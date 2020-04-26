@@ -83,5 +83,6 @@ class TestQuaternion(unittest.TestCase):
     
     def test_rotx(self):
          pass
-    
-unittest.main()
+
+if __name__ == '__main__':
+    unittest.main()
