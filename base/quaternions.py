@@ -10,7 +10,7 @@ import sys
 import math
 import numpy as np
 
-import spatialmath.base.transforms as tr
+import spatialmath.base as tr
 import spatialmath.base.argcheck as argcheck
 
 _eps = np.finfo(np.float64).eps

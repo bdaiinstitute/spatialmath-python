@@ -1,7 +1,7 @@
 import numpy.testing as nt
 import unittest
 
-from spatialmath.base.transforms import *
+from spatialmath.base.vectors import *
 from spatialmath.base.quaternions import *
         
 class TestQuaternion(unittest.TestCase):
@@ -46,6 +46,8 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(len(s) > 2, True)
         
         nt.assert_equal(qprint([1,2,3,4], file=None), "1.000000 < 2.000000, 3.000000, 4.000000 >")
+        
+        nt.assert_equal( isunitvec( rand()), True)
         
     def test_rotation(self):
         # rotation matrix to quaternion
