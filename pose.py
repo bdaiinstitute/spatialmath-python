@@ -11,7 +11,7 @@ import numpy as np
 import math
 
 from spatialmath.base import argcheck 
-from spatialmath.base import transforms
+import spatialmath.base as transforms
 from spatialmath import super_pose as sp
 
 class SO2(sp.SuperPose):
@@ -134,7 +134,7 @@ class SO3(sp.SuperPose):
     # SO2( nplist )  # make from list of numpy objects
     
     # constructor needs to take ndarray -> SO2, or list of ndarray -> SO2
-    def __init__(self, arg = None, *, unit='rad'):
+    def __init__(self, arg = None, *, unit='rad', check=True):
         super().__init__()  # activate the UserList semantics
         
         if arg is None:
@@ -143,7 +143,7 @@ class SO3(sp.SuperPose):
         
             
         else:
-            super().arghandler(arg)
+            super().pose_arghandler(arg, check=check)
 
     @classmethod
     def rand(cls, *, range=[0, 2*math.pi], unit='rad', N=1):
@@ -156,10 +156,16 @@ class SO3(sp.SuperPose):
 
     @property
     def T(self):
-        return SO3(self.A.T)
+        if len(self) == 1:
+            return SO3(self.A.T)
+        else:
+            return SO3([x.T for x in self.A])
     
     def inv(self):
-        return SO3(self.A.T)
+        if len(self) == 1:
+            return SO3(self.A.T)
+        else:
+            return SO3([x.T for x in self.A])
     
     @property
     def n(self):
@@ -175,26 +181,19 @@ class SO3(sp.SuperPose):
     
     @classmethod
     def Rx(cls, theta, unit='rad'):
-        return cls([transforms.rotx(x, unit) for x in argcheck.getvector(theta)])
+        return cls([transforms.rotx(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
     def Ry(cls, theta, unit='rad'):
-        return cls([transforms.roty(x, unit) for x in argcheck.getvector(theta)])
+        return cls([transforms.roty(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
     def Rz(cls, theta, unit='rad'):
-        return cls([transforms.rotz(x, unit) for x in argcheck.getvector(theta)])
+        return cls([transforms.rotz(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
     def rand(cls):
-        ran = randint(1, 3)
-        if ran == 1:
-            rot = transforms.rotx(uniform(0, 360), unit='deg')
-            return cls(null=True).__fill([transforms.rotx(uniform(0, 360), unit='deg')])
-        elif ran == 2:
-            return cls(null=True).__fill([transforms.roty(uniform(0, 360), unit='deg')])
-        elif ran == 3:
-            return cls(null=True).__fill([transforms.rotz(uniform(0, 360), unit='deg')])
+        return cls( transforms.q2r(transforms.rand()), check=False)
         
 
     # 
@@ -202,19 +201,19 @@ class SO3(sp.SuperPose):
 
     @classmethod
     def eul(cls, angles, unit='rad'):
-        return cls(transforms.eul2r(angles, unit=unit))
+        return cls(transforms.eul2r(angles, unit=unit), check=False)
 
     @classmethod
     def rpy(cls, angles, order='zyx', unit='rad'):
-        return cls(transforms.rpy2r(angles, order=order, unit=unit))
+        return cls(transforms.rpy2r(angles, order=order, unit=unit), check=False)
 
     @classmethod
     def oa(cls, o, a):
-        return cls(transforms.oa2r(o, a))
+        return cls(transforms.oa2r(o, a), check=False)
 
     @classmethod
     def angvec(cls, theta, v, *, unit='rad'):
-        return cls(transforms.angvec2r(theta, v, unit=unit))
+        return cls(transforms.angvec2r(theta, v, unit=unit), check=False)
 
 class SE3(SO3):
 
@@ -296,30 +295,35 @@ class SE3(SO3):
 
 
 if __name__ == '__main__':
+    
+    R = SO3()
 
-    a = SO2(0.2)
-    b = SO2(a)
-    print(a+a)
-    print(a*a)
+    # print(isinstance(R, SO3))
+    # print(isinstance(R, sp.SuperPose))
 
-    b = SO2(0.1)
-    b.append(a)
-    b.append(a)
-    b.append(a)
-    b.append(a)
-    print(len(a))
-    print(len(b))
-    print(b)
+    # a = SO2(0.2)
+    # b = SO2(a)
+    # print(a+a)
+    # print(a*a)
 
-    c = SO2(0.3)
-    c.extend(a)
-    c.extend(b)
-    print(len(c))
+    # b = SO2(0.1)
+    # b.append(a)
+    # b.append(a)
+    # b.append(a)
+    # b.append(a)
+    # print(len(a))
+    # print(len(b))
+    # print(b)
 
-    d = SO2(0.4)
-    d.append(b)
-    print(len(d))
-    print(d)
+    # c = SO2(0.3)
+    # c.extend(a)
+    # c.extend(b)
+    # print(len(c))
+
+    # d = SO2(0.4)
+    # d.append(b)
+    # print(len(d))
+    # print(d)
 
 
     # if __name__ == '__main__':
@@ -360,4 +364,9 @@ if __name__ == '__main__':
     # import os.path
     
     # runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
-            
+ 
+    
+    import pathlib
+    import os.path
+    
+    runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose.py") )

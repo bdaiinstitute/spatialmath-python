@@ -1,13 +1,15 @@
-# Created by: Aditya Dua
+# Created by: Aditya Dua, 2017
+# Peter Corke, 2020
 # 13 June, 2017
 
 import numpy as np
 from abc import ABC, abstractmethod
 from collections import UserList
 import copy
+from spatialmath.base import argcheck 
 
 # colored printing of matrices to the terminal
-#   colored package has much finder control than colorama, but the latter is available by default with anaconda
+#   colored package has much finer control than colorama, but the latter is available by default with anaconda
 try:
     from colored import fg, bg, attr
     _color = True
@@ -90,31 +92,45 @@ class SuperPose(UserList, ABC):
         #  numpy array
         #  list of numpy array
         # validity checking??
-        print('super_pose constructor')
         super().__init__()   # enable UserList superpowers
         
-    def arghandler(self, arg):
-        if type(arg) is np.ndarray:
+    def pose_arghandler(self, arg, check=True):
+        
+        if isinstance(arg, np.ndarray):
             # it's a numpy array
-            print('construct from ndarray', arg)
             assert arg.shape == self.shape, 'array must have valid shape for the class'
             assert type(self).isvalid(arg), 'array must have valid value for the class'
             self.data.append(arg)
-        elif type(arg) is list:
+        elif isinstance(arg, list):
             # construct from a list
-            s = self.shape
-            check = type(self).isvalid
-            assert all( map( lambda x: x.shape==s and check(x), arg) ), 'all elements of list must have valid shape and value for the class'
-            self.data = arg           
+
+            if isinstance(arg[0], np.ndarray):
+                #print('list of numpys')
+                # possibly a list of numpy arrays
+                s = self.shape
+                check = type(self).isvalid  # lambda function
+                assert all( map( lambda x: x.shape==s and check(x), arg) ), 'all elements of list must have valid shape and value for the class'
+                self.data = arg         
+            elif type(arg[0]) == type(self):
+                # possibly a list of objects of same type
+                assert all( map( lambda x: type(x) == type(self), arg) ), 'all elements of list must have same type'
+                self.data = [x.A for x in arg]
+            else:
+                raise ValueError('1 bad argument to constructor')
         elif type(self) == type(arg):
-            # it's an SO2 type, do copy
-            print('copy constructor')
-            self.data.append(arg.data.copy())
+            # it's an object of same type, do copy
+            self.data = arg.data.copy()
         else:
-            raise ValueError('bad argument to SO2 constructor')
-            
+            raise ValueError('2 bad argument to constructor')
+    
+    @classmethod
+    def empty(cls):
+        X = cls()
+        X.data = []
+        return X
+    
     def append(self, x):
-        print('in append method')
+        #print('in append method')
         if not type(self) == type(x):
             raise ValueError("cant append different type of pose object")
         if len(x) > 1:
@@ -130,7 +146,7 @@ class SuperPose(UserList, ABC):
             return self.data
 
     def __getitem__(self, i):
-        print('getitem', i)
+        #print('getitem', i)
         #return self.__class__(self.data[i])
         return self.__class__(self.data[i])
 
@@ -153,7 +169,7 @@ class SuperPose(UserList, ABC):
             return 2
         else:
             return 3
-        
+    
     # compatibility methods
 
     def isrot(self):
@@ -206,47 +222,64 @@ class SuperPose(UserList, ABC):
 
     def __mul__(left, right):
         """
-        multiply quaternion
+        Pose multiplication
         
         :arg left: left multiplicand
         :arg right: right multiplicand
         :return: product
         :raises: ValueError
         
+        - ``X * Y`` compounds the poses X and Y
+        - ``X * s`` performs elementwise multiplication of the elements of ``X``
+        - ``s * X`` performs elementwise multiplication of the elements of ``X``
+        - ``X * v`` transforms the vector.
+        
         ==============   ==============   ==============  ================
                    Multiplicands                   Product
         -------------------------------   --------------------------------
             left             right            type           result
-        ==============   ==============   ==============  ================
-        Quaternion       Quaternion       Quaternion      Hamilton product
-        Quaternion       UnitQuaternion   Quaternion      Hamilton product
-        Quaternion       scalar           Quaternion      scalar product
-        UnitQuaternion   Quaternion       Quaternion      Hamilton product
-        UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product
-        UnitQuaternion   scalar           Quaternion      scalar product
-        UnitQuaternion   3-vector         3-vector        vector rotation
-        ==============   ==============   ==============  ================
+        ==============   ==============   ===========  ===================
+        Pose             Pose             Pose         matrix product
+        Pose             scalar           matrix       elementwise product
+        scalar           Pose             matrix       elementwise product
+        Pose             N-vector         N-vector     vector transform
+        ==============   ==============   ===========  ===================
 
         Any other input combinations result in a ValueError.
         
-        Note that self and other can have a length greater than 1 in which case
+        Note that left and right can have a length greater than 1 in which case
         
         ====   =====   ====  ================================
         left   right   len     operation
         ====   =====   ====  ================================
          1      1       1    ``prod = left * right``
-         1      N       N    ``prod[i] = left * right[i]``
-         N      1       N    ``prod[i] = left[i] * right``
-         N      N       N    ``prod[i] = left[i] * right[i]``
+         1      M       M    ``prod[i] = left * right[i]``
+         N      1       M    ``prod[i] = left[i] * right``
+         M      M       M    ``prod[i] = left[i] * right[i]``
         ====   =====   ====  ================================
 
-        A scalar of length N is list, tuple or numpy array.
-        A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
+        A scalar of length M is list, tuple or numpy array.
+        An N-vector of length M is a NxM numpy array, where each column is an N-vector.
         """
-        assert type(left) == type(right), 'operands to * are of different types'
-        return left._op2(right, lambda x, y: x @ y )
+        if isinstance(left, right.__class__):
+            return left.__class__(left._op2(right, lambda x, y: x @ y ))
+        elif isinstance(right, (list, tuple, np.ndarray)):
+            if argcheck.isvector(right, left.N):
+                # pose x vector
+                v = argcheck.getvector(right)
+                return np.vstack([x.A @ v for x in left]).T
 
-    def __rmul__(x, y):
+            elif isinstance(right, np.ndarray) and right.shape[0] == left.N and len(left) == 1:
+                # pose x matrix
+                return left.A @ right
+            else:
+                raise ValueError('bad operands')
+        elif isinstance(right, (int, float)):
+            return left._op2(right, lambda x, y: x * y )
+        else:
+            raise ValueError('bad operands')
+        
+    def __rmul__(right, left):
         """
         
 
@@ -267,10 +300,38 @@ class SuperPose(UserList, ABC):
         None.
 
         """
-        raise NotImplemented()
+        return right.__mul__(left)
         
-    def __imul__(self, other):
-        return self.__mul__(other)
+    def __imul__(left, right):
+        """
+        Pose multiplication
+        
+        :arg left: left multiplicand
+        :arg right: right multiplicand
+        :return: product
+        :raises: ValueError
+        
+        - ``X *= Y`` compounds the poses X and Y and places the result in X
+        - ``X *= s`` performs elementwise multiplication of the elements of ``X``
+
+
+        Any other input combinations result in a ValueError.
+        
+        Note that left and right can have a length greater than 1 in which case
+        
+        ====   =====   ====  ================================
+        left   right   len     operation
+        ====   =====   ====  ================================
+         1      1       1    ``prod = left * right``
+         1      M       M    ``prod[i] = left * right[i]``
+         N      1       M    ``prod[i] = left[i] * right``
+         M      M       M    ``prod[i] = left[i] * right[i]``
+        ====   =====   ====  ================================
+
+        A scalar of length M is list, tuple or numpy array.
+        An N-vector of length M is a NxM numpy array, where each column is an N-vector.
+        """
+        return left.__mul__(right)
     
     def __pow__(self, n):
         assert type(n) is int, 'exponent must be an int'
@@ -280,47 +341,74 @@ class SuperPose(UserList, ABC):
         return self.__pow__(n)
                     
 
-    def __truediv__(self, other):
-        assert type(self) == type(other), 'operands to * are of different types'
-        return self._op2(other, lambda x, y: x @ np.linalg.inv(y) )
+    def __truediv__(left, right):
+        if isinstance(left, right.__class__):
+            return left.__class__(left._op2(right.inv(), lambda x, y: x @ y ))
+        elif isinstance(right, (int, float)):
+            return left._op2(right, lambda x, y: x / y )
+        else:
+            raise ValueError('bad operands')
+
+    
+    def __itruediv__(left, right):
+        return left.__truediv__(right)            
     
 
-    def __add__(self, other):
+    def __add__(left, right):
         # results is not in the group, return an array, not a class
-        assert type(self) == type(other), 'operands to + are of different types'
-        return self._op2(other, lambda x, y: x + y )
+        return left._op2(right, lambda x, y: x + y )
 
-    def __sub__(self, other):
+    # def __radd__(left, right):
+    #     return left.__add__(right)
+    
+    def __iadd__(left, right):
+        return left.__add__(right)
+    
+    def __sub__(left, right):
         # results is not in the group, return an array, not a class
         # TODO allow class +/- a conformant array
-        assert type(self) == type(other), 'operands to - are of different types'
-        return self._op2(other, lambda x, y: x - y )
+        return left._op2(right, lambda x, y: x - y )
+
+    # def __rsub__(left, right):
+    #     return -left.__sub__(right)
     
 
-    def __eq__(self, other):
-        assert type(self) == type(other), 'operands to == are of different types'
-        return self._op2(other, lambda x, y: np.allclose(x, y) )
+    def __isub__(left, right):
+        return left.__sub__(right)
+
+    def __eq__(left, right):
+        assert type(left) == type(right), 'operands to == are of different types'
+        return left._op2(right, lambda x, y: np.allclose(x, y) )
     
-    def __ne__(self, other):
-        return [not x for x in self == other]
+    def __ne__(left, right):
+        return [not x for x in self == right]
     
-    def _op2(self, other, op):
+    def _op2(left, right, op):
         
-        if len(self) == 1:
-            if len(other) == 1:
-                return op(self.A, other.A)
+        if isinstance(right, left.__class__):
+            if len(left) == 1:
+                if len(right) == 1:
+                    #print('== 1x1')
+                    return op(left.A, right.A)
+                else:
+                    #print('== 1xN')
+                    return [op(left.A, x) for x in right.A]
             else:
-                print('== 1xN')
-                return [op(self.A @ x.A) for x in other]
-        else:
-            if len(other) == 1:
-                print('== Nx1')
-                return [op(x.A @ other.A) for x in self]
-            elif len(self) == len(other):
-                print('== NxN')
-                return [op(x.A @ y.A) for (x,y) in zip(self.A, self.other)]
+                if len(right) == 1:
+                    #print('== Nx1')
+                    return [op(x, right.A) for x in left.A]
+                elif len(left) == len(right):
+                    #print('== NxN')
+                    return [op(x, y) for (x,y) in zip(left.A, right.A)]
+                else:
+                    raise ValueError('length of lists to == must be same length')
+        elif isinstance(right, (float, int)) or (isinstance(right, np.ndarray) and right.shape == left.shape):
+            if len(left) == 1:
+                return op(left.A, right)
             else:
-                raise ValueError('length of lists to == must be same length')
+                return [op(x, right) for x in left.A]
+        
+
     
     # @classmethod
     # def rand(cls):
@@ -353,21 +441,21 @@ class SuperPose(UserList, ABC):
             trplot(self.A)
         
     def __repr__(self):
-        #print('in __repr__')
-        if len(self) >= 1:
-            str = ''
-            for each in self.data:
-                str += np.array2string(each) + '\n\n'
-            return str.rstrip("\n")  # Remove trailing newline character
-        else:
-             raise ValueError('no elements in the value list')
+        # #print('in __repr__')
+        # if len(self) >= 1:
+        #     str = ''
+        #     for each in self.data:
+        #         str += np.array2string(each) + '\n\n'
+        #     return str.rstrip("\n")  # Remove trailing newline character
+        # else:
+        #      raise ValueError('no elements in the value list')
+        return self.__str__()
 
     def __str__(self):
         #print('in __str__')
         def mformat(self, X):
             # X is an ndarray value to be display
             # self provides set type for formatting
-            print(self.A)
             out = ''
             n = self.N  # dimension of rotation submatrix
             for rownum, row in enumerate(X):
@@ -392,17 +480,16 @@ class SuperPose(UserList, ABC):
 
         output_str = ''
 
-        if len(self.data) == 1:
+        if len(self.data) == 0:
+            output_str = '[]'
+        elif len(self.data) == 1:
             # single matrix case
             output_str = mformat(self, self.A)
-        elif len(self.data) > 1:
+        else:
             # sequence case
             for count, X in enumerate(self.data):
                 # add separator lines and the index
                 output_str += fg('green') + '[{:d}] =\n'.format(count) + attr(0) + mformat(self, X)
-        else:
-            raise ValueError('no elements in the value list')
 
-
-        
+            
         return output_str
