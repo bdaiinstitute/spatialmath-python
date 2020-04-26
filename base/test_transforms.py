@@ -11,6 +11,7 @@ Created on Fri Apr 10 14:19:04 2020
 import numpy.testing as nt
 import unittest
 from math import pi
+import scipy as sp
 
 from spatialmath.base.transforms import *
 
@@ -18,21 +19,21 @@ class TestVector(unittest.TestCase):
     
     def test_unit(self):
         
-        nt.assert_array_almost_equal(unit([1,0,0]),  np.r_[1,0,0])
-        nt.assert_array_almost_equal(unit([0,1,0]),  np.r_[0,1,0])
-        nt.assert_array_almost_equal(unit([0,0,1]),  np.r_[0,0,1])
+        nt.assert_array_almost_equal(unitvec([1,0,0]),  np.r_[1,0,0])
+        nt.assert_array_almost_equal(unitvec([0,1,0]),  np.r_[0,1,0])
+        nt.assert_array_almost_equal(unitvec([0,0,1]),  np.r_[0,0,1])
         
-        nt.assert_array_almost_equal(unit((1,0,0)),  np.r_[1,0,0])
-        nt.assert_array_almost_equal(unit((0,1,0)),  np.r_[0,1,0])
-        nt.assert_array_almost_equal(unit((0,0,1)),  np.r_[0,0,1])
+        nt.assert_array_almost_equal(unitvec((1,0,0)),  np.r_[1,0,0])
+        nt.assert_array_almost_equal(unitvec((0,1,0)),  np.r_[0,1,0])
+        nt.assert_array_almost_equal(unitvec((0,0,1)),  np.r_[0,0,1])
         
-        nt.assert_array_almost_equal(unit(np.r_[1,0,0]),  np.r_[1,0,0])
-        nt.assert_array_almost_equal(unit(np.r_[0,1,0]),  np.r_[0,1,0])
-        nt.assert_array_almost_equal(unit(np.r_[0,0,1]),  np.r_[0,0,1])
+        nt.assert_array_almost_equal(unitvec(np.r_[1,0,0]),  np.r_[1,0,0])
+        nt.assert_array_almost_equal(unitvec(np.r_[0,1,0]),  np.r_[0,1,0])
+        nt.assert_array_almost_equal(unitvec(np.r_[0,0,1]),  np.r_[0,0,1])
         
-        nt.assert_array_almost_equal(unit([9,0,0]),  np.r_[1,0,0])
-        nt.assert_array_almost_equal(unit([0,9,0]),  np.r_[0,1,0])
-        nt.assert_array_almost_equal(unit([0,0,9]),  np.r_[0,0,1])
+        nt.assert_array_almost_equal(unitvec([9,0,0]),  np.r_[1,0,0])
+        nt.assert_array_almost_equal(unitvec([0,9,0]),  np.r_[0,1,0])
+        nt.assert_array_almost_equal(unitvec([0,0,9]),  np.r_[0,0,1])
         
     def test_isunitvec(self):
         nt.assert_equal(isunitvec([1,0,0]), True)
@@ -558,9 +559,7 @@ class Test3D(unittest.TestCase):
         [theta, v] = tr2angvec(np.eye(3,3))
         nt.assert_array_almost_equal(theta, 0.0)
         nt.assert_array_almost_equal(v, np.r_[0, 0, 0])
-        
-        tr2angvec(eye(3,3))
-        
+                
         # canonic rotations
         [theta, v] = tr2angvec(rotx(pi/2))
         nt.assert_array_almost_equal(theta, pi/2)
@@ -575,7 +574,7 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(v, np.r_[0, 0, 1])
         
         # null rotation
-        [theta, v] = tr2angvec(eye(4,4))
+        [theta, v] = tr2angvec(np.eye(4))
         nt.assert_array_almost_equal(theta, 0.0)
         nt.assert_array_almost_equal(v, np.r_[0, 0, 0])
         
@@ -595,16 +594,6 @@ class Test3D(unittest.TestCase):
         [theta, v] = tr2angvec(roty(pi/2), unit='deg')
         nt.assert_array_almost_equal(theta, 90)
         nt.assert_array_almost_equal(v, np.r_[0, 1, 0])
-        
-        R = cat(3, rotx(pi/2), roty(pi/2), rotz(pi/2))
-        [theta, v] = tr2angvec(R)
-        nt.assert_array_almost_equal(theta, pi/2*np.r_[1, 1, 1])
-        nt.assert_array_almost_equal(v, eye(3,3))
-        
-        T = cat(3, trotx(pi/2), troty(pi/2), trotz(pi/2))
-        [theta, v] = tr2angvec(T)
-        nt.assert_array_almost_equal(theta, pi/2*np.r_[1, 1, 1])
-        nt.assert_array_almost_equal(v, eye(3,3))
         
             
 class TestLie(unittest.TestCase):
@@ -702,23 +691,31 @@ class TestLie(unittest.TestCase):
         
         
         R = rotx(0.2) @ roty(0.3) @ rotz(0.4)
-        [th,w] = trlog(R)
-        nt.assert_array_almost_equal( logm(R), skew(th*w))
+        nt.assert_array_almost_equal( trlog(R), sp.linalg.logm(R))
         
         #%% SE(3) tests
         
         # pure translation
         nt.assert_array_almost_equal(trlog( transl([1, 2, 3]) ), np.array([[0, 0, 0, 1], [ 0, 0, 0, 2], [ 0, 0, 0, 3], [ 0, 0, 0, 0]]))
+ 
+        # pure rotation
+        # rotation by pi case
+        nt.assert_array_almost_equal(trlog( trotx(pi) ), skewa([0, 0, 0,  pi, 0, 0]))
+        nt.assert_array_almost_equal(trlog( troty(pi) ), skewa([0, 0, 0,  0, pi, 0]))
+        nt.assert_array_almost_equal(trlog( trotz(pi) ), skewa([0, 0, 0,  0, 0, pi]))
+        
+        # general case
+        nt.assert_array_almost_equal(trlog( trotx(0.2) ), skewa([0, 0, 0,  0.2, 0, 0]))
+        nt.assert_array_almost_equal(trlog( troty(0.3) ), skewa([0, 0, 0,  0, 0.3, 0]))
+        nt.assert_array_almost_equal(trlog( trotz(0.4) ), skewa([0, 0, 0,  0, 0, 0.4]))
         
         # mixture
         T = transl([1, 2, 3]) @ trotx(0.3)
-        nt.assert_array_almost_equal(trlog(T), logm(T))
+        nt.assert_array_almost_equal(trlog(T), sp.linalg.logm(T))
         
         T = transl([1, 2, 3]) @ troty(0.3)
-        nt.assert_array_almost_equal(trlog(T), logm(T))
+        nt.assert_array_almost_equal(trlog(T), sp.linalg.logm(T))
         
-        [th,w] = trlog(T)
-        nt.assert_array_almost_equal( logm(T), skewa(th*w))
         
     
 
@@ -765,6 +762,11 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trexp( skewa([0, 0, 0, 0, 0.3, 0]) ), troty(0.3))
         nt.assert_array_almost_equal(trexp( skewa([0, 0, 0, 0, 0, 0.4]) ), trotz(0.4))
         
+        nt.assert_array_almost_equal(trexp( [1, 2, 3, 0, 0, 0] ), transl([1, 2, 3]))
+        nt.assert_array_almost_equal(trexp( [0, 0, 0, 0.2, 0, 0] ), trotx(0.2))
+        nt.assert_array_almost_equal(trexp( [0, 0, 0, 0, 0.3, 0] ), troty(0.3))
+        nt.assert_array_almost_equal(trexp( [0, 0, 0, 0, 0, 0.4] ), trotz(0.4))
+        
         # mixture
         S = skewa([1,2,3, 0.1, -0.2, 0.3])
         nt.assert_array_almost_equal(trexp(S), expm(S))
@@ -786,8 +788,8 @@ class TestLie(unittest.TestCase):
         #nt.assert_array_almost_equal(trexp(Twist('R', [1, 0, 0], [0, 0, 0]).S, 0.3), trotx(0.3))
         
         
-        T = transl([1, 2, 3])*trotz(0.3)
-        nt.assert_array_almost_equal(trexp(np.linalg.logm(T)), T)
+        T = transl([1, 2, 3])@trotz(0.3)
+        nt.assert_array_almost_equal(trexp(trlog(T)), T)
         
 
     # test tr2rt rt2tr

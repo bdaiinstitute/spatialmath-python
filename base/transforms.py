@@ -1,5 +1,3 @@
-# Created by: Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan
-# 1 June, 2017
 """ 
 This modules contains functions to create and transform rotation matrices
 and homogeneous tranformation matrices.
@@ -351,7 +349,7 @@ def transl2(x, y=None):
 
 
 # ---------------------------------------------------------------------------------------#
-def unit(v):
+def unitvec(v):
     """
     Create a unit vector
 
@@ -361,7 +359,7 @@ def unit(v):
     :rtype: numpy.ndarray
     :raises ValueError: for zero length vector
     
-    ``unit(v)`` is a vector parallel to `v` of unit length.
+    ``unitvec(v)`` is a vector parallel to `v` of unit length.
     
     :seealso: norm
     
@@ -594,6 +592,45 @@ def rt2tr(R, t, check=False):
     
     return T
 
+# ---------------------------------------------------------------------------------------#
+def rt2m(R, t, check=False):
+    """
+    Pack rotation and translation to matrix
+
+    :param R: rotation matrix
+    :param t: translation vector
+    :param check: check if rotation matrix is valid (default False, no check)
+    :return: homogeneous transform
+    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+
+    ``T = rt2tr(R, t)`` is a homogeneous transformation matrix (N+1xN+1) formed from an
+    orthonormal rotation matrix ``R`` (NxN) and a translation vector ``t``
+    (Nx1).
+        
+    - If ``R`` is 2x2 and ``t`` is 2x1, then ``T`` is 3x3
+    - If ``R`` is 3x3 and ``t`` is 3x1, then ``T`` is 4x4
+    
+    :seealso: tr2rt, r2t
+    """
+    t = argcheck.getvector(t, dim=None, out='array')
+    if R.shape[0] != t.shape[0]:
+        raise ValueError("R and t must have the same number of rows")
+    if check and np.abs(np.linalg.det(R) - 1) < 100*_eps:
+            raise ValueError('Invalid rotation matrix')
+            
+    if R.shape == (2, 2):
+        T = np.zeros((3,3))
+        T[:2,:2] = R
+        T[:2,2] = t
+    elif R.shape == (3, 3):
+        T = np.zeros((4,4))
+        T[:3,:3] = R
+        T[:3,3] = t
+    else:
+        raise ValueError('R must be an SO2 or SO3 rotation matrix')
+    
+    return T
+
 #======================= predicates
 
 def isR(R, tol = 10):
@@ -746,7 +783,7 @@ def iseye(S, tol = 10):
     s = S.shape
     if len(s) != 2 or s[0] != s[1]:
         return False  # not a square matrix
-    return abs(S.trace() - s[0]) < tol * _eps
+    return norm(S - np.eye(s[0])) < tol * _eps
         
     
     
@@ -948,7 +985,7 @@ def angvec2r(theta, v, unit='rad'):
     
     # Rodrigue's equation
 
-    sk = transforms.skew( transforms.unit(v) )
+    sk = transforms.skew( transforms.unitvec(v) )
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
@@ -1015,7 +1052,7 @@ def oa2r(o, a=None):
     a = argcheck.getvector(a, 3, out='array')
     n = np.cross(o, a)
     o = np.cross(a, n)
-    R = np.stack( (transforms.unit(n), transforms.unit(o), transforms.unit(a)), axis=1)
+    R = np.stack( (transforms.unitvec(n), transforms.unitvec(o), transforms.unitvec(a)), axis=1)
     return R
 
 
@@ -1090,8 +1127,12 @@ def tr2angvec(T, unit='rad', check=False):
     
     v = vex( trlog(R) )
     
-    theta = np.linalg.norm(v)
-    v = v / theta
+    if iszerovec(v):
+        theta = 0
+        v = np.r_[0, 0, 0]
+    else:
+        theta = norm(v)
+        v = unitvec(v)
     
     if unit == 'deg':
         theta *= 180 / math.pi
@@ -1458,19 +1499,25 @@ def trlog(T, check=True):
     if ishom(T, check=check):
         # SE(3) matrix
 
-
         if iseye(T):
             # is identity matrix
             return np.zeros((4,4))
         else:
             [R,t] = tr2rt(T)
-            S = trlog(R, check=False)  # recurse
-            w = vex(S)
-            theta = norm(w)
-            skw = S / theta
-            Ginv = np.eye(3) / theta - skw / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) * skw ** 2
-            v = Ginv * t
-            return rt2tr(skw, v)
+            
+            if iseye(R):
+                # rotation matrix is identity
+                skw = np.zeros((3,3))
+                v = t
+                theta = 1
+            else:
+                S = trlog(R, check=False)  # recurse
+                w = vex(S)
+                theta = norm(w)
+                skw = skew(w/theta)
+                Ginv = np.eye(3) / theta - skw / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) * skw @ skw
+                v = Ginv @ t
+            return rt2m(skw, v)*theta
         
     elif isrot(T, check=check):
         # deal with rotation matrix
@@ -1478,19 +1525,20 @@ def trlog(T, check=True):
         if iseye(R):
             # matrix is identity
             return np.zeros((3,3))
-        elif abs(R[0,0] + 1) < 100 * _eps:
-            # tr R = -1
+        elif abs(np.trace(R) + 1) < 100 * _eps:
+
             # rotation by +/- pi, +/- 3pi etc.
-            mx = R.diagonal().max()
-            k = R.diagonal().argmax()
+            diagonal = R.diagonal()
+            k = diagonal.argmax()
+            mx = diagonal[k]
             I = np.eye(3)
-            col = R[:, k] + I[:, k]
+            col = R[:,k] + I[:,k]
             w = col / np.sqrt(2 * (1 + mx))
-            theta = np.pi
+            theta = math.pi
             return skew(w*theta)
         else:
             # general case
-            theta = np.arccos((R[0,0] - 1) / 2)
+            theta = np.arccos((np.trace(R)-1) / 2)
             skw = (R - R.T) / 2 / np.sin(theta)
             return skw * theta
     else:
@@ -1550,11 +1598,21 @@ def trexp(S, theta=None):
             # 6 vector
             tw = argcheck.getvector(S)
 
-        if theta is not None:
-                assert isunittwist(tw), 'If theta is specified S must be a unit twist'
-                
+        if theta is None:
+            (tw,theta) = unittwist(tw)
+        else:
+            assert isunittwist(tw), 'If theta is specified S must be a unit twist'
+
         t = tw[0:3]
         w = tw[3:6]
+        
+
+        R = _rodrigues(w, theta)
+        
+        skw = skew(w)
+        V = np.eye(3)*theta + (1.0-math.cos(theta))*skw + (theta-math.sin(theta))*skw @ skw
+
+        return rt2tr(R, V@t)
         
     elif argcheck.ismatrix(S, (3,3)) or argcheck.isvector(S, 3):
         # so(3) case
@@ -1567,34 +1625,58 @@ def trexp(S, theta=None):
             
         if theta is not None:
             assert isunitvec(w), 'If theta is specified S must be a unit twist'
-        t = None
+
+        # do Rodrigues' formula for rotation
+        return _rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
     
+
+def unittwist(S):
+    """
+    Convert twist to unit twist
     
-    # do Rodrigues' formula for rotation
+    :param S: twist as a 6-vector
+    :type S: array_like
+    :return: unit twist and scalar motion
+    :rtype: tuple (unit_twist, theta)
+
+    A unit twist is a twist where:
+        
+    - the rotation part has unit magnitude
+    - if the rotational part is zero, then the translational part has unit magnitude
+    """
+    
+    s = argcheck.getvector(S, 6)
+    v = S[0:3]
+    w = S[3:6]
+    
+    if iszerovec(w):
+        th = norm(v);
+    else:
+       th = norm(w);
+
+    return (S/th, th)
+
+    
+def _rodrigues(w, theta):
+    """
+    Rodrigues' formula for rotation
+    
+    :param w: rotation vector
+    :type w: array_like
+    :param theta: rotation angle
+    :type theta: float or None
+    """
     if iszerovec(w):
         # for a zero so(3) return unit matrix, theta not relevant
-        R = np.eye(3)
-        V = np.eye(3)
-    else:
-        if theta is None:
-            #  theta is not given, extract it
-            theta = norm(w)
-            w = unit(w)
+        return np.eye(3)
+    if theta is None:
+        theta = norm(w)
+        w = unitvec(w)
 
-        skw = skew(w)
-        R = np.eye(3) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
-        V = None
-    
-    if t is None:
-        # so(3) case
-        return R
-    else:
-        if V is None:
-            V = np.eye(3) + (1.0-math.cos(theta))*skw/theta + (theta-math.sin(theta))/theta*skw @ skw
-        return rt2tr(R, V@t)
-
+    skw = skew(w)
+    return np.eye(3) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
 
 # ---------------------------------------------------------------------------------------#
 def trexp2(S, theta=None):
@@ -1681,7 +1763,7 @@ def trexp2(S, theta=None):
         if theta is None:
             #  theta is not given, extract it
             theta = norm(w)
-            w = unit(w)
+            w = unitvec(w)
 
         skw = skew(w)
         R = np.eye(2) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
@@ -1860,5 +1942,8 @@ if __name__ == '__main__':
     import os.path
     
     runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
+    
+    
+
 
 
