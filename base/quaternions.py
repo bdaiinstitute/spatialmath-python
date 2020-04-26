@@ -501,7 +501,7 @@ def angle(q1, q2):
     return 2.0*math.atan2( norm(q1-q2), norm(q1+q2))
             
             
-def print(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
+def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
     """
     Format a quaternion
     

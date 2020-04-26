@@ -2,7 +2,7 @@ import numpy.testing as nt
 import unittest
 
 from spatialmath.base.transforms import *
-from spatialmath.base.quaternion import *
+from spatialmath.base.quaternions import *
         
 class TestQuaternion(unittest.TestCase):
     def test_ops(self):
@@ -38,14 +38,14 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(isequal(np.r_[1,2,3,4], np.r_[5,6,7,8]), False)
         nt.assert_equal(isequal(np.r_[1,1,0,0]/math.sqrt(2), np.r_[-1,-1,0,0]/math.sqrt(2)), True)
         
-        s = print(np.r_[1,1,0,0], file=None)
+        s = qprint(np.r_[1,1,0,0], file=None)
         nt.assert_equal(isinstance(s,str), True)
         nt.assert_equal(len(s) > 2, True)
-        s = print([1,1,0,0], file=None)
+        s = qprint([1,1,0,0], file=None)
         nt.assert_equal(isinstance(s,str), True)
         nt.assert_equal(len(s) > 2, True)
         
-        nt.assert_equal(print([1,2,3,4], file=None), "1.000000 < 2.000000, 3.000000, 4.000000 >")
+        nt.assert_equal(qprint([1,2,3,4], file=None), "1.000000 < 2.000000, 3.000000, 4.000000 >")
         
     def test_rotation(self):
         # rotation matrix to quaternion
