@@ -16,8 +16,8 @@ import sys
 import math
 import numpy as np
 import spatialmath.base.argcheck as argcheck
-from spatialmath.base.vectors import *
-from spatialmath.base.transformsNd import *
+import spatialmath.base.vectors as vec
+import spatialmath.base.transformsNd as trn
 
 try:
     print('Using SymPy')
@@ -268,7 +268,7 @@ def ishom(T, check=False):
     
     :seealso: isR, isrot, ishom2
     """
-    return T.shape == (4,4) and (not check or (isR(T[:3,:3]) and np.all(T[3,:] == np.array([0,0,0,1]))))
+    return T.shape == (4,4) and (not check or (trn.isR(T[:3,:3]) and np.all(T[3,:] == np.array([0,0,0,1]))))
 
 def isrot(R, check=False):
     """
@@ -286,7 +286,7 @@ def isrot(R, check=False):
     
     :seealso: isR, isrot2, ishom
     """
-    return R.shape == (3,3) and (not check or isR(R))
+    return R.shape == (3,3) and (not check or trn.isR(R))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -387,7 +387,7 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
     """
 
     R = rpy2r(roll, pitch, yaw, order=order, unit=unit)
-    return r2t(R)
+    return trn.r2t(R)
 
 # ---------------------------------------------------------------------------------------#
 def eul2r(phi, theta=None, psi=None, unit='rad'):
@@ -452,7 +452,7 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
     """
     
     R = eul2r(phi, theta, psi, unit=unit)
-    return r2t(R)
+    return trn.r2t(R)
 
 # ---------------------------------------------------------------------------------------#
 def angvec2r(theta, v, unit='rad'):
@@ -620,19 +620,19 @@ def tr2angvec(T, unit='rad', check=False):
     """
 
     if argcheck.ismatrix(T, (4,4)):
-        R = t2r(T)
+        R = trn.t2r(T)
     else:
         R = T
     assert isrot(R, check=check)
     
-    v = vex( trlog(R) )
+    v = trn.vex( trlog(R) )
     
-    if iszerovec(v):
+    if vec.iszerovec(v):
         theta = 0
         v = np.r_[0, 0, 0]
     else:
-        theta = norm(v)
-        v = unitvec(v)
+        theta = vec.norm(v)
+        v = vec.unitvec(v)
     
     if unit == 'deg':
         theta *= 180 / math.pi
@@ -673,7 +673,7 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     """
     
     if argcheck.ismatrix(T, (4,4)):
-        R = t2r(T)
+        R = trn.t2r(T)
     else:
         R = T
     assert isrot(R, check=check)
@@ -737,7 +737,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     """
     
     if argcheck.ismatrix(T, (4,4)):
-        R = t2r(T)
+        R = trn.t2r(T)
     else:
         R = T
     assert isrot(R, check=check)
@@ -854,30 +854,30 @@ def trlog(T, check=True):
     if ishom(T, check=check):
         # SE(3) matrix
 
-        if iseye(T):
+        if trn.iseye(T):
             # is identity matrix
             return np.zeros((4,4))
         else:
-            [R,t] = tr2rt(T)
+            [R,t] = trn.tr2rt(T)
             
-            if iseye(R):
+            if trn.iseye(R):
                 # rotation matrix is identity
                 skw = np.zeros((3,3))
                 v = t
                 theta = 1
             else:
                 S = trlog(R, check=False)  # recurse
-                w = vex(S)
-                theta = norm(w)
-                skw = skew(w/theta)
+                w = trn.vex(S)
+                theta = vec.norm(w)
+                skw = trn.skew(w/theta)
                 Ginv = np.eye(3) / theta - skw / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) * skw @ skw
                 v = Ginv @ t
-            return rt2m(skw, v)*theta
+            return trn.rt2m(skw, v)*theta
         
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
-        if iseye(R):
+        if trn.iseye(R):
             # matrix is identity
             return np.zeros((3,3))
         elif abs(np.trace(R) + 1) < 100 * _eps:
@@ -890,7 +890,7 @@ def trlog(T, check=True):
             col = R[:,k] + I[:,k]
             w = col / np.sqrt(2 * (1 + mx))
             theta = math.pi
-            return skew(w*theta)
+            return trn.skew(w*theta)
         else:
             # general case
             theta = np.arccos((np.trace(R)-1) / 2)
@@ -948,41 +948,41 @@ def trexp(S, theta=None):
         # se(3) case
         if argcheck.ismatrix(S, (4,4)):
             # augmentented skew matrix
-            tw = vexa(S)
+            tw = trn.vexa(S)
         else:
             # 6 vector
             tw = argcheck.getvector(S)
 
         if theta is None:
-            (tw,theta) = unittwist(tw)
+            (tw,theta) = vec.unittwist(tw)
         else:
-            assert isunittwist(tw), 'If theta is specified S must be a unit twist'
+            assert vec.isunittwist(tw), 'If theta is specified S must be a unit twist'
 
         t = tw[0:3]
         w = tw[3:6]
         
 
-        R = _rodrigues(w, theta)
+        R = trn._rodrigues(w, theta)
         
-        skw = skew(w)
+        skw = trn.skew(w)
         V = np.eye(3)*theta + (1.0-math.cos(theta))*skw + (theta-math.sin(theta))*skw @ skw
 
-        return rt2tr(R, V@t)
+        return trn.rt2tr(R, V@t)
         
     elif argcheck.ismatrix(S, (3,3)) or argcheck.isvector(S, 3):
         # so(3) case
         if argcheck.ismatrix(S, (3,3)):
             # skew symmetric matrix
-            w = vex(S)
+            w = trn.vex(S)
         else:
             # 3 vector
             w = argcheck.getvector(S)
             
         if theta is not None:
-            assert isunitvec(w), 'If theta is specified S must be a unit twist'
+            assert vec.isunitvec(w), 'If theta is specified S must be a unit twist'
 
         # do Rodrigues' formula for rotation
-        return _rodrigues(w, theta)
+        return trn._rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
     

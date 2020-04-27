@@ -2,6 +2,7 @@ import numpy.testing as nt
 import unittest
 
 from spatialmath.base.vectors import *
+import spatialmath.base as tr
 from spatialmath.base.quaternions import *
         
 class TestQuaternion(unittest.TestCase):
@@ -12,9 +13,9 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(pure([1,2,3]), np.r_[0,1,2,3])
         nt.assert_array_almost_equal(pure((1,2,3)), np.r_[0,1,2,3])
         
-        nt.assert_equal(norm(np.r_[1,2,3,4]), math.sqrt(30))
-        nt.assert_equal(norm([1,2,3,4]), math.sqrt(30))
-        nt.assert_equal(norm((1,2,3,4)), math.sqrt(30))
+        nt.assert_equal(qnorm(np.r_[1,2,3,4]), math.sqrt(30))
+        nt.assert_equal(qnorm([1,2,3,4]), math.sqrt(30))
+        nt.assert_equal(qnorm((1,2,3,4)), math.sqrt(30))
                         
         nt.assert_array_almost_equal(unit(np.r_[1,2,3,4]), np.r_[1,2,3,4]/math.sqrt(30))
         nt.assert_array_almost_equal(unit([1,2,3,4]), np.r_[1,2,3,4]/math.sqrt(30))

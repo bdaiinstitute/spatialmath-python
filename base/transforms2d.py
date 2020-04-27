@@ -16,8 +16,8 @@ import sys
 import math
 import numpy as np
 import spatialmath.base.argcheck as argcheck
-from spatialmath.base.vectors import *
-from spatialmath.base.transformsNd import *
+import spatialmath.base.vectors as vec
+import spatialmath.base.transformsNd as trn
 
 
 try:
@@ -161,7 +161,7 @@ def ishom2(T, check=False):
     
     :seealso: isR, isrot2, ishom, isvec
     """
-    return T.shape == (3,3) and (not check or (isR(T[:2,:2]) and np.all(T[2,:] == np.array([0,0,1]))))
+    return T.shape == (3,3) and (not check or (trn.isR(T[:2,:2]) and np.all(T[2,:] == np.array([0,0,1]))))
 
 
 def isrot2(R, check=False):
@@ -180,7 +180,7 @@ def isrot2(R, check=False):
     
     :seealso: isR, ishom2, isrot
     """
-    return R.shape == (2,2) and (not check or isR(R))
+    return R.shape == (2,2) and (not check or trn.isR(R))
 
 
 

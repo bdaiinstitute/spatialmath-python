@@ -11,9 +11,10 @@ Created on Fri Apr 10 14:19:04 2020
 import numpy.testing as nt
 import unittest
 from math import pi
-import scipy as sp
+from scipy.linalg import logm, expm
 
-from spatialmath.base.transforms import *
+from spatialmath.base import *
+
 
 class TestVector(unittest.TestCase):
     
@@ -185,6 +186,11 @@ class TestND(unittest.TestCase):
         S[2,0] = 1
         nt.assert_equal( isskew(S), False )
     
+    def test_homog(self):
+        nt.assert_almost_equal( e2h([1,2,3]), np.r_[1,2,3,1])
+        
+        nt.assert_almost_equal( h2e([2,4,6,2]), np.r_[1,2,3])
+        
 class Test2D(unittest.TestCase):
     def test_rot2(self):
         R = np.array([[1, 0], [0, 1]])
@@ -691,7 +697,7 @@ class TestLie(unittest.TestCase):
         
         
         R = rotx(0.2) @ roty(0.3) @ rotz(0.4)
-        nt.assert_array_almost_equal( trlog(R), sp.linalg.logm(R))
+        nt.assert_array_almost_equal( trlog(R), logm(R))
         
         #%% SE(3) tests
         
@@ -711,10 +717,10 @@ class TestLie(unittest.TestCase):
         
         # mixture
         T = transl([1, 2, 3]) @ trotx(0.3)
-        nt.assert_array_almost_equal(trlog(T), sp.linalg.logm(T))
+        nt.assert_array_almost_equal(trlog(T), logm(T))
         
         T = transl([1, 2, 3]) @ troty(0.3)
-        nt.assert_array_almost_equal(trlog(T), sp.linalg.logm(T))
+        nt.assert_array_almost_equal(trlog(T), logm(T))
         
         
     

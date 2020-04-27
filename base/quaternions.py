@@ -44,7 +44,7 @@ def pure(v):
     v = argcheck.getvector(v,3)
     return np.r_[0, v]
 
-def norm(q):
+def qnorm(q):
     r"""
     Norm of a quaternion
     
@@ -300,7 +300,7 @@ def r2q(R, check=True):
     :seealso: q2r
 
     """
-    assert tr.isrot(R, check=check), "Argument must be 3x3 rotation matrix"
+    assert R.shape==(3,3) and tr.isR(R), "Argument must be 3x3 rotation matrix"
     qs = math.sqrt(np.trace(R) + 1) / 2.0
     kx = R[2,1] - R[1,2]  # Oz - Ay
     ky = R[0,2] - R[2,0]  # Ax - Nz

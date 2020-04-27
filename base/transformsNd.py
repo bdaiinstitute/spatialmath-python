@@ -15,12 +15,15 @@ Versions:
 import sys
 import math
 import numpy as np
+import numpy.matlib as matlib
+
 import spatialmath.base.argcheck as argcheck
 from spatialmath.base.vectors import *
+import spatialmath.base.transforms2d as t2d
+import spatialmath.base.transforms3d as t3d
 
     
 _eps = np.finfo(np.float64).eps
-
 
 
 # ---------------------------------------------------------------------------------------#
@@ -427,12 +430,13 @@ def vexa(Omega):
     :seealso: skewa, vex
     """
     if Omega.shape == (4,4):
-        return np.hstack( (transl(Omega), vex(t2r(Omega))) )
+        return np.hstack( (t3d.transl(Omega), vex(t2r(Omega))) )
     elif Omega.shape == (3,3):
-        return np.hstack( (transl2(Omega), vex(t2r(Omega))) )
+        return np.hstack( (t2d.transl2(Omega), vex(t2r(Omega))) )
     else:
         raise AttributeError("expecting a 3x3 or 4x4 matrix")
         
+
 
     
 def _rodrigues(w, theta):
@@ -454,7 +458,55 @@ def _rodrigues(w, theta):
     skw = skew(w)
     return np.eye(3) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
 
+def h2e(v):
+    """
+    Convert from homogeneous to Euclidean form
     
+    :param v: homogeneous vector or matrix
+    :type v: array_like
+    :return: Euclidean vector
+    :rtype: numpy.ndarray
+
+    - If ``v`` is an array, shape=(N,), return an array shape=(N-1,) where the elements have
+      all been scaled by the last element of ``v``.
+    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N-1,N), where each column has
+      been scaled by its last element.
+      
+    :seealso: e2h
+    """
+    if argcheck.isvector(v):
+        # dealing with shape (N,) array
+        v = argcheck.getvector(v)
+        return v[0:-1] / v[-1]
+    elif isinstance(v, np.ndarray) and len(v.shape) == 2:
+        # dealing with matrix
+        return v[:-1,:] / matlib.repmat(v[-1,:], 2, 1)
+    
+def e2h(v):
+    """
+    Convert from Euclidean to homogeneous form
+    
+    :param v: Euclidean vector or matrix
+    :type v: array_like
+    :return: homogeneous vector
+    :rtype: numpy.ndarray
+
+    - If ``v`` is an array, shape=(N,), return an array shape=(N+1,) where a value of 1 has
+      been appended
+    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N+1,N), where each column has
+      been appended with a value of 1, ie. a row of ones has been appended to the matrix.
+      
+    :seealso: e2h
+    """
+    if argcheck.isvector(v):
+        # dealing with shape (N,) array
+        v = argcheck.getvector(v)
+        return np.r_[v, 1.0]
+    elif isinstance(v, np.ndarray) and len(v.shape) == 2:
+        # dealing with matrix  
+        return np.vstack([v, np.ones((1,v.shape[1]))])
+        
+
 if __name__ == '__main__':
     import pathlib
     import os.path

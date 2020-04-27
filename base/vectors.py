@@ -157,6 +157,26 @@ def unittwist(S):
 
     return (S/th, th)
 
+def angdiff(a, b):
+    """
+    Angular difference
+    
+    :param a: angle in radians
+    :type a: scalar or array_like
+    :param b: angle in radians
+    :type b: scalar or array_like
+    :return: angular difference a-b
+    :rtype: scalar or array_like
+    
+    - If ``a`` and ``b`` are both scalars, the result is scalar
+    - If ``a`` is array_like, the result is a vector a[i]-b
+    - If ``a`` is array_like, the result is a vector a-b[i]
+    - If ``a`` and ``b`` are both vectors of the same length, the result is a vector a[i]-b[i]
+    """
+
+    return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
+
+
     
 if __name__ == '__main__':
     import pathlib
