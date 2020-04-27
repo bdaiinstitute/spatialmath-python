@@ -70,8 +70,6 @@ def rotx(theta, unit="rad"):
             [1, 0, 0], 
             [0, ct, -st], 
             [0, st, ct]  ])
-    if not isinstance(theta, sym.Symbol):
-        R = R.round(15)
     return R
 
 
@@ -99,8 +97,6 @@ def roty(theta, unit="rad"):
             [ct, 0, st], 
             [0, 1, 0], 
             [-st, 0, ct]  ])
-    if not isinstance(theta, sym.Symbol):
-        R = R.round(15)
     return R
 
 
@@ -127,8 +123,6 @@ def rotz(theta, unit="rad"):
             [ct, -st, 0], 
             [st,  ct, 0], 
             [0,   0,  1]  ])
-    if not isinstance(theta, sym.Symbol):
-        R = R.round(15)
     return R
 
 
@@ -251,7 +245,7 @@ def transl(x, y=None, z=None):
         
 
 
-def ishom(T, check=False):
+def ishom(T, check=False, tol=10):
     """
     Test if matrix belongs to SE(3)
     
@@ -268,9 +262,9 @@ def ishom(T, check=False):
     
     :seealso: isR, isrot, ishom2
     """
-    return T.shape == (4,4) and (not check or (trn.isR(T[:3,:3]) and np.all(T[3,:] == np.array([0,0,0,1]))))
+    return T.shape == (4,4) and (not check or (trn.isR(T[:3,:3], tol=tol) and np.all(T[3,:] == np.array([0,0,0,1]))))
 
-def isrot(R, check=False):
+def isrot(R, check=False, tol=10):
     """
     Test if matrix belongs to SO(3)
     
@@ -286,7 +280,7 @@ def isrot(R, check=False):
     
     :seealso: isR, isrot2, ishom
     """
-    return R.shape == (3,3) and (not check or trn.isR(R))
+    return R.shape == (3,3) and (not check or trn.isR(R, tol=tol))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -1089,14 +1083,136 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
 def _vec2s(fmt, v):
         v = [x if np.abs(x) > 100*_eps else 0.0 for x in v ]
         return ', '.join([fmt.format(x) for x in v])
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+def trplot(T, ax=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1= 0.05, d2 = 1.15 ):
+    """
+    Plot a 3D coordinate frame
+                         
+    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
+    :type: numpy.ndarray, shape=(3,3) or (4,4)
+    :param X: the axes to plot into, defaults to current axes
+    :type ax: Axes3D reference
+    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax]
+    :type dims: array_like
+    :param color: color of the lines defining the frame
+    :type color: str
+    :param textcolor: color of text labels for the frame, default color of lines above
+    :type textcolor: str
+    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
+    :type frame: str
+    :param labels: labels for the axes, defaults to X, Y and Z
+    :type labels: 3-tuple of strings
+    :param length: length of coordinate frame axes, default 1
+    :type length: float
+    :param arrow: show arrow heads, default True
+    :type arrow: bool
+    :param wtl: width-to-length ratio for arrows, default 0.2
+    :type wtl: float
+    :param rviz: show Rviz style arrows, default False
+    :type rviz: bool
+    :param projection: 3D projection: ortho [default] or persp
+    :type projection: str
+    :param width: width of lines, default 1
+    :type width: float
+    :param d1: distance of frame axis label text from origin, default 1.15
+    :type d2: distance of frame label text from origin, default 0.05
+
+    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.
+    
+    - If no current figure, one is created
+    - If current figure, but no axes, a 3d Axes is created
+    
+    Examples:
+
+         trplot(T, frame='A')
+         trplot(T, frame='A', color='green')
+         trplot(T1, 'labels', 'NOA');
+
+    """
+    
+    #TODO
+    # animation
+    # anaglyph
+
+    # check input types
+    if isrot(T, check=True):
+        T = r2t(T)
+    else:
+        assert ishom(T, check=True)
+
+    if ax is None:
+        # create an axes
+        fig = plt.gcf()
+        if fig.axes == []:
+            # no axes in the figure, create a 3D axes
+            ax = fig.add_subplot(111, projection='3d', proj_type=projection)
+            
+            if dims is None:
+                ax.autoscale(enable=True, axis='both')
+            else:
+                ax.set_xlim(dims[0:2])
+                ax.set_ylim(dims[2:4])
+                ax.set_zlim(dims[4:6])
+            #ax.set_aspect('equal')
+            ax.set_xlabel(labels[0])
+            ax.set_ylabel(labels[1])
+            ax.set_zlabel(labels[2])
+        else:
+            # reuse an existing axis
+            ax = plt.gca()
+    
+    # create unit vectors in homogeneous form
+    o =  T @ np.array([0, 0, 0, 1])
+    x = T @ np.array([1, 0, 0, 1]) * length
+    y = T @ np.array([0, 1, 0, 1]) * length
+    z = T @ np.array([0, 0, 1, 1]) * length
+
+    # draw the axes
+
+    if rviz:
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color='red', linewidth=5*width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=5*width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=5*width)
+    elif arrow:
+        ax.quiver(o[0], o[1], o[2], x[0]-o[0], x[1]-o[1], x[2]-o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        ax.quiver(o[0], o[1], o[2], y[0]-o[0], y[1]-o[1], y[2]-o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        ax.quiver(o[0], o[1], o[2], z[0]-o[0], z[1]-o[1], z[2]-o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        # plot an invisible point at the end of each arrow to allow auto-scaling to work
+        ax.scatter( xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], s=[20,0,0,0])
+    else:
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color, linewidth=width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color, linewidth=width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color, linewidth=width)
+    
+    # label the frame
+    if frame:
+        if textcolor is not None:
+            color = textcolor
+        
+        o1 =  T @ np.array([-d1, -d1, -d1, 1])
+        ax.text(o1[0], o1[1], o1[2], '$\{' + frame + '\}$', color=color, verticalalignment='top', horizontalalignment='center')
+    
+        # add the labels to each axis
+        
+        x = (x - o) * d2 + o
+        y = (y - o) * d2 + o
+        z = (z - o) * d2 + o
+    
+        ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0],frame), color=color, horizontalalignment='center', verticalalignment='center')
+        ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame),  color=color, horizontalalignment='center', verticalalignment='center')
+        ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame),  color=color, horizontalalignment='center', verticalalignment='center')
+
     
 if __name__ == '__main__':
     import pathlib
     import os.path
     
-    runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
     
+    trplot( transl(1,2,3), frame='A', rviz=True, width=1)
+    trplot( transl(3,1, 2), color='red', width=3, frame='B')
+    trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c')
     
-
-
-
+    #runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
