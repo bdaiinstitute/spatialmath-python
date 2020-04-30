@@ -10,6 +10,12 @@ Versions:
     1. Luis Fernando Lara Tobar and Peter Corke, 2008
     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
     3. Peter Corke, 2020
+    
+    TODO:
+        
+        - trinterp
+        - trjac, trjac2
+        - tranimate, tranimate2
 """
 
 import sys
