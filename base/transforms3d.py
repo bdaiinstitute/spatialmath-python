@@ -1088,7 +1088,7 @@ try:
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D
     
-    def trplot(T, ax=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1= 0.05, d2 = 1.15 ):
+    def trplot(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1= 0.05, d2 = 1.15 ):
         """
         Plot a 3D coordinate frame
                              
@@ -1096,7 +1096,8 @@ try:
         :type: numpy.ndarray, shape=(3,3) or (4,4)
         :param X: the axes to plot into, defaults to current axes
         :type ax: Axes3D reference
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax]
+        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax]. 
+        If dims is [min, max] those limits are applied to the x-, y- and z-axes.
         :type dims: array_like
         :param color: color of the lines defining the frame
         :type color: str
@@ -1144,19 +1145,14 @@ try:
         else:
             assert ishom(T, check=True)
     
-        if ax is None:
+        if axes is None:
             # create an axes
             fig = plt.gcf()
             if fig.axes == []:
                 # no axes in the figure, create a 3D axes
                 ax = fig.add_subplot(111, projection='3d', proj_type=projection)
-                
-                if dims is None:
-                    ax.autoscale(enable=True, axis='both')
-                else:
-                    ax.set_xlim(dims[0:2])
-                    ax.set_ylim(dims[2:4])
-                    ax.set_zlim(dims[4:6])
+                ax.autoscale(enable=True, axis='both')
+
                 #ax.set_aspect('equal')
                 ax.set_xlabel(labels[0])
                 ax.set_ylabel(labels[1])
@@ -1164,6 +1160,15 @@ try:
             else:
                 # reuse an existing axis
                 ax = plt.gca()
+        else:
+            ax = axes
+            
+        if dims is not None:
+            if len(dims) == 2:
+                dims = dims * 3
+            ax.set_xlim(dims[0:2])
+            ax.set_ylim(dims[2:4])
+            ax.set_zlim(dims[4:6])
         
         # create unit vectors in homogeneous form
         o =  T @ np.array([0, 0, 0, 1])
@@ -1212,9 +1217,10 @@ if __name__ == '__main__':
     import pathlib
     import os.path
     
+
     
-    trplot( transl(1,2,3), frame='A', rviz=True, width=1)
+    trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
     trplot( transl(3,1, 2), color='red', width=3, frame='B')
-    trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c')
+    trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
     
     #runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
