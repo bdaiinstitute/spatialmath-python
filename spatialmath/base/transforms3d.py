@@ -150,7 +150,7 @@ def trotx(theta, unit="rad", t=None):
     - ``trotx(THETA, 'deg')`` as above but THETA is in degrees
     - ``trotx(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
     """
-    T  = np.pad( rotx(theta, unit), (0,1) )
+    T  = np.pad( rotx(theta, unit), (0,1), mode='constant' )
     if t is not None:
         T[:3,3] = argcheck.getvector(t, 3, 'array')
     T[3,3] = 1.0
@@ -176,7 +176,7 @@ def troty(theta, unit="rad", t=None):
     - ``troty(THETA, 'deg')`` as above but THETA is in degrees
     - ``troty(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
     """
-    T  = np.pad( roty(theta, unit), (0,1) )
+    T  = np.pad( roty(theta, unit), (0,1), mode='constant' )
     if t is not None:
         T[:3,3] = argcheck.getvector(t, 3, 'array')
     T[3,3] = 1.0
@@ -202,7 +202,7 @@ def trotz(theta, unit="rad", t=None):
     - ``trotz(THETA, 'deg')`` as above but THETA is in degrees
     - ``trotz(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
     """
-    T  = np.pad( rotz(theta, unit), (0,1) )
+    T  = np.pad( rotz(theta, unit), (0,1), mode='constant' )
     if t is not None:
         T[:3,3] = argcheck.getvector(t, 3, 'array')
     T[3,3] = 1.0
@@ -1094,7 +1094,7 @@ try:
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D
     
-    def trplot(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1= 0.05, d2 = 1.15 ):
+    def trplot(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1= 0.05, d2 = 1.15, **kwargs ):
         """
         Plot a 3D coordinate frame
                              

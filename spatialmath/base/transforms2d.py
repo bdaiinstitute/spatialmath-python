@@ -95,7 +95,7 @@ def trot2(theta, unit='rad', t=None):
     Notes:
     - Translational component is zero.
     """
-    T  = np.pad( rot2(theta, unit), (0,1) )
+    T  = np.pad( rot2(theta, unit), (0,1), mode='constant' )
     if t is not None:
         T[:2,2] = argcheck.getvector(t, 2, 'array')
     T[2,2] = 1.0

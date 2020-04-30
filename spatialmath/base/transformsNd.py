@@ -53,7 +53,7 @@ def r2t(R, check=False):
     if check and np.abs(np.linalg.det(R) - 1) < 100*_eps:
         raise ValueError('Invalid rotation matrix ')
     
-    T  = np.pad( R, (0,1) )
+    T  = np.pad( R, (0,1), mode='constant' )
     T[-1,-1] = 1.0
         
     return T
