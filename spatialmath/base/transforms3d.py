@@ -485,7 +485,7 @@ def angvec2r(theta, v, unit='rad'):
     
     # Rodrigue's equation
 
-    sk = skew( unitvec(v) )
+    sk = trn.skew( vec.unitvec(v) )
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
@@ -513,7 +513,7 @@ def angvec2tr(theta, v, unit='rad'):
     - If ``THETA ~= 0`` then ``V`` must have a finite length.
     - The translational part is zero.
     """
-    return r2t(angvec2r(theta, v, unit=unit))
+    return trn.r2t(angvec2r(theta, v, unit=unit))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -552,7 +552,7 @@ def oa2r(o, a=None):
     a = argcheck.getvector(a, 3, out='array')
     n = np.cross(o, a)
     o = np.cross(a, n)
-    R = np.stack( (unitvec(n), unitvec(o), unitvec(a)), axis=1)
+    R = np.stack( (vec.unitvec(n), vec.unitvec(o), vec.unitvec(a)), axis=1)
     return R
 
 
@@ -589,7 +589,7 @@ def oa2tr(o, a=None):
     - The translational part is zero.
     - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
     """
-    return r2t(oa2r(o, a))
+    return trn.r2t(oa2r(o, a))
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
