@@ -13,5 +13,4 @@ Spatial Maths for Python
 
    intro
    spatialmath
-   support
    indices
