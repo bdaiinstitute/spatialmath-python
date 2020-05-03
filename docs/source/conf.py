@@ -23,7 +23,7 @@ copyright = '2020, Peter Corke'
 author = 'Peter Corke'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9'
+release = '0.5'
 
 
 # -- General configuration ---------------------------------------------------
