@@ -51,60 +51,60 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(isinstance(R, SO3), True)
         
         # triple angle
-        R = SO3.eul([0.1, 0.2, 0.3])
+        R = SO3.Eul([0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, eul2r([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.eul(np.r_[0.1, 0.2, 0.3])
+        R = SO3.Eul(np.r_[0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, eul2r([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.eul([10, 20, 30], unit='deg')
+        R = SO3.Eul([10, 20, 30], unit='deg')
         nt.assert_equal(len(R),  1)
         array_compare(R, eul2r([10, 20, 30], unit='deg'))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.rpy([0.1, 0.2, 0.3])
+        R = SO3.RPY([0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2r([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.rpy(np.r_[0.1, 0.2, 0.3])
+        R = SO3.RPY(np.r_[0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2r([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.rpy([10, 20, 30], unit='deg')
+        R = SO3.RPY([10, 20, 30], unit='deg')
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2r([10, 20, 30], unit='deg'))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.rpy([0.1, 0.2, 0.3], order='xyz')
+        R = SO3.RPY([0.1, 0.2, 0.3], order='xyz')
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
         nt.assert_equal(isinstance(R, SO3), True)
              
         # angvec
-        R = SO3.angvec(0.2, [1, 0, 0])
+        R = SO3.AngVec(0.2, [1, 0, 0])
         nt.assert_equal(len(R),  1)
         array_compare(R, rotx(0.2))
         nt.assert_equal(isinstance(R, SO3), True)
         
-        R = SO3.angvec(0.3, [0, 1, 0])
+        R = SO3.AngVec(0.3, [0, 1, 0])
         nt.assert_equal(len(R),  1)
         array_compare(R, roty(0.3))
         nt.assert_equal(isinstance(R, SO3), True)
         
         # OA
-        R = SO3.oa([0, 1, 0], [0, 0, 1])
+        R = SO3.OA([0, 1, 0], [0, 0, 1])
         nt.assert_equal(len(R),  1)
         array_compare(R, np.eye(3))
         nt.assert_equal(isinstance(R, SO3), True)
         
         # random
-        R = SO3.rand()
+        R = SO3.Rand()
         nt.assert_equal(len(R),  1)
         nt.assert_equal(isinstance(R, SO3), True)
         
@@ -639,60 +639,60 @@ class TestSE3(unittest.TestCase):
         
         
         # triple angle
-        R = SE3.eul([0.1, 0.2, 0.3])
+        R = SE3.Eul([0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, eul2tr([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.eul(np.r_[0.1, 0.2, 0.3])
+        R = SE3.Eul(np.r_[0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, eul2tr([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.eul([10, 20, 30], unit='deg')
+        R = SE3.Eul([10, 20, 30], unit='deg')
         nt.assert_equal(len(R),  1)
         array_compare(R, eul2tr([10, 20, 30], unit='deg'))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.rpy([0.1, 0.2, 0.3])
+        R = SE3.RPY([0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2tr([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.rpy(np.r_[0.1, 0.2, 0.3])
+        R = SE3.RPY(np.r_[0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2tr([0.1, 0.2, 0.3]))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.rpy([10, 20, 30], unit='deg')
+        R = SE3.RPY([10, 20, 30], unit='deg')
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2tr([10, 20, 30], unit='deg'))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.rpy([0.1, 0.2, 0.3], order='xyz')
+        R = SE3.RPY([0.1, 0.2, 0.3], order='xyz')
         nt.assert_equal(len(R),  1)
         array_compare(R, rpy2tr([0.1, 0.2, 0.3], order='xyz'))
         nt.assert_equal(isinstance(R, SE3), True)
              
         # angvec
-        R = SE3.angvec(0.2, [1, 0, 0])
+        R = SE3.AngVec(0.2, [1, 0, 0])
         nt.assert_equal(len(R),  1)
         array_compare(R, trotx(0.2))
         nt.assert_equal(isinstance(R, SE3), True)
         
-        R = SE3.angvec(0.3, [0, 1, 0])
+        R = SE3.AngVec(0.3, [0, 1, 0])
         nt.assert_equal(len(R),  1)
         array_compare(R, troty(0.3))
         nt.assert_equal(isinstance(R, SE3), True)
         
         # OA
-        R = SE3.oa([0, 1, 0], [0, 0, 1])
+        R = SE3.OA([0, 1, 0], [0, 0, 1])
         nt.assert_equal(len(R),  1)
         array_compare(R, np.eye(4))
         nt.assert_equal(isinstance(R, SE3), True)
         
         # random
-        R = SE3.rand()
+        R = SE3.Rand()
         nt.assert_equal(len(R),  1)
         nt.assert_equal(isinstance(R, SE3), True)
         

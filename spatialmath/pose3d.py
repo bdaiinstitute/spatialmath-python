@@ -81,7 +81,7 @@ class SO3(sp.SMPose):
         return cls([tr.rotz(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
-    def rand(cls, N=1):
+    def Rand(cls, N=1):
         return cls( [tr.q2r(tr.rand()) for i in range(0,N)], check=False)
         
 
@@ -89,19 +89,19 @@ class SO3(sp.SMPose):
     
 
     @classmethod
-    def eul(cls, angles, unit='rad'):
+    def Eul(cls, angles, unit='rad'):
         return cls(tr.eul2r(angles, unit=unit), check=False)
 
     @classmethod
-    def rpy(cls, angles, order='zyx', unit='rad'):
+    def RPY(cls, angles, order='zyx', unit='rad'):
         return cls(tr.rpy2r(angles, order=order, unit=unit), check=False)
 
     @classmethod
-    def oa(cls, o, a):
+    def OA(cls, o, a):
         return cls(tr.oa2r(o, a), check=False)
 
     @classmethod
-    def angvec(cls, theta, v, *, unit='rad'):
+    def AngVec(cls, theta, v, *, unit='rad'):
         return cls(tr.angvec2r(theta, v, unit=unit), check=False)
 
 class SE3(sp.SMPose):
@@ -182,30 +182,37 @@ class SE3(sp.SMPose):
     def R(self):
         return self.A[:3,:3]
     
+    @property
+    def eul(self, **kwargs):
+        return tr.tr2eul(self.A)
+    
+    @property
+    def rpy(self, **kwargs):
+        return tr.tr2eul(self.A, **kwargs)
     
 
     @classmethod
-    def rand(cls, *, xrange=[-1, 1], yrange=[-1, 1], zrange=[-1, 1], N=1):
+    def Rand(cls, *, xrange=[-1, 1], yrange=[-1, 1], zrange=[-1, 1], N=1):
         X = np.random.uniform(low=xrange[0], high=xrange[1], size=N)  # random values in the range
         Y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
         Z = np.random.uniform(low=yrange[0], high=zrange[1], size=N)  # random values in the range
-        R = SO3.rand(N=N)
+        R = SO3.Rand(N=N)
         return cls([tr.transl(x, y, z) @ tr.r2t(r.A) for (x,y,z,r) in zip(X, Y, Z, R)])
 
     @classmethod
-    def eul(cls, angles, unit='rad'):
+    def Eul(cls, angles, unit='rad'):
         return cls(tr.eul2tr(angles, unit=unit))
 
     @classmethod
-    def rpy(cls, angles, order='zyx', unit='rad'):
+    def RPY(cls, angles, order='zyx', unit='rad'):
         return cls(tr.rpy2tr(angles, order=order, unit=unit))
 
     @classmethod
-    def oa(cls, o, a):
+    def OA(cls, o, a):
         return cls(tr.oa2tr(o, a))
 
     @classmethod
-    def angvec(cls, theta, v, *, unit='rad'):
+    def AngVec(cls, theta, v, *, unit='rad'):
         return cls(tr.angvec2tr(theta, v, unit=unit))
 
 
