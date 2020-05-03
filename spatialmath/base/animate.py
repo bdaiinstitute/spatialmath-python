@@ -58,7 +58,7 @@ class Animate:
         for x in self.displaylist:
             x.draw(T)
             
-    def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100):
+    def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, **kwargs):
 
 
         def update(frame, a):
@@ -68,16 +68,22 @@ class Animate:
             return a.artists()
         
         # blit leaves a trail and first frame
+        if movie is not None:
+            repeat = False
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0,nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
         
         if movie is None:
             plt.show()
         else:
             # Set up formatting for the movie files
-            Writer = animation.writers['ffmpeg']
-            writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
-
-            ani.save(movie, writer=writer)
+            print('creating movie', movie)
+             
+             
+            #plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg'
+            
+            FFwriter=animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
+            ani.save(movie, writer=FFwriter)
+            # TODO needs conda install -c conda-forge ffmpeg
             
     def __repr__(self):
         return ', '.join([x.type for x in self.displaylist])
@@ -192,10 +198,10 @@ class Animate:
 def tranimate(T, **kwargs):
     anim = Animate(**kwargs)
     tr.trplot(T, axes=anim, **kwargs)
-    anim.run()
+    anim.run(**kwargs)
     
     
-tranimate( tr.transl(0,0,0), frame='A', arrow=False, dims=[0,5])
+tranimate( tr.transl(0,0,0), frame='A', arrow=False, dims=[0,5], movie='bob.mp4')
 
 
 
