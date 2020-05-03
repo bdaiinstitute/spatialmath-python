@@ -1,8 +1,9 @@
-[![Build Status](https://travis-ci.com/petercorke/spatialmath-python.svg?branch=master)](https://travis-ci.com/petercorke/spatialmath-python)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)[![Build Status](https://travis-ci.com/petercorke/spatialmath-python.svg?branch=master)](https://travis-ci.com/petercorke/spatialmath-python)
 ![Coverage](https://codecov.io/gh/petercorke/spatialmath-python/branch/master/graph/badge.svg)
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/petercorke/spatialmath-python/graphs/commit-activity)
-[![GitHub stars](https://img.shields.io/github/stars/petercorke/robotics-toolbox-matlab.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/petercorke/spatialmath-python/stargazers/)
+[![GitHub stars](https://img.shields.io/github/stars/petercorke/spatialmath-python.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/petercorke/spatialmath-python/stargazers/)
+
 # Spatial Maths for Python
 
 This is a Python implementation of the [Spatial Math Toolbox for MATLAB<sup>&reg;</sup>](https://github.com/petercorke/spatial-math), which is a standalone component of the [Robotics Toolbox for MATLAB<sup>&reg;</sup>](https://github.com/petercorke/robotics-toolbox-matlab).
