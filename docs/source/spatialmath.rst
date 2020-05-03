@@ -8,7 +8,14 @@ High-level classes
 spatialmath.pose
 ^^^^^^^^^^^^^^^^
 
-.. automodule:: spatialmath.pose
+.. automodule:: spatialmath.pose3d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
+
+.. automodule:: spatialmath.pose2d
    :members:
    :undoc-members:
    :show-inheritance:
@@ -30,10 +37,40 @@ spatialmath.quaternion
 Low-level (base) functions
 --------------------------
 
-spatialmath.base.transforms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+spatialmath.base.transforms 3D
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: spatialmath.base.transforms
+.. automodule:: spatialmath.base.transforms3d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
+
+spatialmath.base.transforms 2D
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: spatialmath.base.transforms2d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
+
+spatialmath.base.transforms ND
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: spatialmath.base.transformsNd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
+
+spatialmath.base.transforms vectors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: spatialmath.base.vectors
    :members:
    :undoc-members:
    :show-inheritance:
@@ -43,7 +80,7 @@ spatialmath.base.transforms
 spatialmath.base.quaternion
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: spatialmath.base.quaternion
+.. automodule:: spatialmath.base.quaternions
    :members:
    :undoc-members:
    :show-inheritance:
