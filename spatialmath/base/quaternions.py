@@ -353,7 +353,7 @@ def slerp(q0, q1, s, shortest=False):
     :return: interpolated unit-quaternion
     :rtype: numpy.ndarray, shape=(4,)
     
-    An interpolated quaternion between ``q0`` when ``s``=0 to ``q1`` when ``s``=1.
+    An interpolated quaternion between ``q0`` when ``s``=0`` to ``q1`` when ``s``=1.
     
     Interpolation is performed on a great circle on a 4D hypersphere. This is
     a rotation about a single fixed axis in space which yields the straightest
