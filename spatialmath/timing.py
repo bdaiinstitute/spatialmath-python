@@ -13,25 +13,25 @@ if __name__ == '__main__':
 
     N = 1000000
 
-    quat_setup = '''import spatialmath.base.quaternion as quat
-    import spatialmath.quaternion as qq
-    import numpy as np
-    q1 = quat.qrand()
-    q2 = quat.qrand()
-    v = np.r_[1,2,3]
-    Q1 = qq.UnitQuaternion.Rx(0.2)
-    Q2 = qq.UnitQuaternion.Ry(0.3)'''
+    quat_setup = '''import spatialmath.base as tr
+import spatialmath.quaternion as qq
+import numpy as np
+q1 = tr.rand()
+q2 = tr.rand()
+v = np.r_[1,2,3]
+Q1 = qq.UnitQuaternion.Rx(0.2)
+Q2 = qq.UnitQuaternion.Ry(0.3)'''
 
-    transforms_setup = '''import spatialmath.base.transforms as tr'''
+    transforms_setup = '''import spatialmath.base as tr'''
 
 
     t = timeit.timeit(stmt='tr.rotx(0.2)', setup=transforms_setup, number=N)
     print('transforms.rotx: ', t, ' us')
 
 
-    t = timeit.timeit(stmt='a = quat.qqmul(q1,q2)', setup=quat_setup, number=N)
+    t = timeit.timeit(stmt='a = tr.qqmul(q1,q2)', setup=quat_setup, number=N)
     print('quat.qqmul:         ', t, ' us')
-    t = timeit.timeit(stmt='a = quat.qvmul(q1,v)', setup=quat_setup, number=N)
+    t = timeit.timeit(stmt='a = tr.qvmul(q1,v)', setup=quat_setup, number=N)
     print('quat.qqmul:         ', t, ' us')
     t = timeit.timeit(stmt='a = qq.UnitQuaternion()', setup=quat_setup, number=N)
     print('UnitQuaternion() :  ', t, ' us')
