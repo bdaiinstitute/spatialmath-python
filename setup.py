@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 
 setup(
-    name='spatialmath', 
+    name='spatialmath-python', 
 
     version='0.1', #TODO 
 
