@@ -480,7 +480,7 @@ def h2e(v):
         return v[0:-1] / v[-1]
     elif isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
-        return v[:-1,:] / matlib.repmat(v[-1,:], 2, 1)
+        return v[:-1,:] / matlib.repmat(v[-1,:], v.shape[0]-1, 1)
     
 def e2h(v):
     """
@@ -501,7 +501,7 @@ def e2h(v):
     if argcheck.isvector(v):
         # dealing with shape (N,) array
         v = argcheck.getvector(v)
-        return np.r_[v, 1.0]
+        return np.r_[v, 1]
     elif isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix  
         return np.vstack([v, np.ones((1,v.shape[1]))])
