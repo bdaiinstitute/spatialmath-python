@@ -5,27 +5,18 @@ import unittest
 we will assume that the primitives rotx,trotx, etc. all work
 """
 from math import pi
-from spatialmath.pose import *
+from spatialmath.pose3d import *
 from spatialmath import super_pose as sp
 from spatialmath.base import *
 import spatialmath.base.argcheck as argcheck
 
 def array_compare(x, y):
-    if isinstance(x, sp.SuperPose):
+    if isinstance(x, sp.SMPose):
         x = x.A
-    if isinstance(y, sp.SuperPose):
+    if isinstance(y, sp.SMPose):
         y = y.A
     nt.assert_array_almost_equal(x, y)
                            
-                           
-class TestSO2(unittest.TestCase):
-    pass
-
-class TestSE2(unittest.TestCase):
-    pass
-
-
-    
 
 class TestSO3(unittest.TestCase):
     
@@ -630,6 +621,23 @@ class TestSE3(unittest.TestCase):
         array_compare(R, trotz(0.2))
         nt.assert_equal(isinstance(R, SE3), True)
         
+        # construct from canonic translation
+        R = SE3.Tx(0.2)
+        nt.assert_equal(len(R),  1)
+        array_compare(R, transl(0.2, 0, 0))
+        nt.assert_equal(isinstance(R, SE3), True)
+        
+        R = SE3.Ty(0.2)
+        nt.assert_equal(len(R),  1)
+        array_compare(R, transl(0, 0.2, 0))
+        nt.assert_equal(isinstance(R, SE3), True)
+        
+        R = SE3.Tz(0.2)
+        nt.assert_equal(len(R),  1)
+        array_compare(R, transl(0, 0, 0.2))
+        nt.assert_equal(isinstance(R, SE3), True)
+        
+        
         # triple angle
         R = SE3.eul([0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)
@@ -705,7 +713,7 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(len(R),  3)
         nt.assert_equal(isinstance(R, SE3), True)
         
-        array_compare(R[0], np.eye(3))
+        array_compare(R[0], np.eye(4))
         array_compare(R[1], R1)
         array_compare(R[2], R2)
         
@@ -845,7 +853,7 @@ class TestSE3(unittest.TestCase):
         
         array_compare(SE3.Rx(pi/2) * SE3.Ry(pi/2) * SE3.Rx(-pi/2), SE3.Rz(pi/2))
     
-        array_compare(SE3.Ry(pi/2) * [1, 0, 0], np.c_[0,0,-1].T)
+        array_compare(SE3.Ry(pi/2) * [1, 0, 0], np.r_[0,0,-1])
         
         # SE3 x vector
         vx = np.r_[1, 0, 0]
@@ -856,23 +864,23 @@ class TestSE3(unittest.TestCase):
             return np.c_[v]
         
         nt.assert_equal(isinstance(SE3.Tx(pi/2) * vx, np.ndarray), True)
-        array_compare(SE3.Tx(pi/2) * vx, cv(vx))
-        array_compare(SE3.Tx(pi/2) * vy, cv(vz))
-        array_compare(SE3.Tx(pi/2) * vz, cv(-vy))
+        array_compare(SE3.Rx(pi/2) * vx, vx)
+        array_compare(SE3.Rx(pi/2) * vy, vz)
+        array_compare(SE3.Rx(pi/2) * vz, -vy)
         
-        array_compare(SE3.Ty(pi/2) * vx, cv(-vz))
-        array_compare(SE3.Ty(pi/2) * vy, cv(vy))
-        array_compare(SE3.Ty(pi/2) * vz, cv(vx))
+        array_compare(SE3.Ry(pi/2) * vx, -vz)
+        array_compare(SE3.Ry(pi/2) * vy, vy)
+        array_compare(SE3.Ry(pi/2) * vz, vx)
         
-        array_compare(SE3.Tz(pi/2) * vx, cv(vy))
-        array_compare(SE3.Tz(pi/2) * vy, cv(-vx))
-        array_compare(SE3.Tz(pi/2) * vz, cv(vz))
+        array_compare(SE3.Rz(pi/2) * vx, vy)
+        array_compare(SE3.Rz(pi/2) * vy, -vx)
+        array_compare(SE3.Rz(pi/2) * vz, vz)
 
         # divide
-        T = SE3.Ty(0.3)
+        T = SE3.Ry(0.3)
         a = T / T
         nt.assert_equal(isinstance(a, SE3), True)
-        array_compare(a, np.eye(3))
+        array_compare(a, np.eye(4))
         
         a = T / 2
         nt.assert_equal(isinstance(a, SE3), False)
@@ -882,9 +890,9 @@ class TestSE3(unittest.TestCase):
         
     def test_arith_vect(self):
 
-        rx = SE3.Tx(pi/2)
-        ry = SE3.Ty(pi/2)
-        rz = SE3.Tz(pi/2)
+        rx = SE3.Rx(pi/2)
+        ry = SE3.Ry(pi/2)
+        rz = SE3.Rz(pi/2)
         u = SE3()
         
         # multiply
@@ -991,9 +999,9 @@ class TestSE3(unittest.TestCase):
         a = T / T
         nt.assert_equal(isinstance(a, SE3), True)
         nt.assert_equal(len(a), 3)
-        array_compare(a[0], np.eye(3))
-        array_compare(a[1], np.eye(3))
-        array_compare(a[2], np.eye(3))
+        array_compare(a[0], np.eye(4))
+        array_compare(a[1], np.eye(4))
+        array_compare(a[2], np.eye(4))
         
         a = T / 2
         nt.assert_equal(isinstance(a, SE3), False)
@@ -1022,9 +1030,9 @@ class TestSE3(unittest.TestCase):
         a /= T
         nt.assert_equal(isinstance(a, SE3), True)
         nt.assert_equal(len(a), 3)
-        array_compare(a[0], np.eye(3))
-        array_compare(a[1], np.eye(3))
-        array_compare(a[2], np.eye(3))
+        array_compare(a[0], np.eye(4))
+        array_compare(a[1], np.eye(4))
+        array_compare(a[2], np.eye(4))
         
         a = T
         a /= 2
