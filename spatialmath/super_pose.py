@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 from collections import UserList
 import copy
 from spatialmath.base import argcheck 
+import spatialmath.base as tr
 
 # colored printing of matrices to the terminal
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
@@ -39,7 +40,7 @@ except ImportError:
 # print(Fore.BLACK + Style.DIM + '0 0 1')
 
 
-class SuperPose(UserList, ABC):
+class SMPose(UserList, ABC):
     # inherits from:
     #  UserList, gives list-like functionality
     #  ABC, defines an abstract class, can't be instantiated
@@ -234,7 +235,7 @@ class SuperPose(UserList, ABC):
         - ``s * X`` performs elementwise multiplication of the elements of ``X``
         - ``X * v`` transforms the vector.
         
-        ==============   ==============   ==============  ================
+        ==============   ==============   ===========  ===================
                    Multiplicands                   Product
         -------------------------------   --------------------------------
             left             right            type           result
@@ -243,6 +244,7 @@ class SuperPose(UserList, ABC):
         Pose             scalar           matrix       elementwise product
         scalar           Pose             matrix       elementwise product
         Pose             N-vector         N-vector     vector transform
+        Pose             NxM matrix       NxM matrix   vector transform
         ==============   ==============   ===========  ===================
 
         Any other input combinations result in a ValueError.
@@ -262,16 +264,40 @@ class SuperPose(UserList, ABC):
         An N-vector of length M is a NxM numpy array, where each column is an N-vector.
         """
         if isinstance(left, right.__class__):
+            #print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y ))
+        
         elif isinstance(right, (list, tuple, np.ndarray)):
-            if argcheck.isvector(right, left.N):
+            #print('*: pose x array')
+            if len(left) == 1 and argcheck.isvector(right, left.N):
                 # pose x vector
+                #print('*: pose x vector')
+                v = argcheck.getvector(right, out='col')
+                if left.isSE:
+                    # SE(n) x vector
+                    return tr.h2e(left.A @ tr.e2h(v))
+                else:
+                    # SO(n) x vector
+                    return left.A @ v
+                
+            elif len(left) > 1 and argcheck.isvector(right, left.N):
+                # pose array x vector
+                #print('*: pose array x vector')
                 v = argcheck.getvector(right)
-                return np.vstack([x.A @ v for x in left]).T
-
-            elif isinstance(right, np.ndarray) and right.shape[0] == left.N and len(left) == 1:
-                # pose x matrix
+                if left.isSE:
+                    # SE(n) x vector
+                    v = tr.e2h(v)
+                    return np.array([tr.h2e(x @ v).flatten() for x in left.A]).T
+                else:
+                    # SO(n) x vector
+                    return np.array([(x @ v).flatten() for x in left.A]).T
+                
+            elif len(left) == 1 and isinstance(right, np.ndarray) and left.isSO and right.shape[0] == left.N:
+                # SO(n) x matrix
                 return left.A @ right
+            elif len(left) == 1 and isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N:
+                # SE(n) x matrix
+                return tr.h2e(left.A @ tr.e2h(right))
             else:
                 raise ValueError('bad operands')
         elif isinstance(right, (int, float)):
@@ -281,23 +307,6 @@ class SuperPose(UserList, ABC):
         
     def __rmul__(right, left):
         """
-        
-
-        Parameters
-        ----------
-        x : TYPE
-            DESCRIPTION.
-        y : TYPE
-            DESCRIPTION.
-
-        Raises
-        ------
-        NotImplemented
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
 
         """
         return right.__mul__(left)
