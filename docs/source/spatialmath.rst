@@ -4,9 +4,18 @@ Spatial Math package
 High-level classes
 ------------------
 
+Pose in 2D: SO(2), SE(2)
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-spatialmath.pose
-^^^^^^^^^^^^^^^^
+.. automodule:: spatialmath.pose2d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
+   
+Pose in 3D: SO(3), SE(3)
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: spatialmath.pose3d
    :members:
@@ -15,16 +24,11 @@ spatialmath.pose
    :inherited-members:
    :special-members:
 
-.. automodule:: spatialmath.pose2d
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
 
 
-spatialmath.quaternion
-^^^^^^^^^^^^^^^^^^^^^^
+
+Quaternions
+^^^^^^^^^^^
 
 .. automodule:: spatialmath.quaternion
    :members:
@@ -37,8 +41,18 @@ spatialmath.quaternion
 Low-level (base) functions
 --------------------------
 
-spatialmath.base.transforms 3D
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Transforms in 2D
+^^^^^^^^^^^^^^^^
+
+.. automodule:: spatialmath.base.transforms2d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
+   
+Transforms in 3D
+^^^^^^^^^^^^^^^^
 
 .. automodule:: spatialmath.base.transforms3d
    :members:
@@ -47,18 +61,9 @@ spatialmath.base.transforms 3D
    :inherited-members:
    :special-members:
 
-spatialmath.base.transforms 2D
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: spatialmath.base.transforms2d
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
-
-spatialmath.base.transforms ND
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Transforms in ND
+^^^^^^^^^^^^^^^^
 
 .. automodule:: spatialmath.base.transformsNd
    :members:
@@ -67,8 +72,8 @@ spatialmath.base.transforms ND
    :inherited-members:
    :special-members:
 
-spatialmath.base.transforms vectors
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Vectors
+^^^^^^^
 
 .. automodule:: spatialmath.base.vectors
    :members:
@@ -77,8 +82,8 @@ spatialmath.base.transforms vectors
    :inherited-members:
    :special-members:
 
-spatialmath.base.quaternion
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Quaternions
+^^^^^^^^^^^
 
 .. automodule:: spatialmath.base.quaternions
    :members:
