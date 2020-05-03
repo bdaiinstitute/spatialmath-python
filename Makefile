@@ -9,3 +9,13 @@ coverage:
 
 docs: .FORCE
 	(cd docs; make html)
+
+dist: .FORCE
+	python setup.py sdist
+	twine upload dist/*
+
+clean: .FORCE
+	(cd docs; make clean)
+	-rm -r *.egg-info
+	-rm -r dist
+
