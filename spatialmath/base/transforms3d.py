@@ -1,5 +1,5 @@
 """ 
-This modules contains functions to create and transform rotation matrices
+This modules contains functions to create and transform 3D rotation matrices
 and homogeneous tranformation matrices.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
@@ -11,11 +11,11 @@ Versions:
     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
     3. Peter Corke, 2020
     
-    TODO:
+TODO:
         
-        - trinterp
-        - trjac, trjac2
-        - tranimate, tranimate2
+    - trinterp
+    - trjac, trjac2
+    - tranimate, tranimate2
 """
 
 import sys
@@ -67,6 +67,8 @@ def rotx(theta, unit="rad"):
     - ``rotx(THETA)`` is an SO(3) rotation matrix (3x3) representing a rotation
       of THETA radians about the x-axis
     - ``rotx(THETA, "deg")`` as above but THETA is in degrees
+    
+    :seealso: :func:`~trotx`
     """
 
     theta = argcheck.getunit(theta, unit)
@@ -94,6 +96,8 @@ def roty(theta, unit="rad"):
     - ``roty(THETA)`` is an SO(3) rotation matrix (3x3) representing a rotation
       of THETA radians about the y-axis
     - ``roty(THETA, "deg")`` as above but THETA is in degrees
+    
+    :seealso: :func:`~troty`
     """
 
     theta = argcheck.getunit(theta, unit)
@@ -121,6 +125,8 @@ def rotz(theta, unit="rad"):
     - ``rotz(THETA)`` is an SO(3) rotation matrix (3x3) representing a rotation
       of THETA radians about the z-axis
     - ``rotz(THETA, "deg")`` as above but THETA is in degrees
+    
+    :seealso: :func:`~yrotz`
     """
     theta = argcheck.getunit(theta, unit)
     ct = _cos(theta)
@@ -149,6 +155,8 @@ def trotx(theta, unit="rad", t=None):
       of THETA radians about the x-axis.
     - ``trotx(THETA, 'deg')`` as above but THETA is in degrees
     - ``trotx(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+    
+    :seealso: :func:`~rotx`
     """
     T  = np.pad( rotx(theta, unit), (0,1), mode='constant' )
     if t is not None:
@@ -175,6 +183,8 @@ def troty(theta, unit="rad", t=None):
       of THETA radians about the y-axis.
     - ``troty(THETA, 'deg')`` as above but THETA is in degrees
     - ``troty(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+    
+    :seealso: :func:`~roty`
     """
     T  = np.pad( roty(theta, unit), (0,1), mode='constant' )
     if t is not None:
@@ -201,6 +211,8 @@ def trotz(theta, unit="rad", t=None):
       of THETA radians about the z-axis.
     - ``trotz(THETA, 'deg')`` as above but THETA is in degrees
     - ``trotz(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+    
+    :seealso: :func:`~rotz`
     """
     T  = np.pad( rotz(theta, unit), (0,1), mode='constant' )
     if t is not None:
@@ -234,6 +246,8 @@ def transl(x, y=None, z=None):
 
     - ``P = TRANSL(T)`` is the translational part of a homogeneous transform T as a
       3-element numpy array.
+    
+    :seealso: :func:`~spatialmath.base.transforms2d.transl2`
    """
 
     if np.isscalar(x):
@@ -266,7 +280,7 @@ def ishom(T, check=False, tol=10):
     - ``ISHOM(T, check=True)`` as above, but also checks orthogonality of the rotation sub-matrix and 
       validitity of the bottom row.
     
-    :seealso: isR, isrot, ishom2
+    :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`
     """
     return T.shape == (4,4) and (not check or (trn.isR(T[:3,:3], tol=tol) and np.all(T[3,:] == np.array([0,0,0,1]))))
 
@@ -284,13 +298,13 @@ def isrot(R, check=False, tol=10):
     - ``ISROT(R)`` is True if the argument ``R`` is of dimension 3x3
     - ``ISROT(R, check=True)`` as above, but also checks orthogonality of the rotation matrix.
     
-    :seealso: isR, isrot2, ishom
+    :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
     """
     return R.shape == (3,3) and (not check or trn.isR(R, tol=tol))
 
 
 # ---------------------------------------------------------------------------------------#
-def rpy2r(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
+def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
@@ -323,7 +337,9 @@ def rpy2r(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
           
     - ``rpy2r(RPY)`` as above but the roll, pitch, yaw angles are taken
       from ``RPY`` which is a 3-vector (array_like) with values
-      (ROLL, PITCH, YAW). 
+      (ROLL, PITCH, YAW).
+      
+    :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`
     """
     
     if np.isscalar(roll):
@@ -384,6 +400,8 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
     Notes:
         
     - The translational part is zero.
+    
+    :seealso: :func:`~eul2tr`, :func:`~rpy2r`, :func:`~tr2rpy`
     """
 
     R = rpy2r(roll, pitch, yaw, order=order, unit=unit)
@@ -410,7 +428,9 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
       to rotations about the Z, Y, Z axes respectively.
     - ``R = eul2r(EUL)`` as above but the Euler angles are taken from
       ``EUL`` which is a 3-vector (array_like) with values
-      (PHI THETA PSI). 
+      (PHI THETA PSI).
+      
+    :seealso: :func:`~rpy2r`, :func:`~eul2tr`, :func:`~tr2eul`
     """
     
     if np.isscalar(phi):
@@ -449,6 +469,8 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
     Notes:
         
     - The translational part is zero.
+
+    :seealso: :func:`~rpy2tr`, :func:`~eul2r`, :func:`~tr2eul`
     """
     
     R = eul2r(phi, theta, psi, unit=unit)
@@ -475,6 +497,8 @@ def angvec2r(theta, v, unit='rad'):
         
     - If ``THETA == 0`` then return identity matrix.
     - If ``THETA ~= 0`` then ``V`` must have a finite length.
+
+    :seealso: :func:`~angvec2tr`, :func:`~tr2angvec`
     """
     assert np.isscalar(theta) and argcheck.isvector(v, 3), "Arguments must be theta and vector"
     
@@ -512,6 +536,8 @@ def angvec2tr(theta, v, unit='rad'):
     - If ``THETA == 0`` then return identity matrix.
     - If ``THETA ~= 0`` then ``V`` must have a finite length.
     - The translational part is zero.
+
+    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
     """
     return trn.r2t(angvec2r(theta, v, unit=unit))
 
@@ -547,6 +573,8 @@ def oa2r(o, a=None):
     - O and A do not have to be unit-length, they are normalized
     - O and A do not have to be orthogonal, so long as they are not parallel
     - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+
+    :seealso: :func:`~oa2tr`
     """
     o = argcheck.getvector(o, 3, out='array')
     a = argcheck.getvector(a, 3, out='array')
@@ -588,6 +616,8 @@ def oa2tr(o, a=None):
     - O and A do not have to be orthogonal, so long as they are not parallel
     - The translational part is zero.
     - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+
+    :seealso: :func:`~oa2r`
     """
     return trn.r2t(oa2r(o, a))
 
@@ -615,8 +645,7 @@ def tr2angvec(T, unit='rad', check=False):
         
     - If the input is SE(3) the translation component is ignored.
     
-    :seealso: angvec2r, angvec2tr, tr2rpy, tr2eul
-    
+    :seealso: :func:`~angvec2r`, :func:`~angvec2tr`, :func:`~tr2rpy`, :func:`~tr2eul`
     """
 
     if argcheck.ismatrix(T, (4,4)):
@@ -669,7 +698,7 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     - There is a singularity for the case where :math:`\theta=0` in which case :math:`\phi` is arbitrarily set to zero and :math:`\phi` is set to :math:`\phi+\psi`.
     - If the input is SE(3) the translation component is ignored.
     
-    :seealso: eul2r, eul2tr, tr2rpy, tr2angvec
+    :seealso: :func:`~eul2r`, :func:`~eul2tr`, :func:`~tr2rpy`, :func:`~tr2angvec`
     """
     
     if argcheck.ismatrix(T, (4,4)):
@@ -733,7 +762,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     - There is a singularity for the case where P=:math:`\pi/2` in which case R is arbitrarily set to zero and Y is the sum (R+Y).
     - If the input is SE(3) the translation component is ignored.
     
-    :seealso: rpy2r, rpy2tr, tr2eul, tr2angvec
+    :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`, :func:`~tr2angvec`
     """
     
     if argcheck.ismatrix(T, (4,4)):
@@ -848,7 +877,7 @@ def trlog(T, check=True):
       vector (6x1) comprising [v w].
 
 
-    :seealso: trexp, vex, vexa
+    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`, :func:`~spatialmath.base.transformsNd.vexa`
     """
     
     if ishom(T, check=check):
@@ -941,7 +970,7 @@ def trexp(S, theta=None):
       must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
       matrix.
      
-     :seealso: trlog, trexp2
+     :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`
     """
    
     if argcheck.ismatrix(S, (4,4)) or argcheck.isvector(S, 6):
@@ -1042,7 +1071,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
        specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
        'zyx' is the default.
       
-    :seealso: trprint2, tr2eul, tr2rpy, tr2angvec
+    :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
     """
     
     s = ''
