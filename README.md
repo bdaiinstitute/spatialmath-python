@@ -11,7 +11,7 @@ This is a Python implementation of the [Spatial Math Toolbox for MATLAB<sup>&reg
 Spatial mathematics capability underpins all of robotics and robotic vision where we need to describe the position, orientation or pose of objects in 2D or 3D spaces.
 
 
-* GitHub repository [https://github.com/petercorke/spatialmath-python/settings](https://github.com/petercorke/spatialmath-python/settings)      
+* GitHub repository [https://github.com/petercorke/spatialmath-python](https://github.com/petercorke/spatialmath-python)      
 * Documentation [https://petercorke.github.io/spatialmath-python](https://petercorke.github.io/spatialmath-python)
 * Dependencies: `numpy`, `scipy`, `matplotlib`, `ffmpeg` (if rendering animations as a movie)
 
