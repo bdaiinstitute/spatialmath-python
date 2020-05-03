@@ -11,7 +11,152 @@ This is a Python implementation of the [Spatial Math Toolbox for MATLAB<sup>&reg
 Spatial mathematics capability underpins all of robotics and robotic vision where we need to describe the position, orientation or pose of objects in 2D or 3D spaces.
 
 
+* GitHub repository [https://github.com/petercorke/spatialmath-python/settings](https://github.com/petercorke/spatialmath-python/settings)      
+* Documentation [https://petercorke.github.io/spatialmath-python](https://petercorke.github.io/spatialmath-python)
+* Dependencies: `numpy`, `scipy`, `matplotlib`, `ffmpeg` (if rendering animations as a movie)
+
+
+# What it does
+
+Provides a set of classes:
+
+ * `SO2` for orientation in 2-dimensions
+ * `SE2` for position and orientation (pose) in 2-dimensions
+ * `SO3` for orientation in 3-dimensions
+ * `SE3` for position and orientation (pose) in 3-dimensions
+ * `UnitQuaternion` for orientation in 3-dimensions
+
+which provide convenience and type safety.  These classes have methods and overloaded operators to support:
+
+ * composition, using the `*` operator
+ * exponent, using the `**` operator
+ * normalization
+ * inversion
+ * exponential and logarithm
+ * conversion of orientation to/from Euler angles, roll-pitch-yaw angles and angle-axis forms.
+ * list operations such as append, insert and get
+
+These are layered over a set of base functions that perform many of the same operations but represent everything in terms of `numpy` arrays.
+
+The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
+
 # Examples
+
+
+## High-level classes
+
+These classes abstract the low-level numpy arrays into objects that obey the rules associated with the mathematical groups SO(2), SE(2), SO(3), SE(3) as well as twists and quaternions.
+
+Using classes ensures type safety, for example it stops us mixing a 2D homogeneous transformation with a 3D rotation matrix -- both are 3x3 matrices.
+
+For example, to create an object representing a rotation of 0.3 radians about the x-axis is simply
+
+```python
+>>> R1 = SO3.Rx(0.3)
+>>> R1
+   1         0         0          
+   0         0.955336 -0.29552    
+   0         0.29552   0.955336         
+```
+while a rotation of 30 deg about the z-axis is
+
+```python
+>>> R2 = SO3.Rz(30, 'deg')
+>>> R2
+   0.866025 -0.5       0          
+   0.5       0.866025  0          
+   0         0         1    
+```
+and the composition of these two rotations is 
+
+```python
+>>> R = R1 *R2
+   0.866025 -0.5       0          
+   0.433013  0.75     -0.5        
+   0.25      0.433013  0.866025 
+```
+
+We can find the corresponding Euler angles
+
+```python
+>> R.eul
+array([-1.57079633,  0.52359878,  2.0943951 ])
+```
+
+Frequently in robotics we want a sequence, a trajectory, of rotation matrices or poses. These pose classes inherit capability from the `list` class
+
+```python
+>>> R = SO3()   # the identity
+>>> R.append(R1)
+>>> R.append(R2)
+>>> len(R)
+ 3
+>>> R[1]
+   1         0         0       
+   0         0.866025 -0.5    
+   0         0.5       0.866025            
+```
+and this can be used in `for` loops and list comprehensions.
+
+An alternative way of constructing this would be
+
+```python
+>>> R = SO3( [ SO3(), R1, R2 ] )       
+>>> len(R)
+ 3
+```
+
+Many of the constructors such as `.Rx`, `.Ry` and `.Rz` support vectorization
+
+```python
+>>> R = SO3.Rx( np.arange(0, 2*np.pi, 0.2))
+>>> len(R)
+ 32
+```
+which has created, in a single line, a list of rotation matrices.
+
+Vectorization also applies to the operators, for instance
+
+```python
+>>> A = R * SO3.Ry(0.5)
+>>> len(R)
+ 32
+```
+will produce a result where each element is the product of each element of the left-hand side with the right-hand side, ie. `R[i] * SO3.Ry(0.5)`.
+
+Similarly
+
+```python
+>>> A = SO3.Ry(0.5) * R 
+>>> len(R)
+ 32
+```
+will produce a result where each element is the product of the left-hand side with each element of the right-hand side , ie. `SO3.Ry(0.5) * R[i] `.
+
+Finally
+
+```python
+>>> A = R * R 
+>>> len(R)
+ 32
+```
+will produce a result where each element is the product of each element of the left-hand side with each element of the right-hand side , ie. `R[i] * R[i] `.
+
+The underlying representation of these classes is a numpy matrix, but the class ensures that the structure of that matrix is valid for the particular group represented: SO(2), SE(2), SO(3), SE(3).  Any operation that is not valid for the group will return a matrix rather than a pose class, for example
+
+```python
+>>> SO3.Rx(0.3)*2
+array([[ 2.        ,  0.        ,  0.        ],
+       [ 0.        ,  1.91067298, -0.59104041],
+       [ 0.        ,  0.59104041,  1.91067298]])
+
+>>> SO3.Rx(0.3)-1
+array([[ 0.        , -1.        , -1.        ],
+       [-1.        , -0.04466351, -1.29552021],
+       [-1.        , -0.70447979, -0.04466351]])
+```
+
+
 ## Low-level spatial math
 
 Import the low-level transform functions
@@ -127,90 +272,6 @@ We see that the symbolic constants are converted back to Python numeric types on
 
 Similarly when we assign an element or slice of the symbolic matrix to a numeric value, they are converted to symbolic constants on the way in.
 
-
-
-## High-level classes
-
-These classes abstract the low-level numpy arrays into objects that obey the rules associated with the mathematical groups SO(2), SE(2), SO(3), SE(3) as well as twists and quaternions.  pose classes `SO2`, `SE2`, `SO3`, `SE3`.
-
-Using classes ensures type safety, for example it stops us mixing a 2D homogeneous transformation with a 3D rotation matrix -- both are 3x3 matrices.
-
-```
->>> import spatialmath as sm
->>> sm.SO3(0.3)
-[[ 0.99500417 -0.09983342]
- [ 0.09983342  0.99500417]]
-```
-or
-```
->>> R = sm.SO3.rpy(10, 20, 30, 'deg')
-```
-
-These classes are all derived from two parent classes:
-
-* `SuperPose` which provides common functionality for all
-* `UserList` which provdides the ability to act like a list 
-
-The latter is important because frequenetly in robotics we want a sequence, a trajectory, of rotation matrices or poses.  However a list of these items has the type `list` and the elements are not enforced to be homogeneous, ie. a list could contain a mixture of classes.
-
-Another option would be to create a `numpy` array of these objects, the upside being it could be a multi-dimensional array.  The downside is that again the array is not guaranteed to be homogeneous.
-
-
-The approach adopted here is to give these classes list superpowers.  Using the example of SE(3) but applicable to all
-
-```
-T = transl(1,2,3) # create a 4x4 np.array
-
-a = SE3(T)
-a.append(a)  # append a copy
-a.append(a)  # append a copy
-type(a)
-len(a)
-a[1]  # extract one element of the list
-for x in a:
-  # do a thing
-```
-
-
-
-
-```
-T[0,3] = 22
-print(T)
-[[1 0 0 22]
- [0 cos(theta) -sin(theta) 0]
- [0 sin(theta) cos(theta) 0]
- [0 0 0 1]]
-```
-but you can't write a symbolic value into a floating point matrix
-
-```
-T=trotx(0.2)
-
-T[0,3]=theta
-Traceback (most recent call last):
-
-  File "<ipython-input-248-b6823f58f38d>", line 1, in <module>
-    T[0,3]=th
-
-  File "/opt/anaconda3/lib/python3.7/site-packages/sympy/core/expr.py", line 325, in __float__
-    raise TypeError("can't convert expression to float")
-
-TypeError: can't convert expression to float
-```
-
-| Function | Symbolic support |
-|----------|------------------|
-| rot2 | yes |
-| transl2 | yes |
-| rotx | yes |
-| roty | yes |
-| rotz | yes |
-| transl | yes |
-| r2t | yes |
-| t2r | yes |
-| rotx | yes |
-| rotx | yes |
 
 
 
