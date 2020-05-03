@@ -5,8 +5,8 @@ from collections import UserList
 import math
 import numpy as np
 
-import spatialmath.base.transforms as tr
-import spatialmath.base.quaternion as quat
+import spatialmath.base as tr
+import spatialmath.base.quaternions as quat
 import spatialmath.base.argcheck as argcheck
 
 class Quaternion(UserList):
@@ -484,7 +484,7 @@ class Quaternion(UserList):
 class UnitQuaternion(Quaternion):
     r"""
     A unit-quaternion is is a quaternion with unit length, that is
-   :math:`s^2+v_x^2+v_y^2+v_z^2 = 1`.
+    :math:`s^2+v_x^2+v_y^2+v_z^2 = 1`.
     
     A unit-quaternion can be considered as a rotation :math:`\theta`about a 
     unit-vector in space :math:`v=[v_x, v_y, v_z]` where
@@ -524,9 +524,8 @@ class UnitQuaternion(Quaternion):
           of 4-element numpy.ndarrays.  If ``check`` is True test each element
           of the list is a 4-vector. If ``norm`` is True explicitly normalize 
           each vector.
-
-
         """
+        
         if s is None and v is None:
             self.data = [ quat.eye() ]
             
