@@ -1,34 +1,30 @@
-Spatial Math package
-====================
+Classes and functions
+=====================
 
-High-level classes
-------------------
 
-Pose in 2D: SO(2), SE(2)
-^^^^^^^^^^^^^^^^^^^^^^^^
+Classes
+-------
+
+2D:
+^^^
 
 .. automodule:: spatialmath.pose2d
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
-   :special-members:
+   :special-members: __mul__, __imul__, __rmul__, __floordiv__, __eq__, __ne__, __pow__, __add__, __sub__, __repr__, __str__, __len__, __init__
    
-Pose in 3D: SO(3), SE(3)
-^^^^^^^^^^^^^^^^^^^^^^^^
+3D:
+^^^
 
 .. automodule:: spatialmath.pose3d
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
-   :special-members:
+   :special-members: __mul__, __imul__, __rmul__, __floordiv__, __eq__, __ne__, __pow__, __add__, __sub__, __repr__, __str__, __len__, __init__
 
-
-
-
-Quaternions
-^^^^^^^^^^^
 
 .. automodule:: spatialmath.quaternion
    :members:
@@ -38,8 +34,8 @@ Quaternions
    :special-members: __mul__, __imul__, __rmul__, __floordiv__, __eq__, __ne__, __pow__, __add__, __sub__, __repr__, __str__, __len__, __init__
    
    
-Low-level (base) functions
---------------------------
+Functions (base)
+----------------
 
 Transforms in 2D
 ^^^^^^^^^^^^^^^^
@@ -91,3 +87,5 @@ Quaternions
    :show-inheritance:
    :inherited-members:
    :special-members:
+
+
