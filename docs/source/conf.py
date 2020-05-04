@@ -40,6 +40,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx_markdown_tables',
     'sphinx.ext.autosummary',
+    'sphinx.ext.coverage',
 ]
 
 autosummary_generate = True
