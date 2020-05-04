@@ -178,7 +178,7 @@ def angdiff(a, b):
 
 
     
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
     

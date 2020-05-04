@@ -126,7 +126,7 @@ class SE2(sp.SMPose):
     ArithmeticError()
     
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
  
     import pathlib
     import os.path

@@ -807,7 +807,7 @@ class UnitQuaternion(Quaternion):
         return SE3(so3=SO3.np(self.r()))
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     q = Quaternion([1,2,3,4])
     print(q)
     q.append(q)

@@ -507,7 +507,7 @@ def e2h(v):
         return np.vstack([v, np.ones((1,v.shape[1]))])
         
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
     

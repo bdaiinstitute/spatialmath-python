@@ -506,7 +506,7 @@ class SE3(SO3):
     def AngVec(cls, theta, v, *, unit='rad'):
         return cls(tr.angvec2tr(theta, v, unit=unit))
 
-if __name__ == '__main__':
+if __name__ == '__main__':   # pragma: no cover
     
     import pathlib
     import os.path

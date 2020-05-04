@@ -536,7 +536,7 @@ def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
     else:
         return s
     
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
     
