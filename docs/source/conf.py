@@ -22,17 +22,27 @@ project = 'Spatial Maths package'
 copyright = '2020, Peter Corke'
 author = 'Peter Corke'
 
+print(__file__)
 # The full version, including alpha/beta/rc tags
-release = '0.5'
-
+with open('../../RELEASE', encoding='utf-8') as f:
+    release = f.read()
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [ 'sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.viewcode', 'recommonmark', 'sphinx.ext.mathjax', 'sphinx_markdown_tables'
+extensions = [ 
+    'sphinx.ext.autodoc',
+    'sphinx.ext.todo',
+    'sphinx.ext.viewcode', 
+    'recommonmark',
+    'sphinx.ext.mathjax',
+    'sphinx_markdown_tables',
+    'sphinx.ext.autosummary',
 ]
+
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

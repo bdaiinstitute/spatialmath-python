@@ -6,12 +6,14 @@ here = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
+with open(path.join(here, 'RELEASE'), encoding='utf-8') as f:
+    release = f.read()
 
 
 setup(
     name='spatialmath-python', 
 
-    version='0.5', #TODO 
+    version=release,
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
