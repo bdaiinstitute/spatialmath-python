@@ -169,7 +169,7 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R.shape, (3,3))
         
         R = SO3.Rx(0.3)
-        array_compare(R.T * R, np.eye(3,3))
+        array_compare(R.inv * R, np.eye(3,3))
         
     def test_arith(self):
         R = SO3()

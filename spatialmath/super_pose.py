@@ -9,6 +9,8 @@ import copy
 from spatialmath.base import argcheck 
 import spatialmath.base as tr
 
+_eps = np.finfo(np.float64).eps
+
 # colored printing of matrices to the terminal
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
 try:
@@ -125,7 +127,7 @@ class SMPose(UserList, ABC):
             raise ValueError('2 bad argument to constructor')
     
     @classmethod
-    def empty(cls):
+    def Empty(cls):
         X = cls()
         X.data = []
         return X
@@ -147,25 +149,42 @@ class SMPose(UserList, ABC):
             return self.data
 
     def __getitem__(self, i):
-        #print('getitem', i)
+        #print('getitem', i, 'class', self.__class__)
         #return self.__class__(self.data[i])
         return self.__class__(self.data[i])
 
     #----------------------- tests
     @property
     def isSO(self):
+        """
+        Test if object belongs to SO(n)
+        
+        :param self: object to test
+        :return: true if object is instance of SO2 or SO3
+        :rtype: bool
+        """
         return type(self).__name__ == 'SO2' or type(self).__name__ == 'SO3'
     
     @property
     def isSE(self):
+        """
+        Test if object belongs to SE(n)
+        
+        :param self: object to test
+        :return: true if object is instance of SE2 or SE3
+        :rtype: bool
+        """
         return type(self).__name__ == 'SE2' or type(self).__name__ == 'SE3'
     
     @property
-    def isSO(self):
-        return type(self).__name__ == 'SO2' or type(self).__name__ == 'SO3'
-    
-    @property
     def N(self):
+        """
+        Dimension of the object's space
+        
+        :param self: object to test
+        :return: 2 for SO2 or SE2, 3 for SO3 or SE3
+        :rtype: int
+        """
         if type(self).__name__ == 'SO2' or type(self).__name__ == 'SE2':
             return 2
         else:
@@ -174,20 +193,55 @@ class SMPose(UserList, ABC):
     # compatibility methods
 
     def isrot(self):
+        """
+        Test if object belongs to SO(3)
+        
+        :param self: object to test
+        :return: true if object is instance of SO3
+        :rtype: bool
+        """
         return type(self).__name__ == 'SO3'
 
     def isrot2(self):
+        """
+        Test if object belongs to SO(2)
+        
+        :param self: object to test
+        :return: true if object is instance of SO2
+        :rtype: bool
+        """
         return type(self).__name__ == 'SO2'
 
     def ishom(self):
+        """
+        Test if object belongs to SE(3)
+        
+        :param self: object to test
+        :return: true if object is instance of SE3
+        :rtype: bool
+        """
         return type(self).__name__ == 'SE3'
 
     def ishom2(self):
+        """
+        Test if object belongs to SE(2)
+        
+        :param self: object to test
+        :return: true if object is instance of SE2
+        :rtype: bool
+        """
         return type(self).__name__ == 'SE2'
     
     #----------------------- properties
     @property
     def shape(self):
+        """
+        Dimension of the object's underlying matrix representation
+        
+        :param self: object to test
+        :return: (2,2) for SO2, (3,3) for SE2 and SO3, and (4,4) for SE3
+        :rtype: int
+        """
         if   type(self).__name__ == 'SO2':
             return (2,2)
         elif type(self).__name__ == 'SO3':
@@ -197,26 +251,17 @@ class SMPose(UserList, ABC):
         elif type(self).__name__ == 'SE3':
             return (4,4)
     
-    
-
-    
     def about(self):
-        print(type(self).__name__)
-#
-#    def render(self):
-#        pass
-#
-#    def trprint(self):
-#        pass  # TODO
-#
-#    def trplot(self):
-#        pass  # TODO
-#
-#    def trplot2(self):
-#        pass  # TODO
-#
-#    def tranimate(self):
-#        pass  # TODO
+        """
+        Display succinct details of object
+        
+        :param self: object to display
+        :type self: SO2, SE2, SO3, SE3
+
+        Displays the type and the number of elements in compact form, eg. ``SE3[20]``.
+        """
+        print("{:s}[{:d}]".format( type(self).__name__, len(self)))
+
 
 
     #----------------------- arithmetic
@@ -352,7 +397,7 @@ class SMPose(UserList, ABC):
 
     def __truediv__(left, right):
         if isinstance(left, right.__class__):
-            return left.__class__(left._op2(right.inv(), lambda x, y: x @ y ))
+            return left.__class__(left._op2(right.inv, lambda x, y: x @ y ))
         elif isinstance(right, (int, float)):
             return left._op2(right, lambda x, y: x / y )
         else:
@@ -471,6 +516,8 @@ class SMPose(UserList, ABC):
                 rowstr = '  '
                 # format the columns
                 for colnum, element in enumerate(row):
+                    if abs(element) < 10 * _eps:
+                        element = 0
                     s = '{:< 10g}'.format(element)
 
                     if rownum < n:
