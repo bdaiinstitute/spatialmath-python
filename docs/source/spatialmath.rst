@@ -5,25 +5,25 @@ Classes and functions
 Classes
 -------
 
-2D:
-^^^
+Pose in 2D
+^^^^^^^^^^
 
 .. automodule:: spatialmath.pose2d
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
-   :special-members: __mul__, __imul__, __rmul__, __floordiv__, __eq__, __ne__, __pow__, __add__, __sub__, __repr__, __str__, __len__, __init__
+   :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
    
-3D:
-^^^
+Pose in 3D
+^^^^^^^^^^
 
 .. automodule:: spatialmath.pose3d
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
-   :special-members: __mul__, __imul__, __rmul__, __floordiv__, __eq__, __ne__, __pow__, __add__, __sub__, __repr__, __str__, __len__, __init__
+   :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
 
 
 .. automodule:: spatialmath.quaternion
@@ -31,7 +31,7 @@ Classes
    :undoc-members:
    :show-inheritance:
    :inherited-members:
-   :special-members: __mul__, __imul__, __rmul__, __floordiv__, __eq__, __ne__, __pow__, __add__, __sub__, __repr__, __str__, __len__, __init__
+   :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
    
    
 Functions (base)
