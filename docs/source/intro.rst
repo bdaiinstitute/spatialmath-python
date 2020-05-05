@@ -76,6 +76,46 @@ These classes are all derived from two parent classes:
 * `RTBPose` which provides common functionality for all
 * `UserList` which provdides the ability to act like a list 
 
+
+
+
+### Operators
+
+Standard arithmetic operators can be applied to these objects:
+
+==============   ==============   ===========  ===================
+           Multiplicands                   Product
+-------------------------------   --------------------------------
+    left             right            type           result
+==============   ==============   ===========  ===================
+Pose             Pose             Pose         matrix product
+Pose             scalar           matrix       elementwise product
+scalar           Pose             matrix       elementwise product
+Pose             N-vector         N-vector     vector transform
+Pose             NxM matrix       NxM matrix   vector transform
+==============   ==============   ===========  ===================
+
+Any other input combinations result in a ValueError.
+
+Note that left and right can have a length greater than 1 in which case
+
+====   =====   ====  ================================
+left   right   len     operation
+====   =====   ====  ================================
+ 1      1       1    ``prod = left * right``
+ 1      M       M    ``prod[i] = left * right[i]``
+ N      1       M    ``prod[i] = left[i] * right``
+ M      M       M    ``prod[i] = left[i] * right[i]``
+====   =====   ====  ================================
+        
+        
+### List capability
+
+del iter len pop reverse append extend clear zip enumerate map sliace
+
+NOT sort count
+
+
 ### Vectorization
 
 For most methods, if applied to an object that contains a sequence of length N, the result will be the appropriate return object type but of length N.
@@ -94,15 +134,6 @@ Most binary operations (`*`, `*=`, `**`, `+`, `+=`, `-`, `-=`, `==`, `!=`) are v
 
 
 
-
-
-### Operators
-
-### List capability
-
-del iter len pop reverse append extend clear zip enumerate map sliace
-
-NOT sort count
 
 ## Low-level spatial math
 
