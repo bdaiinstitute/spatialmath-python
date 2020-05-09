@@ -16,11 +16,10 @@ import sys
 import math
 import numpy as np
 import numpy.matlib as matlib
-
-import spatialmath.base.argcheck as argcheck
 from spatialmath.base.vectors import *
-import spatialmath.base.transforms2d as t2d
-import spatialmath.base.transforms3d as t3d
+from spatialmath.base import transforms2d as t2d
+from spatialmath.base import transforms3d as t3d
+from spatialmath.base import argcheck
 
     
 _eps = np.finfo(np.float64).eps

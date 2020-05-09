@@ -8,7 +8,7 @@ from math import pi
 from spatialmath.pose3d import *
 from spatialmath import super_pose as sp
 from spatialmath.base import *
-import spatialmath.base.argcheck as argcheck
+from spatialmath.base import argcheck
 
 def array_compare(x, y):
     if isinstance(x, sp.SMPose):
@@ -19,37 +19,37 @@ def array_compare(x, y):
                            
 
 class TestSO3(unittest.TestCase):
-    
+
     def test_constructor(self):
-        
+
         # null constructor
         R = SO3()
         nt.assert_equal(len(R),  1)
         array_compare(R, np.eye(3))
         nt.assert_equal(isinstance(R, SO3), True)
-        
+
         # construct from matrix
-        R = SO3( rotx(0.2) )
+        R = SO3(rotx(0.2))
         nt.assert_equal(len(R),  1)
         array_compare(R, rotx(0.2))
         nt.assert_equal(isinstance(R, SO3), True)
-        
+
         # construct from canonic rotation
         R = SO3.Rx(0.2)
         nt.assert_equal(len(R),  1)
         array_compare(R, rotx(0.2))
         nt.assert_equal(isinstance(R, SO3), True)
-        
+
         R = SO3.Ry(0.2)
         nt.assert_equal(len(R),  1)
         array_compare(R, roty(0.2))
         nt.assert_equal(isinstance(R, SO3), True)
-        
+
         R = SO3.Rz(0.2)
         nt.assert_equal(len(R),  1)
         array_compare(R, rotz(0.2))
         nt.assert_equal(isinstance(R, SO3), True)
-        
+
         # triple angle
         R = SO3.Eul([0.1, 0.2, 0.3])
         nt.assert_equal(len(R),  1)

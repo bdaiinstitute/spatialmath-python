@@ -5,8 +5,8 @@ and homogeneous tranformation matrices.
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
-Versions: 
-    
+Versions:
+
     1. Luis Fernando Lara Tobar and Peter Corke, 2008
     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
     3. Peter Corke, 2020
@@ -15,7 +15,7 @@ Versions:
 import sys
 import math
 import numpy as np
-import spatialmath.base.argcheck as argcheck
+from spatialmath.base import argcheck
 
 
     
