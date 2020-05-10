@@ -1028,7 +1028,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
     :type label: str
     :param orient: 3-angle convention to use
     :type orient: str
-    :param file: file to write formatted string to
+    :param file: file to write formatted string to. [default, stdout]
     :type file: str
     :param fmt: conversion format for each number
     :type fmt: str
@@ -1038,14 +1038,9 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
     :rtype: str
     
     The matrix is formatted and written to ``file`` or if ``file=None`` then the
-    string is returned. Orientation is expressed in one of several formats:
-    - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order [default]
-    - 'rpy/yxz' roll-pitch-yaw angles in YXZ axis order
-    - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order
-    - 'eul' Euler angles in ZYZ axis order
-    - 'angvec' angle and axis
-    
-    - ``trprint(R)`` displays the SO(3) rotation matrix in a compact 
+    string is returned. 
+
+   - ``trprint(R)`` displays the SO(3) rotation matrix in a compact 
       single-line format:
         
         [LABEL:] ORIENTATION UNIT
@@ -1053,7 +1048,16 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
     - ``trprint(T)`` displays the SE(3) homogoneous transform in a compact 
       single-line format:
         
-        [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT
+        [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT    
+    
+    Orientation is expressed in one of several formats:
+        
+    - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order [default]
+    - 'rpy/yxz' roll-pitch-yaw angles in YXZ axis order
+    - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order
+    - 'eul' Euler angles in ZYZ axis order
+    - 'angvec' angle and axis
+    
 
     Example:
         
@@ -1070,6 +1074,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
      - If the 'rpy' option is selected, then the particular angle sequence can be
        specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
        'zyx' is the default.
+     - Default formatting is for readable columns of data
       
     :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
     """
@@ -1254,8 +1259,8 @@ if __name__ == '__main__':  # pragma: no cover
     
 
     
-    trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
-    trplot( transl(3,1, 2), color='red', width=3, frame='B')
-    trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
+    # trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
+    # trplot( transl(3,1, 2), color='red', width=3, frame='B')
+    # trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
     
-    #runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
+    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read() )
