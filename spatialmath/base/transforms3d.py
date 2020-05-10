@@ -1249,8 +1249,10 @@ try:
             ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0],frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame),  color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame),  color=color, horizontalalignment='center', verticalalignment='center')
-except:
-    pass
+
+except:  # pragma: no cover
+    def trplot(*args, **kwargs):
+        print('** trplot: no plot produced -- matplotlib not installed')
     
 if __name__ == '__main__':  # pragma: no cover
     import pathlib

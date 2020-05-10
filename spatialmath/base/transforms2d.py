@@ -429,7 +429,7 @@ try:
             ax.quiver(o[0], o[1], x[0]-o[0], x[1]-o[1], angles='xy', scale_units='xy', scale=1, linewidth=width, facecolor=color, edgecolor=color)
             ax.quiver(o[0], o[1], y[0]-o[0], y[1]-o[1], angles='xy', scale_units='xy', scale=1, linewidth=width, facecolor=color, edgecolor=color)
             # plot an invisible point at the end of each arrow to allow auto-scaling to work
-            ax.scatter( x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[20,0,0,0])
+            ax.scatter( x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[20,0,0])
         else:
             ax.plot([o[0], x[0]], [o[1], x[1]], color=color, linewidth=width)
             ax.plot([o[0], y[0]], [o[1], y[1]], color=color, linewidth=width)
@@ -450,8 +450,10 @@ try:
     
             ax.text(x[0], x[1], "$%c_{%s}$" % (labels[0],frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], "$%c_{%s}$" % (labels[1], frame),  color=color, horizontalalignment='center', verticalalignment='center')
-except:
-    pass
+            
+except:  # pragma: no cover
+    def trplot2(*args, **kwargs):
+        print('** trplot2: no plot produced -- matplotlib not installed')
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
