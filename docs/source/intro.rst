@@ -4,28 +4,27 @@ Introduction
 ************
 
 
-Spatial maths capability underpins all of robotics and robotic vision.  The aim of the `spatialmath` package is to replicate the functionality of the MATLAB&reg; Spatial Math Toolbox while achieving the conflicting high-level design aims of being:
+Spatial maths capability underpins all of robotics and robotic vision by describing the relative position and orientation of objects in 2D or 3D space.  This package:
 
-* as similar as possible to the MATLAB function names and semantics
-* as Pythonic as possible
+- provides Python classes and functions to manipulate matrices that represent relevant mathematical objects such as rotation matrices :math:`R \in SO(2), SO(3)`, homogeneous transformation matrices :math:`T \in SE(2), SE(3)` and quaternions :math:`q \in \mathbb{H}`.
 
-More detailed design aims include:
+- replicates, as much as possible, the functionality of the `Spatial Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB |reg| which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. Important considerations included:
 
-* Python3 support only
-* Use Python keyword arguments to replace the RTB string options supported using `tb_optparse`
-* Use `numpy` arrays for all rotation and homogeneous transformation matrices, as well as vectors
-* Functions that accept a vector can accept a list, tuple, or `np.ndarray`
-* By default all `np.ndarray` vectors have the shape `(N,)` but functions also accept row `(1,N)` and column `(N,1)` vectors.  This is a gnarly aspect of numpy.
-* Unlike RTB these functions do not support sequences, that functionality is supported by the pose classes `SO2`, `SE2`, `SO3`, `SE3`.
+  - being as similar as possible to the MATLAB Toolbox function names and semantics
+  - but balancing the tension of being as Pythonic as possible
+  - use Python keyword arguments to replace the MATLAB Toolbox string options supported using `tb_optparse``
+  - use ``numpy`` arrays for rotation and homogeneous transformation matrices, quaternions and vectors
+  - all functions that accept a vector can accept a list, tuple, or `np.ndarray`
+  - By default all `np.ndarray` vectors have the shape `(N,)` but functions also accept row `(1,N)`  and column `(N,1)` vectors.  This is a gnarly aspect of numpy.
+  - The classes can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences.
 
 Quick example:
 
 .. code:: python
 
-  import spatialmath as sm
-
-  R = sm.SO3.Rx(30, 'deg')
-  print(R)
+  >>> import spatialmath as sm
+  >>> R = sm.SO3.Rx(30, 'deg')
+  >>> R
      1         0         0          
      0         0.866025 -0.5        
 
@@ -56,7 +55,7 @@ However a list of these items has the type `list` and the elements are not enfor
 Another option would be to create a `numpy` array of these objects, the upside being it could be a multi-dimensional array.  The downside is that again the array is not guaranteed to be homogeneous.
 
 
-The approach adopted here is to give these classes _list superpowers_ so that a single `SE3` object can contain a list of SE(3) poses.  The pose objects are a list subclass so we can index it or slice it as we
+The approach adopted here is to give these classes list *super powers* so that a single `SE3` object can contain a list of SE(3) poses.  The pose objects are a list subclass so we can index it or slice it as we
 would a list, but the result each time belongs to the class it was sliced from.  Here's a simple example of SE(3) but applicable to all the classes
 
 
@@ -122,11 +121,11 @@ by the multiplication operator.  The identity element is a unit matrix.
 -------------------------------   ----------------------------------
     left             right            type           result
 ==============   ==============   ===========  =====================
-Pose             Pose             Pose         composition #1
+Pose             Pose             Pose         composition [1]_
 Pose             scalar           matrix       elementwise product
 scalar           Pose             matrix       elementwise product
-Pose             N-vector         N-vector     vector transform #2
-Pose             NxM matrix       NxM matrix   vector transform #2#3
+Pose             N-vector         N-vector     vector transform [2]_
+Pose             NxM matrix       NxM matrix   vector transform [2]_ [3]_
 ==============   ==============   ===========  =====================
 
 Notes:
@@ -489,6 +488,6 @@ MATLAB compatability
 
 
 
-
+.. |reg|    unicode:: U+000AE .. REGISTERED SIGN
 
 
