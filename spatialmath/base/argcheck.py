@@ -16,6 +16,14 @@ def matrix(m, shape):
 def ismatrix(m, shape):
     return type(m) == np.ndarray and m.shape == shape
 
+def verifymatrix(m, shape):
+    if not type(m) == np.ndarray:
+        raise TypeError("input must be a numpy ndarray")
+
+    if not m.shape == shape:
+        raise ValueError("incorrect matrix dimensions, "
+            "expecting {0}".format(shape))
+
  #and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 def getvector(v, dim=None, out='array'):
@@ -54,7 +62,7 @@ def getvector(v, dim=None, out='array'):
         else:
             raise ValueError("invalid output specifier")
     else:
-        raise ValueError("invalid input type")
+        raise TypeError("invalid input type")
 
 def vector(v, dim):
     assert isvector(v, dim)

@@ -9,9 +9,8 @@ Created on Fri Apr 10 14:12:56 2020
 import sys
 import math
 import numpy as np
-
-import spatialmath.base as tr
-import spatialmath.base.argcheck as argcheck
+from spatialmath import base as tr
+from spatialmath.base import argcheck
 
 _eps = np.finfo(np.float64).eps
 

@@ -1,12 +1,12 @@
-""" 
+"""
 This modules contains functions to create and transform rotation matrices
 and homogeneous tranformation matrices.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
-Versions: 
-    
+Versions:
+
     1. Luis Fernando Lara Tobar and Peter Corke, 2008
     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
     3. Peter Corke, 2020
@@ -15,10 +15,9 @@ Versions:
 import sys
 import math
 import numpy as np
-import spatialmath.base.argcheck as argcheck
-import spatialmath.base.vectors as vec
-import spatialmath.base.transformsNd as trn
-
+from spatialmath.base import argcheck
+from spatialmath.base import vectors as vec
+from spatialmath.base import transformsNd as trn
 
 try:
     print('Using SymPy')
@@ -28,20 +27,22 @@ try:
 except:
     def issymbol(x):
         return False
-    
+
 _eps = np.finfo(np.float64).eps
 
 def colvec(v):
     return np.array(v).reshape((len(v), 1))
 
 # ---------------------------------------------------------------------------------------#
-    
+
+
 def _cos(theta):
     if issymbol(theta):
         return sym.cos(theta)
     else:
         return math.cos(theta)
-        
+
+
 def _sin(theta):
     if issymbol(theta):
         return sym.sin(theta)

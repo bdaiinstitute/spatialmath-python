@@ -21,9 +21,10 @@ TODO:
 import sys
 import math
 import numpy as np
-import spatialmath.base.argcheck as argcheck
-import spatialmath.base.vectors as vec
-import spatialmath.base.transformsNd as trn
+from spatialmath.base import argcheck
+from spatialmath.base import vectors as vec
+from spatialmath.base import transformsNd as trn
+
 
 try:
     print('Using SymPy')
