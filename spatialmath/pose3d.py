@@ -39,7 +39,27 @@ class SO3(sp.SMPose):
                 self.data = [np.eye(3)]  # identity rotation
         else:
             super().pose_arghandler(arg, check=check)
-    
+
+    @property
+    def R(self):
+        """
+        Rotational component as a matrix
+
+        :param self: SO(3), SE(3) 
+        :type self: SO3 or SE3 instance
+        :return: rotational component
+        :rtype: numpy.ndarray
+        
+        ``T.R`` returns an:
+            
+        - ndarray with shape=(3,3), if len(R) == 1
+        - ndarray with shape=(N,3,3), if len(R) = N > 1
+        """
+        if len(self) == 1:
+            return self.A[:3,:3]
+        else:
+            return np.array([x[:3,:3] for x in self.A])
+        
     @property
     def inv(self):
         """
@@ -405,25 +425,7 @@ class SE3(SO3):
             return np.array([x[:3,3] for x in self.A])
         
     
-    @property
-    def R(self):
-        """
-        Rotational component of SE(3)
 
-        :param self: SE(3) 
-        :type self: SE3 instance
-        :return: rotational component
-        :rtype: numpy.ndarray
-        
-        ``T.R`` returns an:
-            
-        - ndarray with shape=(3,3), if len(R) == 1
-        - ndarray with shape=(N,3,3), if len(R) = N > 1
-        """
-        if len(self) == 1:
-            return self.A[:3,:3]
-        else:
-            return np.array([x[:3,:3] for x in self.A])
     
     @property
     def T(self):
