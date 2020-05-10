@@ -6,6 +6,8 @@ here = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
+
+# Get the release/version string
 with open(path.join(here, 'RELEASE'), encoding='utf-8') as f:
     release = f.read()
 
@@ -56,7 +58,7 @@ setup(
 
     python_requires='>=3.2',
 
-    packages=find_packages(),
+    packages=find_packages(exclude=["test_*", "TODO*"]),
 
     install_requires=['numpy', 'scipy', 'matplotlib']
     
