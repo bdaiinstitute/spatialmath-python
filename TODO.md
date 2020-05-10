@@ -61,11 +61,10 @@
 
 ## other
 
-
-
 * Travis matrix test for different Python/numpy versions
 * fixup consequences of spatialmath-matlab name change
   * petercorke.com download page
   * Travis build for RTB matlab
   * MathWorks file exchange
+  * badges in README
 
