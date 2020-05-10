@@ -1,9 +1,14 @@
 language: python
 python:
     - "3.7"
+
 install:
     - pip install -r requirements.txt
     - pip list
+    - python install -e .
+
+env:
+    - MPLBACKEND=Agg
 
 script:
     # your test script goes here
@@ -11,8 +16,6 @@ script:
     - codecov
 
     # Use Sphinx to make the html docs
-    - export PYTHONPATH=$PYTHONPATH:$PWD
-    - echo $PYTHONPATH
     - cd docs
     - make html
     # Tell GitHub not to use jekyll to compile the docs
