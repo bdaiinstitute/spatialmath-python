@@ -181,7 +181,7 @@ def qqmul(q1, q2):
     This is the quaternion or Hamilton product.  If both operands are unit-quaternions then
     the product will be a unit-quaternion.
     
-    :seealso: qvmul
+    :seealso: qvmul, inner
 
     """
     q1 = argcheck.getvector(q1,4)
@@ -190,6 +190,29 @@ def qqmul(q1, q2):
     s2 = q2[0]; v2 = q2[1:4]
     
     return np.r_[s1 * s2 - np.dot(v1, v2), s1 * v2 + s2 * v1 + np.cross(v1, v2)]
+
+
+def inner(q1, q2):
+    """
+    Quaternion innert product
+    
+    :arg q0: quaternion as a 4-vector
+    :type q0: : array_like
+    :arg q1: uaternion as a 4-vector
+    :type q1: array_like
+    :return: inner product
+    :rtype: numpy.ndarray, shape=(4,)
+    
+    This is the inner or dot product of two quaternions, it is the sum of the element-wise
+    product.  
+    
+    :seealso: qvmul
+
+    """
+    q1 = argcheck.getvector(q1,4)
+    q2 = argcheck.getvector(q2,4)
+
+    return np.dot(q1, q2)
 
 def qvmul(q, v):
     """

@@ -20,7 +20,7 @@ class Quaternion(UserList):
     
     def __init__(self, s=None, v=None, check=True, norm=True):
         """        
-        A unit quaternion is one for which M{s^2+vx^2+vy^2+vz^2 = 1}.
+        A zero quaternion is one for which M{s^2+vx^2+vy^2+vz^2 = 1}.
         A quaternion can be considered as a rotation about a vector in space where
         q = cos (theta/2) sin(theta/2) <vx vy vz>
         where <vx vy vz> is a unit vector.
@@ -28,7 +28,7 @@ class Quaternion(UserList):
         :param v: vector
         """
         if s is None and v is None:
-            self.data = [ quat.qone() ]
+            self.data = [ np.array([0, 0, 0, 0]) ]
             
         elif argcheck.isscalar(s) and argcheck.isvector(v,3):
             self.data = [ np.r_[s, argcheck.getvector(v)] ]
@@ -37,12 +37,22 @@ class Quaternion(UserList):
             self.data = [ argcheck.getvector(s) ]
             
         elif type(s) is list:
-            if check:
-                assert argcheck.isvectorlist(s,4), 'list must comprise 4-vectors'
-            self.data = s
+            if isinstance(s[0], np.ndarray):
+                if check:
+                    assert argcheck.isvectorlist(s,4), 'list must comprise 4-vectors'
+                self.data = s
+            elif isinstance(s[0], self.__class__):
+                # possibly a list of objects of same type
+                assert all( map( lambda x: isinstance(x, self.__class__), s) ), 'all elements of list must have same type'
+                self.data = [x._A for x in s]
+            else:
+                raise ValueError('incorrect list')
         
         elif isinstance(s, np.ndarray) and s.shape[1] == 4:
             self.data = [x for x in s]
+            
+        elif isinstance(s, Quaternion):
+            self.data = s.data
             
         else:
             raise ValueError('bad argument to Quaternion constructor')
@@ -64,7 +74,7 @@ class Quaternion(UserList):
             return self.data
 
     def __getitem__(self, i):
-        print('getitem', i)
+        #print('getitem', i)
         #return self.__class__(self.data[i])
         return self.__class__(self.data[i])
 
@@ -122,15 +132,13 @@ class Quaternion(UserList):
     def pure(cls, v):
         return cls(s=0, v=argcheck.getvector(v,3), norm=True)
     
+    @property
     def conj(self):
-        if instance(v, np.ndarray) and len(shape) > 1 and v.shape[1] == 3:
-            return self.__class__( [quat.conj(q._A) for q in self] )
-        else:
-            return self.__class__(quat.conj(self._A))
+        return Quaternion( [quat.conj(q._A) for q in self], norm=False)
 
-    def conj(self):
-        return self.__class__( [quat.conj(q._A) for q in self] )
 
+
+    @property
     def norm(self):
         """Return the norm of this quaternion.
         Code retrieved from: https://github.com/petercorke/robotics-toolbox-python/blob/master/robot/Quaternion.py
@@ -139,10 +147,11 @@ class Quaternion(UserList):
         @return: the norm
         """
         if len(self) == 1:
-            return np.linalg.norm(self.double())
+            return quat.qnorm(self._A)
         else:
-            return np.array([quat.norm(q._A) for q in self])
+            return np.array([quat.qnorm(q._A) for q in self])
 
+    @property
     def unit(self):
         """Return an equivalent unit quaternion
         Code retrieved from: https://github.com/petercorke/robotics-toolbox-python/blob/master/robot/Quaternion.py
@@ -153,10 +162,24 @@ class Quaternion(UserList):
         return UnitQuaternion( [quat.unit(q._A) for q in self], norm=False)
 
 
+    @property
     def matrix(self):
-        return qmatrix(self._A)
+        return quat.matrix(self._A)
     
     #-------------------------------------------- arithmetic
+    
+    def inner(self, other):
+        assert isinstance(other, Quaternion), 'operands to inner must be Quaternion subclass'
+        return self._op2(other, lambda x, y: quat.inner(x, y), list1=False )
+    
+    def __eq__(self, other):
+        assert type(self) == type(other), 'operands to == are of different types'
+        return self._op2(other, lambda x, y: quat.isequal(x, y), list1=False )
+    
+    def __ne__(self, other):
+        assert type(self) == type(other), 'operands to == are of different types'
+        return self._op2(other, lambda x, y: not quat.isequal(x, y), list1=False )
+        
     
     def __mul__(left, right):
         """
@@ -204,7 +227,7 @@ class Quaternion(UserList):
         if type(left) == type(right):
             # quaternion * quaternion case (same class)
             return left.__class__( left._op2(right, lambda x, y: quat.qqmul(x, y) ) )
-        elif isinstance(other, Quaternion):
+        elif isinstance(right, Quaternion):
             # quaternion * quaternion case (different class)
             return Quaternion( left._op2(right, lambda x, y: quat.qqmul(x, y) ) )
         elif argcheck.isscalar(right):
@@ -258,7 +281,7 @@ class Quaternion(UserList):
         A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
         """
         # scalar * quaternion case
-        return Quaternion([other*q._A for q in self])
+        return Quaternion([left*q._A for q in right])
         
     def __imul__(left, right):
         """
@@ -409,13 +432,6 @@ class Quaternion(UserList):
         assert type(left) == type(right), 'operands to - are of different types'
         return Quaternion( left._op2(right, lambda x, y: x - y ) )
     
-
-    def __eq__(self, other):
-        assert type(self) == type(other), 'operands to == are of different types'
-        return self._op2(other, lambda x, y: quat.isequal(x, y), list1=False )
-    
-    def __ne__(self, other):
-        return not self.__eq__(other)
     
     def _op2(self, other, op, list1=True):
         
@@ -430,10 +446,10 @@ class Quaternion(UserList):
                 return [op(self._A, x._A) for x in other]
         else:
             if len(other) == 1:
-                print('== Nx1')
+                #print('== Nx1')
                 return [op(x._A, other._A) for x in self]
             elif len(self) == len(other):
-                print('== NxN')
+                #print('== NxN')
                 return [op(x._A, y._A) for (x,y) in zip(self, other)]
             else:
                 raise ValueError('length of lists to == must be same length')
@@ -472,7 +488,7 @@ class Quaternion(UserList):
     def __repr__(self):
         s = ''
         for q in self:
-            s += quat.print(q._A, file=None) + '\n'
+            s += quat.qprint(q._A, file=None) + '\n'
         s.rstrip('\n')
         return s
 
@@ -536,7 +552,7 @@ class UnitQuaternion(Quaternion):
             self.data = [q]
             
         elif argcheck.isvector(s,4):
-            print('uq constructor 4vec')
+            #print('uq constructor 4vec')
             q = argcheck.getvector(s)
             # if norm:
             #     q = quat.unit(q)
@@ -544,11 +560,16 @@ class UnitQuaternion(Quaternion):
             self.data = [q]
             
         elif type(s) is list:
-            if check:
-                assert argcheck.isvectorlist(s,4), 'list must comprise 4-vectors'
-            if norm:
-                s = [quat.unit(q) for q in s]
-            self.data = s
+            if isinstance(s[0], np.ndarray):
+                if check:
+                    assert argcheck.isvectorlist(s,4), 'list must comprise 4-vectors'
+                self.data = s
+            elif type(s[0]) == type(self):
+                # possibly a list of objects of same type
+                assert all( map( lambda x: type(x) == type(self), s) ), 'all elements of list must have same type'
+                self.data = [x._A for x in s]
+            else:
+                raise ValueError('incorrect list')
         
         elif isinstance(s, np.ndarray) and s.shape[1] == 4:
             if norm:
@@ -769,13 +790,15 @@ class UnitQuaternion(Quaternion):
         from .pose import SO3
         return SE3(so3=SO3.np(self.r()))
 
+        
     
     def __repr__(self):
         s = ''
         for q in self:
-            s += quat.print(q._A, delim=('<<', '>>'), file=None) + '\n'
+            s += quat.qprint(q._A, delim=('<<', '>>'), file=None) + '\n'
         s.rstrip('\n')
         return s
+    
     
     def __str__(self):
         return self.__repr__()
@@ -808,6 +831,10 @@ class UnitQuaternion(Quaternion):
 
 
 if __name__ == '__main__':  # pragma: no cover
+
+    import pathlib
+    import os.path
+    
     q = Quaternion([1,2,3,4])
     print(q)
     q.append(q)
@@ -826,4 +853,4 @@ if __name__ == '__main__':  # pragma: no cover
     # import pathlib
     # import os.path
     
-    # runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_quaternion.py") )
+    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_quaternion.py")).read() )
