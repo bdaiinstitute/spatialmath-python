@@ -19,8 +19,8 @@ from spatialmath.base import argcheck
 from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
 
-try:
-    print('Using SymPy')
+try: # pragma: no cover
+    #print('Using SymPy')
     import sympy as sym
     def issymbol(x):
         return isinstance(x, sym.Symbol)
@@ -234,56 +234,43 @@ def trexp2(S, theta=None):
         # se(2) case
         if argcheck.ismatrix(S, (3,3)):
             # augmentented skew matrix
-            tw = vexa(S)
+            tw = trn.vexa(S)
         else:
             # 3 vector
             tw = argcheck.getvector(S)
 
-        if theta is not None:
-                assert isunittwist(tw), 'If theta is specified S must be a unit twist'
-                
+        if theta is None:
+            (tw,theta) = vec.unittwist2(tw)
+        else:
+            assert vec.isunittwist2(tw), 'If theta is specified S must be a unit twist'
+
         t = tw[0:2]
         w = tw[2]
+        
+
+        R = trn._rodrigues(w, theta)
+        
+        skw = trn.skew(w)
+        V = np.eye(2)*theta + (1.0-math.cos(theta))*skw + (theta-math.sin(theta))*skw @ skw
+
+        return trn.rt2tr(R, V@t)
         
     elif argcheck.ismatrix(S, (2,2)) or argcheck.isvector(S, 1):
         # so(2) case
         if argcheck.ismatrix(S, (2,2)):
             # skew symmetric matrix
-            w = vex(S)
+            w = trn.vex(S)
         else:
             # 1 vector
             w = argcheck.getvector(S)
             
         if theta is not None:
-            assert isunitvec(w), 'If theta is specified S must be a unit twist'
-        t = None
+            assert vec.isunitvec(w), 'If theta is specified S must be a unit twist'
+
+        # do Rodrigues' formula for rotation
+        return trn._rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
-    
-    
-    # do Rodrigues' formula for rotation
-    if iszerovec(w):
-        # for a zero so(2) return unit matrix, theta not relevant
-        R = np.eye(2)
-        V = np.eye(2)
-    else:
-        if theta is None:
-            #  theta is not given, extract it
-            theta = norm(w)
-            w = unitvec(w)
-
-        skw = skew(w)
-        R = np.eye(2) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
-        V = None
-    
-    if t is None:
-        # so(2) case
-        return R
-    else:
-        # se(3) case
-        if V is None:
-            V = np.eye(3) + (1.0-math.cos(theta))*skw/theta + (theta-math.sin(theta))/theta*skw @ skw
-        return rt2tr(R, V@t)
 
     
 def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
@@ -466,16 +453,16 @@ try:
 except:
     pass
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
     
-    trplot2( transl2(1,2), frame='A', rviz=True, width=1)
-    trplot2( transl2(3,1), color='red', arrow=True, width=3, frame='B')
-    trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
-    plt.grid(True)
+    # trplot2( transl2(1,2), frame='A', rviz=True, width=1)
+    # trplot2( transl2(3,1), color='red', arrow=True, width=3, frame='B')
+    # trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
+    # plt.grid(True)
     
-    #runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
+    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read() )
     
     
 

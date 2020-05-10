@@ -26,8 +26,8 @@ from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
 
 
-try:
-    print('Using SymPy')
+try: # pragma: no cover
+    # print('Using SymPy')
     import sympy as sym
     def issymbol(x):
         return isinstance(x, sym.Symbol)
@@ -1017,14 +1017,12 @@ def trexp(S, theta=None):
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
     
 
-
-
 def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     """
-    Compact display of SO(2) or SE(2) matrices
+    Compact display of SO(3) or SE(3) matrices
     
     :param T: matrix to format
-    :type T: numpy.ndarray, shape=(2,2) or (3,3)
+    :type T: numpy.ndarray, shape=(3,3) or (4,4)
     :param label: text label to put at start of line
     :type label: str
     :param orient: 3-angle convention to use
@@ -1097,11 +1095,11 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
             seq = a[1]
         else:
             seq = None
-        angles = tr2rpy(t2r(T), order=seq, unit=unit)
+        angles = tr2rpy(T, order=seq, unit=unit)
         s += ' {} = {} {}'.format(orient, _vec2s(fmt, angles), unit)
         
     elif a[0].startswith('eul'):
-        angles = tr2eul(t2r(T), unit)
+        angles = tr2eul(T, unit)
         s += ' eul = {} {}'.format(_vec2s(fmt, angles), unit)
     
     elif a[0] == 'angvec':

@@ -120,16 +120,41 @@ def isunittwist(v, tol=10):
     """
     v = argcheck.getvector(v)
     
-    if len(v) == 3:
-        # test for SE(2) twist
-        return isunitvec(v[2], tol=tol) or (np.abs(v[2]) < tol*_eps and isunitvec(v[0:2], tol=tol))
-    elif len(v) == 6:
+    if len(v) ==  6:
         # test for SE(3) twist
         return isunitvec(v[3:6], tol=tol) or (np.linalg.norm(v[3:6]) < tol*_eps and isunitvec(v[0:3], tol=tol))
     else:
         raise ValueError
 
-
+def isunittwist2(v, tol=10):
+    r"""
+    Test if vector represents a unit twist in SE(2) or SE(3)
+    
+    :param v: vector to test
+    :type v: array_like
+    :param tol: tolerance in units of eps
+    :type tol: float
+    :return: whether vector has unit length
+    :rtype: bool
+    
+    Vector is is intepretted as :math:`[v, \omega]` where :math:`v \in \mathbb{R}^n` and
+    :math:`\omega \in \mathbb{R}^1` for SE(2) and :math:`\omega \in \mathbb{R}^3` for SE(3).
+    
+    A unit twist can be a:
+        
+    - unit rotational twist where :math:`|| \omega || = 1`, or
+    - unit translational twist where :math:`|| \omega || = 0` and :math:`|| v || = 1`.
+        
+    :seealso: unit, isunitvec
+    """
+    v = argcheck.getvector(v)
+    
+    if len(v) == 3:
+        # test for SE(2) twist
+        return isunitvec(v[2], tol=tol) or (np.abs(v[2]) < tol*_eps and isunitvec(v[0:2], tol=tol))
+    else:
+        raise ValueError
+        
 
 def unittwist(S):
     """
@@ -149,6 +174,32 @@ def unittwist(S):
     s = argcheck.getvector(S, 6)
     v = S[0:3]
     w = S[3:6]
+    
+    if iszerovec(w):
+        th = norm(v);
+    else:
+       th = norm(w);
+
+    return (S/th, th)
+
+def unittwist2(S):
+    """
+    Convert twist to unit twist
+    
+    :param S: twist as a 3-vector
+    :type S: array_like
+    :return: unit twist and scalar motion
+    :rtype: tuple (unit_twist, theta)
+
+    A unit twist is a twist where:
+        
+    - the rotation part has unit magnitude
+    - if the rotational part is zero, then the translational part has unit magnitude
+    """
+    
+    s = argcheck.getvector(S, 3)
+    v = S[0:2]
+    w = S[2]
     
     if iszerovec(w):
         th = norm(v);

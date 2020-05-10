@@ -447,15 +447,19 @@ def _rodrigues(w, theta):
     :param theta: rotation angle
     :type theta: float or None
     """
+    w = argcheck.getvector(w)
     if iszerovec(w):
-        # for a zero so(3) return unit matrix, theta not relevant
-        return np.eye(3)
+        # for a zero so(n) return unit matrix, theta not relevant
+        if len(w) == 1:
+            return np.eye(2)
+        else:
+            return np.eye(3)
     if theta is None:
         theta = norm(w)
         w = unitvec(w)
 
     skw = skew(w)
-    return np.eye(3) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
+    return np.eye(skw.shape[0]) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
 
 def h2e(v):
     """

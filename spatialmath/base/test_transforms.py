@@ -232,7 +232,15 @@ class Test2D(unittest.TestCase):
         
     def test_transl2(self):
         nt.assert_array_almost_equal(transl2(1, 2), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]]) )
-        # TODO
+        nt.assert_array_almost_equal(transl2([1, 2]), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]]) )
+
+    def test_print2(self):
+        
+        T = transl2(1, 2) @ trot2(0.3)
+        
+        s = trprint2(T, file=None)
+        self.assertIsInstance(s, str)
+        self.assertEqual(len(s), 36)
         
     def test_checks(self):
         # 2D case, with rotation matrix
@@ -295,7 +303,12 @@ class Test2D(unittest.TestCase):
         nt.assert_equal( isrot(T, True),  False )
         nt.assert_equal( ishom(T, True),  False )
         nt.assert_equal( ishom2(T, True), False )
-        
+
+    def test_plot(self):
+        plt.figure()
+        trplot2( transl2(1,2), frame='A', rviz=True, width=1)
+        trplot2( transl2(3,1), color='red', arrow=True, width=3, frame='B')
+        trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
         
 class Test3D(unittest.TestCase):
     
@@ -384,8 +397,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(trotz(pi/2, t=np.array([3,4,5])),  T)
 
  
-
-        
     def test_rpy2r(self):
     
         r2d = 180/pi
@@ -601,6 +612,37 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(theta, 90)
         nt.assert_array_almost_equal(v, np.r_[0, 1, 0])
         
+    def test_print(self):
+        
+        R = rotx(0.3) @  roty(0.4)
+        s = trprint(R, file=None)
+        self.assertIsInstance(s, str)
+        self.assertEqual(len(s), 43)
+        
+        T = transl(1, 2, 3) @ trotx(0.3) @  troty(0.4)
+        s = trprint(T, file=None)
+        self.assertIsInstance(s, str)
+        self.assertEqual(len(s), 76)
+        self.assertTrue('rpy' in s)
+        self.assertTrue('zyx' in s)
+        
+        s = trprint(T, file=None, orient='rpy/xyz')
+        self.assertIsInstance(s, str)
+        self.assertEqual(len(s), 76)
+        self.assertTrue('rpy' in s)
+        self.assertTrue('xyz' in s)
+        
+        s = trprint(T, file=None, orient='eul')
+        self.assertIsInstance(s, str)
+        self.assertEqual(len(s), 72)
+        self.assertTrue('eul' in s)
+        self.assertFalse('zyx' in s)
+        
+    def test_plot(self):
+        plt.figure()
+        trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
+        trplot( transl(3,1, 2), color='red', width=3, frame='B')
+        trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
             
 class TestLie(unittest.TestCase):
 
@@ -721,9 +763,39 @@ class TestLie(unittest.TestCase):
         
         T = transl([1, 2, 3]) @ troty(0.3)
         nt.assert_array_almost_equal(trlog(T), logm(T))
-        
-        
+
+    # def test_trlog2(self):
+
     
+    #     #%%% SO(2) tests
+    #     # zero rotation case
+    #     nt.assert_array_almost_equal(trlog2( np.eye(2) ), skew([0]))
+        
+    #     # rotation by pi case
+    #     nt.assert_array_almost_equal(trlog2( rot2(pi) ), skew([pi]))
+
+        
+    #     # general case
+    #     nt.assert_array_almost_equal(trlog2( rotx(0.2) ), skew([0.2]))
+        
+        
+    #     #%% SE(3) tests
+        
+    #     # pure translation
+    #     nt.assert_array_almost_equal(trlog2( transl2([1, 2]) ), np.array([[0, 0, 1], [ 0, 0, 2], [ 0, 0, 0]]))
+ 
+    #     # pure rotation
+    #     # rotation by pi case
+    #     nt.assert_array_almost_equal(trlog( trot2(pi) ), skewa([0, 0, pi]))
+        
+    #     # general case
+    #     nt.assert_array_almost_equal(trlog( trot2(0.2) ), skewa([0, 0, 0.2]))
+        
+    #     # mixture
+    #     T = transl([1, 2, 3]) @ trot2(0.3)
+    #     nt.assert_array_almost_equal(trlog2(T), logm(T))
+    # TODO
+        
 
     def test_trexp(self):
     
@@ -797,15 +869,66 @@ class TestLie(unittest.TestCase):
         T = transl([1, 2, 3])@trotz(0.3)
         nt.assert_array_almost_equal(trexp(trlog(T)), T)
         
+    def test_trexp(self):
+    
+        #%% SO(3) tests
+        
+        #% so(2)
+        
+        # zero rotation case
+        nt.assert_array_almost_equal(trexp2(skew([0])), np.eye(2))
+        nt.assert_array_almost_equal(trexp2(skew(0)), np.eye(2))
+        
+        #% so(2), theta
+                
+        # rotation by pi case
+        nt.assert_array_almost_equal(trexp2(skew(pi)), rot2(pi))
+
+        
+        # general case
+        nt.assert_array_almost_equal(trexp2(skew(0.2)), rot2(0.2))
+        
+        nt.assert_array_almost_equal(trexp2(1, 0.2), rot2(0.2))
+
+        
+        
+        
+        #%% SE(3) tests
+        
+        #% sigma = se(3)
+        # pure translation
+        nt.assert_array_almost_equal(trexp2( skewa([1, 2, 0]) ), transl2([1, 2]))
+
+        
+        nt.assert_array_almost_equal(trexp2( [0, 0, 0.2] ), trot2(0.2))
+
+        
+        # mixture
+        S = skewa([1,2, 0.3])
+        nt.assert_array_almost_equal(trexp2(S), expm(S))
+        
+        # twist vector
+        #nt.assert_array_almost_equal(trexp( double(Twist(T))), T)
+        
+        # (sigma, theta)
+        nt.assert_array_almost_equal(trexp2( skewa([1, 0, 0]), 2), transl2([2, 0]))
+        nt.assert_array_almost_equal(trexp2( skewa([0, 1, 0]), 2), transl2([0, 2]))
+        
+        nt.assert_array_almost_equal(trexp2( skewa([0, 0, 1]), 0.2), trot2(0.2))
+
+        
+        
+        # (twist, theta)
+        #nt.assert_array_almost_equal(trexp(Twist('R', [1, 0, 0], [0, 0, 0]).S, 0.3), trotx(0.3))
+        
+        
+        # T = transl2([1, 2])@trot2(0.3)
+        # nt.assert_array_almost_equal(trexp2(trlog2(T)), T)
+        # TODO
 
     # test tr2rt rt2tr
     # trotX with t=
     
-
-
-
-
-
 
 
         
