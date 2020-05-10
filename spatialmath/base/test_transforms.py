@@ -15,6 +15,8 @@ from scipy.linalg import logm, expm
 
 from spatialmath.base import *
 
+import matplotlib.pyplot as plt
+
 
 class TestVector(unittest.TestCase):
     
