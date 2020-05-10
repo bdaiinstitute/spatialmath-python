@@ -163,7 +163,7 @@ def v2q(v):
     .. seealso:: q2v
     """
     v = argcheck.getvector(v,3)
-    s = 1 - np.linalg.norm(v)
+    s = math.sqrt(1 - np.sum(v**2))
     return np.r_[s, v]
 
 def qqmul(q1, q2):
@@ -236,6 +236,20 @@ def qvmul(q, v):
     qv = qqmul(q, qqmul(pure(v), conj(q)))
     return qv[1:4]
 
+def vvmul(qa, qb):
+    """
+            %UnitQuaternion.QVMUL Multiply unit quaternions defined by vector part
+        %
+        % QV = UnitQuaternion.QVMUL(QV1, QV2) multiplies two unit-quaternions
+        % defined only by their vector components QV1 and QV2 (3x1).  The result is
+        % similarly the vector component of the Hamilton product (3x1).
+        %
+        % Notes::
+        % - Is a static class meth
+    """
+    t6 = math.sqrt(1.0 - np.sum(qa**2));
+    t11 = math.sqrt(1.0 - np.sum(qb**2));
+    return np.r_[qa[1]*qb[2]-qb[1]*qa[2]+qb[0]*t6+qa[0]*t11, -qa[0]*qb[2]+qb[0]*qa[2]+qb[1]*t6+qa[1]*t11,qa[0]*qb[1]-qb[0]*qa[1]+qb[2]*t6+qa[2]*t11]
 
 def pow(q, power):
     """
@@ -356,7 +370,7 @@ def r2q(R, check=True):
     kv = np.r_[kx, ky, kz]
     nm = np.linalg.norm(kv)
     if abs(nm) <  100*_eps:
-        return qone()
+        return eye()
     else:
         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
     

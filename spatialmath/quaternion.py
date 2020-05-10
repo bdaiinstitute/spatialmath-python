@@ -8,6 +8,12 @@ import numpy as np
 import spatialmath.base as tr
 import spatialmath.base.quaternions as quat
 import spatialmath.base.argcheck as argcheck
+import spatialmath.pose3d as p3d
+
+
+#TODO
+# angle
+# vectorized RPY in and out
 
 class Quaternion(UserList):
     """
@@ -90,13 +96,13 @@ class Quaternion(UserList):
         - If the quaternion is of length one, a scalar float is returned.
         - If the quaternion is of length >1, a numpy array shape=(N,) is returned.
         """
-        if len(self) == 1:
-            return self._A[0]
+        if len(q) == 1:
+            return q._A[0]
         else:
-            return np.array([q.s for q in self])
+            return np.array([q.s for q in q])
 
     @property
-    def v(self):
+    def v(q):
         """
         :arg q: input quaternion
         :type q: Quaternion, UnitQuaternion
@@ -106,13 +112,13 @@ class Quaternion(UserList):
         - If the quaternion is of length one, a numpy array shape=(3,) is returned.
         - If the quaternion is of length >1, a numpy array shape=(N,3) is returned.
         """
-        if len(self) == 1:
-            return self._A[1:4]
+        if len(q) == 1:
+            return q._A[1:4]
         else:
-            return np.array([q.v for q in self])
+            return np.array([q.v for q in q])
     
     @property
-    def vec(self):
+    def vec(q):
         """
         :arg q: input quaternion
         :type q: Quaternion, UnitQuaternion
@@ -122,10 +128,10 @@ class Quaternion(UserList):
         - If the quaternion is of length one, a numpy array shape=(4,) is returned.
         - If the quaternion is of length >1, a numpy array shape=(N,4) is returned.
         """
-        if len(self) == 1:
-            return self._A
+        if len(q) == 1:
+            return q._A
         else:
-            return np.array([q._A for q in self])
+            return np.array([q._A for q in q])
     
 
     @classmethod
@@ -134,7 +140,7 @@ class Quaternion(UserList):
     
     @property
     def conj(self):
-        return Quaternion( [quat.conj(q._A) for q in self], norm=False)
+        return self.__class__( [quat.conj(q._A) for q in self], norm=False)
 
 
 
@@ -224,19 +230,15 @@ class Quaternion(UserList):
         A scalar of length N is a list, tuple or numpy array.
         A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
         """
-        if type(left) == type(right):
+        if isinstance(right, left.__class__):
             # quaternion * quaternion case (same class)
-            return left.__class__( left._op2(right, lambda x, y: quat.qqmul(x, y) ) )
-        elif isinstance(right, Quaternion):
-            # quaternion * quaternion case (different class)
             return Quaternion( left._op2(right, lambda x, y: quat.qqmul(x, y) ) )
+
         elif argcheck.isscalar(right):
             # quaternion * scalar case
             print('scalar * quat')
             return Quaternion([right*q._A for q in left])
-        elif isinstance(self, UnitQuaternion) and argcheck.isvector(right,3):
-            # scalar * vector case
-            return quat.qvmul(left._A, argcheck.getvector(right,3))
+
         else:
             raise ValueError('operands to * are of different types')
             
@@ -557,29 +559,41 @@ class UnitQuaternion(Quaternion):
             # if norm:
             #     q = quat.unit(q)
             print(q)
-            self.data = [q]
+            self.data = [quat.unit(s)]
             
         elif type(s) is list:
             if isinstance(s[0], np.ndarray):
                 if check:
                     assert argcheck.isvectorlist(s,4), 'list must comprise 4-vectors'
                 self.data = s
-            elif type(s[0]) == type(self):
+            elif isinstance(s[0], p3d.SO3):
+                self.data = [quat.r2q(x.R) for x in s]
+            
+            elif isinstance(s[0], self.__class__):
                 # possibly a list of objects of same type
                 assert all( map( lambda x: type(x) == type(self), s) ), 'all elements of list must have same type'
                 self.data = [x._A for x in s]
             else:
                 raise ValueError('incorrect list')
         
-        elif isinstance(s, np.ndarray) and s.shape[1] == 4:
-            if norm:
-                self.data = [quat.norm(x) for x in s]
-            else:
-                self.data = [x for x in s]
+
+        elif isinstance(s, p3d.SO3):
+            self.data = [ quat.r2q(s.R) ]
             
-        elif tr.isrot(s, check=check):
+        elif isinstance(s, np.ndarray) and tr.isrot(s, check=check):
             self.data = [ quat.r2q(s) ]
             
+        elif isinstance(s, np.ndarray) and tr.ishom(s, check=check):
+            self.data = [ quat.r2q(tr.t2r(s)) ]
+            
+        elif isinstance(s, np.ndarray) and s.shape[1] == 4:
+            if norm:
+                self.data = [quat.qnorm(x) for x in s]
+            else:
+                self.data = [x for x in s]
+                
+        elif isinstance(s, UnitQuaternion):
+            self.data = s.data            
         else:
             raise ValueError('bad argument to UnitQuaternion constructor')
 
@@ -591,6 +605,10 @@ class UnitQuaternion(Quaternion):
     @property
     def R(self):
         return quat.q2r(self._A)
+    
+    @property
+    def vec3(self):
+        return quat.q2v(self._A)
 
     
     #-------------------------------------------- constructor variants
@@ -653,21 +671,140 @@ class UnitQuaternion(Quaternion):
 
         """
         return cls(tr.rotz(angle, unit=unit), check=False)
-
-    @classmethod
-    def vec3(cls, arg_in):
-        assert isvec(arg_in, 3)
-        s = 1 - np.linalg.norm(arg_in)
-        return cls(s=s, v=arg_in)
     
     @classmethod
-    def eul(cls, arg_in, unit='rad'):
-        assert isvec(arg_in, 3)
-        return cls.rot(eul2r(phi=arg_in, unit=unit))
+    def Rand(cls, N=1):
+        """
+        Create SO(3) with random rotation
+    
+        :param N: number of random rotations
+        :type N: int
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+    
+        - ``SO3.Rand()`` is a random SO(3) rotation.
+        - ``SO3.Rand(N)`` is an SO3 object containing a sequence of N random
+          rotations.
+        
+        :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
+        """
+        return cls( [quat.rand() for i in range(0,N)], check=False)
+        
 
     @classmethod
-    def rpy(cls, arg_in, unit='rad'):
-        return cls.rot(rpy2r(thetas=arg_in, unit=unit))
+    def Eul(cls, angles, *, unit='rad'):
+        """
+        Create an SO(3) rotation from Euler angles
+    
+        :param angles: 3-vector of Euler angles
+        :type angles: array_like
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+    
+        ``SO3.Eul(ANGLES)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
+        correspond to consecutive rotations about the Z, Y, Z axes respectively.
+          
+        :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
+        """
+        return cls(quat.r2q(tr.eul2r(angles, unit=unit)), check=False)
+
+    @classmethod
+    def RPY(cls, angles, *, order='zyx', unit='rad'):
+        """
+        Create an SO(3) rotation from roll-pitch-yaw angles
+    
+        :param angles: 3-vector of roll-pitch-yaw angles
+        :type angles: array_like
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+        :type unit: str
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+    
+        ``SO3.RPY(ANGLES)`` is an SO(3) rotation defined by a 3-vector of roll, pitch, yaw angles :math:`(r, p, y)`
+          which correspond to successive rotations about the axes specified by ``order``:
+              
+            - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
+              and y-axis sideways.
+            - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
+              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
+              and y-axis between the gripper fingers.
+            - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
+              then by roll about the new z-axis. Convention for a camera with z-axis parallel
+              to the optic axis and x-axis parallel to the pixel rows.
+              
+        :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
+        """
+        return cls(quat.r2q(tr.rpy2r(angles, unit=unit, order=order)), check=False)
+
+    @classmethod
+    def OA(cls, o, a):
+        """
+        Create SO(3) rotation from two vectors
+    
+        :param o: 3-vector parallel to Y- axis
+        :type o: array_like
+        :param a: 3-vector parallel to the Z-axis
+        :type o: array_like
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+    
+        ``SO3.OA(O, A)`` is an SO(3) rotation defined in terms of
+        vectors parallel to the Y- and Z-axes of its reference frame.  In robotics these axes are 
+        respectively called the orientation and approach vectors defined such that
+        R = [N O A] and N = O x A.
+    
+        Notes:
+            
+        - The A vector is the only guaranteed to have the same direction in the resulting 
+          rotation matrix
+        - O and A do not have to be unit-length, they are normalized
+        - O and A do not have to be orthogonal, so long as they are not parallel
+        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+    
+        :seealso: :func:`spatialmath.base.transforms3d.oa2r`
+        """
+        return cls(quat.r2q(tr.oa2r(angles, unit=unit)), check=False)
+
+    @classmethod
+    def AngVec(cls, theta, v, *, unit='rad'):
+        """
+        Create an SO(3) rotation matrix from rotation angle and axis
+    
+        :param theta: rotation
+        :type theta: float
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :param v: rotation axis, 3-vector
+        :type v: array_like
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+        
+        ``SO3.AngVec(THETA, V)`` is an SO(3) rotation defined by
+        a rotation of ``THETA`` about the vector ``V``.
+        
+        Notes:
+            
+        - If ``THETA == 0`` then return identity matrix.
+        - If ``THETA ~= 0`` then ``V`` must have a finite length.
+    
+        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
+        """
+        return cls(quat.r2q(tr.angvec2r(theta, v, unit=unit)), check=False)
+
+    @classmethod
+    def Omega(cls, w):
+
+        return cls(quat.r2q(tr.angvec2r(tr.norm(w), tr.unitvec(w))), check=False)
+    
+    @classmethod
+    def Vec3(cls, vec):
+        return cls(quat.v2q(vec))
+    
 
     @classmethod
     def angvec(cls, theta, v, unit='rad'):
@@ -678,10 +815,11 @@ class UnitQuaternion(Quaternion):
 
     def __truediv__(self, other):
         assert type(self) == type(other), 'operands to * are of different types'
-        return self._op2(other, lambda x, y: quat.qqmul(x, quat.qconj(y)) )
+        return self._op2(other, lambda x, y: quat.qqmul(x, quat.conj(y)) )
     
+    @property
     def inv(self):
-        return self.__class__([quat.conj(q._A) for q in self])
+        return UnitQuaternion([quat.conj(q._A) for q in self])
     
     @classmethod
     def omega(cls, w):
@@ -691,64 +829,139 @@ class UnitQuaternion(Quaternion):
         v = math.sin(theta / 2) * unitize(w)
         return cls(s=s, v=v)
 
-
+    @staticmethod
+    def qvmul(qv1, qv2):
+        return quat.vvmul(qv1, qv2)
+    
     def dot(self, omega):
-        E = self.s * np.asmatrix(np.eye(3, 3)) - skew(self.v)
-        qd = -self.v * omega
-        return 0.5 * np.r_[qd, E*omega]
+        return tr.dot(self._A, omega)
 
     def dotb(self, omega):
-        E = self.s * np.asmatrix(np.eye(3, 3)) + skew(self.v)
-        qd = -self.v * omega
-        return 0.5 * np.r_[qd, E*omega]
+        return tr.dotb(self._A, omega)
 
-    def plot(self):
-        from .pose import SO3
-        SO3.np(self.r()).plot()
+     
+    def __mul__(left, right):
+        """
+        multiply quaternion
+        
+        :arg left: left multiplicand
+        :type left: Quaternion, UnitQuaternion
+        :arg right: right multiplicand
+        :type left: Quaternion, UnitQuaternion, 3-vector, float
+        :return: product
+        :rtype: Quaternion, UnitQuaternion
+        :raises: ValueError
+        
+        ==============   ==============   ==============  ================
+                   Multiplicands                   Product
+        -------------------------------   --------------------------------
+            left             right            type           result
+        ==============   ==============   ==============  ================
+        Quaternion       Quaternion       Quaternion      Hamilton product
+        Quaternion       UnitQuaternion   Quaternion      Hamilton product
+        Quaternion       scalar           Quaternion      scalar product
+        UnitQuaternion   Quaternion       Quaternion      Hamilton product
+        UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product
+        UnitQuaternion   scalar           Quaternion      scalar product
+        UnitQuaternion   3-vector         3-vector        vector rotation
+        ==============   ==============   ==============  ================
 
-    def animate(self, qr=None, duration=5, gif=None):
-        self.pipeline = VtkPipeline(total_time_steps=duration*60, gif_file=gif)
-        axis = vtk.vtkAxesActor()
-        axis.SetAxisLabels(0)
-        self.pipeline.add_actor(axis)
-        if qr is None:
-            q1 = UnitQuaternion()
-            q2 = self
+        Any other input combinations result in a ValueError.
+        
+        Note that left and right can have a length greater than 1 in which case:
+        
+        ====   =====   ====  ================================
+        left   right   len     operation
+        ====   =====   ====  ================================
+         1      1       1    ``prod = left * right``
+         1      N       N    ``prod[i] = left * right[i]``
+         N      1       N    ``prod[i] = left[i] * right``
+         N      N       N    ``prod[i] = left[i] * right[i]``
+         N      M       -    ``ValueError``
+        ====   =====   ====  ================================
+
+        A scalar of length N is a list, tuple or numpy array.
+        A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
+        """
+        if isinstance(left, right.__class__):
+            # quaternion * quaternion case (same class)
+            return right.__class__( left._op2(right, lambda x, y: quat.qqmul(x, y) ) )
+
+        elif argcheck.isscalar(right):
+            # quaternion * scalar case
+            print('scalar * quat')
+            return Quaternion([right*q._A for q in left])
+        
+        
+        elif isinstance(right, (list, tuple, np.ndarray)):
+            print('*: pose x array')
+            if argcheck.isvector(right, 3):
+                v = argcheck.getvector(right)
+                if len(left) == 1:
+                    # pose x vector
+                    print('*: pose x vector')
+                    return quat.qvmul(left._A, argcheck.getvector(right,3))
+                    
+                elif len(left) > 1 and argcheck.isvector(right, 3):
+                    # pose array x vector
+                    print('*: pose array x vector')
+                    return np.array([tr.qvmul(x, v) for x in left._A]).T
+                
+            elif len(left) == 1 and isinstance(right, np.ndarray) and right.shape[0] == 3:
+                return np.array([tr.qvmul(left._A, x) for x in right.T]).T
+            else:
+                raise ValueError('bad operands')
         else:
-            assert type(qr) is UnitQuaternion
-            q1 = self
-            q2 = qr
+            raise ValueError('UnitQuaternion: operands to * are of different types')
+            
+        return left._op2(right, lambda x, y: x @ y )        
+        
 
-        cube_axes = axesCube(self.pipeline.ren)
-        self.pipeline.add_actor(cube_axes)
-
-        def execute(obj, event):
-            # print(self.timer_count)
-            nonlocal axis
-            self.pipeline.timer_tick()
-
-            axis.SetUserMatrix(np2vtk(q1.interp(q2, r=1/self.pipeline.total_time_steps * self.pipeline.timer_count).q2tr()))
-            self.pipeline.iren.GetRenderWindow().Render()
-
-        self.pipeline.iren.addObserver('TimerEvent', execute)
-        self.pipeline.animate()
-
-
-    def interp(self, qr, r=0.5, shortest=False):
+    def __truediv__(left, right):
+        assert type(left) == type(right), 'operands to / are of different types'
+        return UnitQuaternion( left._op2(right, lambda x, y: tr.qqmul(x, tr.conj(y)) ) )
+    
+    def __eq__(left, right):
+        return left._op2(right, lambda x, y: quat.isequal(x, y, unitq=True), list1=False )
+    
+    def __ne__(left, right):
+        return left._op2(right, lambda x, y: not quat.isequal(x, y, unitq=True), list1=False )
+    
+    def interp(self, s=0, dest=None, shortest=False):
         """
         Algorithm source: https://en.wikipedia.org/wiki/Slerp
         :param qr: UnitQuaternion
         :param shortest: Take the shortest path along the great circle
-        :param r: interpolation point
+        :param s: interpolation in range [0,1]
+        :type s: float
         :return: interpolated UnitQuaternion
         """
-        assert type(qr) is UnitQuaternion
-        if self == qr:
-            return self
+        # TODO vectorize
+        
 
-        q1 = self.double()
-        q2 = qr.double()
-        dot = q1*np.transpose(q2)
+        
+        if dest is not None:
+            # 2 quaternion form
+            assert type(dest) is UnitQuaternion
+            if s == 0:
+                return self
+            elif s == 1:
+                return dest
+            q1 = self.vec
+            q2 = dest.vec
+        else:
+            # 1 quaternion form
+            if s == 0:
+                return UnitQuaternion()
+            elif s == 1:
+                return self
+        
+            q1 = quat.eye()
+            q2 = self.vec
+
+        assert 0 <= s <= 1, 's must be in interval [0,1]'
+
+        dot = quat.inner(q1, q2)
 
         # If the dot product is negative, the quaternions
         # have opposite handed-ness and slerp won't take
@@ -760,35 +973,17 @@ class UnitQuaternion(Quaternion):
 
         dot = np.clip(dot, -1, 1)  # Clip within domain of acos()
         theta_0 = math.acos(dot)  # theta_0 = angle between input vectors
-        theta = theta_0 * r  # theta = angle between v0 and result
+        theta = theta_0 * s  # theta = angle between v0 and result
+        if theta_0 == 0:
+            return UnitQuaternion(q1)
+
         s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
         s2 = math.sin(theta) / math.sin(theta_0)
         out = (q1 * s1) + (q2 * s2)
-        return UnitQuaternion(s=float(out[0, 0]), v=out[0, 1:])
+        return UnitQuaternion(out)
 
 
 
-    def to_angvec(self, unit='rad'):
-        vec, theta = 0, 0
-        if np.linalg.norm(self.v) < 10 * np.spacing([1])[0]:
-            vec = np.matrix([[0, 0, 0]])
-            theta = 0
-        else:
-            vec = unitize(vec)
-            theta = 2 * math.atan2(np.linalg.norm(self.v), self.s)
-
-        if unit == 'deg':
-            theta = theta * 180 / math.pi
-        return theta, vec
-
-    def to_so3(self):
-        from .pose import SO3
-        return SO3.np(self.r())
-
-    def to_se3(self):
-        from .pose import SE3
-        from .pose import SO3
-        return SE3(so3=SO3.np(self.r()))
 
         
     
@@ -804,30 +999,25 @@ class UnitQuaternion(Quaternion):
         return self.__repr__()
 
 
-    def to_rpy(self):
-        return tr2rpy(self.r())
+    @property
+    def rpy(self, unit='rad', order='zyx'):
+        return tr.tr2rpy(self.R, unit=unit, order=order)
+    
+    @property
+    def eul(self, unit='rad', order='zyx'):
+        return tr.tr2eul(self.R, unit=unit)
 
-    def to_angvec(self, unit='rad'):
-        vec, theta = 0, 0
-        if np.linalg.norm(self.v) < 10 * np.spacing([1])[0]:
-            vec = np.matrix([[0, 0, 0]])
-            theta = 0
-        else:
-            vec = unitize(vec)
-            theta = 2 * math.atan2(np.linalg.norm(self.v), self.s)
+    @property
+    def angvec(self, unit='rad'):
+        return tr.tr2angvec(self.R)
 
-        if unit == 'deg':
-            theta = theta * 180 / math.pi
-        return theta, vec
+    @property
+    def SO3(self):
+        return p3d.SO3(self.R, check=False)
 
-    def to_so3(self):
-        from .pose import SO3
-        return SO3.np(self.r())
-
-    def to_se3(self):
-        from .pose import SE3
-        from .pose import SO3
-        return SE3(so3=SO3.np(self.r()))
+    @property
+    def SE3(self):
+        return p3d.SE3(tr.r2t(self.R), check=False)
 
 
 if __name__ == '__main__':  # pragma: no cover
