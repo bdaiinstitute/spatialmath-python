@@ -1,4 +1,5 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
 [![Build Status](https://travis-ci.com/petercorke/spatialmath-python.svg?branch=master)](https://travis-ci.com/petercorke/spatialmath-python)
 [![Coverage](https://codecov.io/gh/petercorke/spatialmath-python/branch/master/graph/badge.svg)](https://codecov.io/gh/petercorke/spatialmath-python)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -174,7 +175,7 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 >>> T.plot()
 ```
 
-![trplot](docs/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/fig1.png)
 
 `printline` is a compact single line format for tabular listing, whereas `print` shows the underlying matrix and for consoles that support it, it is colorised, with rotational elements in red and translational elements in blue.
 
@@ -241,8 +242,6 @@ array([[1., 0., 1.],
        [0., 0., 1.]])
 ```
 
-trplot example
-packages, animation
 
 There is a single module that deals with quaternions, unit or not, and the representation is a `numpy` array of four elements.  As above, functions can accept the `numpy` array, a list, dict or `numpy` row or column vectors.
 
@@ -259,7 +258,7 @@ array([-60,  12,  30,  24])
 
 ## Graphics
 
-![trplot](docs/source/figs/transforms3d.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs//transforms3d.png)
 
 The functions support various plotting styles
 
