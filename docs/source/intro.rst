@@ -15,7 +15,6 @@ Spatial maths capability underpins all of robotics and robotic vision by describ
   - use Python keyword arguments to replace the MATLAB Toolbox string options supported using `tb_optparse``
   - use ``numpy`` arrays for rotation and homogeneous transformation matrices, quaternions and vectors
   - all functions that accept a vector can accept a list, tuple, or `np.ndarray`
-  - By default all `np.ndarray` vectors have the shape `(N,)` but functions also accept row `(1,N)`  and column `(N,1)` vectors.  This is a gnarly aspect of numpy.
   - The classes can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences.
 
 Quick example:
@@ -102,7 +101,7 @@ Operator      dunder method
   ``-=``     __isub__
 =========  ===========================
 
-The code has documentation for just the method shown in bold.
+This online documentation includes just the method shown in bold.
 The other related methods all invoke that method.
 
 The classes represent mathematical groups, and the rules of group are enforced.  
@@ -116,17 +115,17 @@ SO(n) and SE(n)
 For the groups SO(n) and SE(n) the group operator is composition represented
 by the multiplication operator.  The identity element is a unit matrix.
 
-==============   ==============   ===========  =====================
+==============   ==============   ===========  ========================
            Operands                     ``*``
--------------------------------   ----------------------------------
+-------------------------------   -------------------------------------
     left             right            type           result
-==============   ==============   ===========  =====================
-Pose             Pose             Pose         composition [1]_
+==============   ==============   ===========  ========================
+Pose             Pose             Pose         composition [1]
 Pose             scalar           matrix       elementwise product
 scalar           Pose             matrix       elementwise product
-Pose             N-vector         N-vector     vector transform [2]_
-Pose             NxM matrix       NxM matrix   vector transform [2]_ [3]_
-==============   ==============   ===========  =====================
+Pose             N-vector         N-vector     vector transform [2]
+Pose             NxM matrix       NxM matrix   vector transform [2] [3]
+==============   ==============   ===========  ========================
 
 Notes:
 
@@ -147,6 +146,19 @@ scalar           Pose             matrix       elementwise product
 Notes:
 
 #. The left operand is multiplied by the ``.inv`` property of the right operand.
+   
+==============   ==============   ===========  ===============================
+           Operands                     ``**``
+-------------------------------   --------------------------------------------
+    left             right            type           result
+==============   ==============   ===========  ===============================
+Pose             int >= 0         Pose         exponentiation [1]
+Pose             int <=0          Pose         exponentiation [1] then inverse
+==============   ==============   ===========  ===============================
+
+Notes:
+
+#. By repeated multiplication.
    
 ==============   ==============   ===========  =========================
            Operands                   ``+``
@@ -187,7 +199,7 @@ UnitQuaternion   Quaternion       Quaternion      Hamilton product
 UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product #1
 UnitQuaternion   scalar           Quaternion      scalar product #2
 UnitQuaternion   3-vector         3-vector        vector rotation #3
-UnitQuaternion   NxM matrix       NxM matrix      vector transform #2#3
+UnitQuaternion   3xN matrix       3xN matrix      vector transform #2#3
 ==============   ==============   ==============  ======================
 
 Notes:
@@ -201,15 +213,26 @@ Notes:
 -------------------------------   ------------------------------------------------
     left             right            type           result
 ==============   ==============   ==============  ================================
-Quaternion       scalar           Quaternion      scalar product
 UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product with inverse #1
-UnitQuaternion   scalar           Quaternion      scalar product
 ==============   ==============   ==============  ================================
 
 Notes:
 
 #. The left operand is multiplied by the ``.inv`` property of the right operand.
 
+==============   ==============   ==============  ===============================
+           Operands                     ``**``
+-------------------------------   -----------------------------------------------
+    left             right            type           result
+==============   ==============   ==============  ===============================
+Quaternion       int >= 0         Quaternion      exponentiation [1]
+UnitQuaternion   int >= 0         UnitQuaternion  exponentiation [1]
+UnitQuaternion   int <=0          UnitQuaternion  exponentiation [1] then inverse
+==============   ==============   ==============  ===============================
+
+Notes:
+
+#. By repeated multiplication.
 
 ==============   ==============   ==============  ===================
            Operands                            ``+``
@@ -332,49 +355,51 @@ Any other combination of lengths is not allowed and will raise a ``ValueError`` 
 Low-level spatial math
 ======================
 
-These low-level functions:
+All the classes just described abstract the ``base`` package which represent the spatial-math object as a numpy.ndarray.
 
-* represent the spatial-math object as a numpy.ndarray
-* inputs are either floats, lists, tuples or a numpy.ndarray
+The inputs to functions in this package are either floats, lists, tuples or numpy.ndarray objects describing vectors or arrays.  Functions that require a vector can be passed a list, tuple or numpy.ndarray for a vector -- described in the documentation as being of type *array_like*.
+
+Numpy vectors are somewhat different to MATLAB, and is a gnarly aspect of numpy.  Numpy arrays have a shape described by a shape tuple which is a list of the dimensions.  Typically all ``np.ndarray`` vectors have the shape (N,), that is, they have only one dimension.  The ``@`` product of an (M,N) array and a (N,) vector is a (M,) array.  A numpy column vector has shape (N,1) and a row vector has shape (1,N) but functions also accept row (1,N)  and column (N,1) vectors.  
+Iterating over a numpy.ndarray is done by row, not columns as in MATLAB.  Iterating over a 1D array (N,) returns consecutive elements, iterating a row vector (1,N) returns the entire row, iterating a column vector (N,1) returns consecutive elements (rows).
 
 For example an SE(2) pose is represented by a 3x3 numpy array, an ndarray with shape=(3,3). A unit quaternion is 
 represented by a 4-element numpy array, an ndarray with shape=(4,).
 
-These functions do not support sequences.  You can keep these pose primitives (numpy arrays) in high-order numpy arrays (ie. add an extra dimensions),
-or keep them in a list, tuple or any other python container.
-Sequence functionality is supported by the pose classes `SO2`, `SE2`, `SO3`, `SE3` described in the [high-level spatial math section](#high-level-classes).
+=================    ================   ===================
+Spatial object       equivalent class   numpy.ndarray shape
+=================    ================   ===================
+2D rotation SO(2)    SO2                   (2,2)
+2D pose SE(2)        SE2                   (3,3)
+3D rotation SO(3)    SO3                   (3,3)
+3D poseSE3 SE(3)     SE3                   (3,3)
+3D rotation          UnitQuaternion        (4,)
+n/a                  Quaternion            (4,)
+=================    ================   ===================
 
+Tjhe classes ``SO2``, ```SE2``, ```SO3``, ``SE3``, ``UnitQuaternion`` can operate conveniently on lists but the ``base`` functions do not support this.
+If you wish to work with these functions and create lists of pose objects you could keep the numpy arrays in high-order numpy arrays (ie. add an extra dimensions),
+or keep them in a list, tuple or any other python contai described in the [high-level spatial math section](#high-level-classes).
 
-First lets import the low-level transform functions
+Let's show a simple example:
 
-.. code:: python
+.. code-block:: python
+   :linenos:
 
-  >>> from spatialmath.base.transforms import *
+    >>> import spatialmath.base.transforms as base
+    >>> base.rotx(0.3)
+    array([[ 1.        ,  0.        ,  0.        ],
+           [ 0.        ,  0.95533649, -0.29552021],
+           [ 0.        ,  0.29552021,  0.95533649]])
 
+    >>> base.rotx(30, unit='deg')
+    array([[ 1.       ,  0.       ,  0.       ],
+           [ 0.       ,  0.8660254, -0.5      ],
+           [ 0.       ,  0.5      ,  0.8660254]])
 
-Let's start with a familiar and tangible example:
+    >>> R = base.rotx(0.3) @ base.roty(0.2)
 
-.. code:: python
-
-  >>> rotx(0.3)
-  array([[ 1.        ,  0.        ,  0.        ],
-         [ 0.        ,  0.95533649, -0.29552021],
-         [ 0.        ,  0.29552021,  0.95533649]])
-
-  >>> rotx(30, unit='deg')
-  Out[438]: 
-  array([[ 1.       ,  0.       ,  0.       ],
-         [ 0.       ,  0.8660254, -0.5      ],
-         [ 0.       ,  0.5      ,  0.8660254]])
-
-Remember that these are `numpy` arrays so to perform matrix multiplication you need to use the `@` operator, for example
-
-.. code:: python
-
-  rotx(0.3) @ roty(0.2)
-
-
-Note that the `*` operator performs element-wise multiplication, equivalent to the MATLAB `.*` operator.
+At line 1 we import all the base functions into the namespae ``base``.
+In line 12 when we multiply the matrices we need to use the `@` operator to perform matrix multiplication.  The `*` operator performs element-wise multiplication, which is equivalent to the MATLAB ``.*`` operator.
 
 We also support multiple ways of passing vector information to functions that require it:
 
@@ -412,23 +437,67 @@ We also support multiple ways of passing vector information to functions that re
          [0., 0., 1.]])
 
 
-trplot example
-packages, animation
+There is a single module that deals with quaternions, regular quaternions and unit quaternions, and the representation is a `numpy` array of four elements.  As above, functions can accept the `numpy` array, a list, dict or `numpy` row or column vectors.
 
-There is a single module that deals with quaternions, unit or not, and the representation is a `numpy` array of four elements.  As above, functions can accept the `numpy` array, a list, dict or `numpy` row or column vectors.
 
 .. code:: python
 
-  >>> from spatialmath.base.quaternion import *
-  >>> q = qqmul([1,2,3,4], [5,6,7,8])
+  >>> import spatialmath.base.quaternion as quat
+  >>> q = quat.qqmul([1,2,3,4], [5,6,7,8])
   >>> q
   array([-60,  12,  30,  24])
-  >>> qprint(q)
+  >>> quat.qprint(q)
   -60.000000 < 12.000000, 30.000000, 24.000000 >
-  >>> qnorm(q)
+  >>> quat.qnorm(q)
   72.24956747275377
 
-### Symbolic support
+Functions exist to convert to and from SO(3) rotation matrices and a 3-vector representation.  The latter is often used for SLAM and bundle adjustment applications, being a minimal representation of orientation.
+
+Graphics
+--------
+
+If ``matplotlib`` is installed then we can add 2D coordinate frames to a figure in a variety of styles:
+
+.. code-block:: python
+   :linenos:
+
+    trplot2( transl2(1,2), frame='A', rviz=True, width=1)
+    trplot2( transl2(3,1), color='red', arrow=True, width=3, frame='B')
+    trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
+    plt.grid(True)
+
+.. figure:: ./figs/transforms2d.png 
+   :align: center
+
+   Output of ``trplot2``
+
+If a figure does not yet exist one is added.  If a figure exists but there is no 2D axes then one is added.  To add to an existing axes you can pass this in using the ``axes`` argument.  By default the frames are drawn with lines or arrows of unit length.  Autoscaling is enabled.
+
+Similarly, we can plot 3D coordinate frames in a variety of styles:
+
+.. code-block:: python
+   :linenos:
+
+    trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
+    trplot( transl(3,1, 2), color='red', width=3, frame='B')
+    trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
+
+.. figure:: ./figs/transforms3d.png
+   :align: center
+
+   Output of ``trplot``
+
+The ``dims`` option in lines 1 and 3 sets the workspace dimensions.  Note that the last set value is what is displayed.
+
+Depending on the backend you are using you may need to include
+
+.. code-block:: python
+
+    plt.show()
+
+
+Symbolic support
+----------------
 
 Some functions have support for symbolic variables, for example
 
@@ -486,7 +555,21 @@ but you can't write a symbolic value into a floating point matrix
 MATLAB compatability
 --------------------
 
+We can create a MATLAB like environment by
 
+.. code-block:: python
+
+    from spatialmath  import *
+    from spatialmath.base  import *
+
+which has familiar functions like ``rotx`` and ``rpy2r`` available, as well as classes like ``SE3``
+
+.. code-block:: python
+
+  R = rotx(0.3)
+  R2 = rpy2r(0.1, 0.2, 0.3)
+
+  T = SE3(1, 2, 3)
 
 .. |reg|    unicode:: U+000AE .. REGISTERED SIGN
 

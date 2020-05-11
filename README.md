@@ -30,14 +30,15 @@ Provides a set of classes:
 which provide convenience and type safety.  These classes have methods and overloaded operators to support:
 
  * composition, using the `*` operator
+ * point transformation, using the `*` operator
  * exponent, using the `**` operator
  * normalization
  * inversion
- * exponential and logarithm
+ * connection to the Lie algebra via matrix exponential and logarithm operations
  * conversion of orientation to/from Euler angles, roll-pitch-yaw angles and angle-axis forms.
  * list operations such as append, insert and get
 
-These are layered over a set of base functions that perform many of the same operations but represent everything in terms of `numpy` arrays.
+These are layered over a set of base functions that perform many of the same operations but represent data explicitly in terms of `numpy` arrays.
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
@@ -48,7 +49,7 @@ The class, method and functions names largely mirror those of the MATLAB toolbox
 
 These classes abstract the low-level numpy arrays into objects that obey the rules associated with the mathematical groups SO(2), SE(2), SO(3), SE(3) as well as twists and quaternions.
 
-Using classes ensures type safety, for example it stops us mixing a 2D homogeneous transformation with a 3D rotation matrix -- both are 3x3 matrices.
+Using classes ensures type safety, for example it stops us mixing a 2D homogeneous transformation with a 3D rotation matrix -- both of which are 3x3 matrices.  It also ensures that the internal matrix representation is always a valid member of the relevant group.
 
 For example, to create an object representing a rotation of 0.3 radians about the x-axis is simply
 
@@ -93,9 +94,9 @@ Frequently in robotics we want a sequence, a trajectory, of rotation matrices or
 >>> len(R)
  3
 >>> R[1]
-   1         0         0       
-   0         0.866025 -0.5    
-   0         0.5       0.866025            
+   1         0         0          
+   0         0.955336 -0.29552    
+   0         0.29552   0.955336             
 ```
 and this can be used in `for` loops and list comprehensions.
 
@@ -157,6 +158,25 @@ array([[ 0.        , -1.        , -1.        ],
        [-1.        , -0.70447979, -0.04466351]])
 ```
 
+We can print and plot these objects as well
+
+```
+>>> T = SE3(1,2,3) * SE3.Rx(30, 'deg')
+>>> T.print()
+   1         0         0         1          
+   0         0.866025 -0.5       2          
+   0         0.5       0.866025  3          
+   0         0         0         1          
+
+>>> T.printline()
+t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
+
+>>> T.plot()
+```
+
+![trplot](docs/source/figs/fig1.png)
+
+`printline` is a compact single line format for tabular listing, whereas `print` shows the underlying matrix and for consoles that support it, it is colorised, with rotational elements in red and translational elements in blue.
 
 ## Low-level spatial math
 
@@ -235,6 +255,18 @@ array([-60,  12,  30,  24])
 -60.000000 < 12.000000, 30.000000, 24.000000 >
 >>> qnorm(q)
 72.24956747275377
+```
+
+## Graphics
+
+![trplot](docs/source/figs/transforms3d.png)
+
+The functions support various plotting styles
+
+```
+trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
+trplot( transl(3,1, 2), color='red', width=3, frame='B')
+trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
 ```
 
 ## Symbolic support
