@@ -1180,7 +1180,7 @@ try:
     
         # check input types
         if isrot(T, check=True):
-            T = r2t(T)
+            T = trn.r2t(T)
         else:
             assert ishom(T, check=True)
     

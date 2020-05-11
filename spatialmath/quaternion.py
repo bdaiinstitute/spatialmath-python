@@ -192,11 +192,11 @@ class Quaternion(UserList):
         multiply quaternion
         
         :arg left: left multiplicand
-        :type left: Quaternion, UnitQuaternion
+        :type left: Quaternion
         :arg right: right multiplicand
-        :type left: Quaternion, UnitQuaternion, 3-vector, float
+        :type left: Quaternion, UnitQuaternion, float
         :return: product
-        :rtype: Quaternion, UnitQuaternion
+        :rtype: Quaternion
         :raises: ValueError
         
         ==============   ==============   ==============  ================
@@ -207,10 +207,6 @@ class Quaternion(UserList):
         Quaternion       Quaternion       Quaternion      Hamilton product
         Quaternion       UnitQuaternion   Quaternion      Hamilton product
         Quaternion       scalar           Quaternion      scalar product
-        UnitQuaternion   Quaternion       Quaternion      Hamilton product
-        UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product
-        UnitQuaternion   scalar           Quaternion      scalar product
-        UnitQuaternion   3-vector         3-vector        vector rotation
         ==============   ==============   ==============  ================
 
         Any other input combinations result in a ValueError.
@@ -227,16 +223,14 @@ class Quaternion(UserList):
          N      M       -    ``ValueError``
         ====   =====   ====  ================================
 
-        A scalar of length N is a list, tuple or numpy array.
-        A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
         """
         if isinstance(right, left.__class__):
-            # quaternion * quaternion case (same class)
+            # quaternion * [unit]quaternion case
             return Quaternion( left._op2(right, lambda x, y: quat.qqmul(x, y) ) )
 
         elif argcheck.isscalar(right):
             # quaternion * scalar case
-            print('scalar * quat')
+            #print('scalar * quat')
             return Quaternion([right*q._A for q in left])
 
         else:
@@ -246,91 +240,56 @@ class Quaternion(UserList):
 
     def __rmul__(right, left):
         """
-        pre-multiply quaternion
+        Pre-multiply quaternion
         
         :arg right: right multiplicand
-        :type right: Quaternion, UnitQuaternion
+        :type right: Quaternion, 
         :arg left: left multiplicand
         :type left: float
         :return: product
-        :rtype: Quaternion, UnitQuaternion
+        :rtype: Quaternion
         :raises: ValueError
         
-        ==============   ==============   ==============  ================
-                   Multiplicands                   Product
-        -------------------------------   --------------------------------
-            left             right            type           result
-        ==============   ==============   ==============  ================
-        scalar           Quaternion       Quaternion      scalar product
-        scalar           UnitQuaternion   Quaternion      scalar product
-        ==============   ==============   ==============  ================
-
-        Any other input combinations result in a ValueError.
+        Premultiplies a quaternion by a scalar. If the right operand is a list, 
+        the result will be a list .
         
-        Note that left and right can have a length greater than 1 in which case:
+        Example::
+            
+            q = Quaternion()
+            q = 2 * q
         
-        ====   =====   ====  ================================
-        left   right   len     operation
-        ====   =====   ====  ================================
-         1      1       1    ``prod = left * right``
-         1      N       N    ``prod[i] = left * right[i]``
-         N      1       N    ``prod[i] = left[i] * right``
-         N      N       N    ``prod[i] = left[i] * right[i]``
-         N      M       -    ``ValueError``
-        ====   =====   ====  ================================
-
-        A scalar of length N is a list, tuple or numpy array.
-        A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
+        :seealso: :func:`__mul__`
         """
         # scalar * quaternion case
         return Quaternion([left*q._A for q in right])
         
     def __imul__(left, right):
         """
-        multiply quaternion in place
+        Multiply quaternion in place
         
         :arg left: left multiplicand
-        :type left: Quaternion, UnitQuaternion
+        :type left: Quaternion
         :arg right: right multiplicand
-        :type right: Quaternion, UnitQuaternion, 3-vector, float
+        :type right: Quaternion, UnitQuaternion, float
         :return: product
-        :rtype: Quaternion, UnitQuaternion
+        :rtype: Quaternion
         :raises: ValueError
-        
-        ==============   ==============   ==============  ================
-                   Multiplicands                   Product
-        -------------------------------   --------------------------------
-            left             right            type           result
-        ==============   ==============   ==============  ================
-        Quaternion       Quaternion       Quaternion      Hamilton product
-        Quaternion       UnitQuaternion   Quaternion      Hamilton product
-        Quaternion       scalar           Quaternion      scalar product
-        UnitQuaternion   Quaternion       Quaternion      Hamilton product
-        UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product
-        UnitQuaternion   scalar           Quaternion      scalar product
-        UnitQuaternion   3-vector         3-vector        vector rotation
-        ==============   ==============   ==============  ================
 
-        Any other input combinations result in a ValueError.
+        Multiplies a quaternion in place. If the right operand is a list, 
+        the result will be a list.
         
-        Note that left and right can have a length greater than 1 in which case:
-        
-        ====   =====   ====  ================================
-        left   right   len     operation
-        ====   =====   ====  ================================
-         1      1       1    ``prod = left * right``
-         1      N       N    ``prod[i] = left * right[i]``
-         N      1       N    ``prod[i] = left[i] * right``
-         N      N       N    ``prod[i] = left[i] * right[i]``
-         N      M       -    ``ValueError``
-        ====   =====   ====  ================================
+        Example::
+            
+            q = Quaternion()
+            q *= 2
+            
+        :seealso: :func:`__mul__`        
 
-        A scalar of length N is a list, tuple or numpy array.
-        A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
         """
         return left.__mul__(right)
     
     def __pow__(self, n):
+        assert n >= 0, 'n must be >= 0, cannot invert a Quaternion'
         return self.__class__([quat.pow(q._A, n) for q in self])
     
     def __ipow__(self, n):
@@ -444,7 +403,7 @@ class Quaternion(UserList):
                 else:
                     return op(self._A, other._A)
             else:
-                print('== 1xN')
+                #print('== 1xN')
                 return [op(self._A, x._A) for x in other]
         else:
             if len(other) == 1:
@@ -558,7 +517,7 @@ class UnitQuaternion(Quaternion):
             q = argcheck.getvector(s)
             # if norm:
             #     q = quat.unit(q)
-            print(q)
+            #print(q)
             self.data = [quat.unit(s)]
             
         elif type(s) is list:
@@ -842,12 +801,12 @@ class UnitQuaternion(Quaternion):
      
     def __mul__(left, right):
         """
-        multiply quaternion
+        Multiply unit quaternion
         
         :arg left: left multiplicand
-        :type left: Quaternion, UnitQuaternion
+        :type left: UnitQuaternion
         :arg right: right multiplicand
-        :type left: Quaternion, UnitQuaternion, 3-vector, float
+        :type left: UnitQuaternion, Quaternion, 3-vector, 3xN array, float
         :return: product
         :rtype: Quaternion, UnitQuaternion
         :raises: ValueError
@@ -857,13 +816,11 @@ class UnitQuaternion(Quaternion):
         -------------------------------   --------------------------------
             left             right            type           result
         ==============   ==============   ==============  ================
-        Quaternion       Quaternion       Quaternion      Hamilton product
-        Quaternion       UnitQuaternion   Quaternion      Hamilton product
-        Quaternion       scalar           Quaternion      scalar product
         UnitQuaternion   Quaternion       Quaternion      Hamilton product
         UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product
         UnitQuaternion   scalar           Quaternion      scalar product
         UnitQuaternion   3-vector         3-vector        vector rotation
+        UnitQuaternion   3xN array        3xN array       vector rotations
         ==============   ==============   ==============  ================
 
         Any other input combinations result in a ValueError.
@@ -882,6 +839,8 @@ class UnitQuaternion(Quaternion):
 
         A scalar of length N is a list, tuple or numpy array.
         A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
+        
+        :seealso: :func:`~spatialmath.Quaternion.__mul__`
         """
         if isinstance(left, right.__class__):
             # quaternion * quaternion case (same class)
@@ -889,22 +848,22 @@ class UnitQuaternion(Quaternion):
 
         elif argcheck.isscalar(right):
             # quaternion * scalar case
-            print('scalar * quat')
+            #print('scalar * quat')
             return Quaternion([right*q._A for q in left])
         
         
         elif isinstance(right, (list, tuple, np.ndarray)):
-            print('*: pose x array')
+            #print('*: pose x array')
             if argcheck.isvector(right, 3):
                 v = argcheck.getvector(right)
                 if len(left) == 1:
                     # pose x vector
-                    print('*: pose x vector')
+                    #print('*: pose x vector')
                     return quat.qvmul(left._A, argcheck.getvector(right,3))
                     
                 elif len(left) > 1 and argcheck.isvector(right, 3):
                     # pose array x vector
-                    print('*: pose array x vector')
+                    #print('*: pose array x vector')
                     return np.array([tr.qvmul(x, v) for x in left._A]).T
                 
             elif len(left) == 1 and isinstance(right, np.ndarray) and right.shape[0] == 3:
@@ -917,9 +876,41 @@ class UnitQuaternion(Quaternion):
         return left._op2(right, lambda x, y: x @ y )        
         
 
+
+        return right.__mul__(left)
+        
+    def __imul__(left, right):
+        """
+        Multiply unit quaternion in place
+        
+        :arg left: left multiplicand
+        :type left: UnitQuaternion
+        :arg right: right multiplicand
+        :type right: UnitQuaternion, Quaternion, float
+        :return: product
+        :rtype: UnitQuaternion, Quaternion
+        :raises: ValueError
+
+        Multiplies a quaternion in place. If the right operand is a list, 
+        the result will be a list.
+        
+        Example::
+            
+            q = UnitQuaternion()
+            q *= 2
+            
+        :seealso: :func:`__mul__`        
+
+        """
+        return left.__mul__(right)
+
+
     def __truediv__(left, right):
         assert type(left) == type(right), 'operands to / are of different types'
         return UnitQuaternion( left._op2(right, lambda x, y: tr.qqmul(x, tr.conj(y)) ) )
+    
+    def __pow__(self, n):
+        return self.__class__([quat.pow(q._A, n) for q in self])
     
     def __eq__(left, right):
         return left._op2(right, lambda x, y: quat.isequal(x, y, unitq=True), list1=False )
@@ -983,10 +974,6 @@ class UnitQuaternion(Quaternion):
         return UnitQuaternion(out)
 
 
-
-
-        
-    
     def __repr__(self):
         s = ''
         for q in self:
@@ -998,7 +985,9 @@ class UnitQuaternion(Quaternion):
     def __str__(self):
         return self.__repr__()
 
-
+    def plot(self, *args, **kwargs):
+        tr.trplot(tr.q2r(self._A), *args, **kwargs)
+            
     @property
     def rpy(self, unit='rad', order='zyx'):
         return tr.tr2rpy(self.R, unit=unit, order=order)
@@ -1024,23 +1013,5 @@ if __name__ == '__main__':  # pragma: no cover
 
     import pathlib
     import os.path
-    
-    q = Quaternion([1,2,3,4])
-    print(q)
-    q.append(q)
-    print(len(q))
-    print(q)
-
-    a = np.random.uniform(size=(6,4))
-    q = Quaternion(a)
-    q2 = Quaternion()
-
-    u = UnitQuaternion()
-    #print(u)
-    len(u)
-    a = u[0]
-    
-    # import pathlib
-    # import os.path
     
     exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_quaternion.py")).read() )
