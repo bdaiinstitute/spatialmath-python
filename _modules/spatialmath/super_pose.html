@@ -1,0 +1,746 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.6
+ documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Spatial Maths package
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Spatial Maths package</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spatialmath.super_pose</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spatialmath.super_pose</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Created by: Aditya Dua, 2017</span>
+<span class="c1"># Peter Corke, 2020</span>
+<span class="c1"># 13 June, 2017</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span> 
+<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">tr</span>
+
+<span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+<span class="c1"># colored printing of matrices to the terminal</span>
+<span class="c1">#   colored package has much finer control than colorama, but the latter is available by default with anaconda</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">colored</span> <span class="kn">import</span> <span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">attr</span>
+    <span class="n">_color</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1">#print(&#39;using colored output&#39;)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_color</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">fg</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">bg</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">attr</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span>
+    
+<span class="c1"># try:</span>
+<span class="c1">#     import colorama</span>
+<span class="c1">#     colorama.init()</span>
+<span class="c1">#     print(&#39;using colored output&#39;)</span>
+<span class="c1">#     from colorama import Fore, Back, Style</span>
+
+<span class="c1"># except:</span>
+<span class="c1">#     class color:</span>
+<span class="c1">#         def __init__(self):</span>
+<span class="c1">#             self.RED = &#39;&#39;</span>
+<span class="c1">#             self.BLUE = &#39;&#39;</span>
+<span class="c1">#             self.BLACK = &#39;&#39;</span>
+<span class="c1">#             self.DIM = &#39;&#39;</span>
+        
+<span class="c1"># print(Fore.RED + &#39;1.00 2.00 &#39; + Fore.BLUE + &#39;3.00&#39;)</span>
+<span class="c1"># print(Fore.RED + &#39;1.00 2.00 &#39; + Fore.BLUE + &#39;3.00&#39;)</span>
+<span class="c1"># print(Fore.BLACK + Style.DIM + &#39;0 0 1&#39;)</span>
+
+
+<span class="k">class</span> <span class="nc">SMPose</span><span class="p">(</span><span class="n">UserList</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="c1"># inherits from:</span>
+    <span class="c1">#  UserList, gives list-like functionality</span>
+    <span class="c1">#  ABC, defines an abstract class, can&#39;t be instantiated</span>
+    
+<span class="c1">#    @property</span>
+<span class="c1">#    def length(self):</span>
+<span class="c1">#        &quot;&quot;&quot;</span>
+<span class="c1">#        Property to return number of matrices in pose object</span>
+<span class="c1">#        :return: int</span>
+<span class="c1">#        &quot;&quot;&quot;</span>
+<span class="c1">#        return len(self._list)</span>
+<span class="c1">#</span>
+<span class="c1">#    @property</span>
+<span class="c1">#    def data(self):</span>
+<span class="c1">#        &quot;&quot;&quot;</span>
+<span class="c1">#        Always returns a list containing the matrices of the pose object.</span>
+<span class="c1">#        :return: A list of matrices.</span>
+<span class="c1">#        &quot;&quot;&quot;</span>
+<span class="c1">#        return self._list</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#    def is_equal(self, other):</span>
+<span class="c1">#        if (type(self) is type(other)) and (self.length == other.length):</span>
+<span class="c1">#            for i in range(self.length):</span>
+<span class="c1">#                try:</span>
+<span class="c1">#                    npt.assert_almost_equal(self.data[i], other.data[i])</span>
+<span class="c1">#                except AssertionError:</span>
+<span class="c1">#                    return False</span>
+<span class="c1">#            return True</span>
+<span class="c1">#</span>
+<span class="c1">#    def append(self, item):</span>
+<span class="c1">#        check_args.super_pose_appenditem(self, item)</span>
+<span class="c1">#        if type(item) is np.matrix:</span>
+<span class="c1">#            self._list.append(item)</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            for each_matrix in item:</span>
+<span class="c1">#                self._list.append(each_matrix)</span>
+<span class="c1">#</span>
+<span class="c1">#    def tr_2_rt(self):</span>
+<span class="c1">#        assert isinstance(self, pose.SE2) or isinstance(self, pose.SE3)</span>
+<span class="c1">#</span>
+<span class="c1">#    def t_2_r(self):</span>
+<span class="c1">#        assert isinstance(self, pose.SE2) or isinstance(self, pose.SE3)</span>
+<span class="c1">#        for each_matrix in self:</span>
+<span class="c1">#            pass  # TODO</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># handle common cases</span>
+        <span class="c1">#  deep copy</span>
+        <span class="c1">#  numpy array</span>
+        <span class="c1">#  list of numpy array</span>
+        <span class="c1"># validity checking??</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>   <span class="c1"># enable UserList superpowers</span>
+        
+    <span class="k">def</span> <span class="nf">pose_arghandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># it&#39;s a numpy array</span>
+            <span class="k">assert</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">&#39;array must have valid shape for the class&#39;</span>
+            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span> <span class="s1">&#39;array must have valid value for the class&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># construct from a list</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="c1">#print(&#39;list of numpys&#39;)</span>
+                <span class="c1"># possibly a list of numpy arrays</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">check</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">isvalid</span>  <span class="c1"># lambda function</span>
+                <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span> <span class="nb">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="n">s</span> <span class="ow">and</span> <span class="n">check</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">arg</span><span class="p">)</span> <span class="p">),</span> <span class="s1">&#39;all elements of list must have valid shape and value for the class&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span>         
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c1"># possibly a list of objects of same type</span>
+                <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span> <span class="nb">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">arg</span><span class="p">)</span> <span class="p">),</span> <span class="s1">&#39;all elements of list must have same type&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;1 bad argument to constructor&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="c1"># it&#39;s an object of same type, do copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;2 bad argument to constructor&#39;</span><span class="p">)</span>
+    
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">X</span>
+    
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1">#print(&#39;in append method&#39;)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append a pose sequence - use extend&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># get the underlying numpy array</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="c1">#print(&#39;getitem&#39;, i, &#39;class&#39;, self.__class__)</span>
+        <span class="c1">#return self.__class__(self.data[i])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c1">#----------------------- tests</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isSO</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SO(n)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: true if object is instance of SO2 or SO3</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO3&#39;</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isSE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SE(n)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: true if object is instance of SE2 or SE3</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE3&#39;</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dimension of the object&#39;s space</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: 2 for SO2 or SE2, 3 for SO3 or SE3</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span>
+    
+    <span class="c1"># compatibility methods</span>
+
+    <span class="k">def</span> <span class="nf">isrot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SO(3)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: true if object is instance of SO3</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO3&#39;</span>
+
+    <span class="k">def</span> <span class="nf">isrot2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SO(2)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: true if object is instance of SO2</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span>
+
+    <span class="k">def</span> <span class="nf">ishom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SE(3)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: true if object is instance of SE3</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE3&#39;</span>
+
+    <span class="k">def</span> <span class="nf">ishom2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SE(2)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: true if object is instance of SE2</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span>
+    
+    <span class="c1">#----------------------- properties</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dimension of the object&#39;s underlying matrix representation</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :return: (2,2) for SO2, (3,3) for SE2 and SO3, and (4,4) for SE3</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span>   <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO3&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE3&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display succinct details of object</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: object to display</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+
+<span class="sd">        Displays the type and the number of elements in compact form, eg. ``SE3[20]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:s}</span><span class="s2">[</span><span class="si">{:d}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+
+
+
+    <span class="c1">#----------------------- arithmetic</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pose multiplication</span>
+<span class="sd">        </span>
+<span class="sd">        :arg left: left multiplicand</span>
+<span class="sd">        :arg right: right multiplicand</span>
+<span class="sd">        :return: product</span>
+<span class="sd">        :raises: ValueError</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X * Y`` compounds the poses X and Y</span>
+<span class="sd">        - ``X * s`` performs elementwise multiplication of the elements of ``X``</span>
+<span class="sd">        - ``s * X`` performs elementwise multiplication of the elements of ``X``</span>
+<span class="sd">        - ``X * v`` transforms the vector.</span>
+<span class="sd">        </span>
+<span class="sd">        ==============   ==============   ===========  ===================</span>
+<span class="sd">                   Multiplicands                   Product</span>
+<span class="sd">        -------------------------------   --------------------------------</span>
+<span class="sd">            left             right            type           result</span>
+<span class="sd">        ==============   ==============   ===========  ===================</span>
+<span class="sd">        Pose             Pose             Pose         matrix product</span>
+<span class="sd">        Pose             scalar           matrix       elementwise product</span>
+<span class="sd">        scalar           Pose             matrix       elementwise product</span>
+<span class="sd">        Pose             N-vector         N-vector     vector transform</span>
+<span class="sd">        Pose             NxM matrix       NxM matrix   vector transform</span>
+<span class="sd">        ==============   ==============   ===========  ===================</span>
+
+<span class="sd">        Any other input combinations result in a ValueError.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that left and right can have a length greater than 1 in which case</span>
+<span class="sd">        </span>
+<span class="sd">        ====   =====   ====  ================================</span>
+<span class="sd">        left   right   len     operation</span>
+<span class="sd">        ====   =====   ====  ================================</span>
+<span class="sd">         1      1       1    ``prod = left * right``</span>
+<span class="sd">         1      M       M    ``prod[i] = left * right[i]``</span>
+<span class="sd">         N      1       M    ``prod[i] = left[i] * right``</span>
+<span class="sd">         M      M       M    ``prod[i] = left[i] * right[i]``</span>
+<span class="sd">        ====   =====   ====  ================================</span>
+
+<span class="sd">        A scalar of length M is list, tuple or numpy array.</span>
+<span class="sd">        An N-vector of length M is a NxM numpy array, where each column is an N-vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="c1">#print(&#39;*: pose x pose&#39;)</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">@</span> <span class="n">y</span> <span class="p">))</span>
+        
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="c1">#print(&#39;*: pose x array&#39;)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+                <span class="c1"># pose x vector</span>
+                <span class="c1">#print(&#39;*: pose x vector&#39;)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span><span class="p">:</span>
+                    <span class="c1"># SE(n) x vector</span>
+                    <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># SO(n) x vector</span>
+                    <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">v</span>
+                
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+                <span class="c1"># pose array x vector</span>
+                <span class="c1">#print(&#39;*: pose array x vector&#39;)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span><span class="p">:</span>
+                    <span class="c1"># SE(n) x vector</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># SO(n) x vector</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSO</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="c1"># SO(n) x matrix</span>
+                <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">right</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="c1"># SE(n) x matrix</span>
+                <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pose multiplication</span>
+<span class="sd">        </span>
+<span class="sd">        :arg left: left multiplicand</span>
+<span class="sd">        :arg right: right multiplicand</span>
+<span class="sd">        :return: product</span>
+<span class="sd">        :raises: ValueError</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X *= Y`` compounds the poses X and Y and places the result in X</span>
+<span class="sd">        - ``X *= s`` performs elementwise multiplication of the elements of ``X``</span>
+
+
+<span class="sd">        Any other input combinations result in a ValueError.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that left and right can have a length greater than 1 in which case</span>
+<span class="sd">        </span>
+<span class="sd">        ====   =====   ====  ================================</span>
+<span class="sd">        left   right   len     operation</span>
+<span class="sd">        ====   =====   ====  ================================</span>
+<span class="sd">         1      1       1    ``prod = left * right``</span>
+<span class="sd">         1      M       M    ``prod[i] = left * right[i]``</span>
+<span class="sd">         N      1       M    ``prod[i] = left[i] * right``</span>
+<span class="sd">         M      M       M    ``prod[i] = left[i] * right[i]``</span>
+<span class="sd">        ====   =====   ====  ================================</span>
+
+<span class="sd">        A scalar of length M is list, tuple or numpy array.</span>
+<span class="sd">        An N-vector of length M is a NxM numpy array, where each column is an N-vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;exponent must be an int&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+    
+    <span class="k">def</span> <span class="fm">__ipow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                    
+
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="o">.</span><span class="n">inv</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">@</span> <span class="n">y</span> <span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="fm">__itruediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__truediv__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>            
+    
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="c1"># results is not in the group, return an array, not a class</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="p">)</span>
+
+    <span class="c1"># def __radd__(left, right):</span>
+    <span class="c1">#     return left.__add__(right)</span>
+    
+    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="c1"># results is not in the group, return an array, not a class</span>
+        <span class="c1"># TODO allow class +/- a conformant array</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="p">)</span>
+
+    <span class="c1"># def __rsub__(left, right):</span>
+    <span class="c1">#     return -left.__sub__(right)</span>
+    
+
+    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">),</span> <span class="s1">&#39;operands to == are of different types&#39;</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="p">)</span>
+    
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="ow">not</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">right</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">_op2</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;== 1x1&#39;)</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;== 1xN&#39;)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;== Nx1&#39;)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+                    <span class="c1">#print(&#39;== NxN&#39;)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length of lists to == must be same length&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+        
+
+    
+    <span class="c1"># @classmethod</span>
+    <span class="c1"># def rand(cls):</span>
+    <span class="c1">#     obj = cls(uniform(0, 360), unit=&#39;deg&#39;)</span>
+    <span class="c1">#     return obj</span>
+                
+     <span class="c1">#----------------------- functions</span>
+                
+    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">pass</span>
+                
+    <span class="c1">#----------------------- i/o stuff</span>
+    
+    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">printline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trprint2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trprint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># #print(&#39;in __repr__&#39;)</span>
+        <span class="c1"># if len(self) &gt;= 1:</span>
+        <span class="c1">#     str = &#39;&#39;</span>
+        <span class="c1">#     for each in self.data:</span>
+        <span class="c1">#         str += np.array2string(each) + &#39;\n\n&#39;</span>
+        <span class="c1">#     return str.rstrip(&quot;\n&quot;)  # Remove trailing newline character</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#      raise ValueError(&#39;no elements in the value list&#39;)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#print(&#39;in __str__&#39;)</span>
+        <span class="k">def</span> <span class="nf">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+            <span class="c1"># X is an ndarray value to be display</span>
+            <span class="c1"># self provides set type for formatting</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>  <span class="c1"># dimension of rotation submatrix</span>
+            <span class="k">for</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+                <span class="n">rowstr</span> <span class="o">=</span> <span class="s1">&#39;  &#39;</span>
+                <span class="c1"># format the columns</span>
+                <span class="k">for</span> <span class="n">colnum</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+                        <span class="n">element</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&lt; 10g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">rownum</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">colnum</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                            <span class="c1"># rotation part</span>
+                            <span class="n">s</span> <span class="o">=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">bg</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># translation part</span>
+                            <span class="n">s</span> <span class="o">=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">bg</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># bottom row</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;grey_50&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">bg</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">rowstr</span> <span class="o">+=</span> <span class="n">s</span>
+                <span class="n">out</span> <span class="o">+=</span> <span class="n">rowstr</span> <span class="o">+</span> <span class="n">bg</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">return</span> <span class="n">out</span>
+
+        <span class="n">output_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output_str</span> <span class="o">=</span> <span class="s1">&#39;[]&#39;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># single matrix case</span>
+            <span class="n">output_str</span> <span class="o">=</span> <span class="n">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># sequence case</span>
+            <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                <span class="c1"># add separator lines and the index</span>
+                <span class="n">output_str</span> <span class="o">+=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;[</span><span class="si">{:d}</span><span class="s1">] =</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="o">+</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+
+            
+        <span class="k">return</span> <span class="n">output_str</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Peter Corke
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
