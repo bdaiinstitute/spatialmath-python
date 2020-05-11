@@ -16,7 +16,7 @@ _eps = np.finfo(np.float64).eps
 try:
     from colored import fg, bg, attr
     _color = True
-    print('using colored output')
+    #print('using colored output')
 except ImportError:
     _color = False
     fg = lambda : ''

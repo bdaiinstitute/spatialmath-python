@@ -8,7 +8,6 @@ Created on Fri Mar 20 11:41:25 2020
 import numpy as np
 import math
 
-print('loading base/argcheck.py')
 
 def matrix(m, shape):
     assert ismatrix(m, shape)
