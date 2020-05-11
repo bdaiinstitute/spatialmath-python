@@ -73,7 +73,7 @@ class SO2(sp.SMPose):
 
 class SE2(sp.SMPose):
     # constructor needs to take ndarray -> SO2, or list of ndarray -> SO2
-    def __init__(self, x = None, y = None, theta = None, *, unit='rad'):
+    def __init__(self, x = None, y = None, theta = 0, *, unit='rad'):
         super().__init__()  # activate the UserList semantics
         
         if x is None:
