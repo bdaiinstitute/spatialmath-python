@@ -16,6 +16,7 @@
   * use dot to make a graph
   * use Unicode sub/superscripts to format this nicely (not all letters possible)
 * UnitQuaternion interp, vectorize
+* plot/animate for UnitQuaternion
 
 ## low level
 
