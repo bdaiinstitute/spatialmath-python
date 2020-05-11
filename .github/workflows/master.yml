@@ -2,7 +2,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: spatialmath-python
+name: CI
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 
 jobs:
   # Run tests on different versions of python
-  tests:
+  unittest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -39,11 +39,10 @@ jobs:
       run: |
         pytest
 
-  deploy:
+  codecov:
     # If all tests pass:
     # Run coverage and upload to codecov
-    # Build docs
-    needs: tests
+    needs: unittest
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -63,4 +62,34 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         file: ./.coverage
-    
+  sphinx:
+    # If the above worked:
+    # Build docs and upload to GH Pages
+    needs: unittest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build docs
+        run: |
+          cd docs
+          make html
+          # Tell GitHub not to use jekyll to compile the docs
+          touch build/html/.nojekyll
+          cd ../
+      - name: Commit documentation changes
+        run: |
+          git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
+          cp -r docs/build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update documentation" -a || true
+          # The above command will fail if no changes were present, so we ignore
+          # that.
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
