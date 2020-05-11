@@ -483,16 +483,19 @@ class SMPose(UserList, ABC):
     #----------------------- i/o stuff
     
     def print(self):
+        print(self)
+    
+    def printline(self):
         if self.N == 2:
-            trprint2(self.A)
+            tr.trprint2(self.A)
         else:
-            trprint(self.A)
+            tr.trprint(self.A)
 
-    def plot(self):
+    def plot(self, *args, **kwargs):
         if self.N == 2:
-            trplot2(self.A)
+            tr.trplot2(self.A, *args, **kwargs)
         else:
-            trplot(self.A)
+            tr.trplot(self.A, *args, **kwargs)
         
     def __repr__(self):
         # #print('in __repr__')
