@@ -233,7 +233,7 @@ if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
     
-    runfile(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py") )
+    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read() )
     
     
 
