@@ -383,7 +383,7 @@ class SO3(sp.SMPose):
 ###################################### SE3 ##################################
 class SE3(SO3):
 
-    def __init__(self, arg = None, *, unit='rad', check=True):
+    def __init__(self, x = None, y = None, z = None, *, check=True):
         """
         Construct new SE(3) object
         
@@ -397,11 +397,13 @@ class SE3(SO3):
         """
         super().__init__()  # activate the UserList semantics
         
-        if arg is None:
+        if x is None:
             # empty constructor
             self.data = [np.eye(4)]
+        elif y is not None and z is not None:
+            self.data = [ tr.transl(x, y, z) ]
         else:
-            super().pose_arghandler(arg, check=check)
+            super().pose_arghandler(x, check=check)
 
 
     @property
@@ -424,9 +426,6 @@ class SE3(SO3):
         else:
             return np.array([x[:3,3] for x in self.A])
         
-    
-
-    
     @property
     def T(self):
         raise NotImplemented('transpose is not meaningful for SE3 object')
