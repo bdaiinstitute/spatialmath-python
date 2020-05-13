@@ -77,10 +77,6 @@ class Animate:
         else:
             # Set up formatting for the movie files
             print('creating movie', movie)
-             
-             
-            #plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg'
-            
             FFwriter=animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
             ani.save(movie, writer=FFwriter)
             # TODO needs conda install -c conda-forge ffmpeg
@@ -201,7 +197,7 @@ def tranimate(T, **kwargs):
     anim.run(**kwargs)
     
     
-tranimate( tr.transl(0,0,0), frame='A', arrow=False, dims=[0,5], movie='bob.mp4')
+tranimate( tr.transl(0,0,0), frame='A', arrow=False, dims=[0,5]) #, movie='bob.mp4')
 
 
 
