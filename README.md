@@ -43,6 +43,26 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
+# Getting going
+
+## Using pip
+
+Install a snapshot from PyPI
+
+```
+% pip install spatialmath-python
+```
+
+## From GitHub
+
+Install the current code base from GitHub and pip install a link to that cloned copy
+
+```
+% git clone https://github.com/petercorke/spatialmath-python.git
+% cd spatialmath-python
+% pip install -e .
+```
+
 # Examples
 
 
