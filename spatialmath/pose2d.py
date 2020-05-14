@@ -29,13 +29,16 @@ class SO2(sp.SMPose):
 
         if arg is None:
             # empty constructor
-            self.data = [np.eye(2)]
+            if type(self) is SO2:
+                self.data = [np.eye(2)]
 
         elif argcheck.isvector(arg):
             # SO2(value)
             # SO2(list of values)
             self.data = [tr.rot2(x, unit) for x in argcheck.getvector(arg)]
 
+        elif isinstance(arg, np.ndarray) and arg.shape == (2,2):
+            self.data = [arg]
         else:
             super().arghandler(arg)
 
@@ -44,61 +47,64 @@ class SO2(sp.SMPose):
         rand = np.random.uniform(low=range[0], high=range[1], size=N)  # random values in the range
         return cls([tr.rot2(x) for x in argcheck.getunit(rand, unit)])
 
-    @classmethod
-    def isvalid(self, x):
+    @staticmethod
+    def isvalid(x):
         return tr.isrot2(x, check=True)
 
     @property
     def T(self):
         return SO2(self.A.T)
 
+    @property
     def inv(self):
-        return SO2(self.A.T)
-
-    # for symmetry with other
-    @classmethod
-    def R(cls, theta, unit='rad'):
-        return SO2([tr.rot1(x, unit) for x in argcheck.getvector(theta)])
+        if len(self) == 1:
+            return SO2(self.A.T)
+        else:
+            return SO2([x.T for x in self.A])
 
     @property
-    def angle(self):
+    def R(self):
+        return self.A[:2, :2]
+
+    @property
+    def theta(self):
         """Returns angle of SO2 object matrices in unit radians"""
-        angles = []
-        for each_matrix in self:
-            angles.append(math.atan2(each_matrix[1, 0], each_matrix[0, 0]))
-        # TODO !! Return list be default ?
-        if len(angles) == 1:
-            return angles[0]
-        elif len(angles) > 1:
-            return angles
+        if len(self) == 1:
+            return math.atan2(self.A[1,0], self.A[0,0])
+        else:
+            return [math.atan2(x.A[1,0], x.A[0,0]) for x in self]        
 
 
-class SE2(sp.SMPose):
+class SE2(SO2):
     # constructor needs to take ndarray -> SO2, or list of ndarray -> SO2
-    def __init__(self, x=None, y=None, theta=0, *, unit='rad'):
+    def __init__(self, x=None, y=None, theta=None, *, unit='rad'):
         super().__init__()  # activate the UserList semantics
 
-        if x is None:
+        if x is None and y is None and theta is None:
+            # SE2()
             # empty constructor
             self.data = [np.eye(3)]
 
-        elif all(map(lambda x: isinstance(x, (int, float)), [x, y, theta])):
-            # SE2(x, y, theta)
-            self.data = [tr.trot2(theta, t=[x, y], unit=unit)]
+        elif x is not None:
+            if y is not None and theta is not None:
+                # SE2(x, y, theta)
+                self.data = [tr.trot2(theta, t=[x, y], unit=unit)]
 
-        elif argcheck.isvector(x) and argcheck.isvector(y) and argcheck.isvector(theta):
-            # SE2(xvec, yvec, tvec)
-            xvec = argcheck.getvector(x)
-            yvec = argcheck.getvector(y, dim=len(xvec))
-            tvec = argcheck.getvector(theta, dim=len(xvec))
-            self.data = [tr.trot2(_t, t=[_x, _y]) for (_x, _y, _t) in zip(xvec, yvec, argcheck.getunit(tvec, unit))]
-
-        elif isinstance(x, np.ndarray) and y is None and theta is None:
-            assert x.shape[1] == 3, 'array argument must be Nx3'
-            self.data = [tr.trot2(_t, t=[_x, _y], unit=unit) for (_x, _y, _t) in x]
-
+            elif y is None and theta is None:
+                if argcheck.isvector(x, 3):
+                    # SE2( [x,y,theta])
+                    self.data = [tr.trot2(x[2], t=x[:2], unit=unit)]
+                elif isinstance(x, np.ndarray):
+                    if x.shape == (3,3):
+                        # SE2( 3x3 matrix )
+                        self.data = [x]
+                    elif x.shape[1] == 3:
+                        # SE2( Nx3 )
+                        self.data = [tr.trot2(T.theta, t=T.t) for T in x]
+                else:
+                    super().arghandler(x)
         else:
-            super().arghandler(x)
+            raise ValueError('bad arguments to constructor')
 
     @property
     def T(self):
@@ -111,8 +117,8 @@ class SE2(sp.SMPose):
         theta = np.random.uniform(low=trange[0], high=trange[1], size=N)  # random values in the range
         return cls([tr.trot2(t, t=[x, y]) for (t, x, y) in zip(x, y, argcheck.getunit(theta, unit))])
 
-    @classmethod
-    def isvalid(self, x):
+    @staticmethod
+    def isvalid(x):
         return tr.ishom2(x, check=True)
 
     @property
@@ -120,12 +126,18 @@ class SE2(sp.SMPose):
         return self.A[:2, 2]
 
     @property
-    def R(self):
-        return SO2(self.A[:2, :2])
+    def xyt(self):
+        if len(self) == 1:
+            return np.r_[self.t, self.theta]
+        else:
+            return [np.r_[x.t, x.theta] for x in self]
 
+    @property
     def inv(self):
-        return SO2(self.A.T)
-    ArithmeticError()
+        if len(self) == 1:
+            return SE2(tr.rt2tr(self.R.T, -self.R.T @ self.t))
+        else:
+            return SE2([tr.rt2tr(x.R.T, -x.R.T @ x.t) for x in self])
 
 
 if __name__ == '__main__':  # pragma: no cover
