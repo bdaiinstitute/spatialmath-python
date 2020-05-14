@@ -289,7 +289,10 @@ class SO3(sp.SMPose):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
-        return cls(tr.eul2r(angles, unit=unit), check=False)
+        if argcheck.isvector(angles, 3):
+            return cls(tr.eul2r(angles, unit=unit))
+        else:
+            return cls([tr.eul2r(a, unit=unit) for a in angles])
 
     @classmethod
     def RPY(cls, angles, *, order='zyx', unit='rad'):
@@ -320,7 +323,10 @@ class SO3(sp.SMPose):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
-        return cls(tr.rpy2r(angles, order=order, unit=unit), check=False)
+        if argcheck.isvector(angles, 3):
+                return cls(tr.rpy2r(angles, order=order, unit=unit))
+        else:
+            return cls([tr.rpy2r(a, order=order, unit=unit) for a in angles])
 
     @classmethod
     def OA(cls, o, a):
@@ -376,6 +382,28 @@ class SO3(sp.SMPose):
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
         return cls(tr.angvec2r(theta, v, unit=unit), check=False)
+    
+    @classmethod
+    def Exp(cls,S):
+        """
+        Create an SO(3) rotation matrix from so(3)
+
+        :param S: Lie algebra so(3)
+        :type S: numpy ndarray
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+
+        - ``SO3.Exp(S)`` is an SO(3) rotation defined by its Lie algebra
+          which is a 3x3 so(3) matrix (skew symmetric)
+        - ``SO3.Exp(t)`` is an SO(3) rotation defined by a 3-element twist
+          vector (the unique elements of the so(3) skew-symmetric matrix)
+
+        :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
+        """
+        if isinstance(S, np.ndarray) and S.shape[1] == 3:
+            return cls([tr.trexp(s) for s in S])
+        else:
+            return cls(tr.trexp(S), check=False)
 
 ###################################### SE3 ##################################
 
@@ -386,23 +414,44 @@ class SE3(SO3):
         """
         Construct new SE(3) object
 
+        :param x: translation distance along the X-axis
+        :type x: float
+        :param y: translation distance along the Y-axis
+        :type y: float
+        :param z: translation distance along the Z-axis
+        :type z: float
+        :return: 4x4 homogeneous transformation matrix
+        :rtype: SE3 instance
+        
         - ``SE3()`` is a null motion -- the identity matrix
-        - ``SE3(T)`` where T is a 4x4 numpy array representing an valid rotation matrix.  If ``check``
-          is ``True`` check the matrix value.
-        - ``SE3([T1, T2, ... TN])`` where each Ti is a 3x3 numpy array of rotation matrices, is
+        - ``SE3(x, y, z)`` is a pure translation of (x,y,z)
+        - ``SE3(T)`` where T is a 4x4 numpy array representing an SE(3) matrix.  If ``check``
+          is ``True`` check the matrix belongs to SE(3).
+        - ``SE3([T1, T2, ... TN])`` where each Ti is a 4x4 numpy array representing an SE(3) matrix, is
           an SE3 instance containing N rotations. If ``check`` is ``True``
-          then each matrix is checked for validity.
+          check the matrix belongs to SE(3).
         - ``SE3([T1, T2, ... TN])`` where each Ri is an SE3 instance, is an SE3 instance containing N rotations.
         """
         super().__init__()  # activate the UserList semantics
 
         if x is None:
+            # SE3()
             # empty constructor
             self.data = [np.eye(4)]
         elif y is not None and z is not None:
-            self.data = [tr.transl(x, y, z)]
+                # SE3(x, y, z)
+                self.data = [tr.transl(x, y, z)]
+        elif y is None and z is None:
+            if argcheck.isvector(x, 3):
+                # SE3( [x, y, z] )
+                self.data = [tr.transl(x)]
+            elif isinstance(x, np.ndarray) and x.shape[1] == 3:
+                # SE3( Nx3 )
+                self.data = [tr.transl(T) for T in x]   
+            else:
+                super().pose_arghandler(x, check=check)
         else:
-            super().pose_arghandler(x, check=check)
+            raise ValueError('bad argument to constructor')
 
     @property
     def t(self):
@@ -445,7 +494,7 @@ class SE3(SO3):
         if len(self) == 1:
             return SE3(tr.rt2tr(self.R.T, -self.R.T @ self.t))
         else:
-            return SE3([SE3(tr.rt2tr(x.R.T, -x.R.T @ x.t)) for x in self])
+            return SE3([tr.rt2tr(x.R.T, -x.R.T @ x.t) for x in self])
 
     @classmethod
     def isvalid(self, x):
@@ -552,7 +601,10 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
-        return cls(tr.eul2tr(angles, unit=unit))
+        if argcheck.isvector(angles, 3):
+            return cls(tr.eul2tr(angles, unit=unit))
+        else:
+            return cls([tr.eul2tr(a, unit=unit) for a in angles])
 
     @classmethod
     def RPY(cls, angles, order='zyx', unit='rad'):
@@ -583,7 +635,10 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
-        return cls(tr.rpy2tr(angles, order=order, unit=unit))
+        if argcheck.isvector(angles, 3):
+                return cls(tr.rpy2tr(angles, order=order, unit=unit))
+        else:
+            return cls([tr.rpy2tr(a, order=order, unit=unit) for a in angles])
 
     @classmethod
     def OA(cls, o, a):
@@ -641,6 +696,28 @@ class SE3(SO3):
         return cls(tr.angvec2tr(theta, v, unit=unit))
 
     @classmethod
+    def Exp(cls, S):
+        """
+        Create an SE(3) rotation matrix from se(3)
+
+        :param S: Lie algebra se(3)
+        :type S: numpy ndarray
+        :return: 3x3 rotation matrix
+        :rtype: SO3 instance
+
+        - ``SO3.Exp(S)`` is an SO(3) rotation defined by its Lie algebra
+          which is a 3x3 so(3) matrix (skew symmetric)
+        - ``SO3.Exp(t)`` is an SO(3) rotation defined by a 3-element twist
+          vector (the unique elements of the so(3) skew-symmetric matrix)
+
+        :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
+        """
+        if isinstance(S, np.ndarray) and S.shape[1] == 6:
+            return cls([tr.trexp(s) for s in S])
+        else:
+            return cls(tr.trexp(S), check=False)
+    
+    @classmethod
     def Tx(cls, x):
         """
         Create SE(3) translation along the X-axis
@@ -682,30 +759,12 @@ class SE3(SO3):
         """
         return cls(tr.transl(0, 0, z))
 
-    @classmethod
-    def trans(cls, x=None, y=None, z=None):
-        """
-        Create SE(3) general translation
-
-        :param x: translation distance along the X-axis
-        :type x: float
-        :param y: translation distance along the Y-axis
-        :type y: float
-        :param z: translation distance along the Z-axis
-        :type z: float
-        :return: 4x4 homogeneous transformation matrix
-        :rtype: SE3 instance
-
-        - `SE3.Tz(X, Y, Z)`` is an SE(3) translation of X along the x-axis, Y along the
-          y-axis and Z along the z-axis.
-        - `SE3.Tz( [X, Y, Z] )`` as above but the translation is a 3-element array_like object.
-        """
-        return cls(tr.transl(x, y, z))
-
 
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
     import os.path
+    
+    a = SE3.Exp([2,0,0,0,0,0])
 
     exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose3d.py")).read())

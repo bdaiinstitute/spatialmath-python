@@ -747,7 +747,7 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(R.shape, (4, 4))
 
     def test_arith(self):
-        T = SE3.trans(1, 2, 3)
+        T = SE3(1, 2, 3)
 
         # sum
         a = T + T
@@ -782,7 +782,7 @@ class TestSE3(unittest.TestCase):
         array_compare(a, np.array([[2, 1, 1, 2], [1, 2, 1, 3], [1, 1, 2, 4], [1, 1, 1, 2]]))
 
         # difference
-        T = SE3.trans(1, 2, 3)
+        T = SE3(1, 2, 3)
 
         a = T - T
         self.assertNotIsInstance(a, SE3)
@@ -815,7 +815,7 @@ class TestSE3(unittest.TestCase):
         array_compare(a, np.array([[0, -1, -1, 0], [-1, 0, -1, 1], [-1, -1, 0, 2], [-1, -1, -1, 0]]))
 
         # multiply
-        T = SE3.trans(1, 2, 3)
+        T = SE3(1, 2, 3)
 
         a = T * T
         self.assertIsInstance(a, SE3)
@@ -829,7 +829,7 @@ class TestSE3(unittest.TestCase):
         self.assertNotIsInstance(a, SE3)
         array_compare(a, 2 * transl(1, 2, 3))
 
-        T = SE3.trans(1, 2, 3)
+        T = SE3(1, 2, 3)
         T *= SE3.Ry(pi / 2)
         self.assertIsInstance(T, SE3)
         array_compare(T, np.array([[0, 0, 1, 1], [0, 1, 0, 2], [-1, 0, 0, 3], [0, 0, 0, 1]]))
