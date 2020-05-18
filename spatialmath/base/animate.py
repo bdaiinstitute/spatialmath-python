@@ -21,8 +21,46 @@ import math
 
 
 class Animate:
+    """
+    Animate objects for matplotlib 3d
+    
+    An instance of this class behaves like an Axes3D and supports proxies for
+    
+    - ``plot``
+    - ``quiver``
+    - ``text``
+    
+    which renders them and also places corresponding objects into a display list.
+    These objects are ``Line``, ``Quiver`` and ``Text``.  Only these primitives will
+    be animated.
+    
+    The objects are all drawn relative to the origin, and will be transformed according
+    to the transform that is being animated.
+    
+    Example::
+        
+        anim = animate.Animate(dims=[0,2]) # set up the 3D axes
+        anim.trplot(T, frame='A', color='green')  # draw the frame
+        anim.run(loop=True)  # animate it
+    """
 
     def __init__(self, axes=None, dims=None, projection='ortho', labels=['X', 'Y', 'Z'], **kwargs):
+        """
+        Construct an Animate object
+
+        :param axes: the axes to plot into, defaults to current axes
+        :type axes: Axes3D reference
+        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
+        If dims is [min, max] those limits are applied to the x-, y- and z-axes.
+        :type dims: array_like
+        :param projection: 3D projection: ortho [default] or persp
+        :type projection: str
+        :param labels: labels for the axes, defaults to X, Y and Z
+        :type labels: 3-tuple of strings
+        
+        Will setup to plot into an existing or a new Axes3D instance.
+
+        """
         self.displaylist = []
 
         if axes is None:
@@ -50,17 +88,52 @@ class Animate:
         self.ax = axes
 
         # set flag for 2d or 3d axes, flag errors on the methods called later
+        
+    def trplot(self, T, **kwargs):
+        """
+        Define the transform to animate
+        
+        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
+        :type: numpy.ndarray, shape=(3,3) or (4,4)
+    
+        Is polymorphic with ``base.trplot`` and accepts the same parameters.  This sets
+        up the animation but doesn't execute it.
+        
+        :seealso: :func:`run`
 
-    def draw(self, T):
-        for x in self.displaylist:
-            x.draw(T)
+        """
+        # stash the final value
+        if tr.isrot(T):
+            self.T = tr.r2t(T)
+        else:
+            self.T = T
+        # draw axes at the origin
+        tr.trplot(np.eye(4), axes=self, **kwargs)
 
     def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, **kwargs):
-
+        """
+        Run the animation
+        
+        :param interval: number of steps in the animation [defaault 100]
+        :type interval: int
+        :param repeat: animate in endless loop [default False]
+        :type repeat: bool
+        :param interval: number of milliseconds between frames [default 50]
+        :type interval: int
+        :param movie: name of file to write MP4 movie into
+        :type movie: str
+        
+        Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
+        
+        Notes:
+            
+        - the ``movie`` option requires the ffmpeg package to be installed: ``conda install -c conda-forge ffmpeg``
+        - invokes the draw() method of every object in the display list
+        """
+        
         def update(frame, a):
-            s = frame / 100.0
-            T = tr.transl(0.5 * s, 0.5 * s, 0.5 * s) @ tr.trotx(math.pi * s)
-            a.draw(T)
+            T = tr.trinterp(self.T, s = frame / nframes)
+            a._draw(T)
             return a.artists()
 
         # blit leaves a trail and first frame
@@ -75,17 +148,38 @@ class Animate:
             print('creating movie', movie)
             FFwriter = animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
             ani.save(movie, writer=FFwriter)
-            # TODO needs conda install -c conda-forge ffmpeg
 
     def __repr__(self):
+        """
+        Human readable version of the display list
+
+        :param self: the animation
+        :type self: Animate
+        :returns: readable version of the display list
+        :rtype: str
+        """
         return ', '.join([x.type for x in self.displaylist])
 
     def artists(self):
+        """
+        List of artists that need to be updated
+
+        :param self: the animation
+        :type self: Animate
+        :returns: list of artists
+        :rtype: list
+        """
         return [x.h for x in self.displaylist]
+    
+
+    def _draw(self, T):
+        for x in self.displaylist:
+            x.draw(T)
+
 
     #------------------- plot()
 
-    class Line:
+    class _Line:
 
         def __init__(self, anim, h, xs, ys, zs):
             p = zip(xs, ys, zs)
@@ -99,13 +193,30 @@ class Animate:
             self.h.set_data(p[0, :], p[1, :])
             self.h.set_3d_properties(p[2, :])
 
-    def plot(self, xs, ys, zs, *args, **kwargs):
-        h, = self.ax.plot(xs, ys, zs, *args, **kwargs)
-        self.displaylist.append(Animate.Line(self, h, xs, ys, zs))
+    def plot(self, x, y, z, *args, **kwargs):
+        """
+        Plot a polyline
+        
+        :param x: list of x-coordinates
+        :type x: array_like
+        :param y: list of y-coordinates
+        :type y: array_like
+        :param z: list of z-coordinates
+        :type z: array_like
+        
+        Other arguments as accepted by the matplotlib method.
+        
+        All arrays must have the same length.
+        
+        :seealso: :func:`matplotlib.pyplot.plot`
+        """
+
+        h, = self.ax.plot(x, y, z, *args, **kwargs)
+        self.displaylist.append(Animate._Line(self, h, x, y, z))
 
     #------------------- quiver()
 
-    class Quiver:
+    class _Quiver:
 
         def __init__(self, anim, h):
             self.type = 'quiver'
@@ -130,12 +241,36 @@ class Animate:
             self.h.set_segments(p)
 
     def quiver(self, x, y, z, u, v, w, *args, **kwargs):
+        """
+        Plot a quiver
+        
+        :param x: list of base x-coordinates
+        :type x: array_like
+        :param y: list of base y-coordinates
+        :type y: array_like
+        :param z: list of base z-coordinates
+        :type z: array_like
+        :param u: list of vector x-coordinates
+        :type u: array_like
+        :param v: list of vector y-coordinates
+        :type v: array_like
+        :param w: list of vector z-coordinates
+        :type w: array_like
+        
+        Draws a series of arrows, the bases defined by corresponding elements of
+        (x,y,z) and the vector has components defined by corresponding elements of
+        (u,v,w).
+        
+        Other arguments as accepted by the matplotlib method.
+        
+        :seealso: :func:`matplotlib.pyplot.quiver`
+        """
         h = self.ax.quiver(x, y, z, u, v, w, *args, **kwargs)
-        self.displaylist.append(Animate.Quiver(self, h))
+        self.displaylist.append(Animate._Quiver(self, h))
 
     #------------------- text()
 
-    class Text:
+    class _Text:
 
         def __init__(self, anim, h, x, y, z):
             self.type = 'text'
@@ -148,11 +283,25 @@ class Animate:
             # x2, y2, _ = proj3d.proj_transform(p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))
             self.h.set_position((p[0], p[1]))
-            self.h.set_3d_properties(p[2])
+            self.h.set_3d_properties(z=p[2], zdir='x')
 
     def text(self, x, y, z, *args, **kwargs):
+        """
+        Plot text
+        
+        :param x: x-coordinate
+        :type x: float
+        :param y: float
+        :type y: array_like
+        :param z: z-coordinate
+        :type z: float
+        
+        Other arguments as accepted by the matplotlib method.
+        
+        :seealso: :func:`matplotlib.pyplot.text`
+        """
         h = self.ax.text3D(x, y, z, *args, **kwargs)
-        self.displaylist.append(Animate.Text(self, h, x, y, z))
+        self.displaylist.append(Animate._Text(self, h, x, y, z))
 
     #------------------- scatter()
 
@@ -178,19 +327,3 @@ class Animate:
 
     def set_zlabel(self, *args, **kwargs):
         self.ax.set_zlabel(*args, **kwargs)
-
-
-def tranimate(T, **kwargs):
-    anim = Animate(**kwargs)
-    tr.trplot(T, axes=anim, **kwargs)
-    anim.run(**kwargs)
-
-
-tranimate(tr.transl(0, 0, 0), frame='A', arrow=False, dims=[0, 5])  # , movie='bob.mp4')
-
-
-# a = trplot_a( tr.transl(1,2,3), frame='A', rviz=True, width=1)
-# print(a)
-# a.draw(tr.transl(0, 0, -1))
-# trplot_a( tr.transl(3,1, 2), color='red', width=3, frame='B')
-# trplot_a( tr.transl(4, 3, 1)@tr.trotx(math.pi/3), color='green', frame='c')

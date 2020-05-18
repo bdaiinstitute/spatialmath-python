@@ -1388,8 +1388,8 @@ try:
 
         :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
         :type: numpy.ndarray, shape=(3,3) or (4,4)
-        :param X: the axes to plot into, defaults to current axes
-        :type ax: Axes3D reference
+        :param axes: the axes to plot into, defaults to current axes
+        :type axes: Axes3D reference
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
         If dims is [min, max] those limits are applied to the x-, y- and z-axes.
         :type dims: array_like
@@ -1505,6 +1505,38 @@ try:
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
+    import animate
+        
+    def tranimate(T, **kwargs):
+        """
+        Animate a 3D coordinate frame
+    
+        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
+        :type: numpy.ndarray, shape=(3,3) or (4,4)
+        :param nframes: number of steps in the animation [defaault 100]
+        :type nframes: int
+        :param repeat: animate in endless loop [default False]
+        :type repeat: bool
+        :param interval: number of milliseconds between frames [default 50]
+        :type interval: int
+        :param movie: name of file to write MP4 movie into
+        :type movie: str
+        
+        Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
+    
+        - If no current figure, one is created
+        - If current figure, but no axes, a 3d Axes is created
+        
+    
+        Examples:
+    
+             tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
+             tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+        """
+        anim = animate.Animate(**kwargs)
+        anim.trplot(T, **kwargs)
+        anim.run(**kwargs)
+    
 except BaseException:  # pragma: no cover
     def trplot(*args, **kwargs):
         print('** trplot: no plot produced -- matplotlib not installed')
@@ -1513,8 +1545,7 @@ if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
 
-    # trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
-    # trplot( transl(3,1, 2), color='red', width=3, frame='B')
-    # trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
+    tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame='A', arrow=False, dims=[0, 5], nframes=200, movie='bob.mp4')
+
 
     exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read())
