@@ -316,7 +316,7 @@ def ishom(T, check=False, tol=10):
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`
     """
-    return T.shape == (4, 4) and (not check or (trn.isR(T[:3, :3], tol=tol) and np.all(T[3, :] == np.array([0, 0, 0, 1]))))
+    return isinstance(T, np.ndarray) and T.shape == (4, 4) and (not check or (trn.isR(T[:3, :3], tol=tol) and np.all(T[3, :] == np.array([0, 0, 0, 1]))))
 
 
 def isrot(R, check=False, tol=10):
@@ -335,7 +335,7 @@ def isrot(R, check=False, tol=10):
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
     """
-    return R.shape == (3, 3) and (not check or trn.isR(R, tol=tol))
+    return isinstance(R, np.ndarray) and R.shape == (3, 3) and (not check or trn.isR(R, tol=tol))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -1381,7 +1381,14 @@ def _vec2s(fmt, v):
 try:
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D
-
+    matplotlib_exists = True
+    
+except BaseException:  # pragma: no cover
+    def trplot(*args, **kwargs):
+        print('** trplot: no plot produced -- matplotlib not installed')
+    matplotlib_exists = False
+        
+if matplotlib_exists:
     def trplot(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
         """
         Plot a 3D coordinate frame
@@ -1505,7 +1512,7 @@ try:
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
-    import animate
+    import spatialmath.base.animate
         
     def tranimate(T, **kwargs):
         """
@@ -1536,16 +1543,9 @@ try:
         anim = animate.Animate(**kwargs)
         anim.trplot(T, **kwargs)
         anim.run(**kwargs)
-    
-except BaseException:  # pragma: no cover
-    def trplot(*args, **kwargs):
-        print('** trplot: no plot produced -- matplotlib not installed')
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
-
-    tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame='A', arrow=False, dims=[0, 5], nframes=200, movie='bob.mp4')
-
 
     exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read())
