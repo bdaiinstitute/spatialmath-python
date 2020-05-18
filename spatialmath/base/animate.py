@@ -15,7 +15,7 @@ Created on Mon Apr 27 12:44:45 2020
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
-import spatialmath.base as tr
+from spatialmath import base as tr
 import numpy as np
 import math
 
@@ -23,22 +23,22 @@ import math
 class Animate:
     """
     Animate objects for matplotlib 3d
-    
+
     An instance of this class behaves like an Axes3D and supports proxies for
-    
+
     - ``plot``
     - ``quiver``
     - ``text``
-    
-    which renders them and also places corresponding objects into a display list.
-    These objects are ``Line``, ``Quiver`` and ``Text``.  Only these primitives will
-    be animated.
-    
-    The objects are all drawn relative to the origin, and will be transformed according
-    to the transform that is being animated.
-    
+
+    which renders them and also places corresponding objects into a display
+    list. These objects are ``Line``, ``Quiver`` and ``Text``.  Only these
+    primitives will be animated.
+
+    The objects are all drawn relative to the origin, and will be transformed
+    according to the transform that is being animated.
+
     Example::
-        
+
         anim = animate.Animate(dims=[0,2]) # set up the 3D axes
         anim.trplot(T, frame='A', color='green')  # draw the frame
         anim.run(loop=True)  # animate it
@@ -50,14 +50,15 @@ class Animate:
 
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
-        If dims is [min, max] those limits are applied to the x-, y- and z-axes.
+        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,
+            zmin, zmax]. If dims is [min, max] those limits are applied
+            to the x-, y- and z-axes.
         :type dims: array_like
         :param projection: 3D projection: ortho [default] or persp
         :type projection: str
         :param labels: labels for the axes, defaults to X, Y and Z
         :type labels: 3-tuple of strings
-        
+
         Will setup to plot into an existing or a new Axes3D instance.
 
         """
@@ -88,17 +89,17 @@ class Animate:
         self.ax = axes
 
         # set flag for 2d or 3d axes, flag errors on the methods called later
-        
+
     def trplot(self, T, **kwargs):
         """
         Define the transform to animate
-        
+
         :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
         :type: numpy.ndarray, shape=(3,3) or (4,4)
-    
-        Is polymorphic with ``base.trplot`` and accepts the same parameters.  This sets
-        up the animation but doesn't execute it.
-        
+
+        Is polymorphic with ``base.trplot`` and accepts the same parameters.
+        This sets up the animation but doesn't execute it.
+
         :seealso: :func:`run`
 
         """
@@ -113,7 +114,7 @@ class Animate:
     def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, **kwargs):
         """
         Run the animation
-        
+
         :param interval: number of steps in the animation [defaault 100]
         :type interval: int
         :param repeat: animate in endless loop [default False]
@@ -122,17 +123,19 @@ class Animate:
         :type interval: int
         :param movie: name of file to write MP4 movie into
         :type movie: str
-        
-        Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
-        
+
+        Animates a 3D coordinate frame moving from the world frame to a frame
+        represented by the SO(3) or SE(3) matrix to the current axes.
+
         Notes:
-            
-        - the ``movie`` option requires the ffmpeg package to be installed: ``conda install -c conda-forge ffmpeg``
+
+        - the ``movie`` option requires the ffmpeg package to be installed:
+            ``conda install -c conda-forge ffmpeg``
         - invokes the draw() method of every object in the display list
         """
-        
+
         def update(frame, a):
-            T = tr.trinterp(self.T, s = frame / nframes)
+            T = tr.trinterp(self.T, s=frame / nframes)
             a._draw(T)
             return a.artists()
 
@@ -170,14 +173,12 @@ class Animate:
         :rtype: list
         """
         return [x.h for x in self.displaylist]
-    
 
     def _draw(self, T):
         for x in self.displaylist:
             x.draw(T)
 
-
-    #------------------- plot()
+    # ------------------- plot()
 
     class _Line:
 
@@ -196,25 +197,25 @@ class Animate:
     def plot(self, x, y, z, *args, **kwargs):
         """
         Plot a polyline
-        
+
         :param x: list of x-coordinates
         :type x: array_like
         :param y: list of y-coordinates
         :type y: array_like
         :param z: list of z-coordinates
         :type z: array_like
-        
+
         Other arguments as accepted by the matplotlib method.
-        
+
         All arrays must have the same length.
-        
+
         :seealso: :func:`matplotlib.pyplot.plot`
         """
 
         h, = self.ax.plot(x, y, z, *args, **kwargs)
         self.displaylist.append(Animate._Line(self, h, x, y, z))
 
-    #------------------- quiver()
+    # ------------------- quiver()
 
     class _Quiver:
 
@@ -243,7 +244,7 @@ class Animate:
     def quiver(self, x, y, z, u, v, w, *args, **kwargs):
         """
         Plot a quiver
-        
+
         :param x: list of base x-coordinates
         :type x: array_like
         :param y: list of base y-coordinates
@@ -256,19 +257,19 @@ class Animate:
         :type v: array_like
         :param w: list of vector z-coordinates
         :type w: array_like
-        
-        Draws a series of arrows, the bases defined by corresponding elements of
-        (x,y,z) and the vector has components defined by corresponding elements of
-        (u,v,w).
-        
+
+        Draws a series of arrows, the bases defined by corresponding elements
+        of (x,y,z) and the vector has components defined by corresponding
+        elements of (u,v,w).
+
         Other arguments as accepted by the matplotlib method.
-        
+
         :seealso: :func:`matplotlib.pyplot.quiver`
         """
         h = self.ax.quiver(x, y, z, u, v, w, *args, **kwargs)
         self.displaylist.append(Animate._Quiver(self, h))
 
-    #------------------- text()
+    # ------------------- text()
 
     class _Text:
 
@@ -280,7 +281,8 @@ class Animate:
 
         def draw(self, T):
             p = T @ self.p
-            # x2, y2, _ = proj3d.proj_transform(p[0], p[1], p[2], self.anim.ax.get_proj())
+            # x2, y2, _ = proj3d.proj_transform(
+            #   p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))
             self.h.set_position((p[0], p[1]))
             self.h.set_3d_properties(z=p[2], zdir='x')
@@ -288,22 +290,22 @@ class Animate:
     def text(self, x, y, z, *args, **kwargs):
         """
         Plot text
-        
+
         :param x: x-coordinate
         :type x: float
         :param y: float
         :type y: array_like
         :param z: z-coordinate
         :type z: float
-        
+
         Other arguments as accepted by the matplotlib method.
-        
+
         :seealso: :func:`matplotlib.pyplot.text`
         """
         h = self.ax.text3D(x, y, z, *args, **kwargs)
         self.displaylist.append(Animate._Text(self, h, x, y, z))
 
-    #------------------- scatter()
+    # ------------------- scatter()
 
     def scatter(self, **kwargs):
         pass
