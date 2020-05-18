@@ -49,7 +49,7 @@ def getvector(v, dim=None, out='array'):
         s = v.shape
         if dim is not None:
             if not (s == (dim,) or s == (1, dim) or s == (dim, 1)):
-                raise ValueError("incorrect vector length")
+                raise ValueError("incorrect vector length: expected {}, got {}".format(dim, s))
 
         v = v.flatten()
 
