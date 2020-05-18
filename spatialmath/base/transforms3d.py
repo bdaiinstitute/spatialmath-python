@@ -1130,7 +1130,6 @@ def trinterp(T0, T1=None, s=None):
         
     - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-    
     :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
     """
 
@@ -1159,7 +1158,7 @@ def trinterp(T0, T1=None, s=None):
     return trn.rt2tr(quat.q2r(qr), pr)
 
 def delta2tr(d):
-    """
+    r"""
     Convert differential motion to SE(3)
     
     :param d: differential motion as a 6-vector
@@ -1178,7 +1177,7 @@ def delta2tr(d):
     return np.eye(4,4) + trn.skewa(d)
     
 def trinv(T):
-    """
+    r"""
     Invert an SE(3) matrix
     
     :param T: an SE(3) matrix
