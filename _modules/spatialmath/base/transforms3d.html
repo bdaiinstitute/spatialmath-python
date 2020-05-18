@@ -1538,8 +1538,8 @@
 
 <span class="sd">        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame</span>
 <span class="sd">        :type: numpy.ndarray, shape=(3,3) or (4,4)</span>
-<span class="sd">        :param X: the axes to plot into, defaults to current axes</span>
-<span class="sd">        :type ax: Axes3D reference</span>
+<span class="sd">        :param axes: the axes to plot into, defaults to current axes</span>
+<span class="sd">        :type axes: Axes3D reference</span>
 <span class="sd">        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].</span>
 <span class="sd">        If dims is [min, max] those limits are applied to the x-, y- and z-axes.</span>
 <span class="sd">        :type dims: array_like</span>
@@ -1655,6 +1655,38 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
+    <span class="kn">import</span> <span class="nn">animate</span>
+        
+    <span class="k">def</span> <span class="nf">tranimate</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Animate a 3D coordinate frame</span>
+<span class="sd">    </span>
+<span class="sd">        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame</span>
+<span class="sd">        :type: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">        :param nframes: number of steps in the animation [defaault 100]</span>
+<span class="sd">        :type nframes: int</span>
+<span class="sd">        :param repeat: animate in endless loop [default False]</span>
+<span class="sd">        :type repeat: bool</span>
+<span class="sd">        :param interval: number of milliseconds between frames [default 50]</span>
+<span class="sd">        :type interval: int</span>
+<span class="sd">        :param movie: name of file to write MP4 movie into</span>
+<span class="sd">        :type movie: str</span>
+<span class="sd">        </span>
+<span class="sd">        Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.</span>
+<span class="sd">    </span>
+<span class="sd">        - If no current figure, one is created</span>
+<span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
+<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">        Examples:</span>
+<span class="sd">    </span>
+<span class="sd">             tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
+<span class="sd">             tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anim</span> <span class="o">=</span> <span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
 <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 <div class="viewcode-block" id="trplot"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trplot">[docs]</a>    <span class="k">def</span> <span class="nf">trplot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;** trplot: no plot produced -- matplotlib not installed&#39;</span><span class="p">)</span></div>
@@ -1663,9 +1695,8 @@
     <span class="kn">import</span> <span class="nn">pathlib</span>
     <span class="kn">import</span> <span class="nn">os.path</span>
 
-    <span class="c1"># trplot( transl(1,2,3), frame=&#39;A&#39;, rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])</span>
-    <span class="c1"># trplot( transl(3,1, 2), color=&#39;red&#39;, width=3, frame=&#39;B&#39;)</span>
-    <span class="c1"># trplot( transl(4, 3, 1)@trotx(math.pi/3), color=&#39;green&#39;, frame=&#39;c&#39;, dims=[0,4,0,4,0,4])</span>
+    <span class="n">tranimate</span><span class="p">(</span><span class="n">transl</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="nd">@trotx</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="nd">@troty</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">nframes</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="s1">&#39;bob.mp4&#39;</span><span class="p">)</span>
+
 
     <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s2">&quot;test_transforms.py&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
