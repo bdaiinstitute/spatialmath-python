@@ -188,7 +188,7 @@ def ishom2(T, check=False):
 
     :seealso: isR, isrot2, ishom, isvec
     """
-    return T.shape == (3, 3) and (not check or (trn.isR(T[:2, :2]) and np.all(T[2, :] == np.array([0, 0, 1]))))
+    return isinstance(T, np.ndarray) and T.shape == (3, 3) and (not check or (trn.isR(T[:2, :2]) and np.all(T[2, :] == np.array([0, 0, 1]))))
 
 
 def isrot2(R, check=False):
@@ -207,7 +207,7 @@ def isrot2(R, check=False):
 
     :seealso: isR, ishom2, isrot
     """
-    return R.shape == (2, 2) and (not check or trn.isR(R))
+    return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or trn.isR(R))
 
 
 # ---------------------------------------------------------------------------------------#
