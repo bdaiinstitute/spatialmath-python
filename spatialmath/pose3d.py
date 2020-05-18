@@ -217,6 +217,9 @@ class SO3(sp.SMPose):
 
         - ``SE3.Rx(THETA)`` is an SO(3) rotation of THETA radians about the x-axis
         - ``SE3.Rx(THETA, "deg")`` as above but THETA is in degrees
+        
+        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        elements.
         """
         return cls([tr.rotx(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -234,6 +237,9 @@ class SO3(sp.SMPose):
 
         - ``SO3.Ry(THETA)`` is an SO(3) rotation of THETA radians about the y-axis
         - ``SO3.Ry(THETA, "deg")`` as above but THETA is in degrees
+        
+        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        elements.
         """
         return cls([tr.roty(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -248,9 +254,12 @@ class SO3(sp.SMPose):
         :type unit: str
         :return: 3x3 rotation matrix
         :rtype: SO3 instance
-
+        
         - ``SO3.Rz(THETA)`` is an SO(3) rotation of THETA radians about the z-axis
         - ``SO3.Rz(THETA, "deg")`` as above but THETA is in degrees
+        
+        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        elements.
         """
         return cls([tr.rotz(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -265,8 +274,7 @@ class SO3(sp.SMPose):
         :rtype: SO3 instance
 
         - ``SO3.Rand()`` is a random SO(3) rotation.
-        - ``SO3.Rand(N)`` is an SO3 object containing a sequence of N random
-          rotations.
+        - ``SO3.Rand(N)`` is a sequence of N random rotations.
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
@@ -278,14 +286,17 @@ class SO3(sp.SMPose):
         Create an SO(3) rotation from Euler angles
 
         :param angles: 3-vector of Euler angles
-        :type angles: array_like
+        :type angles: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 3x3 rotation matrix
         :rtype: SO3 instance
 
-        ``SO3.Eul(ANGLES)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
+        ``SO3.Eul(angles)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
+        
+        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
+        correponding to the rows of angles.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
@@ -300,7 +311,7 @@ class SO3(sp.SMPose):
         Create an SO(3) rotation from roll-pitch-yaw angles
 
         :param angles: 3-vector of roll-pitch-yaw angles
-        :type angles: array_like
+        :type angles: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
@@ -308,7 +319,7 @@ class SO3(sp.SMPose):
         :return: 3x3 rotation matrix
         :rtype: SO3 instance
 
-        ``SO3.RPY(ANGLES)`` is an SO(3) rotation defined by a 3-vector of roll, pitch, yaw angles :math:`(r, p, y)`
+        ``SO3.RPY(angles)`` is an SO(3) rotation defined by a 3-vector of roll, pitch, yaw angles :math:`(r, p, y)`
           which correspond to successive rotations about the axes specified by ``order``:
 
             - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
@@ -321,6 +332,9 @@ class SO3(sp.SMPose):
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
 
+        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
+        correponding to the rows of angles.
+        
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
         if argcheck.isvector(angles, 3):
@@ -384,12 +398,14 @@ class SO3(sp.SMPose):
         return cls(tr.angvec2r(theta, v, unit=unit), check=False)
     
     @classmethod
-    def Exp(cls,S):
+    def Exp(cls, S, so3=False):
         """
         Create an SO(3) rotation matrix from so(3)
 
         :param S: Lie algebra so(3)
         :type S: numpy ndarray
+        :param so3: accept input as an so(3) matrix [default False]
+        :type so3: bool
         :return: 3x3 rotation matrix
         :rtype: SO3 instance
 
@@ -397,10 +413,17 @@ class SO3(sp.SMPose):
           which is a 3x3 so(3) matrix (skew symmetric)
         - ``SO3.Exp(t)`` is an SO(3) rotation defined by a 3-element twist
           vector (the unique elements of the so(3) skew-symmetric matrix)
+        - ``SO3.Exp(T)`` is a sequence of SO(3) rotations defined by an Nx3 matrix
+          of twist vectors, one per row.
+          
+        Note:
+            
+        - an input 3x3 matrix is ambiguous, it could be the first or third case above.  In this
+          case the parameter `so3` is the decider.
 
         :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if isinstance(S, np.ndarray) and S.shape[1] == 3:
+        if argcheck.ismatrix(S, (-1,3)) and not so3:
             return cls([tr.trexp(s) for s in S])
         else:
             return cls(tr.trexp(S), check=False)
@@ -492,9 +515,9 @@ class SE3(SO3):
         :math:`T = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
         """
         if len(self) == 1:
-            return SE3(tr.rt2tr(self.R.T, -self.R.T @ self.t))
+            return SE3(tr.trinv(self.A))
         else:
-            return SE3([tr.rt2tr(x.R.T, -x.R.T @ x.t) for x in self])
+            return SE3([tr.trinv(x) for x in self.A])
 
     @classmethod
     def isvalid(self, x):
@@ -525,6 +548,9 @@ class SE3(SO3):
 
         - ``SE3.Rx(THETA)`` is an SO(3) rotation of THETA radians about the x-axis
         - ``SE3.Rx(THETA, "deg")`` as above but THETA is in degrees
+        
+        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        elements.
         """
         return cls([tr.trotx(x, unit) for x in argcheck.getvector(theta)])
 
@@ -542,6 +568,9 @@ class SE3(SO3):
 
         - ``SE3.Ry(THETA)`` is an SO(3) rotation of THETA radians about the y-axis
         - ``SE3.Ry(THETA, "deg")`` as above but THETA is in degrees
+
+        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        elements.
         """
         return cls([tr.troty(x, unit) for x in argcheck.getvector(theta)])
 
@@ -559,6 +588,9 @@ class SE3(SO3):
 
         - ``SE3.Rz(THETA)`` is an SO(3) rotation of THETA radians about the z-axis
         - ``SE3.Rz(THETA, "deg")`` as above but THETA is in degrees
+        
+        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        elements.
         """
         return cls([tr.trotz(x, unit) for x in argcheck.getvector(theta)])
 
@@ -590,7 +622,7 @@ class SE3(SO3):
         Create an SE(3) pure rotation from Euler angles
 
         :param angles: 3-vector of Euler angles
-        :type angles: array_like
+        :type angles: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 4x4 homogeneous transformation matrix
@@ -598,6 +630,9 @@ class SE3(SO3):
 
         ``SE3.Eul(ANGLES)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
+        
+        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
+        correponding to the rows of angles.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
@@ -612,7 +647,7 @@ class SE3(SO3):
         Create an SO(3) pure rotation from roll-pitch-yaw angles
 
         :param angles: 3-vector of roll-pitch-yaw angles
-        :type angles: array_like
+        :type angles: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
@@ -632,6 +667,9 @@ class SE3(SO3):
             - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
+              
+        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
+        correponding to the rows of angles.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """

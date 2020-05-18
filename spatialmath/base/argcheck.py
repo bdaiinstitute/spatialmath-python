@@ -14,7 +14,15 @@ def matrix(m, shape):
 
 
 def ismatrix(m, shape):
-    return isinstance(m, np.ndarray) and m.shape == shape
+    if not isinstance(m, np.ndarray):
+        return False
+    if len(shape) != len(m.shape):
+        return False
+    if shape[0] > 0 and shape[0] != m.shape[0]:
+        return False
+    if shape[1] > 0 and shape[1] != m.shape[1]:
+        return False
+    return True
 
 
 def verifymatrix(m, shape):

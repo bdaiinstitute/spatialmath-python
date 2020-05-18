@@ -14,9 +14,21 @@ from spatialmath.base.argcheck import *
 
 
 class Test_check(unittest.TestCase):
+    
+    def test_ismatrix(self):
+        a = np.eye(3,3)
+        self.assertTrue(ismatrix(a, (3,3)))
+        self.assertFalse(ismatrix(a, (4,3)))
+        self.assertFalse(ismatrix(a, (3,4)))
+        self.assertFalse(ismatrix(a, (4,4)))
+        
+        self.assertTrue(ismatrix(a, (-1,3)))
+        self.assertTrue(ismatrix(a, (3,-1)))
+        self.assertTrue(ismatrix(a, (-1,-1)))
+        
+        self.assertFalse(ismatrix(1, (-1,-1)))
 
     def test_unit(self):
-
         nt.assert_equal(getunit(5, 'rad'), 5)
         nt.assert_equal(getunit(5, 'deg'), 5 * math.pi / 180.0)
         nt.assert_equal(getunit([3, 4, 5], 'rad'), [3, 4, 5])
@@ -29,31 +41,31 @@ class Test_check(unittest.TestCase):
 
     def test_isvector(self):
         # no length specified
-        nt.assert_equal(isvector(2), True)
-        nt.assert_equal(isvector(2.0), True)
-        nt.assert_equal(isvector([1, 2, 3]), True)
-        nt.assert_equal(isvector((1, 2, 3)), True)
-        nt.assert_equal(isvector(np.array([1, 2, 3])), True)
-        nt.assert_equal(isvector(np.array([[1, 2, 3]])), True)
-        nt.assert_equal(isvector(np.array([[1], [2], [3]])), True)
+        self.assertTrue(isvector(2))
+        self.assertTrue(isvector(2.0))
+        self.assertTrue(isvector([1, 2, 3]))
+        self.assertTrue(isvector((1, 2, 3)))
+        self.assertTrue(isvector(np.array([1, 2, 3])))
+        self.assertTrue(isvector(np.array([[1, 2, 3]])))
+        self.assertTrue(isvector(np.array([[1], [2], [3]])))
 
         # length specified
-        nt.assert_equal(isvector(2, 1), True)
-        nt.assert_equal(isvector(2.0, 1), True)
-        nt.assert_equal(isvector([1, 2, 3], 3), True)
-        nt.assert_equal(isvector((1, 2, 3), 3), True)
-        nt.assert_equal(isvector(np.array([1, 2, 3]), 3), True)
-        nt.assert_equal(isvector(np.array([[1, 2, 3]]), 3), True)
-        nt.assert_equal(isvector(np.array([[1], [2], [3]]), 3), True)
+        self.assertTrue(isvector(2, 1))
+        self.assertTrue(isvector(2.0, 1))
+        self.assertTrue(isvector([1, 2, 3], 3))
+        self.assertTrue(isvector((1, 2, 3), 3))
+        self.assertTrue(isvector(np.array([1, 2, 3]), 3))
+        self.assertTrue(isvector(np.array([[1, 2, 3]]), 3))
+        self.assertTrue(isvector(np.array([[1], [2], [3]]), 3))
 
         # wrong length specified
-        nt.assert_equal(isvector(2, 4), False)
-        nt.assert_equal(isvector(2.0, 4), False)
-        nt.assert_equal(isvector([1, 2, 3], 4), False)
-        nt.assert_equal(isvector((1, 2, 3), 4), False)
-        nt.assert_equal(isvector(np.array([1, 2, 3]), 4), False)
-        nt.assert_equal(isvector(np.array([[1, 2, 3]]), 4), False)
-        nt.assert_equal(isvector(np.array([[1], [2], [3]]), 4), False)
+        self.assertFalse(isvector(2, 4))
+        self.assertFalse(isvector(2.0, 4))
+        self.assertFalse(isvector([1, 2, 3], 4))
+        self.assertFalse(isvector((1, 2, 3), 4))
+        self.assertFalse(isvector(np.array([1, 2, 3]), 4))
+        self.assertFalse(isvector(np.array([[1, 2, 3]]), 4))
+        self.assertFalse(isvector(np.array([[1], [2], [3]]), 4))
 
     def test_isvector(self):
         l = [1, 2, 3]
