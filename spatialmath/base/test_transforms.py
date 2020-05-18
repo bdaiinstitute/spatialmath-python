@@ -446,6 +446,16 @@ class Test2D(unittest.TestCase):
 
 class Test3D(unittest.TestCase):
 
+    def test_trinv(self):
+        T = np.eye(4)
+        nt.assert_array_almost_equal(trinv(T), T)
+        
+        T = trotx(0.3)
+        nt.assert_array_almost_equal(trinv(T)@T, np.eye(4))
+        
+        T = transl(1,2,3)
+        nt.assert_array_almost_equal(trinv(T)@T, np.eye(4))
+        
     def test_rotx(self):
         R = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         nt.assert_array_almost_equal(rotx(0), R)
