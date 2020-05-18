@@ -5,12 +5,6 @@ and homogeneous tranformation matrices.
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
-Versions:
-
-    1. Luis Fernando Lara Tobar and Peter Corke, 2008
-    2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
-    3. Peter Corke, 2020
-
 TODO:
 
     - trinterp
@@ -18,12 +12,45 @@ TODO:
     - tranimate, tranimate2
 """
 
+# This file is part of the SpatialMath toolbox for Python
+# https://github.com/petercorke/spatialmath-python
+# 
+# MIT License
+# 
+# Copyright (c) 1993-2020 Peter Corke
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Contributors:
+# 
+#     1. Luis Fernando Lara Tobar and Peter Corke, 2008
+#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
+#     3. Peter Corke, 2020
+
+
 import sys
 import math
 import numpy as np
 from spatialmath.base import argcheck
 from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
+from spatialmath.base import quaternions as quat
 
 
 try:  # pragma: no cover
@@ -997,10 +1024,16 @@ def trexp(S, theta=None):
             # 6 vector
             tw = argcheck.getvector(S)
 
+        if vec.iszerovec(tw):
+            return np.eye(4)
+        
         if theta is None:
-            (tw, theta) = vec.unittwist(tw)
+            (tw, theta) = vec.unittwist_norm(tw)
         else:
-            assert vec.isunittwist(tw), 'If theta is specified S must be a unit twist'
+            if theta == 0:
+                return np.eye(4)
+            else:
+                assert vec.isunittwist(tw), 'If theta is specified S must be a unit twist'
 
         t = tw[0:3]
         w = tw[3:6]
@@ -1028,6 +1061,214 @@ def trexp(S, theta=None):
         return trn._rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
+
+def trnorm(T):
+    """
+    Normalize an SO(3) or SE(3) matrix
+    
+    :param T: SO(3) or SE(3) matrix
+    :type T1: np.ndarray, shape=(3,3) or (4,4)
+    :param T1: second SE(3) matrix
+    :return: SO(3) or SE(3) matrix
+    :rtype: np.ndarray, shape=(3,3) or (4,4)
+
+    TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation
+    matrix (3x3) which is "close" to the input matrix R (3x3). If R
+    = [N,O,A] the O and A vectors are made unit length and the normal vector
+    is formed from N = O x A, and then we ensure that O and A are orthogonal
+    by O = A x N.
+    
+    TRNORM(T) as above but the rotational submatrix of the homogeneous
+    transformation T (4x4) is normalised while the translational part is
+    unchanged.
+    %
+    If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
+    is performed on each of the K planes.
+    %
+    Notes::
+    - Only the direction of A (the z-axis) is unchanged.
+    - Used to prevent finite word length arithmetic causing transforms to 
+    become `unnormalized'.
+    """
+
+    assert ishom(T) or isrot(T), 'expecting 3x3 or 4x4 hom xform'
+    
+    o = T[:3,1]
+    a = T[:3,2]
+    
+    n = np.cross(o, a)        # N = O x A
+    o = np.cross(a, n)        # (a)];
+    R = np.stack((vec.unitvec(n), vec.unitvec(o), vec.unitvec(a)), axis=1)
+    
+    if ishom(T):
+        return trn.rt2tr( R, T[:3,3] )
+    else:
+        return R
+    
+def trinterp(T0, T1=None, s=None):
+    """
+    Interpolate SE(3) matrices
+    
+    :param T0: first SE(3) matrix
+    :type T0: np.ndarray, shape=(4,4)
+    :param T1: second SE(3) matrix
+    :type T1: np.ndarray, shape=(4,4)
+    :param s: interpolation coefficient, range 0 to 1
+    :type s: float
+    :return: SE(3) matrix
+    :rtype: np.ndarray, shape=(4,4)
+    
+    - ``trinterp(T0, T1, S)`` is a homogeneous transform (4x4) interpolated
+    between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
+    transforms (4x4).
+    
+    - ``trinterp(T1, S)`` as above but interpolated between the identity matrix
+    when S=0 to T1 when S=1.
+    
+    
+    Notes:
+        
+    - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
+
+    
+    :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
+    """
+
+    assert 0 <= s <= 1, 's outside interval [0,1]'
+    
+    if T1 is None:
+        #	TRINTERP(T, s)
+        
+        q0 = quat.r2q(trn.t2r(T0))
+        p0 = transl(T0)
+        
+        qr = quat.slerp(quat.eye(), q0, s)
+        pr = s * p0
+    else:
+        #	TRINTERP(T0, T1, s)
+    
+        q0 = quat.r2q(trn.t2r(T0))
+        q1 = quat.r2q(trn.t2r(T1))
+        
+        p0 = transl(T0)
+        p1 = transl(T1)
+        
+        qr = quat.slerp(q0, q1, s)
+        pr = p0 * (1 - s) + s * p1;
+        
+    return trn.rt2tr(quat.q2r(qr), pr)
+
+def delta2tr(d):
+    """
+    Convert differential motion to SE(3)
+    
+    :param d: differential motion as a 6-vector
+    :type d: array_like
+    :return: SE(3) matrix
+    :rtype: np.ndarray, shape=(4,4)
+
+    ``T = delta2tr(d)`` is an SE(3) matrix representing differential 
+    motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
+
+    Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+    
+    :seealso: :func:`~tr2delta`
+    """
+
+    return np.eye(4,4) + trn.skewa(d)
+    
+def trinv(T):
+    """
+    Invert an SE(3) matrix
+    
+    :param T: an SE(3) matrix
+    :type T: np.ndarray, shape=(4,4)
+    :return: SE(3) matrix
+    :rtype: np.ndarray, shape=(4,4)
+
+    Computes an efficient inverse of an SE(3) matrix.
+    
+    :math:`\begin{pmatrix} {\bf R^T} & -{\bf R^T} t \\ 0 0 0 & 1 \end{pmatrix}`
+
+    """
+    assert ishom(T), 'expecting SE(3) matrix'
+    (R, t) = trn.tr2rt(T)
+    return trn.rt2tr(R.T, -R.T@t)
+
+def tr2delta(T0, T1=None):
+    """
+    Difference of SE(3) matrices as differential motion
+    
+    :param T0: first SE(3) matrix
+    :type T0: np.ndarray, shape=(4,4)
+    :param T1: second SE(3) matrix
+    :type T1: np.ndarray, shape=(4,4)
+    :return: Sdifferential motion as a 6-vector
+    :rtype: np.ndarray, shape=(6,)
+
+
+    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to 
+    infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
+
+    - ``tr2delta(T) as above but the motion is from the world frame to the pose represented by T.
+
+    The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
+    represents infinitessimal translation and rotation, and is an approximation to the 
+    instantaneous spatial velocity multiplied by time step.
+
+    Notes:
+        
+    - D is only an approximation to the motion T, and assumes
+      that T0 ~ T1 or T ~ eye(4,4).
+    - Can be considered as an approximation to the effect of spatial velocity over a
+      a time interval, average spatial velocity multiplied by time.
+    
+    Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+
+    :seealso: :func:`~delta2tr`
+    """
+
+    if T1 is None:
+        # tr2delta(T)
+        
+        assert ishom(T0), 'expecting SE(3) matrix'
+        Td = T0
+        
+    else:
+        #  incremental transformation from T0 to T1 in the T0 frame
+        Td = trinv(T0) @ T1
+    
+    return np.r_[transl(Td), trn.vex(trn.t2r(Td) - np.eye(3))]
+
+def tr2jac(T, samebody=False):
+    """
+    SE(3) adjoint
+    
+    :param T: an SE(3) matrix
+    :type T: np.ndarray, shape=(4,4)
+    :return: adjoint matrix
+    :rtype: np.ndarray, shape=(6,6)
+    
+    Computes an adjoint matrix that maps spatial velocity between two frames defined by
+    an SE(3) matrix.  It acts like a Jacobian matrix.
+    
+    - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or
+      differential motion from frame {A} to frame {B} where the pose of {B}
+      relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
+
+    - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both
+      attached to the same moving body.
+    """
+
+    assert ishom(T), 'expecting an SE(3) matrix'
+    Z = np.zeros((3,3))
+    	
+    if samebody:
+        (R,t) = trn.tr2rt(T)
+        return np.block([[R.T, (trn.skew(t)@R).T], [Z, R.T]])
+    else:
+        R = trn.t2r(T);
+        return np.block([[R.T, Z], [Z, R.T]])
 
 
 def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):

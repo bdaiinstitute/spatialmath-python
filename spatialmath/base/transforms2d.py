@@ -5,12 +5,38 @@ and homogeneous tranformation matrices.
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
-Versions:
-
-    1. Luis Fernando Lara Tobar and Peter Corke, 2008
-    2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
-    3. Peter Corke, 2020
 """
+
+# This file is part of the SpatialMath toolbox for Python
+# https://github.com/petercorke/spatialmath-python
+# 
+# MIT License
+# 
+# Copyright (c) 1993-2020 Peter Corke
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Contributors:
+# 
+#     1. Luis Fernando Lara Tobar and Peter Corke, 2008
+#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
+#     3. Peter Corke, 2020
 
 import sys
 import math
@@ -269,6 +295,110 @@ def trexp2(S, theta=None):
         return trn._rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
+        
+def trinterp2(T0, T1=None, s=None):
+    """
+    Interpolate SE(2) matrices
+
+    :param T0: first SE(2) matrix
+    :type T0: np.ndarray, shape=(3,3)
+    :param T1: second SE(2) matrix
+    :type T1: np.ndarray, shape=(3,3)
+    :param s: interpolation coefficient, range 0 to 1
+    :type s: float
+    :return: SE(2) matrix
+    :rtype: np.ndarray, shape=(3,3)
+    
+    - ``trinterp2(T0, T1, S)`` is a homogeneous transform (3x3) interpolated
+    between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
+    transforms (3x3).
+    
+    - ``trinterp2(T1, S)`` as above but interpolated between the identity matrix
+    when S=0 to T1 when S=1.
+    
+    Notes::
+    - Rotation angle is linearly interpolated.
+
+    :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
+    
+    %## 2d homogeneous trajectory
+    """
+    if T1 is None:
+        #	TRINTERP2(T, s)
+        
+        th0 = math.atan2(T0[1,0], T0[0,0])
+        p0 = transl2(T0)
+        
+        th = s * th0
+        pr = s * p0
+    else:
+        #	TRINTERP2(T0, T1, s)
+    
+        th0 = math.atan2(T0[1,0], T0[0,0])
+        th1 = math.atan2(T1[1,0], T1[0,0])
+        
+        p0 = transl2(T0)
+        p1 = transl2(T1)
+        
+        pr = p0 * (1 - s) + s * p1;
+        th = th0 * (1 - s) + s * th1
+    
+    return trn.rt2tr(rot2(th), pr)
+
+
+# function T = trinterp2(A, B, C)
+
+#     switch nargin
+#         case 2
+#             % trinterp(T, s)
+#             T1 = A; s = B;
+            
+#             th0 = 0;
+#             th1 = atan2(T1(2,1), T1(1,1));
+#             if ~isrot2(T1)
+#                 p0 = [0 0]';
+#                 p1 = transl2(T1);
+#             end
+#         case 3
+#             % trinterp(T1, T2, s)
+#             T0 = A; T1 = B; s = C;
+#             assert(all(size(A) == size(B)), 'SMTB:trinterp2:badarg', '2 matrices must be same size');
+#             th0 = atan2(T0(2,1), T0(1,1));
+#             th1 = atan2(T1(2,1), T1(1,1));
+#             if ~isrot2(T0)
+#                 p0 = transl2(T0);
+#                 p1 =transl2(T1);
+#             end
+#         otherwise
+#             error('SMTB:trinterp2:badarg', 'must be 2 or 3 arguments');
+#     end
+    
+#     if length(s) == 1 && s > 1 && (s == floor(s))
+#         % integer value
+#         s = [0:(s-1)] / (s-1);
+#     elseif any(s<0 | s>1)
+#         error('SMTB:trinterp2:badarg', 'values of S outside interval [0,1]');
+#     end
+    
+#     if isrot2(T1)
+        
+#         % SO(2) case
+#         for i=1:length(s)
+#             th = th0*(1-s(i)) + s(i)*th1;
+            
+#             T(:,:,i) = rot2(th);
+#         end
+#     else
+#         % SE(2) case
+#         for i=1:length(s)
+#             th = th0*(1-s(i)) + s(i)*th1;
+#             pr = p0*(1-s(i)) + s(i)*p1;
+            
+#             T(:,:,i) = rt2tr(rot2(th), pr);
+#         end
+#     end
+    
+# end
 
 
 def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
