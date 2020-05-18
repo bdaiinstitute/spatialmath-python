@@ -43,6 +43,10 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/fig1.png)
+
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/animate.gif)
+
 # Getting going
 
 ## Using pip
@@ -201,6 +205,7 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 
 ## Low-level spatial math
 
+
 Import the low-level transform functions
 
 ```
@@ -286,6 +291,26 @@ The functions support various plotting styles
 trplot( transl(1,2,3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
 trplot( transl(3,1, 2), color='red', width=3, frame='B')
 trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,4,0,4])
+```
+
+Animation is straightforward
+
+```
+tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200)
+```
+
+and it can be saved to a file by
+
+```
+tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
+```
+
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/animate.gif)
+
+At the moment we can only save as an MP4, but the following incantation will covert that to an animated GIF for embedding in web pages
+
+```
+ffmpeg -i out -r 20 -vf "fps=10,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" out.gif
 ```
 
 ## Symbolic support
