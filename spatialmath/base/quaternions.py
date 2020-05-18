@@ -6,6 +6,37 @@ Created on Fri Apr 10 14:12:56 2020
 @author: Peter Corke
 """
 
+# This file is part of the SpatialMath toolbox for Python
+# https://github.com/petercorke/spatialmath-python
+# 
+# MIT License
+# 
+# Copyright (c) 1993-2020 Peter Corke
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Contributors:
+# 
+#     1. Luis Fernando Lara Tobar and Peter Corke, 2008
+#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
+#     3. Peter Corke, 2020
+
 import sys
 import math
 import numpy as np
@@ -422,6 +453,11 @@ def slerp(q0, q1, s, shortest=False):
     assert 0 <= s <= 1, 's must be in the interval [0,1]'
     q0 = argcheck.getvector(q0, 4)
     q1 = argcheck.getvector(q1, 4)
+    
+    if s == 0:
+        return q0
+    elif s == 1:
+        return q1
 
     dot = np.dot(q0, q1)
 
@@ -434,11 +470,14 @@ def slerp(q0, q1, s, shortest=False):
             dot = -dot
 
     dot = np.clip(dot, -1, 1)  # Clip within domain of acos()
-    theta_0 = math.acos(dot)  # theta_0 = angle between input vectors
-    theta = theta_0 * s  # theta = angle between v0 and result
-    s0 = math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0)
-    s1 = math.sin(theta) / math.sin(theta_0)
-    return (q0 * s0) + (q1 * s1)
+    theta = math.acos(dot)  # theta is the angle between rotation vectors
+    if abs(theta) > 10*_eps:
+        s0 = math.sin((1 - s) * theta)
+        s1 = math.sin(s * theta)
+        return ((q0 * s0) + (q1 * s1)) / math.sin(theta)
+    else:
+        # quaternions are identical
+        return q0
 
 
 def rand():
