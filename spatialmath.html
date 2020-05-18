@@ -4459,14 +4459,6 @@ Original authors: Luis Fernando Lara Tobar and Peter Corke
 and homogeneous tranformation matrices.</p>
 <p>Vector arguments are what numpy refers to as <code class="docutils literal notranslate"><span class="pre">array_like</span></code> and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.</p>
-<p>Versions:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Luis Fernando Lara Tobar and Peter Corke, 2008</p></li>
-<li><p>Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017</p></li>
-<li><p>Peter Corke, 2020</p></li>
-</ol>
-</div></blockquote>
 <dl class="py function">
 <dt id="spatialmath.base.transforms2d.colvec">
 <code class="sig-prename descclassname">spatialmath.base.transforms2d.</code><code class="sig-name descname">colvec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#colvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms2d.colvec" title="Permalink to this definition">¶</a></dt>
@@ -4646,6 +4638,44 @@ matrix.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="spatialmath.base.transforms2d.trinterp2">
+<code class="sig-prename descclassname">spatialmath.base.transforms2d.</code><code class="sig-name descname">trinterp2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T0</span></em>, <em class="sig-param"><span class="n">T1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinterp2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinterp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate SE(2) matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T0</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – first SE(2) matrix</p></li>
+<li><p><strong>T1</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – second SE(2) matrix</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – interpolation coefficient, range 0 to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(T0,</span> <span class="pre">T1,</span> <span class="pre">S)</span></code> is a homogeneous transform (3x3) interpolated</p></li>
+</ul>
+<p>between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
+transforms (3x3).</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(T1,</span> <span class="pre">S)</span></code> as above but interpolated between the identity matrix</p></li>
+</ul>
+<p>when S=0 to T1 when S=1.</p>
+<p>Notes::
+- Rotation angle is linearly interpolated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a></p>
+</dd>
+</dl>
+<p>%## 2d homogeneous trajectory</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="spatialmath.base.transforms2d.trot2">
 <code class="sig-prename descclassname">spatialmath.base.transforms2d.</code><code class="sig-name descname">trot2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">theta</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'rad'</span></em>, <em class="sig-param"><span class="n">t</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trot2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trot2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create SE(2) pure rotation</p>
@@ -4732,14 +4762,6 @@ single-line format:</p>
 and homogeneous tranformation matrices.</p>
 <p>Vector arguments are what numpy refers to as <code class="docutils literal notranslate"><span class="pre">array_like</span></code> and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.</p>
-<p>Versions:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Luis Fernando Lara Tobar and Peter Corke, 2008</p></li>
-<li><p>Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017</p></li>
-<li><p>Peter Corke, 2020</p></li>
-</ol>
-</div></blockquote>
 <p>TODO:</p>
 <blockquote>
 <div><ul class="simple">
@@ -4819,6 +4841,31 @@ equivalent to a rotation of <code class="docutils literal notranslate"><span cla
 <dt id="spatialmath.base.transforms3d.colvec">
 <code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">colvec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#colvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.colvec" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.delta2tr">
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">delta2tr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#delta2tr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.delta2tr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert differential motion to SE(3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<em>array_like</em>) – differential motion as a 6-vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(4,4)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">delta2tr(d)</span></code> is an SE(3) matrix representing differential 
+motion <span class="math notranslate nohighlight">\(d = [\delta_x, \delta_y, \delta_z,    heta_x,         heta_y,         heta_z\)</span>.</p>
+<p>Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.tr2delta" title="spatialmath.base.transforms3d.tr2delta"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2delta()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.eul2r">
@@ -5279,6 +5326,49 @@ acts that corresponds to the rotation part of <code class="docutils literal notr
 </dd></dl>
 
 <dl class="py function">
+<dt id="spatialmath.base.transforms3d.tr2delta">
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">tr2delta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T0</span></em>, <em class="sig-param"><span class="n">T1</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Difference of SE(3) matrices as differential motion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T0</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – first SE(3) matrix</p></li>
+<li><p><strong>T1</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – second SE(3) matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sdifferential motion as a 6-vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(6,)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2delta(T0,</span> <span class="pre">T1)</span></code> is the differential motion (6x1) corresponding to</p></li>
+</ul>
+<p>infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.</p>
+<ul class="simple">
+<li><p><a href="#id1"><span class="problematic" id="id2">``</span></a>tr2delta(T) as above but the motion is from the world frame to the pose represented by T.</p></li>
+</ul>
+<p>The vector <span class="math notranslate nohighlight">\(d = [\delta_x, \delta_y, \delta_z,        heta_x,         heta_y,         heta_z\)</span>
+represents infinitessimal translation and rotation, and is an approximation to the 
+instantaneous spatial velocity multiplied by time step.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>D is only an approximation to the motion T, and assumes
+that T0 ~ T1 or T ~ eye(4,4).</p></li>
+<li><p>Can be considered as an approximation to the effect of spatial velocity over a
+a time interval, average spatial velocity multiplied by time.</p></li>
+</ul>
+<p>Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.delta2tr" title="spatialmath.base.transforms3d.delta2tr"><code class="xref py py-func docutils literal notranslate"><span class="pre">delta2tr()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="spatialmath.base.transforms3d.tr2eul">
 <code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">tr2eul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'rad'</span></em>, <em class="sig-param"><span class="n">flip</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">check</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2eul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2eul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert SO(3) or SE(3) to ZYX Euler angles</p>
@@ -5313,6 +5403,32 @@ Z, Y and Z axes respectively.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.eul2r" title="spatialmath.base.transforms3d.eul2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2r()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.eul2tr" title="spatialmath.base.transforms3d.eul2tr"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2tr()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.tr2angvec" title="spatialmath.base.transforms3d.tr2angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2angvec()</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.tr2jac">
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">tr2jac</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">samebody</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2jac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2jac" title="Permalink to this definition">¶</a></dt>
+<dd><p>SE(3) adjoint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – an SE(3) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>adjoint matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(6,6)</p>
+</dd>
+</dl>
+<p>Computes an adjoint matrix that maps spatial velocity between two frames defined by
+an SE(3) matrix.  It acts like a Jacobian matrix.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2jac(T)</span></code> is a Jacobian matrix (6x6) that maps spatial velocity or
+differential motion from frame {A} to frame {B} where the pose of {B}
+relative to {A} is represented by the homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {f T}_B\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2jac(T,</span> <span class="pre">True)</span></code> as above but for the case when frame {A} to frame {B} are both
+attached to the same moving body.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py function">
@@ -5454,6 +5570,64 @@ matrix.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="spatialmath.base.transforms3d.trinterp">
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">trinterp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T0</span></em>, <em class="sig-param"><span class="n">T1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">s</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trinterp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trinterp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate SE(3) matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T0</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – first SE(3) matrix</p></li>
+<li><p><strong>T1</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – second SE(3) matrix</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – interpolation coefficient, range 0 to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(4,4)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp(T0,</span> <span class="pre">T1,</span> <span class="pre">S)</span></code> is a homogeneous transform (4x4) interpolated</p></li>
+</ul>
+<p>between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
+transforms (4x4).</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp(T1,</span> <span class="pre">S)</span></code> as above but interpolated between the identity matrix</p></li>
+</ul>
+<p>when S=0 to T1 when S=1.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>Rotation is interpolated using quaternion spherical linear interpolation (slerp).</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.quaternions.slerp()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.trinv">
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">trinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trinv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert an SE(3) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – an SE(3) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(4,4)</p>
+</dd>
+</dl>
+<p>Computes an efficient inverse of an SE(3) matrix.</p>
+<p><span class="math notranslate nohighlight">\(egin{pmatrix} {f R^T} &amp; -{f R^T} t \ 0 0 0 &amp; 1 \end{pmatrix}\)</span></p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="spatialmath.base.transforms3d.trlog">
 <code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">trlog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">check</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trlog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trlog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Logarithm of SO(3) or SE(3) matrix</p>
@@ -5485,6 +5659,42 @@ vector (6x1) comprising [v w].</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.trexp" title="spatialmath.base.transforms3d.trexp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trexp()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.vex" title="spatialmath.base.transformsNd.vex"><code class="xref py py-func docutils literal notranslate"><span class="pre">vex()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.vexa" title="spatialmath.base.transformsNd.vexa"><code class="xref py py-func docutils literal notranslate"><span class="pre">vexa()</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.trnorm">
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">trnorm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trnorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trnorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize an SO(3) or SE(3) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – SO(3) or SE(3) matrix</p></li>
+<li><p><strong>T1</strong> (<em>np.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – second SE(3) matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SO(3) or SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray, shape=(3,3) or (4,4)</p>
+</dd>
+</dl>
+<p>TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation
+matrix (3x3) which is “close” to the input matrix R (3x3). If R
+= [N,O,A] the O and A vectors are made unit length and the normal vector
+is formed from N = O x A, and then we ensure that O and A are orthogonal
+by O = A x N.</p>
+<p>TRNORM(T) as above but the rotational submatrix of the homogeneous
+transformation T (4x4) is normalised while the translational part is
+unchanged.
+%
+If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
+is performed on each of the K planes.
+%
+Notes::
+- Only the direction of A (the z-axis) is unchanged.
+- Used to prevent finite word length arithmetic causing transforms to 
+become <a href="#id3"><span class="problematic" id="id4">`</span></a>unnormalized’.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -6185,14 +6395,6 @@ element of the matrix.</p></li>
 and homogeneous tranformation matrices.</p>
 <p>Vector arguments are what numpy refers to as <code class="docutils literal notranslate"><span class="pre">array_like</span></code> and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.</p>
-<p>Versions:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Luis Fernando Lara Tobar and Peter Corke, 2008</p></li>
-<li><p>Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017</p></li>
-<li><p>Peter Corke, 2020</p></li>
-</ol>
-</div></blockquote>
 <dl class="py function">
 <dt id="spatialmath.base.vectors.angdiff">
 <code class="sig-prename descclassname">spatialmath.base.vectors.</code><code class="sig-name descname">angdiff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#angdiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.vectors.angdiff" title="Permalink to this definition">¶</a></dt>
@@ -6359,17 +6561,20 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 
 <dl class="py function">
 <dt id="spatialmath.base.vectors.unittwist">
-<code class="sig-prename descclassname">spatialmath.base.vectors.</code><code class="sig-name descname">unittwist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">S</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#unittwist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.vectors.unittwist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">spatialmath.base.vectors.</code><code class="sig-name descname">unittwist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">S</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#unittwist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.vectors.unittwist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert twist to unit twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>S</strong> (<em>array_like</em>) – twist as a 6-vector</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>array_like</em>) – twist as a 6-vector</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>unit twist and scalar motion</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple (unit_twist, theta)</p>
+<dd class="field-odd"><p>np.ndarray, shape=(6,)</p>
 </dd>
 </dl>
 <p>A unit twist is a twist where:</p>
@@ -6377,6 +6582,7 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 <li><p>the rotation part has unit magnitude</p></li>
 <li><p>if the rotational part is zero, then the translational part has unit magnitude</p></li>
 </ul>
+<p>Returns None if the twist has zero magnitude</p>
 </dd></dl>
 
 <dl class="py function">
@@ -6399,6 +6605,32 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 <li><p>the rotation part has unit magnitude</p></li>
 <li><p>if the rotational part is zero, then the translational part has unit magnitude</p></li>
 </ul>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.vectors.unittwist_norm">
+<code class="sig-prename descclassname">spatialmath.base.vectors.</code><code class="sig-name descname">unittwist_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">S</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">10</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#unittwist_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.vectors.unittwist_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert twist to unit twist and norm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>array_like</em>) – twist as a 6-vector</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>unit twist and scalar motion</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple (np.ndarray shape=(6,), theta)</p>
+</dd>
+</dl>
+<p>A unit twist is a twist where:</p>
+<ul class="simple">
+<li><p>the rotation part has unit magnitude</p></li>
+<li><p>if the rotational part is zero, then the translational part has unit magnitude</p></li>
+</ul>
+<p>Returns (None,None) if the twist has zero magnitude</p>
 </dd></dl>
 
 <dl class="py function">
@@ -6925,7 +7157,7 @@ considered equivalent to a random SO(3) rotation.</p>
 <dd class="field-odd"><p>numpy.ndarray, shape=(4,)</p>
 </dd>
 </dl>
-<p>An interpolated quaternion between <code class="docutils literal notranslate"><span class="pre">q0</span></code> when <code class="docutils literal notranslate"><span class="pre">s``=0</span></code> to <code class="docutils literal notranslate"><span class="pre">q1</span></code> when <a href="#id1"><span class="problematic" id="id2">``</span></a>s``=1.</p>
+<p>An interpolated quaternion between <code class="docutils literal notranslate"><span class="pre">q0</span></code> when <code class="docutils literal notranslate"><span class="pre">s``=0</span></code> to <code class="docutils literal notranslate"><span class="pre">q1</span></code> when <a href="#id5"><span class="problematic" id="id6">``</span></a>s``=1.</p>
 <p>Interpolation is performed on a great circle on a 4D hypersphere. This is
 a rotation about a single fixed axis in space which yields the straightest
 and shortest path between two points.</p>

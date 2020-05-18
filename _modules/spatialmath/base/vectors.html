@@ -155,12 +155,38 @@
 <span class="sd">Vector arguments are what numpy refers to as ``array_like`` and can be a list,</span>
 <span class="sd">tuple, numpy array, numpy row vector or numpy column vector.</span>
 
-<span class="sd">Versions:</span>
-
-<span class="sd">    1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
-<span class="sd">    2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017</span>
-<span class="sd">    3. Peter Corke, 2020</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># This file is part of the SpatialMath toolbox for Python</span>
+<span class="c1"># https://github.com/petercorke/spatialmath-python</span>
+<span class="c1"># </span>
+<span class="c1"># MIT License</span>
+<span class="c1"># </span>
+<span class="c1"># Copyright (c) 1993-2020 Peter Corke</span>
+<span class="c1"># </span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1"># </span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1"># </span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="c1"># Contributors:</span>
+<span class="c1"># </span>
+<span class="c1">#     1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
+<span class="c1">#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)</span>
+<span class="c1">#     3. Peter Corke, 2020</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
@@ -198,7 +224,7 @@
     <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>  <span class="c1"># if greater than eps</span>
         <span class="k">return</span> <span class="n">v</span> <span class="o">/</span> <span class="n">n</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Vector has zero norm&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.vectors.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -275,6 +301,8 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
         <span class="c1"># test for SE(3) twist</span>
         <span class="k">return</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span> <span class="ow">and</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span> <span class="ow">and</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span></div>
 
@@ -309,22 +337,64 @@
         <span class="k">raise</span> <span class="ne">ValueError</span></div>
 
 
-<div class="viewcode-block" id="unittwist"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.vectors.unittwist">[docs]</a><span class="k">def</span> <span class="nf">unittwist</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="unittwist"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.vectors.unittwist">[docs]</a><span class="k">def</span> <span class="nf">unittwist</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert twist to unit twist</span>
 
 <span class="sd">    :param S: twist as a 6-vector</span>
 <span class="sd">    :type S: array_like</span>
+<span class="sd">    :param tol: tolerance in units of eps</span>
+<span class="sd">    :type tol: float</span>
 <span class="sd">    :return: unit twist and scalar motion</span>
-<span class="sd">    :rtype: tuple (unit_twist, theta)</span>
+<span class="sd">    :rtype: np.ndarray, shape=(6,)</span>
 
 <span class="sd">    A unit twist is a twist where:</span>
 
 <span class="sd">    - the rotation part has unit magnitude</span>
 <span class="sd">    - if the rotational part is zero, then the translational part has unit magnitude</span>
+<span class="sd">    </span>
+<span class="sd">    Returns None if the twist has zero magnitude</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">s</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">iszerovec</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="n">v</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">iszerovec</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+        <span class="n">th</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">th</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">S</span> <span class="o">/</span> <span class="n">th</span></div>
+
+<div class="viewcode-block" id="unittwist_norm"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.vectors.unittwist_norm">[docs]</a><span class="k">def</span> <span class="nf">unittwist_norm</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert twist to unit twist and norm</span>
+
+<span class="sd">    :param S: twist as a 6-vector</span>
+<span class="sd">    :type S: array_like</span>
+<span class="sd">    :param tol: tolerance in units of eps</span>
+<span class="sd">    :type tol: float</span>
+<span class="sd">    :return: unit twist and scalar motion</span>
+<span class="sd">    :rtype: tuple (np.ndarray shape=(6,), theta)</span>
+
+<span class="sd">    A unit twist is a twist where:</span>
+
+<span class="sd">    - the rotation part has unit magnitude</span>
+<span class="sd">    - if the rotational part is zero, then the translational part has unit magnitude</span>
+<span class="sd">    </span>
+<span class="sd">    Returns (None,None) if the twist has zero magnitude</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">iszerovec</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    
     <span class="n">v</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
 
@@ -334,7 +404,6 @@
         <span class="n">th</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span> <span class="o">/</span> <span class="n">th</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="unittwist2"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.vectors.unittwist2">[docs]</a><span class="k">def</span> <span class="nf">unittwist2</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

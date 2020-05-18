@@ -155,12 +155,6 @@
 <span class="sd">Vector arguments are what numpy refers to as ``array_like`` and can be a list,</span>
 <span class="sd">tuple, numpy array, numpy row vector or numpy column vector.</span>
 
-<span class="sd">Versions:</span>
-
-<span class="sd">    1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
-<span class="sd">    2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017</span>
-<span class="sd">    3. Peter Corke, 2020</span>
-
 <span class="sd">TODO:</span>
 
 <span class="sd">    - trinterp</span>
@@ -168,12 +162,45 @@
 <span class="sd">    - tranimate, tranimate2</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="c1"># This file is part of the SpatialMath toolbox for Python</span>
+<span class="c1"># https://github.com/petercorke/spatialmath-python</span>
+<span class="c1"># </span>
+<span class="c1"># MIT License</span>
+<span class="c1"># </span>
+<span class="c1"># Copyright (c) 1993-2020 Peter Corke</span>
+<span class="c1"># </span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1"># </span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1"># </span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="c1"># Contributors:</span>
+<span class="c1"># </span>
+<span class="c1">#     1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
+<span class="c1">#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)</span>
+<span class="c1">#     3. Peter Corke, 2020</span>
+
+
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">vectors</span> <span class="k">as</span> <span class="n">vec</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transformsNd</span> <span class="k">as</span> <span class="n">trn</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">quaternions</span> <span class="k">as</span> <span class="n">quat</span>
 
 
 <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -1147,10 +1174,16 @@
             <span class="c1"># 6 vector</span>
             <span class="n">tw</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">tw</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">unittwist</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">unittwist_norm</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">vec</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="n">tw</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
+            <span class="k">if</span> <span class="n">theta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">vec</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="n">tw</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
 
         <span class="n">t</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
@@ -1178,6 +1211,214 @@
         <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">_rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; First argument must be SO(3), 3-vector, SE(3) or 6-vector&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="trnorm"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trnorm">[docs]</a><span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize an SO(3) or SE(3) matrix</span>
+<span class="sd">    </span>
+<span class="sd">    :param T: SO(3) or SE(3) matrix</span>
+<span class="sd">    :type T1: np.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :param T1: second SE(3) matrix</span>
+<span class="sd">    :return: SO(3) or SE(3) matrix</span>
+<span class="sd">    :rtype: np.ndarray, shape=(3,3) or (4,4)</span>
+
+<span class="sd">    TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation</span>
+<span class="sd">    matrix (3x3) which is &quot;close&quot; to the input matrix R (3x3). If R</span>
+<span class="sd">    = [N,O,A] the O and A vectors are made unit length and the normal vector</span>
+<span class="sd">    is formed from N = O x A, and then we ensure that O and A are orthogonal</span>
+<span class="sd">    by O = A x N.</span>
+<span class="sd">    </span>
+<span class="sd">    TRNORM(T) as above but the rotational submatrix of the homogeneous</span>
+<span class="sd">    transformation T (4x4) is normalised while the translational part is</span>
+<span class="sd">    unchanged.</span>
+<span class="sd">    %</span>
+<span class="sd">    If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation</span>
+<span class="sd">    is performed on each of the K planes.</span>
+<span class="sd">    %</span>
+<span class="sd">    Notes::</span>
+<span class="sd">    - Only the direction of A (the z-axis) is unchanged.</span>
+<span class="sd">    - Used to prevent finite word length arithmetic causing transforms to </span>
+<span class="sd">    become `unnormalized&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s1">&#39;expecting 3x3 or 4x4 hom xform&#39;</span>
+    
+    <span class="n">o</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>        <span class="c1"># N = O x A</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>        <span class="c1"># (a)];</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">R</span></div>
+    
+<div class="viewcode-block" id="trinterp"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trinterp">[docs]</a><span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">T1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interpolate SE(3) matrices</span>
+<span class="sd">    </span>
+<span class="sd">    :param T0: first SE(3) matrix</span>
+<span class="sd">    :type T0: np.ndarray, shape=(4,4)</span>
+<span class="sd">    :param T1: second SE(3) matrix</span>
+<span class="sd">    :type T1: np.ndarray, shape=(4,4)</span>
+<span class="sd">    :param s: interpolation coefficient, range 0 to 1</span>
+<span class="sd">    :type s: float</span>
+<span class="sd">    :return: SE(3) matrix</span>
+<span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
+<span class="sd">    </span>
+<span class="sd">    - ``trinterp(T0, T1, S)`` is a homogeneous transform (4x4) interpolated</span>
+<span class="sd">    between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous</span>
+<span class="sd">    transforms (4x4).</span>
+<span class="sd">    </span>
+<span class="sd">    - ``trinterp(T1, S)`` as above but interpolated between the identity matrix</span>
+<span class="sd">    when S=0 to T1 when S=1.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">        </span>
+<span class="sd">    - Rotation is interpolated using quaternion spherical linear interpolation (slerp).</span>
+
+<span class="sd">    </span>
+<span class="sd">    :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s outside interval [0,1]&#39;</span>
+    
+    <span class="k">if</span> <span class="n">T1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#	TRINTERP(T, s)</span>
+        
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T0</span><span class="p">))</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
+        
+        <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="n">pr</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#	TRINTERP(T0, T1, s)</span>
+    
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T0</span><span class="p">))</span>
+        <span class="n">q1</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T1</span><span class="p">))</span>
+        
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">T1</span><span class="p">)</span>
+        
+        <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="n">pr</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p1</span><span class="p">;</span>
+        
+    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="delta2tr"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.delta2tr">[docs]</a><span class="k">def</span> <span class="nf">delta2tr</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert differential motion to SE(3)</span>
+<span class="sd">    </span>
+<span class="sd">    :param d: differential motion as a 6-vector</span>
+<span class="sd">    :type d: array_like</span>
+<span class="sd">    :return: SE(3) matrix</span>
+<span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
+
+<span class="sd">    ``T = delta2tr(d)`` is an SE(3) matrix representing differential </span>
+<span class="sd">    motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.</span>
+
+<span class="sd">    Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
+<span class="sd">    </span>
+<span class="sd">    :seealso: :func:`~tr2delta`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">trn</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="trinv"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trinv">[docs]</a><span class="k">def</span> <span class="nf">trinv</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Invert an SE(3) matrix</span>
+<span class="sd">    </span>
+<span class="sd">    :param T: an SE(3) matrix</span>
+<span class="sd">    :type T: np.ndarray, shape=(4,4)</span>
+<span class="sd">    :return: SE(3) matrix</span>
+<span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
+
+<span class="sd">    Computes an efficient inverse of an SE(3) matrix.</span>
+<span class="sd">    </span>
+<span class="sd">    :math:`\begin{pmatrix} {\bf R^T} &amp; -{\bf R^T} t \\ 0 0 0 &amp; 1 \end{pmatrix}`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s1">&#39;expecting SE(3) matrix&#39;</span>
+    <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">-</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="nd">@t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="tr2delta"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.tr2delta">[docs]</a><span class="k">def</span> <span class="nf">tr2delta</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">T1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Difference of SE(3) matrices as differential motion</span>
+<span class="sd">    </span>
+<span class="sd">    :param T0: first SE(3) matrix</span>
+<span class="sd">    :type T0: np.ndarray, shape=(4,4)</span>
+<span class="sd">    :param T1: second SE(3) matrix</span>
+<span class="sd">    :type T1: np.ndarray, shape=(4,4)</span>
+<span class="sd">    :return: Sdifferential motion as a 6-vector</span>
+<span class="sd">    :rtype: np.ndarray, shape=(6,)</span>
+
+
+<span class="sd">    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to </span>
+<span class="sd">    infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.</span>
+
+<span class="sd">    - ``tr2delta(T) as above but the motion is from the world frame to the pose represented by T.</span>
+
+<span class="sd">    The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`</span>
+<span class="sd">    represents infinitessimal translation and rotation, and is an approximation to the </span>
+<span class="sd">    instantaneous spatial velocity multiplied by time step.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        </span>
+<span class="sd">    - D is only an approximation to the motion T, and assumes</span>
+<span class="sd">      that T0 ~ T1 or T ~ eye(4,4).</span>
+<span class="sd">    - Can be considered as an approximation to the effect of spatial velocity over a</span>
+<span class="sd">      a time interval, average spatial velocity multiplied by time.</span>
+<span class="sd">    </span>
+<span class="sd">    Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
+
+<span class="sd">    :seealso: :func:`~delta2tr`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">T1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># tr2delta(T)</span>
+        
+        <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T0</span><span class="p">),</span> <span class="s1">&#39;expecting SE(3) matrix&#39;</span>
+        <span class="n">Td</span> <span class="o">=</span> <span class="n">T0</span>
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#  incremental transformation from T0 to T1 in the T0 frame</span>
+        <span class="n">Td</span> <span class="o">=</span> <span class="n">trinv</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span> <span class="o">@</span> <span class="n">T1</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">transl</span><span class="p">(</span><span class="n">Td</span><span class="p">),</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">Td</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span></div>
+
+<div class="viewcode-block" id="tr2jac"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.tr2jac">[docs]</a><span class="k">def</span> <span class="nf">tr2jac</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">samebody</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SE(3) adjoint</span>
+<span class="sd">    </span>
+<span class="sd">    :param T: an SE(3) matrix</span>
+<span class="sd">    :type T: np.ndarray, shape=(4,4)</span>
+<span class="sd">    :return: adjoint matrix</span>
+<span class="sd">    :rtype: np.ndarray, shape=(6,6)</span>
+<span class="sd">    </span>
+<span class="sd">    Computes an adjoint matrix that maps spatial velocity between two frames defined by</span>
+<span class="sd">    an SE(3) matrix.  It acts like a Jacobian matrix.</span>
+<span class="sd">    </span>
+<span class="sd">    - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or</span>
+<span class="sd">      differential motion from frame {A} to frame {B} where the pose of {B}</span>
+<span class="sd">      relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.</span>
+
+<span class="sd">    - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both</span>
+<span class="sd">      attached to the same moving body.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s1">&#39;expecting an SE(3) matrix&#39;</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    	
+    <span class="k">if</span> <span class="n">samebody</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="nd">@R</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span></div>
 
 
 <div class="viewcode-block" id="trprint"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trprint">[docs]</a><span class="k">def</span> <span class="nf">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;rpy/zyx&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:8.2g}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">):</span>
