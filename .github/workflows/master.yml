@@ -58,10 +58,11 @@ jobs:
       run: |
         pip install .
         coverage run --omit=\*/test_\* -m unittest
+        coverage xml
     - name: upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
-        file: ./.coverage
+        file: ./coverage.xml
   sphinx:
     # If the above worked:
     # Build docs and upload to GH Pages
