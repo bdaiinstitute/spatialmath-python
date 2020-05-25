@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 
-from spatialmath.base import base as tr
+from spatialmath.base import transforms3d as tr
 
 class Animate:
     """
