@@ -1349,8 +1349,8 @@ transforms (4x4).</p>
 <dd class="field-odd"><p>np.ndarray, shape=(4,4)</p>
 </dd>
 </dl>
-<p>Computes an efficient inverse of an SE(3) matrix.</p>
-<p><span class="math notranslate nohighlight">\(\begin{pmatrix} {\bf R^T} &amp; -{\bf R^T} t \\ 0 0 0 &amp; 1 \end{pmatrix}\)</span></p>
+<p>Computes an efficient inverse of an SE(3) matrix:</p>
+<p><span class="math notranslate nohighlight">\(\begin{pmatrix} {\bf R} &amp; t \\ 0\,0\,0 &amp; 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T &amp; -{\bf R}^T t \\ 0\,0\, 0 &amp; 1 \end{pmatrix}\)</span></p>
 </dd></dl>
 
 <dl class="py function">
@@ -1405,19 +1405,21 @@ vector (6x1) comprising [v w].</p></li>
 <dd class="field-odd"><p>np.ndarray, shape=(3,3) or (4,4)</p>
 </dd>
 </dl>
-<p>TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation
-matrix (3x3) which is “close” to the input matrix R (3x3). If R
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trnorm(R)</span></code> is guaranteed to be a proper orthogonal matrix rotation</p></li>
+</ul>
+<p>matrix (3x3) which is “close” to the input matrix R (3x3). If R
 = [N,O,A] the O and A vectors are made unit length and the normal vector
 is formed from N = O x A, and then we ensure that O and A are orthogonal
 by O = A x N.</p>
-<p>TRNORM(T) as above but the rotational submatrix of the homogeneous
-transformation T (4x4) is normalised while the translational part is
-unchanged.
-%
-If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
-is performed on each of the K planes.
-%
-Notes::
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trnorm(T)</span></code> as above but the rotational submatrix of the homogeneous</p></li>
+</ul>
+<p>transformation T (4x4) is normalised while the translational part is
+unchanged.</p>
+<p>If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
+is performed on each of the K planes.</p>
+<p>Notes::
 - Only the direction of A (the z-axis) is unchanged.
 - Used to prevent finite word length arithmetic causing transforms to 
 become <a href="#id3"><span class="problematic" id="id4">`</span></a>unnormalized’.</p>

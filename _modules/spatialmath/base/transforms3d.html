@@ -1222,19 +1222,19 @@
 <span class="sd">    :return: SO(3) or SE(3) matrix</span>
 <span class="sd">    :rtype: np.ndarray, shape=(3,3) or (4,4)</span>
 
-<span class="sd">    TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation</span>
+<span class="sd">    - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation</span>
 <span class="sd">    matrix (3x3) which is &quot;close&quot; to the input matrix R (3x3). If R</span>
 <span class="sd">    = [N,O,A] the O and A vectors are made unit length and the normal vector</span>
 <span class="sd">    is formed from N = O x A, and then we ensure that O and A are orthogonal</span>
 <span class="sd">    by O = A x N.</span>
 <span class="sd">    </span>
-<span class="sd">    TRNORM(T) as above but the rotational submatrix of the homogeneous</span>
+<span class="sd">    - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous</span>
 <span class="sd">    transformation T (4x4) is normalised while the translational part is</span>
 <span class="sd">    unchanged.</span>
-<span class="sd">    %</span>
+
 <span class="sd">    If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation</span>
 <span class="sd">    is performed on each of the K planes.</span>
-<span class="sd">    %</span>
+
 <span class="sd">    Notes::</span>
 <span class="sd">    - Only the direction of A (the z-axis) is unchanged.</span>
 <span class="sd">    - Used to prevent finite word length arithmetic causing transforms to </span>
@@ -1335,9 +1335,9 @@
 <span class="sd">    :return: SE(3) matrix</span>
 <span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
 
-<span class="sd">    Computes an efficient inverse of an SE(3) matrix.</span>
+<span class="sd">    Computes an efficient inverse of an SE(3) matrix:</span>
 <span class="sd">    </span>
-<span class="sd">    :math:`\begin{pmatrix} {\bf R^T} &amp; -{\bf R^T} t \\ 0 0 0 &amp; 1 \end{pmatrix}`</span>
+<span class="sd">    :math:`\begin{pmatrix} {\bf R} &amp; t \\ 0\,0\,0 &amp; 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T &amp; -{\bf R}^T t \\ 0\,0\, 0 &amp; 1 \end{pmatrix}`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s1">&#39;expecting SE(3) matrix&#39;</span>
@@ -1661,7 +1661,8 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span></div>
 
-    <span class="kn">import</span> <span class="nn">spatialmath.base.animate</span>
+    <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">animate</span> <span class="k">as</span> <span class="n">animate</span>
+
         
     <span class="k">def</span> <span class="nf">tranimate</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
