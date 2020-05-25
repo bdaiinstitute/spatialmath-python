@@ -18,10 +18,9 @@ try:
     _color = True
     #print('using colored output')
 except ImportError:
+    #print('colored not found')
     _color = False
-    def fg(): return ''
-    def bg(): return ''
-    def attr(): return ''
+
 
 # try:
 #     import colorama
@@ -498,10 +497,18 @@ class SMPose(UserList, ABC):
         #     return str.rstrip("\n")  # Remove trailing newline character
         # else:
         #      raise ValueError('no elements in the value list')
-        return self.__str__()
+        return self._string(color=_color)
 
     def __str__(self):
+        return self._string(color=False)
+
+    def _string(self, color=False):
         #print('in __str__')
+
+        FG = lambda c: fg(c) if color else ''
+        BG = lambda c: bg(c) if color else ''
+        ATTR = lambda c: attr(c) if color else ''
+
         def mformat(self, X):
             # X is an ndarray value to be display
             # self provides set type for formatting
@@ -518,15 +525,15 @@ class SMPose(UserList, ABC):
                     if rownum < n:
                         if colnum < n:
                             # rotation part
-                            s = fg('red') + bg('grey_93') + s + attr(0)
+                            s = FG('red') + BG('grey_93') + s + ATTR(0)
                         else:
                             # translation part
-                            s = fg('blue') + bg('grey_93') + s + attr(0)
+                            s = FG('blue') + BG('grey_93') + s + ATTR(0)
                     else:
                         # bottom row
-                        s = fg('grey_50') + bg('grey_93') + s + attr(0)
+                        s = FG('grey_50') + BG('grey_93') + s + ATTR(0)
                     rowstr += s
-                out += rowstr + bg('grey_93') + '  ' + attr(0) + '\n'
+                out += rowstr + BG('grey_93') + '  ' + ATTR(0) + '\n'
             return out
 
         output_str = ''
