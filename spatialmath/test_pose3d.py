@@ -29,6 +29,11 @@ class TestSO3(unittest.TestCase):
         array_compare(R, np.eye(3))
         self.assertIsInstance(R, SO3)
 
+        # empty constructor
+        R = SO3.Empty()
+        nt.assert_equal(len(R), 0)
+        self.assertIsInstance(R, SO3)
+
         # construct from matrix
         R = SO3(rotx(0.2))
         nt.assert_equal(len(R), 1)
@@ -114,6 +119,25 @@ class TestSO3(unittest.TestCase):
         R2 = SO3(R)
         R = SO3.Ry(pi / 2)
         array_compare(R2, rotx(pi / 2))
+
+    def test_about(self):
+        R = SO3()
+        R.about()
+
+    def test_display(self):
+        R = SO3()
+
+        s = str(R)
+        self.assertIsInstance(s, str)
+        self.assertEqual(s.count('\n'), 3)
+
+        s = repr(R)
+        self.assertIsInstance(s, str)
+        self.assertEqual(s.count('\n'), 3)
+
+        R.print()
+
+        R.printline()
 
     def test_listpowers(self):
         R = SO3()
@@ -294,6 +318,26 @@ class TestSO3(unittest.TestCase):
         a = R / 2
         self.assertNotIsInstance(a, SO3)
         array_compare(a, roty(0.3) / 2)
+
+        # power
+
+        R = SO3.Rx(pi/2)
+        R = R**2
+        array_compare(R, SO3.Rx(pi))
+
+        R = SO3.Rx(pi/2)
+        R **= 2
+        array_compare(R, SO3.Rx(pi))
+
+        R = SO3.Rx(pi/4)
+        R = R**(-2)
+        array_compare(R, SO3.Rx(-pi/2))
+
+        R = SO3.Rx(pi/4)
+        R **= -2
+        array_compare(R, SO3.Rx(-pi/2))
+
+
 
     def test_arith_vect(self):
 
