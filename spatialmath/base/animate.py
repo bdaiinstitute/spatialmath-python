@@ -12,13 +12,13 @@ Created on Mon Apr 27 12:44:45 2020
 # quiver.set_offsets(), quiver.set_UVC()
 # FancyArrow.set_xy()
 
+import numpy as np
+import math
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
-from spatialmath import base as tr
-import numpy as np
-import math
 
+from spatialmath.base import base as tr
 
 class Animate:
     """
