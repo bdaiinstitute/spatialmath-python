@@ -1072,19 +1072,19 @@ def trnorm(T):
     :return: SO(3) or SE(3) matrix
     :rtype: np.ndarray, shape=(3,3) or (4,4)
 
-    TRNORM(R) is guaranteed to be a proper orthogonal matrix rotation
+    - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation
     matrix (3x3) which is "close" to the input matrix R (3x3). If R
     = [N,O,A] the O and A vectors are made unit length and the normal vector
     is formed from N = O x A, and then we ensure that O and A are orthogonal
     by O = A x N.
     
-    TRNORM(T) as above but the rotational submatrix of the homogeneous
+    - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous
     transformation T (4x4) is normalised while the translational part is
     unchanged.
-    %
+
     If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
     is performed on each of the K planes.
-    %
+
     Notes::
     - Only the direction of A (the z-axis) is unchanged.
     - Used to prevent finite word length arithmetic causing transforms to 
@@ -1185,9 +1185,9 @@ def trinv(T):
     :return: SE(3) matrix
     :rtype: np.ndarray, shape=(4,4)
 
-    Computes an efficient inverse of an SE(3) matrix.
+    Computes an efficient inverse of an SE(3) matrix:
     
-    :math:`\begin{pmatrix} {\bf R^T} & -{\bf R^T} t \\ 0 0 0 & 1 \end{pmatrix}`
+    :math:`\begin{pmatrix} {\bf R} & t \\ 0\,0\,0 & 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T & -{\bf R}^T t \\ 0\,0\, 0 & 1 \end{pmatrix}`
 
     """
     assert ishom(T), 'expecting SE(3) matrix'
@@ -1511,7 +1511,7 @@ if matplotlib_exists:
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
-    import spatialmath.base.animate
+    import spatialmath.base.animate as animate
         
     def tranimate(T, **kwargs):
         """
