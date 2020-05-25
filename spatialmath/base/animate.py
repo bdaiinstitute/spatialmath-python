@@ -111,7 +111,7 @@ class Animate:
         # draw axes at the origin
         tr.trplot(np.eye(4), axes=self, **kwargs)
 
-    def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, **kwargs):
+    def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, pause=None, **kwargs):
         """
         Run the animation
 
@@ -145,7 +145,12 @@ class Animate:
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
 
         if movie is None:
-            plt.show()
+
+            if pause is None:
+                plt.show()
+            else:
+                plt.pause(pause)
+            
         else:
             # Set up formatting for the movie files
             print('creating movie', movie)

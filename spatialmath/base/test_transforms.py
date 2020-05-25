@@ -780,6 +780,10 @@ class Test3D(unittest.TestCase):
         trplot(transl(3, 1, 2), color='red', width=3, frame='B')
         trplot(transl(4, 3, 1)@trotx(math.pi / 3), color='green', frame='c', dims=[0, 4, 0, 4, 0, 4])
 
+        plt.clf()
+        tranimate(transl(1, 2, 3), repeat=False, pause=2)
+        # run again, with axes already created
+        tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
 
 class TestLie(unittest.TestCase):
 
