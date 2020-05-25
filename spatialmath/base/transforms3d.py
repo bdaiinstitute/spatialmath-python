@@ -1511,7 +1511,8 @@ if matplotlib_exists:
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
-    import spatialmath.base.animate as animate
+    from spatialmath.base import animate as animate
+
         
     def tranimate(T, **kwargs):
         """
