@@ -7,6 +7,7 @@ Created on Fri Mar 20 11:41:25 2020
 """
 import numpy as np
 import math
+import sympy
 
 
 def matrix(m, shape):
@@ -18,9 +19,9 @@ def ismatrix(m, shape):
         return False
     if len(shape) != len(m.shape):
         return False
-    if shape[0] > 0 and shape[0] != m.shape[0]:
+    if shape[0] is not None and shape[0] > 0 and shape[0] != m.shape[0]:
         return False
-    if shape[1] > 0 and shape[1] != m.shape[1]:
+    if shape[1] is not None and shape[1] > 0 and shape[1] != m.shape[1]:
         return False
     return True
 
@@ -37,7 +38,7 @@ def verifymatrix(m, shape):
 
 
 def getvector(v, dim=None, out='array'):
-    if isinstance(v, (int, float)):  # handle scalar case
+    if isinstance(v, (int, float, sympy.Expr)):  # handle scalar case
         v = [v]
 
     if isinstance(v, (list, tuple)):
