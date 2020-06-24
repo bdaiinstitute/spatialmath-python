@@ -76,15 +76,20 @@ _eps = np.finfo(np.float64).eps
    
 class Plane:
     
-    def __init__(self, c=None, n=None, p=None):
+    def __init__(self, c):
         
-        if c is not None:
-            self.plane = arg.getvector(c, 4)
-        elif n is not None and p is not None:
-            n = arg.getvector(n, 3)  # normal to the plane
-            p = arg.getvector(p, 3)  # point on the plane
-            self.plane = np.r_[n, -np.dot(n, p)]
+        self.plane = arg.getvector(c, 4)
     
+    # point and normal
+    @staticmethod
+    def PN(p=None, n=None):
+        n = arg.getvector(n, 3)  # normal to the plane
+        p = arg.getvector(p, 3)  # point on the plane
+        return Plane(np.r_[n, -np.dot(n, p)])
+        
+    # line and point
+    # 3 points
+        
     @property
     def n(self):
         # normal
@@ -96,6 +101,9 @@ class Plane:
     
     def contains(self, p, tol=10*_eps):
         return abs(np.dot(self.n, p) - self.d) < tol
+    
+    def __str__(self):
+        return str(self.plane)
 
 class Plucker:
     
@@ -130,6 +138,9 @@ class Plucker:
             self.w = pl[3:6]
         else:
             raise ValueError('bad argument')
+            
+        # needed to allow __rmul__ to work if left multiplied by ndarray
+        self.__array_priority__ = 100  
 
 
     @staticmethod
@@ -143,8 +154,8 @@ class Plucker:
     
     @staticmethod
     def VW(v=None, w=None):
-        self.v = arg.getvector(v, 3)
-        self.w = arg.getvector(w, 3)
+        v = arg.getvector(v, 3)
+        w = arg.getvector(w, 3)
         return Plucker(np.r_[v, w])
     
     @staticmethod
@@ -159,9 +170,9 @@ class Plucker:
          - Planes are given by the 4-vector [a b c d] to represent ax+by+cz+d=0.
         """
 
-        if not isinstance(p11, Plane):
+        if not isinstance(pi1, Plane):
             pi1 = Plane(arg.getvector(pi1, 4))
-        if not isinstance(p12, Plane):
+        if not isinstance(pi2, Plane):
             pi2 = Plane(arg.getvector(pi2, 4))
         
         w = np.cross(pi1.n, pi2.n)
@@ -281,6 +292,7 @@ class Plucker:
         the Plucker object self.
         """
         if arg.isvector(x, 3):
+            x = arg.getvector(x)
             return np.linalg.norm( np.cross(x - self.pp, self.w) ) < tol
         elif arg.ismatrix(x, (3,None)):
             return [np.linalg.norm(np.cross(_ - self.pp, self.w)) < tol for _ in x.T]
@@ -351,7 +363,7 @@ class Plucker:
 
         See also Plucker.intersects, Plucker.parallel.
         """
-        return not isparallel(p1, p2) and (abs(p1 * p2) < 10*_eps )
+        return not p1.isparallel(p2) and (abs(p1 * p2) < 10*_eps )
     
     # ------------------------------------------------------------------------- #
     #  PLUCKER LINE DISTANCE AND INTERSECTION
@@ -390,7 +402,7 @@ class Plucker:
         Notes::
          - Works for parallel, skew and intersecting lines.
          """
-        if isparallel(p1, p2):
+        if p1.isparallel(p2):
             # lines are parallel
             l = np.cross(p1.w, p1.v - p2.v * np.dot(p1.w, p2.w) / dot(p2.w, p2.w)) / np.linalg.norm(p1.w)
         else:
@@ -425,7 +437,7 @@ class Plucker:
         x = arg.getvector(x, 3)
 
         lam = np.dot(x - self.pp, self.uw)
-        p = self.point(lam)  # is the closest point on the line
+        p = self.point(lam).flatten()  # is the closest point on the line
         d = np.linalg.norm( x - p)
         
         return namedtuple('closest', 'p d lam')(p, d, lam)
@@ -442,7 +454,7 @@ class Plucker:
         See also Plucker.intersect.
         """
         
-        if isparallel(p1, p2):
+        if p1.isparallel(p2):
             # no common perpendicular if lines are parallel
             return None
         else:
@@ -476,7 +488,6 @@ class Plucker:
         elif isinstance(left, Plucker) and arg.ismatrix(right, (4,None)):
             return  left.skew @ right;  # postmultiply by 4xN
         
-
     def __rmul__(right, left):
         """
         Plucker.mtimes Plucker multiplication
@@ -484,10 +495,10 @@ class Plucker:
         M * PL is the product of M (Nx4) and the Plucker skew matrix (4x4).
 
         Notes::
-         - The * operator is overloaded for convenience.
-         - Multiplication or composition of Plucker lines is not defined.
-         - Premultiplying by an SE3 will transform the line with respect to the world
-           coordinate frame.
+          - The * operator is overloaded for convenience.
+          - Multiplication or composition of Plucker lines is not defined.
+          - Premultiplying by an SE3 will transform the line with respect to the world
+            coordinate frame.
 
         See also Plucker.skew, SE3.mtimes.
         """
@@ -528,16 +539,17 @@ class Plucker:
         #    intersection of plane (n,p) with the line (v,p)
         #    returns point and line parameter
         
-        
+        if not isinstance(plane, Plane):
+            plane = Plane(arg.getvector(plane, 4))
+            
         den = np.dot(L.w, plane.n)
         
         if abs(den) > (100*_eps):
-            P = -(np.cross(L.v, plane.n) + plane.p * L.w) / den
-            p = (np.cross(L.v, plane.n) - plane.p * L.w) / den
+            # P = -(np.cross(L.v, plane.n) + plane.d * L.w) / den
+            p = (np.cross(L.v, plane.n) - plane.d * L.w) / den
             
-            P = L.pp
-            t = np.dot( P-p, N)
-            return namedtuple('intersect_plane', 'p t')(P, t)
+            t = np.dot( L.pp - p, plane.n)
+            return namedtuple('intersect_plane', 'p lam')(p, t)
         else:
             return None
 
@@ -560,31 +572,32 @@ class Plucker:
         intersections = []
         
         # reshape, top row is minimum, bottom row is maximum
-        bounds = bounds.reshape((2,3))
+        bounds23 = bounds.reshape((3, 2))
         
         for face in range(0, 6):
             # for each face of the bounding volume
             #  x=xmin, x=xmax, y=ymin, y=ymax, z=zmin, z=zmax
             
-            i = math.ceil(face / 2)  # 1,2,3
+            i = face // 2  # 0, 1, 2
             I = np.eye(3,3)
             p = [0, 0, 0]
             p[i] = bounds[face]
-            plane = Plane(I[:,i], p)
+            plane = Plane.PN(n=I[:,i], p=p)
             
             # find where line pierces the plane
             try:
-                p,lam = line.intersect_plane(plane)
+                p, lam = line.intersect_plane(plane)
             except TypeError:
                 continue  # no intersection with this plane
             
 #            print('face %d: n=(%f, %f, %f), p=(%f, %f, %f)' % (face, plane.n, plane.p))
 #            print('      : p=(%f, %f, %f)  ' % p)
             
+            print('face', face, ' point ', p, ' plane ', plane)
             # find if intersection point is within the cube face
             #  test x,y,z simultaneously
-            k = (p >= bounds[0,:]) & (p <= bounds[1,:])
-            del k[i]  # remove the boolean corresponding to current face
+            k = (p >= bounds23[:,0]) & (p <= bounds23[:,1])
+            k = np.delete(k, i)  # remove the boolean corresponding to current face
             if all(k):
                 # if within bounds, add
                 intersections.append(lam)
@@ -638,7 +651,7 @@ class Plucker:
         if len(lam) == 0:
             print('line does not intersect the plot volume')
         else:
-            plt.plot(P[0,:], P[1,:], P[2,:], **kwargs)
+            ax.plot(P[0,:], P[1,:], P[2,:], **kwargs)
 
     
     def __str__(self):
@@ -789,30 +802,30 @@ if __name__ == "__main__":
             L = Plucker.PQ(P, Q)
             
             out = L.closest(P)
-            nt.assert_array_almost_equal(out.p, np.c_[P])
-            self.assertEqual(out.d, 0)
+            nt.assert_array_almost_equal(out.p, P)
+            self.assertAlmostEqual(out.d, 0)
             
              # validate closest with given points and origin
             out = L.closest(Q)
             nt.assert_array_almost_equal(out.p, Q)
-            self.assertEqual(out.d, 0)
+            self.assertAlmostEqual(out.d, 0)
             
             L = Plucker.PQ([-1, 1, 2], [1, 1, 2])
             out = L.closest([0, 1, 2])
             nt.assert_array_almost_equal(out.p, np.r_[0, 1, 2])
-            self.assertEqual(out.d, 0)
+            self.assertAlmostEqual(out.d, 0)
             
             out = L.closest([5, 1, 2])
             nt.assert_array_almost_equal(out.p, np.r_[5, 1, 2])
-            self.assertEqual(out.d, 0)
+            self.assertAlmostEqual(out.d, 0)
             
             out = L.closest([0, 0, 0])
-            snt.assert_array_almost_equal(out.p, L.pp)
+            nt.assert_array_almost_equal(out.p, L.pp)
             self.assertEqual(out.d, L.ppd)
             
             out = L.closest([5, 1, 0])
-            snt.assert_array_almost_equal(out.pp, [5, 1, 2])
-            self.assertEqual(out.d, 2)
+            nt.assert_array_almost_equal(out.p, [5, 1, 2])
+            self.assertAlmostEqual(out.d, 2)
         
         def test_plot(self):
             
@@ -826,7 +839,7 @@ if __name__ == "__main__":
             ax.set_ylim3d(-10, 10)
             ax.set_zlim3d(-10, 10)
             
-            L.plot(linecolor='red', linewidth=2)
+            L.plot(color='red', linewidth=2)
         
         def test_eq(self):
             w = np.r_[1, 2, 3]
@@ -863,13 +876,14 @@ if __name__ == "__main__":
             a = L * M
             nt.assert_array_almost_equal(a, L.skew @ M)
             
+            # not possible to overload this, numpy takes over
             M = np.random.uniform(size=(10,4))
             a = M * L
             nt.assert_array_almost_equal(a, M @ L.skew)
             
             # check transformation by SE3
             
-            L2 = SE3() @ L
+            L2 = SE3() * L
             nt.assert_array_almost_equal(L.vec, L2.vec)
             
             L2 = SE3(2, 3, 1) @ L # shift line in the xy directions
@@ -918,7 +932,7 @@ if __name__ == "__main__":
             self.assertFalse( L1|L2)
             self.assertFalse( L1^L2)
             
-            self.assertEqual( distance(L1, L2), 2)
+            self.assertEqual( L1.distance(L2), 2)
             
             L = L1.commonperp(L2)  # common perp intersects both lines
             
@@ -967,25 +981,26 @@ if __name__ == "__main__":
             x6 = [1, 0, 0, -6]  # x = 6
             
             # plane_intersect
-            p,lam = L.intersect_plane(x6)
+            p, lam = L.intersect_plane(x6)
             nt.assert_array_almost_equal(p, np.r_[6, 2, 3])
-            nt.assert_array_almost_equal(L.point(lam), np.r_[6, 2, 3])
+            nt.assert_array_almost_equal(L.point(lam).flatten(), np.r_[6, 2, 3])
             
     
-            x6s = Plane(n=[1, 0, 0], p=[6, 0, 0])
-            p,lam = L.intersect_plane(x6s)
-            self.assertEqual(p, [6, 2, 3])
-            self.assertEqual(L.point(lam), np.r_[6, 2, 3])
+            x6s = Plane.PN(n=[1, 0, 0], p=[6, 0, 0])
+            p, lam = L.intersect_plane(x6s)
+            nt.assert_array_almost_equal(p, np.r_[6, 2, 3])
+            
+            nt.assert_array_almost_equal(L.point(lam).flatten(), np.r_[6, 2, 3])
         
         def test_methods(self):
             # intersection
-            px = Plucker.PQ(v=[0, 0, 0], w=[1, 0, 0]);  # x-axis
-            py = Plucker.PQ(v=[0, 0, 0], w=[0, 1, 0]);  # y-axis
-            px1 = Plucker.PQ(v=[0, 1, 0], w=[1, 1, 0]); # offset x-axis
+            px = Plucker.PQ([0, 0, 0], [1, 0, 0]);  # x-axis
+            py = Plucker.PQ([0, 0, 0], [0, 1, 0]);  # y-axis
+            px1 = Plucker.PQ([0, 1, 0], [1, 1, 0]); # offset x-axis
             
-            verifyEqual(tc, px.ppd, 0)
-            verifyEqual(tc, px1.ppd, 1)
-            verifyEqual(tc, px1.pp, [0, 1, 0])
+            self.assertEqual(px.ppd, 0)
+            self.assertEqual(px1.ppd, 1)
+            nt.assert_array_almost_equal(px1.pp, [0, 1, 0])
 
             px.intersects(px)
             px.intersects(py)
