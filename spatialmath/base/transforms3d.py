@@ -1453,7 +1453,7 @@ if matplotlib_exists:
                 ax = fig.add_subplot(111, projection='3d', proj_type=projection)
                 ax.autoscale(enable=True, axis='both')
 
-                # ax.set_aspect('equal')
+                ax.set_aspect('equal')
                 ax.set_xlabel(labels[0])
                 ax.set_ylabel(labels[1])
                 ax.set_zlabel(labels[2])
@@ -1472,9 +1472,9 @@ if matplotlib_exists:
 
         # create unit vectors in homogeneous form
         o = T @ np.array([0, 0, 0, 1])
-        x = T @ np.array([1, 0, 0, 1]) * length
-        y = T @ np.array([0, 1, 0, 1]) * length
-        z = T @ np.array([0, 0, 1, 1]) * length
+        x = T @ np.array([1, 0, 0, 1])
+        y = T @ np.array([0, 1, 0, 1])
+        z = T @ np.array([0, 0, 1, 1])
 
         # draw the axes
 
@@ -1483,9 +1483,9 @@ if matplotlib_exists:
             ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=5 * width)
             ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=5 * width)
         elif arrow:
-            ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-            ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-            ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+            ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], length=length, arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+            ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], length=length, arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+            ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], length=length, arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
             # plot an invisible point at the end of each arrow to allow auto-scaling to work
             ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], s=[20, 0, 0, 0])
         else:
