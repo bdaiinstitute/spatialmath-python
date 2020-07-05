@@ -1073,22 +1073,20 @@ def trnorm(T):
     :rtype: np.ndarray, shape=(3,3) or (4,4)
 
     - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation
-    matrix (3x3) which is "close" to the input matrix R (3x3). If R
-    = [N,O,A] the O and A vectors are made unit length and the normal vector
-    is formed from N = O x A, and then we ensure that O and A are orthogonal
-    by O = A x N.
+      matrix (3x3) which is "close" to the input matrix R (3x3). If R
+      = [N,O,A] the O and A vectors are made unit length and the normal vector
+      is formed from N = O x A, and then we ensure that O and A are orthogonal
+      by O = A x N.
     
     - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous
-    transformation T (4x4) is normalised while the translational part is
-    unchanged.
+      transformation T (4x4) is normalised while the translational part is
+      unchanged.
 
-    If R (3x3xK) or T (4x4xK) representing a sequence then the normalisation
-    is performed on each of the K planes.
-
-    Notes::
+    Notes:
+        
     - Only the direction of A (the z-axis) is unchanged.
     - Used to prevent finite word length arithmetic causing transforms to 
-    become `unnormalized'.
+      become 'unnormalized'.
     """
 
     assert ishom(T) or isrot(T), 'expecting 3x3 or 4x4 hom xform'
@@ -1119,11 +1117,11 @@ def trinterp(T0, T1=None, s=None):
     :rtype: np.ndarray, shape=(4,4)
     
     - ``trinterp(T0, T1, S)`` is a homogeneous transform (4x4) interpolated
-    between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
-    transforms (4x4).
+      between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
+      transforms (4x4).
     
     - ``trinterp(T1, S)`` as above but interpolated between the identity matrix
-    when S=0 to T1 when S=1.
+      when S=0 to T1 when S=1.
     
     
     Notes:
@@ -1207,9 +1205,9 @@ def tr2delta(T0, T1=None):
 
 
     - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to 
-    infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
+      infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
 
-    - ``tr2delta(T) as above but the motion is from the world frame to the pose represented by T.
+    - ``tr2delta(T)`` as above but the motion is from the world frame to the pose represented by T.
 
     The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
     represents infinitessimal translation and rotation, and is an approximation to the 

@@ -310,13 +310,14 @@ def trinterp2(T0, T1=None, s=None):
     :rtype: np.ndarray, shape=(3,3)
     
     - ``trinterp2(T0, T1, S)`` is a homogeneous transform (3x3) interpolated
-    between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
-    transforms (3x3).
+      between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
+      transforms (3x3).
     
     - ``trinterp2(T1, S)`` as above but interpolated between the identity matrix
-    when S=0 to T1 when S=1.
+      when S=0 to T1 when S=1.
     
-    Notes::
+    Notes:
+        
     - Rotation angle is linearly interpolated.
 
     :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
@@ -422,20 +423,20 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     string is returned.
 
     - ``trprint2(R)`` displays the SO(2) rotation matrix in a compact
-      single-line format:
+      single-line format::
 
         [LABEL:] THETA UNIT
 
     - ``trprint2(T)`` displays the SE(2) homogoneous transform in a compact
-      single-line format:
+      single-line format::
 
         [LABEL:] [t=X, Y;] THETA UNIT
 
-    Example:
+    Example::
 
-    >>> T = transl2(1,2)@trot2(0.3)
-    >>> trprint2(a, file=None, label='T')
-    'T: t =        1,        2;       17 deg'
+        >>> T = transl2(1,2)@trot2(0.3)
+        >>> trprint2(a, file=None, label='T')
+        'T: t =        1,        2;       17 deg'
 
     :seealso: trprint
     """
