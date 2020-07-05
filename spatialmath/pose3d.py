@@ -14,7 +14,6 @@ from spatialmath.base import argcheck
 import spatialmath.base as tr
 from spatialmath import super_pose as sp
 
-
 ###################################### SE3 ##################################
 
 class SO3(sp.SMPose):
@@ -187,6 +186,25 @@ class SO3(sp.SMPose):
             return tr.tr2rpy(self.A, unit=unit)
         else:
             return np.array([tr.tr2rpy(x, unit=unit) for x in self.A]).T
+
+    @property
+    def Ad(self):
+        """
+        :param self: pose
+        :type self: SE3 instance
+        :return: adjoint matrix
+        :rtype: numpy.ndarray, shape=(6,6)
+        
+        SE3.Ad  Adjoint matrix
+
+        A = P.Ad() is the adjoint matrix (6x6) corresponding to the pose P.
+        See also Twist.ad.
+
+        """
+
+        return np.r_[ np.c_[self.R, tr.skew(self.t) @ self.R],
+                      np.c_[np.zeros((3,3)), self.R]
+                        ]
 
     @classmethod
     def isvalid(cls, x):
