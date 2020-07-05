@@ -1,3 +1,4 @@
+![PyPI - Downloads](https://img.shields.io/pypi/dm/spatialmath-python)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
 [![Build Status](https://github.com/petercorke/spatialmath-python/workflows/build/badge.svg?branch=master)](https://github.com/petercorke/spatialmath-python/actions?query=workflow%3Abuild)
