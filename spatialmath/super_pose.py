@@ -504,7 +504,7 @@ class SMPose(UserList, ABC):
     def __str__(self):
         return self._string(color=False)
 
-    def _string(self, color=False):
+    def _string(self, color=False, squash=True):
         #print('in __str__')
 
         FG = lambda c: fg(c) if color else ''
@@ -520,9 +520,12 @@ class SMPose(UserList, ABC):
                 rowstr = '  '
                 # format the columns
                 for colnum, element in enumerate(row):
-                    if abs(element) < 10 * _eps:
-                        element = 0
-                    s = '{:< 10g}'.format(element)
+                    if isinstance(element, sympy.Expr):
+                        s = '{:<12s}'.format(str(element))
+                    else:
+                        if squash and abs(element) < 10 * _eps:
+                            element = 0
+                        s = '{:< 12g}'.format(element)
 
                     if rownum < n:
                         if colnum < n:
