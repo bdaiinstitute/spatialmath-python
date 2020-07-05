@@ -219,7 +219,7 @@ def qqmul(q1, q2):
     This is the quaternion or Hamilton product.  If both operands are unit-quaternions then
     the product will be a unit-quaternion.
 
-    :seealso: qvmul, inner
+    :seealso: qvmul, inner, vvmul
 
     """
     q1 = argcheck.getvector(q1, 4)
@@ -281,14 +281,21 @@ def qvmul(q, v):
 
 def vvmul(qa, qb):
     """
-            %UnitQuaternion.QVMUL Multiply unit quaternions defined by vector part
-        %
-        % QV = UnitQuaternion.QVMUL(QV1, QV2) multiplies two unit-quaternions
-        % defined only by their vector components QV1 and QV2 (3x1).  The result is
-        % similarly the vector component of the Hamilton product (3x1).
-        %
-        % Notes::
-        % - Is a static class meth
+    Quaternion multiplication
+
+
+    :arg qa: left-hand quaternion as a 3-vector
+    :type qa: : array_like
+    :arg qb: right-hand quaternion as a 3-vector
+    :type qb: array_like
+    :return: quaternion product
+    :rtype: numpy.ndarray, shape=(3,)
+
+    This is the quaternion or Hamilton product of unit-quaternions defined only
+    by their vector components.  The product will be a unit-quaternion, defined only
+    by its vector component.
+
+    :seealso: qvmul, inner
     """
     t6 = math.sqrt(1.0 - np.sum(qa**2))
     t11 = math.sqrt(1.0 - np.sum(qb**2))
@@ -438,7 +445,7 @@ def slerp(q0, q1, s, shortest=False):
     :return: interpolated unit-quaternion
     :rtype: numpy.ndarray, shape=(4,)
 
-    An interpolated quaternion between ``q0`` when ``s``=0`` to ``q1`` when ``s``=1.
+    An interpolated quaternion between ``q0`` when ``s`` = 0 to ``q1`` when ``s`` = 1.
 
     Interpolation is performed on a great circle on a 4D hypersphere. This is
     a rotation about a single fixed axis in space which yields the straightest
