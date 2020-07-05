@@ -3,11 +3,14 @@
 # 13 June, 2017
 
 import numpy as np
+import sympy
 from abc import ABC, abstractmethod
 from collections import UserList
 import copy
 from spatialmath.base import argcheck
 import spatialmath.base as tr
+#from spatialmath import Plucker
+
 
 _eps = np.finfo(np.float64).eps
 
@@ -110,8 +113,11 @@ class SMPose(UserList, ABC):
                 #print('list of numpys')
                 # possibly a list of numpy arrays
                 s = self.shape
-                check = type(self).isvalid  # lambda function
-                assert all(map(lambda x: x.shape == s and check(x), arg)), 'all elements of list must have valid shape and value for the class'
+                if check:
+                    checkfunc = type(self).isvalid # lambda function
+                    assert all(map(lambda x: x.shape == s and checkfunc(x), arg)), 'all elements of list must have valid shape and value for the class'
+                else:
+                    assert all(map(lambda x: x.shape == s, arg))
                 self.data = arg
             elif type(arg[0]) == type(self):
                 # possibly a list of objects of same type
