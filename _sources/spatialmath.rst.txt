@@ -2,8 +2,8 @@ Classes and functions
 =====================
 
 
-Classes
--------
+Pose classes
+------------
 
 Pose in 2D
 ^^^^^^^^^^
@@ -31,9 +31,21 @@ Pose in 3D
    :undoc-members:
    :show-inheritance:
    :inherited-members:
-   :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
+   :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__, __init__
    
-   
+Geometry
+--------
+
+Geometry in 3D
+^^^^^^^^^^^^^^
+
+.. automodule:: spatialmath.geom3d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __mul__, __rmul__, __eq__, __ne__, __init__, __or__, __xor__
+
 Functions (base)
 ----------------
 
