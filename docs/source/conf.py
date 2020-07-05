@@ -1,3 +1,4 @@
+# spatialmath
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -12,8 +13,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('..'))
+# sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -37,11 +38,13 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode', 
     'sphinx.ext.mathjax',
-    'sphinx_markdown_tables',
-    #'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
+    'sphinx_markdown_tables',
 ]
     #'recommonmark',
+    #'sphinx.ext.autosummary',
+    #    
+
 
 autosummary_generate = True
 
@@ -51,7 +54,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = ['test_*']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -59,17 +62,26 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-#html_theme = 'alabaster'
+#html_theme = 'sphinx_rtd_theme'
+html_theme = 'alabaster'
 #html_theme = 'pyramid'
 #html_theme = 'sphinxdoc'
+
+html_theme_options = {
+    'logo': '../../../../figs/icon.png',
+    'github_user': 'petercorke',
+    'github_repo': 'spatialmath-python',
+    'logo_name': False,
+    'description': 'Spatial maths and geometry for Python'
+    
+    }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
-autodoc_mock_imports = ["numpy", "scipy"] 
+# autodoc_mock_imports = ["numpy", "scipy"] 
 
 # extensions = ['rst2pdf.pdfbuilder']
 # pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Your Name'),]

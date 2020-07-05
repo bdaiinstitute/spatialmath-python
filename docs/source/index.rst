@@ -6,12 +6,10 @@
 Spatial Maths for Python
 ========================
 
-    
+   
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    intro
    spatialmath
    indices
-
