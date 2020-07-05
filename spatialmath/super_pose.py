@@ -345,13 +345,15 @@ class SMPose(UserList, ABC):
         elif isinstance(right, (int, float)):
             return left._op2(right, lambda x, y: x * y)
         else:
-            raise ValueError('bad operands')
-
+            return NotImplemented
+        
     def __rmul__(right, left):
         """
-
         """
-        return right.__mul__(left)
+        if isinstance(left, (int, float)):
+            return right.__mul__(left)
+        else:
+            return NotImplemented
 
     def __imul__(left, right):
         """
