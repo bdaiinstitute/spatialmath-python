@@ -561,3 +561,120 @@ class SMPose(UserList, ABC):
                 output_str += fg('green') + '[{:d}] =\n'.format(count) + attr(0) + mformat(self, X)
 
         return output_str
+    
+    
+class SMTwist(UserList, ABC):
+
+    # ------------------------- list support -------------------------------#
+    def __init__(self):
+        # handle common cases
+        #  deep copy
+        #  numpy array
+        #  list of numpy array
+        # validity checking??
+        # TODO should this be done by __new__?
+        super().__init__()   # enable UserList superpowers
+        
+    @classmethod
+    def Empty(cls):
+        """
+        Construct an empy pose object
+        
+        :param cls: The pose subclass
+        :type cls: type
+        :return: a pose object with zero lenght
+        :rtype: subclass instance
+
+        Example::
+            
+            >>> x = SE3()
+            >>> len(x)
+            1
+            >>> x = SE3.Empty()
+            >>> len(x)
+            1
+            
+        """
+        X = cls()
+        X.data = []
+        return X
+        
+    def __getitem__(self, i):
+        # print('getitem', i, 'class', self.__class__)
+        if isinstance(i, slice):
+            return self.__class__([self.data[k] for k in range(i.start or 0, i.stop or len(self), i.step or 1)], check=False)
+        else:
+            return self.__class__(self.data[i], check=False)
+    
+    def append(self, x):
+        """
+        Append a pose object
+        
+        :param x: A pose subclass
+        :type x: subclass
+        :raises ValueError: incorrect type of appended object
+
+        Appends the argument to the object's internal list.
+        
+        Examples::
+            
+            >>> x = SE3()
+            >>> len(x)
+            1
+            >>> x.append(SE3())
+            >>> len(x)
+            2
+        """
+        #print('in append method')
+        if not type(self) == type(x):
+            raise ValueError("cant append different type of pose object")
+        if len(x) > 1:
+            raise ValueError("cant append a pose sequence - use extend")
+        super().append(x.S)
+        
+    @property
+    def S(self):
+        """
+        Twist vector
+
+        TW.S is the twist vector in se(3) as a vector (6x1).
+
+        Notes:
+
+        - Sometimes referred to as the twist coordinate vector.
+        """
+        # get the underlying numpy array
+        if len(self.data) == 1:
+            return self.data[0]
+        else:
+            return self.data
+    
+    @property
+    def v(self):
+        return self.data[0][:3]
+    
+    @property
+    def w(self):
+        return self.data[0][3:6]
+
+    @property
+    def isprismatic(self):
+        return tr.iszerovec(self.w)
+    
+
+    def prod(self):
+        """
+        %Twist.prod Compound array of twists
+        %
+        TW.prod is a twist representing the product (composition) of the
+        successive elements of TW (1xN), an array of Twists.
+                %
+                %
+        See also RTBPose.prod, Twist.mtimes.
+        """
+        out = self[0]
+        
+        for t in self[1:]:
+            out *= t
+        return out
+
