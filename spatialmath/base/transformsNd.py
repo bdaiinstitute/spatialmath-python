@@ -213,7 +213,7 @@ def rt2m(R, t, check=False):
 # ======================= predicates
 
 
-def isR(R, tol=10):
+def isR(R, tol=100):
     r"""
     Test if matrix belongs to SO(n)
 
