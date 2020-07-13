@@ -476,8 +476,11 @@ class SMPose(UserList, ABC):
     def log(self, arg):
         pass
 
-    def interp(self, arg):
-        pass
+    def interp(self, T1=None, s=None):
+        if self.N == 2:
+            return self.__class__(tr.trinterp2(self.A, T1.A, s))
+        elif self.N == 3:
+            return self.__class__(tr.trinterp(self.A, T1.A, s))
 
     # ----------------------- i/o stuff
 
