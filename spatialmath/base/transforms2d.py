@@ -467,15 +467,24 @@ def _vec2s(fmt, v):
 
 try:
     import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    _matplotlib_exists = True
+    
+except BaseException:  # pragma: no cover
+    def trplot(*args, **kwargs):
+        print('** trplot: no plot produced -- matplotlib not installed')
+    _matplotlib_exists = False
+        
+if _matplotlib_exists:
 
-    def trplot2(T, ax=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y'], length=1, arrow=True, rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15):
+    def trplot2(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y'], length=1, arrow=True, rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
         """
         Plot a 2D coordinate frame
 
         :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
         :type: numpy.ndarray, shape=(2,2) or (3,3)
-        :param X: the axes to plot into, defaults to current axes
-        :type ax: Axes3D reference
+        :param axes: the axes to plot into, defaults to current axes
+        :type axes: Axes3D reference
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]
         :type dims: array_like
         :param color: color of the lines defining the frame
@@ -524,7 +533,7 @@ try:
         else:
             assert ishom2(T, check=True)
 
-        if ax is None:
+        if axes is None:
             # create an axes
             fig = plt.gcf()
             if fig.axes == []:
@@ -534,6 +543,8 @@ try:
                 if dims is None:
                     ax.autoscale(enable=True, axis='both')
                 else:
+                    if len(dims) == 2:
+                        dims = dims * 2
                     ax.set_xlim(dims[0:2])
                     ax.set_ylim(dims[2:4])
                 ax.set_aspect('equal')
@@ -542,6 +553,8 @@ try:
             else:
                 # reuse an existing axis
                 ax = plt.gca()
+        else:
+            ax = axes
 
         # create unit vectors in homogeneous form
         o = T @ np.array([0, 0, 1])
@@ -578,9 +591,38 @@ try:
             ax.text(x[0], x[1], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
-except BaseException:  # pragma: no cover
-    def trplot2(*args, **kwargs):
-        print('** trplot2: no plot produced -- matplotlib not installed')
+    from spatialmath.base import animate as animate
+    
+    def tranimate2(T, **kwargs):
+        """
+        Animate a 2D coordinate frame
+    
+        :param T: an SO(2) or SE(2) pose to be displayed as coordinate frame
+        :type: numpy.ndarray, shape=(2,2) or (3,3)
+        :param nframes: number of steps in the animation [defaault 100]
+        :type nframes: int
+        :param repeat: animate in endless loop [default False]
+        :type repeat: bool
+        :param interval: number of milliseconds between frames [default 50]
+        :type interval: int
+        :param movie: name of file to write MP4 movie into
+        :type movie: str
+        
+        Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.
+    
+        - If no current figure, one is created
+        - If current figure, but no axes, a 3d Axes is created
+        
+    
+        Examples:
+    
+             tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5])
+             tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+        """
+        anim = animate.Animate2(**kwargs)
+        anim.trplot2(T, **kwargs)
+        anim.run(**kwargs)
+
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
