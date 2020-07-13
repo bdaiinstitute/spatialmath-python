@@ -97,9 +97,33 @@ class SMPose(UserList, ABC):
         #  numpy array
         #  list of numpy array
         # validity checking??
+        # TODO should this be done by __new__?
         super().__init__()   # enable UserList superpowers
 
     def pose_arghandler(self, arg, check=True):
+        """
+        Generalized argument handling for pose classes
+        
+        :param arg: value of pose
+        :param check: check type of argument, defaults to True
+        :type check: TYPE, optional
+        :raises ValueError: bad type passed
+
+        The argument can be any of:
+            
+        1. a numpy.ndarray of the appropriate shape and valid value for the subclass
+        2. an instance of the subclass
+        3. a list whose elements all meet the criteria of 1.
+        4. a list whose elements are all instances of the subclass
+        
+        Examples::
+            
+            SE3( np.identity(4))
+            SE3( SE3() )
+            SE3( [np.identity(4), np.identity(4)])
+            SE3( [SE3(), SE3()])
+
+        """
 
         if isinstance(arg, np.ndarray):
             # it's a numpy array
@@ -124,20 +148,56 @@ class SMPose(UserList, ABC):
                 assert all(map(lambda x: type(x) == type(self), arg)), 'all elements of list must have same type'
                 self.data = [x.A for x in arg]
             else:
-                raise ValueError('1 bad argument to constructor')
+                raise ValueError('bad list argument to constructor')
         elif type(self) == type(arg):
             # it's an object of same type, do copy
             self.data = arg.data.copy()
         else:
-            raise ValueError('2 bad argument to constructor')
+            raise ValueError('bad argument to constructor')
 
     @classmethod
     def Empty(cls):
+        """
+        Construct an empy pose object
+        
+        :param cls: The pose subclass
+        :type cls: type
+        :return: a pose object with zero lenght
+        :rtype: subclass instance
+
+        Example::
+            
+            >>> x = SE3()
+            >>> len(x)
+            1
+            >>> x = SE3.Empty()
+            >>> len(x)
+            1
+            
+        """
         X = cls()
         X.data = []
         return X
 
     def append(self, x):
+        """
+        Append a pose object
+        
+        :param x: A pose subclass
+        :type x: subclass
+        :raises ValueError: incorrect type of appended object
+
+        Appends the argument to the object's internal list.
+        
+        Examples::
+            
+            >>> x = SE3()
+            >>> len(x)
+            1
+            >>> x.append(SE3())
+            >>> len(x)
+            2
+        """
         #print('in append method')
         if not type(self) == type(x):
             raise ValueError("cant append different type of pose object")
@@ -147,6 +207,24 @@ class SMPose(UserList, ABC):
 
     @property
     def A(self):
+        """
+        Access the underlying array
+        
+        :return: The numeric array
+        :rtype: numpy.ndarray
+        
+        Each pose subclass is stored internally as a numpy array. This property returns
+        the array, shape depends on the particular subclass.
+        
+        Examples::
+            
+        >>> x = SE3()
+        >>> x.A
+        array([[1., 0., 0., 0.],
+               [0., 1., 0., 0.],
+               [0., 0., 1., 0.],
+               [0., 0., 0., 1.]])
+        """
         # get the underlying numpy array
         if len(self.data) == 1:
             return self.data[0]
@@ -154,9 +232,34 @@ class SMPose(UserList, ABC):
             return self.data
 
     def __getitem__(self, i):
-        #print('getitem', i, 'class', self.__class__)
+        """
+        Access
+        :param i: index into the internal list
+        :type i: int
+        :return: one element of internal list
+        :rtype: subclass
+        :raises IndexError: if the element is out of bounds
+
+        Note that only a single index is supported, slices are not.
+        
+        Example::
+            
+        >>> x = SE3.Rx([0, math.pi/2, math.pi])
+        >>> len(x)
+        3
+        >>> x[1]
+           1           0           0           0            
+           0           0          -1           0            
+           0           1           0           0            
+           0           0           0           1  
+
+        """
+        # print('getitem', i, 'class', self.__class__)
         # return self.__class__(self.data[i])
-        return self.__class__(self.data[i])
+        if isinstance(i, slice):
+            return self.__class__([self.data[k] for k in range(i.start or 0, i.stop or len(self), i.step or 1)])
+        else:
+            return self.__class__(self.data[i])
 
     #----------------------- tests
     @property
@@ -346,9 +449,15 @@ class SMPose(UserList, ABC):
             elif len(left) == 1 and isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N:
                 # SE(n) x matrix
                 return tr.h2e(left.A @ tr.e2h(right))
+            elif isinstance(right, np.ndarray) and left.isSO and right.shape[0] == left.N and len(left) == right.shape[1]:
+                # SO(n) x matrix
+                return np.c_[[x.A @ y for x,y in zip(right, left.T)]].T
+            elif isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N and len(left) == right.shape[1]:
+                # SE(n) x matrix
+                return np.c_[[tr.h2e(x.A @ tr.e2h(y)) for x,y in zip(right, left.T)]].T
             else:
                 raise ValueError('bad operands')
-        elif isinstance(right, (int, float)):
+        elif isinstance(right, (int, np.int64, float, np.float64)):
             return left._op2(right, lambda x, y: x * y)
         else:
             return NotImplemented
@@ -356,7 +465,7 @@ class SMPose(UserList, ABC):
     def __rmul__(right, left):
         """
         """
-        if isinstance(left, (int, float)):
+        if isinstance(left, (int, np.int64, float, np.float64)):
             return right.__mul__(left)
         else:
             return NotImplemented
@@ -402,7 +511,7 @@ class SMPose(UserList, ABC):
     def __truediv__(left, right):
         if isinstance(left, right.__class__):
             return left.__class__(left._op2(right.inv, lambda x, y: x @ y))
-        elif isinstance(right, (int, float)):
+        elif isinstance(right, (int, np.int64, float, np.float64)):
             return left._op2(right, lambda x, y: x / y)
         else:
             raise ValueError('bad operands')
@@ -414,8 +523,8 @@ class SMPose(UserList, ABC):
         # results is not in the group, return an array, not a class
         return left._op2(right, lambda x, y: x + y)
 
-    # def __radd__(left, right):
-    #     return left.__add__(right)
+    def __radd__(left, right):
+        return left.__add__(right)
 
     def __iadd__(left, right):
         return left.__add__(right)
@@ -425,8 +534,8 @@ class SMPose(UserList, ABC):
         # TODO allow class +/- a conformant array
         return left._op2(right, lambda x, y: x - y)
 
-    # def __rsub__(left, right):
-    #     return -left.__sub__(right)
+    def __rsub__(left, right):
+        return -left.__sub__(right)
 
     def __isub__(left, right):
         return left.__sub__(right)
@@ -441,6 +550,7 @@ class SMPose(UserList, ABC):
     def _op2(left, right, op):
 
         if isinstance(right, left.__class__):
+            # class by class
             if len(left) == 1:
                 if len(right) == 1:
                     #print('== 1x1')
@@ -458,6 +568,7 @@ class SMPose(UserList, ABC):
                 else:
                     raise ValueError('length of lists to == must be same length')
         elif isinstance(right, (float, int)) or (isinstance(right, np.ndarray) and right.shape == left.shape):
+            # class by matrix
             if len(left) == 1:
                 return op(left.A, right)
             else:
@@ -498,6 +609,14 @@ class SMPose(UserList, ABC):
             tr.trplot2(self.A, *args, **kwargs)
         else:
             tr.trplot(self.A, *args, **kwargs)
+            
+    def animate(self, *args, T0=None, **kwargs):
+        if T0 is not None:
+            T0 = T0.A
+        if self.N == 2:
+            tr.tranimate2(self.A, T0=T0, *args, **kwargs)
+        else:
+            tr.tranimate(self.A, T0=T0, *args, **kwargs)
 
     def __repr__(self):
         # #print('in __repr__')
