@@ -38,7 +38,7 @@ def verifymatrix(m, shape):
 
 
 def getvector(v, dim=None, out='array'):
-    if isinstance(v, (int, float, sympy.Expr)):  # handle scalar case
+    if isinstance(v, (int, np.int64, float, sympy.Expr)):  # handle scalar case
         v = [v]
 
     if isinstance(v, (list, tuple)):
@@ -47,11 +47,11 @@ def getvector(v, dim=None, out='array'):
         if out == 'sequence':
             return v
         elif out == 'array':
-            return np.array(v)
+            return np.array(v, dtype=np.float64)
         elif out == 'row':
-            return np.array(v).reshape(1, -1)
+            return np.array(v, dtype=np.float64).reshape(1, -1)
         elif out == 'col':
-            return np.array(v).reshape(-1, 1)
+            return np.array(v, dtype=np.float64).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
     elif isinstance(v, np.ndarray):
@@ -65,11 +65,11 @@ def getvector(v, dim=None, out='array'):
         if out == 'sequence':
             return list(v.flatten())
         elif out == 'array':
-            return v
+            return v.astype(np.float64)
         elif out == 'row':
-            return v.reshape(1, -1)
+            return v.astype(np.float64).reshape(1, -1)
         elif out == 'col':
-            return v.reshape(-1, 1)
+            return v.astype(np.float64).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
     else:
