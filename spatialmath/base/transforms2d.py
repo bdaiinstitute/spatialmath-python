@@ -44,6 +44,7 @@ import numpy as np
 from spatialmath.base import argcheck
 from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
+import scipy.linalg
 
 try:  # pragma: no cover
     #print('Using SymPy')
@@ -209,7 +210,44 @@ def isrot2(R, check=False):
     """
     return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or trn.isR(R))
 
+# ---------------------------------------------------------------------------------------#
+def trlog2(T, check=True):
+    """
+    Logarithm of SO(2) or SE(2) matrix
 
+    :param T: SO(2) or SE(2) matrix
+    :type T: numpy.ndarray, shape=(2,2) or (3,3)
+    :return: logarithm
+    :rtype: numpy.ndarray, shape=(2,2) or (3,3)
+    :raises: ValueError
+
+    An efficient closed-form solution of the matrix logarithm for arguments that are SO(2) or SE(2).
+
+    - ``trlog2(R)`` is the logarithm of the passed rotation matrix ``R`` which will be
+      2x2 skew-symmetric matrix.  The equivalent vector from ``vex()`` is parallel to rotation axis
+      and its norm is the amount of rotation about that axis.
+    - ``trlog(T)`` is the logarithm of the passed homogeneous transformation matrix ``T`` which will be
+      3x3 augumented skew-symmetric matrix. The equivalent vector from ``vexa()`` is the twist
+      vector (6x1) comprising [v w].
+
+
+    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`, :func:`~spatialmath.base.transformsNd.vexa`
+    """
+
+    if ishom2(T, check=check):
+        # SE(2) matrix
+
+        if trn.iseye(T):
+            # is identity matrix
+            return np.zeros((3,3))
+        else:
+            return scipy.linalg.logm(T)
+
+    elif isrot2(T, check=check):
+        # SO(2) rotation matrix
+        return scipy.linalg.logm(T)
+    else:
+        raise ValueError("Expect SO(2) or SE(2) matrix")
 # ---------------------------------------------------------------------------------------#
 def trexp2(S, theta=None):
     """
@@ -264,6 +302,9 @@ def trexp2(S, theta=None):
             # 3 vector
             tw = argcheck.getvector(S)
 
+        if vec.iszerovec(tw):
+            return np.eye(3)
+        
         if theta is None:
             (tw, theta) = vec.unittwist2(tw)
         else:
@@ -324,82 +365,49 @@ def trinterp2(T0, T1=None, s=None):
     
     %## 2d homogeneous trajectory
     """
-    if T1 is None:
-        #	TRINTERP2(T, s)
+    if argcheck.ismatrix(T0, (2,2)):
+        # SO(2) case
+        if T1 is None:
+            #	TRINTERP2(T, s)
+            
+            th0 = math.atan2(T0[1,0], T0[0,0])
+            
+            th = s * th0
+        else:
+            #	TRINTERP2(T0, T1, s)
+            assert T0.shape == T1.shape, 'both matrices must be same shape'
         
-        th0 = math.atan2(T0[1,0], T0[0,0])
-        p0 = transl2(T0)
+            th0 = math.atan2(T0[1,0], T0[0,0])
+            th1 = math.atan2(T1[1,0], T1[0,0])
+            
+            th = th0 * (1 - s) + s * th1
         
-        th = s * th0
-        pr = s * p0
+        return rot2(th)
+    elif argcheck.ismatrix(T0, (3,3)):
+        if T1 is None:
+            #	TRINTERP2(T, s)
+            
+            th0 = math.atan2(T0[1,0], T0[0,0])
+            p0 = transl2(T0)
+            
+            th = s * th0
+            pr = s * p0
+        else:
+            #	TRINTERP2(T0, T1, s)
+            assert T0.shape == T1.shape, 'both matrices must be same shape'
+        
+            th0 = math.atan2(T0[1,0], T0[0,0])
+            th1 = math.atan2(T1[1,0], T1[0,0])
+            
+            p0 = transl2(T0)
+            p1 = transl2(T1)
+            
+            pr = p0 * (1 - s) + s * p1;
+            th = th0 * (1 - s) + s * th1
+        
+        return trn.rt2tr(rot2(th), pr)
     else:
-        #	TRINTERP2(T0, T1, s)
-    
-        th0 = math.atan2(T0[1,0], T0[0,0])
-        th1 = math.atan2(T1[1,0], T1[0,0])
-        
-        p0 = transl2(T0)
-        p1 = transl2(T1)
-        
-        pr = p0 * (1 - s) + s * p1;
-        th = th0 * (1 - s) + s * th1
-    
-    return trn.rt2tr(rot2(th), pr)
-
-
-# function T = trinterp2(A, B, C)
-
-#     switch nargin
-#         case 2
-#             % trinterp(T, s)
-#             T1 = A; s = B;
-            
-#             th0 = 0;
-#             th1 = atan2(T1(2,1), T1(1,1));
-#             if ~isrot2(T1)
-#                 p0 = [0 0]';
-#                 p1 = transl2(T1);
-#             end
-#         case 3
-#             % trinterp(T1, T2, s)
-#             T0 = A; T1 = B; s = C;
-#             assert(all(size(A) == size(B)), 'SMTB:trinterp2:badarg', '2 matrices must be same size');
-#             th0 = atan2(T0(2,1), T0(1,1));
-#             th1 = atan2(T1(2,1), T1(1,1));
-#             if ~isrot2(T0)
-#                 p0 = transl2(T0);
-#                 p1 =transl2(T1);
-#             end
-#         otherwise
-#             error('SMTB:trinterp2:badarg', 'must be 2 or 3 arguments');
-#     end
-    
-#     if length(s) == 1 && s > 1 && (s == floor(s))
-#         % integer value
-#         s = [0:(s-1)] / (s-1);
-#     elseif any(s<0 | s>1)
-#         error('SMTB:trinterp2:badarg', 'values of S outside interval [0,1]');
-#     end
-    
-#     if isrot2(T1)
-        
-#         % SO(2) case
-#         for i=1:length(s)
-#             th = th0*(1-s(i)) + s(i)*th1;
-            
-#             T(:,:,i) = rot2(th);
-#         end
-#     else
-#         % SE(2) case
-#         for i=1:length(s)
-#             th = th0*(1-s(i)) + s(i)*th1;
-#             pr = p0*(1-s(i)) + s(i)*p1;
-            
-#             T(:,:,i) = rt2tr(rot2(th), pr);
-#         end
-#     end
-    
-# end
+        return ValueError('Argument must be SO(2) or SE(2)')
 
 
 def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
