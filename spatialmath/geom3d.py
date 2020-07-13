@@ -15,19 +15,19 @@ _eps = np.finfo(np.float64).eps
 
    
 class Plane:
+    """
+    Create a plane object from linear coefficients
     
-    def __init__(self, c):
-        """
-        Create a plane object
-        
-        :param c: Plane coefficients
-        :type c: 4-element array_like
-        :return: a Plane object
-        :rtype: Plane
+    :param c: Plane coefficients
+    :type c: 4-element array_like
+    :return: a Plane object
+    :rtype: Plane
 
-        Planes are represented by the 4-vector :math:`[a, b, c, d]` which describes
-        the plane :math:`\pi: ax + by + cz + d=0`.
-        """
+    Planes are represented by the 4-vector :math:`[a, b, c, d]` which describes
+    the plane :math:`\pi: ax + by + cz + d=0`.
+    """
+    def __init__(self, c):
+
         self.plane = arg.getvector(c, 4)
     
     # point and normal
@@ -200,12 +200,12 @@ class Plucker(UserList):
         :return: Plucker line
         :rtype: Plucker
 
-        - `` L = Plucker(X)`` creates a Plucker object from the Plucker coordinate vector
+        - ``L = Plucker(X)`` creates a Plucker object from the Plucker coordinate vector
           ``X`` = [V,W] where V (3-vector) is the moment and W (3-vector) is the line direction.
 
         - ``L = Plucker(L)`` creates a copy of the Plucker object ``L``.
         
-        - `` L = Plucker(V, W)`` creates a Plucker object from moment ``V`` (3-vector) and
+        - ``L = Plucker(V, W)`` creates a Plucker object from moment ``V`` (3-vector) and
           line direction ``W`` (3-vector).
           
         Notes:
@@ -746,7 +746,7 @@ class Plucker(UserList):
         Notes:
             
          - Multiplication or composition of Plucker lines is not defined.
-         - Pre-multiplication by an SE3 object is supported, see __rmul__.
+         - Pre-multiplication by an SE3 object is supported, see ``__rmul__``.
 
         :seealso: Plucker.__rmul__
         """
@@ -978,7 +978,26 @@ class Plucker(UserList):
         return '\n'.join(['{{ {:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}}}'.format(*list(x.vec)) for x in self])
 
     def __repr__(self):
-        return self.__str__()
+        """
+        %Twist.display Display parameters
+        %
+L.display() displays the twist parameters in compact single line format.  If L is a
+vector of Twist objects displays one line per element.
+        %
+Notes::
+- This method is invoked implicitly at the command line when the result
+  of an expression is a Twist object and the command has no trailing
+  semicolon.
+        %
+See also Twist.char.
+        """
+        
+        if len(self) == 1:
+            return "Plucker([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self))
+        else:
+            return "Plucker([\n" + \
+                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self]) +\
+                "\n])"
         
         
 #         function z = side(self1, pl2)
