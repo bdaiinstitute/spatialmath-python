@@ -950,8 +950,8 @@ def trlog(T, check=True):
             # matrix is identity
             return np.zeros((3, 3))
         elif abs(np.trace(R) + 1) < 100 * _eps:
-
-            # rotation by +/- pi, +/- 3pi etc.
+            # check for trace = -1
+            #   rotation by +/- pi, +/- 3pi etc.
             diagonal = R.diagonal()
             k = diagonal.argmax()
             mx = diagonal[k]
@@ -1378,14 +1378,14 @@ def _vec2s(fmt, v):
 try:
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D
-    matplotlib_exists = True
+    _matplotlib_exists = True
     
 except BaseException:  # pragma: no cover
     def trplot(*args, **kwargs):
         print('** trplot: no plot produced -- matplotlib not installed')
-    matplotlib_exists = False
+    _matplotlib_exists = False
         
-if matplotlib_exists:
+if _matplotlib_exists:
     def trplot(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
         """
         Plot a 3D coordinate frame
