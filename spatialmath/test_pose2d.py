@@ -1,4 +1,5 @@
 import numpy.testing as nt
+import matplotlib.pyplot as plt
 import unittest
 
 """
@@ -446,6 +447,7 @@ class TestSE2(unittest.TestCase):
         
     def test_graphics(self):
         
+        plt.close('all')
         T1 = SE2.Rand()
         T2 = SE2.Rand()
         

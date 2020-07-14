@@ -1,4 +1,5 @@
 import numpy.testing as nt
+import matplotlib.pyplot as plt
 import unittest
 
 """
