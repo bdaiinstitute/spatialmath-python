@@ -205,6 +205,20 @@ class SMPose(UserList, ABC):
             raise ValueError("cant append a pose sequence - use extend")
         super().append(x.A)
 
+    def insert(self, i, value):
+        if not type(self) == type(value):
+            raise ValueError("cant append different type of pose object")
+        if len(value) > 1:
+            raise ValueError("cant insert a pose sequence - must have len() == 1")
+        super().insert(i, value.A)
+
+    def __setitem__(self, i, value):
+        if not type(self) == type(value):
+            raise ValueError("cant append different type of pose object")
+        if len(value) > 1:
+            raise ValueError("cant insert a pose sequence - must have len() == 1")
+        self.data[i] = value.A
+
     @property
     def A(self):
         """
