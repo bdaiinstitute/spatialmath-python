@@ -40,13 +40,15 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.coverage',
     'sphinx_markdown_tables',
-]
+    'sphinx.ext.doctest',
+    ]
     #'recommonmark',
     #'sphinx.ext.autosummary',
     #    
 
 
 autosummary_generate = True
+autodoc_member_order = 'bysource'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
