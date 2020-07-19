@@ -9,6 +9,8 @@ import numpy as np
 import math
 import sympy
 
+def isscalar(x):
+    return isinstance(x, (int, np.int64, float, np.float64))
 
 def matrix(m, shape):
     assert ismatrix(m, shape)
