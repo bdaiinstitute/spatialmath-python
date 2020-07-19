@@ -17,6 +17,14 @@ from spatialmath import super_pose as sp
 # ============================== SO3 =====================================#
 
 class SO3(sp.SMPose):
+    """
+    SO(3) subclass
+
+    This subclass represents rotations in 3D space.  Internally it is a 3x3 orthogonal matrix belonging
+    to the group SO(3) which describe rotations in 3D.
+
+    .. inheritance-diagram::
+    """
 
     def __init__(self, arg=None, *, check=True):
         """
@@ -29,6 +37,8 @@ class SO3(sp.SMPose):
           an SO3 instance containing N rotations. If ``check`` is ``True``
           then each matrix is checked for validity.
         - ``SO3([R1, R2, ... RN])`` where each Ri is an SO3 instance, is an SO3 instance containing N rotations.
+
+        :seealso: `SMPose.pose_arghandler`
         """
         super().__init__()  # activate the UserList semantics
 
@@ -37,7 +47,7 @@ class SO3(sp.SMPose):
             if type(self) is SO3:
                 self.data = [np.eye(3)]  # identity rotation
         else:
-            super().pose_arghandler(arg, check=check)
+            super()._arghandler(arg, check=check)
 
     @property
     def R(self):
@@ -490,7 +500,7 @@ class SE3(SO3):
                 # SE3( Nx3 )
                 self.data = [tr.transl(T) for T in x]   
             else:
-                super().pose_arghandler(x, check=check)
+                super()._arghandler(x, check=check)
         else:
             raise ValueError('bad argument to constructor')
 

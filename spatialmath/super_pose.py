@@ -4,12 +4,10 @@
 
 import numpy as np
 import sympy
-from abc import ABC, abstractmethod
 from collections import UserList
 import copy
 from spatialmath.base import argcheck
 import spatialmath.base as tr
-#from spatialmath import Plucker
 
 
 _eps = np.finfo(np.float64).eps
@@ -44,83 +42,83 @@ except ImportError:
 # print(Fore.BLACK + Style.DIM + '0 0 1')
 
 
-class SMPose(UserList, ABC):
-    # inherits from:
-    #  UserList, gives list-like functionality
-    #  ABC, defines an abstract class, can't be instantiated
+class SMPose(UserList):
+    """
+    Superclass for SO(N) and SE(N) objects
 
-    #    @property
-    #    def length(self):
-    #        """
-    #        Property to return number of matrices in pose object
-    #        :return: int
-    #        """
-    #        return len(self._list)
-    #
-    #    @property
-    #    def data(self):
-    #        """
-    #        Always returns a list containing the matrices of the pose object.
-    #        :return: A list of matrices.
-    #        """
-    #        return self._list
-    #
-    #
-    #    def is_equal(self, other):
-    #        if (type(self) is type(other)) and (self.length == other.length):
-    #            for i in range(self.length):
-    #                try:
-    #                    npt.assert_almost_equal(self.data[i], other.data[i])
-    #                except AssertionError:
-    #                    return False
-    #            return True
-    #
-    #    def append(self, item):
-    #        check_args.super_pose_appenditem(self, item)
-    #        if type(item) is np.matrix:
-    #            self._list.append(item)
-    #        else:
-    #            for each_matrix in item:
-    #                self._list.append(each_matrix)
-    #
-    #    def tr_2_rt(self):
-    #        assert isinstance(self, pose.SE2) or isinstance(self, pose.SE3)
-    #
-    #    def t_2_r(self):
-    #        assert isinstance(self, pose.SE2) or isinstance(self, pose.SE3)
-    #        for each_matrix in self:
-    #            pass  # TODO
+    Subclasses are:
 
-    def __init__(self):
-        # handle common cases
-        #  deep copy
-        #  numpy array
-        #  list of numpy array
-        # validity checking??
-        # TODO should this be done by __new__?
-        super().__init__()   # enable UserList superpowers
+    - ``SO2`` representing elements of SO(2) which describe rotations in 2D
+    - ``SE2`` representing elements of SE(2) which describe rigid-body motion in 2D
+    - ``SO3`` representing elements of SO(3) which describe rotations in 3D
+    - ``SE3`` representing elements of SE(3) which describe rigid-body motion in 3D
 
-    def pose_arghandler(self, arg, check=True):
+    Arithmetic operators are overloaded but the operation they perform depend
+    on the types of the operands.  For example:
+
+    - ``*`` will compose two instances of the same subclass, and the result will be
+      an instance of the same subclass, since this is a group operator.
+    - ``+`` will add two instances of the same subclass, and the result will be
+      a matrix, not an instance of the same subclass, since addition is not a group operator.
+
+    These classes all inherit from ``UserList`` which enables them to 
+    represent a sequence of values, ie. an ``SE3`` instance can contain
+    a sequence of SE(3) values.  Most of the Python ``list`` operators
+    are applicable::
+
+        >>> x = SE3()  # new instance with identity matrix value
+        >>> len(x)     # it is a sequence of one value
+        1
+        >>> x.append(x)  # append to itself
+        >>> len(x)       # it is a sequence of two values
+        2
+        >>> x[1]         # the element has a 4x4 matrix value
+        SE3([
+        array([[1., 0., 0., 0.],
+               [0., 1., 0., 0.],
+               [0., 0., 1., 0.],
+            [0., 0., 0., 1.]]) ])
+        >>> x[1] = SE3.Rx(0.3)  # set an elements of the sequence
+        >>> x.reverse()         # reverse the elements in the sequence
+        >>> del x[1]            # delete an element
+
+    """
+
+    def __new__(cls, *args, **kwargs):
         """
-        Generalized argument handling for pose classes
+        Create the subclass instance
+
+        Create a new instance and call the superclass initializer to enable the 
+        ``UserList`` capabilities.
+        """
+
+        pose = super(SMPose, cls).__new__(cls)  # create a new instance
+        super().__init__(pose)  # initialize UserList
+        return pose
+
+    def _arghandler(self, arg, check=True):
+        """
+        Assign value to pose subclasses
         
+        :param self: the pose object to be set
+        :type self: SO2, SE2, SO3, SE3 instance
         :param arg: value of pose
         :param check: check type of argument, defaults to True
         :type check: TYPE, optional
         :raises ValueError: bad type passed
 
-        The argument can be any of:
+        The value ``arg`` can be any of:
             
-        1. a numpy.ndarray of the appropriate shape and valid value for the subclass
-        2. an instance of the subclass
-        3. a list whose elements all meet the criteria of 1.
-        4. a list whose elements are all instances of the subclass
+        # a numpy.ndarray of the appropriate shape and value which is valid for the subclass
+        # a list whose elements all meet the criteria above
+        # an instance of the subclass
+        # a list whose elements are all instances of the subclass
         
         Examples::
-            
+
             SE3( np.identity(4))
-            SE3( SE3() )
             SE3( [np.identity(4), np.identity(4)])
+            SE3( SE3() )
             SE3( [SE3(), SE3()])
 
         """
@@ -132,7 +130,6 @@ class SMPose(UserList, ABC):
             self.data.append(arg)
         elif isinstance(arg, list):
             # construct from a list
-
             if isinstance(arg[0], np.ndarray):
                 #print('list of numpys')
                 # possibly a list of numpy arrays
@@ -158,21 +155,18 @@ class SMPose(UserList, ABC):
     @classmethod
     def Empty(cls):
         """
-        Construct an empy pose object
+        Construct an empty pose object
         
         :param cls: The pose subclass
-        :type cls: type
-        :return: a pose object with zero lenght
-        :rtype: subclass instance
+        :type cls: SO2, SE2, SO3, SE3
+        :return: a pose with zero values
+        :rtype: SO2, SE2, SO3, SE3 instance
 
-        Example::
+        This functions like a constructor.  For example::
             
-            >>> x = SE3()
-            >>> len(x)
-            1
             >>> x = SE3.Empty()
             >>> len(x)
-            1
+            0
             
         """
         X = cls()
@@ -181,20 +175,22 @@ class SMPose(UserList, ABC):
 
     def append(self, x):
         """
-        Append a pose object
+        Append a value to a pose object
         
-        :param x: A pose subclass
-        :type x: subclass
+        :param self: the pose object to be appened to
+        :type self: SO2, SE2, SO3, SE3 instance
+        :param x: the value to append
+        :type x: SO2, SE2, SO3, SE3 instance
         :raises ValueError: incorrect type of appended object
 
-        Appends the argument to the object's internal list.
+        Appends the argument to the object's internal list of values.
         
         Examples::
             
             >>> x = SE3()
             >>> len(x)
             1
-            >>> x.append(SE3())
+            >>> x.append(SE3.Rx(0.1))
             >>> len(x)
             2
         """
@@ -206,6 +202,26 @@ class SMPose(UserList, ABC):
         super().append(x.A)
 
     def insert(self, i, value):
+        """
+        Insert a value to a pose object
+
+        :param self: the pose object to be inserted into
+        :type self: SO2, SE2, SO3, SE3 instance
+        :param i: element to insert value before
+        :type i: int
+        :param value: the value to insert
+        :type value: SO2, SE2, SO3, SE3 instance
+        :raises ValueError: incorrect type of inserted value
+
+        Inserts the argument into the object's internal list of values.
+        
+        Examples::
+            
+            >>> x = SE3()
+            >>> x.inert(0, SE3.Rx(0.1)) # insert at position 0 in the list
+            >>> len(x)
+            2
+        """
         if not type(self) == type(value):
             raise ValueError("cant append different type of pose object")
         if len(value) > 1:
@@ -213,6 +229,25 @@ class SMPose(UserList, ABC):
         super().insert(i, value.A)
 
     def __setitem__(self, i, value):
+        """
+        Assign a value to a pose object
+        
+        :param self: the pose object to be assigned
+        :type self: SO2, SE2, SO3, SE3 instance
+        :param i: index of element to assign to
+        :type i: int
+        :param value: the value to insert
+        :type value: SO2, SE2, SO3, SE3 instance
+        :raises ValueError: incorrect type of assigned value
+
+        Assign the argument to an element of the object's internal list of values.
+        This supports the assignement operator, for example::
+            
+            >>> x = SE3([SE3() for i in range(10)]) # sequence of ten identity values
+            >>> len(x)
+            10
+            >>> x[3] = SE3.Rx(0.2)   # assign to position 3 in the list
+        """
         if not type(self) == type(value):
             raise ValueError("cant append different type of pose object")
         if len(value) > 1:
@@ -224,6 +259,8 @@ class SMPose(UserList, ABC):
         """
         Access the underlying array
         
+        :param self: the pose object
+        :type self: SO2, SE2, SO3, SE3 instance
         :return: The numeric array
         :rtype: numpy.ndarray
         
@@ -238,6 +275,8 @@ class SMPose(UserList, ABC):
                [0., 1., 0., 0.],
                [0., 0., 1., 0.],
                [0., 0., 0., 1.]])
+
+        :seealso: `shape`, `N`
         """
         # get the underlying numpy array
         if len(self.data) == 1:
@@ -247,11 +286,14 @@ class SMPose(UserList, ABC):
 
     def __getitem__(self, i):
         """
-        Access
-        :param i: index into the internal list
+        Access value of a pose object
+
+        :param self: the pose object to be accessed
+        :type self: SO2, SE2, SO3, SE3 instance
+        :param i: index of element to return
         :type i: int
-        :return: one element of internal list
-        :rtype: subclass
+        :return: the specific element of the pose
+        :rtype: SO2, SE2, SO3, SE3 instance
         :raises IndexError: if the element is out of bounds
 
         Note that only a single index is supported, slices are not.
@@ -282,7 +324,8 @@ class SMPose(UserList, ABC):
         Test if object belongs to SO(n)
 
         :param self: object to test
-        :return: true if object is instance of SO2 or SO3
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: ``True`` if object is instance of SO2 or SO3
         :rtype: bool
         """
         return type(self).__name__ == 'SO2' or type(self).__name__ == 'SO3'
@@ -293,7 +336,8 @@ class SMPose(UserList, ABC):
         Test if object belongs to SE(n)
 
         :param self: object to test
-        :return: true if object is instance of SE2 or SE3
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: ``True`` if object is instance of SE2 or SE3
         :rtype: bool
         """
         return type(self).__name__ == 'SE2' or type(self).__name__ == 'SE3'
@@ -301,11 +345,14 @@ class SMPose(UserList, ABC):
     @property
     def N(self):
         """
-        Dimension of the object's space
+        Dimension of the object's group
 
         :param self: object to test
-        :return: 2 for SO2 or SE2, 3 for SO3 or SE3
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: dimension
         :rtype: int
+
+        Dimension of the group is 2 for ``SO2`` or ``SE2``, and 3 for ``SO3`` or ``SE3``.
         """
         if type(self).__name__ == 'SO2' or type(self).__name__ == 'SE2':
             return 2
@@ -319,8 +366,12 @@ class SMPose(UserList, ABC):
         Test if object belongs to SO(3)
 
         :param self: object to test
-        :return: true if object is instance of SO3
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: ``True`` if object is instance of SO3
         :rtype: bool
+
+        For compatibility with Spatial Math Toolbox for MATLAB.
+        In Python use ``isinstance(x, SO3)``.
         """
         return type(self).__name__ == 'SO3'
 
@@ -329,8 +380,13 @@ class SMPose(UserList, ABC):
         Test if object belongs to SO(2)
 
         :param self: object to test
-        :return: true if object is instance of SO2
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: ``True`` if object is instance of SO2
         :rtype: bool
+
+
+        For compatibility with Spatial Math Toolbox for MATLAB.
+        In Python use ``isinstance(x, SO2)``.
         """
         return type(self).__name__ == 'SO2'
 
@@ -339,8 +395,12 @@ class SMPose(UserList, ABC):
         Test if object belongs to SE(3)
 
         :param self: object to test
-        :return: true if object is instance of SE3
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: ``True`` if object is instance of SE3
         :rtype: bool
+
+        For compatibility with Spatial Math Toolbox for MATLAB.
+        In Python use ``isinstance(x, SE3)``.
         """
         return type(self).__name__ == 'SE3'
 
@@ -349,8 +409,12 @@ class SMPose(UserList, ABC):
         Test if object belongs to SE(2)
 
         :param self: object to test
-        :return: true if object is instance of SE2
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: ``True`` if object is instance of SE2
         :rtype: bool
+
+        For compatibility with Spatial Math Toolbox for MATLAB.
+        In Python use ``isinstance(x, SE2)``.
         """
         return type(self).__name__ == 'SE2'
 
@@ -358,11 +422,14 @@ class SMPose(UserList, ABC):
     @property
     def shape(self):
         """
-        Dimension of the object's underlying matrix representation
+        Shape of the object's matrix representation
 
         :param self: object to test
-        :return: (2,2) for SO2, (3,3) for SE2 and SO3, and (4,4) for SE3
-        :rtype: int
+        :type self: SO2, SE2, SO3, SE3 instance
+        :return: matrix shape
+        :rtype: 2-tuple of ints
+
+        (2,2) for ``SO2``, (3,3) for ``SE2`` and ``SO3``, and (4,4) for ``SE3``.
         """
         if type(self).__name__ == 'SO2':
             return (2, 2)
@@ -375,14 +442,22 @@ class SMPose(UserList, ABC):
 
     def about(self):
         """
-        Display succinct details of object
+        Succinct summary of object type and length
 
         :param self: object to display
         :type self: SO2, SE2, SO3, SE3
+        :return: succinct summary
+        :rtype: str
 
-        Displays the type and the number of elements in compact form, eg. ``SE3[20]``.
+        Displays the type and the number of elements in compact form, for example::
+
+        >>> x = SE3([SE3() for i in range(20)])
+        >>> len(x)
+        20
+        >> print(x.about())
+        SE3[20]
         """
-        print("{:s}[{:d}]".format(type(self).__name__, len(self)))
+        return "{:s}[{:d}]".format(type(self).__name__, len(self))
 
     #----------------------- arithmetic
 
@@ -641,10 +716,10 @@ class SMPose(UserList, ABC):
         #     return str.rstrip("\n")  # Remove trailing newline character
         # else:
         #      raise ValueError('no elements in the value list')
-        return self._string(color=_color)
+        return 'SE3([\n' + ',\n'.join([v.__repr__() for v in self.data]) + ' ])'
 
     def __str__(self):
-        return self._string(color=False)
+        return self._string(color=True)
 
     def _string(self, color=False, squash=True):
         #print('in __str__')
@@ -699,7 +774,7 @@ class SMPose(UserList, ABC):
         return output_str
     
     
-class SMTwist(UserList, ABC):
+class SMTwist(UserList):
 
     # ------------------------- list support -------------------------------#
     def __init__(self):

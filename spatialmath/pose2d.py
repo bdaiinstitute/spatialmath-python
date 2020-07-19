@@ -63,7 +63,7 @@ class SO2(sp.SMPose):
         elif isinstance(arg, np.ndarray) and arg.shape == (2,2):
             self.data = [arg]
         else:
-            super().pose_arghandler(arg, check=check)
+            super()._arghandler(arg, check=check)
 
     @classmethod
     def Rand(cls, *, range=[0, 2 * math.pi], unit='rad', N=1):
@@ -234,7 +234,7 @@ class SE2(SO2):
                     # SE2([x,y,theta])
                     self.data = [tr.trot2(x[2], t=x[:2], unit=unit)]
                 else:
-                    super().pose_arghandler(x, check=check)
+                    super()._arghandler(x, check=check)
         else:
             raise ValueError('bad arguments to constructor')
 
@@ -661,9 +661,7 @@ if __name__ == '__main__':  # pragma: no cover
     import pathlib
     import os.path
 
-    #exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose2d.py")).read())
+    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose2d.py")).read())
     
-    a = SE2()
-    a.interp(a, 0)
 
     
