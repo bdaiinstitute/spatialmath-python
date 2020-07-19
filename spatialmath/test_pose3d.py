@@ -127,7 +127,7 @@ class TestSO3(unittest.TestCase):
 
     def test_about(self):
         R = SO3()
-        R.about()
+        R.about
 
     def test_display(self):
         R = SO3()
@@ -138,9 +138,7 @@ class TestSO3(unittest.TestCase):
 
         s = repr(R)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 3)
-
-        R.print()
+        self.assertEqual(s.count('\n'), 2)
 
         R.printline()
 
@@ -196,7 +194,7 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R.shape, (3, 3))
 
         R = SO3.Rx(0.3)
-        array_compare(R.inv * R, np.eye(3, 3))
+        array_compare(R.inv() * R, np.eye(3, 3))
 
     def test_arith(self):
         R = SO3()
@@ -223,14 +221,7 @@ class TestSO3(unittest.TestCase):
         # array_compare(a, np.array([ [2,0,0], [0,2,0], [0,0,2]]))
         #  this invokes the __add__ method for numpy
 
-        R += R
-        self.assertNotIsInstance(a, SO3)
-        array_compare(a, np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]]))
 
-        R = SO3()
-        R += 1
-        self.assertNotIsInstance(R, SO3)
-        array_compare(R, np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]]))
 
         # difference
         R = SO3()
@@ -254,15 +245,6 @@ class TestSO3(unittest.TestCase):
         # a =  np.eye(3) - R
         # self.assertNotIsInstance(a, SO3)
         # array_compare(a, np.zeros((3,3)))
-
-        R -= R
-        self.assertNotIsInstance(R, SO3)
-        array_compare(R, np.zeros((3, 3)))
-
-        R = SO3()
-        R -= 1
-        self.assertNotIsInstance(R, SO3)
-        array_compare(R, np.array([[0, -1, -1], [-1, 0, -1], [-1, -1, 0]]))
 
         # multiply
         R = SO3()
@@ -527,37 +509,6 @@ class TestSO3(unittest.TestCase):
         array_compare(a[1], ry + 1)
         array_compare(a[2], rz + 1)
 
-        a = R
-        a += rx
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + rx)
-        array_compare(a[2], rz + rx)
-
-        a = rx
-        a += R
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], rx + ry)
-        array_compare(a[2], rx + rz)
-
-        a = R
-        a += R
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + ry)
-        array_compare(a[2], rz + rz)
-
-        a = R
-        a += 1
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + 1)
-        array_compare(a[1], ry + 1)
-        array_compare(a[2], rz + 1)
 
         # subtract
         R = SO3([rx, ry, rz])
@@ -582,44 +533,7 @@ class TestSO3(unittest.TestCase):
         array_compare(a[1], ry - ry)
         array_compare(a[2], rz - rz)
 
-        a = R - 1
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - 1)
-        array_compare(a[1], ry - 1)
-        array_compare(a[2], rz - 1)
 
-        a = R
-        a -= rx
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - rx)
-        array_compare(a[2], rz - rx)
-
-        a = rx
-        a -= R
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], rx - ry)
-        array_compare(a[2], rx - rz)
-
-        a = R
-        a -= R
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - ry)
-        array_compare(a[2], rz - rz)
-
-        a = R
-        a -= 1
-        self.assertNotIsInstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - 1)
-        array_compare(a[1], ry - 1)
-        array_compare(a[2], rz - 1)
 
     def test_functions(self):
         # inv
@@ -820,16 +734,6 @@ class TestSE3(unittest.TestCase):
         # array_compare(a, np.array([ [2,0,0], [0,2,0], [0,0,2]]))
         #  this invokes the __add__ method for numpy
 
-        a = T
-        a += T
-        self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[2, 0, 0, 2], [0, 2, 0, 4], [0, 0, 2, 6], [0, 0, 0, 2]]))
-
-        a = T
-        a += 1
-        self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[2, 1, 1, 2], [1, 2, 1, 3], [1, 1, 2, 4], [1, 1, 1, 2]]))
-
         # difference
         T = SE3(1, 2, 3)
 
@@ -857,11 +761,6 @@ class TestSE3(unittest.TestCase):
         a -= T
         self.assertNotIsInstance(a, SE3)
         array_compare(a, np.zeros((4, 4)))
-
-        a = T
-        a -= 1
-        self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[0, -1, -1, 0], [-1, 0, -1, 1], [-1, -1, 0, 2], [-1, -1, -1, 0]]))
 
         # multiply
         T = SE3(1, 2, 3)
@@ -1106,38 +1005,6 @@ class TestSE3(unittest.TestCase):
         array_compare(a[1], ry + 1)
         array_compare(a[2], rz + 1)
 
-        a = T
-        a += rx
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + rx)
-        array_compare(a[2], rz + rx)
-
-        a = rx
-        a += T
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], rx + ry)
-        array_compare(a[2], rx + rz)
-
-        a = T
-        a += T
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + ry)
-        array_compare(a[2], rz + rz)
-
-        a = T
-        a += 1
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + 1)
-        array_compare(a[1], ry + 1)
-        array_compare(a[2], rz + 1)
-
         # subtract
         T = SE3([rx, ry, rz])
         a = T - rx
@@ -1168,37 +1035,6 @@ class TestSE3(unittest.TestCase):
         array_compare(a[1], ry - 1)
         array_compare(a[2], rz - 1)
 
-        a = T
-        a -= rx
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - rx)
-        array_compare(a[2], rz - rx)
-
-        a = rx
-        a -= T
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], rx - ry)
-        array_compare(a[2], rx - rz)
-
-        a = T
-        a -= T
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - ry)
-        array_compare(a[2], rz - rz)
-
-        a = T
-        a -= 1
-        self.assertNotIsInstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - 1)
-        array_compare(a[1], ry - 1)
-        array_compare(a[2], rz - 1)
 
     def test_functions(self):
         # inv
