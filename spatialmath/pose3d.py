@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Classes to represent orientation and pose in 3D.
 
-@author: Peter Corke
-"""
 
 from collections import UserList
 import numpy as np
@@ -21,7 +17,7 @@ class SO3(sp.SMPose):
     SO(3) subclass
 
     This subclass represents rotations in 3D space.  Internally it is a 3x3 orthogonal matrix belonging
-    to the group SO(3) which describe rotations in 3D.
+    to the group SO(3).
 
     .. inheritance-diagram::
     """
@@ -36,7 +32,7 @@ class SO3(sp.SMPose):
         - ``SO3([R1, R2, ... RN])`` where each Ri is a 3x3 numpy array of rotation matrices, is
           an SO3 instance containing N rotations. If ``check`` is ``True``
           then each matrix is checked for validity.
-        - ``SO3([R1, R2, ... RN])`` where each Ri is an SO3 instance, is an SO3 instance containing N rotations.
+        - ``SO3([X1, X2, ... XN])`` where each Xi is an SO3 instance, is an SO3 instance containing N rotations.
 
         :seealso: `SMPose.pose_arghandler`
         """
@@ -48,6 +44,8 @@ class SO3(sp.SMPose):
                 self.data = [np.eye(3)]  # identity rotation
         else:
             super()._arghandler(arg, check=check)
+
+# ------------------------------------------------------------------------ #
 
     @property
     def R(self):
@@ -68,23 +66,6 @@ class SO3(sp.SMPose):
             return self.A[:3, :3]
         else:
             return np.array([x[:3, :3] for x in self.A])
-
-    @property
-    def inv(self):
-        """
-        Inverse of SO(3)
-
-        :param self: pose
-        :type self: SE3 instance
-        :return: inverse
-        :rtype: SO2
-
-        Returns the inverse, which for elements of SO(3) is the transpose.
-        """
-        if len(self) == 1:
-            return SO3(self.A.T)
-        else:
-            return SO3([x.T for x in self.A])
 
     @property
     def n(self):
@@ -131,7 +112,25 @@ class SO3(sp.SMPose):
         """
         return self.A[:3, 2]
 
-    @property
+# ------------------------------------------------------------------------ #
+
+    def inv(self):
+        """
+        Inverse of SO(3)
+
+        :param self: pose
+        :type self: SE3 instance
+        :return: inverse
+        :rtype: SO2
+
+        Returns the inverse, which for elements of SO(3) is the transpose.
+        """
+        if len(self) == 1:
+            return SO3(self.A.T)
+        else:
+            return SO3([x.T for x in self.A])
+
+
     def eul(self, unit='deg'):
         """
         Extract Euler angles from SO(3) rotation
@@ -159,7 +158,6 @@ class SO3(sp.SMPose):
         else:
             return np.array([tr.tr2eul(x, unit=unit) for x in self.A]).T
 
-    @property
     def rpy(self, unit='deg', order='zyx'):
         """
         Extract roll-pitch-yaw angles from SO(3) rotation
@@ -197,7 +195,6 @@ class SO3(sp.SMPose):
         else:
             return np.array([tr.tr2rpy(x, unit=unit) for x in self.A]).T
 
-    @property
     def Ad(self):
         """
         :param self: pose
@@ -215,6 +212,7 @@ class SO3(sp.SMPose):
         return np.r_[ np.c_[self.R, tr.skew(self.t) @ self.R],
                       np.c_[np.zeros((3,3)), self.R]
                         ]
+# ------------------------------------------------------------------------ #
 
     @staticmethod
     def isvalid(x):
@@ -230,6 +228,8 @@ class SO3(sp.SMPose):
         :seealso: :func:`~spatialmath.base.transform3d.isrot`
         """
         return tr.isrot(x, check=True)
+
+# ---------------- variant constructors ---------------------------------- #
 
     @classmethod
     def Rx(cls, theta, unit='rad'):
@@ -456,6 +456,8 @@ class SO3(sp.SMPose):
         else:
             return cls(tr.trexp(S), check=False)
 
+
+
 # ============================== SE3 =====================================#
 
 
@@ -481,7 +483,7 @@ class SE3(SO3):
         - ``SE3([T1, T2, ... TN])`` where each Ti is a 4x4 numpy array representing an SE(3) matrix, is
           an SE3 instance containing N rotations. If ``check`` is ``True``
           check the matrix belongs to SE(3).
-        - ``SE3([T1, T2, ... TN])`` where each Ri is an SE3 instance, is an SE3 instance containing N rotations.
+        - ``SE3([X1, X2, ... XN])`` where each Xi is an SE3 instance, is an SE3 instance containing N rotations.
         """
         super().__init__()  # activate the UserList semantics
 
@@ -504,6 +506,8 @@ class SE3(SO3):
         else:
             raise ValueError('bad argument to constructor')
 
+# ------------------------------------------------------------------------ #
+
     @property
     def t(self):
         """
@@ -524,11 +528,8 @@ class SE3(SO3):
         else:
             return np.array([x[:3, 3] for x in self.A])
 
-    @property
-    def T(self):
-        raise NotImplemented('transpose is not meaningful for SE3 object')
+# ------------------------------------------------------------------------ #
 
-    @property
     def inv(self):
         r"""
         Inverse of SE(3)
@@ -546,6 +547,8 @@ class SE3(SO3):
             return SE3(tr.trinv(self.A))
         else:
             return SE3([tr.trinv(x) for x in self.A])
+        
+# ------------------------------------------------------------------------ #
 
     @staticmethod
     def isvalid(x):
@@ -561,6 +564,8 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transform3d.ishom`
         """
         return tr.ishom(x, check=True)
+
+# ---------------- variant constructors ---------------------------------- #
 
     @classmethod
     def Rx(cls, theta, unit='rad'):
@@ -833,6 +838,7 @@ class SE3(SO3):
         """
         return cls(tr.transl(0, 0, z))
 
+
 # ============================== Twist =====================================#
 
 class Twist(sp.SMTwist):
@@ -882,18 +888,10 @@ class Twist(sp.SMTwist):
     https://github.com/petercorke/spatial-math
     """
 
-    # properties (SetAccess = protected)
-    #     v  %axis direction (column vector)
-    #     w  %moment (column vector)
-    # end
-
-
-
-    # ------------------------- constructors -------------------------------#
 
     def __init__(self, arg=None, w=None, check=True):
         """
-        Twist.Twist Create Twist object
+        Construct a new Twist object
 
         TW = Twist(T) is a Twist object representing the SE(2) or SE(3)
         homogeneous transformation matrix T (3x3 or 4x4).
@@ -967,47 +965,75 @@ class Twist(sp.SMTwist):
 
         else:
             raise ValueError('bad argument to constructor')
-
-    @classmethod
-    def R(cls, a, q, p=None):
-        
-        w = tr.unitvec(argcheck.getvector(a, 3))
-        v = -np.cross(w, argcheck.getvector(q, 3))
-        if p is not None:
-            pitch = argcheck.getvector(p, 3)
-            v = v + pitch * w
-        return cls(v, w)
-
-    @classmethod
-    def P(cls, a):
-        w = np.r_[0, 0, 0]
-        v = tr.unitvec(argcheck.getvector(a, 3))
-
-        return cls(v, w)
-    
-
-    
-    
-    # ------------------------- static methods -------------------------------#
-
-    @staticmethod
-    def isvalid(v, check=True):
-        if argcheck.isvector(v, 6):
-            return True
-        elif argcheck.ismatrix(v, (4,4)):
-            # maybe be an se(3)
-            if not all(v.diagonal() == 0):  # check diagonal is zero 
-                return False
-            if not all(v[3,:] == 0):  # check bottom row is zero
-                return False
-            if not tr.isskew(v[:3,:3]):
-                  # top left 3x3 is skew symmetric
-                  return False
-            return True
-        return False
-
-
+            
     # ------------------------- properties -------------------------------#
+
+        
+    @property
+    def N(self):
+        """
+        Dimension of the object's vector representation
+
+        :return: dimension
+        :rtype: int
+
+        Length of the Twist vector
+
+        
+        Example::
+            
+            >>> x = Twist()
+            >>> x.N
+            3
+        """
+        return 3
+        
+    @property
+    def v(self):
+        """
+        Twist as a moment vector
+        
+        :return: Moment vector
+        :rtype: numpy.ndarray, shape=(3,)
+        
+        - ``X.v`` is a 3-vector
+
+        """
+        return self.data[0][:3]
+    
+    @property
+    def w(self):
+        """
+        Twist as a direction vector (superclass property)
+        
+        :return: Direction vector
+        :rtype: numpy.ndarray, shape=(3,)
+        
+        - ``X.v`` is a 3-vector for Twist and a 1-vector for Twist2
+
+        """
+        return self.data[0][3:6]
+    
+    @property
+    def isprismatic(self):
+        """
+        Test for prismatic twist (superclass property)
+        
+        :return: If twist is purely prismatic
+        :rtype: book
+        
+        Example::
+            
+            >>> x = Twist.R([1,2,3], [4,5,6])
+            >>> x.isprismatic
+            False
+
+        """
+        if len(self) == 1:
+            return tr.iszerovec(self.w)
+        else:
+            return [tr.iszerovec(x) for x in self.data]
+
     @property
     def unit(self):
         """
@@ -1022,37 +1048,90 @@ class Twist(sp.SMTwist):
         else:
             # prismatic twist
             return Twist(tr.unitvec(self.v), [0, 0, 0])
-
+    
     @property
-    def S(self):
+    def isunit(self):
         """
-        Twist vector
-
-        TW.S is the twist vector in se(3) as a vector (6x1).
-
-        Notes:
-
-        - Sometimes referred to as the twist coordinate vector.
+        Test for unit twist (superclass property)
+        
+        :return: If twist is a unit-twist
+        :rtype: bool
         """
-        # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
+        if len(self) == 1:
+            return tr.isunittwist(self.S)
         else:
-            return self.data
-    
-    @property
-    def v(self):
-        return self.data[0][:3]
-    
-    @property
-    def w(self):
-        return self.data[0][3:6]
+            return [tr.isunittwist(x) for x in self.data]
 
-    @property
-    def isprismatic(self):
-        return tr.iszerovec(self.w)
+    # -------------------- variant constructors ----------------------------#
+
+    @classmethod
+    def R(cls, a, q, p=None):
+        """
+        Construct a new rotational 3D twist
+        
+        :param a: Twist axis or line of action
+        :type a: 3-element array_like
+        :param q: Point on the line of action
+        :type q: 3-element array_like
+        :param p: pitch, defaults to None
+        :type p: float, optional
+        :return: a rotational or helical twist
+        :rtype: Twist instance
+
+        """
+        
+        w = tr.unitvec(argcheck.getvector(a, 3))
+        v = -np.cross(w, argcheck.getvector(q, 3))
+        if p is not None:
+            pitch = argcheck.getvector(p, 3)
+            v = v + pitch * w
+        return cls(v, w)
+
+    @classmethod
+    def P(cls, a):
+        """
+        Construct a new prismatic 3D twist
+        
+        :param a: Twist axis or line of action
+        :type a: 3-element array_like
+        :return: a prismatic twist
+        :rtype: Twist instance
+
+        """
+        w = np.r_[0, 0, 0]
+        v = tr.unitvec(argcheck.getvector(a, 3))
+
+        return cls(v, w)
     
-    @property
+    # ------------------------- static methods -------------------------------#
+
+    @staticmethod
+    def isvalid(v, check=True):
+        """
+        Test if matrix is valid twist
+
+        :param x: array to test
+        :type x: numpy.ndarray
+        :return: true of the matrix is a 6-vector or a 4x4 se(3) element
+        :rtype: bool
+
+        """
+        if argcheck.isvector(v, 6):
+            return True
+        elif argcheck.ismatrix(v, (4,4)):
+            # maybe be an se(3)
+            if not all(v.diagonal() == 0):  # check diagonal is zero 
+                return False
+            if not all(v[3,:] == 0):  # check bottom row is zero
+                return False
+            if not tr.isskew(v[:3,:3]):
+                  # top left 3x3 is skew symmetric
+                  return False
+            return True
+        return False
+
+    # -------------------------  methods -------------------------------#
+
     def ad(self):
         """
         Twist.ad Logarithm of adjoint
@@ -1064,7 +1143,7 @@ class Twist(sp.SMTwist):
         """
         x = np.array([skew(self.w), skew(self.v), [np.zeros((3,3)), skew(self.w)]])
 
-    @property
+
     def Ad(self):
         """
         Twist.Ad Adjoint
@@ -1076,8 +1155,8 @@ class Twist(sp.SMTwist):
         """
 
         return self.SE3.Ad
+
     
-    @property
     def SE3(self):
         """
         Twist.SE Convert twist to SE2 or SE3 object
@@ -1089,7 +1168,7 @@ class Twist(sp.SMTwist):
 
         return SE3(self.exp())
 
-    @property
+
     def se3(self):
         """
         Twist.se Return the twist matrix
@@ -1103,7 +1182,7 @@ class Twist(sp.SMTwist):
         else:
             return [tr.skewa(x.S) for x in self]
     
-    @property
+
     def pitch(self):
         """
         %Twist.pitch Pitch of the twist
@@ -1117,7 +1196,6 @@ class Twist(sp.SMTwist):
         return np.dot(self.w, self.v)
 
     
-    @property
     def line(self):
         """
         Twist.line Line of twist axis in Plucker form
@@ -1134,7 +1212,6 @@ class Twist(sp.SMTwist):
         return Plucker([np.r_[tw.v - tw.pitch * tw.w, tw.w] for tw in self])
 
 
-    @property
     def pole(self):
         """
         %Twist.pole Point on the twist axis
@@ -1147,7 +1224,7 @@ class Twist(sp.SMTwist):
 
         return np.cross(self.w, self.v) / self.theta
 
-    @property
+
     def theta(self):
         """
         Twist.theta Twist rotation
@@ -1157,27 +1234,62 @@ class Twist(sp.SMTwist):
 
         return tr.norm(self.w)
     
-    # ------------------------- methods -------------------------------#
+    # ------------------------- arithmetic -------------------------------#
 
     def __mul__(left, right):
         """
-        Twist.mtimes Multiply twist by twist or scalar
+        Overloaded ``*`` operator
+        
+        :arg left: left multiplicand
+        :arg right: right multiplicand
+        :return: product
+        :raises: ValueError
 
-        TW1 * TW2 is a new Twist representing the composition of twists TW1 and
-        TW2.
+        Twist composition or scaling:
+        
+        - ``X * Y`` compounds the twists ``X`` and ``Y``
+        - ``X * s`` performs elementwise multiplication of the elements of ``X`` by ``s``
+        - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
 
-        TW * T is an SE2 or SE3 that is the composition of the twist TW and the
-        homogeneous transformation object T.
+        ========  ====================  ===================  ========================
+                   Multiplicands                   Product
+        -------------------------------   -----------------------------------
+        left       right                type                 operation
+        ========  ====================  ===================  ========================
+        Twist      Twist                Twist                product of exponentials
+        Twist      scalar               Twist                element-wise product
+        scalar     Twist                Twist                element-wise product
+        Twist      SpatialVelocity      SpatialVelocity      adjoint product
+        Twist      SpatialAcceleration  SpatialAcceleration  adjoint product
+        Twist      SpatialForce         SpatialForce         adjoint product
+        ========  ====================  ===================  ========================
+        
+        Notes:
+            
+        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
+        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
+        #. scalar x Pose is handled by ``__rmul__``
+        #. scalar multiplication is commutative but the result is not a group
+           operation so the result will be a matrix
+        #. Any other input combinations result in a ValueError.
+        
+        For pose composition the ``left`` and ``right`` operands may be a sequence
 
-        TW * S with its twist coordinates scaled by scalar S.
+        =========   ==========   ====  ================================
+        len(left)   len(right)   len     operation
+        =========   ==========   ====  ================================
+         1          1             1    ``prod = left * right``
+         1          M             M    ``prod[i] = left * right[i]``
+         N          1             M    ``prod[i] = left[i] * right``
+         M          M             M    ``prod[i] = left[i] * right[i]``
+        =========   ==========   ====  ================================
 
-        TW * T compounds a twist with an SE2/3 transformation
-        %
         """
+        # TODO TW * T compounds a twist with an SE2/3 transformation
         
         if isinstance(right, Twist):
             # twist composition
-            return Twist( left.exp() * right.exp());
+            return Twist( left.exp() @ right.exp());
         elif isinstance(right, (int, np.int64, float, np.float64)):
             return Twist(left.S * right)
         elif isinstance(right, SpatialVelocity):
@@ -1200,7 +1312,14 @@ class Twist(sp.SMTwist):
             
     def exp(self, theta=None, units='rad'):
         """
-        Twist.exp Convert twist to homogeneous transformation
+        Exponentiate a twist
+        
+        :param theta: DESCRIPTION, defaults to None
+        :type theta: TYPE, optional
+        :param units: DESCRIPTION, defaults to 'rad'
+        :type units: TYPE, optional
+        :return: DESCRIPTION
+        :rtype: TYPE
 
         TW.exp is the homogeneous transformation equivalent to the twist (SE2 or SE3).
 
@@ -1229,35 +1348,58 @@ class Twist(sp.SMTwist):
         
     def __str__(self):
         """
-    %Twist.char Convert to string
+        Pretty string representation of twist
+        
+        :return: readable representation of the twist
+        :rtype: str
+        
+        Convert the pose's matrix value to a simple grid of numbers.
+        
+        Example::
+            
+            >>> x = Twist.R([1,2,3], [4,5,6])
+            >>> print(x)
+            (0.80178 -1.6036 0.80178; 0.26726 0.53452 0.80178)
+        
+        Notes:
+            
+            - By default, the output is colorised for an ANSI terminal console:
+                
+                * red: rotational elements
+                * blue: translational elements
+                * white: constant elements
 
-    s = TW.char() is a string showing Twist parameters in a compact single line format.
-    If TW is a vector of Twist objects return a string with one line per Twist.
-
-    See also Twist.display.
         """
         return '\n'.join(["({:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g})".format(*list(tw.S)) for tw in self])
 
     def __repr__(self):
         """
-        %Twist.display Display parameters
-        %
-L.display() displays the twist parameters in compact single line format.  If L is a
-vector of Twist objects displays one line per element.
-        %
-Notes::
-- This method is invoked implicitly at the command line when the result
-  of an expression is a Twist object and the command has no trailing
-  semicolon.
-        %
-See also Twist.char.
+        Readable representation of twist
+        
+        :return: readable representation of a twist as a list of arrays
+        :rtype: str
+        
+        Example::
+            
+            >>> x = Twist.R([1,2,3], [4,5,6])
+            >>> x
+            Twist([0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178])
+            >>> a.append(a)
+            >>> a
+            Twist([
+              [0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178],
+              [0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178]
+            ])
+
         """
         
-        if len(self) == 1:
-            return "Twist([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self))
+        if len(self) == 0:
+            return "Twist([])"
+        elif len(self) == 1:
+            return "Twist([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
         else:
             return "Twist([\n" + \
-                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self]) +\
+                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self.data]) +\
                 "\n])"
 
             
@@ -1265,6 +1407,9 @@ if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
     import os.path
+    
+    x = SE3.Rx(0.3)
+    y = x.interp(np.linspace(0, 1, 10))
     
     x = Twist.P([1, 2, 3])
 

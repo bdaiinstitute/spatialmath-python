@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Mar 21 15:48:52 2020
-
-@author: Peter Corke
-"""
 
 from collections import UserList
 import numpy as np
@@ -465,6 +460,8 @@ class Twist2(sp.SMTwist):
         else:
             raise ValueError('bad argument to constructor')
 
+    # -------------------- variant constructors ----------------------------#
+
     @classmethod
     def R(cls, q):
         
@@ -481,7 +478,35 @@ class Twist2(sp.SMTwist):
         return cls(v, w)
     
     @property
+    def N(self):
+        """
+        Dimension of the object's vector representation
+
+        :return: dimension
+        :rtype: int
+
+        Length of the Twist vector
+
+        
+        Example::
+            
+            >>> x = Twist()
+            >>> x.N
+            3
+        """
+        return 3
+    
+    @property
     def v(self):
+        """
+        Twist as a moment vector (superclass property)
+        
+        :return: Moment vector
+        :rtype: numpy.ndarray
+        
+        - ``X.v`` is a 3-vector for Twist and a 1-vector for Twist2
+
+        """
         return self.data[0][:2]
     
     @property
