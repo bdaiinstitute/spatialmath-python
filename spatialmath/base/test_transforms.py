@@ -785,6 +785,8 @@ class Test3D(unittest.TestCase):
         # run again, with axes already created
         tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
 
+        # test animate with line not arrow, text, test with SO(3)
+
 class TestLie(unittest.TestCase):
 
     def test_vex(self):

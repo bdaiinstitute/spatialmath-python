@@ -1395,7 +1395,7 @@ if _matplotlib_exists:
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
-        If dims is [min, max] those limits are applied to the x-, y- and z-axes.
+                     If dims is [min, max] those limits are applied to the x-, y- and z-axes.
         :type dims: array_like
         :param color: color of the lines defining the frame
         :type color: str
