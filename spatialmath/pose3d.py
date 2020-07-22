@@ -534,20 +534,47 @@ class SE3(SO3):
         r"""
         Inverse of SE(3)
 
-        :param self: pose
-        :type self: SE3 instance
         :return: inverse
         :rtype: SE3
 
         Returns the inverse taking into account its structure
 
         :math:`T = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
+        
+        :seealso: :func:`~spatialmath.base.transform3d.trinv`
         """
         if len(self) == 1:
             return SE3(tr.trinv(self.A))
         else:
             return SE3([tr.trinv(x) for x in self.A])
+    
+    def delta(self, X2):
+        r"""
+        Difference of SE(3)
+
+        :param X1: 
+        :type X1: SE3
+        :return: differential motion vector
+        :rtype: numpy.ndarray, shape=(6,)
+            
+        - ``X1.delta(T2)`` is the differential motion (6x1) corresponding to 
+          infinitessimal motion (in the X1 frame) from pose X1 to X2.
+    
+        The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
+        represents infinitessimal translation and rotation.
+    
+        Notes:
+            
+        - the displacement is only an approximation to the motion T, and assumes
+          that X1 ~ X2.
+        - Can be considered as an approximation to the effect of spatial velocity over a
+          a time interval, average spatial velocity multiplied by time.
         
+        Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+        
+        :seealso: :func:`~spatialmath.base.transform3d.tr2delta`
+        """
+        return tr.tr2delta(self.A, X1.A)
 # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -837,6 +864,27 @@ class SE3(SO3):
         `SE3.Tz(D)`` is an SE(3) translation of D along the z-axis
         """
         return cls(tr.transl(0, 0, z))
+    
+    @classmethod
+    def Delta(cls, d):
+        r"""
+        Create SE(3) from diffential motion
+
+        :param d: differential motion
+        :type d: 6-element array_like
+        :return: 4x4 homogeneous transformation matrix
+        :rtype: SE3 instance
+            
+
+        - ``T = delta2tr(d)`` is an SE(3) representing differential 
+          motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
+    
+        Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+        
+        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
+
+        """
+        return tr.tr2delta(self.A, X1.A)
 
 
 # ============================== Twist =====================================#
