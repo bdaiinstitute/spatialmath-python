@@ -1,0 +1,1849 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>spatialmath.super_pose &#8212; Spatial Maths package 0.7.0
+ documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for spatialmath.super_pose</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Created by: Aditya Dua, 2017</span>
+<span class="c1"># Peter Corke, 2020</span>
+<span class="c1"># 13 June, 2017</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
+<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">tr</span>
+
+
+<span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+<span class="c1"># colored printing of matrices to the terminal</span>
+<span class="c1">#   colored package has much finer control than colorama, but the latter is available by default with anaconda</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">colored</span> <span class="kn">import</span> <span class="n">fg</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">attr</span>
+    <span class="n">_color</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;using colored output&#39;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="c1">#print(&#39;colored not found&#39;)</span>
+    <span class="n">_color</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># try:</span>
+<span class="c1">#     import colorama</span>
+<span class="c1">#     colorama.init()</span>
+<span class="c1">#     print(&#39;using colored output&#39;)</span>
+<span class="c1">#     from colorama import Fore, Back, Style</span>
+
+<span class="c1"># except:</span>
+<span class="c1">#     class color:</span>
+<span class="c1">#         def __init__(self):</span>
+<span class="c1">#             self.RED = &#39;&#39;</span>
+<span class="c1">#             self.BLUE = &#39;&#39;</span>
+<span class="c1">#             self.BLACK = &#39;&#39;</span>
+<span class="c1">#             self.DIM = &#39;&#39;</span>
+
+<span class="c1"># print(Fore.RED + &#39;1.00 2.00 &#39; + Fore.BLUE + &#39;3.00&#39;)</span>
+<span class="c1"># print(Fore.RED + &#39;1.00 2.00 &#39; + Fore.BLUE + &#39;3.00&#39;)</span>
+<span class="c1"># print(Fore.BLACK + Style.DIM + &#39;0 0 1&#39;)</span>
+
+
+<span class="k">class</span> <span class="nc">SMPose</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Superclass for SO(N) and SE(N) objects</span>
+
+<span class="sd">    Subclasses are:</span>
+
+<span class="sd">    - ``SO2`` representing elements of SO(2) which describe rotations in 2D</span>
+<span class="sd">    - ``SE2`` representing elements of SE(2) which describe rigid-body motion in 2D</span>
+<span class="sd">    - ``SO3`` representing elements of SO(3) which describe rotations in 3D</span>
+<span class="sd">    - ``SE3`` representing elements of SE(3) which describe rigid-body motion in 3D</span>
+
+<span class="sd">    Arithmetic operators are overloaded but the operation they perform depend</span>
+<span class="sd">    on the types of the operands.  For example:</span>
+
+<span class="sd">    - ``*`` will compose two instances of the same subclass, and the result will be</span>
+<span class="sd">      an instance of the same subclass, since this is a group operator.</span>
+<span class="sd">    - ``+`` will add two instances of the same subclass, and the result will be</span>
+<span class="sd">      a matrix, not an instance of the same subclass, since addition is not a group operator.</span>
+
+<span class="sd">    These classes all inherit from ``UserList`` which enables them to </span>
+<span class="sd">    represent a sequence of values, ie. an ``SE3`` instance can contain</span>
+<span class="sd">    a sequence of SE(3) values.  Most of the Python ``list`` operators</span>
+<span class="sd">    are applicable::</span>
+
+<span class="sd">        &gt;&gt;&gt; x = SE3()  # new instance with identity matrix value</span>
+<span class="sd">        &gt;&gt;&gt; len(x)     # it is a sequence of one value</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; x.append(x)  # append to itself</span>
+<span class="sd">        &gt;&gt;&gt; len(x)       # it is a sequence of two values</span>
+<span class="sd">        2</span>
+<span class="sd">        &gt;&gt;&gt; x[1]         # the element has a 4x4 matrix value</span>
+<span class="sd">        SE3([</span>
+<span class="sd">        array([[1., 0., 0., 0.],</span>
+<span class="sd">               [0., 1., 0., 0.],</span>
+<span class="sd">               [0., 0., 1., 0.],</span>
+<span class="sd">            [0., 0., 0., 1.]]) ])</span>
+<span class="sd">        &gt;&gt;&gt; x[1] = SE3.Rx(0.3)  # set an elements of the sequence</span>
+<span class="sd">        &gt;&gt;&gt; x.reverse()         # reverse the elements in the sequence</span>
+<span class="sd">        &gt;&gt;&gt; del x[1]            # delete an element</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the subclass instance (superclass method)</span>
+
+<span class="sd">        Create a new instance and call the superclass initializer to enable the </span>
+<span class="sd">        ``UserList`` capabilities.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pose</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SMPose</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>  <span class="c1"># create a new instance</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span>  <span class="c1"># initialize UserList</span>
+        <span class="k">return</span> <span class="n">pose</span>
+
+    <span class="k">def</span> <span class="nf">_arghandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assign value to pose subclasses (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: the pose object to be set</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :param arg: value of pose</span>
+<span class="sd">        :param check: check type of argument, defaults to True</span>
+<span class="sd">        :type check: TYPE, optional</span>
+<span class="sd">        :raises ValueError: bad type passed</span>
+
+<span class="sd">        The value ``arg`` can be any of:</span>
+<span class="sd">            </span>
+<span class="sd">        # a numpy.ndarray of the appropriate shape and value which is valid for the subclass</span>
+<span class="sd">        # a list whose elements all meet the criteria above</span>
+<span class="sd">        # an instance of the subclass</span>
+<span class="sd">        # a list whose elements are all instances of the subclass</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+
+<span class="sd">            SE3( np.identity(4))</span>
+<span class="sd">            SE3( [np.identity(4), np.identity(4)])</span>
+<span class="sd">            SE3( SE3() )</span>
+<span class="sd">            SE3( [SE3(), SE3()])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># it&#39;s a numpy array</span>
+            <span class="k">assert</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">&#39;array must have valid shape for the class&#39;</span>
+            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span> <span class="s1">&#39;array must have valid value for the class&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># construct from a list</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="c1">#print(&#39;list of numpys&#39;)</span>
+                <span class="c1"># possibly a list of numpy arrays</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+                <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+                    <span class="n">checkfunc</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">isvalid</span> <span class="c1"># lambda function</span>
+                    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">s</span> <span class="ow">and</span> <span class="n">checkfunc</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">arg</span><span class="p">)),</span> <span class="s1">&#39;all elements of list must have valid shape and value for the class&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">s</span><span class="p">,</span> <span class="n">arg</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span>
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c1"># possibly a list of objects of same type</span>
+                <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">arg</span><span class="p">)),</span> <span class="s1">&#39;all elements of list must have same type&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad list argument to constructor&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="c1"># it&#39;s an object of same type, do copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument to constructor&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new pose object with zero items (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param cls: The pose subclass</span>
+<span class="sd">        :type cls: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :return: a pose with zero values</span>
+<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
+
+<span class="sd">        This constructs an empty pose container which can be appended to.  For example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO2.Empty()</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            0</span>
+<span class="sd">            &gt;&gt;&gt; x.append(SO2(20, &#39;deg&#39;))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            1</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">X</span>
+
+<span class="c1"># ------------------------------------------------------------------------ #</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interal array representation (superclass property)</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: the pose object</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :return: The numeric array</span>
+<span class="sd">        :rtype: numpy.ndarray</span>
+<span class="sd">        </span>
+<span class="sd">        Each pose subclass SO(N) or SE(N) are stored internally as a numpy array. This property returns</span>
+<span class="sd">        the array, shape depends on the particular subclass.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.A</span>
+<span class="sd">            array([[1., 0., 0., 0.],</span>
+<span class="sd">                   [0., 1., 0., 0.],</span>
+<span class="sd">                   [0., 0., 1., 0.],</span>
+<span class="sd">                   [0., 0., 0., 1.]])</span>
+
+<span class="sd">        :seealso: `shape`, `N`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get the underlying numpy array</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shape of the object&#39;s matrix representation (superclass property)</span>
+
+<span class="sd">        :return: matrix shape</span>
+<span class="sd">        :rtype: 2-tuple of ints</span>
+
+<span class="sd">        (2,2) for ``SO2``, (3,3) for ``SE2`` and ``SO3``, and (4,4) for ``SE3``.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.shape</span>
+<span class="sd">            (4, 4)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO3&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE3&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Succinct summary of object type and length (superclass property)</span>
+
+<span class="sd">        :return: succinct summary</span>
+<span class="sd">        :rtype: str</span>
+
+<span class="sd">        Displays the type and the number of elements in compact form, for </span>
+<span class="sd">        example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = SE3([SE3() for i in range(20)])</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            20</span>
+<span class="sd">            &gt;&gt;&gt; print(x.about)</span>
+<span class="sd">            SE3[20]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{:s}</span><span class="s2">[</span><span class="si">{:d}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dimension of the object&#39;s group (superclass property)</span>
+
+<span class="sd">        :return: dimension</span>
+<span class="sd">        :rtype: int</span>
+
+<span class="sd">        Dimension of the group is 2 for ``SO2`` or ``SE2``, and 3 for ``SO3`` or ``SE3``.</span>
+<span class="sd">        This corresponds to the dimension of the space, 2D or 3D, to which these</span>
+<span class="sd">        rotations or rigid-body motions apply.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.N</span>
+<span class="sd">            3</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span>
+
+    <span class="c1">#----------------------- tests</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isSO</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SO(n) group (superclass property)</span>
+
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :return: ``True`` if object is instance of SO2 or SO3</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO3&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isSE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SE(n) group (superclass property)</span>
+
+<span class="sd">        :param self: object to test</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :return: ``True`` if object is instance of SE2 or SE3</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE3&#39;</span>
+
+
+        
+<span class="c1"># ------------------------------------------------------------------------ #</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Access value of a pose object (superclass method)</span>
+
+<span class="sd">        :param i: index of element to return</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :return: the specific element of the pose</span>
+<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises IndexError: if the element is out of bounds</span>
+
+<span class="sd">        Note that only a single index is supported, slices are not.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            3</span>
+<span class="sd">            &gt;&gt;&gt; x[1]</span>
+<span class="sd">               1           0           0           0            </span>
+<span class="sd">               0           0          -1           0            </span>
+<span class="sd">               0           1           0           0            </span>
+<span class="sd">               0           0           0           1  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assign a value to a pose object (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param i: index of element to assign to</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :param value: the value to insert</span>
+<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises ValueError: incorrect type of assigned value</span>
+
+<span class="sd">        Assign the argument to an element of the object&#39;s internal list of values.</span>
+<span class="sd">        This supports the assignement operator, for example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3([SE3() for i in range(10)]) # sequence of ten identity values</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(0.2)   # assign to position 3 in the list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
+
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append a value to a pose object (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param x: the value to append</span>
+<span class="sd">        :type x: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises ValueError: incorrect type of appended object</span>
+
+<span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; x.append(SE3.Rx(0.1))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(&#39;in append method&#39;)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append a pose sequence - use extend&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        
+
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extend sequence of values of a pose object (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param x: the value to extend</span>
+<span class="sd">        :type x: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises ValueError: incorrect type of appended object</span>
+
+<span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; x.append(SE3.Rx(0.1))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(&#39;in extend method&#39;)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant extend a singleton pose  - use append&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert a value to a pose object (superclass method)</span>
+
+<span class="sd">        :param i: element to insert value before</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :param value: the value to insert</span>
+<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises ValueError: incorrect type of inserted value</span>
+
+<span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.inert(0, SE3.Rx(0.1)) # insert at position 0 in the list</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pop value of a pose object (superclass method)</span>
+
+<span class="sd">        :return: the specific element of the pose</span>
+<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises IndexError: if there are no values to pop</span>
+
+<span class="sd">        Removes the first pose value from the sequence in the pose object.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            3</span>
+<span class="sd">            &gt;&gt;&gt; y = x.pop()</span>
+<span class="sd">            &gt;&gt;&gt; y</span>
+<span class="sd">            SE3(array([[ 1.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],</span>
+<span class="sd">                       [ 0.0000000e+00, -1.0000000e+00, -1.2246468e-16,  0.0000000e+00],</span>
+<span class="sd">                       [ 0.0000000e+00,  1.2246468e-16, -1.0000000e+00,  0.0000000e+00],</span>
+<span class="sd">                       [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  1.0000000e+00]]))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+
+
+<span class="c1"># ------------------------------------------------------------------------ #</span>
+
+    <span class="c1"># --------- compatibility methods</span>
+
+    <span class="k">def</span> <span class="nf">isrot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SO(3) group (superclass method)</span>
+
+<span class="sd">        :return: ``True`` if object is instance of SO3</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        For compatibility with Spatial Math Toolbox for MATLAB.</span>
+<span class="sd">        In Python use ``isinstance(x, SO3)``.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO3()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO3&#39;</span>
+
+    <span class="k">def</span> <span class="nf">isrot2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SO(2) group (superclass method)</span>
+
+<span class="sd">        :return: ``True`` if object is instance of SO2</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        For compatibility with Spatial Math Toolbox for MATLAB.</span>
+<span class="sd">        In Python use ``isinstance(x, SO2)``.</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO2()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; x = SE2()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SO2&#39;</span>
+
+    <span class="k">def</span> <span class="nf">ishom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SE(3) group (superclass method)</span>
+
+<span class="sd">        :return: ``True`` if object is instance of SE3</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        For compatibility with Spatial Math Toolbox for MATLAB.</span>
+<span class="sd">        In Python use ``isinstance(x, SE3)``.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO3()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE3&#39;</span>
+
+    <span class="k">def</span> <span class="nf">ishom2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if object belongs to SE(2) group (superclass method)</span>
+
+<span class="sd">        :return: ``True`` if object is instance of SE2</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        For compatibility with Spatial Math Toolbox for MATLAB.</span>
+<span class="sd">        In Python use ``isinstance(x, SE2)``.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO2()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; x = SE2()</span>
+<span class="sd">            &gt;&gt;&gt; x.isrot()</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SE2&#39;</span>
+    
+     <span class="c1">#----------------------- functions</span>
+
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Logarithm of pose (superclass method)</span>
+
+<span class="sd">        :return: logarithm</span>
+<span class="sd">        :rtype: numpy.ndarray</span>
+<span class="sd">        :raises: ValueError</span>
+<span class="sd">    </span>
+<span class="sd">        An efficient closed-form solution of the matrix logarithm.</span>
+<span class="sd">        </span>
+<span class="sd">        =====  ======  ===============================</span>
+<span class="sd">        Input         Output</span>
+<span class="sd">        -----  ---------------------------------------</span>
+<span class="sd">        Pose   Shape   Structure</span>
+<span class="sd">        =====  ======  ===============================</span>
+<span class="sd">        SO2    (2,2)   skew-symmetric</span>
+<span class="sd">        SE2    (3,3)   augmented skew-symmetric</span>
+<span class="sd">        SO3    (3,3)   skew-symmetric</span>
+<span class="sd">        SE3    (4,4)   augmented skew-symmetric</span>
+<span class="sd">        =====  ======  ===============================</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; y = x.log()</span>
+<span class="sd">            &gt;&gt;&gt; y</span>
+<span class="sd">            array([[ 0. , -0. ,  0. ,  0. ],</span>
+<span class="sd">                   [ 0. ,  0. , -0.3,  0. ],</span>
+<span class="sd">                   [-0. ,  0.3,  0. ,  0. ],</span>
+<span class="sd">                   [ 0. ,  0. ,  0. ,  0. ]])</span>
+<span class="sd">            </span>
+
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms2d.trlog2`, :func:`~spatialmath.base.transforms3d.trlog`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;in log&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">log</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">log</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">log</span>
+
+    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interpolate pose (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param T0: initial pose</span>
+<span class="sd">        :type T0: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :param s: interpolation coefficient, range 0 to 1</span>
+<span class="sd">        :type s: float or array_like</span>
+<span class="sd">        :return: interpolated pose</span>
+<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X.interp(s)`` interpolates the pose X between identity when s=0</span>
+<span class="sd">          and X when s=1.</span>
+
+<span class="sd">         ======  ======  ===========  ===============================</span>
+<span class="sd">         len(X)  len(s)  len(result)  Result</span>
+<span class="sd">         ======  ======  ===========  ===============================</span>
+<span class="sd">         1       1       1            Y = interp(identity, X, s)</span>
+<span class="sd">         M       1       M            Y[i] = interp(T0, X[i], s)</span>
+<span class="sd">         1       M       M            Y[i] = interp(T0, X, s[i])</span>
+<span class="sd">         ======  ======  ===========  ===============================</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; print(x.interp(0))</span>
+<span class="sd">            SE3(array([[1., 0., 0., 0.],</span>
+<span class="sd">                       [0., 1., 0., 0.],</span>
+<span class="sd">                       [0., 0., 1., 0.],</span>
+<span class="sd">                       [0., 0., 0., 1.]]))</span>
+<span class="sd">            &gt;&gt;&gt; print(x.interp(1))</span>
+<span class="sd">            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.95533649, -0.29552021,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.29552021,  0.95533649,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))</span>
+<span class="sd">            &gt;&gt;&gt; y = x.interp(x, np.linspace(0, 1, 10))</span>
+<span class="sd">            &gt;&gt;&gt; len(y)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; y[5]</span>
+<span class="sd">            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.98614323, -0.16589613,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.16589613,  0.98614323,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))</span>
+<span class="sd">            </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).</span>
+<span class="sd">    </span>
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trinterp`, :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">T0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;len(X0) must == 1&#39;</span>
+            <span class="n">T0</span> <span class="o">=</span> <span class="n">T0</span><span class="o">.</span><span class="n">A</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(s) &gt; 1, len(X) must == 1&#39;</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(X) &gt; 1, len(s) must == 1&#39;</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(s) &gt; 1, len(X) must == 1&#39;</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">T1</span><span class="o">=</span><span class="n">T0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(X) &gt; 1, len(s) must == 1&#39;</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T1</span><span class="o">=</span><span class="n">T0</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+        
+    
+    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Normalize pose (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :return: pose</span>
+<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">    </span>
+<span class="sd">        - ``X.norm()`` is an equivalent pose object but the rotational matrix </span>
+<span class="sd">          part of all values has been adjusted to ensure it is a proper orthogonal</span>
+<span class="sd">          matrix rotation.</span>
+<span class="sd">          </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; y = x.norm()</span>
+<span class="sd">            &gt;&gt;&gt; y</span>
+<span class="sd">            SE3(array([[1., 0., 0., 0.],</span>
+<span class="sd">                       [0., 1., 0., 0.],</span>
+<span class="sd">                       [0., 0., 1., 0.],</span>
+<span class="sd">                       [0., 0., 0., 1.]]))</span>
+<span class="sd">    </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. Only the direction of A vector (the z-axis) is unchanged.</span>
+<span class="sd">        #. Used to prevent finite word length arithmetic causing transforms to </span>
+<span class="sd">           become &#39;unnormalized&#39;.</span>
+<span class="sd">           </span>
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trnorm2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trnorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+
+ 
+
+    <span class="c1"># ----------------------- i/o stuff</span>
+
+    <span class="k">def</span> <span class="nf">printline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print pose as a single line (superclass method)</span>
+<span class="sd">    </span>
+<span class="sd">        :param label: text label to put at start of line</span>
+<span class="sd">        :type label: str</span>
+<span class="sd">        :param file: file to write formatted string to. [default, stdout]</span>
+<span class="sd">        :type file: str</span>
+<span class="sd">        :param fmt: conversion format for each number as used by ``format()``</span>
+<span class="sd">        :type fmt: str</span>
+<span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
+<span class="sd">        :type unit: str</span>
+<span class="sd">        :return: optional formatted string</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        </span>
+<span class="sd">        For SO(3) or SE(3) also:</span>
+<span class="sd">        </span>
+<span class="sd">        :param orient: 3-angle convention to use</span>
+<span class="sd">        :type orient: str</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X.printline()`` print ``X`` in single-line format to ``stdout``, followed</span>
+<span class="sd">          by a newline</span>
+<span class="sd">        - ``X.printline(file=None)`` return a string containing ``X`` in </span>
+<span class="sd">          single-line format</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x=SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; x.printline()</span>
+<span class="sd">            t =        0,        0,        0; rpy/zyx =       17,        0,        0 deg</span>
+<span class="sd">        </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trprint2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trprint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Readable representation of pose (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :return: readable representation of the pose as a list of arrays</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; x</span>
+<span class="sd">            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.95533649, -0.29552021,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.29552021,  0.95533649,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span>  <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;([])&#39;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># need to indent subsequent lines of the native repr string by 4 spaces</span>
+            <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># format this as a list of ndarrays</span>
+            <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;([</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39; ])&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pretty string representation of pose (superclass method)</span>
+
+<span class="sd">        :return: readable representation of the pose</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        </span>
+<span class="sd">        Convert the pose&#39;s matrix value to a simple grid of numbers.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; print(x)</span>
+<span class="sd">               1           0           0           0            </span>
+<span class="sd">               0           0.955336   -0.29552     0            </span>
+<span class="sd">               0           0.29552     0.955336    0            </span>
+<span class="sd">               0           0           0           1 </span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">            - By default, the output is colorised for an ANSI terminal console:</span>
+<span class="sd">                </span>
+<span class="sd">                * red: rotational elements</span>
+<span class="sd">                * blue: translational elements</span>
+<span class="sd">                * white: constant elements</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pretty print the matrix value</span>
+<span class="sd">        </span>
+<span class="sd">        :param color: colorise the output, defaults to False</span>
+<span class="sd">        :type color: bool, optional</span>
+<span class="sd">        :param tol: zero values smaller than tol*eps, defaults to 10</span>
+<span class="sd">        :type tol: float, optional</span>
+<span class="sd">        :return: multiline matrix representation</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        </span>
+<span class="sd">        Convert a matrix to a simple grid of numbers with optional</span>
+<span class="sd">        colorization for an ANSI terminal console:</span>
+<span class="sd">                </span>
+<span class="sd">                * red: rotational elements</span>
+<span class="sd">                * blue: translational elements</span>
+<span class="sd">                * white: constant elements</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; print(str(x))</span>
+<span class="sd">               1           0           0           0            </span>
+<span class="sd">               0           0.955336   -0.29552     0            </span>
+<span class="sd">               0           0.29552     0.955336    0            </span>
+<span class="sd">               0           0           0           1 </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(&#39;in __str__&#39;)</span>
+
+        <span class="n">FG</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">fg</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="n">_color</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">BG</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">bg</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="n">_color</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">ATTR</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">attr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="n">_color</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+            <span class="c1"># X is an ndarray value to be display</span>
+            <span class="c1"># self provides set type for formatting</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>  <span class="c1"># dimension of rotation submatrix</span>
+            <span class="k">for</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+                <span class="n">rowstr</span> <span class="o">=</span> <span class="s1">&#39;  &#39;</span>
+                <span class="c1"># format the columns</span>
+                <span class="k">for</span> <span class="n">colnum</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Expr</span><span class="p">):</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&lt;12s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">tol</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+                            <span class="n">element</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&lt; 12g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">rownum</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">colnum</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                            <span class="c1"># rotation part</span>
+                            <span class="n">s</span> <span class="o">=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># translation part</span>
+                            <span class="n">s</span> <span class="o">=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># bottom row</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;grey_50&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">rowstr</span> <span class="o">+=</span> <span class="n">s</span>
+                <span class="n">out</span> <span class="o">+=</span> <span class="n">rowstr</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">return</span> <span class="n">out</span>
+
+        <span class="n">output_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output_str</span> <span class="o">=</span> <span class="s1">&#39;[]&#39;</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># single matrix case</span>
+            <span class="n">output_str</span> <span class="o">=</span> <span class="n">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># sequence case</span>
+            <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                <span class="c1"># add separator lines and the index</span>
+                <span class="n">output_str</span> <span class="o">+=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;[</span><span class="si">{:d}</span><span class="s1">] =</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="o">+</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output_str</span>
+    
+    <span class="c1"># ----------------------- graphics</span>
+    
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot pose object as a coordinate frame (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param `**kwargs`: plotting options</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X.plot()`` displays the pose ``X`` as a coordinate frame in either</span>
+<span class="sd">          2D or 3D axes.  There are many options, see the links below.</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; X = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; X.plot(frame=&#39;A&#39;, color=&#39;green&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trplot`, :func:`~spatialmath.base.transforms2d.trplot2`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">T0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot pose object as an animated coordinate frame (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param `**kwargs`: plotting options</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X.plot()`` displays the pose ``X`` as a coordinate frame moving</span>
+<span class="sd">          from the origin, or ``T0``, in either 2D or 3D axes.  There are </span>
+<span class="sd">          many options, see the links below.</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; X = SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; X.animate(frame=&#39;A&#39;, color=&#39;green&#39;)</span>
+
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms2d.tranimate2`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">T0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">T0</span> <span class="o">=</span> <span class="n">T0</span><span class="o">.</span><span class="n">A</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">tranimate2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">T0</span><span class="o">=</span><span class="n">T0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">tranimate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">T0</span><span class="o">=</span><span class="n">T0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="c1"># ------------------------------------------------------------------------ #</span>
+
+    <span class="c1">#----------------------- arithmetic</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``*`` operator (superclass method)</span>
+
+<span class="sd">        :arg left: left multiplicand</span>
+<span class="sd">        :arg right: right multiplicand</span>
+<span class="sd">        :return: product</span>
+<span class="sd">        :raises: ValueError</span>
+
+<span class="sd">        Pose composition, scaling or vector transformation:</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X * Y`` compounds the poses ``X`` and ``Y``</span>
+<span class="sd">        - ``X * s`` performs elementwise multiplication of the elements of ``X`` by ``s``</span>
+<span class="sd">        - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``</span>
+<span class="sd">        - ``X * v`` linear transform of the vector ``v``</span>
+
+<span class="sd">        ==============   ==============   ===========  ======================</span>
+<span class="sd">                   Multiplicands                   Product</span>
+<span class="sd">        -------------------------------   -----------------------------------</span>
+<span class="sd">            left             right            type           operation</span>
+<span class="sd">        ==============   ==============   ===========  ======================</span>
+<span class="sd">        Pose             Pose             Pose         matrix product</span>
+<span class="sd">        Pose             scalar           NxN matrix   element-wise product</span>
+<span class="sd">        scalar           Pose             NxN matrix   element-wise product</span>
+<span class="sd">        Pose             N-vector         N-vector     vector transform</span>
+<span class="sd">        Pose             NxM matrix       NxM matrix   transform each column</span>
+<span class="sd">        ==============   ==============   ===========  ======================</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance</span>
+<span class="sd">        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``</span>
+<span class="sd">        #. scalar x Pose is handled by ``__rmul__``</span>
+<span class="sd">        #. scalar multiplication is commutative but the result is not a group</span>
+<span class="sd">           operation so the result will be a matrix</span>
+<span class="sd">        #. Any other input combinations result in a ValueError.</span>
+<span class="sd">        </span>
+<span class="sd">        For pose composition the ``left`` and ``right`` operands may be a sequence</span>
+
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``prod = left * right``</span>
+<span class="sd">         1          M             M    ``prod[i] = left * right[i]``</span>
+<span class="sd">         N          1             M    ``prod[i] = left[i] * right``</span>
+<span class="sd">         M          M             M    ``prod[i] = left[i] * right[i]``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+
+<span class="sd">        For vector transformation there are three cases</span>
+<span class="sd">        </span>
+<span class="sd">        =========  ===========  =====  ==========================</span>
+<span class="sd">              Multiplicands             Product</span>
+<span class="sd">        ----------------------  ---------------------------------</span>
+<span class="sd">        len(left)  right.shape  shape  operation</span>
+<span class="sd">        =========  ===========  =====  ==========================</span>
+<span class="sd">        1          (N,)         (N,)   vector transformation</span>
+<span class="sd">        M          (N,)         (N,M)  vector transformations</span>
+<span class="sd">        1          (N,M)        (N,M)  column transformation</span>
+<span class="sd">        =========  ===========  =====  ==========================</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. for the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous</span>
+<span class="sd">           form, transformed, then converted back to Euclidean form.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="c1">#print(&#39;*: pose x pose&#39;)</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">@</span> <span class="n">y</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="c1">#print(&#39;*: pose x array&#39;)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+                <span class="c1"># pose x vector</span>
+                <span class="c1">#print(&#39;*: pose x vector&#39;)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span><span class="p">:</span>
+                    <span class="c1"># SE(n) x vector</span>
+                    <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># SO(n) x vector</span>
+                    <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">v</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+                <span class="c1"># pose array x vector</span>
+                <span class="c1">#print(&#39;*: pose array x vector&#39;)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span><span class="p">:</span>
+                    <span class="c1"># SE(n) x vector</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># SO(n) x vector</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSO</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="c1"># SO(n) x matrix</span>
+                <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">right</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
+                <span class="c1"># SE(n) x matrix</span>
+                <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSO</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="c1"># SO(n) x matrix</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">T</span><span class="p">)]]</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="c1"># SE(n) x matrix</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">T</span><span class="p">)]]</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``*`` operator (superclass method)</span>
+
+<span class="sd">        :arg left: left multiplicand</span>
+<span class="sd">        :arg right: right multiplicand</span>
+<span class="sd">        :return: product</span>
+<span class="sd">        :raises: NotImplemented</span>
+<span class="sd">        </span>
+<span class="sd">        Left-multiplication by a scalar</span>
+<span class="sd">        </span>
+<span class="sd">        - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. For other left-operands return ``NotImplemented``.  Other classes</span>
+<span class="sd">          such as ``Plucker`` and ``Twist`` implement left-multiplication by</span>
+<span class="sd">          an ``SE33`` using their own ``__rmul__`` methods.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``*=`` operator (superclass method)</span>
+
+<span class="sd">        :arg left: left multiplicand</span>
+<span class="sd">        :arg right: right multiplicand</span>
+<span class="sd">        :return: product</span>
+<span class="sd">        :raises: ValueError</span>
+
+<span class="sd">        - ``X *= Y`` compounds the poses ``X`` and ``Y`` and places the result in ``X``</span>
+<span class="sd">        - ``X *= s`` performs elementwise multiplication of the elements of ``X``</span>
+<span class="sd">          and ``s`` and places the result in ``X``</span>
+
+<span class="sd">        :seealso: ``__mul__``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``**`` operator (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param n: pose</span>
+<span class="sd">        :return: pose to the power n</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+
+<span class="sd">        Raise all elements of pose to the specified power.</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X**n`` raise all values in ``X`` to the power ``n``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;exponent must be an int&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+
+    <span class="c1"># def __ipow__(self, n):</span>
+    <span class="c1">#     return self.__pow__(n)</span>
+
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``/`` operator (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :arg left: left multiplicand</span>
+<span class="sd">        :arg right: right multiplicand</span>
+<span class="sd">        :return: product</span>
+<span class="sd">        :raises ValueError: for incompatible arguments</span>
+<span class="sd">        :return: matrix</span>
+<span class="sd">        :rtype: numpy ndarray</span>
+<span class="sd">        </span>
+<span class="sd">        Pose composition or scaling:</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X / Y`` compounds the poses ``X`` and ``Y.inv()``</span>
+<span class="sd">        - ``X / s`` performs elementwise multiplication of the elements of ``X`` by ``s``</span>
+
+<span class="sd">        ==============   ==============   ===========  =========================</span>
+<span class="sd">                   Multiplicands                   Quotient</span>
+<span class="sd">        -------------------------------   --------------------------------------</span>
+<span class="sd">            left             right            type           operation</span>
+<span class="sd">        ==============   ==============   ===========  =========================</span>
+<span class="sd">        Pose             Pose             Pose         matrix product by inverse</span>
+<span class="sd">        Pose             scalar           NxN matrix   element-wise division</span>
+<span class="sd">        ==============   ==============   ===========  =========================</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance</span>
+<span class="sd">        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``</span>
+<span class="sd">        #. scalar multiplication is not a group operation so the result will </span>
+<span class="sd">           be a matrix</span>
+<span class="sd">        #. Any other input combinations result in a ValueError.</span>
+<span class="sd">        </span>
+<span class="sd">        For pose composition the ``left`` and ``right`` operands may be a sequence</span>
+
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``prod = left * right.inv()``</span>
+<span class="sd">         1          M             M    ``prod[i] = left * right[i].inv()``</span>
+<span class="sd">         N          1             M    ``prod[i] = left[i] * right.inv()``</span>
+<span class="sd">         M          M             M    ``prod[i] = left[i] * right[i].inv()``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="o">.</span><span class="n">inv</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">@</span> <span class="n">y</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
+
+    <span class="c1"># def __itruediv__(left, right):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Overloaded ``/=`` operator (superclass method)</span>
+
+    <span class="c1">#     :arg left: left dividend</span>
+    <span class="c1">#     :arg right: right divisor</span>
+    <span class="c1">#     :return: quotient</span>
+    <span class="c1">#     :raises: ValueError</span>
+
+    <span class="c1">#     - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``</span>
+    <span class="c1">#     - ``X /= s`` performs elementwise division of the elements of ``X`` by ``s``</span>
+
+    <span class="c1">#     :seealso: ``__truediv__``</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     return left.__truediv__(right)</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``+`` operator (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :arg left: left addend</span>
+<span class="sd">        :arg right: right addend</span>
+<span class="sd">        :return: sum</span>
+<span class="sd">        :raises ValueError: for incompatible arguments</span>
+<span class="sd">        :return: matrix</span>
+<span class="sd">        :rtype: numpy ndarray, shape=(N,N)</span>
+<span class="sd">        </span>
+<span class="sd">        Add elements of two poses.  This is not a group operation so the</span>
+<span class="sd">        result is a matrix not a pose class.</span>
+<span class="sd">                </span>
+<span class="sd">        - ``X + Y`` is the element-wise sum of the matrix value of ``X`` and ``Y``</span>
+<span class="sd">        - ``X + s`` is the element-wise sum of the matrix value of ``X`` and ``s``</span>
+<span class="sd">        - ``s + X`` is the element-wise sum of the matrix value of ``s`` and ``X``</span>
+
+<span class="sd">        ==============   ==============   ===========  ========================</span>
+<span class="sd">                   Operands                   Sum</span>
+<span class="sd">        -------------------------------   -------------------------------------</span>
+<span class="sd">            left             right            type           operation</span>
+<span class="sd">        ==============   ==============   ===========  ========================</span>
+<span class="sd">        Pose             Pose             NxN matrix   element-wise matrix sum</span>
+<span class="sd">        Pose             scalar           NxN matrix   element-wise sum</span>
+<span class="sd">        scalar           Pose             NxN matrix   element-wise sum</span>
+<span class="sd">        ==============   ==============   ===========  ========================</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance</span>
+<span class="sd">        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``</span>
+<span class="sd">        #. scalar + Pose is handled by ``__radd__``</span>
+<span class="sd">        #. scalar addition is commutative</span>
+<span class="sd">        #. Any other input combinations result in a ValueError.</span>
+<span class="sd">        </span>
+<span class="sd">        For pose addition the ``left`` and ``right`` operands may be a sequence which</span>
+<span class="sd">        results in the result being a sequence:</span>
+<span class="sd">            </span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``prod = left + right``</span>
+<span class="sd">         1          M             M    ``prod[i] = left + right[i]``</span>
+<span class="sd">         N          1             M    ``prod[i] = left[i] + right``</span>
+<span class="sd">         M          M             M    ``prod[i] = left[i] + right[i]``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># results is not in the group, return an array, not a class</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``+`` operator (superclass method)</span>
+
+<span class="sd">        :arg left: left addend</span>
+<span class="sd">        :arg right: right addend</span>
+<span class="sd">        :return: sum</span>
+<span class="sd">        :raises ValueError: for incompatible arguments</span>
+<span class="sd">        </span>
+<span class="sd">        Left-addition by a scalar</span>
+<span class="sd">        </span>
+<span class="sd">        - ``s + X`` performs elementwise addition of the elements of ``X`` and ``s``</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="c1"># def __iadd__(left, right):</span>
+    <span class="c1">#     return left.__add__(right)</span>
+
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``-`` operator (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :arg left: left minuend</span>
+<span class="sd">        :arg right: right subtrahend</span>
+<span class="sd">        :return: difference</span>
+<span class="sd">        :raises ValueError: for incompatible arguments</span>
+<span class="sd">        :return: matrix</span>
+<span class="sd">        :rtype: numpy ndarray, shape=(N,N)</span>
+<span class="sd">        </span>
+<span class="sd">        Subtract elements of two poses.  This is not a group operation so the</span>
+<span class="sd">        result is a matrix not a pose class.</span>
+<span class="sd">                </span>
+<span class="sd">        - ``X - Y`` is the element-wise difference of the matrix value of ``X`` and ``Y``</span>
+<span class="sd">        - ``X - s`` is the element-wise difference of the matrix value of ``X`` and ``s``</span>
+<span class="sd">        - ``s - X`` is the element-wise difference of ``s`` and the matrix value of ``X``</span>
+
+<span class="sd">        ==============   ==============   ===========  ==============================</span>
+<span class="sd">                   Operands                   Sum</span>
+<span class="sd">        -------------------------------   -------------------------------------------</span>
+<span class="sd">            left             right            type           operation</span>
+<span class="sd">        ==============   ==============   ===========  ==============================</span>
+<span class="sd">        Pose             Pose             NxN matrix   element-wise matrix difference</span>
+<span class="sd">        Pose             scalar           NxN matrix   element-wise sum</span>
+<span class="sd">        scalar           Pose             NxN matrix   element-wise sum</span>
+<span class="sd">        ==============   ==============   ===========  ==============================</span>
+<span class="sd">        </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance</span>
+<span class="sd">        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``</span>
+<span class="sd">        #. scalar - Pose is handled by ``__rsub__``</span>
+<span class="sd">        #. Any other input combinations result in a ValueError.</span>
+<span class="sd">        </span>
+<span class="sd">        For pose addition the ``left`` and ``right`` operands may be a sequence which</span>
+<span class="sd">        results in the result being a sequence:</span>
+
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``prod = left - right``</span>
+<span class="sd">         1          M             M    ``prod[i] = left - right[i]``</span>
+<span class="sd">         N          1             M    ``prod[i] = left[i] - right``</span>
+<span class="sd">         M          M             M    ``prod[i] = left[i]  right[i]``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># results is not in the group, return an array, not a class</span>
+        <span class="c1"># TODO allow class +/- a conformant array</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``-`` operator (superclass method)</span>
+
+<span class="sd">        :arg left: left minuend</span>
+<span class="sd">        :arg right: right subtrahend</span>
+<span class="sd">        :return: difference</span>
+<span class="sd">        :raises ValueError: for incompatible arguments</span>
+<span class="sd">        </span>
+<span class="sd">        Left-addition by a scalar</span>
+<span class="sd">        </span>
+<span class="sd">        - ``s + X`` performs elementwise addition of the elements of ``X`` and ``s``</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">left</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="c1"># def __isub__(left, right):</span>
+    <span class="c1">#     return left.__sub__(right)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``==`` operator (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param left: left side of comparison</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :param right: right side of comparison</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :return: poses are equal</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        </span>
+<span class="sd">        Test two poses for equality</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X == Y`` is true of the poses are of the same type and numerically</span>
+<span class="sd">          equal.</span>
+
+<span class="sd">        If either operand contains a sequence the results is a sequence </span>
+<span class="sd">        according to:</span>
+<span class="sd">        </span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``ret = left == right``</span>
+<span class="sd">         1          M             M    ``ret[i] = left == right[i]``</span>
+<span class="sd">         N          1             M    ``ret[i] = left[i] == right``</span>
+<span class="sd">         M          M             M    ``ret[i] = left[i] == right[i]``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">),</span> <span class="s1">&#39;operands to == are of different types&#39;</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overloaded ``!=`` operator</span>
+<span class="sd">        </span>
+<span class="sd">        :param left: left side of comparison</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :param right: right side of comparison</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :return: poses are not equal</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        </span>
+<span class="sd">        Test two poses for inequality</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X == Y`` is true of the poses are of the same type but not numerically</span>
+<span class="sd">          equal.</span>
+<span class="sd">          </span>
+<span class="sd">        If either operand contains a sequence the results is a sequence </span>
+<span class="sd">        according to:</span>
+<span class="sd">        </span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``ret = left != right``</span>
+<span class="sd">         1          M             M    ``ret[i] = left != right[i]``</span>
+<span class="sd">         N          1             M    ``ret[i] = left[i] != right``</span>
+<span class="sd">         M          M             M    ``ret[i] = left[i] != right[i]``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="ow">not</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">right</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_op2</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform binary operation</span>
+<span class="sd">        </span>
+<span class="sd">        :param left: left side of comparison</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :param right: right side of comparison</span>
+<span class="sd">        :type self: SO2, SE2, SO3, SE3</span>
+<span class="sd">        :param op: binary operation</span>
+<span class="sd">        :type op: callable</span>
+<span class="sd">        :raises ValueError: arguments are not compatible</span>
+<span class="sd">        :return: list of matrices</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        </span>
+<span class="sd">        Peform a binary operation on a pair of operands.  If either operand</span>
+<span class="sd">        contains a sequence the results is a sequence accordinging to this</span>
+<span class="sd">        truth table.</span>
+
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">         1          1             1    ``ret = op(left, right)``</span>
+<span class="sd">         1          M             M    ``ret[i] = op(left, right[i])``</span>
+<span class="sd">         N          1             M    ``ret[i] = op(left[i], right)``</span>
+<span class="sd">         M          M             M    ``ret[i] = op(left[i], right[i])``</span>
+<span class="sd">        =========   ==========   ====  ================================</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="c1"># class by class</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;== 1x1&#39;)</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;== 1xN&#39;)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;== Nx1&#39;)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+                    <span class="c1">#print(&#39;== NxN&#39;)</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length of lists to == must be same length&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="c1"># class by matrix</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+
+
+
+    
+    
+<span class="k">class</span> <span class="nc">SMTwist</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Superclass for 2D and 3D twist objects</span>
+
+<span class="sd">    Subclasses are:</span>
+
+<span class="sd">    - ``Twist2`` representing rigid-body motion in 2D as a 3-vector</span>
+<span class="sd">    - ``Twist`` representing rigid-body motion in 3D as a 6-vector</span>
+
+<span class="sd">    A twist is the unique elements of the logarithm of the corresponding SE(N)</span>
+<span class="sd">    matrix.</span>
+<span class="sd">    </span>
+<span class="sd">    Arithmetic operators are overloaded but the operation they perform depend</span>
+<span class="sd">    on the types of the operands.  For example:</span>
+
+<span class="sd">    - ``*`` will compose two instances of the same subclass, and the result will be</span>
+<span class="sd">      an instance of the same subclass, since this is a group operator.</span>
+
+<span class="sd">    These classes all inherit from ``UserList`` which enables them to </span>
+<span class="sd">    represent a sequence of values, ie. an ``Twist`` instance can contain</span>
+<span class="sd">    a sequence of twists.  Most of the Python ``list`` operators</span>
+<span class="sd">    are applicable::</span>
+
+<span class="sd">        &gt;&gt;&gt; x = Twist()  # new instance with zero value</span>
+<span class="sd">        &gt;&gt;&gt; len(x)     # it is a sequence of one value</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; x.append(x)  # append to itself</span>
+<span class="sd">        &gt;&gt;&gt; len(x)       # it is a sequence of two values</span>
+<span class="sd">        2</span>
+<span class="sd">        &gt;&gt;&gt; x[1]         # the element has a 4x4 matrix value</span>
+<span class="sd">        SE3([</span>
+<span class="sd">        array([[1., 0., 0., 0.],</span>
+<span class="sd">               [0., 1., 0., 0.],</span>
+<span class="sd">               [0., 0., 1., 0.],</span>
+<span class="sd">            [0., 0., 0., 1.]]) ])</span>
+<span class="sd">        &gt;&gt;&gt; x[1] = SE3.Rx(0.3)  # set an elements of the sequence</span>
+<span class="sd">        &gt;&gt;&gt; x.reverse()         # reverse the elements in the sequence</span>
+<span class="sd">        &gt;&gt;&gt; del x[1]            # delete an element</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ------------------------- list support -------------------------------#</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># handle common cases</span>
+        <span class="c1">#  deep copy</span>
+        <span class="c1">#  numpy array</span>
+        <span class="c1">#  list of numpy array</span>
+        <span class="c1"># validity checking??</span>
+        <span class="c1"># TODO should this be done by __new__?</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>   <span class="c1"># enable UserList superpowers</span>
+        
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an empty twist object (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param cls: The twist subclass</span>
+<span class="sd">        :type cls: type</span>
+<span class="sd">        :return: a twist object with zero values</span>
+<span class="sd">        :rtype: Twist or Twist2 instance</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = Twist.Empty()</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">X</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Twist as a vector (superclass property)</span>
+<span class="sd">        </span>
+<span class="sd">        :return: Twist vector</span>
+<span class="sd">        :rtype: numpy.ndarray, shape=(N,)</span>
+<span class="sd">        </span>
+<span class="sd">        - ``X.S`` is a 3-vector if X is a ``Twist2`` instance, and a 6-vector if</span>
+<span class="sd">          X is a ``Twist`` instance.</span>
+
+<span class="sd">        Notes::</span>
+<span class="sd">            </span>
+<span class="sd">            </span>
+<span class="sd">        - the vector is the unique elements of the se(N) representation</span>
+<span class="sd">        - the vector is sometimes referred to as the twist coordinate vector.</span>
+<span class="sd">        - if ``len(X)`` &gt; 1 then return a list of vectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get the underlying numpy array</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isprismatic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test for prismatic twist (superclass property)</span>
+<span class="sd">        </span>
+<span class="sd">        :return: If twist is purely prismatic</span>
+<span class="sd">        :rtype: book</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = Twist.R([1,2,3], [4,5,6])</span>
+<span class="sd">            &gt;&gt;&gt; x.isprismatic</span>
+<span class="sd">            False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unit twist</span>
+
+<span class="sd">        TW.unit() is a Twist object representing a unit aligned with the Twist</span>
+<span class="sd">        TW.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">):</span>
+            <span class="c1"># rotational twist</span>
+            <span class="k">return</span> <span class="n">Twist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># prismatic twist</span>
+            <span class="k">return</span> <span class="n">Twist</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test for unit twist (superclass property)</span>
+<span class="sd">        </span>
+<span class="sd">        :return: If twist is a unit-twist</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Access value of a twist object (superclass method)</span>
+
+<span class="sd">        :param i: index of element to return</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :return: the specific element of the twist</span>
+<span class="sd">        :rtype: Twist or Twist2 instance</span>
+<span class="sd">        :raises IndexError: if the element is out of bounds</span>
+
+<span class="sd">        Note that only a single index is supported, slices are not.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            3</span>
+<span class="sd">            &gt;&gt;&gt; x[1]</span>
+<span class="sd">               1           0           0           0            </span>
+<span class="sd">               0           0          -1           0            </span>
+<span class="sd">               0           1           0           0            </span>
+<span class="sd">               0           0           0           1  </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print(&#39;getitem&#39;, i, &#39;class&#39;, self.__class__)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assign a value to a twist object (superclass method)</span>
+<span class="sd">        </span>
+<span class="sd">        :param i: index of element to assign to</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :param value: the value to insert</span>
+<span class="sd">        :type value: Twist or Twist2 instance</span>
+<span class="sd">        :raises ValueError: incorrect type of assigned value</span>
+
+<span class="sd">        Assign the argument to an element of the object&#39;s internal list of values.</span>
+<span class="sd">        This supports the assignement operator, for example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3([SE3() for i in range(10)]) # sequence of ten identity values</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(0.2)   # assign to position 3 in the list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
+    
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append a twist object</span>
+<span class="sd">        </span>
+<span class="sd">        :param x: A twist subclass</span>
+<span class="sd">        :type x: subclass</span>
+<span class="sd">        :raises ValueError: incorrect type of appended object</span>
+
+<span class="sd">        Appends the argument to the object&#39;s internal list.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = Twist()</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; x.append(Twist())</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(&#39;in append method&#39;)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append a pose sequence - use extend&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pop value of a pose object (superclass method)</span>
+
+<span class="sd">        :return: the specific element of the pose</span>
+<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises IndexError: if there are no values to pop</span>
+
+<span class="sd">        Removes the first pose value from the sequence in the pose object.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            3</span>
+<span class="sd">            &gt;&gt;&gt; y = x.pop()</span>
+<span class="sd">            &gt;&gt;&gt; y</span>
+<span class="sd">            SE3(array([[ 1.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],</span>
+<span class="sd">                       [ 0.0000000e+00, -1.0000000e+00, -1.2246468e-16,  0.0000000e+00],</span>
+<span class="sd">                       [ 0.0000000e+00,  1.2246468e-16, -1.0000000e+00,  0.0000000e+00],</span>
+<span class="sd">                       [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  1.0000000e+00]]))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+    
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert a value to a pose object (superclass method)</span>
+
+<span class="sd">        :param i: element to insert value before</span>
+<span class="sd">        :type i: int</span>
+<span class="sd">        :param value: the value to insert</span>
+<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
+<span class="sd">        :raises ValueError: incorrect type of inserted value</span>
+
+<span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
+<span class="sd">            &gt;&gt;&gt; x.inert(0, SE3.Rx(0.1)) # insert at position 0 in the list</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        
+
+    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        %Twist.prod Compound array of twists</span>
+<span class="sd">        %</span>
+<span class="sd">        TW.prod is a twist representing the product (composition) of the</span>
+<span class="sd">        successive elements of TW (1xN), an array of Twists.</span>
+<span class="sd">                %</span>
+<span class="sd">                %</span>
+<span class="sd">        See also RTBPose.prod, Twist.mtimes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">out</span> <span class="o">*=</span> <span class="n">t</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/../../../../figs/icon.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Spatial maths and geometry for Python</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=petercorke&repo=spatialmath-python&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Peter Corke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

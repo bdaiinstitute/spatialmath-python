@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>spatialmath.base.quaternions &#8212; Spatial Maths package 0.7.0
+ documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for spatialmath.base.quaternions</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Fri Apr 10 14:12:56 2020</span>
+
+<span class="sd">@author: Peter Corke</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># This file is part of the SpatialMath toolbox for Python</span>
+<span class="c1"># https://github.com/petercorke/spatialmath-python</span>
+<span class="c1"># </span>
+<span class="c1"># MIT License</span>
+<span class="c1"># </span>
+<span class="c1"># Copyright (c) 1993-2020 Peter Corke</span>
+<span class="c1"># </span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1"># </span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1"># </span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="c1"># Contributors:</span>
+<span class="c1"># </span>
+<span class="c1">#     1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
+<span class="c1">#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)</span>
+<span class="c1">#     3. Peter Corke, 2020</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
+
+<span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+
+<div class="viewcode-block" id="eye"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.eye">[docs]</a><span class="k">def</span> <span class="nf">eye</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an identity quaternion</span>
+
+<span class="sd">    :return: an identity quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Creates an identity quaternion, with the scalar part equal to one, and</span>
+<span class="sd">    a zero vector value.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="pure"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.pure">[docs]</a><span class="k">def</span> <span class="nf">pure</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a pure quaternion</span>
+
+<span class="sd">    :arg v: vector from a 3-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: pure quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Creates a pure quaternion, with a zero scalar value and the vector part</span>
+<span class="sd">    equal to the passed vector value.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="qnorm"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.qnorm">[docs]</a><span class="k">def</span> <span class="nf">qnorm</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Norm of a quaternion</span>
+
+<span class="sd">    :arg q: input quaternion as a 4-vector</span>
+<span class="sd">    :type v: : array_like</span>
+<span class="sd">    :return: norm of the quaternion</span>
+<span class="sd">    :rtype: float</span>
+
+<span class="sd">    Returns the norm, length or magnitude of the input quaternion which is</span>
+<span class="sd">    :math:`\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}`</span>
+
+<span class="sd">    :seealso: unit</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="unit"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.unit">[docs]</a><span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a unit quaternion</span>
+
+<span class="sd">    :arg v: quaterion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: a pure quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Creates a unit quaternion, with unit norm, by scaling the input quaternion.</span>
+
+<span class="sd">    .. seealso:: norm</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">nm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nm</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">,</span> <span class="s1">&#39;cannot normalize (near) zero length quaternion&#39;</span>
+    <span class="k">return</span> <span class="n">q</span> <span class="o">/</span> <span class="n">nm</span></div>
+
+
+<div class="viewcode-block" id="isunit"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.isunit">[docs]</a><span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if quaternion has unit length</span>
+
+<span class="sd">    :param v: quaternion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :param tol: tolerance in units of eps</span>
+<span class="sd">    :type tol: float</span>
+<span class="sd">    :return: whether quaternion has unit length</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    :seealso: unit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="isequal"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.isequal">[docs]</a><span class="k">def</span> <span class="nf">isequal</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if quaternions are equal</span>
+
+<span class="sd">    :param q1: quaternion as a 4-vector</span>
+<span class="sd">    :type q1: array_like</span>
+<span class="sd">    :param q2: quaternion as a 4-vector</span>
+<span class="sd">    :type q2: array_like</span>
+<span class="sd">    :param unitq: quaternions are unit quaternions</span>
+<span class="sd">    :type unitq: bool</span>
+<span class="sd">    :param tol: tolerance in units of eps</span>
+<span class="sd">    :type tol: float</span>
+<span class="sd">    :return: whether quaternion has unit length</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    Tests if two quaternions are equal.</span>
+
+<span class="sd">    For unit-quaternions ``unitq=True`` the double mapping is taken into account,</span>
+<span class="sd">    that is ``q`` and ``-q`` represent the same orientation and ``isequal(q, -q, unitq=True)`` will</span>
+<span class="sd">    return ``True``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q2</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">unit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="q2v"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.q2v">[docs]</a><span class="k">def</span> <span class="nf">q2v</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert unit-quaternion to 3-vector</span>
+
+<span class="sd">    :arg q: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: a unique 3-vector</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(3,)</span>
+
+<span class="sd">    Returns a unique 3-vector representing the input unit-quaternion. The sign</span>
+<span class="sd">    of the scalar part is made positive, if necessary by multiplying the</span>
+<span class="sd">    entire quaternion by -1, then the vector part is taken.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed value is a unit-quaternion.</span>
+
+<span class="sd">    .. seealso:: v2q</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="v2q"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.v2q">[docs]</a><span class="k">def</span> <span class="nf">v2q</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert 3-vector to unit-quaternion</span>
+
+<span class="sd">    :arg v: vector part of unit quaternion, a 3-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: a unit quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Returns a unit-quaternion reconsituted from just its vector part.  Assumes</span>
+<span class="sd">    that the scalar part was positive, so :math:`s = \sqrt{1-||v||}`.</span>
+
+<span class="sd">    .. seealso:: q2v</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="qqmul"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.qqmul">[docs]</a><span class="k">def</span> <span class="nf">qqmul</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quaternion multiplication</span>
+
+<span class="sd">    :arg q0: left-hand quaternion as a 4-vector</span>
+<span class="sd">    :type q0: : array_like</span>
+<span class="sd">    :arg q1: right-hand quaternion as a 4-vector</span>
+<span class="sd">    :type q1: array_like</span>
+<span class="sd">    :return: quaternion product</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    This is the quaternion or Hamilton product.  If both operands are unit-quaternions then</span>
+<span class="sd">    the product will be a unit-quaternion.</span>
+
+<span class="sd">    :seealso: qvmul, inner, vvmul</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q2</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">q1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">q1</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="n">q2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">q2</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s1</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">),</span> <span class="n">s1</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">s2</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="inner"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.inner">[docs]</a><span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quaternion innert product</span>
+
+<span class="sd">    :arg q0: quaternion as a 4-vector</span>
+<span class="sd">    :type q0: : array_like</span>
+<span class="sd">    :arg q1: uaternion as a 4-vector</span>
+<span class="sd">    :type q1: array_like</span>
+<span class="sd">    :return: inner product</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    This is the inner or dot product of two quaternions, it is the sum of the element-wise</span>
+<span class="sd">    product.</span>
+
+<span class="sd">    :seealso: qvmul</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q2</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="qvmul"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.qvmul">[docs]</a><span class="k">def</span> <span class="nf">qvmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vector rotation</span>
+
+<span class="sd">    :arg q: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type q: array_like</span>
+<span class="sd">    :arg v: 3-vector to be rotated</span>
+<span class="sd">    :type v: list, tuple, numpy.ndarray</span>
+<span class="sd">    :return: rotated 3-vector</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(3,)</span>
+
+<span class="sd">    The vector `v` is rotated about the origin by the SO(3) equivalent of the unit</span>
+<span class="sd">    quaternion.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed value is a unit-quaternions.</span>
+
+<span class="sd">    :seealso: qvmul</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">qv</span> <span class="o">=</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">pure</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">conj</span><span class="p">(</span><span class="n">q</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">qv</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="vvmul"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.vvmul">[docs]</a><span class="k">def</span> <span class="nf">vvmul</span><span class="p">(</span><span class="n">qa</span><span class="p">,</span> <span class="n">qb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quaternion multiplication</span>
+
+
+<span class="sd">    :arg qa: left-hand quaternion as a 3-vector</span>
+<span class="sd">    :type qa: : array_like</span>
+<span class="sd">    :arg qb: right-hand quaternion as a 3-vector</span>
+<span class="sd">    :type qb: array_like</span>
+<span class="sd">    :return: quaternion product</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(3,)</span>
+
+<span class="sd">    This is the quaternion or Hamilton product of unit-quaternions defined only</span>
+<span class="sd">    by their vector components.  The product will be a unit-quaternion, defined only</span>
+<span class="sd">    by its vector component.</span>
+
+<span class="sd">    :seealso: qvmul, inner</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t6</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">qa</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">t11</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">qb</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">qa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">qb</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">qb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">qa</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">qb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">t6</span> <span class="o">+</span> <span class="n">qa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">t11</span><span class="p">,</span> <span class="o">-</span><span class="n">qa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">qb</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">qb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">qa</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">qb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">t6</span> <span class="o">+</span> <span class="n">qa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">t11</span><span class="p">,</span> <span class="n">qa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">qb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">qb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">qa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">qb</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">t6</span> <span class="o">+</span> <span class="n">qa</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">t11</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="pow"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.pow">[docs]</a><span class="k">def</span> <span class="nf">pow</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise quaternion to a power</span>
+
+<span class="sd">    :arg q: quaternion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :arg power: exponent</span>
+<span class="sd">    :type power: int</span>
+<span class="sd">    :return: input quaternion raised to the specified power</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Raises a quaternion to the specified power using repeated multiplication.</span>
+
+<span class="sd">    Notes:</span>
+
+<span class="sd">    - power must be an integer</span>
+<span class="sd">    - power can be negative, in which case the conjugate is taken</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;Power must be an integer&quot;</span>
+    <span class="n">qr</span> <span class="o">=</span> <span class="n">eye</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">power</span><span class="p">)):</span>
+        <span class="n">qr</span> <span class="o">=</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">qr</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">power</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">qr</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qr</span></div>
+
+
+<div class="viewcode-block" id="conj"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.conj">[docs]</a><span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quaternion conjugate</span>
+
+<span class="sd">    :arg q: quaternion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: conjugate of input quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Conjugate of quaternion, the vector part is negated.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="q2r"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.q2r">[docs]</a><span class="k">def</span> <span class="nf">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert unit-quaternion to SO(3) rotation matrix</span>
+
+<span class="sd">    :arg q: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: corresponding SO(3) rotation matrix</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(3,3)</span>
+
+<span class="sd">    Returns an SO(3) rotation matrix corresponding to this unit-quaternion.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed value is a unit-quaternion.</span>
+
+<span class="sd">    :seealso: r2q</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">z</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">z</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">y</span><span class="p">)],</span>
+                     <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">z</span><span class="p">),</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">z</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">x</span><span class="p">)],</span>
+                     <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">z</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">y</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">z</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">x</span><span class="p">),</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)]])</span></div>
+
+
+<div class="viewcode-block" id="r2q"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.r2q">[docs]</a><span class="k">def</span> <span class="nf">r2q</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert SO(3) rotation matrix to unit-quaternion</span>
+
+<span class="sd">    :arg R: rotation matrix</span>
+<span class="sd">    :type R: numpy.ndarray, shape=(3,3)</span>
+<span class="sd">    :return: unit-quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(3,)</span>
+
+<span class="sd">    Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed matrix is a valid rotation matrix.</span>
+
+<span class="sd">    :seealso: q2r</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tr</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="s2">&quot;Argument must be 3x3 rotation matrix&quot;</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">kx</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz - Ay</span>
+    <span class="n">ky</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Ax - Nz</span>
+    <span class="n">kz</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny - Ox</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]):</span>
+        <span class="n">kx1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Nx - Oy - Az + 1</span>
+        <span class="n">ky1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny + Ox</span>
+        <span class="n">kz1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Nz + Ax</span>
+        <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">kx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="n">kx1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny + Ox</span>
+        <span class="n">ky1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Oy - Nx - Az + 1</span>
+        <span class="n">kz1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz + Ay</span>
+        <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">ky</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kx1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Nz + Ax</span>
+        <span class="n">ky1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz + Ay</span>
+        <span class="n">kz1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Az - Nx - Oy + 1</span>
+        <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">kz</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
+        <span class="n">kx</span> <span class="o">=</span> <span class="n">kx</span> <span class="o">+</span> <span class="n">kx1</span>
+        <span class="n">ky</span> <span class="o">=</span> <span class="n">ky</span> <span class="o">+</span> <span class="n">ky1</span>
+        <span class="n">kz</span> <span class="o">=</span> <span class="n">kz</span> <span class="o">+</span> <span class="n">kz1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kx</span> <span class="o">=</span> <span class="n">kx</span> <span class="o">-</span> <span class="n">kx1</span>
+        <span class="n">ky</span> <span class="o">=</span> <span class="n">ky</span> <span class="o">-</span> <span class="n">ky1</span>
+        <span class="n">kz</span> <span class="o">=</span> <span class="n">kz</span> <span class="o">-</span> <span class="n">kz1</span>
+
+    <span class="n">kv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">kz</span><span class="p">]</span>
+    <span class="n">nm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">kv</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nm</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">eye</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">qs</span><span class="p">,</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">qs</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">nm</span><span class="p">)</span> <span class="o">*</span> <span class="n">kv</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="slerp"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.slerp">[docs]</a><span class="k">def</span> <span class="nf">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quaternion conjugate</span>
+
+<span class="sd">    :arg q0: initial unit quaternion as a 4-vector</span>
+<span class="sd">    :type q0: array_like</span>
+<span class="sd">    :arg q1: final unit quaternion as a 4-vector</span>
+<span class="sd">    :type q1: array_like</span>
+<span class="sd">    :arg s: interpolation coefficient in the range [0,1]</span>
+<span class="sd">    :type s: float</span>
+<span class="sd">    :arg shortest: choose shortest distance [default False]</span>
+<span class="sd">    :type shortest: bool</span>
+<span class="sd">    :return: interpolated unit-quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    An interpolated quaternion between ``q0`` when ``s`` = 0 to ``q1`` when ``s`` = 1.</span>
+
+<span class="sd">    Interpolation is performed on a great circle on a 4D hypersphere. This is</span>
+<span class="sd">    a rotation about a single fixed axis in space which yields the straightest</span>
+<span class="sd">    and shortest path between two points.</span>
+
+<span class="sd">    For large rotations the path may be the *long way around* the circle,</span>
+<span class="sd">    the option ``&#39;shortest&#39;`` ensures always the shortest path.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s must be in the interval [0,1]&#39;</span>
+    <span class="n">q0</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">q0</span>
+    <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">q1</span>
+
+    <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">)</span>
+
+    <span class="c1"># If the dot product is negative, the quaternions</span>
+    <span class="c1"># have opposite handed-ness and slerp won&#39;t take</span>
+    <span class="c1"># the shorter path. Fix by reversing one quaternion.</span>
+    <span class="k">if</span> <span class="n">shortest</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dot</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="o">-</span> <span class="n">q0</span>
+            <span class="n">dot</span> <span class="o">=</span> <span class="o">-</span><span class="n">dot</span>
+
+    <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dot</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Clip within domain of acos()</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dot</span><span class="p">)</span>  <span class="c1"># theta is the angle between rotation vectors</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="o">*</span><span class="n">_eps</span><span class="p">:</span>
+        <span class="n">s0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">q0</span> <span class="o">*</span> <span class="n">s0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">q1</span> <span class="o">*</span> <span class="n">s1</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># quaternions are identical</span>
+        <span class="k">return</span> <span class="n">q0</span></div>
+
+
+<div class="viewcode-block" id="rand"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.rand">[docs]</a><span class="k">def</span> <span class="nf">rand</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Random unit-quaternion</span>
+
+<span class="sd">    :return: random unit-quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    Computes a uniformly distributed random unit-quaternion which can be</span>
+<span class="sd">    considered equivalent to a random SO(3) rotation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># get 3 random numbers in [0,1]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span>
+        <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+        <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span></div>
+
+
+<div class="viewcode-block" id="matrix"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.matrix">[docs]</a><span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert to 4x4 matrix equivalent</span>
+
+<span class="sd">    :arg q: quaternion as a 4-vector</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: equivalent matrix</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,4)</span>
+
+<span class="sd">    Hamilton multiplication between two quaternions can be considered as a</span>
+<span class="sd">    matrix-vector product, the left-hand quaternion is represented by an</span>
+<span class="sd">    equivalent 4x4 matrix and the right-hand quaternion as 4x1 column vector.</span>
+
+<span class="sd">    :seealso: qqmul</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="n">z</span><span class="p">],</span>
+                     <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
+                     <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="n">x</span><span class="p">],</span>
+                     <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">]])</span></div>
+
+
+<div class="viewcode-block" id="dot"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.dot">[docs]</a><span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rate of change of unit-quaternion</span>
+
+<span class="sd">    :arg q0: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type q0: array_like</span>
+<span class="sd">    :arg w: angular velocity in world frame as a 3-vector</span>
+<span class="sd">    :type w: array_like</span>
+<span class="sd">    :return: rate of change of unit quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    ``dot(q, w)`` is the rate of change of the elements of the unit quaternion ``q``</span>
+<span class="sd">    which represents the orientation of a body frame with angular velocity ``w`` in</span>
+<span class="sd">    the world frame.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">-</span> <span class="n">tr</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">w</span><span class="p">),</span> <span class="n">E</span><span class="nd">@w</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dotb"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.dotb">[docs]</a><span class="k">def</span> <span class="nf">dotb</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rate of change of unit-quaternion</span>
+
+<span class="sd">    :arg q0: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type q0: array_like</span>
+<span class="sd">    :arg w: angular velocity in body frame as a 3-vector</span>
+<span class="sd">    :type w: array_like</span>
+<span class="sd">    :return: rate of change of unit quaternion</span>
+<span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+
+<span class="sd">    ``dot(q, w)`` is the rate of change of the elements of the unit quaternion ``q``</span>
+<span class="sd">    which represents the orientation of a body frame with angular velocity ``w`` in</span>
+<span class="sd">    the body frame.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="n">tr</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">w</span><span class="p">),</span> <span class="n">E</span><span class="nd">@w</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Angle between two unit-quaternions</span>
+
+<span class="sd">    :arg q0: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type q0: array_like</span>
+<span class="sd">    :arg q1: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type q1: array_like</span>
+<span class="sd">    :return: angle between the rotations [radians]</span>
+<span class="sd">    :rtype: float</span>
+
+<span class="sd">    If each of the input quaternions is considered a rotated coordinate</span>
+<span class="sd">    frame, then the angle is the smallest rotation required about a fixed</span>
+<span class="sd">    axis, to rotate the first frame into the second.</span>
+
+<span class="sd">    References:  Metrics for 3D rotations: comparison and analysis,</span>
+<span class="sd">    Du Q. Huynh, % J.Math Imaging Vis. DOFI 10.1007/s10851-009-0161-2.</span>
+
+<span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO different methods</span>
+
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">q2</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span><span class="p">),</span> <span class="n">norm</span><span class="p">(</span><span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="qprint"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.quaternions.qprint">[docs]</a><span class="k">def</span> <span class="nf">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format a quaternion</span>
+
+<span class="sd">    :arg q: unit-quaternion as a 4-vector</span>
+<span class="sd">    :type q: array_like</span>
+<span class="sd">    :arg delim: 2-list of delimeters [default (&#39;&lt;&#39;, &#39;&gt;&#39;)]</span>
+<span class="sd">    :type delim: list or tuple of strings</span>
+<span class="sd">    :arg fmt: printf-style format soecifier [default &#39;%f&#39;]</span>
+<span class="sd">    :type fmt: str</span>
+<span class="sd">    :arg file: destination for formatted string [default sys.stdout]</span>
+<span class="sd">    :type file: file object</span>
+<span class="sd">    :return: formatted string</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    Format the quaternion in a human-readable form as::</span>
+
+<span class="sd">        S  D1  VX VY VZ D2</span>
+
+<span class="sd">    where S, VX, VY, VZ are the quaternion elements, and D1 and D2 are a pair</span>
+<span class="sd">    of delimeters given by `delim`.</span>
+
+<span class="sd">    By default the string is written to `sys.stdout`.</span>
+
+<span class="sd">    If `file=None` then a string is returned.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;# </span><span class="si">%s</span><span class="s2"> #, #, # </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">template</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">delim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">import</span> <span class="nn">pathlib</span>
+    <span class="kn">import</span> <span class="nn">os.path</span>
+
+    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s2">&quot;test_quaternions.py&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/../../../../figs/icon.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Spatial maths and geometry for Python</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=petercorke&repo=spatialmath-python&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatialmath.html">Classes and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../indices.html">Indices</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Peter Corke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
