@@ -17,11 +17,10 @@ _eps = np.finfo(np.float64).eps
 try:
     from colored import fg, bg, attr
     _color = True
-    #print('using colored output')
-except ImportError:
+    print('using colored output')
+except:
     #print('colored not found')
     _color = False
-
 
 # try:
 #     import colorama
@@ -155,18 +154,21 @@ class SMPose(UserList):
     @classmethod
     def Empty(cls):
         """
-        Construct an empty pose object (superclass method)
+        Construct a new pose object with zero items (superclass method)
         
         :param cls: The pose subclass
         :type cls: SO2, SE2, SO3, SE3
         :return: a pose with zero values
         :rtype: SO2, SE2, SO3, SE3 instance
 
-        This functions like a constructor.  For example::
+        This constructs an empty pose container which can be appended to.  For example::
             
-            >>> x = SE3.Empty()
+            >>> x = SO2.Empty()
             >>> len(x)
             0
+            >>> x.append(SO2(20, 'deg'))
+            >>> len(x)
+            1
             
         """
         X = cls()
@@ -178,24 +180,24 @@ class SMPose(UserList):
     @property
     def A(self):
         """
-        Access the underlying array (superclass property)
+        Interal array representation (superclass property)
         
         :param self: the pose object
         :type self: SO2, SE2, SO3, SE3 instance
         :return: The numeric array
         :rtype: numpy.ndarray
         
-        Each pose subclass is stored internally as a numpy array. This property returns
+        Each pose subclass SO(N) or SE(N) are stored internally as a numpy array. This property returns
         the array, shape depends on the particular subclass.
         
         Examples::
             
-        >>> x = SE3()
-        >>> x.A
-        array([[1., 0., 0., 0.],
-               [0., 1., 0., 0.],
-               [0., 0., 1., 0.],
-               [0., 0., 0., 1.]])
+            >>> x = SE3()
+            >>> x.A
+            array([[1., 0., 0., 0.],
+                   [0., 1., 0., 0.],
+                   [0., 0., 1., 0.],
+                   [0., 0., 0., 1.]])
 
         :seealso: `shape`, `N`
         """
@@ -259,7 +261,7 @@ class SMPose(UserList):
 
         Dimension of the group is 2 for ``SO2`` or ``SE2``, and 3 for ``SO3`` or ``SE3``.
         This corresponds to the dimension of the space, 2D or 3D, to which these
-        rotations or poses apply.
+        rotations or rigid-body motions apply.
         
         Example::
             
@@ -379,6 +381,33 @@ class SMPose(UserList):
         if len(x) > 1:
             raise ValueError("cant append a pose sequence - use extend")
         super().append(x.A)
+        
+
+    def extend(self, x):
+        """
+        Extend sequence of values of a pose object (superclass method)
+        
+        :param x: the value to extend
+        :type x: SO2, SE2, SO3, SE3 instance
+        :raises ValueError: incorrect type of appended object
+
+        Appends the argument to the object's internal list of values.
+        
+        Examples::
+            
+            >>> x = SE3()
+            >>> len(x)
+            1
+            >>> x.append(SE3.Rx(0.1))
+            >>> len(x)
+            2
+        """
+        #print('in extend method')
+        if not type(self) == type(x):
+            raise ValueError("cant append different type of pose object")
+        if len(x) == 0:
+            raise ValueError("cant extend a singleton pose  - use append")
+        super().extend(x.A)
 
     def insert(self, i, value):
         """
@@ -446,6 +475,15 @@ class SMPose(UserList):
 
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SO3)``.
+        
+        Example::
+            
+            >>> x = SO3()
+            >>> x.isrot()
+            True
+            >>> x = SE3()
+            >>> x.isrot()
+            False
         """
         return type(self).__name__ == 'SO3'
 
@@ -456,9 +494,17 @@ class SMPose(UserList):
         :return: ``True`` if object is instance of SO2
         :rtype: bool
 
-
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SO2)``.
+
+        Example::
+            
+            >>> x = SO2()
+            >>> x.isrot()
+            True
+            >>> x = SE2()
+            >>> x.isrot()
+            False
         """
         return type(self).__name__ == 'SO2'
 
@@ -471,6 +517,15 @@ class SMPose(UserList):
 
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SE3)``.
+        
+        Example::
+            
+            >>> x = SO3()
+            >>> x.isrot()
+            False
+            >>> x = SE3()
+            >>> x.isrot()
+            True
         """
         return type(self).__name__ == 'SE3'
 
@@ -483,6 +538,15 @@ class SMPose(UserList):
 
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SE2)``.
+        
+        Example::
+            
+            >>> x = SO2()
+            >>> x.isrot()
+            False
+            >>> x = SE2()
+            >>> x.isrot()
+            True
         """
         return type(self).__name__ == 'SE2'
     
@@ -498,16 +562,16 @@ class SMPose(UserList):
     
         An efficient closed-form solution of the matrix logarithm.
         
-        ====  ======  ===============================
+        =====  ======  ===============================
         Input         Output
-        -----  --------------------------------------
-        Pose  Shape   Structure
-        ====  ======  ===============================
-        SO2   (2,2)   skew-symmetric
-        SE2   (3,3)   augmented skew-symmetric
-        SO3   (3,3)   skew-symmetric
-        SE3   (4,4)   augmented skew-symmetric
-        ====  ======  ===============================
+        -----  ---------------------------------------
+        Pose   Shape   Structure
+        =====  ======  ===============================
+        SO2    (2,2)   skew-symmetric
+        SE2    (3,3)   augmented skew-symmetric
+        SO3    (3,3)   skew-symmetric
+        SE3    (4,4)   augmented skew-symmetric
+        =====  ======  ===============================
         
         Example::
 
@@ -522,6 +586,7 @@ class SMPose(UserList):
 
         :seealso: :func:`~spatialmath.base.transforms2d.trlog2`, :func:`~spatialmath.base.transforms3d.trlog`
         """
+        print('in log')
         if self.N == 2:
             log = [tr.trlog2(x) for x in self.data]
         else:
@@ -695,14 +760,15 @@ class SMPose(UserList):
                        [ 0.        ,  0.        ,  0.        ,  1.        ]]))
 
         """
+        name = type(self).__name__
         if len(self) ==  0:
-            return 'SE3([])'
+            return name + '([])'
         elif len(self) == 1:
             # need to indent subsequent lines of the native repr string by 4 spaces
-            return 'SE3(' + self.A.__repr__().replace('\n', '\n    ') + ')'
+            return name + '(' + self.A.__repr__().replace('\n', '\n    ') + ')'
         else:
             # format this as a list of ndarrays
-            return 'SE3([\n' + ',\n'.join([v.__repr__() for v in self.data]) + ' ])'
+            return name + '([\n' + ',\n'.join([v.__repr__() for v in self.data]) + ' ])'
 
     def __str__(self):
         """
@@ -763,9 +829,9 @@ class SMPose(UserList):
         """
         #print('in __str__')
 
-        FG = lambda c: fg(c) if color else ''
-        BG = lambda c: bg(c) if color else ''
-        ATTR = lambda c: attr(c) if color else ''
+        FG = lambda c: fg(c) if _color else ''
+        BG = lambda c: bg(c) if _color else ''
+        ATTR = lambda c: attr(c) if _color else ''
 
         def mformat(self, X):
             # X is an ndarray value to be display
@@ -814,7 +880,7 @@ class SMPose(UserList):
     
     # ----------------------- graphics
     
-    def plot(self, **kwargs):
+    def plot(self, *args, **kwargs):
         """
         Plot pose object as a coordinate frame (superclass method)
         
@@ -1091,21 +1157,21 @@ class SMPose(UserList):
         else:
             raise ValueError('bad operands')
 
-    def __itruediv__(left, right):
-        """
-        Overloaded ``/=`` operator (superclass method)
+    # def __itruediv__(left, right):
+    #     """
+    #     Overloaded ``/=`` operator (superclass method)
 
-        :arg left: left dividend
-        :arg right: right divisor
-        :return: quotient
-        :raises: ValueError
+    #     :arg left: left dividend
+    #     :arg right: right divisor
+    #     :return: quotient
+    #     :raises: ValueError
 
-        - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``
-        - ``X /= s`` performs elementwise division of the elements of ``X`` by ``s``
+    #     - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``
+    #     - ``X /= s`` performs elementwise division of the elements of ``X`` by ``s``
 
-        :seealso: ``__truediv__``
-        """
-        return left.__truediv__(right)
+    #     :seealso: ``__truediv__``
+    #     """
+    #     return left.__truediv__(right)
 
     def __add__(left, right):
         """
@@ -1448,18 +1514,69 @@ class SMTwist(UserList):
         :return: Twist vector
         :rtype: numpy.ndarray, shape=(N,)
         
-        - ``X.v`` is a 3-vector for Twist and a 1-vector for Twist2
+        - ``X.S`` is a 3-vector if X is a ``Twist2`` instance, and a 6-vector if
+          X is a ``Twist`` instance.
 
-        - ``X.S`` is the twist vector in se(3) as a 6-vector. Sometimes 
-          referred to as the twist coordinate vector.
-          
-        If ``len(X)`` > 1 then return a list of 6-vectors.
+        Notes::
+            
+            
+        - the vector is the unique elements of the se(N) representation
+        - the vector is sometimes referred to as the twist coordinate vector.
+        - if ``len(X)`` > 1 then return a list of vectors.
         """
         # get the underlying numpy array
         if len(self.data) == 1:
             return self.data[0]
         else:
             return self.data
+        
+    @property
+    def isprismatic(self):
+        """
+        Test for prismatic twist (superclass property)
+        
+        :return: If twist is purely prismatic
+        :rtype: book
+        
+        Example::
+            
+            >>> x = Twist.R([1,2,3], [4,5,6])
+            >>> x.isprismatic
+            False
+
+        """
+        if len(self) == 1:
+            return tr.iszerovec(self.w)
+        else:
+            return [tr.iszerovec(x.w) for x in self.data]
+
+    @property
+    def unit(self):
+        """
+        Unit twist
+
+        TW.unit() is a Twist object representing a unit aligned with the Twist
+        TW.
+        """
+        if tr.iszerovec(self.w):
+            # rotational twist
+            return Twist(self.S / tr.norm(S.w))
+        else:
+            # prismatic twist
+            return Twist(tr.unitvec(self.v), [0, 0, 0])
+    
+    @property
+    def isunit(self):
+        """
+        Test for unit twist (superclass property)
+        
+        :return: If twist is a unit-twist
+        :rtype: bool
+        """
+        if len(self) == 1:
+            return tr.isunittwist(self.S)
+        else:
+            return [tr.isunittwist(x) for x in self.data]
 
 
     def __getitem__(self, i):
@@ -1609,4 +1726,5 @@ class SMTwist(UserList):
         for t in self[1:]:
             out *= t
         return out
+
 
