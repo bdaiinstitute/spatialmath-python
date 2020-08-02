@@ -7,6 +7,7 @@ help:
 	@echo "$(BLUE) make test - run all unit tests"
 	@echo " make coverage - run unit tests and coverage report"
 	@echo " make docs - build Sphinx documentation"
+	@echo " make docupdate - upload Sphinx documentation to GitHub pages"
 	@echo " make dist - build dist files"
 	@echo " make upload - upload to PyPI"
 	@echo " make clean - remove dist and docs build files"
@@ -17,7 +18,7 @@ test:
 ifeq ($(shell which travis),)
 	@echo travis not found (gem install travis)
 else
-	travis lint .travis.yml
+	#travis lint .travis.yml
 endif
 
 coverage:
@@ -26,6 +27,12 @@ coverage:
 
 docs: .FORCE
 	(cd docs; make html)
+
+docupdate: docs
+	cp -r docsrc/build/html/. docs
+	git add docs
+	git commit -m "rebuilt docs"
+	git push origin master
 
 dist: .FORCE
 	$(MAKE) test
