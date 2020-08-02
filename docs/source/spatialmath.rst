@@ -14,7 +14,7 @@ Pose in 2D
    :show-inheritance:
    :inherited-members:
    :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
-   :exclude-members: count, index, sort, remove
+   :exclude-members: count, copy, index, sort, remove
    
 Pose in 3D
 ^^^^^^^^^^
@@ -25,7 +25,7 @@ Pose in 3D
    :show-inheritance:
    :inherited-members:
    :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
-   :exclude-members: count, index, sort, remove
+   :exclude-members: count, copy, index, sort, remove
 
 
 .. automodule:: spatialmath.quaternion
@@ -34,7 +34,7 @@ Pose in 3D
    :show-inheritance:
    :inherited-members:
    :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__, __init__
-   :exclude-members: count, index, sort, remove
+   :exclude-members: count, copy, index, sort, remove
 
    
 Geometry
