@@ -76,7 +76,7 @@ class SO2(sp.SMPose):
         :rtype: SO2 instance
 
         - ``SO2.Rand()`` is a random SO(2) rotation.
-        - ``SO2.Rand([-90, 90], unit='deg') is a random SO(2) rotation between 
+        - ``SO2.Rand([-90, 90], unit='deg')`` is a random SO(2) rotation between 
           -90 and +90 degrees.
         - ``SO2.Rand(N)`` is a sequence of N random rotations.
         
@@ -211,7 +211,7 @@ class SE2(SO2):
         - ``SE2(t)`` is an SE2 instance representing a pure translation of (``x``, ``y``) where``t``=[x,y] is a 2-element array_like
         - ``SE2(x, y, theta)`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` radians
         - ``SE2(x, y, theta, unit='deg')`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` degrees
-        - ``SE2(t)`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` where where ``t``=[x,y,theta] is a 3-element array_like
+        - ``SE2(t)`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` where ``t``=[x,y,theta] is a 3-element array_like
         - ``SE2(T)`` is an SE2 instance with rigid-body motion described by the SE(2) matrix T which is a 3x3 numpy array.  If ``check``
           is ``True`` check the matrix belongs to SE(2).
         - ``SE2([T1, T2, ... TN])`` is an SE2 instance containing a sequence of N rigid-body motions, each described by an SE(2) matrix
