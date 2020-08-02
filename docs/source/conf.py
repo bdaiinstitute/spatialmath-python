@@ -41,6 +41,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx_markdown_tables',
     'sphinx.ext.doctest',
+    'sphinx.ext.inheritance_diagram',
     ]
     #'recommonmark',
     #'sphinx.ext.autosummary',
