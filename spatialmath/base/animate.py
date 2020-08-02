@@ -228,14 +228,22 @@ class Animate:
         def __init__(self, anim, h):
             self.type = 'quiver'
             self.anim = anim
+            # for matplotlib 3.1.x
             # ._segments3d is 3x2x3
             #   first index: line segment in the collection
             #   second index: 0 = start, 1 = end
             #   third index: x, y, z components
             # https://stackoverflow.com/questions/48911643/set-uvc-equivilent-for-a-3d-quiver-plot-in-matplotlib
+            #
+            # for matplotlib 3.3.x
+            # ._segments3d is a 3-element list, each element is 2x3
 
-            # turn to homogeneous form, with columns per point
-            self.p = np.vstack([h._segments3d.reshape(6, 3).T, np.ones((1, 6))])
+            # turn to homogeneous form, with columns per point, alternating start, end
+            
+            if isinstance(h._segments3d, np.ndarray):
+                self.p = np.vstack([h._segments3d.reshape(6, 3).T, np.ones((1, 6))]) # result is 4x6
+            else:
+                self.p = np.vstack([np.hstack([x.T for x in h._segments3d]), np.ones((1, 6))])
             self.h = h
             self.type = 'arrow'
             self.anim = anim
