@@ -71,7 +71,7 @@ html_theme = 'alabaster'
 #html_theme = 'sphinxdoc'
 
 html_theme_options = {
-    'logo': '../../../../figs/icon.png',
+    'logo': '../../figs/icon.png',
     'github_user': 'petercorke',
     'github_repo': 'spatialmath-python',
     'logo_name': False,
