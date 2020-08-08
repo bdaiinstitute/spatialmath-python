@@ -7,7 +7,12 @@ Created on Fri Mar 20 11:41:25 2020
 """
 import numpy as np
 import math
-import sympy
+
+try:
+    import sympy
+    _sympy = True
+except ImportError:
+    _sympy = False
 
 def isscalar(x):
     return isinstance(x, (int, np.int64, float, np.float64))
@@ -40,7 +45,8 @@ def verifymatrix(m, shape):
 
 
 def getvector(v, dim=None, out='array'):
-    if isinstance(v, (int, np.int64, float, sympy.Expr)):  # handle scalar case
+    if isinstance(v, (int, np.int64, float)) or (
+            _sympy and isinstance(v, sympy.Expr)):  # handle scalar case
         v = [v]
 
     if isinstance(v, (list, tuple)):

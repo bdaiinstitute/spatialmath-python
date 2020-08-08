@@ -3,14 +3,20 @@
 # 13 June, 2017
 
 import numpy as np
-import sympy
 from collections import UserList
 import copy
 from spatialmath.base import argcheck
-import spatialmath.base as tr
+from spatialmath import base as tr
 
 
 _eps = np.finfo(np.float64).eps
+
+try:
+    import sympy
+    _sympy = True
+except ImportError:
+    _sympy = False
+
 
 # colored printing of matrices to the terminal
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
@@ -842,7 +848,7 @@ class SMPose(UserList):
                 rowstr = '  '
                 # format the columns
                 for colnum, element in enumerate(row):
-                    if isinstance(element, sympy.Expr):
+                    if _sympy and isinstance(element, sympy.Expr):
                         s = '{:<12s}'.format(str(element))
                     else:
                         if tol > 0 and abs(element) < tol * _eps:
