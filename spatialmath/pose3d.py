@@ -7,7 +7,7 @@ import numpy as np
 import math
 
 from spatialmath.base import argcheck
-import spatialmath.base as tr
+from spatialmath import base as tr
 from spatialmath import super_pose as sp
 
 # ============================== SO3 =====================================#

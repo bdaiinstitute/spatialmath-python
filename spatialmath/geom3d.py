@@ -5,8 +5,8 @@ import math
 from collections import namedtuple
 from collections import UserList
 
-import spatialmath.base.argcheck as arg
-import spatialmath.base as sm
+from  spatialmath.base import argcheck as arg
+from spatialmath import base as sm
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from spatialmath import SE3

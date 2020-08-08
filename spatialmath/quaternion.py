@@ -5,10 +5,10 @@ from collections import UserList
 import math
 import numpy as np
 
-import spatialmath.base as tr
-import spatialmath.base.quaternions as quat
-import spatialmath.base.argcheck as argcheck
-import spatialmath.pose3d as p3d
+from spatialmath import base as tr
+from spatialmath.base import quaternions as quat
+from spatialmath.base import argcheck as argcheck
+from spatialmath import pose3d as p3d
 
 
 # TODO
