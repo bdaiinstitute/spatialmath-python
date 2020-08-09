@@ -602,12 +602,12 @@ class SMPose(UserList):
         else:
             return log
 
-    def interp(self, s=None, T0=None):
+    def interp(self, s=None, start=None):
         """
         Interpolate pose (superclass method)
         
-        :param T0: initial pose
-        :type T0: SO2, SE2, SO3, SE3
+        :param start: initial pose
+        :type start: same as ``self``
         :param s: interpolation coefficient, range 0 to 1
         :type s: float or array_like
         :return: interpolated pose
@@ -653,24 +653,26 @@ class SMPose(UserList):
         :seealso: :func:`~spatialmath.base.transforms3d.trinterp`, :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
         """
         s = argcheck.getvector(s)
-        if T0 is not None:
-            assert len(T0) == 1, 'len(X0) must == 1'
-            T0 = T0.A
+        if start is not None:
+            assert len(start) == 1, 'len(start) must == 1'
+            start = start.A
+        else:
+            start = self.__class__().A
             
         if self.N == 2:
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([tr.trinterp2(self.A, T0, _s) for _s in s])
+                return self.__class__([tr.trinterp2(self.A, start=start, s=_s) for _s in s])
             else:
                 assert len(s) == 1, 'if len(X) > 1, len(s) must == 1'
-                return self.__class__([tr.trinterp2(x, T0, s) for x in self.data])
+                return self.__class__([tr.trinterp2(x, start=start, s=s[0]) for x in self.data])
         elif self.N == 3:
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([tr.trinterp(self.A, T1=T0, s=_s) for _s in s])
+                return self.__class__([tr.trinterp(self.A, start=start, s=_s) for _s in s])
             else:
                 assert len(s) == 1, 'if len(X) > 1, len(s) must == 1'
-                return self.__class__([tr.trinterp(x, T1=T0, s=s) for x in self.data])
+                return self.__class__([tr.trinterp(x, start=start, s=s[0]) for x in self.data])
         
     
     def norm(self):
@@ -913,10 +915,12 @@ class SMPose(UserList):
         else:
             tr.trplot(self.A, *args, **kwargs)
             
-    def animate(self, *args, T0=None, **kwargs):
+    def animate(self, *args, start=None, **kwargs):
         """
         Plot pose object as an animated coordinate frame (superclass method)
         
+        :param start: initial pose, defaults to null/identity
+        :type start: same as ``self``
         :param `**kwargs`: plotting options
         
         - ``X.plot()`` displays the pose ``X`` as a coordinate frame moving
@@ -927,15 +931,16 @@ class SMPose(UserList):
             
             >>> X = SE3.Rx(0.3)
             >>> X.animate(frame='A', color='green')
+            >>> X.animate(start=X.inv())
 
         :seealso: :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms2d.tranimate2`
         """
-        if T0 is not None:
-            T0 = T0.A
+        if start is not None:
+            start = start.A
         if self.N == 2:
-            tr.tranimate2(self.A, T0=T0, *args, **kwargs)
+            tr.tranimate2(self.A, start=start, *args, **kwargs)
         else:
-            tr.tranimate(self.A, T0=T0, *args, **kwargs)
+            tr.tranimate(self.A, start=start, *args, **kwargs)
 
 
 # ------------------------------------------------------------------------ #

@@ -44,7 +44,7 @@ class Animate:
         anim.run(loop=True)  # animate it
     """
 
-    def __init__(self, axes=None, dims=None, projection='ortho', labels=['X', 'Y', 'Z'], **kwargs):
+    def __init__(self, axes=None, start=None, dims=None, projection='ortho', labels=['X', 'Y', 'Z'], **kwargs):
         """
         Construct an Animate object
 
@@ -87,15 +87,18 @@ class Animate:
             # ax.set_aspect('equal')
 
         self.ax = axes
+        
+
 
         # set flag for 2d or 3d axes, flag errors on the methods called later
 
-    def trplot(self, T, **kwargs):
+    def trplot(self, end, start=None, **kwargs):
         """
         Define the transform to animate
 
         :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
         :type: numpy.ndarray, shape=(3,3) or (4,4)
+        :param start: an 
 
         Is polymorphic with ``base.trplot`` and accepts the same parameters.
         This sets up the animation but doesn't execute it.
@@ -104,14 +107,23 @@ class Animate:
 
         """
         # stash the final value
-        if tr.isrot(T):
-            self.T = tr.r2t(T)
+        if tr.isrot(end):
+            self.end = tr.r2t(end)
         else:
-            self.T = T
+            self.end = end
+            
+        if start is None:
+            self.start = np.identity(4)
+        else:
+            if tr.isrot(start):
+                self.start = tr.r2t(start)
+            else:
+                self.start = start
+            
         # draw axes at the origin
-        tr.trplot(np.eye(4), axes=self, **kwargs)
+        tr.trplot(self.start, axes=self, block=None, **kwargs)
 
-    def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, pause=0, **kwargs):
+    def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, pause=0, **kwargs):
         """
         Run the animation
 
@@ -135,7 +147,7 @@ class Animate:
         """
 
         def update(frame, a):
-            T = tr.trinterp(self.T, s=frame / nframes)
+            T = tr.trinterp(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True
@@ -147,7 +159,6 @@ class Animate:
             
         self.done = False
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
-        
         if movie is None:
             while repeat or not self.done:
                 plt.pause(1)
@@ -412,7 +423,7 @@ class Animate2:
 
         # set flag for 2d or 3d axes, flag errors on the methods called later
 
-    def trplot2(self, Tf, T0=None, **kwargs):
+    def trplot2(self, end, start=None, **kwargs):
         """
         Define the transform to animate
 
@@ -426,24 +437,24 @@ class Animate2:
 
         """
         # stash the final value
-
-        if tr.isrot2(Tf):
-            self.Tf = tr.r2t(Tf)
-            if T0 is None:
-                self.T0 = np.eye(3)
-            else:
-                self.T0 = tr.r2t(T0)
+        if tr.isrot2(end):
+            self.end = tr.r2t(end)
         else:
-            self.Tf = Tf
-            if T0 is None:
-                self.T0 = np.eye(3)
+            self.end = end
+            
+        if start is None:
+            self.start = np.identity(3)
+        else:
+            if tr.isrot2(start):
+                self.start = tr.r2t(start)
             else:
-                self.T0 = T0
+                self.start = start
+                
         # draw axes at the origin
-        tr.trplot2(np.eye(3), axes=self, **kwargs)
+        tr.trplot2(self.start, axes=self, block=None, **kwargs)
         
 
-    def run(self, movie=None, axes=None, repeat=True, interval=50, nframes=100, **kwargs):
+    def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs):
         """
         Run the animation
 
@@ -467,7 +478,7 @@ class Animate2:
         """
         
         def update(frame, a):            
-            T = tr.trinterp2(a.T0, T1=a.Tf, s=frame / nframes)
+            T = tr.trinterp2(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True

@@ -415,27 +415,27 @@ class Test2D(unittest.TestCase):
         T0 = trot2(-0.3)
         T1 = trot2(0.3)
         
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0.5), np.eye(3))
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
         
-        T0 = transl2(-1, -2,)
+        T0 = transl2(-1, -2)
         T1 = transl2(1, 2)
         
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0.5), np.eye(3))
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
         
         T0 = transl2(-1, -2) @ trot2(-0.3)
         T1 = transl2(1, 2) @ trot2(0.3)
         
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0.5), np.eye(3))
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
         
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp2(T0, T1, 0.5), np.eye(3))
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
 
     def test_plot(self):
         plt.figure()
@@ -781,11 +781,103 @@ class Test3D(unittest.TestCase):
         trplot(transl(4, 3, 1)@trotx(math.pi / 3), block=False, color='green', frame='c', dims=[0, 4, 0, 4, 0, 4])
 
         plt.clf()
-        # tranimate(transl(1, 2, 3), repeat=False, pause=2)
+        tranimate(transl(1, 2, 3), repeat=False, pause=2)
         # run again, with axes already created
-        # tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
+        tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
 
         # test animate with line not arrow, text, test with SO(3)
+
+    def test_trinterp(self):
+        T0 = trotx(-0.3)
+        T1 = trotx(0.3)
+        
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+        
+        T0 = transl(-1, -2, -3)
+        T1 = transl(1, 2, 3)
+        
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+        
+        T0 = transl(-1, -2, -3) @ trotx(-0.3)
+        T1 = transl(1, 2, 3) @ trotx(0.3)
+        
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+        
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+        
+    def test_tr2delta(self):
+
+        # unit testing tr2delta with a tr matrix
+        nt.assert_array_almost_equal( tr2delta( transl(0.1, 0.2, 0.3) ), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
+        nt.assert_array_almost_equal( tr2delta( transl(0.1, 0.2, 0.3), transl(0.2, 0.4, 0.6) ), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
+        nt.assert_array_almost_equal( tr2delta( trotx(0.001) ), np.r_[0,0,0, 0.001,0,0])
+        nt.assert_array_almost_equal( tr2delta( troty(0.001) ), np.r_[0,0,0, 0,0.001,0])
+        nt.assert_array_almost_equal( tr2delta( trotz(0.001) ), np.r_[0,0,0, 0,0,0.001])
+        nt.assert_array_almost_equal( tr2delta( trotx(0.001), trotx(0.002) ), np.r_[0,0,0, 0.001,0,0])
+    
+        # %Testing with a scalar number input
+        # verifyError(tc, @()tr2delta(1),'SMTB:tr2delta:badarg');
+        # verifyError(tc, @()tr2delta( ones(3,3) ),'SMTB:tr2delta:badarg');
+        
+    def test_delta2tr(self):
+        # test with standard numbers  
+        nt.assert_array_almost_equal(delta2tr([0.1, 0.2, 0.3, 0.4, 0.5, 0.6]), 
+        np.array([[1.0, -0.6, 0.5, 0.1], 
+                  [0.6, 1.0, -0.4, 0.2], 
+                  [-0.5, 0.4, 1.0, 0.3], 
+                  [0, 0, 0, 1.0]]))
+
+        # test, with, zeros
+        nt.assert_array_almost_equal(delta2tr([0, 0, 0, 0, 0, 0]), np.eye(4));
+        
+        # test with scalar input 
+        #verifyError(testCase, @()delta2tr(1),'MATLAB:badsubscript');
+    
+    def test_tr2jac(self):
+
+        # NOTE, create these matrices using pyprint() in MATLAB
+        nt.assert_array_almost_equal( tr2jac(trotx(pi/2)), 
+            np.array([  [1, 0, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0, 0],
+                        [0, -1, 0, 0, 0, 0],
+                        [0, 0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0, 1],
+                        [0, 0, 0, 0, -1, 0]]))
+         
+        nt.assert_array_almost_equal( tr2jac(trotx(pi/2), True), 
+            np.array([  [1, 0, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0, 0],
+                        [0, -1, 0, 0, 0, 0],
+                        [0, 0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 0, 1],
+                        [0, 0, 0, 0, -1, 0]]))
+        
+        nt.assert_array_almost_equal( tr2jac(transl(1,2,3)),
+            np.array([  [1, 0, 0, 0, 0, 0],
+                        [0, 1, 0, 0, 0, 0],
+                        [0, 0, 1, 0, 0, 0],
+                        [0, 0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 1, 0],
+                        [0, 0, 0, 0, 0, 1]]))
+            
+        nt.assert_array_almost_equal( tr2jac(transl(1,2,3), True),
+            np.array([  [1, 0, 0, 0, 3, -2],
+                        [0, 1, 0, -3, 0, 1],
+                        [0, 0, 1, 2, -1, 0],
+                        [0, 0, 0, 1, 0, 0],
+                        [0, 0, 0, 0, 1, 0],
+                        [0, 0, 0, 0, 0, 1]]))
+
+        # test with scalar value
+        #verifyError(tc, @()tr2jac(1),'SMTB:t2r:badarg');
 
 class TestLie(unittest.TestCase):
 
@@ -1060,97 +1152,7 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trnorm(T0), T0)
         
         
-    def test_trinterp(self):
-        T0 = trotx(-0.3)
-        T1 = trotx(0.3)
-        
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0.5), np.eye(4))
-        
-        T0 = transl(-1, -2, -3)
-        T1 = transl(1, 2, 3)
-        
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0.5), np.eye(4))
-        
-        T0 = transl(-1, -2, -3) @ trotx(-0.3)
-        T1 = transl(1, 2, 3) @ trotx(0.3)
-        
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0.5), np.eye(4))
-        
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0), T0)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 1), T1)
-        nt.assert_array_almost_equal( trinterp(T0, T1, 0.5), np.eye(4))
-        
-    def test_tr2delta(self):
 
-        # unit testing tr2delta with a tr matrix
-        nt.assert_array_almost_equal( tr2delta( transl(0.1, 0.2, 0.3) ), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
-        nt.assert_array_almost_equal( tr2delta( transl(0.1, 0.2, 0.3), transl(0.2, 0.4, 0.6) ), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
-        nt.assert_array_almost_equal( tr2delta( trotx(0.001) ), np.r_[0,0,0, 0.001,0,0])
-        nt.assert_array_almost_equal( tr2delta( troty(0.001) ), np.r_[0,0,0, 0,0.001,0])
-        nt.assert_array_almost_equal( tr2delta( trotz(0.001) ), np.r_[0,0,0, 0,0,0.001])
-        nt.assert_array_almost_equal( tr2delta( trotx(0.001), trotx(0.002) ), np.r_[0,0,0, 0.001,0,0])
-    
-        # %Testing with a scalar number input
-        # verifyError(tc, @()tr2delta(1),'SMTB:tr2delta:badarg');
-        # verifyError(tc, @()tr2delta( ones(3,3) ),'SMTB:tr2delta:badarg');
-        
-    def test_delta2tr(self):
-        # test with standard numbers  
-        nt.assert_array_almost_equal(delta2tr([0.1, 0.2, 0.3, 0.4, 0.5, 0.6]), 
-        np.array([[1.0, -0.6, 0.5, 0.1], 
-                  [0.6, 1.0, -0.4, 0.2], 
-                  [-0.5, 0.4, 1.0, 0.3], 
-                  [0, 0, 0, 1.0]]))
-
-        # test, with, zeros
-        nt.assert_array_almost_equal(delta2tr([0, 0, 0, 0, 0, 0]), np.eye(4));
-        
-        # test with scalar input 
-        #verifyError(testCase, @()delta2tr(1),'MATLAB:badsubscript');
-    
-    def test_tr2jac(self):
-
-        # NOTE, create these matrices using pyprint() in MATLAB
-        nt.assert_array_almost_equal( tr2jac(trotx(pi/2)), 
-            np.array([  [1, 0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, -1, 0, 0, 0, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0, 1],
-                        [0, 0, 0, 0, -1, 0]]))
-         
-        nt.assert_array_almost_equal( tr2jac(trotx(pi/2), True), 
-            np.array([  [1, 0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, -1, 0, 0, 0, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0, 1],
-                        [0, 0, 0, 0, -1, 0]]))
-        
-        nt.assert_array_almost_equal( tr2jac(transl(1,2,3)),
-            np.array([  [1, 0, 0, 0, 0, 0],
-                        [0, 1, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 1, 0],
-                        [0, 0, 0, 0, 0, 1]]))
-            
-        nt.assert_array_almost_equal( tr2jac(transl(1,2,3), True),
-            np.array([  [1, 0, 0, 0, 3, -2],
-                        [0, 1, 0, -3, 0, 1],
-                        [0, 0, 1, 2, -1, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 1, 0],
-                        [0, 0, 0, 0, 0, 1]]))
-
-        # test with scalar value
-        #verifyError(tc, @()tr2jac(1),'SMTB:t2r:badarg');
 
 
 # ---------------------------------------------------------------------------------------#

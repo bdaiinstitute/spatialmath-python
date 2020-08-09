@@ -129,7 +129,7 @@ class TestSO3(unittest.TestCase):
         R = SO3()
         R.about
 
-    def test_display(self):
+    def test_str(self):
         R = SO3()
 
         s = str(R)
@@ -140,8 +140,29 @@ class TestSO3(unittest.TestCase):
         self.assertIsInstance(s, str)
         self.assertEqual(s.count('\n'), 2)
 
+    def test_printline(self):
+        
+        R = SO3.Rx( 0.3)
+        
         R.printline()
+        s = R.printline(file=None)
+        self.assertIsInstance(s, str)
 
+        R = SO3.Rx([0.3, 0.4, 0.5])
+        s = R.printline(file=None)
+        self.assertIsInstance(s, str)
+        self.assertEqual(s.count('\n'), 2)
+        
+    def test_plot(self):
+        plt.close('all')
+        
+        R = SO3.Rx( 0.3)
+        R.plot(block=False)
+        
+        R2 = SO3.Rx(0.6)
+        R.animate()
+        R.animate(start=R.inv())
+        
     def test_listpowers(self):
         R = SO3()
         R1 = SO3.Rx(0.2)
@@ -1048,5 +1069,5 @@ class TestSE3(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
-
+    
     unittest.main()

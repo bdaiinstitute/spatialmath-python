@@ -337,25 +337,25 @@ def trexp2(S, theta=None):
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
         
-def trinterp2(T0, T1=None, s=None):
+def trinterp2(end, start=None, s=None):
     """
     Interpolate SE(2) matrices
 
-    :param T0: first SE(2) matrix
+    :param end: final SE(3) matrix, value when s=1
     :type T0: np.ndarray, shape=(3,3)
-    :param T1: second SE(2) matrix
+    :param start: initial SE(3) matrix, value when s=0, optional, defaults to identity
     :type T1: np.ndarray, shape=(3,3)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
     :return: SE(2) matrix
     :rtype: np.ndarray, shape=(3,3)
     
-    - ``trinterp2(T0, T1, S)`` is a homogeneous transform (3x3) interpolated
+    - ``trinterp2(T1, s=S)`` is a homogeneous transform (3x3) interpolated
+      between identity when S=0 and T1 when S=1.
+      
+    - ``trinterp2(T1, start=T0, s=S)`` as above but interpolated
       between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
       transforms (3x3).
-    
-    - ``trinterp2(T1, S)`` as above but interpolated between the identity matrix
-      when S=0 to T1 when S=1.
     
     Notes:
         
@@ -365,42 +365,42 @@ def trinterp2(T0, T1=None, s=None):
     
     %## 2d homogeneous trajectory
     """
-    if argcheck.ismatrix(T0, (2,2)):
+    if argcheck.ismatrix(start, (2,2)):
         # SO(2) case
         if T1 is None:
             #	TRINTERP2(T, s)
             
-            th0 = math.atan2(T0[1,0], T0[0,0])
+            th0 = math.atan2(start[1,0], start[0,0])
             
             th = s * th0
         else:
             #	TRINTERP2(T0, T1, s)
-            assert T0.shape == T1.shape, 'both matrices must be same shape'
+            assert start.shape == end.shape, 'both matrices must be same shape'
         
-            th0 = math.atan2(T0[1,0], T0[0,0])
-            th1 = math.atan2(T1[1,0], T1[0,0])
+            th0 = math.atan2(start[1,0], start[0,0])
+            th1 = math.atan2(end[1,0], end[0,0])
             
             th = th0 * (1 - s) + s * th1
         
         return rot2(th)
-    elif argcheck.ismatrix(T0, (3,3)):
-        if T1 is None:
+    elif argcheck.ismatrix(start, (3,3)):
+        if end is None:
             #	TRINTERP2(T, s)
             
-            th0 = math.atan2(T0[1,0], T0[0,0])
-            p0 = transl2(T0)
+            th0 = math.atan2(start[1,0], start[0,0])
+            p0 = transl2(start)
             
             th = s * th0
             pr = s * p0
         else:
             #	TRINTERP2(T0, T1, s)
-            assert T0.shape == T1.shape, 'both matrices must be same shape'
+            assert start.shape == end.shape, 'both matrices must be same shape'
         
-            th0 = math.atan2(T0[1,0], T0[0,0])
-            th1 = math.atan2(T1[1,0], T1[0,0])
+            th0 = math.atan2(start[1,0], start[0,0])
+            th1 = math.atan2(end[1,0], end[0,0])
             
-            p0 = transl2(T0)
-            p1 = transl2(T1)
+            p0 = transl2(start)
+            p1 = transl2(end)
             
             pr = p0 * (1 - s) + s * p1;
             th = th0 * (1 - s) + s * th1
@@ -519,6 +519,8 @@ if _matplotlib_exists:
         :type width: float
         :param d1: distance of frame axis label text from origin, default 1.15
         :type d2: distance of frame label text from origin, default 0.05
+        :return: axes containing the frame
+        :rtype: AxesSubplot
 
         Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.
 
@@ -601,7 +603,10 @@ if _matplotlib_exists:
             ax.text(x[0], x[1], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
-        plt.show(block=block)
+        if block:
+            # calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit
+            plt.show(block=block)
+        return ax
 
     from spatialmath.base import animate as animate
     

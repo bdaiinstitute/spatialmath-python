@@ -213,13 +213,15 @@ class TestSO2(unittest.TestCase):
         self.assertEqual(s.count('\n'), 2)
         
     def test_plot(self):
-
+        plt.close('all')
+        
         R = SO2( 0.3)
         R.plot(block=False)
         
         R2 = SO2(0.6)
-        # R.animate()
-        # R.animate(R2)
+        R.animate()
+        R.animate(start=R2)
+        
 
 class TestSE2(unittest.TestCase):
  
@@ -434,12 +436,13 @@ class TestSE2(unittest.TestCase):
         TT = SE2(2, -4, 0.6)
         I = SE2()
         
-        z = I.interp(0, T0=TT)
+        z = I.interp(s=0)
         self.assertIsInstance(z, SE2)
         
-        array_compare(I.interp(0, T0=TT), I)
-        array_compare(I.interp(1, T0=TT), TT)
-        array_compare(I.interp(0.5, T0=TT), SE2(1, -2, 0.3))
+        array_compare(TT.interp(s=0), I)
+        array_compare(TT.interp(s=1), TT)
+        array_compare(TT.interp(s=0.5), SE2(1, -2, 0.3))
+        array_compare(TT.interp(s=0.5,start=SE2(-2, 4, -0.6)), I)
     
     def test_miscellany(self):
         
@@ -471,8 +474,7 @@ class TestSE2(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
-    
-    x = SE2()
-    x.log()
-
+    R = SO2( 0.3)
+    R2 = SO2(0.6)
+    R.animate()
     unittest.main(buffer=True)

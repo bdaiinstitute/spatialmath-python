@@ -1103,26 +1103,24 @@ def trnorm(T):
     else:
         return R
     
-def trinterp(T0, T1=None, s=None):
+def trinterp(end, start=None, s=None):
     """
     Interpolate SE(3) matrices
     
-    :param T0: first SE(3) matrix
-    :type T0: np.ndarray, shape=(4,4)
-    :param T1: second SE(3) matrix
-    :type T1: np.ndarray, shape=(4,4)
+    :param end: final SE(3) matrix, value when s=1
+    :type end: np.ndarray, shape=(4,4)
+    :param start: initial SE(3) matrix, value when s=0, optional, defaults to identity
+    :type start: np.ndarray, shape=(4,4)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
     :return: SE(3) matrix
     :rtype: np.ndarray, shape=(4,4)
     
-    - ``trinterp(T0, T1, S)`` is a homogeneous transform (4x4) interpolated
+    - ``trinterp(T1, s=S)`` is a homogeneous transform (4x4) interpolated
+      between identity when S=0 and T1 when S=1.
+    - ``trinterp(T1, start=T0, s=S)`` as above but interpolated
       between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
       transforms (4x4).
-    
-    - ``trinterp(T1, S)`` as above but interpolated between the identity matrix
-      when S=0 to T1 when S=1.
-    
     
     Notes:
         
@@ -1133,22 +1131,22 @@ def trinterp(T0, T1=None, s=None):
 
     assert 0 <= s <= 1, 's outside interval [0,1]'
     
-    if T1 is None:
+    if end is None:
         #	TRINTERP(T, s)
         
-        q0 = quat.r2q(trn.t2r(T0))
-        p0 = transl(T0)
+        q0 = quat.r2q(trn.t2r(start))
+        p0 = transl(start)
         
         qr = quat.slerp(quat.eye(), q0, s)
         pr = s * p0
     else:
         #	TRINTERP(T0, T1, s)
     
-        q0 = quat.r2q(trn.t2r(T0))
-        q1 = quat.r2q(trn.t2r(T1))
+        q0 = quat.r2q(trn.t2r(start))
+        q1 = quat.r2q(trn.t2r(end))
         
-        p0 = transl(T0)
-        p1 = transl(T1)
+        p0 = transl(start)
+        p1 = transl(end)
         
         qr = quat.slerp(q0, q1, s)
         pr = p0 * (1 - s) + s * p1;
@@ -1386,7 +1384,7 @@ except BaseException:  # pragma: no cover
     _matplotlib_exists = False
         
 if _matplotlib_exists:
-    def trplot(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
+    def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
         """
         Plot a 3D coordinate frame
 
@@ -1394,6 +1392,8 @@ if _matplotlib_exists:
         :type: numpy.ndarray, shape=(3,3) or (4,4)
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
+        :param block: run the GUI main loop until all windows are closed, default True
+        :type block: bool
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
                      If dims is [min, max] those limits are applied to the x-, y- and z-axes.
         :type dims: array_like
@@ -1419,6 +1419,8 @@ if _matplotlib_exists:
         :type width: float
         :param d1: distance of frame axis label text from origin, default 1.15
         :type d2: distance of frame label text from origin, default 0.05
+        :return: axes containing the frame
+        :rtype: Axes3DSubplot
 
         Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.
 
@@ -1508,6 +1510,11 @@ if _matplotlib_exists:
             ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
+        
+        if block:
+            # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
+            plt.show(block=block)
+        return ax
 
     from spatialmath.base import animate as animate
 
