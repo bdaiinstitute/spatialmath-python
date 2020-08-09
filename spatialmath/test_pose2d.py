@@ -199,15 +199,23 @@ class TestSO2(unittest.TestCase):
         self.assertFalse(r.isSE)
     
     
-    def test_display(self):
+    def test_printline(self):
         
-        R = SO2( 0.3,)
+        R = SO2( 0.3)
         
-        # This method does not exist
-        # Try R.__str__() maybe?
-        # R.print()
+        R.printline()
+        s = R.printline(file=None)
+        self.assertIsInstance(s, str)
+
+        R = SO2([0.3, 0.4, 0.5])
+        s = R.printline(file=None)
+        self.assertIsInstance(s, str)
+        self.assertEqual(s.count('\n'), 2)
         
-        # R.plot()
+    def test_plot(self):
+
+        R = SO2( 0.3)
+        R.plot(block=False)
         
         R2 = SO2(0.6)
         # R.animate()
@@ -455,7 +463,7 @@ class TestSE2(unittest.TestCase):
         T1 = SE2.Rand()
         T2 = SE2.Rand()
         
-        T1.plot(dims=[-2,2])
+        T1.plot(block=False, dims=[-2,2])
         
         # T1.animate(repeat=False, dims=[-2,2])
         # T1.animate(T0=T2, repeat=False, dims=[-2,2])
@@ -467,4 +475,4 @@ if __name__ == '__main__':
     x = SE2()
     x.log()
 
-    unittest.main()
+    unittest.main(buffer=True)

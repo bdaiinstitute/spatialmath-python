@@ -424,25 +424,25 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     :type fmt: str
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: optional formatted string
+    :return: formatted string
     :rtype: str
 
-    The matrix is formatted and written to ``file`` or if ``file=None`` then the
-    string is returned.
+    The matrix is formatted and written to ``file`` and the
+    string is returned.  To suppress writing to a file, set ``file=None``.
 
     - ``trprint2(R)`` displays the SO(2) rotation matrix in a compact
-      single-line format::
+      single-line format and returns the string::
 
         [LABEL:] THETA UNIT
 
     - ``trprint2(T)`` displays the SE(2) homogoneous transform in a compact
-      single-line format::
+      single-line format and returns the string::
 
         [LABEL:] [t=X, Y;] THETA UNIT
 
     Example::
 
-        >>> T = transl2(1,2)@trot2(0.3)
+        >>> T = transl2(1,2) @ trot2(0.3)
         >>> trprint2(a, file=None, label='T')
         'T: t =        1,        2;       17 deg'
 
@@ -455,7 +455,8 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
         s += '{:s}: '.format(label)
 
     # print the translational part if it exists
-    s += 't = {};'.format(_vec2s(fmt, transl2(T)))
+    if ishom2(T):
+        s += 't = {};'.format(_vec2s(fmt, transl2(T)))
 
     angle = math.atan2(T[1, 0], T[0, 0])
     if unit == 'deg':
@@ -464,8 +465,7 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
 
     if file:
         print(s, file=file)
-    else:
-        return s
+    return s
 
 
 def _vec2s(fmt, v):
@@ -480,12 +480,12 @@ try:
     
 except BaseException:  # pragma: no cover
     def trplot(*args, **kwargs):
-        print('** trplot: no plot produced -- matplotlib not installed')
+        print('matplotlib is not installed: pip install matplotlib')
     _matplotlib_exists = False
         
 if _matplotlib_exists:
 
-    def trplot2(T, axes=None, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y'], length=1, arrow=True, rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
+    def trplot2(T, axes=None, block=True, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y'], length=1, arrow=True, rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
         """
         Plot a 2D coordinate frame
 
@@ -493,6 +493,8 @@ if _matplotlib_exists:
         :type: numpy.ndarray, shape=(2,2) or (3,3)
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
+        :param block: run the GUI main loop until all windows are closed, default True
+        :type block: bool
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]
         :type dims: array_like
         :param color: color of the lines defining the frame
@@ -598,6 +600,8 @@ if _matplotlib_exists:
 
             ax.text(x[0], x[1], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
+
+        plt.show(block=block)
 
     from spatialmath.base import animate as animate
     

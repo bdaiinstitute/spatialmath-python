@@ -439,9 +439,9 @@ class Test2D(unittest.TestCase):
 
     def test_plot(self):
         plt.figure()
-        trplot2(transl2(1, 2), frame='A', rviz=True, width=1)
-        trplot2(transl2(3, 1), color='red', arrow=True, width=3, frame='B')
-        trplot2(transl2(4, 3)@trot2(math.pi / 3), color='green', frame='c')
+        trplot2(transl2(1, 2), block=False, frame='A', rviz=True, width=1)
+        trplot2(transl2(3, 1), block=False, color='red', arrow=True, width=3, frame='B')
+        trplot2(transl2(4, 3)@trot2(math.pi / 3), block=False, color='green', frame='c')
 
 
 class Test3D(unittest.TestCase):
@@ -776,9 +776,9 @@ class Test3D(unittest.TestCase):
 
     def test_plot(self):
         plt.figure()
-        trplot(transl(1, 2, 3), frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
-        trplot(transl(3, 1, 2), color='red', width=3, frame='B')
-        trplot(transl(4, 3, 1)@trotx(math.pi / 3), color='green', frame='c', dims=[0, 4, 0, 4, 0, 4])
+        trplot(transl(1, 2, 3), block=False, frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
+        trplot(transl(3, 1, 2), block=False, color='red', width=3, frame='B')
+        trplot(transl(4, 3, 1)@trotx(math.pi / 3), block=False, color='green', frame='c', dims=[0, 4, 0, 4, 0, 4])
 
         plt.clf()
         # tranimate(transl(1, 2, 3), repeat=False, pause=2)

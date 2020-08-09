@@ -742,12 +742,18 @@ class SMPose(UserList):
             >>> x.printline()
             t =        0,        0,        0; rpy/zyx =       17,        0,        0 deg
         
+        If `X` contains a sequence, print one line per element.
 
         """
+        s = []
         if self.N == 2:
-            tr.trprint2(self.A, **kwargs)
+            for x in self.data:
+                s.append(tr.trprint2(x, **kwargs))
         else:
-            tr.trprint(self.A, **kwargs)
+            for x in self.data:
+                s.append(tr.trprint(x, **kwargs))
+
+        return '\n'.join(s)
 
     def __repr__(self):
         """

@@ -1284,11 +1284,11 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
     :type fmt: str
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: optional formatted string
+    :return: formatted string
     :rtype: str
 
-    The matrix is formatted and written to ``file`` or if ``file=None`` then the
-    string is returned.
+    The matrix is formatted and written to ``file`` and the
+    string is returned.  To suppress writing to a file, set ``file=None``.
 
    - ``trprint(R)`` displays the SO(3) rotation matrix in a compact
       single-line format:
@@ -1366,8 +1366,8 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
 
     if file:
         print(s, file=file)
-    else:
-        return s
+
+    return s
 
 
 def _vec2s(fmt, v):
@@ -1382,7 +1382,7 @@ try:
     
 except BaseException:  # pragma: no cover
     def trplot(*args, **kwargs):
-        print('** trplot: no plot produced -- matplotlib not installed')
+        print('matplotlib is not installed: pip install matplotlib')
     _matplotlib_exists = False
         
 if _matplotlib_exists:
