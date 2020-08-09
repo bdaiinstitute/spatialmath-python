@@ -1,4 +1,3 @@
-![PyPI - Downloads](https://img.shields.io/pypi/dm/spatialmath-python)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
 [![Build Status](https://github.com/petercorke/spatialmath-python/workflows/build/badge.svg?branch=master)](https://github.com/petercorke/spatialmath-python/actions?query=workflow%3Abuild)
@@ -44,9 +43,9 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/fig1.png)
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/animate.gif)
 
 # Getting going
 
@@ -98,16 +97,16 @@ while a rotation of 30 deg about the z-axis is
 and the composition of these two rotations is 
 
 ```python
->>> R = R1 *R2
+>>> R = R1 * R2
    0.866025 -0.5       0          
    0.433013  0.75     -0.5        
    0.25      0.433013  0.866025 
 ```
 
-We can find the corresponding Euler angles
+We can find the corresponding Euler angles (in radians)
 
 ```python
->> R.eul
+>> R.eul()
 array([-1.57079633,  0.52359878,  2.0943951 ])
 ```
 
@@ -126,7 +125,7 @@ Frequently in robotics we want a sequence, a trajectory, of rotation matrices or
 ```
 and this can be used in `for` loops and list comprehensions.
 
-An alternative way of constructing this would be
+An alternative way of constructing this would be (`R1`, `R2` defined above)
 
 ```python
 >>> R = SO3( [ SO3(), R1, R2 ] )       
@@ -173,12 +172,12 @@ will produce a result where each element is the product of each element of the l
 The underlying representation of these classes is a numpy matrix, but the class ensures that the structure of that matrix is valid for the particular group represented: SO(2), SE(2), SO(3), SE(3).  Any operation that is not valid for the group will return a matrix rather than a pose class, for example
 
 ```python
->>> SO3.Rx(0.3)*2
+>>> SO3.Rx(0.3) * 2
 array([[ 2.        ,  0.        ,  0.        ],
        [ 0.        ,  1.91067298, -0.59104041],
        [ 0.        ,  0.59104041,  1.91067298]])
 
->>> SO3.Rx(0.3)-1
+>>> SO3.Rx(0.3) - 1
 array([[ 0.        , -1.        , -1.        ],
        [-1.        , -0.04466351, -1.29552021],
        [-1.        , -0.70447979, -0.04466351]])
@@ -200,9 +199,18 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 >>> T.plot()
 ```
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/fig1.png)
 
 `printline` is a compact single line format for tabular listing, whereas `print` shows the underlying matrix and for consoles that support it, it is colorised, with rotational elements in red and translational elements in blue.
+
+For more detail checkout the shipped Python notebooks:
+
+* [gentle introduction](https://github.com/petercorke/spatialmath-python/blob/master/spatialmath/gentle-introduction.ipynb)
+* [deeper introduction](https://github.com/petercorke/spatialmath-python/blob/master/spatialmath/introduction.ipynb)
+
+
+You can browse it statically through the links above, or clone the toolbox and run them interactively using [Jupyter](https://jupyter.org) or [JupyterLab](https://jupyter.org).
+
 
 ## Low-level spatial math
 
@@ -284,7 +292,7 @@ array([-60,  12,  30,  24])
 
 ## Graphics
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs//transforms3d.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs//transforms3d.png)
 
 The functions support various plotting styles
 
@@ -306,7 +314,7 @@ and it can be saved to a file by
 tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
 ```
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/animate.gif)
 
 At the moment we can only save as an MP4, but the following incantation will covert that to an animated GIF for embedding in web pages
 
