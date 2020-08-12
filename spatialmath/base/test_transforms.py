@@ -781,9 +781,9 @@ class Test3D(unittest.TestCase):
         trplot(transl(4, 3, 1)@trotx(math.pi / 3), block=False, color='green', frame='c', dims=[0, 4, 0, 4, 0, 4])
 
         plt.clf()
-        tranimate(transl(1, 2, 3), repeat=False, pause=2)
+        # tranimate(transl(1, 2, 3), repeat=False, pause=2)
         # run again, with axes already created
-        tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
+        # tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
 
         # test animate with line not arrow, text, test with SO(3)
 
