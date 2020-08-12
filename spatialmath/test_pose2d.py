@@ -219,8 +219,8 @@ class TestSO2(unittest.TestCase):
         R.plot(block=False)
         
         R2 = SO2(0.6)
-        R.animate()
-        R.animate(start=R2)
+        # R.animate()
+        # R.animate(start=R2)
         
 
 class TestSE2(unittest.TestCase):
