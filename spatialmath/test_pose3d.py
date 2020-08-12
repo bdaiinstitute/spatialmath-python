@@ -160,8 +160,8 @@ class TestSO3(unittest.TestCase):
         R.plot(block=False)
         
         R2 = SO3.Rx(0.6)
-        R.animate()
-        R.animate(start=R.inv())
+        # R.animate()
+        # R.animate(start=R.inv())
         
     def test_listpowers(self):
         R = SO3()
