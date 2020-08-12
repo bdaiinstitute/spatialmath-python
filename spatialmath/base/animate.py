@@ -161,7 +161,7 @@ class Animate:
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
         if movie is None:
             while repeat or not self.done:
-                plt.pause(1)
+                plt.pause(0.01)
         else:
             # Set up formatting for the movie files
             print('creating movie', movie)
