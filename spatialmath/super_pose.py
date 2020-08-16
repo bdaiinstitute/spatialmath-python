@@ -430,7 +430,7 @@ class SMPose(UserList):
         Examples::
             
             >>> x = SE3()
-            >>> x.inert(0, SE3.Rx(0.1)) # insert at position 0 in the list
+            >>> x.insert(0, SE3.Rx(0.1)) # insert at position 0 in the list
             >>> len(x)
             2
         """

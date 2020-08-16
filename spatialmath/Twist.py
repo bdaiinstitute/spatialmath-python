@@ -478,7 +478,7 @@ class Twist(sp.SMTwist):
         :return: readable representation of the twist
         :rtype: str
         
-        Convert the pose's matrix value to a simple grid of numbers.
+        Convert the twist's value to an array of numbers.
         
         Example::
             
