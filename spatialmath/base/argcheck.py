@@ -50,16 +50,21 @@ def getvector(v, dim=None, out='array'):
         v = [v]
 
     if isinstance(v, (list, tuple)):
+        if _sympy:
+            if any([isinstance(x, sympy.Expr) for x in v]):
+                dt = None
+            else:
+                dt = np.float64
         if dim is not None and v and len(v) != dim:
             raise ValueError("incorrect vector length")
         if out == 'sequence':
             return v
         elif out == 'array':
-            return np.array(v, dtype=np.float64)
+            return np.array(v, dtype=dt)
         elif out == 'row':
-            return np.array(v, dtype=np.float64).reshape(1, -1)
+            return np.array(v, dtype=dt).reshape(1, -1)
         elif out == 'col':
-            return np.array(v, dtype=np.float64).reshape(-1, 1)
+            return np.array(v, dtype=dt).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
     elif isinstance(v, np.ndarray):
@@ -70,14 +75,17 @@ def getvector(v, dim=None, out='array'):
 
         v = v.flatten()
 
+        if v.dtype.kind != 'O':
+            dt = np.float64
+
         if out == 'sequence':
             return list(v.flatten())
         elif out == 'array':
-            return v.astype(np.float64)
+            return v.astype(dt)
         elif out == 'row':
-            return v.astype(np.float64).reshape(1, -1)
+            return v.astype(dt).reshape(1, -1)
         elif out == 'col':
-            return v.astype(np.float64).reshape(-1, 1)
+            return v.astype(dt).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
     else:
