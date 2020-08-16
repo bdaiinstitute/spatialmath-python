@@ -709,7 +709,33 @@ class SMPose(UserList):
         else:
             return self.__class__([tr.trnorm(x) for x in self.data])
 
- 
+    def simplify(self):
+        """
+        Symbolically simplify matrix values (superclass method)
+
+        :return: pose with symbolic elements
+        :rtype: SO2, SE2, SO3, SE3 instance
+
+        Apply symbolic simplification to every element of
+        Example::
+
+        >>> a = SE3.Rx(sympy.symbols('theta')
+        >>> b = a * a
+        >>> b
+        SE3(array([[1, 0, 0, 0.0],
+           [0, -sin(theta)**2 + cos(theta)**2, -2*sin(theta)*cos(theta), 0],
+           [0, 2*sin(theta)*cos(theta), -sin(theta)**2 + cos(theta)**2, 0],
+           [0.0, 0, 0, 1.0]], dtype=object)
+        >>> b.simplify()
+           SE3(array([[1, 0, 0, 0],
+           [0, cos(2*theta), -sin(2*theta), 0],
+           [0, sin(2*theta), cos(2*theta), 0],
+           [0, 0, 0, 1.00000000000000]], dtype=object))
+
+        .. todo:: No need to simplify the constants in bottom row
+        """
+        vf = np.vectorize(sympy.simplify)
+        return self.__class__([vf(x) for x in self.data], chec=False)
 
     # ----------------------- i/o stuff
 
@@ -784,6 +810,23 @@ class SMPose(UserList):
             # format this as a list of ndarrays
             return name + '([\n' + ',\n'.join([v.__repr__() for v in self.data]) + ' ])'
 
+    def _repr_pretty_(self, p, cycle):
+        """
+        Pretty string for IPython (superclass method)
+
+        :param p: pretty printer handle (ignored)
+        :param cycle: pretty printer flag (ignored)
+
+        Print colorized output when variable is displayed in IPython, ie. on a line by
+        itself.
+
+        Example::
+
+            In [1]: x
+
+        """
+        print(self.__str__())
+
     def __str__(self):
         """
         Pretty string representation of pose (superclass method)
@@ -841,7 +884,7 @@ class SMPose(UserList):
                0           0           0           1 
 
         """
-        #print('in __str__')
+        #print('in __str__', _color)
 
         FG = lambda c: fg(c) if _color else ''
         BG = lambda c: bg(c) if _color else ''
@@ -1015,7 +1058,7 @@ class SMPose(UserList):
         """
         if isinstance(left, right.__class__):
             #print('*: pose x pose')
-            return left.__class__(left._op2(right, lambda x, y: x @ y))
+            return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
 
         elif isinstance(right, (list, tuple, np.ndarray)):
             #print('*: pose x array')
@@ -1117,7 +1160,7 @@ class SMPose(UserList):
         """
 
         assert type(n) is int, 'exponent must be an int'
-        return self.__class__([np.linalg.matrix_power(x, n) for x in self.data])
+        return self.__class__([np.linalg.matrix_power(x, n) for x in self.data], check=False)
 
     # def __ipow__(self, n):
     #     return self.__pow__(n)
@@ -1168,7 +1211,7 @@ class SMPose(UserList):
 
         """
         if isinstance(left, right.__class__):
-            return left.__class__(left._op2(right.inv(), lambda x, y: x @ y))
+            return left.__class__(left._op2(right.inv(), lambda x, y: x @ y), check=False)
         elif isinstance(right, (int, np.int64, float, np.float64)):
             return left._op2(right, lambda x, y: x / y)
         else:

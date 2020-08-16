@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
-from collections import UserList
 import numpy as np
-import math
 
 from spatialmath.base import argcheck
 from spatialmath import base as tr
 from spatialmath import super_pose as sp
 
 # ============================== SO3 =====================================#
+
 
 class SO3(sp.SMPose):
     """
@@ -122,7 +121,6 @@ class SO3(sp.SMPose):
         else:
             return SO3([x.T for x in self.A])
 
-
     def eul(self, unit='deg'):
         """
         SO(3) or SE(3) as Euler angles
@@ -170,7 +168,7 @@ class SO3(sp.SMPose):
               then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
               and y-axis sideways.
             - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
-              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
+              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
               and y-axis between the gripper fingers.
             - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
@@ -184,26 +182,24 @@ class SO3(sp.SMPose):
         :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, ::func:`spatialmath.base.transforms3d.tr2rpy`
         """
         if len(self) == 1:
-            return tr.tr2rpy(self.A, unit=unit)
+            return tr.tr2rpy(self.A, unit=unit, order=order)
         else:
-            return np.array([tr.tr2rpy(x, unit=unit) for x in self.A]).T
+            return np.array([tr.tr2rpy(x, unit=unit, order=order) for x in self.A]).T
 
     def Ad(self):
         """
         Adjoint of SO(3)
         
         :return: adjoint matrix
-        :rtype: numpy.ndarray, shape=(6,6)
+        :rtype: numpy.ndarray, shape=(3,3)
         
-        - ``SE3.Ad`` is the 6x6 adjoint matrix
+        - ``SEO.Ad`` is the 6x6 adjoint matrix
         
         :seealso: Twist.ad.
 
         """
 
-        return np.r_[ np.c_[self.R, tr.skew(self.t) @ self.R],
-                      np.c_[np.zeros((3,3)), self.R]
-                        ]
+        return self.R
 # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -336,7 +332,7 @@ class SO3(sp.SMPose):
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
-        return cls([tr.q2r(tr.rand()) for i in range(0, N)], check=False)
+        return cls([tr.q2r(tr.rand()) for _ in range(0, N)], check=False)
 
     @classmethod
     def Eul(cls, angles, *, unit='rad'):
@@ -354,14 +350,14 @@ class SO3(sp.SMPose):
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
         
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
-        correponding to the rows of ``angles``.
+        corresponding to the rows of ``angles``.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
         if argcheck.isvector(angles, 3):
-            return cls(tr.eul2r(angles, unit=unit))
+            return cls(tr.eul2r(angles, unit=unit), check=False)
         else:
-            return cls([tr.eul2r(a, unit=unit) for a in angles])
+            return cls([tr.eul2r(a, unit=unit) for a in angles], check=False)
 
     @classmethod
     def RPY(cls, angles, *, order='zyx', unit='rad'):
@@ -372,8 +368,8 @@ class SO3(sp.SMPose):
         :type angles: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
-        :type unit: str
+        :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+        :type order: str
         :return: SO(3) rotation
         :rtype: SO3 instance
 
@@ -384,21 +380,21 @@ class SO3(sp.SMPose):
               then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
               and y-axis sideways.
             - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
-              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
+              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
               and y-axis between the gripper fingers.
             - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
 
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
-        correponding to the rows of angles.
+        corresponding to the rows of angles.
         
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
         if argcheck.isvector(angles, 3):
-                return cls(tr.rpy2r(angles, order=order, unit=unit))
+            return cls(tr.rpy2r(angles, order=order, unit=unit), check=False)
         else:
-            return cls([tr.rpy2r(a, order=order, unit=unit) for a in angles])
+            return cls([tr.rpy2r(a, order=order, unit=unit) for a in angles], check=False)
 
     @classmethod
     def OA(cls, o, a):
@@ -480,11 +476,10 @@ class SO3(sp.SMPose):
 
         :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if argcheck.ismatrix(S, (-1,3)) and not so3:
-            return cls([tr.trexp(s, check=check) for s in S])
+        if argcheck.ismatrix(S, (-1, 3)) and not so3:
+            return cls([tr.trexp(s, check=check) for s in S], check=False)
         else:
             return cls(tr.trexp(S, check=check), check=False)
-
 
 
 # ============================== SE3 =====================================#
@@ -521,8 +516,8 @@ class SE3(SO3):
             # empty constructor
             self.data = [np.eye(4)]
         elif y is not None and z is not None:
-                # SE3(x, y, z)
-                self.data = [tr.transl(x, y, z)]
+            # SE3(x, y, z)
+            self.data = [tr.transl(x, y, z)]
         elif y is None and z is None:
             if argcheck.isvector(x, 3):
                 # SE3( [x, y, z] )
@@ -575,22 +570,22 @@ class SE3(SO3):
         if len(self) == 1:
             return SE3(tr.trinv(self.A))
         else:
-            return SE3([tr.trinv(x) for x in self.A])
+            return SE3([tr.trinv(x) for x in self.A], check=False)
     
     def delta(self, X2):
         r"""
-        Difference of SE(3)
+        Infinitesimal difference of SE(3)
 
-        :param X1: 
-        :type X1: SE3
+        :param X2:
+        :type X2: SE3
         :return: differential motion vector
         :rtype: numpy.ndarray, shape=(6,)
             
-        - ``X1.delta(T2)`` is the differential motion (6x1) corresponding to 
-          infinitessimal motion (in the X1 frame) from pose X1 to X2.
+        - ``X1.delta(X2)`` is the differential motion (6x1) corresponding to
+          infinitesimal motion (in the X1 frame) from pose X1 to X2.
     
         The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
-        represents infinitessimal translation and rotation.
+        represents infinitesimal translation and rotation.
     
         Notes:
             
@@ -603,7 +598,7 @@ class SE3(SO3):
         
         :seealso: :func:`~spatialmath.base.transform3d.tr2delta`
         """
-        return tr.tr2delta(self.A, X1.A)
+        return tr.tr2delta(self.A, X2.A)
 # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -641,7 +636,7 @@ class SE3(SO3):
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
         """
-        return cls([tr.trotx(x, unit) for x in argcheck.getvector(theta)])
+        return cls([tr.trotx(x, unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
     def Ry(cls, theta, unit='rad'):
@@ -661,7 +656,7 @@ class SE3(SO3):
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
         """
-        return cls([tr.troty(x, unit) for x in argcheck.getvector(theta)])
+        return cls([tr.troty(x, unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
     def Rz(cls, theta, unit='rad'):
@@ -681,10 +676,10 @@ class SE3(SO3):
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
         """
-        return cls([tr.trotz(x, unit) for x in argcheck.getvector(theta)])
+        return cls([tr.trotz(x, unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
-    def Rand(cls, *, xrange=[-1, 1], yrange=[-1, 1], zrange=[-1, 1], N=1):
+    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):
         """
         Create a random SE(3)
 
@@ -711,7 +706,7 @@ class SE3(SO3):
         Y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
         Z = np.random.uniform(low=yrange[0], high=zrange[1], size=N)  # random values in the range
         R = SO3.Rand(N=N)
-        return cls([tr.transl(x, y, z) @ tr.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)])
+        return cls([tr.transl(x, y, z) @ tr.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
 
     @classmethod
     def Eul(cls, angles, unit='rad'):
@@ -729,14 +724,14 @@ class SE3(SO3):
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
         
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
-        correponding to the rows of angles.
+        corresponding to the rows of angles.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
         if argcheck.isvector(angles, 3):
-            return cls(tr.eul2tr(angles, unit=unit))
+            return cls(tr.eul2tr(angles, unit=unit), check=False)
         else:
-            return cls([tr.eul2tr(a, unit=unit) for a in angles])
+            return cls([tr.eul2tr(a, unit=unit) for a in angles], check=False)
 
     @classmethod
     def RPY(cls, angles, order='zyx', unit='rad'):
@@ -747,8 +742,8 @@ class SE3(SO3):
         :type angles: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
-        :type unit: str
+        :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+        :type order: str
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
@@ -759,21 +754,21 @@ class SE3(SO3):
               then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
               and y-axis sideways.
             - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
-              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
+              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
               and y-axis between the gripper fingers.
             - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
               
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
-        correponding to the rows of angles.
+        corresponding to the rows of angles.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
         if argcheck.isvector(angles, 3):
-                return cls(tr.rpy2tr(angles, order=order, unit=unit))
+            return cls(tr.rpy2tr(angles, order=order, unit=unit), check=False)
         else:
-            return cls([tr.rpy2tr(a, order=order, unit=unit) for a in angles])
+            return cls([tr.rpy2tr(a, order=order, unit=unit) for a in angles], check=False)
 
     @classmethod
     def OA(cls, o, a):
@@ -802,7 +797,7 @@ class SE3(SO3):
 
         :seealso: :func:`spatialmath.base.transforms3d.oa2r`
         """
-        return cls(tr.oa2tr(o, a))
+        return cls(tr.oa2tr(o, a), check=False)
 
     @classmethod
     def AngVec(cls, theta, v, *, unit='rad'):
@@ -828,7 +823,7 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
-        return cls(tr.angvec2tr(theta, v, unit=unit))
+        return cls(tr.angvec2tr(theta, v, unit=unit), check=False)
 
     @classmethod
     def Exp(cls, S):
@@ -848,7 +843,7 @@ class SE3(SO3):
         :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
         if isinstance(S, np.ndarray) and S.shape[1] == 6:
-            return cls([tr.trexp(s) for s in S])
+            return cls([tr.trexp(s) for s in S], check=False)
         else:
             return cls(tr.trexp(S), check=False)
     
@@ -857,47 +852,47 @@ class SE3(SO3):
         """
         Create SE(3) translation along the X-axis
 
-        :param theta: translation distance along the X-axis
-        :type theta: float
+        :param x: translation distance along the X-axis
+        :type x: float
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
         `SE3.Tz(D)`` is an SE(3) translation of D along the x-axis
         """
-        return cls(tr.transl(x, 0, 0))
+        return cls(tr.transl(x, 0, 0), check=False)
 
     @classmethod
     def Ty(cls, y):
         """
         Create SE(3) translation along the Y-axis
 
-        :param theta: translation distance along the Y-axis
-        :type theta: float
+        :param y: translation distance along the Y-axis
+        :type y: float
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
         `SE3.Tz(D)`` is an SE(3) translation of D along the y-axis
         """
-        return cls(tr.transl(0, y, 0))
+        return cls(tr.transl(0, y, 0), check=False)
 
     @classmethod
     def Tz(cls, z):
         """
         Create SE(3) translation along the Z-axis
 
-        :param theta: translation distance along the Z-axis
-        :type theta: float
+        :param z: translation distance along the Z-axis
+        :type z: float
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
         `SE3.Tz(D)`` is an SE(3) translation of D along the z-axis
         """
-        return cls(tr.transl(0, 0, z))
+        return cls(tr.transl(0, 0, z), check=False)
     
     @classmethod
     def Delta(cls, d):
         r"""
-        Create SE(3) from diffential motion
+        Create SE(3) from differential motion
 
         :param d: differential motion
         :type d: 6-element array_like
@@ -913,7 +908,7 @@ class SE3(SO3):
         :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
 
         """
-        return tr.tr2delta(self.A, X1.A)
+        return tr.tr2delta(d)
 
             
 if __name__ == '__main__':   # pragma: no cover
