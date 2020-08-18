@@ -147,9 +147,11 @@ class Animate:
         """
 
         def update(frame, a):
+            print('tranimate/update', frame)
             T = tr.trinterp(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
+                print('tranimate/update - done set')
                 a.done = True
             return a.artists()
 
