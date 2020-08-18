@@ -4,6 +4,7 @@
 from collections import UserList
 import math
 import numpy as np
+from typing import Any
 
 from spatialmath import base as tr
 from spatialmath.base import quaternions as quat
@@ -11,9 +12,11 @@ from spatialmath.base import argcheck as argcheck
 from spatialmath import pose3d as p3d
 
 
+
 # TODO
 # angle
 # vectorized RPY in and out
+
 
 class Quaternion(UserList):
     """
@@ -24,7 +27,7 @@ class Quaternion(UserList):
         q = s <vx vy vz>
     """
 
-    def __init__(self, s=None, v=None, check=True, norm=True):
+    def __init__(self, s: Any =None, v=None, check=True, norm=True):
         """
         A zero quaternion is one for which M{s^2+vx^2+vy^2+vz^2 = 1}.
         A quaternion can be considered as a rotation about a vector in space where
@@ -33,6 +36,8 @@ class Quaternion(UserList):
         :param s: scalar
         :param v: vector
         """
+        super().__init__()
+
         if s is None and v is None:
             self.data = [np.array([0, 0, 0, 0])]
 
@@ -101,36 +106,32 @@ class Quaternion(UserList):
             return np.array([q.s for q in q])
 
     @property
-    def v(q):
+    def v(self):
         """
-        :arg q: input quaternion
-        :type q: Quaternion, UnitQuaternion
         :return: vector part of quaternion
         :rtype: numpy ndarray
 
         - If the quaternion is of length one, a numpy array shape=(3,) is returned.
         - If the quaternion is of length >1, a numpy array shape=(N,3) is returned.
         """
-        if len(q) == 1:
-            return q._A[1:4]
+        if len(self) == 1:
+            return self._A[1:4]
         else:
-            return np.array([q.v for q in q])
+            return np.array([q.v for q in self])
 
     @property
-    def vec(q):
+    def vec(self):
         """
-        :arg q: input quaternion
-        :type q: Quaternion, UnitQuaternion
         :return: quaternion expressed as a vector
         :rtype: numpy ndarray
 
         - If the quaternion is of length one, a numpy array shape=(4,) is returned.
         - If the quaternion is of length >1, a numpy array shape=(N,4) is returned.
         """
-        if len(q) == 1:
-            return q._A
+        if len(self) == 1:
+            return self._A
         else:
-            return np.array([q._A for q in q])
+            return np.array([q._A for q in self])
 
     @classmethod
     def pure(cls, v):
@@ -229,8 +230,6 @@ class Quaternion(UserList):
 
         else:
             raise ValueError('operands to * are of different types')
-
-        return left._op2(right, lambda x, y: x @ y)
 
     def __rmul__(right, left):
         """
@@ -456,7 +455,7 @@ class UnitQuaternion(Quaternion):
     :math:`q = \cos \theta/2 \sin \theta/2 <v_x v_y v_z>`.
     """
 
-    def __init__(self, s=None, v=None, norm=True, check=True):
+    def __init__(self, s: Any=None, v=None, norm=True, check=True):
         """
         Construct a UnitQuaternion object
 
@@ -479,6 +478,9 @@ class UnitQuaternion(Quaternion):
         - ``UnitQuaternion(R)`` constructs a unit quaternion from an orthonormal
           rotation matrix given as a 3x3 numpy.ndarray. If ``check`` is True
           test the matrix for orthogonality.
+        - ``UnitQuaternion(X)`` constructs a unit quaternion from the rotational
+          part of ``X`` which is SO3 or SE3 instance.  If len(X) > 1 then
+          the resulting unit quaternion is of the same length.
 
         Multi-element quaternion:
 
@@ -490,30 +492,34 @@ class UnitQuaternion(Quaternion):
           of the list is a 4-vector. If ``norm`` is True explicitly normalize
           each vector.
         """
+        super().__init__()
 
         if s is None and v is None:
             self.data = [quat.eye()]
 
         elif argcheck.isscalar(s) and argcheck.isvector(v, 3):
+            # UnitQuaternion(s, v)   s is scalar, v is 3-vector
             q = np.r_[s, argcheck.getvector(v)]
             if norm:
                 q = quat.unit(q)
             self.data = [q]
 
         elif argcheck.isvector(s, 4):
-            #print('uq constructor 4vec')
+            # UnitQuaternion(q)   q is 4-vector
             q = argcheck.getvector(s)
-            # if norm:
-            #     q = quat.unit(q)
-            # print(q)
-            self.data = [quat.unit(s)]
+            if norm:
+                s = quat.unit(s)
+            self.data = [s]
 
         elif isinstance(s, list):
+            # UnitQuaternion(list)
             if isinstance(s[0], np.ndarray):
+                # list of 4-vectors
                 if check:
                     assert argcheck.isvectorlist(s, 4), 'list must comprise 4-vectors'
                 self.data = s
             elif isinstance(s[0], p3d.SO3):
+                # list of SO3/SE3
                 self.data = [quat.r2q(x.R) for x in s]
 
             elif isinstance(s[0], self.__class__):
@@ -524,12 +530,15 @@ class UnitQuaternion(Quaternion):
                 raise ValueError('incorrect list')
 
         elif isinstance(s, p3d.SO3):
-            self.data = [quat.r2q(s.R)]
+            # UnitQuaternion(x) x is SO3 or SE3
+            self.data = [quat.r2q(x.R) for x in s]
 
         elif isinstance(s, np.ndarray) and tr.isrot(s, check=check):
+            # UnitQuaternion(R) R is 3x3 rotation matrix
             self.data = [quat.r2q(s)]
 
         elif isinstance(s, np.ndarray) and tr.ishom(s, check=check):
+            # UnitQuaternion(T) T is 4x4 homogeneous transformation matrix
             self.data = [quat.r2q(tr.t2r(s))]
 
         elif isinstance(s, np.ndarray) and s.shape[1] == 4:
@@ -539,7 +548,9 @@ class UnitQuaternion(Quaternion):
                 self.data = [x for x in s]
 
         elif isinstance(s, UnitQuaternion):
+            # UnitQuaternion(Q) Q is a UnitQuaternion instance, clone it
             self.data = s.data
+
         else:
             raise ValueError('bad argument to UnitQuaternion constructor')
 
@@ -563,7 +574,7 @@ class UnitQuaternion(Quaternion):
         Construct a UnitQuaternion object representing rotation about X-axis
 
         :arg angle: rotation angle
-        :type norm: float
+        :type angle: float
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
         :return: new unit-quaternion
@@ -574,6 +585,7 @@ class UnitQuaternion(Quaternion):
         - ``UnitQuaternion(theta, 'deg')`` constructs a unit quaternion representing a
           rotation of `theta` degrees about the X-axis.
 
+        .. todo:: vectorize
         """
         return cls(tr.rotx(angle, unit=unit), check=False)
 
@@ -583,7 +595,7 @@ class UnitQuaternion(Quaternion):
         Construct a UnitQuaternion object representing rotation about Y-axis
 
         :arg angle: rotation angle
-        :type norm: float
+        :type angle: float
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
         :return: new unit-quaternion
@@ -594,6 +606,7 @@ class UnitQuaternion(Quaternion):
         - ``UnitQuaternion(theta, 'deg')`` constructs a unit quaternion representing a
           rotation of `theta` degrees about the Y-axis.
 
+        .. todo:: vectorize
         """
         return cls(tr.roty(angle, unit=unit), check=False)
 
@@ -603,7 +616,7 @@ class UnitQuaternion(Quaternion):
         Construct a UnitQuaternion object representing rotation about Z-axis
 
         :arg angle: rotation angle
-        :type norm: float
+        :type angle: float
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
         :return: new unit-quaternion
@@ -614,6 +627,7 @@ class UnitQuaternion(Quaternion):
         - ``UnitQuaternion(theta, 'deg')`` constructs a unit quaternion representing a
           rotation of `theta` degrees about the Z-axis.
 
+        .. todo:: vectorize
         """
         return cls(tr.rotz(angle, unit=unit), check=False)
 
@@ -712,7 +726,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :func:`spatialmath.base.transforms3d.oa2r`
         """
-        return cls(quat.r2q(tr.oa2r(angles, unit=unit)), check=False)
+        return cls(quat.r2q(tr.oa2r(o, a)), check=False)
 
     @classmethod
     def AngVec(cls, theta, v, *, unit='rad'):
@@ -766,10 +780,11 @@ class UnitQuaternion(Quaternion):
 
     @classmethod
     def omega(cls, w):
-        assert isvec(w, 3)
-        theta = np.linalg.norm(w)
+        assert argcheck.isvector(w, 3), 'w must be a 3-vector'
+        w = argcheck.getvector(w)
+        theta = tr.norm(w)
         s = math.cos(theta / 2)
-        v = math.sin(theta / 2) * unitize(w)
+        v = math.sin(theta / 2) * tr.unitvec(w)
         return cls(s=s, v=v)
 
     @staticmethod
@@ -854,10 +869,6 @@ class UnitQuaternion(Quaternion):
                 raise ValueError('bad operands')
         else:
             raise ValueError('UnitQuaternion: operands to * are of different types')
-
-        return left._op2(right, lambda x, y: x @ y)
-
-        return right.__mul__(left)
 
     def __imul__(left, right):
         """
@@ -985,7 +996,10 @@ class UnitQuaternion(Quaternion):
 
 
 if __name__ == '__main__':  # pragma: no cover
-
+    x = p3d.SE3()
+    x.append(x)
+    q = UnitQuaternion(x)
+    print(q)
     import pathlib
     import os.path
 
