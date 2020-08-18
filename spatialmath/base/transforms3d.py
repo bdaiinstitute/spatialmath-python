@@ -772,7 +772,7 @@ def tr2eul(T, unit='rad', flip=False, check=False):
 
 
 def tr2rpy(T, unit='rad', order='zyx', check=False):
-    """
+    r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
 
     :param R: SO(3) or SE(3) matrix
