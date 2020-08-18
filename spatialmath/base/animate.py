@@ -66,7 +66,10 @@ class Animate:
         if axes is None:
             # create an axes
             fig = plt.gcf()
-            if fig.axes is None:
+            for a in fig.axes:
+                if a.name != "3d":
+                    fig.delete(a)
+            if len(fig.axes) == 0:
                 # no axes in the figure, create a 3D axes
                 axes = fig.add_subplot(111, projection='3d', proj_type=projection)
                 axes.set_xlabel(labels[0])
