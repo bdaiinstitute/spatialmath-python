@@ -1378,7 +1378,7 @@ try:
     from mpl_toolkits.mplot3d import Axes3D
     _matplotlib_exists = True
     
-except BaseException:  # pragma: no cover
+except ImportError:  # pragma: no cover
     def trplot(*args, **kwargs):
         print('matplotlib is not installed: pip install matplotlib')
     _matplotlib_exists = False

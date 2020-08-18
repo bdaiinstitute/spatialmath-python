@@ -24,7 +24,7 @@ try:
     from colored import fg, bg, attr
     _color = True
     # print('using colored output')
-except:
+except ImportError:
     # print('colored not found')
     _color = False
 
