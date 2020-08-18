@@ -23,9 +23,9 @@ except ImportError:
 try:
     from colored import fg, bg, attr
     _color = True
-    print('using colored output')
+    # print('using colored output')
 except:
-    #print('colored not found')
+    # print('colored not found')
     _color = False
 
 # try:
