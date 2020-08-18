@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from collections import UserList
 import numpy as np
 import math
 
@@ -11,6 +10,7 @@ from spatialmath import super_pose as sp
 import spatialmath.pose3d as p3
 
 # ============================== SO2 =====================================#
+
 
 class SO2(sp.SMPose):
 
@@ -55,19 +55,19 @@ class SO2(sp.SMPose):
             # SO2(list of values)
             self.data = [tr.rot2(x, unit) for x in argcheck.getvector(arg)]
 
-        elif isinstance(arg, np.ndarray) and arg.shape == (2,2):
+        elif isinstance(arg, np.ndarray) and arg.shape == (2, 2):
             self.data = [arg]
         else:
             super()._arghandler(arg, check=check)
 
     @classmethod
-    def Rand(cls, *, range=[0, 2 * math.pi], unit='rad', N=1):
+    def Rand(cls, *, arange=(0, 2 * math.pi), unit='rad', N=1):
 
         r"""
         Construct new SO(2) with random rotation
 
-        :param range: rotation range, defaults to :math:`[0, 2\pi)`.
-        :type range: 2-element array-like, optional
+        :param arange: rotation range, defaults to :math:`[0, 2\pi)`.
+        :type arange: 2-element array-like, optional
         :param unit: angular units as 'deg or 'rad' [default]
         :type unit: str, optional
         :param N: number of random rotations, defaults to 1
@@ -83,7 +83,7 @@ class SO2(sp.SMPose):
         Rotations are uniform over the specified interval.
 
         """
-        rand = np.random.uniform(low=range[0], high=range[1], size=N)  # random values in the range
+        rand = np.random.uniform(low=arange[0], high=arange[1], size=N)  # random values in the range
         return cls([tr.rot2(x) for x in argcheck.getunit(rand, unit)])
     
     @classmethod
@@ -103,7 +103,7 @@ class SO2(sp.SMPose):
 
         :seealso: :func:`spatialmath.base.transforms2d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if argcheck.ismatrix(S, (-1,2)) and not so2:
+        if argcheck.ismatrix(S, (-1, 2)) and not so2:
             return cls([tr.trexp2(s, check=check) for s in S])
         else:
             return cls(tr.trexp2(S, check=check), check=False)
@@ -157,7 +157,7 @@ class SO2(sp.SMPose):
         """
         return self.A[:2, :2]
 
-    def theta(self, units='rad'):
+    def theta(self, unit='rad'):
         """
         SO(2) as a rotation angle
         
@@ -169,15 +169,15 @@ class SO2(sp.SMPose):
         ``x.theta`` is the rotation angle such that `x` is `SO2(x.theta)`.
         
         """
-        if units == 'deg':
+        if unit == 'deg':
             conv = 180.0 / math.pi
         else:
             conv = 1.0
             
         if len(self) == 1:
-            return conv * math.atan2(self.A[1,0], self.A[0,0])
+            return conv * math.atan2(self.A[1, 0], self.A[0, 0])
         else:
-            return [conv * math.atan2(x.A[1,0], x.A[0,0]) for x in self]
+            return [conv * math.atan2(x.A[1, 0], x.A[0, 0]) for x in self]
     
     def SE2(self):
         """
@@ -190,7 +190,6 @@ class SO2(sp.SMPose):
         return SE2(tr.rt2tr(self.A, [0, 0]))
 
     
-
 # ============================== SE2 =====================================#
 
 class SE2(SO2):
@@ -245,9 +244,8 @@ class SE2(SO2):
         else:
             raise ValueError('bad arguments to constructor')
 
-
     @classmethod
-    def Rand(cls, *, xrange=[-1, 1], yrange=[-1, 1], trange=[0, 2 * math.pi], unit='rad', N=1):
+    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), arange=(0, 2 * math.pi), unit='rad', N=1):
         r"""
         Construct a new random SE(2)
     
@@ -255,10 +253,12 @@ class SE2(SO2):
         :type xrange: 2-element sequence, optional
         :param yrange: y-axis range [min,max], defaults to [-1, 1]
         :type yrange: 2-element sequence, optional
-        :param trange: theta range [min,max], defaults to :math:`[0, 2\pi)`
-        :type yrange: 2-element sequence, optional
+        :param arange: angle range [min,max], defaults to :math:`[0, 2\pi)`
+        :type arange: 2-element sequence, optional
         :param N: number of random rotations, defaults to 1
         :type N: int
+        :param unit: angular units 'deg' or 'rad' [default] if applicable
+        :type unit: str, optional
         :return: homogeneous rigid-body transformation matrix
         :rtype: SE2 instance
     
@@ -277,7 +277,7 @@ class SE2(SO2):
         """
         x = np.random.uniform(low=xrange[0], high=xrange[1], size=N)  # random values in the range
         y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
-        theta = np.random.uniform(low=trange[0], high=trange[1], size=N)  # random values in the range
+        theta = np.random.uniform(low=arange[0], high=arange[1], size=N)  # random values in the range
         return cls([tr.trot2(t, t=[x, y]) for (t, x, y) in zip(x, y, argcheck.getunit(theta, unit))])
 
     @classmethod
@@ -399,9 +399,9 @@ class SE2(SO2):
         """
         def lift3(x):
             y = np.eye(4)
-            y[:2,:2] = x.A[:2,:2]
-            y[:2,3] = x.A[:2,2]
-            y[2,3] = z
+            y[:2, :2] = x.A[:2, :2]
+            y[:2, 3] = x.A[:2, 2]
+            y[2, 3] = z
             return y
         return p3.SE3([lift3(x) for x in self])
     
@@ -412,6 +412,3 @@ if __name__ == '__main__':  # pragma: no cover
     import os.path
 
     exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose2d.py")).read())
-    
-
-    
