@@ -13,12 +13,11 @@ Created on Mon Apr 27 12:44:45 2020
 # FancyArrow.set_xy()
 
 import numpy as np
-import math
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 
 from spatialmath import base as tr
+
 
 class Animate:
     """
@@ -44,7 +43,7 @@ class Animate:
         anim.run(loop=True)  # animate it
     """
 
-    def __init__(self, axes=None, start=None, dims=None, projection='ortho', labels=['X', 'Y', 'Z'], **kwargs):
+    def __init__(self, axes=None, dims=None, projection='ortho', labels=('X', 'Y', 'Z'), **kwargs):
         """
         Construct an Animate object
 
@@ -67,7 +66,7 @@ class Animate:
         if axes is None:
             # create an axes
             fig = plt.gcf()
-            if fig.axes == []:
+            if fig.axes is None:
                 # no axes in the figure, create a 3D axes
                 axes = fig.add_subplot(111, projection='3d', proj_type=projection)
                 axes.set_xlabel(labels[0])
@@ -87,17 +86,17 @@ class Animate:
             # ax.set_aspect('equal')
 
         self.ax = axes
-        
 
-
-        # set flag for 2d or 3d axes, flag errors on the methods called later
+        # TODO set flag for 2d or 3d axes, flag errors on the methods called later
 
     def trplot(self, end, start=None, **kwargs):
         """
         Define the transform to animate
 
-        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-        :type: numpy.ndarray, shape=(3,3) or (4,4)
+        :param end: the final pose SO(3) or SE(3) to display as a coordinate frame
+        :type end: numpy.ndarray, shape=(3,3) or (4,4)
+        :param start: the initial pose SO(3) or SE(3) to display as a coordinate frame, defaults to null
+        :type start: numpy.ndarray, shape=(3,3) or (4,4)
         :param start: an 
 
         Is polymorphic with ``base.trplot`` and accepts the same parameters.
@@ -127,10 +126,12 @@ class Animate:
         """
         Run the animation
 
-        :param interval: number of steps in the animation [defaault 100]
-        :type interval: int
+        :param axes: the axes to plot into, defaults to current axes
+        :type axes: Axes3D reference
         :param repeat: animate in endless loop [default False]
         :type repeat: bool
+        :param nframes: number of steps in the animation [defaault 100]
+        :type nframes: int
         :param interval: number of milliseconds between frames [default 50]
         :type interval: int
         :param movie: name of file to write MP4 movie into
@@ -161,14 +162,18 @@ class Animate:
             
         self.done = False
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
+        print('main thread enters pause loop')
         if movie is None:
             while repeat or not self.done:
+                print('about to pause')
                 plt.pause(0.1)
+                print('pause done')
         else:
             # Set up formatting for the movie files
             print('creating movie', movie)
             FFwriter = animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
             ani.save(movie, writer=FFwriter)
+        print('animate.run returns')
 
     def __repr__(self):
         """
@@ -201,7 +206,6 @@ class Animate:
     class _Line:
 
         def __init__(self, anim, h, xs, ys, zs):
-            p = zip(xs, ys, zs)
             # form 4x2 matrix, columns are first/last point in homogeneous form
             self.p = np.vstack([xs, ys, zs, [1, 1]])
             self.h = h
@@ -254,7 +258,7 @@ class Animate:
             # turn to homogeneous form, with columns per point, alternating start, end
             
             if isinstance(h._segments3d, np.ndarray):
-                self.p = np.vstack([h._segments3d.reshape(6, 3).T, np.ones((1, 6))]) # result is 4x6
+                self.p = np.vstack([h._segments3d.reshape(6, 3).T, np.ones((1, 6))])  # result is 4x6
             else:
                 self.p = np.vstack([np.hstack([x.T for x in h._segments3d]), np.ones((1, 6))])
             self.h = h
@@ -265,7 +269,7 @@ class Animate:
             p = T @ self.p
 
             # reshape it
-            p = (p[0:3, :].T).reshape(3, 2, 3)
+            p = p[0:3, :].T.reshape(3, 2, 3)
             self.h.set_segments(p)
 
     def quiver(self, x, y, z, u, v, w, *args, **kwargs):
@@ -357,6 +361,7 @@ class Animate:
     def set_zlabel(self, *args, **kwargs):
         self.ax.set_zlabel(*args, **kwargs)
 
+
 class Animate2:
     """
     Animate objects for matplotlib 2d
@@ -381,7 +386,7 @@ class Animate2:
         anim.run(loop=True)  # animate it
     """
 
-    def __init__(self, axes=None, dims=None, labels=['X', 'Y'], **kwargs):
+    def __init__(self, axes=None, dims=None, labels=('X', 'Y'), **kwargs):
         """
         Construct an Animate object
 
@@ -404,7 +409,7 @@ class Animate2:
         if axes is None:
             # create an axes
             fig = plt.gcf()
-            if fig.axes == []:
+            if fig.axes is None:
                 # no axes in the figure, create a 3D axes
                 axes = fig.add_subplot(111)
                 axes.set_xlabel(labels[0])
@@ -429,8 +434,10 @@ class Animate2:
         """
         Define the transform to animate
 
-        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-        :type: numpy.ndarray, shape=(3,3) or (4,4)
+        :param end: the final pose SO(2) or SE(2) to display as a coordinate frame
+        :type end: numpy.ndarray, shape=(2,2) or (3,3)
+        :param start: the initial pose SO(2) or SE(2) to display as a coordinate frame, defaults to null
+        :type start: numpy.ndarray, shape=(2,2) or (3,3)
 
         Is polymorphic with ``base.trplot`` and accepts the same parameters.
         This sets up the animation but doesn't execute it.
@@ -453,15 +460,16 @@ class Animate2:
                 self.start = start
                 
         # draw axes at the origin
-        tr.trplot2(self.start, axes=self, block=None, **kwargs)
-        
+        tr.trplot2(self.start, axes=self, block=False, **kwargs)
 
     def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs):
         """
         Run the animation
 
-        :param interval: number of steps in the animation [defaault 100]
-        :type interval: int
+        :param axes: the axes to plot into, defaults to current axes
+        :type axes: Axes3D reference
+        :param nframes: number of steps in the animation [defaault 100]
+        :type nframes: int
         :param repeat: animate in endless loop [default False]
         :type repeat: bool
         :param interval: number of milliseconds between frames [default 50]
@@ -533,7 +541,6 @@ class Animate2:
     class _Line:
 
         def __init__(self, anim, h, xs, ys):
-            p = zip(xs, ys)
             # form 3x2 matrix, columns are first/last point in homogeneous form
             self.p = np.vstack([xs, ys, [1, 1]])
             self.h = h
@@ -575,7 +582,7 @@ class Animate2:
             self.type = 'arrow'
             self.anim = anim
             
-            self.p = np.c_[u-x, v-y].T
+            self.p = np.c_[u - x, v - y].T
 
         def draw(self, T):
             R, t = tr.tr2rt(T)
