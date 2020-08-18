@@ -651,7 +651,7 @@ class UnitQuaternion(Quaternion):
 
     @classmethod
     def Eul(cls, angles, *, unit='rad'):
-        """
+        r"""
         Create an SO(3) rotation from Euler angles
 
         :param angles: 3-vector of Euler angles

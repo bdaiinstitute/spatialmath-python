@@ -122,7 +122,7 @@ class SO3(sp.SMPose):
             return SO3([x.T for x in self.A])
 
     def eul(self, unit='deg'):
-        """
+        r"""
         SO(3) or SE(3) as Euler angles
 
         :param unit: angular units: 'rad' [default], or 'deg'
@@ -450,7 +450,7 @@ class SO3(sp.SMPose):
     
     @classmethod
     def Exp(cls, S, check=True, so3=True):
-        """
+        r"""
         Create an SO(3) rotation matrix from so(3)
 
         :param S: Lie algebra so(3)
@@ -710,7 +710,7 @@ class SE3(SO3):
 
     @classmethod
     def Eul(cls, angles, unit='rad'):
-        """
+        r"""
         Create an SE(3) pure rotation from Euler angles
 
         :param angles: 3-vector of Euler angles

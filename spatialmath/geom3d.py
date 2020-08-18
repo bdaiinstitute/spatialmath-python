@@ -15,7 +15,7 @@ _eps = np.finfo(np.float64).eps
 
    
 class Plane:
-    """
+    r"""
     Create a plane object from linear coefficients
     
     :param c: Plane coefficients
@@ -75,7 +75,7 @@ class Plane:
         
     @property
     def n(self):
-        """
+        r"""
         Normal to the plane
         
         :return: Normal to the plane
@@ -90,7 +90,7 @@ class Plane:
     
     @property
     def d(self):
-        """
+        r"""
         Plane offset
         
         :return: Offset of the plane
@@ -731,7 +731,7 @@ class Plucker(UserList):
 
 
     def __mul__(left, right):
-        """
+        r"""
         Reciprocal product
         
         :param left: Left operand

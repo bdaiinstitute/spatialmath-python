@@ -1191,7 +1191,7 @@ def trinv(T):
     return trn.rt2tr(R.T, -R.T@t)
 
 def tr2delta(T0, T1=None):
-    """
+    r"""
     Difference of SE(3) matrices as differential motion
     
     :param T0: first SE(3) matrix
