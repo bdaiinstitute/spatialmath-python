@@ -15,7 +15,6 @@ Versions:
 import sys
 import math
 import numpy as np
-import numpy.matlib as matlib
 from spatialmath.base.vectors import *
 from spatialmath.base import transforms2d as t2d
 from spatialmath.base import transforms3d as t3d
@@ -493,7 +492,7 @@ def h2e(v):
         return v[0:-1] / v[-1]
     elif isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
-        return v[:-1, :] / matlib.repmat(v[-1, :], v.shape[0] - 1, 1)
+        return v[:-1, :] / np.tile(v[-1, :], (v.shape[0] - 1, 1))
 
 
 def e2h(v):
