@@ -25,6 +25,9 @@ def array_compare(x, y):
 
 
 class TestSO3(unittest.TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        plt.close('all')
 
     def test_constructor(self):
 
@@ -568,6 +571,10 @@ class TestSO3(unittest.TestCase):
 
 
 class TestSE3(unittest.TestCase):
+
+    @classmethod
+    def tearDownClass(cls):
+        plt.close('all')
 
     def test_constructor(self):
 

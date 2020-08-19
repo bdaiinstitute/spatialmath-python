@@ -52,6 +52,10 @@ import matplotlib.pyplot as plt
 
 class TestVector(unittest.TestCase):
 
+    @classmethod
+    def tearDownClass(cls):
+        plt.close('all')
+
     def test_unit(self):
 
         nt.assert_array_almost_equal(unitvec([1, 0, 0]), np.r_[1, 0, 0])
