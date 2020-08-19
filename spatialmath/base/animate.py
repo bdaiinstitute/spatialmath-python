@@ -151,11 +151,9 @@ class Animate:
         """
 
         def update(frame, a):
-            print('tranimate/update', frame)
             T = tr.trinterp(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
-                print('tranimate/update - done set')
                 a.done = True
             return a.artists()
 
@@ -165,18 +163,14 @@ class Animate:
             
         self.done = False
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
-        print('main thread enters pause loop')
         if movie is None:
             while repeat or not self.done:
-                print('about to pause')
                 plt.pause(0.1)
-                print('pause done')
         else:
             # Set up formatting for the movie files
             print('creating movie', movie)
             FFwriter = animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
             ani.save(movie, writer=FFwriter)
-        print('animate.run returns')
 
     def __repr__(self):
         """
