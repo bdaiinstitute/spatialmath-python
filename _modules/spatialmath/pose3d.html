@@ -1,70 +1,189 @@
 
+
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>spatialmath.pose3d &#8212; Spatial Maths package 0.7.0
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.7.0
  documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> Spatial Maths package
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Spatial Maths package</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spatialmath.pose3d</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for spatialmath.pose3d</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Classes to represent orientation and pose in 3D.</span>
 
-<span class="sd">@author: Peter Corke</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
-<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">tr</span>
+<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">super_pose</span> <span class="k">as</span> <span class="n">sp</span>
 
-<span class="c1">###################################### SE3 ##################################</span>
+<span class="c1"># ============================== SO3 =====================================#</span>
+
 
 <div class="viewcode-block" id="SO3"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3">[docs]</a><span class="k">class</span> <span class="nc">SO3</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">SMPose</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SO(3) subclass</span>
+
+<span class="sd">    This subclass represents rotations in 3D space.  Internally it is a 3x3 orthogonal matrix belonging</span>
+<span class="sd">    to the group SO(3).</span>
+
+<span class="sd">    .. inheritance-diagram::</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SO3.__init__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct new SO(3) object</span>
 
-<span class="sd">        - ``SO3()`` is a null rotation -- the identity matrix</span>
-<span class="sd">        - ``SO3(R)`` where R is a 3x3 numpy array representing an valid rotation matrix.  If ``check``</span>
+<span class="sd">        - ``SO3()`` is an SO3 instance representing null rotation -- the identity matrix</span>
+<span class="sd">        - ``SO3(R)`` is an SO3 instance with rotation matrix R which is a 3x3 numpy array representing an valid rotation matrix.  If ``check``</span>
 <span class="sd">          is ``True`` check the matrix value.</span>
 <span class="sd">        - ``SO3([R1, R2, ... RN])`` where each Ri is a 3x3 numpy array of rotation matrices, is</span>
 <span class="sd">          an SO3 instance containing N rotations. If ``check`` is ``True``</span>
 <span class="sd">          then each matrix is checked for validity.</span>
-<span class="sd">        - ``SO3([R1, R2, ... RN])`` where each Ri is an SO3 instance, is an SO3 instance containing N rotations.</span>
+<span class="sd">        - ``SO3([X1, X2, ... XN])`` where each Xi is an SO3 instance, is an SO3 instance containing N rotations.</span>
+
+<span class="sd">        :seealso: `SMPose.pose_arghandler`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>  <span class="c1"># activate the UserList semantics</span>
 
@@ -73,22 +192,22 @@
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="ow">is</span> <span class="n">SO3</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>  <span class="c1"># identity rotation</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pose_arghandler</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span></div>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_arghandler</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span></div>
+
+<span class="c1"># ------------------------------------------------------------------------ #</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">R</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Rotational component as a matrix</span>
+<span class="sd">        SO(3) or SE(3) as rotation matrix</span>
 
-<span class="sd">        :param self: SO(3), SE(3)</span>
-<span class="sd">        :type self: SO3 or SE3 instance</span>
 <span class="sd">        :return: rotational component</span>
-<span class="sd">        :rtype: numpy.ndarray</span>
+<span class="sd">        :rtype: numpy.ndarray, shape=(3,3)</span>
 
-<span class="sd">        ``T.R`` returns an:</span>
-
-<span class="sd">        - ndarray with shape=(3,3), if len(R) == 1</span>
-<span class="sd">        - ndarray with shape=(N,3,3), if len(R) = N &gt; 1</span>
+<span class="sd">        ``x.R`` returns the rotation matrix, when `x` is `SO3` or `SE3`. If `len(x)` is:</span>
+<span class="sd">            </span>
+<span class="sd">        - 1, return an ndarray with shape=(3,3)</span>
+<span class="sd">        - N&gt;1, return ndarray with shape=(N,3,3)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
@@ -96,29 +215,10 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Inverse of SO(3)</span>
-
-<span class="sd">        :param self: pose</span>
-<span class="sd">        :type self: SE3 instance</span>
-<span class="sd">        :return: inverse</span>
-<span class="sd">        :rtype: SE3</span>
-
-<span class="sd">        Returns the inverse taking, which for elements of SO(3) is the transpose.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SO3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SO3</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">T</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Normal vector of SO(3) pose</span>
+<span class="sd">        Normal vector of SO(3) or SE(3)</span>
 
-<span class="sd">        :param self: pose</span>
-<span class="sd">        :type self: SO3 instance</span>
 <span class="sd">        :return: normal vector</span>
 <span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
 
@@ -130,10 +230,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">o</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Orientation vector of SO(3) pose</span>
+<span class="sd">        Orientation vector of SO(3) or SE(3)</span>
 
-<span class="sd">        :param self: pose</span>
-<span class="sd">        :type self: SO3 instance</span>
 <span class="sd">        :return: orientation vector</span>
 <span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
 
@@ -145,10 +243,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Approach vector of SO(3) pose</span>
+<span class="sd">        Approach vector of SO(3) or SE(3)</span>
 
-<span class="sd">        :param self: pose</span>
-<span class="sd">        :type self: SO3 instance</span>
 <span class="sd">        :return: approach vector</span>
 <span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
 
@@ -157,23 +253,41 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">eul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extract Euler angles from SO(3) rotation</span>
+<span class="c1"># ------------------------------------------------------------------------ #</span>
 
-<span class="sd">        :param self: rotation or pose</span>
-<span class="sd">        :type angles: SO3, SE3 instance</span>
+<div class="viewcode-block" id="SO3.inv"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.inv">[docs]</a>    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inverse of SO(3)</span>
+
+<span class="sd">        :param self: pose</span>
+<span class="sd">        :type self: SE3 instance</span>
+<span class="sd">        :return: inverse</span>
+<span class="sd">        :rtype: SO2</span>
+
+<span class="sd">        Returns the inverse, which for elements of SO(3) is the transpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SO3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SO3</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">T</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="SO3.eul"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.eul">[docs]</a>    <span class="k">def</span> <span class="nf">eul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        SO(3) or SE(3) as Euler angles</span>
+
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
 <span class="sd">        :return: 3-vector of Euler angles</span>
 <span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
 
-<span class="sd">        ``R.eul`` is the Euler angle representation of the rotation.  Euler angles are</span>
+<span class="sd">        ``x.eul`` is the Euler angle representation of the rotation.  Euler angles are</span>
 <span class="sd">        a 3-vector :math:`(\phi, \theta, \psi)` which correspond to consecutive</span>
 <span class="sd">        rotations about the Z, Y, Z axes respectively.</span>
 
-<span class="sd">        ``R.eul`` returns an:</span>
+<span class="sd">        If `len(x)` is:</span>
+<span class="sd">            </span>
+<span class="sd">        - 1, return an ndarray with shape=(3,)</span>
+<span class="sd">        - N&gt;1, return ndarray with shape=(N,3)</span>
 
 <span class="sd">        - ndarray with shape=(3,), if len(R) == 1</span>
 <span class="sd">        - ndarray with shape=(N,3), if len(R) = N &gt; 1</span>
@@ -183,21 +297,20 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="SO3.rpy"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.rpy">[docs]</a>    <span class="k">def</span> <span class="nf">rpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extract roll-pitch-yaw angles from SO(3) rotation</span>
+<span class="sd">        SO(3) or SE(3) as roll-pitch-yaw angles</span>
 
-<span class="sd">        :param self: rotation or pose</span>
-<span class="sd">        :type angles: SO3, SE3 instance</span>
+<span class="sd">        :param order: angle sequence order, default to &#39;zyx&#39;</span>
+<span class="sd">        :type order: str</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
 <span class="sd">        :return: 3-vector of roll-pitch-yaw angles</span>
 <span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
 
-<span class="sd">        ``R.rpy`` is the roll-pitch-yaw angle representation of the rotation.  The angles are</span>
+<span class="sd">        ``x.rpy`` is the roll-pitch-yaw angle representation of the rotation.  The angles are</span>
 <span class="sd">        a 3-vector :math:`(r, p, y)` which correspond to successive rotations about the axes</span>
 <span class="sd">        specified by ``order``:</span>
 
@@ -205,51 +318,48 @@
 <span class="sd">              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward</span>
 <span class="sd">              and y-axis sideways.</span>
 <span class="sd">            - &#39;xyz&#39;, rotate by yaw about the x-axis, then by pitch about the new y-axis,</span>
-<span class="sd">              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward</span>
+<span class="sd">              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward</span>
 <span class="sd">              and y-axis between the gripper fingers.</span>
 <span class="sd">            - &#39;yxz&#39;, rotate by yaw about the y-axis, then by pitch about the new x-axis,</span>
 <span class="sd">              then by roll about the new z-axis. Convention for a camera with z-axis parallel</span>
 <span class="sd">              to the optic axis and x-axis parallel to the pixel rows.</span>
 
-<span class="sd">        ``R.rpy`` returns an:</span>
-
-<span class="sd">        - ndarray with shape=(3,), if len(R) == 1</span>
-<span class="sd">        - ndarray with shape=(N,3), if len(R) = N &gt; 1</span>
+<span class="sd">        If `len(x)` is:</span>
+<span class="sd">            </span>
+<span class="sd">        - 1, return an ndarray with shape=(3,)</span>
+<span class="sd">        - N&gt;1, return ndarray with shape=(N,3)</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, ::func:`spatialmath.base.transforms3d.tr2rpy`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">Ad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SO3.Ad"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Ad">[docs]</a>    <span class="k">def</span> <span class="nf">Ad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param self: pose</span>
-<span class="sd">        :type self: SE3 instance</span>
-<span class="sd">        :return: adjoint matrix</span>
-<span class="sd">        :rtype: numpy.ndarray, shape=(6,6)</span>
+<span class="sd">        Adjoint of SO(3)</span>
 <span class="sd">        </span>
-<span class="sd">        SE3.Ad  Adjoint matrix</span>
-
-<span class="sd">        A = P.Ad() is the adjoint matrix (6x6) corresponding to the pose P.</span>
-<span class="sd">        See also Twist.ad.</span>
+<span class="sd">        :return: adjoint matrix</span>
+<span class="sd">        :rtype: numpy.ndarray, shape=(3,3)</span>
+<span class="sd">        </span>
+<span class="sd">        - ``SEO.Ad`` is the 6x6 adjoint matrix</span>
+<span class="sd">        </span>
+<span class="sd">        :seealso: Twist.ad.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">],</span>
-                      <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">]</span>
-                        <span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span></div>
+<span class="c1"># ------------------------------------------------------------------------ #</span>
 
-<div class="viewcode-block" id="SO3.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.isvalid">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="SO3.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if matrix is valid SO(3)</span>
 
 <span class="sd">        :param x: matrix to test</span>
 <span class="sd">        :type x: numpy.ndarray</span>
-<span class="sd">        :return: true of the matrix is 3x3 and a valid element of SO(3), ie. it is an</span>
+<span class="sd">        :return: true if the matrix is a valid element of SO(3), ie. it is a 3x3</span>
 <span class="sd">            orthonormal matrix with determinant of +1.</span>
 <span class="sd">        :rtype: bool</span>
 
@@ -257,120 +367,160 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
+<span class="c1"># ---------------- variant constructors ---------------------------------- #</span>
+
 <div class="viewcode-block" id="SO3.Rx"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Rx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Rx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create SO(3) rotation about X-axis</span>
+<span class="sd">        Construct a new SO(3) from X-axis rotation</span>
 
 <span class="sd">        :param theta: rotation angle about the X-axis</span>
 <span class="sd">        :type theta: float or array_like</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
-<span class="sd">        - ``SE3.Rx(THETA)`` is an SO(3) rotation of THETA radians about the x-axis</span>
-<span class="sd">        - ``SE3.Rx(THETA, &quot;deg&quot;)`` as above but THETA is in degrees</span>
+<span class="sd">        - ``SE3.Rx(theta)`` is an SO(3) rotation of ``theta`` radians about the x-axis</span>
+<span class="sd">        - ``SE3.Rx(theta, &quot;deg&quot;)`` as above but ``theta`` is in degrees</span>
 <span class="sd">        </span>
 <span class="sd">        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive</span>
 <span class="sd">        elements.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO3.Rx(np.linspace(0, math.pi, 20))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            20</span>
+<span class="sd">            &gt;&gt;&gt; x[7]</span>
+<span class="sd">            SO3(array([[ 1.        ,  0.        ,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.40169542, -0.91577333],</span>
+<span class="sd">                       [ 0.        ,  0.91577333,  0.40169542]]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">rotx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Ry"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Ry">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Ry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create SO(3) rotation about the Y-axis</span>
+<span class="sd">        Construct a new SO(3) from Y-axis rotation</span>
 
 <span class="sd">        :param theta: rotation angle about Y-axis</span>
 <span class="sd">        :type theta: float or array_like</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
-<span class="sd">        - ``SO3.Ry(THETA)`` is an SO(3) rotation of THETA radians about the y-axis</span>
-<span class="sd">        - ``SO3.Ry(THETA, &quot;deg&quot;)`` as above but THETA is in degrees</span>
+<span class="sd">        - ``SO3.Ry(theta)`` is an SO(3) rotation of ``theta`` radians about the y-axis</span>
+<span class="sd">        - ``SO3.Ry(theta, &quot;deg&quot;)`` as above but ``theta`` is in degrees</span>
 <span class="sd">        </span>
 <span class="sd">        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive</span>
 <span class="sd">        elements.</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO3.Ry(np.linspace(0, math.pi, 20))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            20</span>
+<span class="sd">            &gt;&gt;&gt; x[7]</span>
+<span class="sd">            &gt;&gt;&gt; x[7]</span>
+<span class="sd">            SO3(array([[ 0.40169542,  0.        ,  0.91577333],</span>
+<span class="sd">                       [ 0.        ,  1.        ,  0.        ],</span>
+<span class="sd">                       [-0.91577333,  0.        ,  0.40169542]]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">roty</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Rz"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Rz">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Rz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create SO(3) rotation about the Z-axis</span>
+<span class="sd">        Construct a new SO(3) from Z-axis rotation</span>
 
 <span class="sd">        :param theta: rotation angle about Z-axis</span>
 <span class="sd">        :type theta: float or array_like</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 <span class="sd">        </span>
-<span class="sd">        - ``SO3.Rz(THETA)`` is an SO(3) rotation of THETA radians about the z-axis</span>
-<span class="sd">        - ``SO3.Rz(THETA, &quot;deg&quot;)`` as above but THETA is in degrees</span>
+<span class="sd">        - ``SO3.Rz(theta)`` is an SO(3) rotation of ``theta`` radians about the z-axis</span>
+<span class="sd">        - ``SO3.Rz(theta, &quot;deg&quot;)`` as above but ``theta`` is in degrees</span>
 <span class="sd">        </span>
 <span class="sd">        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive</span>
 <span class="sd">        elements.</span>
+
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SE3.Rz(np.linspace(0, math.pi, 20))</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            20</span>
+<span class="sd">            SO3(array([[ 0.40169542, -0.91577333,  0.        ],</span>
+<span class="sd">                       [ 0.91577333,  0.40169542,  0.        ],</span>
+<span class="sd">                       [ 0.        ,  0.        ,  1.        ]]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">rotz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Rand"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Rand">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create SO(3) with random rotation</span>
+<span class="sd">        Construct a new SO(3) from random rotation</span>
 
 <span class="sd">        :param N: number of random rotations</span>
 <span class="sd">        :type N: int</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation matrix</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
 <span class="sd">        - ``SO3.Rand()`` is a random SO(3) rotation.</span>
 <span class="sd">        - ``SO3.Rand(N)`` is a sequence of N random rotations.</span>
+<span class="sd">        </span>
+<span class="sd">        Example::</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; x = SO3.Rand()</span>
+<span class="sd">            &gt;&gt;&gt; x</span>
+<span class="sd">            SO3(array([[ 0.1805082 , -0.97959019,  0.08842995],</span>
+<span class="sd">                       [-0.98357187, -0.17961408,  0.01803234],</span>
+<span class="sd">                       [-0.00178104, -0.0902322 , -0.99591916]]))</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Eul"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create an SO(3) rotation from Euler angles</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new SO(3) from Euler angles</span>
 
-<span class="sd">        :param angles: 3-vector of Euler angles</span>
+<span class="sd">        :param angles: Euler angles</span>
 <span class="sd">        :type angles: array_like or numpy.ndarray with shape=(N,3)</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
 <span class="sd">        ``SO3.Eul(angles)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which</span>
 <span class="sd">        correspond to consecutive rotations about the Z, Y, Z axes respectively.</span>
 <span class="sd">        </span>
 <span class="sd">        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles</span>
-<span class="sd">        correponding to the rows of angles.</span>
+<span class="sd">        corresponding to the rows of ``angles``.</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2r</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2r</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.RPY"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.RPY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create an SO(3) rotation from roll-pitch-yaw angles</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new SO(3) from roll-pitch-yaw angles</span>
 
-<span class="sd">        :param angles: 3-vector of roll-pitch-yaw angles</span>
+<span class="sd">        :param angles: roll-pitch-yaw angles</span>
 <span class="sd">        :type angles: array_like or numpy.ndarray with shape=(N,3)</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :param unit: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
-<span class="sd">        :type unit: str</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :param order: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
+<span class="sd">        :type order: str</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
 <span class="sd">        ``SO3.RPY(angles)`` is an SO(3) rotation defined by a 3-vector of roll, pitch, yaw angles :math:`(r, p, y)`</span>
@@ -380,46 +530,45 @@
 <span class="sd">              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward</span>
 <span class="sd">              and y-axis sideways.</span>
 <span class="sd">            - &#39;xyz&#39;, rotate by yaw about the x-axis, then by pitch about the new y-axis,</span>
-<span class="sd">              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward</span>
+<span class="sd">              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward</span>
 <span class="sd">              and y-axis between the gripper fingers.</span>
 <span class="sd">            - &#39;yxz&#39;, rotate by yaw about the y-axis, then by pitch about the new x-axis,</span>
 <span class="sd">              then by roll about the new z-axis. Convention for a camera with z-axis parallel</span>
 <span class="sd">              to the optic axis and x-axis parallel to the pixel rows.</span>
 
 <span class="sd">        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles</span>
-<span class="sd">        correponding to the rows of angles.</span>
+<span class="sd">        corresponding to the rows of angles.</span>
 <span class="sd">        </span>
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.OA"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.OA">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">OA</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create SO(3) rotation from two vectors</span>
+<span class="sd">        Construct a new SO(3) from two vectors</span>
 
 <span class="sd">        :param o: 3-vector parallel to Y- axis</span>
 <span class="sd">        :type o: array_like</span>
 <span class="sd">        :param a: 3-vector parallel to the Z-axis</span>
 <span class="sd">        :type o: array_like</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
 <span class="sd">        ``SO3.OA(O, A)`` is an SO(3) rotation defined in terms of</span>
 <span class="sd">        vectors parallel to the Y- and Z-axes of its reference frame.  In robotics these axes are</span>
-<span class="sd">        respectively called the orientation and approach vectors defined such that</span>
-<span class="sd">        R = [N O A] and N = O x A.</span>
+<span class="sd">        respectively called the *orientation* and *approach* vectors defined such that</span>
+<span class="sd">        R = [N, O, A] and N = O x A.</span>
 
 <span class="sd">        Notes:</span>
 
-<span class="sd">        - The A vector is the only guaranteed to have the same direction in the resulting</span>
+<span class="sd">        - Only the ``A`` vector is guaranteed to have the same direction in the resulting</span>
 <span class="sd">          rotation matrix</span>
-<span class="sd">        - O and A do not have to be unit-length, they are normalized</span>
-<span class="sd">        - O and A do not have to be orthogonal, so long as they are not parallel</span>
-<span class="sd">        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.</span>
+<span class="sd">        - ``O`` and ``A`` do not have to be unit-length, they are normalized</span>
+<span class="sd">        - ``O`` and ``A` do not have to be orthogonal, so long as they are not parallel</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.base.transforms3d.oa2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -427,8 +576,8 @@
 
 <div class="viewcode-block" id="SO3.AngVec"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.AngVec">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">AngVec</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create an SO(3) rotation matrix from rotation angle and axis</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a new SO(3) rotation matrix from rotation angle and axis</span>
 
 <span class="sd">        :param theta: rotation</span>
 <span class="sd">        :type theta: float</span>
@@ -436,31 +585,31 @@
 <span class="sd">        :type unit: str</span>
 <span class="sd">        :param v: rotation axis, 3-vector</span>
 <span class="sd">        :type v: array_like</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
-<span class="sd">        ``SO3.AngVec(THETA, V)`` is an SO(3) rotation defined by</span>
+<span class="sd">        ``SO3.AngVec(theta, V)`` is an SO(3) rotation defined by</span>
 <span class="sd">        a rotation of ``THETA`` about the vector ``V``.</span>
 
-<span class="sd">        Notes:</span>
-
-<span class="sd">        - If ``THETA == 0`` then return identity matrix.</span>
-<span class="sd">        - If ``THETA ~= 0`` then ``V`` must have a finite length.</span>
+<span class="sd">        If :math:`\theta \eq 0` the result in an identity matrix, otherwise</span>
+<span class="sd">        ``V`` must have a finite length, ie. :math:`|V| &gt; 0`.</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">angvec2r</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="SO3.Exp"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Exp">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Exp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">so3</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">Exp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">so3</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an SO(3) rotation matrix from so(3)</span>
 
 <span class="sd">        :param S: Lie algebra so(3)</span>
 <span class="sd">        :type S: numpy ndarray</span>
-<span class="sd">        :param so3: accept input as an so(3) matrix [default False]</span>
+<span class="sd">        :param check: check that passed matrix is valid so(3), default True</span>
+<span class="sd">        :type check: bool</span>
+<span class="sd">        :param so3: input is an so(3) matrix (default True)</span>
 <span class="sd">        :type so3: bool</span>
-<span class="sd">        :return: 3x3 rotation matrix</span>
+<span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
 <span class="sd">        - ``SO3.Exp(S)`` is an SO(3) rotation defined by its Lie algebra</span>
@@ -471,18 +620,19 @@
 <span class="sd">          of twist vectors, one per row.</span>
 <span class="sd">          </span>
 <span class="sd">        Note:</span>
-<span class="sd">            </span>
+<span class="sd">        - if :math:`\theta \eq 0` the result in an identity matrix</span>
 <span class="sd">        - an input 3x3 matrix is ambiguous, it could be the first or third case above.  In this</span>
 <span class="sd">          case the parameter `so3` is the decider.</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">so3</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">so3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
 
-<span class="c1">###################################### SE3 ##################################</span>
+
+<span class="c1"># ============================== SE3 =====================================#</span>
 
 
 <div class="viewcode-block" id="SE3"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3">[docs]</a><span class="k">class</span> <span class="nc">SE3</span><span class="p">(</span><span class="n">SO3</span><span class="p">):</span>
@@ -507,7 +657,7 @@
 <span class="sd">        - ``SE3([T1, T2, ... TN])`` where each Ti is a 4x4 numpy array representing an SE(3) matrix, is</span>
 <span class="sd">          an SE3 instance containing N rotations. If ``check`` is ``True``</span>
 <span class="sd">          check the matrix belongs to SE(3).</span>
-<span class="sd">        - ``SE3([T1, T2, ... TN])`` where each Ri is an SE3 instance, is an SE3 instance containing N rotations.</span>
+<span class="sd">        - ``SE3([X1, X2, ... XN])`` where each Xi is an SE3 instance, is an SE3 instance containing N rotations.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>  <span class="c1"># activate the UserList semantics</span>
 
@@ -516,8 +666,8 @@
             <span class="c1"># empty constructor</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># SE3(x, y, z)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span>
+            <span class="c1"># SE3(x, y, z)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                 <span class="c1"># SE3( [x, y, z] )</span>
@@ -526,9 +676,11 @@
                 <span class="c1"># SE3( Nx3 )</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>   
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pose_arghandler</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_arghandler</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument to constructor&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># ------------------------------------------------------------------------ #</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -542,39 +694,65 @@
 
 <span class="sd">        ``T.t`` returns an:</span>
 
-<span class="sd">        - ndarray with shape=(3,), if len(R) == 1</span>
-<span class="sd">        - ndarray with shape=(N,3), if len(R) = N &gt; 1</span>
+<span class="sd">        - ndarray with shape=(3,), if len(T) == 1</span>
+<span class="sd">        - ndarray with shape=(N,3), if len(T) = N &gt; 1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;transpose is not meaningful for SE3 object&#39;</span><span class="p">)</span>
+<span class="c1"># ------------------------------------------------------------------------ #</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SE3.inv"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.inv">[docs]</a>    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inverse of SE(3)</span>
 
-<span class="sd">        :param self: pose</span>
-<span class="sd">        :type self: SE3 instance</span>
 <span class="sd">        :return: inverse</span>
 <span class="sd">        :rtype: SE3</span>
 
 <span class="sd">        Returns the inverse taking into account its structure</span>
 
 <span class="sd">        :math:`T = \left[ \begin{array}{cc} R &amp; t \\ 0 &amp; 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T &amp; -R^T t \\ 0 &amp; 1 \end{array} \right]`</span>
+<span class="sd">        </span>
+<span class="sd">        :seealso: :func:`~spatialmath.base.transform3d.trinv`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="SE3.delta"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X2</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Infinitesimal difference of SE(3)</span>
 
-<div class="viewcode-block" id="SE3.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.isvalid">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="sd">        :param X2:</span>
+<span class="sd">        :type X2: SE3</span>
+<span class="sd">        :return: differential motion vector</span>
+<span class="sd">        :rtype: numpy.ndarray, shape=(6,)</span>
+<span class="sd">            </span>
+<span class="sd">        - ``X1.delta(X2)`` is the differential motion (6x1) corresponding to</span>
+<span class="sd">          infinitesimal motion (in the X1 frame) from pose X1 to X2.</span>
+<span class="sd">    </span>
+<span class="sd">        The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`</span>
+<span class="sd">        represents infinitesimal translation and rotation.</span>
+<span class="sd">    </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            </span>
+<span class="sd">        - the displacement is only an approximation to the motion T, and assumes</span>
+<span class="sd">          that X1 ~ X2.</span>
+<span class="sd">        - Can be considered as an approximation to the effect of spatial velocity over a</span>
+<span class="sd">          a time interval, average spatial velocity multiplied by time.</span>
+<span class="sd">        </span>
+<span class="sd">        Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
+<span class="sd">        </span>
+<span class="sd">        :seealso: :func:`~spatialmath.base.transform3d.tr2delta`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">X2</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
+<span class="c1"># ------------------------------------------------------------------------ #</span>
+
+<div class="viewcode-block" id="SE3.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if matrix is valid SE(3)</span>
 
@@ -587,6 +765,8 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transform3d.ishom`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">ishom</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<span class="c1"># ---------------- variant constructors ---------------------------------- #</span>
 
 <div class="viewcode-block" id="SE3.Rx"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Rx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Rx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
@@ -606,7 +786,7 @@
 <span class="sd">        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive</span>
 <span class="sd">        elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trotx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trotx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Ry"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Ry">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Ry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
@@ -626,7 +806,7 @@
 <span class="sd">        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive</span>
 <span class="sd">        elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">troty</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">troty</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Rz"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Rz">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Rz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
@@ -646,21 +826,29 @@
 <span class="sd">        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive</span>
 <span class="sd">        elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trotz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trotz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Rand"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Rand">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">yrange</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">zrange</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">yrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">zrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create SE(3) with pure random rotation</span>
+<span class="sd">        Create a random SE(3)</span>
 
-<span class="sd">        :param N: number of random rotations</span>
+<span class="sd">        :param xrange: x-axis range [min,max], defaults to [-1, 1]</span>
+<span class="sd">        :type xrange: 2-element sequence, optional</span>
+<span class="sd">        :param yrange: y-axis range [min,max], defaults to [-1, 1]</span>
+<span class="sd">        :type yrange: 2-element sequence, optional</span>
+<span class="sd">        :param zrange: z-axis range [min,max], defaults to [-1, 1]</span>
+<span class="sd">        :type zrange: 2-element sequence, optional</span>
+<span class="sd">        :param N: number of random transforms</span>
 <span class="sd">        :type N: int</span>
-<span class="sd">        :return: 4x4 homogeneous transformation matrix</span>
+<span class="sd">        :return: homogeneous transformation matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
+<span class="sd">        </span>
+<span class="sd">        Return an SE3 instance with random rotation and translation.</span>
 
-<span class="sd">        - ``SE3.Rand()`` is a random SO(3) rotation.</span>
-<span class="sd">        - ``SE3.Rand(N)`` is an SO3 object containing a sequence of N random</span>
-<span class="sd">          rotations.</span>
+<span class="sd">        - ``SE3.Rand()`` is a random SE(3) translation.</span>
+<span class="sd">        - ``SE3.Rand(N)`` is an SE3 object containing a sequence of N random</span>
+<span class="sd">          poses.</span>
 
 <span class="sd">        :seealso: `~spatialmath.quaternion.UnitQuaternion.Rand`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -668,11 +856,11 @@
         <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># random values in the range</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">zrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># random values in the range</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Eul"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an SE(3) pure rotation from Euler angles</span>
 
 <span class="sd">        :param angles: 3-vector of Euler angles</span>
@@ -686,14 +874,14 @@
 <span class="sd">        correspond to consecutive rotations about the Z, Y, Z axes respectively.</span>
 <span class="sd">        </span>
 <span class="sd">        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles</span>
-<span class="sd">        correponding to the rows of angles.</span>
+<span class="sd">        corresponding to the rows of angles.</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.RPY"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.RPY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
@@ -704,8 +892,8 @@
 <span class="sd">        :type angles: array_like or numpy.ndarray with shape=(N,3)</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :param unit: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
-<span class="sd">        :type unit: str</span>
+<span class="sd">        :param order: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
+<span class="sd">        :type order: str</span>
 <span class="sd">        :return: 4x4 homogeneous transformation matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
@@ -716,21 +904,21 @@
 <span class="sd">              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward</span>
 <span class="sd">              and y-axis sideways.</span>
 <span class="sd">            - &#39;xyz&#39;, rotate by yaw about the x-axis, then by pitch about the new y-axis,</span>
-<span class="sd">              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward</span>
+<span class="sd">              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward</span>
 <span class="sd">              and y-axis between the gripper fingers.</span>
 <span class="sd">            - &#39;yxz&#39;, rotate by yaw about the y-axis, then by pitch about the new x-axis,</span>
 <span class="sd">              then by roll about the new z-axis. Convention for a camera with z-axis parallel</span>
 <span class="sd">              to the optic axis and x-axis parallel to the pixel rows.</span>
 <span class="sd">              </span>
 <span class="sd">        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles</span>
-<span class="sd">        correponding to the rows of angles.</span>
+<span class="sd">        corresponding to the rows of angles.</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2tr</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2tr</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2tr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">rpy2tr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.OA"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.OA">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">OA</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
@@ -759,7 +947,7 @@
 
 <span class="sd">        :seealso: :func:`spatialmath.base.transforms3d.oa2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">oa2tr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">oa2tr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.AngVec"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.AngVec">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">AngVec</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
@@ -785,7 +973,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">angvec2tr</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">angvec2tr</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Exp"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Exp">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Exp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
@@ -797,15 +985,15 @@
 <span class="sd">        :return: 3x3 rotation matrix</span>
 <span class="sd">        :rtype: SO3 instance</span>
 
-<span class="sd">        - ``SO3.Exp(S)`` is an SO(3) rotation defined by its Lie algebra</span>
-<span class="sd">          which is a 3x3 so(3) matrix (skew symmetric)</span>
-<span class="sd">        - ``SO3.Exp(t)`` is an SO(3) rotation defined by a 3-element twist</span>
-<span class="sd">          vector (the unique elements of the so(3) skew-symmetric matrix)</span>
+<span class="sd">        - ``SE3.Exp(S)`` is an SE(3) rotation defined by its Lie algebra</span>
+<span class="sd">          which is a 3x3 se(3) matrix (skew symmetric)</span>
+<span class="sd">        - ``SE3.Exp(t)`` is an SE(3) rotation defined by a 6-element twist</span>
+<span class="sd">          vector (the unique elements of the se(3) skew-symmetric matrix)</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
     
@@ -814,132 +1002,110 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create SE(3) translation along the X-axis</span>
 
-<span class="sd">        :param theta: translation distance along the X-axis</span>
-<span class="sd">        :type theta: float</span>
+<span class="sd">        :param x: translation distance along the X-axis</span>
+<span class="sd">        :type x: float</span>
 <span class="sd">        :return: 4x4 homogeneous transformation matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
 <span class="sd">        `SE3.Tz(D)`` is an SE(3) translation of D along the x-axis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Ty"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Ty">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Ty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create SE(3) translation along the Y-axis</span>
 
-<span class="sd">        :param theta: translation distance along the Y-axis</span>
-<span class="sd">        :type theta: float</span>
+<span class="sd">        :param y: translation distance along the Y-axis</span>
+<span class="sd">        :type y: float</span>
 <span class="sd">        :return: 4x4 homogeneous transformation matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
 <span class="sd">        `SE3.Tz(D)`` is an SE(3) translation of D along the y-axis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Tz"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Tz">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create SE(3) translation along the Z-axis</span>
 
-<span class="sd">        :param theta: translation distance along the Z-axis</span>
-<span class="sd">        :type theta: float</span>
+<span class="sd">        :param z: translation distance along the Z-axis</span>
+<span class="sd">        :type z: float</span>
 <span class="sd">        :return: 4x4 homogeneous transformation matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
 <span class="sd">        `SE3.Tz(D)`` is an SE(3) translation of D along the z-axis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="SE3.Delta"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Delta">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Delta</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create SE(3) from differential motion</span>
 
+<span class="sd">        :param d: differential motion</span>
+<span class="sd">        :type d: 6-element array_like</span>
+<span class="sd">        :return: 4x4 homogeneous transformation matrix</span>
+<span class="sd">        :rtype: SE3 instance</span>
+<span class="sd">            </span>
 
+<span class="sd">        - ``T = delta2tr(d)`` is an SE(3) representing differential </span>
+<span class="sd">          motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.</span>
+<span class="sd">    </span>
+<span class="sd">        Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
+<span class="sd">        </span>
+<span class="sd">        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div></div>
+
+            
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
 
     <span class="kn">import</span> <span class="nn">pathlib</span>
     <span class="kn">import</span> <span class="nn">os.path</span>
-    
-    <span class="n">a</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Exp</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s2">&quot;test_pose3d.py&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<p class="logo">
-  <a href="../../index.html">
-    <img class="logo" src="../../_static/../../../../figs/icon.png" alt="Logo"/>
-    
-  </a>
-</p>
+          <footer>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Peter Corke
 
-<p class="blurb">Spatial maths and geometry for Python</p>
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
-<p>
-<iframe src="https://ghbtns.com/github-btn.html?user=petercorke&repo=spatialmath-python&type=watch&count=true&size=large&v=2"
-  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
-</p>
-
-
-
-
-
-<h3>Navigation</h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes and functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Peter Corke.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>
