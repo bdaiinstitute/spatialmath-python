@@ -375,12 +375,16 @@ def q2r(q):
                      [2 * (x * z - s * y), 2 * (y * z + s * x), 1 - 2 * (x ** 2 + y ** 2)]])
 
 
-def r2q(R, check=True):
+def r2q(R, check=False, tol=100):
     """
     Convert SO(3) rotation matrix to unit-quaternion
 
     :arg R: rotation matrix
     :type R: numpy.ndarray, shape=(3,3)
+    :param check: check validity of rotation matrix, default False
+    :type check: bool
+    :param tol: tolerance in units of eps
+    :type tol: float
     :return: unit-quaternion
     :rtype: numpy.ndarray, shape=(3,)
 
@@ -392,7 +396,10 @@ def r2q(R, check=True):
 
     """
     assert R.shape == (3, 3) and tr.isR(R), "Argument must be 3x3 rotation matrix"
-    qs = math.sqrt(np.trace(R) + 1) / 2.0
+    if check:
+        assert tr.isR(R, tol=tol), "Argument must be a valid SO(3) matrix"
+
+    qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0
     kx = R[2, 1] - R[1, 2]  # Oz - Ay
     ky = R[0, 2] - R[2, 0]  # Ax - Nz
     kz = R[1, 0] - R[0, 1]  # Ny - Ox
@@ -424,7 +431,7 @@ def r2q(R, check=True):
 
     kv = np.r_[kx, ky, kz]
     nm = np.linalg.norm(kv)
-    if abs(nm) < 100 * _eps:
+    if abs(nm) < tol * _eps:
         return eye()
     else:
         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
