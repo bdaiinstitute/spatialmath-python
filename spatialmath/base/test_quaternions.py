@@ -38,6 +38,7 @@ from spatialmath.base.quaternions import *
 
 
 class TestQuaternion(unittest.TestCase):
+
     def test_ops(self):
         nt.assert_array_almost_equal(eye(), np.r_[1, 0, 0, 0])
 
@@ -69,7 +70,7 @@ class TestQuaternion(unittest.TestCase):
 
         nt.assert_equal(isequal(np.r_[1, 2, 3, 4], np.r_[1, 2, 3, 4]), True)
         nt.assert_equal(isequal(np.r_[1, 2, 3, 4], np.r_[5, 6, 7, 8]), False)
-        nt.assert_equal(isequal(np.r_[1, 1, 0, 0] / math.sqrt(2), np.r_[-1, -1, 0, 0] / math.sqrt(2)), True)
+        nt.assert_equal(isequal(np.r_[1, 1, 0, 0] / math.sqrt(2), np.r_[-1, -1, 0, 0] / math.sqrt(2), unitq=True), True)
 
         s = qprint(np.r_[1, 1, 0, 0], file=None)
         nt.assert_equal(isinstance(s, str), True)
