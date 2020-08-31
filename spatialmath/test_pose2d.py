@@ -225,6 +225,7 @@ class TestSO2(unittest.TestCase):
         # R.animate()
         # R.animate(start=R2)
         
+        
 
 class TestSE2(unittest.TestCase):
 

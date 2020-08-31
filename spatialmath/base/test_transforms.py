@@ -446,6 +446,7 @@ class Test2D(unittest.TestCase):
         trplot2(transl2(1, 2), block=False, frame='A', rviz=True, width=1)
         trplot2(transl2(3, 1), block=False, color='red', arrow=True, width=3, frame='B')
         trplot2(transl2(4, 3)@trot2(math.pi / 3), block=False, color='green', frame='c')
+        plt.close('all')
 
 
 class Test3D(unittest.TestCase):
@@ -786,10 +787,10 @@ class Test3D(unittest.TestCase):
 
         plt.clf()
         tranimate(transl(1, 2, 3), repeat=False)
-        # tranimate(transl(1, 2, 3), repeat=False, pause=2)
+        tranimate(transl(1, 2, 3), repeat=False, pause=2)
         # run again, with axes already created
-        # tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
-
+        tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
+        plt.close('all')
         # test animate with line not arrow, text, test with SO(3)
 
     def test_trinterp(self):

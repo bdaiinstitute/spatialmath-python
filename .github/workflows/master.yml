@@ -55,8 +55,10 @@ jobs:
     - name: Run coverage
       run: |
         pip install .
-        coverage run --omit=\*/test_\* -m unittest
-        coverage xml
+        pip install pytest-xvfb
+        pip install pytest-timeout
+        pytest --ignore=W605 --timeout=50 --cov=spatialmath --cov-report xml:coverage.xml
+        coverage report
     - name: upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
