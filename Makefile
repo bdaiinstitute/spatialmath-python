@@ -14,12 +14,7 @@ help:
 	@echo " make help - this message$(BLACK)"
 
 test:
-	python -m unittest
-ifeq ($(shell which travis),)
-	@echo travis not found (gem install travis)
-else
-	#travis lint .travis.yml
-endif
+	pytest
 
 coverage:
 	coverage run --omit=\*/test_\* -m unittest
