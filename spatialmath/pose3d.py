@@ -8,6 +8,23 @@ from spatialmath.base import argcheck
 from spatialmath import base as tr
 from spatialmath import super_pose as sp
 
+"""
+Classes to abstract 3D pose and orientation using matrices in SO(3) and SE(3)
+
+To use::
+
+    from spatialmath.pose3d import *
+    T = SE3.Rx(0.3)
+
+    import spatialmath as sm
+    T = sm.SE3.Rx(0.3)
+
+
+ .. inheritance-diagram:: spatialmath.pose3d
+    :top-classes: collections.UserList
+    :parts: 1
+"""
+
 # ============================== SO3 =====================================#
 
 
@@ -18,7 +35,9 @@ class SO3(sp.SMPose):
     This subclass represents rotations in 3D space.  Internally it is a 3x3 orthogonal matrix belonging
     to the group SO(3).
 
-    .. inheritance-diagram::
+ .. inheritance-diagram:: spatialmath.pose3d.SO3
+    :top-classes: collections.UserList
+    :parts: 1
     """
 
     def __init__(self, arg=None, *, check=True):
@@ -185,6 +204,36 @@ class SO3(sp.SMPose):
             return tr.tr2rpy(self.A, unit=unit, order=order)
         else:
             return np.array([tr.tr2rpy(x, unit=unit, order=order) for x in self.A]).T
+
+    def angvec(self, unit='rad'):
+        r"""
+        SO(3) or SE(3) as angle and rotation vector
+
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :param check: check that rotation matrix is valid
+        :type check: bool
+        :return: :math:`(\theta, {\bf v})`
+        :rtype: float, numpy.ndarray, shape=(3,)
+
+        ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation 
+        angle and a rotation axis which is equivalent to the rotation of
+        the unit quaternion ``q``.
+
+        By default the angle is in radians but can be changed setting `unit='deg'`.
+
+        Notes:
+
+        - If the input is SE(3) the translation component is ignored.
+
+        Example::
+
+        >>> UnitQuaternion.Rz(0.3).angvec()
+            (0.3, array([0., 0., 1.]))
+
+        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
+        """
+        return tr.tr2angvec(self.R, unit=unit)
 
     def Ad(self):
         """
@@ -486,6 +535,16 @@ class SO3(sp.SMPose):
 
 
 class SE3(SO3):
+    """
+    SE(3) subclass
+
+    This subclass represents rigid-body motion in 3D space.  Internally it is a 4x4 homogeneous transformation matrix belonging
+    to the group SE(3).
+
+ .. inheritance-diagram:: spatialmath.pose3d.SE3
+    :top-classes: collections.UserList
+    :parts: 1
+    """
 
     def __init__(self, x=None, y=None, z=None, *, check=True):
         """
@@ -914,6 +973,5 @@ class SE3(SO3):
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
-    import os.path
 
     exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose3d.py")).read())

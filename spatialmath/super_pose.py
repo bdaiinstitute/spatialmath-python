@@ -944,7 +944,7 @@ class SMPose(UserList):
         :param `**kwargs`: plotting options
         
         - ``X.plot()`` displays the pose ``X`` as a coordinate frame in either
-          2D or 3D axes.  There are many options, see the links below.
+          2D or 3D.  There are many options, see the links below.
 
         Example::
             
@@ -966,15 +966,18 @@ class SMPose(UserList):
         :type start: same as ``self``
         :param `**kwargs`: plotting options
         
-        - ``X.plot()`` displays the pose ``X`` as a coordinate frame moving
-          from the origin, or ``T0``, in either 2D or 3D axes.  There are 
+        - ``X.animate()`` displays the pose ``X`` as a coordinate frame moving
+          from the origin in either 2D or 3D.  There are many options, see the 
+          links below.
+        - ``X.animate(*args, start=X1)`` displays the pose ``X`` as a coordinate
+          frame moving from pose ``X1``, in either 2D or 3D.  There are 
           many options, see the links below.
 
         Example::
             
             >>> X = SE3.Rx(0.3)
             >>> X.animate(frame='A', color='green')
-            >>> X.animate(start=X.inv())
+            >>> X.animate(start=SE3.Ry(0.2))
 
         :seealso: :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms2d.tranimate2`
         """
