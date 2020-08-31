@@ -43,9 +43,9 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/fig1.png)
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/animate.gif)
 
 # Getting going
 
@@ -199,7 +199,7 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 >>> T.plot()
 ```
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/fig1.png)
 
 `printline` is a compact single line format for tabular listing, whereas `print` shows the underlying matrix and for consoles that support it, it is colorised, with rotational elements in red and translational elements in blue.
 
@@ -292,7 +292,7 @@ array([-60,  12,  30,  24])
 
 ## Graphics
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs//transforms3d.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs//transforms3d.png)
 
 The functions support various plotting styles
 
@@ -314,7 +314,7 @@ and it can be saved to a file by
 tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
 ```
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docsrc/source/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/animate.gif)
 
 At the moment we can only save as an MP4, but the following incantation will covert that to an animated GIF for embedding in web pages
 
