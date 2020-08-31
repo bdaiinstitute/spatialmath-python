@@ -1,29 +1,19 @@
 
 """
-Spatial vectors
-
 A set of cooperating classes to support Featherstone's spatial vector formalism
 
-References::
+References:
 
- - Robot Dynamics Algorithms, R. Featherstone, volume 22,
+ - "Robot Dynamics Algorithms", R. Featherstone, volume 22,
    Springer International Series in Engineering and Computer Science,
    Springer, 1987.
- - A beginner's guide to 6-d vectors (part 1), R. Featherstone,
+ - "A beginner's guide to 6-d vectors (part 1)", R. Featherstone,
    IEEE Robotics Automation Magazine, 17(3):83-94, Sep. 2010.
+ - `Online notes <http://users.cecs.anu.edu.au/~roy/spatial>`_
 
-
-     SpatialVec6 (abstract super class)
-       |
-       +--- SpatialM6 (abstract)
-       |     |
-       |     +---SpatialVelocity
-       |     +---SpatialAcceleration
-       |
-       +---SpatialF6 (abstract)
-            |
-            +---SpatialForce
-            +---SpatialMomentum
+.. inheritance-diagram:: spatialmath.spatialvector
+   :top-classes: collections.UserList
+   :parts: 1
 """
 
 from abc import ABC, abstractmethod
@@ -34,31 +24,30 @@ import numpy as np
 
 class SpatialVector(UserList, ABC):
     """
-        SpatialV6 Abstract spatial 6-vector class
+    Spatial 6-vector abstract superclass
 
-        Abstract superclass for spatial vector functionality.  This class has two
-        abstract subclasses, which each have concrete subclasses:
+    This class has two abstract subclasses, which each have concrete subclasses.
 
+    .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity spatialmath.spatialvector.SpatialAcceleration spatialmath.spatialvector.SpatialForce spatialmath.spatialvector.SpatialMomentum
+       :top-classes: spatialmath.spatialvector.SpatialVector
+       :parts: 1
 
-        Methods::
-         SpatialV6     constructor invoked by subclasses
-         double        convert to a 6xN double
-         char          convert to string
-         display       display in human readable form
+    Methods:
 
-        Operators::
+        SpatialV6     constructor invoked by subclasses
+        double        convert to a 6xN double
+        char          convert to string
+        display       display in human readable form
 
-         +          add spatial vectors of the same type
-         -          subtract spatial vectors of the same type
-         -          unary minus of spatial vectors
+    Common operators:
 
-        Notes::
-        - Subclass of the MATLAB handle class which means that pass by reference semantics
-          apply.
-        - Spatial vectors can be placed into arrays and indexed.
+        +          add spatial vectors of the same type
+        -          subtract spatial vectors of the same type
+        -          unary minus of spatial vectors
 
-        See also SpatialM6, SpatialF6, SpatialVelocity, SpatialAcceleration, SpatialForce,
-        SpatialMomentum, SpatialInertia.
+    Spatial vectors are a ``UserList`` subclass and can be placed into arrays and indexed.
+
+    :seealso: :func:`SpatialM6`, :func:`SpatialF6`, :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.
     """
 
     @abstractmethod
@@ -74,7 +63,7 @@ class SpatialVector(UserList, ABC):
         - ``SpatialVector(A)`` is a spatial vector array with N elements, constructed from the columns of the 6xN
           array ``A``.
 
-        See also SpatialVelocity, SpatialAcceleration, SpatialForce, SpatialMomentum.
+        :seealso: :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.
         """
         print('spatialVec6 init')
         super().__init__()
@@ -94,7 +83,7 @@ class SpatialVector(UserList, ABC):
     @classmethod
     def Empty(cls):
         """
-        Construct a new spatial vector with zero items (superclass method)
+        Construct a new spatial vector with zero vectors (superclass method)
 
         :param cls: The spatial vector subclass
         :type cls: SpatialVelocity, SpatialAcceleration, SpatialForce
@@ -522,6 +511,9 @@ class SpatialVelocity(SpatialM6):
 
     See also SpatialVec6, SpatialM6, SpatialAcceleration, SpatialInertia, SpatialMomentum.
 
+    .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity
+       :top-classes: collections.UserList
+       :parts: 1
 
     """
     def __init__(self, value=None):
@@ -557,7 +549,10 @@ class SpatialAcceleration(SpatialM6):
      - ^^^ are implemented in SpatialInertia.
      - ^^^^ are implemented in Twist.
 
-        """
+    .. inheritance-diagram:: spatialmath.spatialvector.SpatialAcceleration
+       :top-classes: collections.UserList
+       :parts: 1
+    """
     def __init__(self, value=None):
         super().__init__(value)
 
@@ -715,7 +710,7 @@ class SpatialInertia(UserList):
         - ``SI * V`` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.
         """
 
-        if instance(right, SpatialAcceleration):
+        if isinstance(right, SpatialAcceleration):
             v = SpatialForce(a.I * b.vw);  # F = ma
         elif instance(right, SpatialVelocity):
             # crf(v(i).vw)*model.I(i).I*v(i).vw;
