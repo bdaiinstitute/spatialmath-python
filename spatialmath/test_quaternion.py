@@ -11,8 +11,12 @@ from math import pi, sin, cos
 def qcompare(x, y):
     if isinstance(x, Quaternion):
         x = x.vec
+    elif isinstance(x, SMPose):
+        x = x.A
     if isinstance(y, Quaternion):
         y = y.vec
+    elif isinstance(y, SMPose):
+        y = y.A
     nt.assert_array_almost_equal(x, y)
 
 # straight port of the MATLAB unit tests
@@ -120,13 +124,23 @@ class TestUnitQuaternion(unittest.TestCase):
         self.assertIsInstance(uu, UnitQuaternion)
         self.assertEqual(len(uu), 4)
 
-    def test_convert_string(self):
-        # char
+    def test_string(self):
 
         u = UnitQuaternion()
 
         s = str(u)
         self.assertIsInstance(s, str)
+        self.assertTrue(s.endswith(' >>'))
+        self.assertEqual(s.count('\n'), 0)
+
+        q = UnitQuaternion.Rx([0.3, 0.4, 0.5])
+        s = str(q)
+        self.assertIsInstance(s, str)
+        self.assertEqual(s.count('\n'), 2)
+
+    def test_properties(self):
+
+        u = UnitQuaternion()
 
         # s,v
         nt.assert_array_almost_equal(UnitQuaternion([1, 0, 0, 0]).s, 1)
@@ -142,17 +156,20 @@ class TestUnitQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(UnitQuaternion([0, 0, 0, 1]).v, [0, 0, 1])
 
         # R,T
-        nt.assert_array_almost_equal(u.R, eye(3))
+        nt.assert_array_almost_equal(u.R, np.eye(3))
 
         nt.assert_array_almost_equal(UnitQuaternion(rotx(pi / 2)).R, rotx(pi / 2))
         nt.assert_array_almost_equal(UnitQuaternion(roty(-pi / 2)).R, roty(-pi / 2))
         nt.assert_array_almost_equal(UnitQuaternion(rotz(pi)).R, rotz(pi))
 
-        nt.assert_array_almost_equal(UnitQuaternion(rotx(pi / 2)).T, trotx(pi / 2))
-        nt.assert_array_almost_equal(UnitQuaternion(roty(-pi / 2)).T, troty(-pi / 2))
-        nt.assert_array_almost_equal(UnitQuaternion(rotz(pi)).T, trotz(pi))
+        qcompare(UnitQuaternion(rotx(pi / 2)).SO3(), SO3.Rx(pi / 2))
+        qcompare(UnitQuaternion(roty(-pi / 2)).SO3(), SO3.Ry(-pi / 2))
+        qcompare(UnitQuaternion(rotz(pi)).SO3(), SO3.Rz(pi))
 
-        nt.assert_array_almost_equal(UnitQuaternion.q2r(u.vec), eye(3, 3))
+        qcompare(UnitQuaternion(rotx(pi / 2)).SE3(), SE3.Rx(pi / 2))
+        qcompare(UnitQuaternion(roty(-pi / 2)).SE3(), SE3.Ry(-pi / 2))
+        qcompare(UnitQuaternion(rotz(pi)).SE3(), SE3.Rz(pi))
+
 
     def test_staticconstructors(self):
         # rotation primitives
@@ -609,6 +626,21 @@ class TestQuaternion(unittest.TestCase):
         # tc.verifyError( @() Quaternion(2), 'SMTB:Quaternion:badarg')
         # tc.verifyError( @() Quaternion([1, 2, 3]), 'SMTB:Quaternion:badarg')
 
+    def test_string(self):
+
+        u = Quaternion()
+
+        s = str(u)
+        self.assertIsInstance(s, str)
+        self.assertTrue(s.endswith(' >'))
+        self.assertEqual(s.count('\n'), 0)
+        self.assertEqual(len(s), 41)
+
+        q = Quaternion([u, u, u])
+        s = str(q)
+        self.assertIsInstance(s, str)
+        self.assertEqual(s.count('\n'), 2)
+
     def test_properties(self):
 
         q = Quaternion([1, 2, 3, 4])
@@ -627,29 +659,7 @@ class TestQuaternion(unittest.TestCase):
         #nt.assert_array_almost_equal(log(exp(q1)), q1)
         #nt.assert_array_almost_equal(log(exp(q2)), q2)
 
-    def test_char(self):
 
-        # char
-        q = Quaternion()
-
-        s = str(q)
-        self.assertTrue(isinstance(s, str))
-        self.assertEqual(len(s), 42)
-
-        s = str(Quaternion([q, q, q]))
-        self.assertEqual(len(s), 126)
-        self.assertEqual(s.count('\n'), 3)
-
-        # symbolic display
-        # syms s x y z real
-        # q = Quaternion([s x y z])
-        # s = char( q )
-        # tc.verifyTrue( ischar(s))
-        # nt.assert_array_almost_equal(size(s,1), 1)
-
-        # s = char( [q q q] )
-        # tc.verifyTrue( ischar(s))
-        # nt.assert_array_almost_equal(size(s,1), 3)
 
     def test_concat(self):
         u = Quaternion()
