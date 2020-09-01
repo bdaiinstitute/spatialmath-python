@@ -21,11 +21,11 @@ coverage:
 	coverage report
 
 docs: .FORCE
-	(cd docsrc; make html)
+	(cd docs; make html)
 
 docupdate: docs
 	git clone https://github.com/petercorke/spatialmath-python.git --branch gh-pages --single-branch gh-pages
-	cp -r doc/build/html/. gh-pages
+	cp -r docs/build/html/. gh-pages
 	git add gh-pages
 	git commit -m "rebuilt docs"
 	git push origin gh-pages
