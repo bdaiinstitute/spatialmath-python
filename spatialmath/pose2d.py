@@ -409,6 +409,5 @@ class SE2(SO2):
 if __name__ == '__main__':  # pragma: no cover
 
     import pathlib
-    import os.path
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose2d.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose2d.py").read())

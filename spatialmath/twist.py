@@ -1007,7 +1007,6 @@ if __name__ == '__main__':  # pragma: no cover
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
-    import os.path
     
     x = SE3.Rx(0.3)
     y = x.interp(np.linspace(0, 1, 10))
@@ -1019,4 +1018,4 @@ if __name__ == '__main__':   # pragma: no cover
     a = Twist.isvalid(x.S)
     print(a)
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_twist3d.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_twist.py").read())

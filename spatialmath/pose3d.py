@@ -979,4 +979,4 @@ if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_pose3d.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose3d.py").read())
