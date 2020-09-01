@@ -4,267 +4,334 @@ Introduction
 ************
 
 
-Spatial maths capability underpins all of robotics and robotic vision by describing the relative position and orientation of objects in 2D or 3D space.  This package:
+Spatial maths capability underpins all of robotics and robotic vision. 
+It provides the means to describe the relative position and orientation of objects in 2D or 3D space.  
+This package provides Python classes and functions to represent, print, plot, manipulate and covert between such representations.
+This includes relevant mathematical objects such as rotation matrices :math:`R \in SO(2), SO(3)`, homogeneous transformation matrices :math:`T \in SE(2), SE(3)` and quaternions :math:`q \in \mathbb{H}`.
 
-- provides Python classes and functions to manipulate matrices that represent relevant mathematical objects such as rotation matrices :math:`R \in SO(2), SO(3)`, homogeneous transformation matrices :math:`T \in SE(2), SE(3)` and quaternions :math:`q \in \mathbb{H}`.
+For example, we can create a rigid-body transformation that is a rotation about the x-axis of 30 degrees::
 
-- replicates, as much as possible, the functionality of the `Spatial Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB |reg| which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. Important considerations included:
+  >>> from spatialmath import *
+  >>> base.rotx(30, 'deg')
+  array([[ 1.       ,  0.       ,  0.       ],
+        [ 0.       ,  0.8660254, -0.5      ],
+        [ 0.       ,  0.5      ,  0.8660254]])
+
+which results in a NumPy 4x4 array that belongs to the group SE(3).  We could also create a class instance::
+
+  >>> from spatialmath import *
+  >>> T = sm.SE3.Rx(30, 'deg')
+  >>> type(T)
+  <class 'spatialmath.pose3d.SE3'>
+  >>> print(T)
+    1           0           0           0            
+    0           0.866025   -0.5         0            
+    0           0.5         0.866025    0            
+    0           0           0           1                  
+
+which is *internally* represented as a 4x4 NumPy array.
+
+While functions and classes can provide similar functionality the class provide the benefits of:
+
+- type safety, it is not possible to mix a 3D rotation matrix with a 2D rigid-body motion, even though both are represented
+  by a 3x3 matrix
+- operator overloading allows for convenient and readable expression of algorithms
+- representing not a just a single value, but a sequence, which are handled by the operators with implicit broadcasting of values
+
+
+Relationship to MATLAB tools
+============================
+This package replicates, as much as possible, the functionality of the `Spatial Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB |reg| 
+which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. 
+The design considerations included:
 
   - being as similar as possible to the MATLAB Toolbox function names and semantics
   - but balancing the tension of being as Pythonic as possible
-  - use Python keyword arguments to replace the MATLAB Toolbox string options supported using `tb_optparse``
-  - use ``numpy`` arrays for rotation and homogeneous transformation matrices, quaternions and vectors
-  - all functions that accept a vector can accept a list, tuple, or `np.ndarray`
-  - The classes can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences.
-
-Quick example:
-
-.. code:: python
-
-  >>> import spatialmath as sm
-  >>> R = sm.SO3.Rx(30, 'deg')
-  >>> R
-     1         0         0          
-     0         0.866025 -0.5        
-
-which constructs a rotation about the x-axis by 30 degrees.
-
-High-level classes
-==================
+  - use Python keyword arguments to replace the MATLAB Toolbox string options supported using ``tb_optparse()``
+  - use NumPy arrays internally to represent for rotation and homogeneous transformation matrices, quaternions and vectors
+  - all functions that accept a vector can accept a list, tuple, or ``np.ndarray``
+  - A class instance can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences
+  - Classes are _fairly_ polymorphic, they share many common constructor options and methods
 
 
-These classes abstract the low-level numpy arrays into objects of class `SO2`, `SE2`, `SO3`, `SE3`, `UnitQuaternion` that obey the rules associated with the mathematical groups SO(2), SE(2), SO(3), SE(3) and
-H.
-Using classes has several merits:
+Spatial math classes
+====================
 
-* ensures type safety, for example it stops us mixing a 2D homogeneous transformation with a 3D rotation matrix -- both of which are 3x3 matrices.
-* ensure that an SO(2), SO(3) or unit-quaternion rotation is always valid because the constraints (eg. orthogonality, unit norm) are enforced when the object is constructed.
+The package provides classes to abstract and implementing appropriate operations for the following groups:
 
-.. code:: python
+======================  ============================    =======================
+Group                   Name                            Class
+======================  ============================    =======================
+:math:`\mbox{SE(3)}`    rigid-body translation in 3D    ``SE3``
+:math:`\mbox{SO(3)}`    orientation in 3D               ``SO3``
+:math:`S^3`             unit quaternion                 ``UnitQuaternion``
+:math:`\mbox{SE(2)}`    rigid-body translation in 2D    ``SE2``
+:math:`\mbox{SO(2)}`    orientation in 2D               ``SO2``
+:math:`\mbox{se(2)}`    twist in 2D                     ``Twist2``
+:math:`\mbox{se(3)}`    twist in 3D                     ``Twist``
+:math:`\mathbb{H}`      quaternion                      ``Quaternion``
+:math:`M^6`             spatial velocity                ``SpatialVelocity``
+:math:`M^6`             spatial acceleration            ``SpatialAcceleration``
+:math:`F^6`             spatial force                   ``SpatialForce``
+:math:`F^6`             spatial momentum                ``SpatialMomentum``
+|                       spatial inertia                 ``SpatialInertia``
+======================  ============================    =======================
 
-  >>> from spatialmath import *
-  >>> SO2(.1)
-  [[ 0.99500417 -0.09983342]
-   [ 0.09983342  0.99500417]]
 
+In addition to the merits outlined above, classes ensure that the numerical value is always valid because the 
+constraints (eg. orthogonality, unit norm) are enforced when the object is constructed.  For example::
 
-Type safety and type validity are particularly important when we deal with a sequence of such objects.  In robotics we frequently deal with trajectories of poses or rotation to describe objects moving in the
+  >>> SE3(np.zeros((4,4)))
+  Traceback (most recent call last):
+    .
+    .
+  AssertionError: array must have valid value for the class
+
+Type safety and type validity are particularly important when we deal with a sequence of values.  
+In robotics we frequently deal with trajectories of poses or rotation to describe objects moving in the
 world.
-However a list of these items has the type `list` and the elements are not enforced to be homogeneous, ie. a list could contain a mixture of classes.
-Another option would be to create a `numpy` array of these objects, the upside being it could be a multi-dimensional array.  The downside is that again the array is not guaranteed to be homogeneous.
+However a list of these items::
 
+  >>> X = [SE3.Rx(0), SE3.Rx(0.2), SE3.Rx(0.4), SE3.Rx(0.6)]
 
-The approach adopted here is to give these classes list *super powers* so that a single `SE3` object can contain a list of SE(3) poses.  The pose objects are a list subclass so we can index it or slice it as we
-would a list, but the result each time belongs to the class it was sliced from.  Here's a simple example of SE(3) but applicable to all the classes
+has the type `list` and the elements are not enforced to be homogeneous, ie. a list could contain a mixture of classes.
+This requires careful coding, or additional user code to check the validity of all elements in the list.
+We could create a NumPy array of these objects, the upside being it could be a multi-dimensional array, but the again NumPy does not
+enforce homogeneity of object types in an array.
 
+The Spatial Math package give these classes list *super powers* so that, for example, a single `SE3` object can contain a list of SE(3) poses::
 
-.. code:: python
+  >>> X = SE3.Rx([0, 0.2, 0.4, 0.6])
+  >>> len(x)
+  4
+  >>> print(X[1])
+    1           0           0           0            
+    0           0.980067   -0.198669    0            
+    0           0.198669    0.980067    0            
+    0           0           0           1            
 
-  T = transl(1,2,3) # create a 4x4 np.array
-
-  a = SE3(T)
-  len(a)
-  type(a)
-  a.append(a)  # append a copy
-  a.append(a)  # append a copy
-  type(a)
-  len(a)
-  a[1]  # extract one element of the list
-  for x in a:
-    # do a thing
-
-
-
-These classes are all derived from two parent classes:
-
-* `RTBPose` which provides common functionality for all
-* `UserList` which provdides the ability to act like a list 
+The classes inherit from ``collections.UserList`` and have all the functionality of Python lists, and this is discussed further in
+section :ref:`list-powers`
+The pose objects are a list subclass so we can index it or slice it as we
+would a list, but the result each time belongs to the class it was sliced from.  
 
 
 Operators for pose objects
 --------------------------
 
-Standard arithmetic operators can be applied to all these objects.
+Group operations
+^^^^^^^^^^^^^^^^
 
-=========  ===========================
-Operator      dunder method
-=========  ===========================
-  ``*``      **__mul__** , __rmul__
-  ``*=``     __imul__
-  ``/``      **__truediv__**
-  ``/=``     __itruediv__
-  ``**``     **__pow__**
-  ``**=``    __ipow__
-  ``+``      **__add__**, __radd__
-  ``+=``     __iadd__
-  ``-``      **__sub__**, __rsub__
-  ``-=``     __isub__
-=========  ===========================
+The classes represent mathematical groups, and the group arithmetic rules are enforced.
+The operator ``*`` denotes composition and the result will be of the same type as the operand::
 
-This online documentation includes just the method shown in bold.
-The other related methods all invoke that method.
+  >>> T = SE3.Rx(0.3)
+  >>> type(T)
+  <class 'spatialmath.pose3d.SE3'>
+  >>> X = T * T
+  >>> type(X)
+  <class 'spatialmath.pose3d.SE3'>
 
-The classes represent mathematical groups, and the rules of group are enforced.  
-If this is a group operation, ie. the operands are of the same type and the operator
-is the group operator, the result will be of the input type, otherwise the result
-will be a matrix.
+The implementation depends on the class:
 
-SO(n) and SE(n)
-^^^^^^^^^^^^^^^
+* for SO(n) and SE(n) composition is implemented by matrix multiplication of the underlying matrix values,
+* for unit-quaternions composition is implemented by the Hamilton product of the underlying vector value,
+* for twists it is the logarithm of the product of exponentiating the two twists
 
-For the groups SO(n) and SE(n) the group operator is composition represented
-by the multiplication operator.  The identity element is a unit matrix.
+``**`` denotes repeated composition so the exponent must be an integer.  If the negative exponent the repeated multiplication
+is performed then the inverse is taken.
 
-==============   ==============   ===========  ========================
-           Operands                     ``*``
--------------------------------   -------------------------------------
-    left             right            type           result
-==============   ==============   ===========  ========================
-Pose             Pose             Pose         composition [1]
-Pose             scalar           matrix       elementwise product
-scalar           Pose             matrix       elementwise product
-Pose             N-vector         N-vector     vector transform [2]
-Pose             NxM matrix       NxM matrix   vector transform [2] [3]
-==============   ==============   ===========  ========================
+The group inverse is given by the ``inv()`` method::
 
-Notes:
+  >>> T * T.inv()
+  SE3(array([[1., 0., 0., 0.],
+            [0., 1., 0., 0.],
+            [0., 0., 1., 0.],
+            [0., 0., 0., 1.]]))
 
-#. Composition is performed by standard matrix multiplication.
-#. N=2 (for SO2 and SE2),  N=3 (for SO3 and SE3).
-#. Matrix columns are taken as the vectors to transform.
+and ``/`` denotes multiplication by the inverse::
 
-==============   ==============   ===========  ===================
-           Operands                     ``/``
--------------------------------   --------------------------------
-    left             right            type           result
-==============   ==============   ===========  ===================
-Pose             Pose             Pose         matrix * inverse #1
-Pose             scalar           matrix       elementwise product
-scalar           Pose             matrix       elementwise product
-==============   ==============   ===========  ===================
-
-Notes:
-
-#. The left operand is multiplied by the ``.inv`` property of the right operand.
-   
-==============   ==============   ===========  ===============================
-           Operands                     ``**``
--------------------------------   --------------------------------------------
-    left             right            type           result
-==============   ==============   ===========  ===============================
-Pose             int >= 0         Pose         exponentiation [1]
-Pose             int <=0          Pose         exponentiation [1] then inverse
-==============   ==============   ===========  ===============================
-
-Notes:
-
-#. By repeated multiplication.
-   
-==============   ==============   ===========  =========================
-           Operands                   ``+``
--------------------------------   --------------------------------------
-    left             right            type           result
-==============   ==============   ===========  =========================
-Pose             Pose             matrix       elementwise sum
-Pose             scalar           matrix       add scalar to all elements
-scalar           Pose             matrix       add scalarto all elements
-==============   ==============   ===========  =========================
-
-==============   ==============   ===========  =================================
-           Operands                   ``-``
--------------------------------   ----------------------------------------------
-    left             right            type           result
-==============   ==============   ===========  =================================
-Pose             Pose             matrix       elementwise difference
-Pose             scalar           matrix       subtract scalar from all elements
-scalar           Pose             matrix       subtract all elements from scalar
-==============   ==============   ===========  =================================
-
-Unit quaternions and quaternions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Quaternions form a ring and support the operations of multiplication, addition and
-subtraction. Unit quaternions form a group and the group operator is composition represented
-by the multiplication operator.
-
-==============   ==============   ==============  ======================
-           Operands                   ``*``
--------------------------------   --------------------------------------
-    left             right            type           result
-==============   ==============   ==============  ======================
-Quaternion       Quaternion       Quaternion      Hamilton product
-Quaternion       UnitQuaternion   Quaternion      Hamilton product
-Quaternion       scalar           Quaternion      scalar product #2
-UnitQuaternion   Quaternion       Quaternion      Hamilton product
-UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product #1
-UnitQuaternion   scalar           Quaternion      scalar product #2
-UnitQuaternion   3-vector         3-vector        vector rotation #3
-UnitQuaternion   3xN matrix       3xN matrix      vector transform #2#3
-==============   ==============   ==============  ======================
-
-Notes:
-
-#. Composition.
-#. N=2 (for SO2 and SE2),  N=3 (for SO3 and SE3).
-#. Matrix columns are taken as the vectors to transform.
-
-==============   ==============   ==============  ================================
-           Operands                   ``/``
--------------------------------   ------------------------------------------------
-    left             right            type           result
-==============   ==============   ==============  ================================
-UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product with inverse #1
-==============   ==============   ==============  ================================
-
-Notes:
-
-#. The left operand is multiplied by the ``.inv`` property of the right operand.
-
-==============   ==============   ==============  ===============================
-           Operands                     ``**``
--------------------------------   -----------------------------------------------
-    left             right            type           result
-==============   ==============   ==============  ===============================
-Quaternion       int >= 0         Quaternion      exponentiation [1]
-UnitQuaternion   int >= 0         UnitQuaternion  exponentiation [1]
-UnitQuaternion   int <=0          UnitQuaternion  exponentiation [1] then inverse
-==============   ==============   ==============  ===============================
-
-Notes:
-
-#. By repeated multiplication.
-
-==============   ==============   ==============  ===================
-           Operands                            ``+``
--------------------------------   -----------------------------------
-    left             right            type           result
-==============   ==============   ==============  ===================
-Quaternion       Quaternion       Quaternion      elementwise sum
-Quaternion       UnitQuaternion   Quaternion      elementwise sum
-Quaternion       scalar           Quaternion      add to each element
-UnitQuaternion   Quaternion       Quaternion      elementwise sum
-UnitQuaternion   UnitQuaternion   Quaternion      elementwise sum
-UnitQuaternion   scalar           Quaternion      add to each element
-==============   ==============   ==============  ===================
+  >>> T / T
+  SE3(array([[1., 0., 0., 0.],
+            [0., 1., 0., 0.],
+            [0., 0., 1., 0.],
+            [0., 0., 0., 1.]]))
 
 
-==============   ==============   ==============  ==================================
-           Operands                          ``-``
--------------------------------   --------------------------------------------------
-    left             right            type           result
-==============   ==============   ==============  ==================================
-Quaternion       Quaternion       Quaternion      elementwise difference
-Quaternion       UnitQuaternion   Quaternion      elementwise difference
-Quaternion       scalar           Quaternion      subtract scalar from each element
-UnitQuaternion   Quaternion       Quaternion      elementwise difference
-UnitQuaternion   UnitQuaternion   Quaternion      elementwise difference
-UnitQuaternion   scalar           Quaternion      subtract scalar from each element
-==============   ==============   ==============  ==================================
+
+Constructors
+^^^^^^^^^^^^
+
+For every group the identity value can be constructed by instantiating the class with no arguments::
+
+    >>> UnitQuaternion()
+    1.000000 << 0.000000, 0.000000, 0.000000 >>
+
+    >>> SE3()
+    SE3(array([[1., 0., 0., 0.],
+              [0., 1., 0., 0.],
+              [0., 0., 1., 0.],
+              [0., 0., 0., 1.]]))
+
+Other constructors are implemented as class methods and are common to ``SE3``, ``SO3``, ``SE2``, ``SO2`` and ``UnitQuaternion``
+and begin with an uppercase letter:
+
+-----------   --------------------------------------------------
+Constructor   Meaning
+-----------   --------------------------------------------------
+Rx            Pure rotation about the x-axis
+Ry            Pure rotation about the y-axis
+Rz            Pure rotation about the z-axis
+RPY           specified as roll-pitch-yaw angles
+Eul           specified as Euler angles
+AngVec        specified as rotational axis and rotation angle
+Rand          random rotation
+Exp           specified as se(2) or se(3) matrix
+empty         no values
+-----------   --------------------------------------------------
+
+Non-group operations
+^^^^^^^^^^^^^^^^^^^^
+
+The classes ``SE3``, ``SO3``, ``SE2``, ``SO2`` and ``UnitQuaternion`` support vector transformation when 
+premultiplying a vector (or a set of vectors columnwise in a NumPy array) using the ``*`` operator.
+This is either rotation about the origin (for ``SO3``, ``SO2`` and ``UnitQuaternion``) or rotation and translation (``SE3``, ``SE2``).  
+For ``UnitQuaternion`` this is performed directly using Hamilton products :math:`q \circ \mathring{v} \circ q^{-1}`.
+For ``SO3`` and ``SO2`` this is a matrix-vector product, for ``SE3`` and ``SE2`` this is a matrix-vector product with the vectors
+being first converted to homogeneous form, and the result converted back to Euclidean form.
+
+Scalar multiplication, addition and subtraction are not defined group operations so the result will be a NumPy array rather than a class,
+and the operations are performed elementwise, for example::
+
+  >>> T = SE3.Rx(0.3)
+  >>> T - T
+  array([[0., 0., 0., 0.],
+        [0., 0., 0., 0.],
+        [0., 0., 0., 0.],
+        [0., 0., 0., 0.]])
+
+or in the case of a scalar broadcast to each element::
+
+  >>> T - 1
+  array([[ 0.        , -1.        , -1.        , -1.        ],
+        [-1.        , -0.04466351, -1.29552021, -1.        ],
+        [-1.        , -0.70447979, -0.04466351, -1.        ],
+        [-1.        , -1.        , -1.        ,  0.        ]])
+  >>> 2 * T
+  array([[ 2.        ,  0.        ,  0.        ,  0.        ],
+        [ 0.        ,  1.91067298, -0.59104041,  0.        ],
+        [ 0.        ,  0.59104041,  1.91067298,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  2.        ]])
+
+The exception is the ``Quaternion`` class which supports these since a quaternion is a ring not a group::
+
+  >>> q
+  1.000000 < 2.000000, 3.000000, 4.000000 >
+  >>> 2 * q
+  2.000000 < 4.000000, 6.000000, 8.000000 >
+
+Compare this to the unit quaternion case::
+
+  >>> q = UnitQuaternion([1, 2, 3, 4])
+  >>> q
+  0.182574 << 0.365148, 0.547723, 0.730297 >>
+
+  >>> 2 * q
+  0.365148 < 0.730297, 1.095445, 1.460593 >
+
+Noting that unit quaternions are denoted by double angle bracket delimiters of their vector part,
+whereas a general quaternion uses single angle brackets.  The product of a general quaternion and a 
+unit quaternion is always a general quaternion.
 
 
-Any other operands will raise a ``ValueError`` exception.
+Displaying values
+-----------------
 
-        
+Each class has a compact text representation via its *repr* method and its ``str()`` method.
+The ``printline()`` methods prints a single-line for tabular listing to the console, file and returns a string::
+
+  >>> _ = X.printline()
+  t =      0.6,    -0.29,    -0.98; rpy/zyx =  1.5e+02,       36,      -44 deg
+
+The classes ``SE3``, ``SO3``, ``SE2`` and ``SO2`` can provide colorized text output to the console::
+
+  >>> T = SE3()
+  >>> T.print()
+
+.. image:: ../../figs/colored_output.png
+
+with rotational elements in red, translational elements in blue and constants in grey.
+
+Graphics
+--------
+
+Each class has a ``plot`` method that displays the corresponding pose as a coordinate frame, for example::
+
+  >>> X = SE3.Rand()
+  >>> X.plot()
+
+.. image:: figs/fig1.png
+
+and there are many display options.
+
+The ``animate`` method animates the motion of the coordinate frame from the null-pose, for example:
+
+  >>> X = SE3.Rand()
+  >>> X.animate(frame='A', arrow=False)
+
+.. image:: figs/animate.gif
+
+
+Constructors
+------------
+
+The constructor for each class can accept:
+
+* no arguments, in which case the identity element is created::
+
+    >>> SE2()
+    SE2(array([[1., 0., 0.],
+              [0., 1., 0.],
+              [0., 0., 1.]]))
+
+* class specific values, eg. ``SE2(x, y, theta)`` or ``SE3(x, y, z)``, for example::
+
+    >>> SE2(1, 2, 0.3)
+    SE2(array([[ 0.95533649, -0.29552021,  1.        ],
+              [ 0.29552021,  0.95533649,  2.        ],
+              [ 0.        ,  0.        ,  1.        ]]))
+    >>> UnitQuaternion([1, 0, 0, 0])
+    1.000000 << 0.000000, 0.000000, 0.000000 >>
+
+* a numeric value for the class as a NumPy array or a 1D list or tuple which will be checked for validity::
+
+    >>> SE2(numpy.identity(3))
+    SE2(array([[1., 0., 0.],
+              [0., 1., 0.],
+              [0., 0., 1.]]))
+
+* a list of numeric values, each of which will be checked for validity::
+
+    >>> X = SE2([numpy.identity(3), numpy.identity(3), numpy.identity(3), numpy.identity(3)])
+    >>> X
+    SE2([
+    array([[1., 0., 0.],
+          [0., 1., 0.],
+          [0., 0., 1.]]),
+    array([[1., 0., 0.],
+          [0., 1., 0.],
+          [0., 0., 1.]]),
+    array([[1., 0., 0.],
+          [0., 1., 0.],
+          [0., 0., 1.]]),
+    array([[1., 0., 0.],
+          [0., 1., 0.],
+          [0., 0., 1.]]) ])
+    >>> len(X)
+    4
+
+.. _list-powers:
+
 List capability
 ---------------
 
@@ -350,7 +417,28 @@ len(X)   len(Y)   len(Z)     results
   M        M        M       Z[i] = X[i] op Y[i]
 ======   ======   ======  ========================
 
-Any other combination of lengths is not allowed and will raise a ``ValueError`` exception.   
+Any other combination of lengths is not allowed and will raise a ``ValueError`` exception.
+
+Implementation
+--------------
+
+=========  ===========================
+Operator      dunder method
+=========  ===========================
+  ``*``      **__mul__** , __rmul__
+  ``*=``     __imul__
+  ``/``      **__truediv__**
+  ``/=``     __itruediv__
+  ``**``     **__pow__**
+  ``**=``    __ipow__
+  ``+``      **__add__**, __radd__
+  ``+=``     __iadd__
+  ``-``      **__sub__**, __rsub__
+  ``-=``     __isub__
+=========  ===========================
+
+This online documentation includes just the method shown in bold.
+The other related methods all invoke that method.
 
 Low-level spatial math
 ======================

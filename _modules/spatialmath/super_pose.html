@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -13,12 +12,19 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -26,16 +32,11 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> Spatial Maths package
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> Spatial Maths package
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,13 +85,15 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html#function-library-base">Function library (base)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -128,7 +132,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -157,6 +161,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
+<span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
 
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
@@ -197,7 +202,7 @@
 <span class="c1"># print(Fore.BLACK + Style.DIM + &#39;0 0 1&#39;)</span>
 
 
-<span class="k">class</span> <span class="nc">SMPose</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SMPose</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Superclass for SO(N) and SE(N) objects</span>
 
@@ -306,30 +311,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument to constructor&#39;</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct a new pose object with zero items (superclass method)</span>
-<span class="sd">        </span>
-<span class="sd">        :param cls: The pose subclass</span>
-<span class="sd">        :type cls: SO2, SE2, SO3, SE3</span>
-<span class="sd">        :return: a pose with zero values</span>
-<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
-
-<span class="sd">        This constructs an empty pose container which can be appended to.  For example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SO2.Empty()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            0</span>
-<span class="sd">            &gt;&gt;&gt; x.append(SO2(20, &#39;deg&#39;))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-<span class="sd">            </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">X</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">X</span>
 
 <span class="c1"># ------------------------------------------------------------------------ #</span>
 
@@ -458,164 +439,6 @@
 
         
 <span class="c1"># ------------------------------------------------------------------------ #</span>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Access value of a pose object (superclass method)</span>
-
-<span class="sd">        :param i: index of element to return</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :return: the specific element of the pose</span>
-<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises IndexError: if the element is out of bounds</span>
-
-<span class="sd">        Note that only a single index is supported, slices are not.</span>
-<span class="sd">        </span>
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; x[1]</span>
-<span class="sd">               1           0           0           0            </span>
-<span class="sd">               0           0          -1           0            </span>
-<span class="sd">               0           1           0           0            </span>
-<span class="sd">               0           0           0           1  </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assign a value to a pose object (superclass method)</span>
-<span class="sd">        </span>
-<span class="sd">        :param i: index of element to assign to</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of assigned value</span>
-
-<span class="sd">        Assign the argument to an element of the object&#39;s internal list of values.</span>
-<span class="sd">        This supports the assignement operator, for example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3([SE3() for i in range(10)]) # sequence of ten identity values</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            10</span>
-<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(0.2)   # assign to position 3 in the list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
-
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Append a value to a pose object (superclass method)</span>
-<span class="sd">        </span>
-<span class="sd">        :param x: the value to append</span>
-<span class="sd">        :type x: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of appended object</span>
-
-<span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-<span class="sd">            &gt;&gt;&gt; x.append(SE3.Rx(0.1))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#print(&#39;in append method&#39;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append a pose sequence - use extend&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
-        
-
-    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extend sequence of values of a pose object (superclass method)</span>
-<span class="sd">        </span>
-<span class="sd">        :param x: the value to extend</span>
-<span class="sd">        :type x: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of appended object</span>
-
-<span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-<span class="sd">            &gt;&gt;&gt; x.append(SE3.Rx(0.1))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#print(&#39;in extend method&#39;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant extend a singleton pose  - use append&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert a value to a pose object (superclass method)</span>
-
-<span class="sd">        :param i: element to insert value before</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of inserted value</span>
-
-<span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; x.insert(0, SE3.Rx(0.1)) # insert at position 0 in the list</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pop value of a pose object (superclass method)</span>
-
-<span class="sd">        :return: the specific element of the pose</span>
-<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises IndexError: if there are no values to pop</span>
-
-<span class="sd">        Removes the first pose value from the sequence in the pose object.</span>
-<span class="sd">        </span>
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; y = x.pop()</span>
-<span class="sd">            &gt;&gt;&gt; y</span>
-<span class="sd">            SE3(array([[ 1.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00, -1.0000000e+00, -1.2246468e-16,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00,  1.2246468e-16, -1.0000000e+00,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  1.0000000e+00]]))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
 
 
 <span class="c1"># ------------------------------------------------------------------------ #</span>
@@ -1094,7 +917,7 @@
 <span class="sd">        :param `**kwargs`: plotting options</span>
 <span class="sd">        </span>
 <span class="sd">        - ``X.plot()`` displays the pose ``X`` as a coordinate frame in either</span>
-<span class="sd">          2D or 3D axes.  There are many options, see the links below.</span>
+<span class="sd">          2D or 3D.  There are many options, see the links below.</span>
 
 <span class="sd">        Example::</span>
 <span class="sd">            </span>
@@ -1116,15 +939,18 @@
 <span class="sd">        :type start: same as ``self``</span>
 <span class="sd">        :param `**kwargs`: plotting options</span>
 <span class="sd">        </span>
-<span class="sd">        - ``X.plot()`` displays the pose ``X`` as a coordinate frame moving</span>
-<span class="sd">          from the origin, or ``T0``, in either 2D or 3D axes.  There are </span>
+<span class="sd">        - ``X.animate()`` displays the pose ``X`` as a coordinate frame moving</span>
+<span class="sd">          from the origin in either 2D or 3D.  There are many options, see the </span>
+<span class="sd">          links below.</span>
+<span class="sd">        - ``X.animate(*args, start=X1)`` displays the pose ``X`` as a coordinate</span>
+<span class="sd">          frame moving from pose ``X1``, in either 2D or 3D.  There are </span>
 <span class="sd">          many options, see the links below.</span>
 
 <span class="sd">        Example::</span>
 <span class="sd">            </span>
 <span class="sd">            &gt;&gt;&gt; X = SE3.Rx(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; X.animate(frame=&#39;A&#39;, color=&#39;green&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; X.animate(start=X.inv())</span>
+<span class="sd">            &gt;&gt;&gt; X.animate(start=SE3.Ry(0.2))</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms2d.tranimate2`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1641,303 +1467,6 @@
                 <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
-
-
-
-    
-    
-<span class="k">class</span> <span class="nc">SMTwist</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Superclass for 2D and 3D twist objects</span>
-
-<span class="sd">    Subclasses are:</span>
-
-<span class="sd">    - ``Twist2`` representing rigid-body motion in 2D as a 3-vector</span>
-<span class="sd">    - ``Twist`` representing rigid-body motion in 3D as a 6-vector</span>
-
-<span class="sd">    A twist is the unique elements of the logarithm of the corresponding SE(N)</span>
-<span class="sd">    matrix.</span>
-<span class="sd">    </span>
-<span class="sd">    Arithmetic operators are overloaded but the operation they perform depend</span>
-<span class="sd">    on the types of the operands.  For example:</span>
-
-<span class="sd">    - ``*`` will compose two instances of the same subclass, and the result will be</span>
-<span class="sd">      an instance of the same subclass, since this is a group operator.</span>
-
-<span class="sd">    These classes all inherit from ``UserList`` which enables them to </span>
-<span class="sd">    represent a sequence of values, ie. an ``Twist`` instance can contain</span>
-<span class="sd">    a sequence of twists.  Most of the Python ``list`` operators</span>
-<span class="sd">    are applicable::</span>
-
-<span class="sd">        &gt;&gt;&gt; x = Twist()  # new instance with zero value</span>
-<span class="sd">        &gt;&gt;&gt; len(x)     # it is a sequence of one value</span>
-<span class="sd">        1</span>
-<span class="sd">        &gt;&gt;&gt; x.append(x)  # append to itself</span>
-<span class="sd">        &gt;&gt;&gt; len(x)       # it is a sequence of two values</span>
-<span class="sd">        2</span>
-<span class="sd">        &gt;&gt;&gt; x[1]         # the element has a 4x4 matrix value</span>
-<span class="sd">        SE3([</span>
-<span class="sd">        array([[1., 0., 0., 0.],</span>
-<span class="sd">               [0., 1., 0., 0.],</span>
-<span class="sd">               [0., 0., 1., 0.],</span>
-<span class="sd">            [0., 0., 0., 1.]]) ])</span>
-<span class="sd">        &gt;&gt;&gt; x[1] = SE3.Rx(0.3)  # set an elements of the sequence</span>
-<span class="sd">        &gt;&gt;&gt; x.reverse()         # reverse the elements in the sequence</span>
-<span class="sd">        &gt;&gt;&gt; del x[1]            # delete an element</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># ------------------------- list support -------------------------------#</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># handle common cases</span>
-        <span class="c1">#  deep copy</span>
-        <span class="c1">#  numpy array</span>
-        <span class="c1">#  list of numpy array</span>
-        <span class="c1"># validity checking??</span>
-        <span class="c1"># TODO should this be done by __new__?</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>   <span class="c1"># enable UserList superpowers</span>
-        
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct an empty twist object (superclass method)</span>
-<span class="sd">        </span>
-<span class="sd">        :param cls: The twist subclass</span>
-<span class="sd">        :type cls: type</span>
-<span class="sd">        :return: a twist object with zero values</span>
-<span class="sd">        :rtype: Twist or Twist2 instance</span>
-
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = Twist.Empty()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">X</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">X</span>
-    
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Twist as a vector (superclass property)</span>
-<span class="sd">        </span>
-<span class="sd">        :return: Twist vector</span>
-<span class="sd">        :rtype: numpy.ndarray, shape=(N,)</span>
-<span class="sd">        </span>
-<span class="sd">        - ``X.S`` is a 3-vector if X is a ``Twist2`` instance, and a 6-vector if</span>
-<span class="sd">          X is a ``Twist`` instance.</span>
-
-<span class="sd">        Notes::</span>
-<span class="sd">            </span>
-<span class="sd">            </span>
-<span class="sd">        - the vector is the unique elements of the se(N) representation</span>
-<span class="sd">        - the vector is sometimes referred to as the twist coordinate vector.</span>
-<span class="sd">        - if ``len(X)`` &gt; 1 then return a list of vectors.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># get the underlying numpy array</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
-        
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">isprismatic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Test for prismatic twist (superclass property)</span>
-<span class="sd">        </span>
-<span class="sd">        :return: If twist is purely prismatic</span>
-<span class="sd">        :rtype: book</span>
-<span class="sd">        </span>
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = Twist.R([1,2,3], [4,5,6])</span>
-<span class="sd">            &gt;&gt;&gt; x.isprismatic</span>
-<span class="sd">            False</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Unit twist</span>
-
-<span class="sd">        TW.unit() is a Twist object representing a unit aligned with the Twist</span>
-<span class="sd">        TW.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">):</span>
-            <span class="c1"># rotational twist</span>
-            <span class="k">return</span> <span class="n">Twist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># prismatic twist</span>
-            <span class="k">return</span> <span class="n">Twist</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Test for unit twist (superclass property)</span>
-<span class="sd">        </span>
-<span class="sd">        :return: If twist is a unit-twist</span>
-<span class="sd">        :rtype: bool</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
-
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Access value of a twist object (superclass method)</span>
-
-<span class="sd">        :param i: index of element to return</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :return: the specific element of the twist</span>
-<span class="sd">        :rtype: Twist or Twist2 instance</span>
-<span class="sd">        :raises IndexError: if the element is out of bounds</span>
-
-<span class="sd">        Note that only a single index is supported, slices are not.</span>
-<span class="sd">        </span>
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; x[1]</span>
-<span class="sd">               1           0           0           0            </span>
-<span class="sd">               0           0          -1           0            </span>
-<span class="sd">               0           1           0           0            </span>
-<span class="sd">               0           0           0           1  </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># print(&#39;getitem&#39;, i, &#39;class&#39;, self.__class__)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assign a value to a twist object (superclass method)</span>
-<span class="sd">        </span>
-<span class="sd">        :param i: index of element to assign to</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: Twist or Twist2 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of assigned value</span>
-
-<span class="sd">        Assign the argument to an element of the object&#39;s internal list of values.</span>
-<span class="sd">        This supports the assignement operator, for example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3([SE3() for i in range(10)]) # sequence of ten identity values</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            10</span>
-<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(0.2)   # assign to position 3 in the list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
-    
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Append a twist object</span>
-<span class="sd">        </span>
-<span class="sd">        :param x: A twist subclass</span>
-<span class="sd">        :type x: subclass</span>
-<span class="sd">        :raises ValueError: incorrect type of appended object</span>
-
-<span class="sd">        Appends the argument to the object&#39;s internal list.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = Twist()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-<span class="sd">            &gt;&gt;&gt; x.append(Twist())</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#print(&#39;in append method&#39;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append a pose sequence - use extend&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pop value of a pose object (superclass method)</span>
-
-<span class="sd">        :return: the specific element of the pose</span>
-<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises IndexError: if there are no values to pop</span>
-
-<span class="sd">        Removes the first pose value from the sequence in the pose object.</span>
-<span class="sd">        </span>
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; y = x.pop()</span>
-<span class="sd">            &gt;&gt;&gt; y</span>
-<span class="sd">            SE3(array([[ 1.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00, -1.0000000e+00, -1.2246468e-16,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00,  1.2246468e-16, -1.0000000e+00,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  1.0000000e+00]]))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
-    
-    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert a value to a pose object (superclass method)</span>
-
-<span class="sd">        :param i: element to insert value before</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of inserted value</span>
-
-<span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; x.inert(0, SE3.Rx(0.1)) # insert at position 0 in the list</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
-        
-
-    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        %Twist.prod Compound array of twists</span>
-<span class="sd">        %</span>
-<span class="sd">        TW.prod is a twist representing the product (composition) of the</span>
-<span class="sd">        successive elements of TW (1xN), an array of Twists.</span>
-<span class="sd">                %</span>
-<span class="sd">                %</span>
-<span class="sd">        See also RTBPose.prod, Twist.mtimes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">out</span> <span class="o">*=</span> <span class="n">t</span>
-        <span class="k">return</span> <span class="n">out</span>
-
-
 </pre></div>
 
            </div>
@@ -1950,11 +1479,22 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Peter Corke
+      <span class="lastupdated">
+        Last updated on 01-Sep-2020.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1965,7 +1505,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

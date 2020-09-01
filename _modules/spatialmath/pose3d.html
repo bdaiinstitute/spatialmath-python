@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -13,12 +12,19 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -26,16 +32,11 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> Spatial Maths package
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> Spatial Maths package
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,13 +85,15 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html#function-library-base">Function library (base)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -128,7 +132,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -157,6 +161,25 @@
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">super_pose</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="c1"># from spatialmath import Twist</span>
+<span class="kn">import</span> <span class="nn">spatialmath</span> <span class="k">as</span> <span class="nn">sm</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Classes to abstract 3D pose and orientation using matrices in SO(3) and SE(3)</span>
+
+<span class="sd">To use::</span>
+
+<span class="sd">    from spatialmath.pose3d import *</span>
+<span class="sd">    T = SE3.Rx(0.3)</span>
+
+<span class="sd">    import spatialmath as sm</span>
+<span class="sd">    T = sm.SE3.Rx(0.3)</span>
+
+
+<span class="sd"> .. inheritance-diagram:: spatialmath.pose3d</span>
+<span class="sd">    :top-classes: collections.UserList</span>
+<span class="sd">    :parts: 1</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># ============================== SO3 =====================================#</span>
 
@@ -168,7 +191,9 @@
 <span class="sd">    This subclass represents rotations in 3D space.  Internally it is a 3x3 orthogonal matrix belonging</span>
 <span class="sd">    to the group SO(3).</span>
 
-<span class="sd">    .. inheritance-diagram::</span>
+<span class="sd"> .. inheritance-diagram:: spatialmath.pose3d.SO3</span>
+<span class="sd">    :top-classes: collections.UserList</span>
+<span class="sd">    :parts: 1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SO3.__init__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -335,6 +360,36 @@
             <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span></div>
+
+<div class="viewcode-block" id="SO3.angvec"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.angvec">[docs]</a>    <span class="k">def</span> <span class="nf">angvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        SO(3) or SE(3) as angle and rotation vector</span>
+
+<span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
+<span class="sd">        :type unit: str</span>
+<span class="sd">        :param check: check that rotation matrix is valid</span>
+<span class="sd">        :type check: bool</span>
+<span class="sd">        :return: :math:`(\theta, {\bf v})`</span>
+<span class="sd">        :rtype: float, numpy.ndarray, shape=(3,)</span>
+
+<span class="sd">        ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation </span>
+<span class="sd">        angle and a rotation axis which is equivalent to the rotation of</span>
+<span class="sd">        the unit quaternion ``q``.</span>
+
+<span class="sd">        By default the angle is in radians but can be changed setting `unit=&#39;deg&#39;`.</span>
+
+<span class="sd">        Notes:</span>
+
+<span class="sd">        - If the input is SE(3) the translation component is ignored.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">        &gt;&gt;&gt; UnitQuaternion.Rz(0.3).angvec()</span>
+<span class="sd">            (0.3, array([0., 0., 1.]))</span>
+
+<span class="sd">        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2angvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Ad"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SO3.Ad">[docs]</a>    <span class="k">def</span> <span class="nf">Ad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -636,6 +691,16 @@
 
 
 <div class="viewcode-block" id="SE3"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3">[docs]</a><span class="k">class</span> <span class="nc">SE3</span><span class="p">(</span><span class="n">SO3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SE(3) subclass</span>
+
+<span class="sd">    This subclass represents rigid-body motion in 3D space.  Internally it is a 4x4 homogeneous transformation matrix belonging</span>
+<span class="sd">    to the group SE(3).</span>
+
+<span class="sd"> .. inheritance-diagram:: spatialmath.pose3d.SE3</span>
+<span class="sd">    :top-classes: collections.UserList</span>
+<span class="sd">    :parts: 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SE3.__init__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -749,6 +814,9 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transform3d.tr2delta`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">X2</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SE3.Twist"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Twist">[docs]</a>    <span class="k">def</span> <span class="nf">Twist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">sm</span><span class="o">.</span><span class="n">Twist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 <span class="c1"># ------------------------------------------------------------------------ #</span>
 
 <div class="viewcode-block" id="SE3.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1064,9 +1132,8 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
 
     <span class="kn">import</span> <span class="nn">pathlib</span>
-    <span class="kn">import</span> <span class="nn">os.path</span>
 
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s2">&quot;test_pose3d.py&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;test_pose3d.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 
            </div>
@@ -1079,11 +1146,22 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Peter Corke
+      <span class="lastupdated">
+        Last updated on 01-Sep-2020.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1094,7 +1172,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
