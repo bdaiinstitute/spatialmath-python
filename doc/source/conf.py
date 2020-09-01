@@ -85,6 +85,6 @@ html_theme_options = {
 # html_static_path = ['_static']
 
 # autodoc_mock_imports = ["numpy", "scipy"] 
-
+html_last_updated_fmt = '%d-%b-%Y'
 # extensions = ['rst2pdf.pdfbuilder']
 # pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Your Name'),]
