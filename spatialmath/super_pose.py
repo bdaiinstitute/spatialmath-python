@@ -7,6 +7,7 @@ from collections import UserList
 import copy
 from spatialmath.base import argcheck
 from spatialmath import base as tr
+from spatialmath.smuserlist import SMUserList
 
 
 _eps = np.finfo(np.float64).eps
@@ -47,7 +48,7 @@ except ImportError:
 # print(Fore.BLACK + Style.DIM + '0 0 1')
 
 
-class SMPose(UserList):
+class SMPose(SMUserList):
     """
     Superclass for SO(N) and SE(N) objects
 
@@ -156,30 +157,6 @@ class SMPose(UserList):
             self.data = arg.data.copy()
         else:
             raise ValueError('bad argument to constructor')
-
-    @classmethod
-    def Empty(cls):
-        """
-        Construct a new pose object with zero items (superclass method)
-        
-        :param cls: The pose subclass
-        :type cls: SO2, SE2, SO3, SE3
-        :return: a pose with zero values
-        :rtype: SO2, SE2, SO3, SE3 instance
-
-        This constructs an empty pose container which can be appended to.  For example::
-            
-            >>> x = SO2.Empty()
-            >>> len(x)
-            0
-            >>> x.append(SO2(20, 'deg'))
-            >>> len(x)
-            1
-            
-        """
-        X = cls()
-        X.data = []
-        return X
 
 # ------------------------------------------------------------------------ #
 
@@ -308,164 +285,6 @@ class SMPose(UserList):
 
         
 # ------------------------------------------------------------------------ #
-
-    def __getitem__(self, i):
-        """
-        Access value of a pose object (superclass method)
-
-        :param i: index of element to return
-        :type i: int
-        :return: the specific element of the pose
-        :rtype: SO2, SE2, SO3, SE3 instance
-        :raises IndexError: if the element is out of bounds
-
-        Note that only a single index is supported, slices are not.
-        
-        Example::
-            
-            >>> x = SE3.Rx([0, math.pi/2, math.pi])
-            >>> len(x)
-            3
-            >>> x[1]
-               1           0           0           0            
-               0           0          -1           0            
-               0           1           0           0            
-               0           0           0           1  
-        """
-
-        if isinstance(i, slice):
-            return self.__class__([self.data[k] for k in range(i.start or 0, i.stop or len(self), i.step or 1)])
-        else:
-            return self.__class__(self.data[i])
-        
-    def __setitem__(self, i, value):
-        """
-        Assign a value to a pose object (superclass method)
-        
-        :param i: index of element to assign to
-        :type i: int
-        :param value: the value to insert
-        :type value: SO2, SE2, SO3, SE3 instance
-        :raises ValueError: incorrect type of assigned value
-
-        Assign the argument to an element of the object's internal list of values.
-        This supports the assignement operator, for example::
-            
-            >>> x = SE3([SE3() for i in range(10)]) # sequence of ten identity values
-            >>> len(x)
-            10
-            >>> x[3] = SE3.Rx(0.2)   # assign to position 3 in the list
-        """
-        if not type(self) == type(value):
-            raise ValueError("cant append different type of pose object")
-        if len(value) > 1:
-            raise ValueError("cant insert a pose sequence - must have len() == 1")
-        self.data[i] = value.A
-
-    def append(self, x):
-        """
-        Append a value to a pose object (superclass method)
-        
-        :param x: the value to append
-        :type x: SO2, SE2, SO3, SE3 instance
-        :raises ValueError: incorrect type of appended object
-
-        Appends the argument to the object's internal list of values.
-        
-        Examples::
-            
-            >>> x = SE3()
-            >>> len(x)
-            1
-            >>> x.append(SE3.Rx(0.1))
-            >>> len(x)
-            2
-        """
-        #print('in append method')
-        if not type(self) == type(x):
-            raise ValueError("cant append different type of pose object")
-        if len(x) > 1:
-            raise ValueError("cant append a pose sequence - use extend")
-        super().append(x.A)
-        
-
-    def extend(self, x):
-        """
-        Extend sequence of values of a pose object (superclass method)
-        
-        :param x: the value to extend
-        :type x: SO2, SE2, SO3, SE3 instance
-        :raises ValueError: incorrect type of appended object
-
-        Appends the argument to the object's internal list of values.
-        
-        Examples::
-            
-            >>> x = SE3()
-            >>> len(x)
-            1
-            >>> x.append(SE3.Rx(0.1))
-            >>> len(x)
-            2
-        """
-        #print('in extend method')
-        if not type(self) == type(x):
-            raise ValueError("cant append different type of pose object")
-        if len(x) == 0:
-            raise ValueError("cant extend a singleton pose  - use append")
-        super().extend(x.A)
-
-    def insert(self, i, value):
-        """
-        Insert a value to a pose object (superclass method)
-
-        :param i: element to insert value before
-        :type i: int
-        :param value: the value to insert
-        :type value: SO2, SE2, SO3, SE3 instance
-        :raises ValueError: incorrect type of inserted value
-
-        Inserts the argument into the object's internal list of values.
-        
-        Examples::
-            
-            >>> x = SE3()
-            >>> x.insert(0, SE3.Rx(0.1)) # insert at position 0 in the list
-            >>> len(x)
-            2
-        """
-        if not type(self) == type(value):
-            raise ValueError("cant append different type of pose object")
-        if len(value) > 1:
-            raise ValueError("cant insert a pose sequence - must have len() == 1")
-        super().insert(i, value.A)
-        
-    def pop(self):
-        """
-        Pop value of a pose object (superclass method)
-
-        :return: the specific element of the pose
-        :rtype: SO2, SE2, SO3, SE3 instance
-        :raises IndexError: if there are no values to pop
-
-        Removes the first pose value from the sequence in the pose object.
-        
-        Example::
-            
-            >>> x = SE3.Rx([0, math.pi/2, math.pi])
-            >>> len(x)
-            3
-            >>> y = x.pop()
-            >>> y
-            SE3(array([[ 1.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
-                       [ 0.0000000e+00, -1.0000000e+00, -1.2246468e-16,  0.0000000e+00],
-                       [ 0.0000000e+00,  1.2246468e-16, -1.0000000e+00,  0.0000000e+00],
-                       [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  1.0000000e+00]]))
-            >>> len(x)
-            2
-        """
-
-        return self.__class__(super().pop())
 
 
 # ------------------------------------------------------------------------ #
