@@ -40,6 +40,14 @@ class SMUserList(UserList):
         else:
             return self.data
 
+    @property
+    def A(self):
+        # get the underlying numpy array
+        if len(self.data) == 1:
+            return self.data[0]
+        else:
+            return self.data
+
     # ------------------------------------------------------------------------ #
 
     def __getitem__(self, i):
