@@ -7,6 +7,8 @@ import numpy as np
 from spatialmath.base import argcheck
 from spatialmath import base as tr
 from spatialmath import super_pose as sp
+# from spatialmath import Twist
+import spatialmath as sm
 
 """
 Classes to abstract 3D pose and orientation using matrices in SO(3) and SE(3)
@@ -658,6 +660,9 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transform3d.tr2delta`
         """
         return tr.tr2delta(self.A, X2.A)
+
+    def Twist(self):
+        return sm.Twist(self)
 # ------------------------------------------------------------------------ #
 
     @staticmethod
