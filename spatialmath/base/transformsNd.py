@@ -11,18 +11,16 @@ Versions:
     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
     3. Peter Corke, 2020
 """
+# pylint: disable=invalid-name
 
-import sys
 import math
 import numpy as np
-from spatialmath.base.vectors import *
+from spatialmath.base import vectors as vec
 from spatialmath.base import transforms2d as t2d
 from spatialmath.base import transforms3d as t3d
 from spatialmath.base import argcheck
 
-
 _eps = np.finfo(np.float64).eps
-
 
 # ---------------------------------------------------------------------------------------#
 def r2t(R, check=False):
@@ -291,7 +289,7 @@ def iseye(S, tol=10):
     s = S.shape
     if len(s) != 2 or s[0] != s[1]:
         return False  # not a square matrix
-    return norm(S - np.eye(s[0])) < tol * _eps
+    return vec.norm(S - np.eye(s[0])) < tol * _eps
 
 
 # ========================= angle sequences
@@ -446,7 +444,7 @@ def vexa(Omega):
         raise AttributeError("expecting a 3x3 or 4x4 matrix")
 
 
-def _rodrigues(w, theta):
+def rodrigues(w, theta):
     """
     Rodrigues' formula for rotation
 
@@ -456,15 +454,15 @@ def _rodrigues(w, theta):
     :type theta: float or None
     """
     w = argcheck.getvector(w)
-    if iszerovec(w):
+    if vec.iszerovec(w):
         # for a zero so(n) return unit matrix, theta not relevant
         if len(w) == 1:
             return np.eye(2)
         else:
             return np.eye(3)
     if theta is None:
-        theta = norm(w)
-        w = unitvec(w)
+        theta = vec.norm(w)
+        w = vec.unitvec(w)
 
     skw = skew(w)
     return np.eye(skw.shape[0]) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
@@ -522,6 +520,5 @@ def e2h(v):
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
-    import os.path
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used

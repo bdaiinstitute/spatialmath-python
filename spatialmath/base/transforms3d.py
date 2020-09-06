@@ -14,21 +14,21 @@ TODO:
 
 # This file is part of the SpatialMath toolbox for Python
 # https://github.com/petercorke/spatialmath-python
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 1993-2020 Peter Corke
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,11 +38,12 @@ TODO:
 # SOFTWARE.
 
 # Contributors:
-# 
+#
 #     1. Luis Fernando Lara Tobar and Peter Corke, 2008
 #     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
 #     3. Peter Corke, 2020
 
+# pylint: disable=invalid-name
 
 import sys
 import math
@@ -51,36 +52,32 @@ from spatialmath.base import argcheck
 from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
 from spatialmath.base import quaternions as quat
-
+from spatialmath.base import animate
 
 try:  # pragma: no cover
     # print('Using SymPy')
     import sympy as sym
 
-    def issymbol(x):
+    def _issymbol(x):
         return isinstance(x, sym.Symbol)
-except BaseException:
-    def issymbol(x):
+except ImportError:
+    def _issymbol(x):  # pylint: disable=unused-argument
         return False
 
 _eps = np.finfo(np.float64).eps
-
-
-def colvec(v):
-    return np.array(v).reshape((len(v), 1))
 
 # ---------------------------------------------------------------------------------------#
 
 
 def _cos(theta):
-    if issymbol(theta):
+    if _issymbol(theta):
         return sym.cos(theta)
     else:
         return math.cos(theta)
 
 
 def _sin(theta):
-    if issymbol(theta):
+    if _issymbol(theta):
         return sym.sin(theta)
     else:
         return math.sin(theta)
@@ -971,7 +968,7 @@ def trlog(T, check=True):
 # ---------------------------------------------------------------------------------------#
 
 
-def trexp(S, theta=None):
+def trexp(S, theta=None, check=True):
     """
     Exponential of so(3) or se(3) matrix
 
@@ -1019,6 +1016,8 @@ def trexp(S, theta=None):
         # se(3) case
         if argcheck.ismatrix(S, (4, 4)):
             # augmentented skew matrix
+            if check:
+                assert trn.isskewa(S), 'argument must be a valid se(3) element'
             tw = trn.vexa(S)
         else:
             # 6 vector
@@ -1026,7 +1025,7 @@ def trexp(S, theta=None):
 
         if vec.iszerovec(tw):
             return np.eye(4)
-        
+
         if theta is None:
             (tw, theta) = vec.unittwist_norm(tw)
         else:
@@ -1038,7 +1037,7 @@ def trexp(S, theta=None):
         t = tw[0:3]
         w = tw[3:6]
 
-        R = trn._rodrigues(w, theta)
+        R = trn.rodrigues(w, theta)
 
         skw = trn.skew(w)
         V = np.eye(3) * theta + (1.0 - math.cos(theta)) * skw + (theta - math.sin(theta)) * skw @ skw
@@ -1049,6 +1048,8 @@ def trexp(S, theta=None):
         # so(3) case
         if argcheck.ismatrix(S, (3, 3)):
             # skew symmetric matrix
+            if check:
+                assert trn.isskew(S), 'argument must be a valid so(3) element'
             w = trn.vex(S)
         else:
             # 3 vector
@@ -1058,14 +1059,15 @@ def trexp(S, theta=None):
             assert vec.isunitvec(w), 'If theta is specified S must be a unit twist'
 
         # do Rodrigues' formula for rotation
-        return trn._rodrigues(w, theta)
+        return trn.rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
+
 
 def trnorm(T):
     """
     Normalize an SO(3) or SE(3) matrix
-    
+
     :param T: SO(3) or SE(3) matrix
     :type T1: np.ndarray, shape=(3,3) or (4,4)
     :param T1: second SE(3) matrix
@@ -1077,86 +1079,91 @@ def trnorm(T):
       = [N,O,A] the O and A vectors are made unit length and the normal vector
       is formed from N = O x A, and then we ensure that O and A are orthogonal
       by O = A x N.
-    
+
     - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous
       transformation T (4x4) is normalised while the translational part is
       unchanged.
 
     Notes:
-        
+
     - Only the direction of A (the z-axis) is unchanged.
     - Used to prevent finite word length arithmetic causing transforms to 
       become 'unnormalized'.
     """
 
     assert ishom(T) or isrot(T), 'expecting 3x3 or 4x4 hom xform'
-    
-    o = T[:3,1]
-    a = T[:3,2]
-    
+
+    o = T[:3, 1]
+    a = T[:3, 2]
+
     n = np.cross(o, a)        # N = O x A
     o = np.cross(a, n)        # (a)];
     R = np.stack((vec.unitvec(n), vec.unitvec(o), vec.unitvec(a)), axis=1)
-    
+
     if ishom(T):
-        return trn.rt2tr( R, T[:3,3] )
+        return trn.rt2tr(R, T[:3, 3])
     else:
         return R
-    
-def trinterp(end, start=None, s=None):
+
+
+def trinterp(start, end, s=None):
     """
     Interpolate SE(3) matrices
-    
-    :param end: final SE(3) matrix, value when s=1
-    :type end: np.ndarray, shape=(4,4)
-    :param start: initial SE(3) matrix, value when s=0, optional, defaults to identity
-    :type start: np.ndarray, shape=(4,4)
+
+    :param start: initial SO(3) or SE(3) matrix value when s=0, if None then identity is used
+    :type start: np.ndarray, shape=(3,3), (4,4)
+    :param end: final SO(3) or SE(3) matrix, value when s=1
+    :type end: np.ndarray, shape=(3,3), (4,4)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
-    :return: SE(3) matrix
-    :rtype: np.ndarray, shape=(4,4)
-    
-    - ``trinterp(T1, s=S)`` is a homogeneous transform (4x4) interpolated
-      between identity when S=0 and T1 when S=1.
-    - ``trinterp(T1, start=T0, s=S)`` as above but interpolated
-      between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
-      transforms (4x4).
-    
+    :return: SO(3) or SE(3) matrix
+    :rtype: np.ndarray, shape=(3,3), (4,4)
+
+    - ``trinterp(None, T, S)`` is a homogeneous transform (4x4) interpolated
+      between identity when S=0 and T (4x4) when S=1.
+    - ``trinterp(T0, T1, S)`` as above but interpolated
+      between T0 (4x4) when S=0 and T1 (4x4) when S=1.
+    - ``trinterp(None, R, S)`` is a rotation matrix (3x3) interpolated
+      between identity when S=0 and R (3x3) when S=1.
+    - ``trinterp(R0, R1, S)`` as above but interpolated
+      between R0 (3x3) when S=0 and R1 (3x3) when S=1.
+
     Notes:
-        
+
     - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
     :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
     """
 
     assert 0 <= s <= 1, 's outside interval [0,1]'
-    
+
     if end is None:
         #	TRINTERP(T, s)
-        
+
         q0 = quat.r2q(trn.t2r(start))
         p0 = transl(start)
-        
+
         qr = quat.slerp(quat.eye(), q0, s)
         pr = s * p0
     else:
         #	TRINTERP(T0, T1, s)
-    
+
         q0 = quat.r2q(trn.t2r(start))
         q1 = quat.r2q(trn.t2r(end))
-        
+
         p0 = transl(start)
         p1 = transl(end)
-        
+
         qr = quat.slerp(q0, q1, s)
-        pr = p0 * (1 - s) + s * p1;
-        
+        pr = p0 * (1 - s) + s * p1
+
     return trn.rt2tr(quat.q2r(qr), pr)
+
 
 def delta2tr(d):
     r"""
     Convert differential motion to SE(3)
-    
+
     :param d: differential motion as a 6-vector
     :type d: array_like
     :return: SE(3) matrix
@@ -1166,23 +1173,24 @@ def delta2tr(d):
     motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
 
     Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
-    
+
     :seealso: :func:`~tr2delta`
     """
 
-    return np.eye(4,4) + trn.skewa(d)
-    
+    return np.eye(4, 4) + trn.skewa(d)
+
+
 def trinv(T):
     r"""
     Invert an SE(3) matrix
-    
+
     :param T: an SE(3) matrix
     :type T: np.ndarray, shape=(4,4)
     :return: SE(3) matrix
     :rtype: np.ndarray, shape=(4,4)
 
     Computes an efficient inverse of an SE(3) matrix:
-    
+
     :math:`\begin{pmatrix} {\bf R} & t \\ 0\,0\,0 & 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T & -{\bf R}^T t \\ 0\,0\, 0 & 1 \end{pmatrix}`
 
     """
@@ -1190,10 +1198,11 @@ def trinv(T):
     (R, t) = trn.tr2rt(T)
     return trn.rt2tr(R.T, -R.T@t)
 
+
 def tr2delta(T0, T1=None):
     r"""
     Difference of SE(3) matrices as differential motion
-    
+
     :param T0: first SE(3) matrix
     :type T0: np.ndarray, shape=(4,4)
     :param T1: second SE(3) matrix
@@ -1212,12 +1221,12 @@ def tr2delta(T0, T1=None):
     instantaneous spatial velocity multiplied by time step.
 
     Notes:
-        
+
     - D is only an approximation to the motion T, and assumes
       that T0 ~ T1 or T ~ eye(4,4).
     - Can be considered as an approximation to the effect of spatial velocity over a
       a time interval, average spatial velocity multiplied by time.
-    
+
     Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 
     :seealso: :func:`~delta2tr`
@@ -1225,28 +1234,29 @@ def tr2delta(T0, T1=None):
 
     if T1 is None:
         # tr2delta(T)
-        
+
         assert ishom(T0), 'expecting SE(3) matrix'
         Td = T0
-        
+
     else:
         #  incremental transformation from T0 to T1 in the T0 frame
         Td = trinv(T0) @ T1
-    
+
     return np.r_[transl(Td), trn.vex(trn.t2r(Td) - np.eye(3))]
+
 
 def tr2jac(T, samebody=False):
     """
     SE(3) adjoint
-    
+
     :param T: an SE(3) matrix
     :type T: np.ndarray, shape=(4,4)
     :return: adjoint matrix
     :rtype: np.ndarray, shape=(6,6)
-    
+
     Computes an adjoint matrix that maps spatial velocity between two frames defined by
     an SE(3) matrix.  It acts like a Jacobian matrix.
-    
+
     - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or
       differential motion from frame {A} to frame {B} where the pose of {B}
       relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
@@ -1256,13 +1266,13 @@ def tr2jac(T, samebody=False):
     """
 
     assert ishom(T), 'expecting an SE(3) matrix'
-    Z = np.zeros((3,3))
-    	
+    Z = np.zeros((3, 3))
+
     if samebody:
-        (R,t) = trn.tr2rt(T)
+        (R, t) = trn.tr2rt(T)
         return np.block([[R.T, (trn.skew(t)@R).T], [Z, R.T]])
     else:
-        R = trn.t2r(T);
+        R = trn.t2r(T)
         return np.block([[R.T, Z], [Z, R.T]])
 
 
@@ -1352,7 +1362,6 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
         s += ' eul = {} {}'.format(_vec2s(fmt, angles), unit)
 
     elif a[0] == 'angvec':
-        pass
         # as a vector and angle
         (theta, v) = tr2angvec(T, unit)
         if theta == 0:
@@ -1375,16 +1384,15 @@ def _vec2s(fmt, v):
 
 try:
     import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
     _matplotlib_exists = True
-    
+
 except ImportError:  # pragma: no cover
-    def trplot(*args, **kwargs):
+    def trplot(*args, **kwargs):  # pylint: disable=unused-argument,missing-function-docstring
         print('matplotlib is not installed: pip install matplotlib')
     _matplotlib_exists = False
-        
+
 if _matplotlib_exists:
-    def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y', 'Z'], length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
+    def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None, textcolor=None, labels=('X', 'Y', 'Z'), length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  # pylint: disable=unused-argument,function-redefined
         """
         Plot a 3D coordinate frame
 
@@ -1510,19 +1518,16 @@ if _matplotlib_exists:
             ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
             ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
-        
+
         if block:
             # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
             plt.show(block=block)
         return ax
 
-    from spatialmath.base import animate as animate
-
-        
     def tranimate(T, **kwargs):
         """
         Animate a 3D coordinate frame
-    
+
         :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
         :type: numpy.ndarray, shape=(3,3) or (4,4)
         :param nframes: number of steps in the animation [defaault 100]
@@ -1533,15 +1538,15 @@ if _matplotlib_exists:
         :type interval: int
         :param movie: name of file to write MP4 movie into
         :type movie: str
-        
+
         Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
-    
+
         - If no current figure, one is created
         - If current figure, but no axes, a 3d Axes is created
-        
-    
+
+
         Examples:
-    
+
              tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
              tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
         """
@@ -1551,6 +1556,5 @@ if _matplotlib_exists:
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
-    import os.path
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used

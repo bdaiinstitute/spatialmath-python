@@ -14,19 +14,19 @@ from spatialmath.base.argcheck import *
 
 
 class Test_check(unittest.TestCase):
-    
+
     def test_ismatrix(self):
-        a = np.eye(3,3)
-        self.assertTrue(ismatrix(a, (3,3)))
-        self.assertFalse(ismatrix(a, (4,3)))
-        self.assertFalse(ismatrix(a, (3,4)))
-        self.assertFalse(ismatrix(a, (4,4)))
-        
-        self.assertTrue(ismatrix(a, (-1,3)))
-        self.assertTrue(ismatrix(a, (3,-1)))
-        self.assertTrue(ismatrix(a, (-1,-1)))
-        
-        self.assertFalse(ismatrix(1, (-1,-1)))
+        a = np.eye(3, 3)
+        self.assertTrue(ismatrix(a, (3, 3)))
+        self.assertFalse(ismatrix(a, (4, 3)))
+        self.assertFalse(ismatrix(a, (3, 4)))
+        self.assertFalse(ismatrix(a, (4, 4)))
+
+        self.assertTrue(ismatrix(a, (-1, 3)))
+        self.assertTrue(ismatrix(a, (3, -1)))
+        self.assertTrue(ismatrix(a, (-1, -1)))
+
+        self.assertFalse(ismatrix(1, (-1, -1)))
 
     def test_unit(self):
         nt.assert_equal(getunit(5, 'rad'), 5)
@@ -69,7 +69,7 @@ class Test_check(unittest.TestCase):
 
     def test_isvector(self):
         l = [1, 2, 3]
-        nt.assert_raises(AssertionError, vector, l, 4)
+        nt.assert_raises(AssertionError, assertvector, l, 4)
 
     def test_getvector(self):
         l = [1, 2, 3]

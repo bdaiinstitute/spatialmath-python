@@ -1,20 +1,20 @@
 # This file is part of the SpatialMath toolbox for Python
 # https://github.com/petercorke/spatialmath-python
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 1993-2020 Peter Corke
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,7 +24,7 @@
 # SOFTWARE.
 
 # Contributors:
-# 
+#
 #     1. Luis Fernando Lara Tobar and Peter Corke, 2008
 #     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
 #     3. Peter Corke, 2020
@@ -61,12 +61,12 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(matrix([1, 2, 3, 4])@np.r_[5, 6, 7, 8], np.r_[-60, 12, 30, 24])
         nt.assert_array_almost_equal(matrix(np.r_[1, 2, 3, 4])@np.r_[1, 2, 3, 4], np.r_[-28, 4, 6, 8])
 
-        nt.assert_array_almost_equal(pow(np.r_[1, 2, 3, 4], 0), np.r_[1, 0, 0, 0])
-        nt.assert_array_almost_equal(pow(np.r_[1, 2, 3, 4], 1), np.r_[1, 2, 3, 4])
-        nt.assert_array_almost_equal(pow([1, 2, 3, 4], 1), np.r_[1, 2, 3, 4])
-        nt.assert_array_almost_equal(pow(np.r_[1, 2, 3, 4], 2), np.r_[-28, 4, 6, 8])
-        nt.assert_array_almost_equal(pow(np.r_[1, 2, 3, 4], -1), np.r_[1, -2, -3, -4])
-        nt.assert_array_almost_equal(pow(np.r_[1, 2, 3, 4], -2), np.r_[-28, -4, -6, -8])
+        nt.assert_array_almost_equal(qpow(np.r_[1, 2, 3, 4], 0), np.r_[1, 0, 0, 0])
+        nt.assert_array_almost_equal(qpow(np.r_[1, 2, 3, 4], 1), np.r_[1, 2, 3, 4])
+        nt.assert_array_almost_equal(qpow([1, 2, 3, 4], 1), np.r_[1, 2, 3, 4])
+        nt.assert_array_almost_equal(qpow(np.r_[1, 2, 3, 4], 2), np.r_[-28, 4, 6, 8])
+        nt.assert_array_almost_equal(qpow(np.r_[1, 2, 3, 4], -1), np.r_[1, -2, -3, -4])
+        nt.assert_array_almost_equal(qpow(np.r_[1, 2, 3, 4], -2), np.r_[-28, -4, -6, -8])
 
         nt.assert_equal(isequal(np.r_[1, 2, 3, 4], np.r_[1, 2, 3, 4]), True)
         nt.assert_equal(isequal(np.r_[1, 2, 3, 4], np.r_[5, 6, 7, 8]), False)
@@ -116,9 +116,9 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(slerp(q1, q2, 0), q1)
         nt.assert_array_almost_equal(slerp(q1, q2, 1), q2)
         nt.assert_array_almost_equal(slerp(q1, q2, 0.5), np.r_[0, 1, 1, 0] / math.sqrt(2))
-        
-        nt.assert_array_almost_equal(slerp( r2q(tr.rotx(-0.3)), r2q(tr.rotx(0.3)), 0.5), np.r_[1, 0, 0, 0])
-        nt.assert_array_almost_equal(slerp( r2q(tr.roty(0.3)), r2q(tr.roty(0.5)), 0.5), r2q(tr.roty(0.4)))
+
+        nt.assert_array_almost_equal(slerp(r2q(tr.rotx(-0.3)), r2q(tr.rotx(0.3)), 0.5), np.r_[1, 0, 0, 0])
+        nt.assert_array_almost_equal(slerp(r2q(tr.roty(0.3)), r2q(tr.roty(0.5)), 0.5), r2q(tr.roty(0.4)))
 
     def test_rotx(self):
         pass

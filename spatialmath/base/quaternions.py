@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 
-
-# Contributors:
-# 
-#     1. Luis Fernando Lara Tobar and Peter Corke, 2008
-#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
-#     3. Peter Corke, 2020
+# pylint: disable=invalid-name
 
 import sys
 import math
@@ -98,7 +93,7 @@ def isunit(q, tol=10):
 
     :seealso: unit
     """
-    return tr.iszerovec(q)
+    return tr.iszerovec(q, tol=tol)
 
 
 def isequal(q1, q2, tol=100, unitq=False):
@@ -128,7 +123,7 @@ def isequal(q1, q2, tol=100, unitq=False):
     if unitq:
         return (np.sum(np.abs(q1 - q2)) < tol * _eps) or (np.sum(np.abs(q1 + q2)) < tol * _eps)
     else:
-        return (np.sum(np.abs(q1 - q2)) < tol * _eps)
+        return np.sum(np.abs(q1 - q2)) < tol * _eps
 
 
 def q2v(q):
@@ -272,7 +267,7 @@ def vvmul(qa, qb):
     return np.r_[qa[1] * qb[2] - qb[1] * qa[2] + qb[0] * t6 + qa[0] * t11, -qa[0] * qb[2] + qb[0] * qa[2] + qb[1] * t6 + qa[1] * t11, qa[0] * qb[1] - qb[0] * qa[1] + qb[2] * t6 + qa[2] * t11]
 
 
-def pow(q, power):
+def qpow(q, power):
     """
     Raise quaternion to a power
 
@@ -294,7 +289,7 @@ def pow(q, power):
     q = argcheck.getvector(q, 4)
     assert isinstance(power, int), "Power must be an integer"
     qr = eye()
-    for i in range(0, abs(power)):
+    for _ in range(0, abs(power)):
         qr = qqmul(qr, q)
 
     if power < 0:
@@ -437,25 +432,25 @@ def slerp(q0, q1, s, shortest=False):
     assert 0 <= s <= 1, 's must be in the interval [0,1]'
     q0 = argcheck.getvector(q0, 4)
     q1 = argcheck.getvector(q1, 4)
-    
+
     if s == 0:
         return q0
     elif s == 1:
         return q1
 
-    dot = np.dot(q0, q1)
+    dotprod = np.dot(q0, q1)
 
     # If the dot product is negative, the quaternions
     # have opposite handed-ness and slerp won't take
     # the shorter path. Fix by reversing one quaternion.
     if shortest:
-        if dot < 0:
-            q0 = - q0
-            dot = -dot
+        if dotprod < 0:
+            q0 = -q0   # pylint: disable=invalid-unary-operand-type
+            dotprod = -dotprod # pylint: disable=invalid-unary-operand-type
 
-    dot = np.clip(dot, -1, 1)  # Clip within domain of acos()
-    theta = math.acos(dot)  # theta is the angle between rotation vectors
-    if abs(theta) > 10*_eps:
+    dotprod = np.clip(dotprod, -1, 1)  # Clip within domain of acos()
+    theta = math.acos(dotprod)  # theta is the angle between rotation vectors
+    if abs(theta) > 10 * _eps:
         s0 = math.sin((1 - s) * theta)
         s1 = math.sin(s * theta)
         return ((q0 * s0) + (q1 * s1)) / math.sin(theta)
@@ -582,7 +577,7 @@ def angle(q1, q2):
 
     q1 = argcheck.getvector(q1, 4)
     q2 = argcheck.getvector(q2, 4)
-    return 2.0 * math.atan2(norm(q1 - q2), norm(q1 + q2))
+    return 2.0 * math.atan2(tr.norm(q1 - q2), tr.norm(q1 + q2))
 
 
 def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
@@ -623,6 +618,5 @@ def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
-    import os.path
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_quaternions.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_quaternions.py").read())  # pylint: disable=exec-used

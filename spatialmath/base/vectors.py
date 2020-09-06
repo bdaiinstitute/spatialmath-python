@@ -9,21 +9,21 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 # This file is part of the SpatialMath toolbox for Python
 # https://github.com/petercorke/spatialmath-python
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 1993-2020 Peter Corke
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,12 +33,13 @@ tuple, numpy array, numpy row vector or numpy column vector.
 # SOFTWARE.
 
 # Contributors:
-# 
+#
 #     1. Luis Fernando Lara Tobar and Peter Corke, 2008
 #     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
 #     3. Peter Corke, 2020
 
-import sys
+# pylint: disable=invalid-name
+
 import math
 import numpy as np
 from spatialmath.base import argcheck
@@ -48,6 +49,14 @@ _eps = np.finfo(np.float64).eps
 
 
 def colvec(v):
+    """
+    Create a column vector
+
+    :param v: an N-vector
+    :type v: array like
+    :return: a column vector
+    :rtype: NumPy ndarray, shape=(N,1)
+    """
     return np.array(v).reshape((len(v), 1))
 
 
@@ -202,15 +211,15 @@ def unittwist(S, tol=10):
 
     - the rotation part has unit magnitude
     - if the rotational part is zero, then the translational part has unit magnitude
-    
+
     Returns None if the twist has zero magnitude
     """
 
     s = argcheck.getvector(S, 6)
-    
+
     if iszerovec(s, tol=tol):
         return None
-    
+
     v = S[0:3]
     w = S[3:6]
 
@@ -220,6 +229,7 @@ def unittwist(S, tol=10):
         th = norm(w)
 
     return S / th
+
 
 def unittwist_norm(S, tol=10):
     """
@@ -236,15 +246,15 @@ def unittwist_norm(S, tol=10):
 
     - the rotation part has unit magnitude
     - if the rotational part is zero, then the translational part has unit magnitude
-    
+
     Returns (None,None) if the twist has zero magnitude
     """
 
     s = argcheck.getvector(S, 6)
-    
+
     if iszerovec(s, tol=tol):
         return (None, None)
-    
+
     v = S[0:3]
     w = S[3:6]
 
@@ -254,6 +264,7 @@ def unittwist_norm(S, tol=10):
         th = norm(w)
 
     return (S / th, th)
+
 
 def unittwist2(S):
     """
@@ -270,7 +281,7 @@ def unittwist2(S):
     - if the rotational part is zero, then the translational part has unit magnitude
     """
 
-    s = argcheck.getvector(S, 3)
+    S = argcheck.getvector(S, 3)
     v = S[0:2]
     w = S[2]
 
@@ -304,6 +315,5 @@ def angdiff(a, b):
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
-    import os.path
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_argcheck.py").read())  # pylint: disable=exec-used

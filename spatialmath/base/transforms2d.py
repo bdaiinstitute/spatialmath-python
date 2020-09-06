@@ -9,21 +9,21 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 # This file is part of the SpatialMath toolbox for Python
 # https://github.com/petercorke/spatialmath-python
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 1993-2020 Peter Corke
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,47 +33,48 @@ tuple, numpy array, numpy row vector or numpy column vector.
 # SOFTWARE.
 
 # Contributors:
-# 
+#
 #     1. Luis Fernando Lara Tobar and Peter Corke, 2008
 #     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
 #     3. Peter Corke, 2020
 
+# pylint: disable=invalid-name
+
 import sys
 import math
 import numpy as np
+import scipy.linalg
 from spatialmath.base import argcheck
 from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
-import scipy.linalg
+from spatialmath.base import animate
+
 
 try:  # pragma: no cover
     #print('Using SymPy')
     import sympy as sym
 
-    def issymbol(x):
+    def _issymbol(x):
         return isinstance(x, sym.Symbol)
-except BaseException:
-    def issymbol(x):
+except ImportError:
+    def _issymbol(x):  # pylint: disable=unused-argument
         return False
 
 _eps = np.finfo(np.float64).eps
 
 
-def colvec(v):
-    return np.array(v).reshape((len(v), 1))
-
 # ---------------------------------------------------------------------------------------#
 
 
 def _cos(theta):
-    if issymbol(theta):
+    if _issymbol(theta):
         return sym.cos(theta)
     else:
         return math.cos(theta)
 
 
 def _sin(theta):
-    if issymbol(theta):
+    if _issymbol(theta):
         return sym.sin(theta)
     else:
         return math.sin(theta)
@@ -184,12 +185,14 @@ def ishom2(T, check=False):
     :rtype: bool
 
     - ``ISHOM2(T)`` is True if the argument ``T`` is of dimension 3x3
-    - ``ISHOM2(T, check=True)`` as above, but also checks orthogonality of the rotation sub-matrix and
-      validitity of the bottom row.
+    - ``ISHOM2(T, check=True)`` as above, but also checks orthogonality of the
+      rotation sub-matrix and validitity of the bottom row.
 
     :seealso: isR, isrot2, ishom, isvec
     """
-    return isinstance(T, np.ndarray) and T.shape == (3, 3) and (not check or (trn.isR(T[:2, :2]) and np.all(T[2, :] == np.array([0, 0, 1]))))
+    return isinstance(T, np.ndarray) and T.shape == (3, 3) \
+        and (not check or (trn.isR(T[:2, :2])
+                           and np.all(T[2, :] == np.array([0, 0, 1]))))
 
 
 def isrot2(R, check=False):
@@ -208,9 +211,12 @@ def isrot2(R, check=False):
 
     :seealso: isR, ishom2, isrot
     """
-    return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or trn.isR(R))
+    return isinstance(R, np.ndarray) and R.shape == (2, 2) \
+        and (not check or trn.isR(R))
 
 # ---------------------------------------------------------------------------------------#
+
+
 def trlog2(T, check=True):
     """
     Logarithm of SO(2) or SE(2) matrix
@@ -221,17 +227,20 @@ def trlog2(T, check=True):
     :rtype: numpy.ndarray, shape=(2,2) or (3,3)
     :raises: ValueError
 
-    An efficient closed-form solution of the matrix logarithm for arguments that are SO(2) or SE(2).
+    An efficient closed-form solution of the matrix logarithm for arguments that
+    are SO(2) or SE(2).
 
-    - ``trlog2(R)`` is the logarithm of the passed rotation matrix ``R`` which will be
-      2x2 skew-symmetric matrix.  The equivalent vector from ``vex()`` is parallel to rotation axis
-      and its norm is the amount of rotation about that axis.
-    - ``trlog(T)`` is the logarithm of the passed homogeneous transformation matrix ``T`` which will be
-      3x3 augumented skew-symmetric matrix. The equivalent vector from ``vexa()`` is the twist
-      vector (6x1) comprising [v w].
+    - ``trlog2(R)`` is the logarithm of the passed rotation matrix ``R`` which
+      will be 2x2 skew-symmetric matrix.  The equivalent vector from ``vex()``
+      is parallel to rotation axis and its norm is the amount of rotation about
+      that axis.
+    - ``trlog(T)`` is the logarithm of the passed homogeneous transformation
+      matrix ``T`` which will be 3x3 augumented skew-symmetric matrix. The
+      equivalent vector from ``vexa()`` is the twist vector (6x1) comprising [v
+      w].
 
-
-    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`, :func:`~spatialmath.base.transformsNd.vexa`
+    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`,
+              :func:`~spatialmath.base.transformsNd.vexa`
     """
 
     if ishom2(T, check=check):
@@ -239,7 +248,7 @@ def trlog2(T, check=True):
 
         if trn.iseye(T):
             # is identity matrix
-            return np.zeros((3,3))
+            return np.zeros((3, 3))
         else:
             return scipy.linalg.logm(T)
 
@@ -249,7 +258,9 @@ def trlog2(T, check=True):
     else:
         raise ValueError("Expect SO(2) or SE(2) matrix")
 # ---------------------------------------------------------------------------------------#
-def trexp2(S, theta=None):
+
+
+def trexp2(S, theta=None, check=True):
     """
     Exponential of so(2) or se(2) matrix
 
@@ -297,6 +308,8 @@ def trexp2(S, theta=None):
         # se(2) case
         if argcheck.ismatrix(S, (3, 3)):
             # augmentented skew matrix
+            if check:
+                assert trn.isskewa(S), 'argument must be a valid se(2) element'
             tw = trn.vexa(S)
         else:
             # 3 vector
@@ -304,7 +317,7 @@ def trexp2(S, theta=None):
 
         if vec.iszerovec(tw):
             return np.eye(3)
-        
+
         if theta is None:
             (tw, theta) = vec.unittwist2(tw)
         else:
@@ -313,7 +326,7 @@ def trexp2(S, theta=None):
         t = tw[0:2]
         w = tw[2]
 
-        R = trn._rodrigues(w, theta)
+        R = trn.rodrigues(w, theta)
 
         skw = trn.skew(w)
         V = np.eye(2) * theta + (1.0 - math.cos(theta)) * skw + (theta - math.sin(theta)) * skw @ skw
@@ -324,6 +337,8 @@ def trexp2(S, theta=None):
         # so(2) case
         if argcheck.ismatrix(S, (2, 2)):
             # skew symmetric matrix
+            if check:
+                assert trn.isskew(S), 'argument must be a valid so(2) element'
             w = trn.vex(S)
         else:
             # 1 vector
@@ -333,78 +348,81 @@ def trexp2(S, theta=None):
             assert vec.isunitvec(w), 'If theta is specified S must be a unit twist'
 
         # do Rodrigues' formula for rotation
-        return trn._rodrigues(w, theta)
+        return trn.rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
-        
-def trinterp2(end, start=None, s=None):
+
+
+def trinterp2(start, end, s=None):
     """
     Interpolate SE(2) matrices
 
-    :param end: final SE(3) matrix, value when s=1
-    :type T0: np.ndarray, shape=(3,3)
-    :param start: initial SE(3) matrix, value when s=0, optional, defaults to identity
-    :type T1: np.ndarray, shape=(3,3)
+    :param start: initial SO(2) or SE(2) matrix value when s=0, if None then identity is used
+    :type T1: np.ndarray, shape=(2,2), (3,3) or None
+    :param end: final SO(2) or SE(2) matrix, value when s=1
+    :type T0: np.ndarray, shape=(2,2), (3,3)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
-    :return: SE(2) matrix
-    :rtype: np.ndarray, shape=(3,3)
-    
-    - ``trinterp2(T1, s=S)`` is a homogeneous transform (3x3) interpolated
-      between identity when S=0 and T1 when S=1.
-      
-    - ``trinterp2(T1, start=T0, s=S)`` as above but interpolated
-      between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous
-      transforms (3x3).
-    
+    :return: SO(2) or SE(2) matrix
+    :rtype: np.ndarray, shape=(2,2), (3,3)
+
+    - ``trinterp2(None, T, S)`` is a homogeneous transform (3x3) interpolated
+      between identity when S=0 and T (3x3) when S=1.
+    - ``trinterp2(T0, T1, S)`` as above but interpolated
+      between T0 (3x3) when S=0 and T1 (3x3) when S=1.
+    - ``trinterp2(None, R, S)`` is a rotation matrix (2x2) interpolated
+      between identity when S=0 and R (2x2) when S=1.
+    - ``trinterp2(R0, R1, S)`` as above but interpolated
+      between R0 (2x2) when S=0 and R1 (2x2) when S=1.
+
     Notes:
-        
+
     - Rotation angle is linearly interpolated.
 
     :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
-    
+
     %## 2d homogeneous trajectory
     """
-    if argcheck.ismatrix(start, (2,2)):
+    if argcheck.ismatrix(start, (2, 2)):
         # SO(2) case
-        if T1 is None:
+        if start is None:
             #	TRINTERP2(T, s)
-            
-            th0 = math.atan2(start[1,0], start[0,0])
-            
+
+            th0 = math.atan2(start[1, 0], start[0, 0])
+
             th = s * th0
         else:
-            #	TRINTERP2(T0, T1, s)
+            #	TRINTERP2(T1, start= s)
             assert start.shape == end.shape, 'both matrices must be same shape'
-        
-            th0 = math.atan2(start[1,0], start[0,0])
-            th1 = math.atan2(end[1,0], end[0,0])
-            
+
+            th0 = math.atan2(start[1, 0], start[0, 0])
+            th1 = math.atan2(end[1, 0], end[0, 0])
+
             th = th0 * (1 - s) + s * th1
-        
+
         return rot2(th)
-    elif argcheck.ismatrix(start, (3,3)):
+    elif argcheck.ismatrix(start, (3, 3)):
         if end is None:
             #	TRINTERP2(T, s)
-            
-            th0 = math.atan2(start[1,0], start[0,0])
+
+            th0 = math.atan2(start[1, 0], start[0, 0])
             p0 = transl2(start)
-            
+
             th = s * th0
             pr = s * p0
         else:
             #	TRINTERP2(T0, T1, s)
             assert start.shape == end.shape, 'both matrices must be same shape'
-        
-            th0 = math.atan2(start[1,0], start[0,0])
-            th1 = math.atan2(end[1,0], end[0,0])
-            
+
+            th0 = math.atan2(start[1, 0], start[0, 0])
+            th1 = math.atan2(end[1, 0], end[0, 0])
+
             p0 = transl2(start)
             p1 = transl2(end)
-            
-            pr = p0 * (1 - s) + s * p1;
+
+            pr = p0 * (1 - s) + s * p1
             th = th0 * (1 - s) + s * th1
-        
+
         return trn.rt2tr(rot2(th), pr)
     else:
         return ValueError('Argument must be SO(2) or SE(2)')
@@ -475,17 +493,18 @@ def _vec2s(fmt, v):
 
 try:
     import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
     _matplotlib_exists = True
-    
+
 except ImportError:  # pragma: no cover
-    def trplot(*args, **kwargs):
+    def trplot2(*args, **kwargs):  # pylint: disable=unused-argument,missing-function-docstring
         print('matplotlib is not installed: pip install matplotlib')
     _matplotlib_exists = False
-        
+
 if _matplotlib_exists:
 
-    def trplot2(T, axes=None, block=True, dims=None, color='blue', frame=None, textcolor=None, labels=['X', 'Y'], length=1, arrow=True, rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):
+    def trplot2(T, axes=None, block=True, dims=None, color='blue', frame=None,
+                textcolor=None, labels=('X', 'Y'), length=1, arrow=True,
+                rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  # pylint: disable=unused-argument,function-redefined
         """
         Plot a 2D coordinate frame
 
@@ -608,12 +627,10 @@ if _matplotlib_exists:
             plt.show(block=block)
         return ax
 
-    from spatialmath.base import animate as animate
-    
     def tranimate2(T, **kwargs):
         """
         Animate a 2D coordinate frame
-    
+
         :param T: an SO(2) or SE(2) pose to be displayed as coordinate frame
         :type: numpy.ndarray, shape=(2,2) or (3,3)
         :param nframes: number of steps in the animation [defaault 100]
@@ -624,15 +641,15 @@ if _matplotlib_exists:
         :type interval: int
         :param movie: name of file to write MP4 movie into
         :type movie: str
-        
+
         Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.
-    
+
         - If no current figure, one is created
         - If current figure, but no axes, a 3d Axes is created
-        
-    
+
+
         Examples:
-    
+
              tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5])
              tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
         """
@@ -643,11 +660,10 @@ if _matplotlib_exists:
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
-    import os.path
 
     # trplot2( transl2(1,2), frame='A', rviz=True, width=1)
     # trplot2( transl2(3,1), color='red', arrow=True, width=3, frame='B')
     # trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
     # plt.grid(True)
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_transforms.py")).read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used

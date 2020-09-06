@@ -113,7 +113,7 @@ class Animate:
             self.end = tr.r2t(end)
         else:
             self.end = end
-            
+
         if start is None:
             self.start = np.identity(4)
         else:
@@ -121,7 +121,7 @@ class Animate:
                 self.start = tr.r2t(start)
             else:
                 self.start = start
-            
+
         # draw axes at the origin
         tr.trplot(self.start, axes=self, block=None, **kwargs)
 
@@ -160,7 +160,7 @@ class Animate:
         # blit leaves a trail and first frame
         if movie is not None:
             repeat = False
-            
+
         self.done = False
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
         if movie is None:
@@ -253,7 +253,7 @@ class Animate:
             # ._segments3d is a 3-element list, each element is 2x3
 
             # turn to homogeneous form, with columns per point, alternating start, end
-            
+
             if isinstance(h._segments3d, np.ndarray):
                 self.p = np.vstack([h._segments3d.reshape(6, 3).T, np.ones((1, 6))])  # result is 4x6
             else:
@@ -447,7 +447,7 @@ class Animate2:
             self.end = tr.r2t(end)
         else:
             self.end = end
-            
+
         if start is None:
             self.start = np.identity(3)
         else:
@@ -455,7 +455,7 @@ class Animate2:
                 self.start = tr.r2t(start)
             else:
                 self.start = start
-                
+
         # draw axes at the origin
         tr.trplot2(self.start, axes=self, block=False, **kwargs)
 
@@ -483,21 +483,21 @@ class Animate2:
             ``conda install -c conda-forge ffmpeg``
         - invokes the draw() method of every object in the display list
         """
-        
-        def update(frame, a):            
+
+        def update(frame, a):
             T = tr.trinterp2(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True
             return a.artists()
-        
+
         # blit leaves a trail and first frame
         if movie is not None:
             repeat = False
-        
+
         self.done = False
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
-        
+
         if movie is None:
             while repeat or not self.done:
                 plt.pause(1)
@@ -578,7 +578,7 @@ class Animate2:
             self.h = h
             self.type = 'arrow'
             self.anim = anim
-            
+
             self.p = np.c_[u - x, v - y].T
 
         def draw(self, T):

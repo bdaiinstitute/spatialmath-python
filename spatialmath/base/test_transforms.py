@@ -9,21 +9,21 @@ Created on Fri Apr 10 14:19:04 2020
 
 # This file is part of the SpatialMath toolbox for Python
 # https://github.com/petercorke/spatialmath-python
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 1993-2020 Peter Corke
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,16 +33,18 @@ Created on Fri Apr 10 14:19:04 2020
 # SOFTWARE.
 
 # Contributors:
-# 
+#
 #     1. Luis Fernando Lara Tobar and Peter Corke, 2008
 #     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
 #     3. Peter Corke, 2020
 
 # Some unit tests
 
+import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
+import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base import *
@@ -73,10 +75,10 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(unitvec([9, 0, 0]), np.r_[1, 0, 0])
         nt.assert_array_almost_equal(unitvec([0, 9, 0]), np.r_[0, 1, 0])
         nt.assert_array_almost_equal(unitvec([0, 0, 9]), np.r_[0, 0, 1])
-        
-        self.assertIsNone(unitvec([0, 0, 0]) )
-        self.assertIsNone(unitvec([0]) )
-        self.assertIsNone(unitvec(0) )
+
+        self.assertIsNone(unitvec([0, 0, 0]))
+        self.assertIsNone(unitvec([0]))
+        self.assertIsNone(unitvec(0))
 
     def test_isunitvec(self):
         self.assertTrue(isunitvec([1, 0, 0]))
@@ -86,17 +88,16 @@ class TestVector(unittest.TestCase):
         self.assertFalse(isunitvec([9, 0, 0]))
         self.assertFalse(isunitvec((9, 0, 0)))
         self.assertFalse(isunitvec(np.r_[9, 0, 0]))
-        
+
         self.assertTrue(isunitvec(1))
         self.assertTrue(isunitvec([1]))
         self.assertTrue(isunitvec(-1))
         self.assertTrue(isunitvec([-1]))
-        
+
         self.assertFalse(isunitvec(2))
         self.assertFalse(isunitvec([2]))
         self.assertFalse(isunitvec(-2))
         self.assertFalse(isunitvec([-2]))
-        
 
     def test_norm(self):
         nt.assert_array_almost_equal(norm([0, 0, 0]), 0)
@@ -116,61 +117,61 @@ class TestVector(unittest.TestCase):
 
         # not a unit translation twist
         self.assertFalse(isunittwist([2, 0, 0, 0, 0, 0]))
-        
+
     def test_unittwist(self):
         nt.assert_array_almost_equal(unittwist([0, 0, 0, 1, 0, 0]), np.r_[0, 0, 0, 1, 0, 0])
         nt.assert_array_almost_equal(unittwist([0, 0, 0, 0, 2, 0]), np.r_[0, 0, 0, 0, 1, 0])
         nt.assert_array_almost_equal(unittwist([0, 0, 0, 0, 0, -3]), np.r_[0, 0, 0, 0, 0, -1])
-        
+
         nt.assert_array_almost_equal(unittwist([1, 0, 0, 1, 0, 0]), np.r_[1, 0, 0, 1, 0, 0])
         nt.assert_array_almost_equal(unittwist([1, 0, 0, 0, 2, 0]), np.r_[0.5, 0, 0, 0, 1, 0])
         nt.assert_array_almost_equal(unittwist([1, 0, 0, 0, 0, -2]), np.r_[0.5, 0, 0, 0, 0, -1])
-        
+
         nt.assert_array_almost_equal(unittwist([1, 0, 0, 0, 0, 0]), np.r_[1, 0, 0, 0, 0, 0])
         nt.assert_array_almost_equal(unittwist([0, 2, 0, 0, 0, 0]), np.r_[0, 1, 0, 0, 0, 0])
         nt.assert_array_almost_equal(unittwist([0, 0, -2, 0, 0, 0]), np.r_[0, 0, -1, 0, 0, 0])
 
-        self.assertIsNone(unittwist([0, 0, 0, 0, 0, 0]) )
+        self.assertIsNone(unittwist([0, 0, 0, 0, 0, 0]))
 
     def test_unittwist_norm(self):
         a = unittwist_norm([0, 0, 0, 1, 0, 0])
         nt.assert_array_almost_equal(a[0], np.r_[0, 0, 0, 1, 0, 0])
         nt.assert_array_almost_equal(a[1], 1)
-        
+
         a = unittwist_norm([0, 0, 0, 0, 2, 0])
         nt.assert_array_almost_equal(a[0], np.r_[0, 0, 0, 0, 1, 0])
         nt.assert_array_almost_equal(a[1], 2)
-        
+
         a = unittwist_norm([0, 0, 0, 0, 0, -3])
         nt.assert_array_almost_equal(a[0], np.r_[0, 0, 0, 0, 0, -1])
         nt.assert_array_almost_equal(a[1], 3)
-        
+
         a = unittwist_norm([1, 0, 0, 1, 0, 0])
         nt.assert_array_almost_equal(a[0], np.r_[1, 0, 0, 1, 0, 0])
         nt.assert_array_almost_equal(a[1], 1)
-        
+
         a = unittwist_norm([1, 0, 0, 0, 2, 0])
         nt.assert_array_almost_equal(a[0], np.r_[0.5, 0, 0, 0, 1, 0])
         nt.assert_array_almost_equal(a[1], 2)
-        
+
         a = unittwist_norm([1, 0, 0, 0, 0, -2])
         nt.assert_array_almost_equal(a[0], np.r_[0.5, 0, 0, 0, 0, -1])
         nt.assert_array_almost_equal(a[1], 2)
-        
+
         a = unittwist_norm([1, 0, 0, 0, 0, 0])
         nt.assert_array_almost_equal(a[0], np.r_[1, 0, 0, 0, 0, 0])
         nt.assert_array_almost_equal(a[1], 1)
-        
+
         a = unittwist_norm([0, 2, 0, 0, 0, 0])
         nt.assert_array_almost_equal(a[0], np.r_[0, 1, 0, 0, 0, 0])
         nt.assert_array_almost_equal(a[1], 2)
-        
+
         a = unittwist_norm([0, 0, -2, 0, 0, 0])
         nt.assert_array_almost_equal(a[0], np.r_[0, 0, -1, 0, 0, 0])
         nt.assert_array_almost_equal(a[1], 2)
 
         a = unittwist_norm([0, 0, 0, 0, 0, 0])
-        self.assertEqual(a, (None, None) )
+        self.assertEqual(a, (None, None))
 
     def test_iszerovec(self):
         self.assertTrue(iszerovec([0]))
@@ -412,34 +413,33 @@ class Test2D(unittest.TestCase):
         nt.assert_equal(isrot(T, True), False)
         nt.assert_equal(ishom(T, True), False)
         nt.assert_equal(ishom2(T, True), False)
-        
-    
+
     def test_trinterp2(self):
 
         T0 = trot2(-0.3)
         T1 = trot2(0.3)
-        
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
-        
+
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
+
         T0 = transl2(-1, -2)
         T1 = transl2(1, 2)
-        
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
-        
+
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
+
         T0 = transl2(-1, -2) @ trot2(-0.3)
         T1 = transl2(1, 2) @ trot2(0.3)
-        
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
-        
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
+
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
+
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
 
     def test_plot(self):
         plt.figure()
@@ -454,13 +454,13 @@ class Test3D(unittest.TestCase):
     def test_trinv(self):
         T = np.eye(4)
         nt.assert_array_almost_equal(trinv(T), T)
-        
+
         T = trotx(0.3)
         nt.assert_array_almost_equal(trinv(T)@T, np.eye(4))
-        
-        T = transl(1,2,3)
+
+        T = transl(1, 2, 3)
         nt.assert_array_almost_equal(trinv(T)@T, np.eye(4))
-        
+
     def test_rotx(self):
         R = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         nt.assert_array_almost_equal(rotx(0), R)
@@ -796,94 +796,95 @@ class Test3D(unittest.TestCase):
     def test_trinterp(self):
         T0 = trotx(-0.3)
         T1 = trotx(0.3)
-        
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
-        
+
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+
         T0 = transl(-1, -2, -3)
         T1 = transl(1, 2, 3)
-        
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
-        
+
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+
         T0 = transl(-1, -2, -3) @ trotx(-0.3)
         T1 = transl(1, 2, 3) @ trotx(0.3)
-        
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
-        
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0), T0)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=1), T1)
-        nt.assert_array_almost_equal( trinterp(start=T0, end=T1, s=0.5), np.eye(4))
-        
+
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0), T0)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+
     def test_tr2delta(self):
 
         # unit testing tr2delta with a tr matrix
-        nt.assert_array_almost_equal( tr2delta( transl(0.1, 0.2, 0.3) ), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
-        nt.assert_array_almost_equal( tr2delta( transl(0.1, 0.2, 0.3), transl(0.2, 0.4, 0.6) ), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
-        nt.assert_array_almost_equal( tr2delta( trotx(0.001) ), np.r_[0,0,0, 0.001,0,0])
-        nt.assert_array_almost_equal( tr2delta( troty(0.001) ), np.r_[0,0,0, 0,0.001,0])
-        nt.assert_array_almost_equal( tr2delta( trotz(0.001) ), np.r_[0,0,0, 0,0,0.001])
-        nt.assert_array_almost_equal( tr2delta( trotx(0.001), trotx(0.002) ), np.r_[0,0,0, 0.001,0,0])
-    
+        nt.assert_array_almost_equal(tr2delta(transl(0.1, 0.2, 0.3)), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
+        nt.assert_array_almost_equal(tr2delta(transl(0.1, 0.2, 0.3), transl(0.2, 0.4, 0.6)), np.r_[0.1, 0.2, 0.3, 0, 0, 0])
+        nt.assert_array_almost_equal(tr2delta(trotx(0.001)), np.r_[0, 0, 0, 0.001, 0, 0])
+        nt.assert_array_almost_equal(tr2delta(troty(0.001)), np.r_[0, 0, 0, 0, 0.001, 0])
+        nt.assert_array_almost_equal(tr2delta(trotz(0.001)), np.r_[0, 0, 0, 0, 0, 0.001])
+        nt.assert_array_almost_equal(tr2delta(trotx(0.001), trotx(0.002)), np.r_[0, 0, 0, 0.001, 0, 0])
+
         # %Testing with a scalar number input
         # verifyError(tc, @()tr2delta(1),'SMTB:tr2delta:badarg');
         # verifyError(tc, @()tr2delta( ones(3,3) ),'SMTB:tr2delta:badarg');
-        
+
     def test_delta2tr(self):
-        # test with standard numbers  
-        nt.assert_array_almost_equal(delta2tr([0.1, 0.2, 0.3, 0.4, 0.5, 0.6]), 
-        np.array([[1.0, -0.6, 0.5, 0.1], 
-                  [0.6, 1.0, -0.4, 0.2], 
-                  [-0.5, 0.4, 1.0, 0.3], 
-                  [0, 0, 0, 1.0]]))
+        # test with standard numbers
+        nt.assert_array_almost_equal(delta2tr([0.1, 0.2, 0.3, 0.4, 0.5, 0.6]),
+                                     np.array([[1.0, -0.6, 0.5, 0.1],
+                                               [0.6, 1.0, -0.4, 0.2],
+                                               [-0.5, 0.4, 1.0, 0.3],
+                                               [0, 0, 0, 1.0]]))
 
         # test, with, zeros
-        nt.assert_array_almost_equal(delta2tr([0, 0, 0, 0, 0, 0]), np.eye(4));
-        
-        # test with scalar input 
-        #verifyError(testCase, @()delta2tr(1),'MATLAB:badsubscript');
-    
+        nt.assert_array_almost_equal(delta2tr([0, 0, 0, 0, 0, 0]), np.eye(4))
+
+        # test with scalar input
+        # verifyError(testCase, @()delta2tr(1),'MATLAB:badsubscript');
+
     def test_tr2jac(self):
 
         # NOTE, create these matrices using pyprint() in MATLAB
-        nt.assert_array_almost_equal( tr2jac(trotx(pi/2)), 
-            np.array([  [1, 0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, -1, 0, 0, 0, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0, 1],
-                        [0, 0, 0, 0, -1, 0]]))
-         
-        nt.assert_array_almost_equal( tr2jac(trotx(pi/2), True), 
-            np.array([  [1, 0, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, -1, 0, 0, 0, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 0, 1],
-                        [0, 0, 0, 0, -1, 0]]))
-        
-        nt.assert_array_almost_equal( tr2jac(transl(1,2,3)),
-            np.array([  [1, 0, 0, 0, 0, 0],
-                        [0, 1, 0, 0, 0, 0],
-                        [0, 0, 1, 0, 0, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 1, 0],
-                        [0, 0, 0, 0, 0, 1]]))
-            
-        nt.assert_array_almost_equal( tr2jac(transl(1,2,3), True),
-            np.array([  [1, 0, 0, 0, 3, -2],
-                        [0, 1, 0, -3, 0, 1],
-                        [0, 0, 1, 2, -1, 0],
-                        [0, 0, 0, 1, 0, 0],
-                        [0, 0, 0, 0, 1, 0],
-                        [0, 0, 0, 0, 0, 1]]))
+        nt.assert_array_almost_equal(tr2jac(trotx(pi / 2)),
+                                     np.array([[1, 0, 0, 0, 0, 0],
+                                               [0, 0, 1, 0, 0, 0],
+                                               [0, -1, 0, 0, 0, 0],
+                                               [0, 0, 0, 1, 0, 0],
+                                               [0, 0, 0, 0, 0, 1],
+                                               [0, 0, 0, 0, -1, 0]]))
+
+        nt.assert_array_almost_equal(tr2jac(trotx(pi / 2), True),
+                                     np.array([[1, 0, 0, 0, 0, 0],
+                                               [0, 0, 1, 0, 0, 0],
+                                               [0, -1, 0, 0, 0, 0],
+                                               [0, 0, 0, 1, 0, 0],
+                                               [0, 0, 0, 0, 0, 1],
+                                               [0, 0, 0, 0, -1, 0]]))
+
+        nt.assert_array_almost_equal(tr2jac(transl(1, 2, 3)),
+                                     np.array([[1, 0, 0, 0, 0, 0],
+                                               [0, 1, 0, 0, 0, 0],
+                                               [0, 0, 1, 0, 0, 0],
+                                               [0, 0, 0, 1, 0, 0],
+                                               [0, 0, 0, 0, 1, 0],
+                                               [0, 0, 0, 0, 0, 1]]))
+
+        nt.assert_array_almost_equal(tr2jac(transl(1, 2, 3), True),
+                                     np.array([[1, 0, 0, 0, 3, -2],
+                                               [0, 1, 0, -3, 0, 1],
+                                               [0, 0, 1, 2, -1, 0],
+                                               [0, 0, 0, 1, 0, 0],
+                                               [0, 0, 0, 0, 1, 0],
+                                               [0, 0, 0, 0, 0, 1]]))
 
         # test with scalar value
-        #verifyError(tc, @()tr2jac(1),'SMTB:t2r:badarg');
+        # verifyError(tc, @()tr2jac(1),'SMTB:t2r:badarg');
+
 
 class TestLie(unittest.TestCase):
 
@@ -1071,7 +1072,7 @@ class TestLie(unittest.TestCase):
         # zero motion case
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 0, 0, 0])), np.eye(4))
         nt.assert_array_almost_equal(trexp([0, 0, 0, 0, 0, 0]), np.eye(4))
-        
+
         # % sigma = se(3)
         # pure translation
         nt.assert_array_almost_equal(trexp(skewa([1, 2, 3, 0, 0, 0])), transl([1, 2, 3]))
@@ -1107,7 +1108,6 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trexp(trlog(T)), T)
 
     def test_trexp2(self):
-
 
         # % so(2)
 
@@ -1152,13 +1152,10 @@ class TestLie(unittest.TestCase):
         # T = transl2([1, 2])@trot2(0.3)
         # nt.assert_array_almost_equal(trexp2(trlog2(T)), T)
         # TODO
-        
+
     def test_trnorm(self):
         T0 = transl(-1, -2, -3) @ trotx(-0.3)
         nt.assert_array_almost_equal(trnorm(T0), T0)
-        
-        
-
 
 
 # ---------------------------------------------------------------------------------------#
