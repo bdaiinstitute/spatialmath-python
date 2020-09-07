@@ -168,21 +168,21 @@
 
 <span class="c1"># This file is part of the SpatialMath toolbox for Python</span>
 <span class="c1"># https://github.com/petercorke/spatialmath-python</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># MIT License</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Copyright (c) 1993-2020 Peter Corke</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
 <span class="c1"># in the Software without restriction, including without limitation the rights</span>
 <span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
 <span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
 <span class="c1"># furnished to do so, subject to the following conditions:</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
 <span class="c1"># copies or substantial portions of the Software.</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
 <span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
 <span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
@@ -192,11 +192,12 @@
 <span class="c1"># SOFTWARE.</span>
 
 <span class="c1"># Contributors:</span>
-<span class="c1"># </span>
+<span class="c1">#</span>
 <span class="c1">#     1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
 <span class="c1">#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)</span>
 <span class="c1">#     3. Peter Corke, 2020</span>
 
+<span class="c1"># pylint: disable=invalid-name</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
@@ -205,36 +206,32 @@
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">vectors</span> <span class="k">as</span> <span class="n">vec</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transformsNd</span> <span class="k">as</span> <span class="n">trn</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">quaternions</span> <span class="k">as</span> <span class="n">quat</span>
-
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">animate</span>
 
 <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="c1"># print(&#39;Using SymPy&#39;)</span>
     <span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sym</span>
 
-    <span class="k">def</span> <span class="nf">issymbol</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_issymbol</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-<div class="viewcode-block" id="issymbol"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.issymbol">[docs]</a>    <span class="k">def</span> <span class="nf">issymbol</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_issymbol</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
-
-
-<div class="viewcode-block" id="colvec"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.colvec">[docs]</a><span class="k">def</span> <span class="nf">colvec</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
 <span class="k">def</span> <span class="nf">_cos</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">issymbol</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_issymbol</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_sin</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">issymbol</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_issymbol</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
@@ -1051,12 +1048,16 @@
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="trlog"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trlog">[docs]</a><span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="trlog"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trlog">[docs]</a><span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Logarithm of SO(3) or SE(3) matrix</span>
 
 <span class="sd">    :param T: SO(3) or SE(3) matrix</span>
 <span class="sd">    :type T: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :param check: check that matrix is valid</span>
+<span class="sd">    :type check: bool</span>
+<span class="sd">    :param twist: return a twist vector instead of matrix [default]</span>
+<span class="sd">    :type twist: bool</span>
 <span class="sd">    :return: logarithm</span>
 <span class="sd">    :rtype: numpy.ndarray, shape=(3,3) or (4,4)</span>
 <span class="sd">    :raises: ValueError</span>
@@ -1079,30 +1080,39 @@
 
         <span class="k">if</span> <span class="n">trn</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
             <span class="c1"># is identity matrix</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">trn</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
                 <span class="c1"># rotation matrix is identity</span>
-                <span class="n">skw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="n">t</span>
-                <span class="n">theta</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2m</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">t</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">S</span> <span class="o">=</span> <span class="n">trlog</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># recurse</span>
                 <span class="n">w</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
                 <span class="n">theta</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-                <span class="n">skw</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="n">theta</span><span class="p">)</span>
-                <span class="n">Ginv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">skw</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">@</span> <span class="n">skw</span>
+                <span class="n">Ginv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">S</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">S</span> <span class="o">@</span> <span class="n">S</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">Ginv</span> <span class="o">@</span> <span class="n">t</span>
-            <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2m</span><span class="p">(</span><span class="n">skw</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span>
+                <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2m</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
         <span class="c1"># deal with rotation matrix</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span>
         <span class="k">if</span> <span class="n">trn</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
             <span class="c1"># matrix is identity</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
             <span class="c1"># check for trace = -1</span>
             <span class="c1">#   rotation by +/- pi, +/- 3pi etc.</span>
@@ -1113,19 +1123,25 @@
             <span class="n">col</span> <span class="o">=</span> <span class="n">R</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">I</span><span class="p">[:,</span> <span class="n">k</span><span class="p">]</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">col</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mx</span><span class="p">))</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-            <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">w</span> <span class="o">*</span> <span class="n">theta</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># general case</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">skw</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">skw</span> <span class="o">*</span> <span class="n">theta</span>
+            <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">skw</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">skw</span> <span class="o">*</span> <span class="n">theta</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expect SO(3) or SE(3) matrix&quot;</span><span class="p">)</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="trexp"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trexp">[docs]</a><span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="trexp"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trexp">[docs]</a><span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exponential of so(3) or se(3) matrix</span>
 
@@ -1173,6 +1189,8 @@
         <span class="c1"># se(3) case</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
             <span class="c1"># augmentented skew matrix</span>
+            <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">trn</span><span class="o">.</span><span class="n">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="s1">&#39;argument must be a valid se(3) element&#39;</span>
             <span class="n">tw</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 6 vector</span>
@@ -1180,7 +1198,7 @@
 
         <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">tw</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">unittwist_norm</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1192,7 +1210,7 @@
         <span class="n">t</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">_rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
 
         <span class="n">skw</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">+</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">@</span> <span class="n">skw</span>
@@ -1203,6 +1221,8 @@
         <span class="c1"># so(3) case</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
             <span class="c1"># skew symmetric matrix</span>
+            <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">trn</span><span class="o">.</span><span class="n">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="s1">&#39;argument must be a valid so(3) element&#39;</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 3 vector</span>
@@ -1212,14 +1232,15 @@
             <span class="k">assert</span> <span class="n">vec</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
 
         <span class="c1"># do Rodrigues&#39; formula for rotation</span>
-        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">_rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; First argument must be SO(3), 3-vector, SE(3) or 6-vector&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="trnorm"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trnorm">[docs]</a><span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Normalize an SO(3) or SE(3) matrix</span>
-<span class="sd">    </span>
+
 <span class="sd">    :param T: SO(3) or SE(3) matrix</span>
 <span class="sd">    :type T1: np.ndarray, shape=(3,3) or (4,4)</span>
 <span class="sd">    :param T1: second SE(3) matrix</span>
@@ -1231,112 +1252,135 @@
 <span class="sd">      = [N,O,A] the O and A vectors are made unit length and the normal vector</span>
 <span class="sd">      is formed from N = O x A, and then we ensure that O and A are orthogonal</span>
 <span class="sd">      by O = A x N.</span>
-<span class="sd">    </span>
+
 <span class="sd">    - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous</span>
 <span class="sd">      transformation T (4x4) is normalised while the translational part is</span>
 <span class="sd">      unchanged.</span>
 
 <span class="sd">    Notes:</span>
-<span class="sd">        </span>
+
 <span class="sd">    - Only the direction of A (the z-axis) is unchanged.</span>
-<span class="sd">    - Used to prevent finite word length arithmetic causing transforms to </span>
+<span class="sd">    - Used to prevent finite word length arithmetic causing transforms to</span>
 <span class="sd">      become &#39;unnormalized&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s1">&#39;expecting 3x3 or 4x4 hom xform&#39;</span>
-    
-    <span class="n">o</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
-    
+
+    <span class="n">o</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
     <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>        <span class="c1"># N = O x A</span>
     <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>        <span class="c1"># (a)];</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span> <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">R</span></div>
-    
-<div class="viewcode-block" id="trinterp"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trinterp">[docs]</a><span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+
+<div class="viewcode-block" id="trinterp"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trinterp">[docs]</a><span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolate SE(3) matrices</span>
-<span class="sd">    </span>
-<span class="sd">    :param end: final SE(3) matrix, value when s=1</span>
-<span class="sd">    :type end: np.ndarray, shape=(4,4)</span>
-<span class="sd">    :param start: initial SE(3) matrix, value when s=0, optional, defaults to identity</span>
-<span class="sd">    :type start: np.ndarray, shape=(4,4)</span>
+
+<span class="sd">    :param start: initial SO(3) or SE(3) matrix value when s=0, if None then identity is used</span>
+<span class="sd">    :type start: np.ndarray, shape=(3,3), (4,4)</span>
+<span class="sd">    :param end: final SO(3) or SE(3) matrix, value when s=1</span>
+<span class="sd">    :type end: np.ndarray, shape=(3,3), (4,4)</span>
 <span class="sd">    :param s: interpolation coefficient, range 0 to 1</span>
 <span class="sd">    :type s: float</span>
-<span class="sd">    :return: SE(3) matrix</span>
-<span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
-<span class="sd">    </span>
-<span class="sd">    - ``trinterp(T1, s=S)`` is a homogeneous transform (4x4) interpolated</span>
-<span class="sd">      between identity when S=0 and T1 when S=1.</span>
-<span class="sd">    - ``trinterp(T1, start=T0, s=S)`` as above but interpolated</span>
-<span class="sd">      between T0 when S=0 and T1 when S=1.  T0 and T1 are both homogeneous</span>
-<span class="sd">      transforms (4x4).</span>
-<span class="sd">    </span>
+<span class="sd">    :return: SO(3) or SE(3) matrix</span>
+<span class="sd">    :rtype: np.ndarray, shape=(3,3), (4,4)</span>
+
+<span class="sd">    - ``trinterp(None, T, S)`` is a homogeneous transform (4x4) interpolated</span>
+<span class="sd">      between identity when S=0 and T (4x4) when S=1.</span>
+<span class="sd">    - ``trinterp(T0, T1, S)`` as above but interpolated</span>
+<span class="sd">      between T0 (4x4) when S=0 and T1 (4x4) when S=1.</span>
+<span class="sd">    - ``trinterp(None, R, S)`` is a rotation matrix (3x3) interpolated</span>
+<span class="sd">      between identity when S=0 and R (3x3) when S=1.</span>
+<span class="sd">    - ``trinterp(R0, R1, S)`` as above but interpolated</span>
+<span class="sd">      between R0 (3x3) when S=0 and R1 (3x3) when S=1.</span>
+
 <span class="sd">    Notes:</span>
-<span class="sd">        </span>
+
 <span class="sd">    - Rotation is interpolated using quaternion spherical linear interpolation (slerp).</span>
 
 <span class="sd">    :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s outside interval [0,1]&#39;</span>
-    
-    <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1">#	TRINTERP(T, s)</span>
-        
-        <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
-        <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-        
-        <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-        <span class="n">pr</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p0</span>
+
+    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+        <span class="c1"># SO(3) case</span>
+
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#	TRINTERP(T, s)</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#	TRINTERP(T0, T1, s)</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">quat</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+        <span class="c1"># SE(3) case</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#	TRINTERP(T, s)</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">pr</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#	TRINTERP(T0, T1, s)</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+
+            <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="n">p1</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">pr</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p1</span>
+
+        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1">#	TRINTERP(T0, T1, s)</span>
-    
-        <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
-        <span class="n">q1</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
-        
-        <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-        <span class="n">p1</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
-        
-        <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-        <span class="n">pr</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p1</span><span class="p">;</span>
-        
-    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument must be SO(3) or SE(3)&#39;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="delta2tr"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.delta2tr">[docs]</a><span class="k">def</span> <span class="nf">delta2tr</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert differential motion to SE(3)</span>
-<span class="sd">    </span>
+
 <span class="sd">    :param d: differential motion as a 6-vector</span>
 <span class="sd">    :type d: array_like</span>
 <span class="sd">    :return: SE(3) matrix</span>
 <span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
 
-<span class="sd">    ``T = delta2tr(d)`` is an SE(3) matrix representing differential </span>
+<span class="sd">    ``T = delta2tr(d)`` is an SE(3) matrix representing differential</span>
 <span class="sd">    motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.</span>
 
 <span class="sd">    Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
-<span class="sd">    </span>
+
 <span class="sd">    :seealso: :func:`~tr2delta`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">trn</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
-    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">trn</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="trinv"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trinv">[docs]</a><span class="k">def</span> <span class="nf">trinv</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Invert an SE(3) matrix</span>
-<span class="sd">    </span>
+
 <span class="sd">    :param T: an SE(3) matrix</span>
 <span class="sd">    :type T: np.ndarray, shape=(4,4)</span>
 <span class="sd">    :return: SE(3) matrix</span>
 <span class="sd">    :rtype: np.ndarray, shape=(4,4)</span>
 
 <span class="sd">    Computes an efficient inverse of an SE(3) matrix:</span>
-<span class="sd">    </span>
+
 <span class="sd">    :math:`\begin{pmatrix} {\bf R} &amp; t \\ 0\,0\,0 &amp; 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T &amp; -{\bf R}^T t \\ 0\,0\, 0 &amp; 1 \end{pmatrix}`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1344,10 +1388,11 @@
     <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">-</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="nd">@t</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="tr2delta"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.tr2delta">[docs]</a><span class="k">def</span> <span class="nf">tr2delta</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">T1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Difference of SE(3) matrices as differential motion</span>
-<span class="sd">    </span>
+
 <span class="sd">    :param T0: first SE(3) matrix</span>
 <span class="sd">    :type T0: np.ndarray, shape=(4,4)</span>
 <span class="sd">    :param T1: second SE(3) matrix</span>
@@ -1356,22 +1401,22 @@
 <span class="sd">    :rtype: np.ndarray, shape=(6,)</span>
 
 
-<span class="sd">    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to </span>
+<span class="sd">    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to</span>
 <span class="sd">      infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.</span>
 
 <span class="sd">    - ``tr2delta(T)`` as above but the motion is from the world frame to the pose represented by T.</span>
 
 <span class="sd">    The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`</span>
-<span class="sd">    represents infinitessimal translation and rotation, and is an approximation to the </span>
+<span class="sd">    represents infinitessimal translation and rotation, and is an approximation to the</span>
 <span class="sd">    instantaneous spatial velocity multiplied by time step.</span>
 
 <span class="sd">    Notes:</span>
-<span class="sd">        </span>
+
 <span class="sd">    - D is only an approximation to the motion T, and assumes</span>
 <span class="sd">      that T0 ~ T1 or T ~ eye(4,4).</span>
 <span class="sd">    - Can be considered as an approximation to the effect of spatial velocity over a</span>
 <span class="sd">      a time interval, average spatial velocity multiplied by time.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
 
 <span class="sd">    :seealso: :func:`~delta2tr`</span>
@@ -1379,28 +1424,29 @@
 
     <span class="k">if</span> <span class="n">T1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># tr2delta(T)</span>
-        
+
         <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T0</span><span class="p">),</span> <span class="s1">&#39;expecting SE(3) matrix&#39;</span>
         <span class="n">Td</span> <span class="o">=</span> <span class="n">T0</span>
-        
+
     <span class="k">else</span><span class="p">:</span>
         <span class="c1">#  incremental transformation from T0 to T1 in the T0 frame</span>
         <span class="n">Td</span> <span class="o">=</span> <span class="n">trinv</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span> <span class="o">@</span> <span class="n">T1</span>
-    
+
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">transl</span><span class="p">(</span><span class="n">Td</span><span class="p">),</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">Td</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span></div>
+
 
 <div class="viewcode-block" id="tr2jac"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.tr2jac">[docs]</a><span class="k">def</span> <span class="nf">tr2jac</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">samebody</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SE(3) adjoint</span>
-<span class="sd">    </span>
+
 <span class="sd">    :param T: an SE(3) matrix</span>
 <span class="sd">    :type T: np.ndarray, shape=(4,4)</span>
 <span class="sd">    :return: adjoint matrix</span>
 <span class="sd">    :rtype: np.ndarray, shape=(6,6)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Computes an adjoint matrix that maps spatial velocity between two frames defined by</span>
 <span class="sd">    an SE(3) matrix.  It acts like a Jacobian matrix.</span>
-<span class="sd">    </span>
+
 <span class="sd">    - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or</span>
 <span class="sd">      differential motion from frame {A} to frame {B} where the pose of {B}</span>
 <span class="sd">      relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.</span>
@@ -1410,13 +1456,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="s1">&#39;expecting an SE(3) matrix&#39;</span>
-    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-    	
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
     <span class="k">if</span> <span class="n">samebody</span><span class="p">:</span>
-        <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="nd">@R</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">);</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span></div>
 
 
@@ -1506,7 +1552,6 @@
         <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39; eul = </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;angvec&#39;</span><span class="p">:</span>
-        <span class="k">pass</span>
         <span class="c1"># as a vector and angle</span>
         <span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">tr2angvec</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">theta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1529,185 +1574,187 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
     <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">True</span>
-    
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="k">def</span> <span class="nf">trplot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matplotlib is not installed: pip install matplotlib&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover      </span>
     <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">False</span>
-        
-<span class="k">if</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
-<div class="viewcode-block" id="trplot"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trplot">[docs]</a>    <span class="k">def</span> <span class="nf">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">textcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">],</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">,</span> <span class="n">rviz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wtl</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">d1</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot a 3D coordinate frame</span>
 
-<span class="sd">        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame</span>
-<span class="sd">        :type: numpy.ndarray, shape=(3,3) or (4,4)</span>
-<span class="sd">        :param axes: the axes to plot into, defaults to current axes</span>
-<span class="sd">        :type axes: Axes3D reference</span>
-<span class="sd">        :param block: run the GUI main loop until all windows are closed, default True</span>
-<span class="sd">        :type block: bool</span>
-<span class="sd">        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].</span>
-<span class="sd">                     If dims is [min, max] those limits are applied to the x-, y- and z-axes.</span>
-<span class="sd">        :type dims: array_like</span>
-<span class="sd">        :param color: color of the lines defining the frame</span>
-<span class="sd">        :type color: str</span>
-<span class="sd">        :param textcolor: color of text labels for the frame, default color of lines above</span>
-<span class="sd">        :type textcolor: str</span>
-<span class="sd">        :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
-<span class="sd">        :type frame: str</span>
-<span class="sd">        :param labels: labels for the axes, defaults to X, Y and Z</span>
-<span class="sd">        :type labels: 3-tuple of strings</span>
-<span class="sd">        :param length: length of coordinate frame axes, default 1</span>
-<span class="sd">        :type length: float</span>
-<span class="sd">        :param arrow: show arrow heads, default True</span>
-<span class="sd">        :type arrow: bool</span>
-<span class="sd">        :param wtl: width-to-length ratio for arrows, default 0.2</span>
-<span class="sd">        :type wtl: float</span>
-<span class="sd">        :param rviz: show Rviz style arrows, default False</span>
-<span class="sd">        :type rviz: bool</span>
-<span class="sd">        :param projection: 3D projection: ortho [default] or persp</span>
-<span class="sd">        :type projection: str</span>
-<span class="sd">        :param width: width of lines, default 1</span>
-<span class="sd">        :type width: float</span>
-<span class="sd">        :param d1: distance of frame axis label text from origin, default 1.15</span>
-<span class="sd">        :type d2: distance of frame label text from origin, default 0.05</span>
-<span class="sd">        :return: axes containing the frame</span>
-<span class="sd">        :rtype: Axes3DSubplot</span>
+<div class="viewcode-block" id="trplot"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.trplot">[docs]</a><span class="k">def</span> <span class="nf">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>   <span class="c1"># pylint: disable=unused-argument,function-redefined</span>
+           <span class="n">textcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+           <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">,</span> <span class="n">rviz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wtl</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">d1</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+           <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a 3D coordinate frame</span>
 
-<span class="sd">        Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.</span>
+<span class="sd">    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame</span>
+<span class="sd">    :type: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :param axes: the axes to plot into, defaults to current axes</span>
+<span class="sd">    :type axes: Axes3D reference</span>
+<span class="sd">    :param block: run the GUI main loop until all windows are closed, default True</span>
+<span class="sd">    :type block: bool</span>
+<span class="sd">    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].</span>
+<span class="sd">                    If dims is [min, max] those limits are applied to the x-, y- and z-axes.</span>
+<span class="sd">    :type dims: array_like</span>
+<span class="sd">    :param color: color of the lines defining the frame</span>
+<span class="sd">    :type color: str</span>
+<span class="sd">    :param textcolor: color of text labels for the frame, default color of lines above</span>
+<span class="sd">    :type textcolor: str</span>
+<span class="sd">    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
+<span class="sd">    :type frame: str</span>
+<span class="sd">    :param labels: labels for the axes, defaults to X, Y and Z</span>
+<span class="sd">    :type labels: 3-tuple of strings</span>
+<span class="sd">    :param length: length of coordinate frame axes, default 1</span>
+<span class="sd">    :type length: float</span>
+<span class="sd">    :param arrow: show arrow heads, default True</span>
+<span class="sd">    :type arrow: bool</span>
+<span class="sd">    :param wtl: width-to-length ratio for arrows, default 0.2</span>
+<span class="sd">    :type wtl: float</span>
+<span class="sd">    :param rviz: show Rviz style arrows, default False</span>
+<span class="sd">    :type rviz: bool</span>
+<span class="sd">    :param projection: 3D projection: ortho [default] or persp</span>
+<span class="sd">    :type projection: str</span>
+<span class="sd">    :param width: width of lines, default 1</span>
+<span class="sd">    :type width: float</span>
+<span class="sd">    :param d1: distance of frame axis label text from origin, default 1.15</span>
+<span class="sd">    :type d2: distance of frame label text from origin, default 0.05</span>
+<span class="sd">    :return: axes containing the frame</span>
+<span class="sd">    :rtype: Axes3DSubplot</span>
 
-<span class="sd">        - If no current figure, one is created</span>
-<span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
+<span class="sd">    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.</span>
 
-<span class="sd">        Examples:</span>
+<span class="sd">    - If no current figure, one is created</span>
+<span class="sd">    - If current figure, but no axes, a 3d Axes is created</span>
 
-<span class="sd">             trplot(T, frame=&#39;A&#39;)</span>
-<span class="sd">             trplot(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
-<span class="sd">             trplot(T1, &#39;labels&#39;, &#39;NOA&#39;);</span>
+<span class="sd">    Examples:</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            trplot(T, frame=&#39;A&#39;)</span>
+<span class="sd">            trplot(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
+<span class="sd">            trplot(T1, &#39;labels&#39;, &#39;NOA&#39;);</span>
 
-        <span class="c1"># TODO</span>
-        <span class="c1"># animation</span>
-        <span class="c1"># anaglyph</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-        <span class="c1"># check input types</span>
-        <span class="k">if</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="n">T</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="c1"># TODO</span>
+    <span class="c1"># animation</span>
+    <span class="c1"># anaglyph</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matplotlib is not installed: pip install matplotlib&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># check input types</span>
+    <span class="k">if</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># create an axes</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="c1"># no axes in the figure, create a 3D axes</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">,</span> <span class="n">proj_type</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+            <span class="c1"># ax.set_aspect(&#39;equal&#39;)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># reuse an existing axis</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span>
 
-        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># create an axes</span>
-            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="o">==</span> <span class="p">[]:</span>
-                <span class="c1"># no axes in the figure, create a 3D axes</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">,</span> <span class="n">proj_type</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span> <span class="o">*</span> <span class="mi">3</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
 
-                <span class="c1"># ax.set_aspect(&#39;equal&#39;)</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># reuse an existing axis</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span>
+    <span class="c1"># create unit vectors in homogeneous form</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
 
-        <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span> <span class="o">*</span> <span class="mi">3</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+    <span class="c1"># draw the axes</span>
 
-        <span class="c1"># create unit vectors in homogeneous form</span>
-        <span class="n">o</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
+    <span class="k">if</span> <span class="n">rviz</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lime&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">arrow</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">wtl</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">wtl</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">wtl</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="c1"># plot an invisible point at the end of each arrow to allow auto-scaling to work</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ys</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">zs</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
 
-        <span class="c1"># draw the axes</span>
+    <span class="c1"># label the frame</span>
+    <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
 
-        <span class="k">if</span> <span class="n">rviz</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lime&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">arrow</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">wtl</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">wtl</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">arrow_length_ratio</span><span class="o">=</span><span class="n">wtl</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
-            <span class="c1"># plot an invisible point at the end of each arrow to allow auto-scaling to work</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ys</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">zs</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">r</span><span class="s1">&#39;$\{&#39;</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;\}$&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
-        <span class="c1"># label the frame</span>
-        <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
+        <span class="c1"># add the labels to each axis</span>
 
-            <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">o1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">o1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">r</span><span class="s1">&#39;$\{&#39;</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;\}$&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
 
-            <span class="c1"># add the labels to each axis</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
-            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
+    <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+        <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
 
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
-            <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ax</span></div>
+<div class="viewcode-block" id="tranimate"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.tranimate">[docs]</a><span class="k">def</span> <span class="nf">tranimate</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Animate a 3D coordinate frame</span>
 
-    <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">animate</span> <span class="k">as</span> <span class="n">animate</span>
+<span class="sd">    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame</span>
+<span class="sd">    :type: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :param nframes: number of steps in the animation [defaault 100]</span>
+<span class="sd">    :type nframes: int</span>
+<span class="sd">    :param repeat: animate in endless loop [default False]</span>
+<span class="sd">    :type repeat: bool</span>
+<span class="sd">    :param interval: number of milliseconds between frames [default 50]</span>
+<span class="sd">    :type interval: int</span>
+<span class="sd">    :param movie: name of file to write MP4 movie into</span>
+<span class="sd">    :type movie: str</span>
 
-        
-<div class="viewcode-block" id="tranimate"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transforms3d.tranimate">[docs]</a>    <span class="k">def</span> <span class="nf">tranimate</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Animate a 3D coordinate frame</span>
-<span class="sd">    </span>
-<span class="sd">        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame</span>
-<span class="sd">        :type: numpy.ndarray, shape=(3,3) or (4,4)</span>
-<span class="sd">        :param nframes: number of steps in the animation [defaault 100]</span>
-<span class="sd">        :type nframes: int</span>
-<span class="sd">        :param repeat: animate in endless loop [default False]</span>
-<span class="sd">        :type repeat: bool</span>
-<span class="sd">        :param interval: number of milliseconds between frames [default 50]</span>
-<span class="sd">        :type interval: int</span>
-<span class="sd">        :param movie: name of file to write MP4 movie into</span>
-<span class="sd">        :type movie: str</span>
-<span class="sd">        </span>
-<span class="sd">        Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.</span>
-<span class="sd">    </span>
-<span class="sd">        - If no current figure, one is created</span>
-<span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
-<span class="sd">        </span>
-<span class="sd">    </span>
-<span class="sd">        Examples:</span>
-<span class="sd">    </span>
-<span class="sd">             tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
-<span class="sd">             tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">anim</span> <span class="o">=</span> <span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<span class="sd">    Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.</span>
+
+<span class="sd">    - If no current figure, one is created</span>
+<span class="sd">    - If current figure, but no axes, a 3d Axes is created</span>
+
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">            tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
+<span class="sd">            tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matplotlib is not installed: pip install matplotlib&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">anim</span> <span class="o">=</span> <span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
-    <span class="kn">import</span> <span class="nn">os.path</span>
 
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s2">&quot;test_transforms.py&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;test_transforms.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -1723,7 +1770,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 01-Sep-2020.
+        Last updated on 07-Sep-2020.
       </span>
 
     </p>

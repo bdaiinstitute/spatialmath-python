@@ -156,9 +156,80 @@
 <span class="sd">Provide list super powers for spatial math objects.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
+<span class="c1"># pylint: disable=invalid-name</span>
 
-<span class="k">class</span> <span class="nc">SMUserList</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractproperty</span><span class="p">,</span> <span class="n">abstractstaticmethod</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">spatialmath.base.argcheck</span> <span class="k">as</span> <span class="nn">argcheck</span>
+
+<span class="n">_numtypes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SMUserList</span><span class="p">(</span><span class="n">UserList</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List properties for spatial math classes</span>
+
+<span class="sd">    Each of the spatial math classes behaves like a regular Python object and</span>
+<span class="sd">    an instance contains a value of a particular type, for example an SE(3) </span>
+<span class="sd">    matrix, a unit quaternion, a twist etc.</span>
+
+<span class="sd">    This class adds list-like capabilities to each of spatial math classes.  This</span>
+<span class="sd">    means that an instance is not limited to holding just a single value (a </span>
+<span class="sd">    singleton instance), it can hold a list of values.  That list can contain </span>
+<span class="sd">    zero or more items.  This is helpful for:</span>
+<span class="sd">    </span>
+<span class="sd">    - storing sequences (trajectories) where it is important to know that all</span>
+<span class="sd">      elements in the sequence are of the same time and have valid values</span>
+<span class="sd">    - arrays of the same type to enable C++ like programming patterns</span>
+
+<span class="sd">    This class inherits from ``collections.UserList`` and wraps those list-like</span>
+<span class="sd">    methods in spatial math specific ways.  The list operations supported are:</span>
+
+<span class="sd">    ==================  ============================================================</span>
+<span class="sd">    syntax              meaning</span>
+<span class="sd">    ==================  ============================================================</span>
+<span class="sd">    ``C()``             create a singleton instance of ``C`` with the identity value</span>
+<span class="sd">    ``C.Empty()``       create an instance of ``C`` with zero items</span>
+<span class="sd">    ``C.Alloc(n)``      create an instance of ``C`` with ``n`` identity items</span>
+<span class="sd">    ``len(x)``          return the number of items in ``x``</span>
+<span class="sd">    ``x[i]``            return the ``i``&#39;th item of ``x``, ``i`` is an index</span>
+<span class="sd">                        or a slice.</span>
+<span class="sd">    ``x[i] = y``        set the ``i``&#39;th item of ``x`` to the singleton instance</span>
+<span class="sd">                        ``y`` and ``i`` is an index</span>
+<span class="sd">    ``x.append(y)``     append the value of singleton instance ``y`` to ``x``</span>
+<span class="sd">    ``x.extend(y)``     append the items of ``y`` to ``x``</span>
+<span class="sd">    ``x.pop()``         pop the first item of ``x``</span>
+<span class="sd">    ``x.insert(i, y)``  insert the value of singleton instsance ``y`` into ``x``</span>
+<span class="sd">                        at position ``i``.</span>
+<span class="sd">    ``del x[i]``        delete the ``i``&#39;th element of ``x``</span>
+<span class="sd">    ``x.reverse()``     reverse the elements of ``x`` in place</span>
+<span class="sd">    ``x.clear()``       remove all items from ``x``</span>
+<span class="sd">    ==================  ============================================================</span>
+
+<span class="sd">    where ``C`` is the class, and ``x`` and ``y`` are instances of ``C``.</span>
+
+<span class="sd">    Notes:</span>
+
+<span class="sd">    - The subclass must invoke ``super().__init__()``</span>
+<span class="sd">    - ``UserList`` keeps the list in the ``.data`` attribute</span>
+<span class="sd">    - Some list method do not make sense for spatial math, these are:</span>
+<span class="sd">      ``count``, ``remove`` and ``sort``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractproperty</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abstractstaticmethod</span>
+    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad type passed&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -168,15 +239,87 @@
 <span class="sd">        :return: a quaternion instance with zero values</span>
 <span class="sd">        :rtype: Quaternion</span>
 
-<span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; q = Quaternion.Empty()</span>
-<span class="sd">            &gt;&gt;&gt; len(q)</span>
-<span class="sd">            0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">q</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Alloc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">arghandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">convertfrom</span><span class="o">=</span><span class="p">(),</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Standard constructor support (superclass method)</span>
+
+<span class="sd">        :param self: the instance to be initialized :type self: SMUserList</span>
+<span class="sd">        instance :param arg: initial value :param convertfrom: list of classes</span>
+<span class="sd">        to accept and convert from :type: tuple of typles :param check: check</span>
+<span class="sd">        value is valid, defaults to True :type check: bool :raises ValueError:</span>
+<span class="sd">        bad type passed</span>
+
+<span class="sd">        The value ``arg`` can be any of:</span>
+
+<span class="sd">        #. a numpy.ndarray of the appropriate shape and value which is valid for the subclass</span>
+<span class="sd">        #. a list whose elements all meet the criteria above</span>
+<span class="sd">        #. an instance of the subclass</span>
+<span class="sd">        #. a list whose elements are all singelton instances of the subclass</span>
+
+<span class="sd">        For cases 1 and 2, a NumPy array or a list of NumPy array is passed.</span>
+<span class="sd">        Each NumPyarray is tested for validity (if ``check`` is False a cursory</span>
+<span class="sd">        check of shape is made, if ``check`` is True the numerical value is</span>
+<span class="sd">        inspected) and converted to the required internal format by the</span>
+<span class="sd">        ``_import`` method. The default ``_import`` method calls the ``isvalid``</span>
+<span class="sd">        method for checking.  This mechanism allows equivalent forms to be</span>
+<span class="sd">        passed, ie. 6x1 or 4x4 for an se(3).</span>
+
+<span class="sd">        If ``self`` is an instance of class ``A``, and an instance of class</span>
+<span class="sd">        ``B`` is passed and ``B`` is an element of the ``convertfrom`` argument,</span>
+<span class="sd">        then ``B.A()`` will be invoked to perform the type conversion.</span>
+
+<span class="sd">        Examples::</span>
+
+<span class="sd">            SE3(np.identity(4))</span>
+<span class="sd">            SE3([np.identity(4), np.identity(4)])</span>
+<span class="sd">            SE3(SE3())</span>
+<span class="sd">            SE3([SE3(), SE3()])</span>
+<span class="sd">            Twist3(SE3())</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># it&#39;s a numpy array</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_import</span><span class="p">(</span><span class="n">arg</span><span class="p">)]</span>
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># it&#39;s an object of same type, do copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># it&#39;s a list of things</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="c1"># possibly a list of numpy arrays</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_import</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="c1"># possibly a list of objects of same type</span>
+                <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">arg</span><span class="p">)),</span> <span class="s1">&#39;elements of list are incorrect type&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;list of unknown values&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="n">convertfrom</span><span class="p">:</span>
+            <span class="c1"># see if we can convert passed argument to this type</span>
+            <span class="c1">#  only support class instance</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># get method to convert from arg to self types</span>
+                <span class="n">converter</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;argument has no conversion method to this type&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">converter</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unknown argument&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -201,6 +344,36 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># @property</span>
+    <span class="c1"># def A(self):</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Interal array representation (superclass property)</span>
+        
+    <span class="c1">#     :param self: the pose object</span>
+    <span class="c1">#     :type self: SO2, SE2, SO3, SE3 instance</span>
+    <span class="c1">#     :return: The numeric array</span>
+    <span class="c1">#     :rtype: numpy.ndarray</span>
+        
+    <span class="c1">#     Each pose subclass SO(N) or SE(N) are stored internally as a numpy array. This property returns</span>
+    <span class="c1">#     the array, shape depends on the particular subclass.</span>
+        
+    <span class="c1">#     Examples::</span>
+            
+    <span class="c1">#         &gt;&gt;&gt; x = SE3()</span>
+    <span class="c1">#         &gt;&gt;&gt; x.A</span>
+    <span class="c1">#         array([[1., 0., 0., 0.],</span>
+    <span class="c1">#                [0., 1., 0., 0.],</span>
+    <span class="c1">#                [0., 0., 1., 0.],</span>
+    <span class="c1">#                [0., 0., 0., 1.]])</span>
+
+    <span class="c1">#     :seealso: `shape`, `N`</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     # get the underlying numpy array</span>
+    <span class="c1">#     if len(self.data) == 1:</span>
+    <span class="c1">#         return self.data[0]</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         return self.data</span>
 
     <span class="c1"># ------------------------------------------------------------------------ #</span>
 
@@ -254,7 +427,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t insert a multivalued element - must have len() == 1&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Append a value to an instance (superclass method)</span>
 <span class="sd">        </span>
@@ -266,14 +439,14 @@
 <span class="sd">    </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#print(&#39;in append method&#39;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t append different type of object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t append a multivalued instance - use extend&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
         
 
-    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extend sequence of values in an instance (superclass method)</span>
 <span class="sd">        </span>
@@ -284,18 +457,18 @@
 <span class="sd">        Appends the argument&#39;s values to the object&#39;s internal list of values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#print(&#39;in extend method&#39;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t append different type of object&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">iterable</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Insert a value to an instance (superclass method)</span>
 
 <span class="sd">        :param i: element to insert value before</span>
 <span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: instance of same type</span>
+<span class="sd">        :param item: the value to insert</span>
+<span class="sd">        :type item: instance of same type</span>
 <span class="sd">        :raises ValueError: incorrect type of inserted value</span>
 
 <span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
@@ -307,13 +480,13 @@
 <span class="sd">            &gt;&gt;&gt; len(q)</span>
 <span class="sd">            2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t insert different type of object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t insert a multivalued instance - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
         
-    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pop value from an instance (superclass method)</span>
 
@@ -333,7 +506,224 @@
 <span class="sd">            &gt;&gt;&gt; len(q)</span>
 <span class="sd">            2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">binop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">op2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">list1</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform binary operation</span>
+<span class="sd">        </span>
+<span class="sd">        :param left: left operand</span>
+<span class="sd">        :type left: SMUserList subclass</span>
+<span class="sd">        :param right: right operand</span>
+<span class="sd">        :type right: SMUserList subclass, scalar or array</span>
+<span class="sd">        :param op: binary operation</span>
+<span class="sd">        :type op: callable</span>
+<span class="sd">        :param op2: binary operation</span>
+<span class="sd">        :type op2: callable</span>
+<span class="sd">        :param list1: return single array as a list, default True</span>
+<span class="sd">        :type list1: bool</span>
+<span class="sd">        :raises ValueError: arguments are not compatible</span>
+<span class="sd">        :return: list of values</span>
+<span class="sd">        :rtype: list</span>
+
+<span class="sd">        The is a helper method for implementing binary operation with overloaded</span>
+<span class="sd">        operators such as ``X * Y`` where ``X`` and ``Y`` are both subclasses</span>
+<span class="sd">        of ``SMUserList``.  Each operand has a list of one or more</span>
+<span class="sd">        values and this methods computes a list of result values according to:</span>
+
+<span class="sd">        =========   ==========   ====  ===================================</span>
+<span class="sd">              Inputs                    Output</span>
+<span class="sd">        ----------------------   -----------------------------------------</span>
+<span class="sd">        len(left)   len(right)   len     operation</span>
+<span class="sd">        =========   ==========   ====  ===================================</span>
+<span class="sd">         1          1             1    ``ret = op(left, right)``</span>
+<span class="sd">         1          M             M    ``ret[i] = op(left, right[i])``</span>
+<span class="sd">         M          1             M    ``ret[i] = op(left[i], right)``</span>
+<span class="sd">         M          M             M    ``ret[i] = op(left[i], right[i])``</span>
+<span class="sd">        =========   ==========   ====  ===================================</span>
+
+<span class="sd">        The arguments to ``op`` are the internal numeric values, ie. as returned</span>
+<span class="sd">        by the ``._A`` property.</span>
+
+<span class="sd">        The result is always a list, except for the first case above and</span>
+<span class="sd">        ``list1`` is ``False``.</span>
+
+<span class="sd">        If the right operand is not a ``SMUserList`` subclass, but is a numeric</span>
+<span class="sd">        scalar or array then then ``op2`` is invoked</span>
+
+<span class="sd">        For example::</span>
+
+<span class="sd">            X._binop(Y, lambda x, y: x + y)</span>
+
+<span class="sd">        =========   ====  ===================================</span>
+<span class="sd">          Input                    Output</span>
+<span class="sd">        ---------   -----------------------------------------</span>
+<span class="sd">        len(left)   len     operation</span>
+<span class="sd">        =========   ====  ===================================</span>
+<span class="sd">         1           1    ``ret = op2(left, right)``</span>
+<span class="sd">         M           M    ``ret[i] = op2(left[i], right)``</span>
+<span class="sd">        =========   ====  ===================================</span>
+
+<span class="sd">        There is no check on the shape of ``right`` if it is an array.</span>
+<span class="sd">        The result is always a list, except for the first case above and</span>
+<span class="sd">        ``list1`` is ``False``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># class * class</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># singleton * </span>
+            <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">list1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">right</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># singleton * singleton</span>
+                <span class="k">if</span> <span class="n">list1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">_A</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># singleton * non-singleton</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># non-singleton * </span>
+            <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># non-singleton * singleton</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+                <span class="c1"># non-singleton * non-singleton</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length of lists to == must be same length&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if isinstance(right, left.__class__):</span>
+        <span class="c1">#     # class * class</span>
+        <span class="c1">#     if len(left) == 1:</span>
+        <span class="c1">#         # singleton * </span>
+        <span class="c1">#         if len(right) == 1:</span>
+        <span class="c1">#             # singleton * singleton</span>
+        <span class="c1">#             if list1:</span>
+        <span class="c1">#                 return [op(left._A, right._A)]</span>
+        <span class="c1">#             else:</span>
+        <span class="c1">#                 return op(left.A, right.A)</span>
+        <span class="c1">#         else:</span>
+        <span class="c1">#             # singleton * non-singleton</span>
+        <span class="c1">#             return [op(left.A, x) for x in right.A]</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         # non-singleton * </span>
+        <span class="c1">#         if len(right) == 1:</span>
+        <span class="c1">#             # non-singleton * singleton</span>
+        <span class="c1">#             return [op(x, right.A) for x in left.A]</span>
+        <span class="c1">#         elif len(left) == len(right):</span>
+        <span class="c1">#             # non-singleton * non-singleton</span>
+        <span class="c1">#             return [op(x, y) for (x, y) in zip(left.A, right.A)]</span>
+        <span class="c1">#         else:</span>
+        <span class="c1">#             raise ValueError(&#39;length of lists to == must be same length&#39;)</span>
+        <span class="c1"># elif op2 is not None and isinstance(right, _numtypes) or (isinstance(right, np.ndarray)):</span>
+        <span class="c1">#     # class * (scalar or array)</span>
+        <span class="c1">#     if len(left) == 1:</span>
+        <span class="c1">#         if list1:</span>
+        <span class="c1">#             return [op2(left.A, right)]</span>
+        <span class="c1">#         else:</span>
+        <span class="c1">#             return op2(left.A, right)</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         return [op(x, right) for x in left.A]</span>
+
+    <span class="k">def</span> <span class="nf">unop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform unary operation</span>
+<span class="sd">        </span>
+<span class="sd">        :param self: operand</span>
+<span class="sd">        :type self: SMUserList subclass</span>
+<span class="sd">        :param op: unnary operation</span>
+<span class="sd">        :type op: callable</span>
+<span class="sd">        :param matrix: return array instead of list, default False</span>
+<span class="sd">        :type matrix: bool</span>
+<span class="sd">        :return: operation results</span>
+<span class="sd">        :rtype: list or NumPy array</span>
+
+<span class="sd">        The is a helper method for implementing unary operations where the</span>
+<span class="sd">        operand has multiple value. This method computes the value of </span>
+<span class="sd">        the operation for all input values and returns the result as either</span>
+<span class="sd">        a list or as a matrix which vertically stacks the results.</span>
+
+<span class="sd">        =========   ====  ===================================</span>
+<span class="sd">          Input                     Output</span>
+<span class="sd">        ---------   -----------------------------------------</span>
+<span class="sd">        len(self)   len     operation</span>
+<span class="sd">        =========   ====  ===================================</span>
+<span class="sd">         1           1    ``ret = op(self)``</span>
+<span class="sd">         M           M    ``ret[i] = op(self[i])``</span>
+<span class="sd">         M           M    ``ret[i,;] = op(self[i])``</span>
+<span class="sd">        =========   ====  ===================================</span>
+
+<span class="sd">        The result is:</span>
+<span class="sd">        </span>
+<span class="sd">        - a list of values if ``matrix==False``, or</span>
+<span class="sd">        - a 2D NumPy stack of values if ``matrix==True``, it is assumed</span>
+<span class="sd">          that the value is a 1D array.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+
+
+
+<span class="c1">#    def binop(left, right, op): </span>
+
+
+<span class="c1">#         if isinstance(right, left.__class__):</span>
+<span class="c1">#             # class by class</span>
+<span class="c1">#             if len(left) == 1:</span>
+<span class="c1">#                 if len(right) == 1:</span>
+<span class="c1">#                     #print(&#39;== 1x1&#39;)</span>
+<span class="c1">#                     return op(left.A, right.A)</span>
+<span class="c1">#                 else:</span>
+<span class="c1">#                     #print(&#39;== 1xN&#39;)</span>
+<span class="c1">#                     return [op(left.A, x) for x in right.A]</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 if len(right) == 1:</span>
+<span class="c1">#                     #print(&#39;== Nx1&#39;)</span>
+<span class="c1">#                     return [op(x, right.A) for x in left.A]</span>
+<span class="c1">#                 elif len(left) == len(right):</span>
+<span class="c1">#                     #print(&#39;== NxN&#39;)</span>
+<span class="c1">#                     return [op(x, y) for (x, y) in zip(left.A, right.A)]</span>
+<span class="c1">#                 else:</span>
+<span class="c1">#                     raise ValueError(&#39;length of lists to == must be same length&#39;)</span>
+<span class="c1">#         elif isinstance(right, (float, int, np.float64, np.int64)) or (isinstance(right, np.ndarray):</span>
+<span class="c1">#             # class by matrix</span>
+<span class="c1">#             if len(left) == 1:</span>
+<span class="c1">#                 return op(left.A, right)</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 return [op(x, right) for x in left.A]</span>
+
+
+    <span class="c1"># def _op2(self, other, op, list1=True):</span>
+
+    <span class="c1">#     if len(self) == 1:</span>
+    <span class="c1">#         if len(other) == 1:</span>
+    <span class="c1">#             if list1:</span>
+    <span class="c1">#                 return [op(self._A, other._A)]</span>
+    <span class="c1">#             else:</span>
+    <span class="c1">#                 return op(self._A, other._A)</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             #print(&#39;== 1xN&#39;)</span>
+    <span class="c1">#             return [op(self._A, x._A) for x in other]</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         if len(other) == 1:</span>
+    <span class="c1">#             #print(&#39;== Nx1&#39;)</span>
+    <span class="c1">#             return [op(x._A, other._A) for x in self]</span>
+    <span class="c1">#         elif len(self) == len(other):</span>
+    <span class="c1">#             #print(&#39;== NxN&#39;)</span>
+    <span class="c1">#             return [op(x._A, y._A) for (x, y) in zip(self, other)]</span>
+    <span class="c1">#         else:</span>
+    <span class="c1">#             raise ValueError(&#39;length of lists to == must be same length&#39;)</span>
 </pre></div>
 
            </div>
@@ -349,7 +739,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 01-Sep-2020.
+        Last updated on 07-Sep-2020.
       </span>
 
     </p>
