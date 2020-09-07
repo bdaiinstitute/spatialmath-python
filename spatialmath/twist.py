@@ -4,8 +4,7 @@ import math
 from spatialmath.base import argcheck
 import spatialmath.base as tr
 from spatialmath import super_pose as sp
-from spatialmath import SO3, SE3, SO2, SE2
-
+from spatialmath import SO3, SE3, SO2, SE2, Plucker
 from spatialmath.smuserlist import SMUserList
 
 
@@ -382,7 +381,7 @@ class Twist3(SMTwist):
         - ``X.ad()`` is the 6x6 logarithm of the adjoint matrix of the corresponding
           homogeneous transformation.
         """
-        return np.array([skew(self.w), skew(self.v), [np.zeros((3, 3)), skew(self.w)]])
+        return np.array([tr.skew(self.w), tr.skew(self.v), [np.zeros((3, 3)), tr.skew(self.w)]])
 
     def Ad(self):
         """
@@ -394,7 +393,7 @@ class Twist3(SMTwist):
         - ``X.Ad()``  is the 6x6 adjoint matrix of the corresponding
           homogeneous transformation.
         """
-        return self.SE3.Ad
+        return self.SE3().Ad()
 
     def SE3(self):
         """
@@ -445,7 +444,8 @@ class Twist3(SMTwist):
 
         - ``X.line()`` is a Plucker object representing the line of the twist axis.
         """
-        return Plucker([np.r_[tw.v - tw.pitch * tw.w, tw.w] for tw in self])
+        tw = self
+        return Plucker(tw.v - tw.pitch() * tw.w, tw.w)
 
     def pole(self):
         """
@@ -457,7 +457,7 @@ class Twist3(SMTwist):
         - ``X.pole()`` is a point on the twist axis. For a pure translation 
           this point is at infinity.
         """
-        return np.cross(self.w, self.v) / self.theta
+        return np.cross(self.w, self.v) / self.theta()
 
     def theta(self):
         """
@@ -622,24 +622,40 @@ class Twist3(SMTwist):
 
             >>> x = Twist3.R([1,2,3], [4,5,6])
             >>> x
-            Twist([0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178])
+            Twist3([0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178])
             >>> a.append(a)
             >>> a
-            Twist([
+            Twist3([
               [0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178],
               [0.80178, -1.6036, 0.80178, 0.26726, 0.53452, 0.80178]
             ])
 
         """
-
         if len(self) == 0:
             return "Twist([])"
         elif len(self) == 1:
-            return "Twist([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
+            return "Twist3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
         else:
-            return "Twist([\n" + \
+            return "Twist3([\n" + \
                 ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self.data]) +\
                 "\n])"
+
+    def _repr_pretty_(self, p, cycle):
+        """
+        Pretty string for IPython (superclass method)
+
+        :param p: pretty printer handle (ignored)
+        :param cycle: pretty printer flag (ignored)
+
+        Print colorized output when variable is displayed in IPython, ie. on a line by
+        itself.
+
+        Example::
+
+            In [1]: x
+
+        """
+        print(self.__str__())
 
 # ======================================================================== #
 
@@ -969,6 +985,25 @@ See also Twist3.char.
             return "Twist2([\n" + \
                 ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}}]".format(*list(tw.S)) for tw in self]) +\
                 "\n])"
+
+    def _repr_pretty_(self, p, cycle):
+        """
+        Pretty string for IPython (superclass method)
+
+        :param p: pretty printer handle (ignored)
+        :param cycle: pretty printer flag (ignored)
+
+        Print colorized output when variable is displayed in IPython, ie. on a line by
+        itself.
+
+        Example::
+
+            In [1]: x
+
+        """
+        # note _repr_pretty_self must be in subclass if the subclass has a __repr__
+        #  see https://stackoverflow.com/questions/59284262/how-to-implement-repr-pretty-in-a-python-mixin
+        print(self.__str__())
 
 if __name__ == '__main__':   # pragma: no cover
 
