@@ -362,18 +362,18 @@ class SMPose(SMUserList):
             start = start.A
 
         if self.N == 2:
+            # SO(2) or SE(2)
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
                 return self.__class__([tr.trinterp2(start, self.A, s=_s) for _s in s])
             else:
-                assert len(s) == 1, 'if len(X) > 1, len(s) must == 1'
                 return self.__class__([tr.trinterp2(start, x, s=s[0]) for x in self.data])
         elif self.N == 3:
+            # SO(3) or SE(3)
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
                 return self.__class__([tr.trinterp(start, self.A, s=_s) for _s in s])
             else:
-                assert len(s) == 1, 'if len(X) > 1, len(s) must == 1'
                 return self.__class__([tr.trinterp(start, x, s=s[0]) for x in self.data])
 
     def norm(self):
