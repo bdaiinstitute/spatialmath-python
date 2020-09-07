@@ -967,24 +967,35 @@ class TestLie(unittest.TestCase):
         # %%% SO(3) tests
         # zero rotation case
         nt.assert_array_almost_equal(trlog(np.eye(3)), skew([0, 0, 0]))
+        nt.assert_array_almost_equal(trlog(np.eye(3), twist=True), np.r_[0, 0, 0])
 
         # rotation by pi case
         nt.assert_array_almost_equal(trlog(rotx(pi)), skew([pi, 0, 0]))
         nt.assert_array_almost_equal(trlog(roty(pi)), skew([0, pi, 0]))
         nt.assert_array_almost_equal(trlog(rotz(pi)), skew([0, 0, pi]))
 
+        nt.assert_array_almost_equal(trlog(rotx(pi), twist=True), np.r_[pi, 0, 0])
+        nt.assert_array_almost_equal(trlog(roty(pi), twist=True), np.r_[0, pi, 0])
+        nt.assert_array_almost_equal(trlog(rotz(pi), twist=True), np.r_[0, 0, pi])
+
         # general case
         nt.assert_array_almost_equal(trlog(rotx(0.2)), skew([0.2, 0, 0]))
         nt.assert_array_almost_equal(trlog(roty(0.3)), skew([0, 0.3, 0]))
         nt.assert_array_almost_equal(trlog(rotz(0.4)), skew([0, 0, 0.4]))
 
+        nt.assert_array_almost_equal(trlog(rotx(0.2), twist=True), np.r_[0.2, 0, 0])
+        nt.assert_array_almost_equal(trlog(roty(0.3), twist=True), np.r_[0, 0.3, 0])
+        nt.assert_array_almost_equal(trlog(rotz(0.4), twist=True), np.r_[0, 0, 0.4])
+
         R = rotx(0.2) @ roty(0.3) @ rotz(0.4)
         nt.assert_array_almost_equal(trlog(R), logm(R))
+        nt.assert_array_almost_equal(trlog(R, twist=True), vex(logm(R)))
 
-        # %% SE(3) tests
+        # SE(3) tests
 
         # pure translation
         nt.assert_array_almost_equal(trlog(transl([1, 2, 3])), np.array([[0, 0, 0, 1], [0, 0, 0, 2], [0, 0, 0, 3], [0, 0, 0, 0]]))
+        nt.assert_array_almost_equal(trlog(transl([1, 2, 3]), twist=True), np.r_[1,2,3,0,0,0])
 
         # pure rotation
         # rotation by pi case
@@ -992,17 +1003,28 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trlog(troty(pi)), skewa([0, 0, 0, 0, pi, 0]))
         nt.assert_array_almost_equal(trlog(trotz(pi)), skewa([0, 0, 0, 0, 0, pi]))
 
+        nt.assert_array_almost_equal(trlog(trotx(pi), twist=True), np.r_[0, 0, 0, pi, 0, 0])
+        nt.assert_array_almost_equal(trlog(troty(pi), twist=True), np.r_[0, 0, 0, 0, pi, 0])
+        nt.assert_array_almost_equal(trlog(trotz(pi), twist=True), np.r_[0, 0, 0, 0, 0, pi])
+
         # general case
         nt.assert_array_almost_equal(trlog(trotx(0.2)), skewa([0, 0, 0, 0.2, 0, 0]))
         nt.assert_array_almost_equal(trlog(troty(0.3)), skewa([0, 0, 0, 0, 0.3, 0]))
         nt.assert_array_almost_equal(trlog(trotz(0.4)), skewa([0, 0, 0, 0, 0, 0.4]))
 
+        nt.assert_array_almost_equal(trlog(trotx(0.2), twist=True), np.r_[0, 0, 0, 0.2, 0, 0])
+        nt.assert_array_almost_equal(trlog(troty(0.3), twist=True), np.r_[0, 0, 0, 0, 0.3, 0])
+        nt.assert_array_almost_equal(trlog(trotz(0.4), twist=True), np.r_[0, 0, 0, 0, 0, 0.4])
+
         # mixture
         T = transl([1, 2, 3]) @ trotx(0.3)
         nt.assert_array_almost_equal(trlog(T), logm(T))
+        nt.assert_array_almost_equal(trlog(T, twist=True), vexa(logm(T)))
 
         T = transl([1, 2, 3]) @ troty(0.3)
         nt.assert_array_almost_equal(trlog(T), logm(T))
+        nt.assert_array_almost_equal(trlog(T, twist=True), vexa(logm(T)))
+
 
     # def test_trlog2(self):
 

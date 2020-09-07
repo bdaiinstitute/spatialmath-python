@@ -894,12 +894,16 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
 
 
 # ---------------------------------------------------------------------------------------#
-def trlog(T, check=True):
+def trlog(T, check=True, twist=False):
     """
     Logarithm of SO(3) or SE(3) matrix
 
     :param T: SO(3) or SE(3) matrix
     :type T: numpy.ndarray, shape=(3,3) or (4,4)
+    :param check: check that matrix is valid
+    :type check: bool
+    :param twist: return a twist vector instead of matrix [default]
+    :type twist: bool
     :return: logarithm
     :rtype: numpy.ndarray, shape=(3,3) or (4,4)
     :raises: ValueError
@@ -922,30 +926,39 @@ def trlog(T, check=True):
 
         if trn.iseye(T):
             # is identity matrix
-            return np.zeros((4, 4))
+            if twist:
+                return np.zeros((6,))
+            else:
+                return np.zeros((4, 4))
         else:
             [R, t] = trn.tr2rt(T)
 
             if trn.iseye(R):
                 # rotation matrix is identity
-                skw = np.zeros((3, 3))
-                v = t
-                theta = 1
+                if twist:
+                    return np.r_[t, 0, 0, 0]
+                else:
+                    return trn.rt2m(np.zeros((3, 3)), t)
             else:
                 S = trlog(R, check=False)  # recurse
                 w = trn.vex(S)
                 theta = vec.norm(w)
-                skw = trn.skew(w / theta)
-                Ginv = np.eye(3) / theta - skw / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) * skw @ skw
-                v = Ginv @ t
-            return trn.rt2m(skw, v) * theta
+                Ginv = np.eye(3) - S / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) / theta * S @ S
+                v = Ginv @ t 
+                if twist:
+                    return np.r_[v, w]
+                else:
+                    return trn.rt2m(S, v)
 
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
         if trn.iseye(R):
             # matrix is identity
-            return np.zeros((3, 3))
+            if twist:
+                return np.zeros((3,))
+            else:
+                return np.zeros((3, 3))
         elif abs(np.trace(R) + 1) < 100 * _eps:
             # check for trace = -1
             #   rotation by +/- pi, +/- 3pi etc.
@@ -956,12 +969,18 @@ def trlog(T, check=True):
             col = R[:, k] + I[:, k]
             w = col / np.sqrt(2 * (1 + mx))
             theta = math.pi
-            return trn.skew(w * theta)
+            if twist:
+                return w * theta
+            else:
+                return trn.skew(w * theta)
         else:
             # general case
             theta = np.arccos((np.trace(R) - 1) / 2)
             skw = (R - R.T) / 2 / np.sin(theta)
-            return skw * theta
+            if twist:
+                return trn.vex(skw * theta)
+            else:
+                return skw * theta
     else:
         raise ValueError("Expect SO(3) or SE(3) matrix")
 
@@ -1087,7 +1106,7 @@ def trnorm(T):
     Notes:
 
     - Only the direction of A (the z-axis) is unchanged.
-    - Used to prevent finite word length arithmetic causing transforms to 
+    - Used to prevent finite word length arithmetic causing transforms to
       become 'unnormalized'.
     """
 
@@ -1137,27 +1156,44 @@ def trinterp(start, end, s=None):
 
     assert 0 <= s <= 1, 's outside interval [0,1]'
 
-    if end is None:
-        #	TRINTERP(T, s)
+    if argcheck.ismatrix(end, (3, 3)):
+        # SO(3) case
 
-        q0 = quat.r2q(trn.t2r(start))
-        p0 = transl(start)
+        if start is None:
+            #	TRINTERP(T, s)
+            q0 = quat.r2q(trn.t2r(end))
+            qr = quat.slerp(quat.eye(), q0, s)
+        else:
+            #	TRINTERP(T0, T1, s)
+            q0 = quat.r2q(trn.t2r(start))
+            q1 = quat.r2q(trn.t2r(end))
+            qr = quat.slerp(q0, q1, s)
 
-        qr = quat.slerp(quat.eye(), q0, s)
-        pr = s * p0
+        return quat.q2r(qr)
+
+    elif argcheck.ismatrix(end, (4, 4)):
+        # SE(3) case
+        if start is None:
+            #	TRINTERP(T, s)
+            q0 = quat.r2q(trn.t2r(end))
+            p0 = transl(end)
+
+            qr = quat.slerp(quat.eye(), q0, s)
+            pr = s * p0
+        else:
+            #	TRINTERP(T0, T1, s)
+            q0 = quat.r2q(trn.t2r(start))
+            q1 = quat.r2q(trn.t2r(end))
+
+            p0 = transl(start)
+            p1 = transl(end)
+
+            qr = quat.slerp(q0, q1, s)
+            pr = p0 * (1 - s) + s * p1
+
+        return trn.rt2tr(quat.q2r(qr), pr)
     else:
-        #	TRINTERP(T0, T1, s)
-
-        q0 = quat.r2q(trn.t2r(start))
-        q1 = quat.r2q(trn.t2r(end))
-
-        p0 = transl(start)
-        p1 = transl(end)
-
-        qr = quat.slerp(q0, q1, s)
-        pr = p0 * (1 - s) + s * p1
-
-    return trn.rt2tr(quat.q2r(qr), pr)
+        return ValueError('Argument must be SO(3) or SE(3)')
 
 
 def delta2tr(d):
@@ -1169,7 +1205,7 @@ def delta2tr(d):
     :return: SE(3) matrix
     :rtype: np.ndarray, shape=(4,4)
 
-    ``T = delta2tr(d)`` is an SE(3) matrix representing differential 
+    ``T = delta2tr(d)`` is an SE(3) matrix representing differential
     motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
 
     Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
@@ -1211,13 +1247,13 @@ def tr2delta(T0, T1=None):
     :rtype: np.ndarray, shape=(6,)
 
 
-    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to 
+    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to
       infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
 
     - ``tr2delta(T)`` as above but the motion is from the world frame to the pose represented by T.
 
     The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
-    represents infinitessimal translation and rotation, and is an approximation to the 
+    represents infinitessimal translation and rotation, and is an approximation to the
     instantaneous spatial velocity multiplied by time step.
 
     Notes:
@@ -1385,174 +1421,181 @@ def _vec2s(fmt, v):
 try:
     import matplotlib.pyplot as plt
     _matplotlib_exists = True
-
-except ImportError:  # pragma: no cover
-    def trplot(*args, **kwargs):  # pylint: disable=unused-argument,missing-function-docstring
-        print('matplotlib is not installed: pip install matplotlib')
+except ImportError:  # pragma: no cover        
     _matplotlib_exists = False
 
-if _matplotlib_exists:
-    def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None, textcolor=None, labels=('X', 'Y', 'Z'), length=1, arrow=True, projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  # pylint: disable=unused-argument,function-redefined
-        """
-        Plot a 3D coordinate frame
+def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
+            textcolor=None, labels=('X', 'Y', 'Z'), length=1, arrow=True, 
+            projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, 
+            d2=1.15, **kwargs):
+    """
+    Plot a 3D coordinate frame
 
-        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-        :type: numpy.ndarray, shape=(3,3) or (4,4)
-        :param axes: the axes to plot into, defaults to current axes
-        :type axes: Axes3D reference
-        :param block: run the GUI main loop until all windows are closed, default True
-        :type block: bool
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
-                     If dims is [min, max] those limits are applied to the x-, y- and z-axes.
-        :type dims: array_like
-        :param color: color of the lines defining the frame
-        :type color: str
-        :param textcolor: color of text labels for the frame, default color of lines above
-        :type textcolor: str
-        :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
-        :type frame: str
-        :param labels: labels for the axes, defaults to X, Y and Z
-        :type labels: 3-tuple of strings
-        :param length: length of coordinate frame axes, default 1
-        :type length: float
-        :param arrow: show arrow heads, default True
-        :type arrow: bool
-        :param wtl: width-to-length ratio for arrows, default 0.2
-        :type wtl: float
-        :param rviz: show Rviz style arrows, default False
-        :type rviz: bool
-        :param projection: 3D projection: ortho [default] or persp
-        :type projection: str
-        :param width: width of lines, default 1
-        :type width: float
-        :param d1: distance of frame axis label text from origin, default 1.15
-        :type d2: distance of frame label text from origin, default 0.05
-        :return: axes containing the frame
-        :rtype: Axes3DSubplot
+    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
+    :type: numpy.ndarray, shape=(3,3) or (4,4)
+    :param axes: the axes to plot into, defaults to current axes
+    :type axes: Axes3D reference
+    :param block: run the GUI main loop until all windows are closed, default True
+    :type block: bool
+    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
+                    If dims is [min, max] those limits are applied to the x-, y- and z-axes.
+    :type dims: array_like
+    :param color: color of the lines defining the frame
+    :type color: str
+    :param textcolor: color of text labels for the frame, default color of lines above
+    :type textcolor: str
+    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
+    :type frame: str
+    :param labels: labels for the axes, defaults to X, Y and Z
+    :type labels: 3-tuple of strings
+    :param length: length of coordinate frame axes, default 1
+    :type length: float
+    :param arrow: show arrow heads, default True
+    :type arrow: bool
+    :param wtl: width-to-length ratio for arrows, default 0.2
+    :type wtl: float
+    :param rviz: show Rviz style arrows, default False
+    :type rviz: bool
+    :param projection: 3D projection: ortho [default] or persp
+    :type projection: str
+    :param width: width of lines, default 1
+    :type width: float
+    :param d1: distance of frame axis label text from origin, default 1.15
+    :type d2: distance of frame label text from origin, default 0.05
+    :return: axes containing the frame
+    :rtype: Axes3DSubplot
 
-        Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.
+    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.
 
-        - If no current figure, one is created
-        - If current figure, but no axes, a 3d Axes is created
+    - If no current figure, one is created
+    - If current figure, but no axes, a 3d Axes is created
 
-        Examples:
+    Examples:
 
-             trplot(T, frame='A')
-             trplot(T, frame='A', color='green')
-             trplot(T1, 'labels', 'NOA');
+            trplot(T, frame='A')
+            trplot(T, frame='A', color='green')
+            trplot(T1, 'labels', 'NOA');
 
-        """
+    """
 
-        # TODO
-        # animation
-        # anaglyph
+    # TODO
+    # animation
+    # anaglyph
 
-        # check input types
-        if isrot(T, check=True):
-            T = trn.r2t(T)
+    if not _matplotlib_exists:
+        print('matplotlib is not installed: pip install matplotlib')
+        return
+
+    # check input types
+    if isrot(T, check=True):
+        T = trn.r2t(T)
+    else:
+        assert ishom(T, check=True)
+
+    if axes is None:
+        # create an axes
+        fig = plt.gcf()
+        if fig.axes == []:
+            # no axes in the figure, create a 3D axes
+            ax = fig.add_subplot(111, projection='3d', proj_type=projection)
+            ax.autoscale(enable=True, axis='both')
+
+            # ax.set_aspect('equal')
+            ax.set_xlabel(labels[0])
+            ax.set_ylabel(labels[1])
+            ax.set_zlabel(labels[2])
         else:
-            assert ishom(T, check=True)
+            # reuse an existing axis
+            ax = plt.gca()
+    else:
+        ax = axes
 
-        if axes is None:
-            # create an axes
-            fig = plt.gcf()
-            if fig.axes == []:
-                # no axes in the figure, create a 3D axes
-                ax = fig.add_subplot(111, projection='3d', proj_type=projection)
-                ax.autoscale(enable=True, axis='both')
+    if dims is not None:
+        if len(dims) == 2:
+            dims = dims * 3
+        ax.set_xlim(dims[0:2])
+        ax.set_ylim(dims[2:4])
+        ax.set_zlim(dims[4:6])
 
-                # ax.set_aspect('equal')
-                ax.set_xlabel(labels[0])
-                ax.set_ylabel(labels[1])
-                ax.set_zlabel(labels[2])
-            else:
-                # reuse an existing axis
-                ax = plt.gca()
-        else:
-            ax = axes
+    # create unit vectors in homogeneous form
+    o = T @ np.array([0, 0, 0, 1])
+    x = T @ np.array([1, 0, 0, 1]) * length
+    y = T @ np.array([0, 1, 0, 1]) * length
+    z = T @ np.array([0, 0, 1, 1]) * length
 
-        if dims is not None:
-            if len(dims) == 2:
-                dims = dims * 3
-            ax.set_xlim(dims[0:2])
-            ax.set_ylim(dims[2:4])
-            ax.set_zlim(dims[4:6])
+    # draw the axes
 
-        # create unit vectors in homogeneous form
-        o = T @ np.array([0, 0, 0, 1])
-        x = T @ np.array([1, 0, 0, 1]) * length
-        y = T @ np.array([0, 1, 0, 1]) * length
-        z = T @ np.array([0, 0, 1, 1]) * length
+    if rviz:
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color='red', linewidth=5 * width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=5 * width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=5 * width)
+    elif arrow:
+        ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        # plot an invisible point at the end of each arrow to allow auto-scaling to work
+        ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], s=[20, 0, 0, 0])
+    else:
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color, linewidth=width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color, linewidth=width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color, linewidth=width)
 
-        # draw the axes
+    # label the frame
+    if frame:
+        if textcolor is not None:
+            color = textcolor
 
-        if rviz:
-            ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color='red', linewidth=5 * width)
-            ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=5 * width)
-            ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=5 * width)
-        elif arrow:
-            ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-            ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-            ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-            # plot an invisible point at the end of each arrow to allow auto-scaling to work
-            ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], s=[20, 0, 0, 0])
-        else:
-            ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color, linewidth=width)
-            ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color, linewidth=width)
-            ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color, linewidth=width)
+        o1 = T @ np.array([-d1, -d1, -d1, 1])
+        ax.text(o1[0], o1[1], o1[2], r'$\{' + frame + r'\}$', color=color, verticalalignment='top', horizontalalignment='center')
 
-        # label the frame
-        if frame:
-            if textcolor is not None:
-                color = textcolor
+        # add the labels to each axis
 
-            o1 = T @ np.array([-d1, -d1, -d1, 1])
-            ax.text(o1[0], o1[1], o1[2], r'$\{' + frame + r'\}$', color=color, verticalalignment='top', horizontalalignment='center')
+        x = (x - o) * d2 + o
+        y = (y - o) * d2 + o
+        z = (z - o) * d2 + o
 
-            # add the labels to each axis
+        ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
+        ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
+        ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
 
-            x = (x - o) * d2 + o
-            y = (y - o) * d2 + o
-            z = (z - o) * d2 + o
+    if block:
+        # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
+        plt.show(block=block)
+    return ax
 
-            ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
-            ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
-            ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
+def tranimate(T, **kwargs):
+    """
+    Animate a 3D coordinate frame
 
-        if block:
-            # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
-            plt.show(block=block)
-        return ax
+    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
+    :type: numpy.ndarray, shape=(3,3) or (4,4)
+    :param nframes: number of steps in the animation [defaault 100]
+    :type nframes: int
+    :param repeat: animate in endless loop [default False]
+    :type repeat: bool
+    :param interval: number of milliseconds between frames [default 50]
+    :type interval: int
+    :param movie: name of file to write MP4 movie into
+    :type movie: str
 
-    def tranimate(T, **kwargs):
-        """
-        Animate a 3D coordinate frame
+    Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
 
-        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-        :type: numpy.ndarray, shape=(3,3) or (4,4)
-        :param nframes: number of steps in the animation [defaault 100]
-        :type nframes: int
-        :param repeat: animate in endless loop [default False]
-        :type repeat: bool
-        :param interval: number of milliseconds between frames [default 50]
-        :type interval: int
-        :param movie: name of file to write MP4 movie into
-        :type movie: str
-
-        Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
-
-        - If no current figure, one is created
-        - If current figure, but no axes, a 3d Axes is created
+    - If no current figure, one is created
+    - If current figure, but no axes, a 3d Axes is created
 
 
-        Examples:
+    Examples:
 
-             tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
-             tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
-        """
-        anim = animate.Animate(**kwargs)
-        anim.trplot(T, **kwargs)
-        anim.run(**kwargs)
+            tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
+            tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+    """
+    if not _matplotlib_exists:
+        print('matplotlib is not installed: pip install matplotlib')
+        return
+
+    anim = animate.Animate(**kwargs)
+    anim.trplot(T, **kwargs)
+    anim.run(**kwargs)
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib

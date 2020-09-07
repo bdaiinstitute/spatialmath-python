@@ -217,12 +217,16 @@ def isrot2(R, check=False):
 # ---------------------------------------------------------------------------------------#
 
 
-def trlog2(T, check=True):
+def trlog2(T, check=True, twist=False):
     """
     Logarithm of SO(2) or SE(2) matrix
 
     :param T: SO(2) or SE(2) matrix
     :type T: numpy.ndarray, shape=(2,2) or (3,3)
+    :param check: check that matrix is valid
+    :type check: bool
+    :param twist: return a twist vector instead of matrix [default]
+    :type twist: bool
     :return: logarithm
     :rtype: numpy.ndarray, shape=(2,2) or (3,3)
     :raises: ValueError
@@ -248,13 +252,22 @@ def trlog2(T, check=True):
 
         if trn.iseye(T):
             # is identity matrix
-            return np.zeros((3, 3))
+            if twist:
+                return np.zeros((3,))
+            else:
+                return np.zeros((3, 3))
         else:
-            return scipy.linalg.logm(T)
+            if twist:
+                return trn.vex(scipy.linalg.logm(T))
+            else:
+                return scipy.linalg.logm(T)
 
     elif isrot2(T, check=check):
         # SO(2) rotation matrix
-        return scipy.linalg.logm(T)
+        if twist:
+            return trn.vex(scipy.linalg.logm(T))
+        else:
+            return scipy.linalg.logm(T)
     else:
         raise ValueError("Expect SO(2) or SE(2) matrix")
 # ---------------------------------------------------------------------------------------#
@@ -383,17 +396,17 @@ def trinterp2(start, end, s=None):
 
     %## 2d homogeneous trajectory
     """
-    if argcheck.ismatrix(start, (2, 2)):
+    if argcheck.ismatrix(end, (2, 2)):
         # SO(2) case
         if start is None:
             #	TRINTERP2(T, s)
 
-            th0 = math.atan2(start[1, 0], start[0, 0])
+            th0 = math.atan2(end[1, 0], end[0, 0])
 
             th = s * th0
         else:
             #	TRINTERP2(T1, start= s)
-            assert start.shape == end.shape, 'both matrices must be same shape'
+            assert start.shape == end.shape, 'start and end matrices must be same shape'
 
             th0 = math.atan2(start[1, 0], start[0, 0])
             th1 = math.atan2(end[1, 0], end[0, 0])
@@ -401,12 +414,12 @@ def trinterp2(start, end, s=None):
             th = th0 * (1 - s) + s * th1
 
         return rot2(th)
-    elif argcheck.ismatrix(start, (3, 3)):
-        if end is None:
+    elif argcheck.ismatrix(end, (3, 3)):
+        if start is None:
             #	TRINTERP2(T, s)
 
-            th0 = math.atan2(start[1, 0], start[0, 0])
-            p0 = transl2(start)
+            th0 = math.atan2(end[1, 0], end[0, 0])
+            p0 = transl2(end)
 
             th = s * th0
             pr = s * p0
@@ -502,9 +515,9 @@ except ImportError:  # pragma: no cover
 
 if _matplotlib_exists:
 
-    def trplot2(T, axes=None, block=True, dims=None, color='blue', frame=None,
+    def trplot2(T, axes=None, block=True, dims=None, color='blue', frame=None, # pylint: disable=unused-argument,function-redefined
                 textcolor=None, labels=('X', 'Y'), length=1, arrow=True,
-                rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  # pylint: disable=unused-argument,function-redefined
+                rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  
         """
         Plot a 2D coordinate frame
 
