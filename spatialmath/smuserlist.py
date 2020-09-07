@@ -245,7 +245,16 @@ class SMUserList(UserList, ABC):
         """
 
         if isinstance(i, slice):
-            return self.__class__([self.data[k] for k in range(i.start or 0, i.stop or len(self), i.step or 1)])
+            if i.stop is None:
+                # stop not given
+                end = len(self)
+            elif i.stop < 0:
+                # stop is negative, -
+                end = i.stop + len(self) + 1
+            else:
+                # stop is positive, use it directly
+                end = i.stop
+            return self.__class__([self.data[k] for k in range(i.start or 0, end, i.step or 1)])
         else:
             return self.__class__(self.data[i])
         
