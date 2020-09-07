@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Spatial Maths package 0.7.0
+  <title>Introduction &mdash; Spatial Maths package 0.8.0
  documentation</title>
   
 
@@ -87,28 +87,23 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#relationship-to-matlab-tools">Relationship to MATLAB tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spatial-math-classes">Spatial math classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#operators-for-pose-objects">Operators for pose objects</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#group-operations">Group operations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#non-group-operations">Non-group operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#relationship-to-matlab-tools">Relationship to MATLAB tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spatial-math-classes">Spatial math classes</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#displaying-values">Displaying values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#graphics">Graphics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Constructors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#list-capability">List capability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#vectorization">Vectorization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operators-for-pose-objects">Operators for pose objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#displaying-values">Displaying values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graphics">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constructors">Constructors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-capability">List capability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vectorization">Vectorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#low-level-spatial-math">Low-level spatial math</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#low-level-spatial-math">Low-level spatial math</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Graphics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#symbolic-support">Symbolic support</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#matlab-compatability">MATLAB compatability</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#symbolic-support">Symbolic support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#matlab-compatability">MATLAB compatability</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="spatialmath.html">Classes</a></li>
@@ -184,7 +179,9 @@
 <p>Spatial maths capability underpins all of robotics and robotic vision.
 It provides the means to describe the relative position and orientation of objects in 2D or 3D space.
 This package provides Python classes and functions to represent, print, plot, manipulate and covert between such representations.
-This includes relevant mathematical objects such as rotation matrices <span class="math notranslate nohighlight">\(R \in SO(2), SO(3)\)</span>, homogeneous transformation matrices <span class="math notranslate nohighlight">\(T \in SE(2), SE(3)\)</span> and quaternions <span class="math notranslate nohighlight">\(q \in \mathbb{H}\)</span>.</p>
+This includes relevant mathematical objects such as rotation matrices <span class="math notranslate nohighlight">\(R \in SO(2), SO(3)\)</span>,
+homogeneous transformation matrices <span class="math notranslate nohighlight">\(T \in SE(2), SE(3)\)</span>, quaternions <span class="math notranslate nohighlight">\(q \in \mathbb{H}\)</span>,
+and twists <span class="math notranslate nohighlight">\(t in se(2), se(3)\)</span>.</p>
 <p>For example, we can create a rigid-body transformation that is a rotation about the x-axis of 30 degrees:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">base</span><span class="o">.</span><span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
@@ -195,7 +192,7 @@ This includes relevant mathematical objects such as rotation matrices <span clas
 </div>
 <p>which results in a NumPy 4x4 array that belongs to the group SE(3).  We could also create a class instance:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">&lt;class &#39;spatialmath.pose3d.SE3&#39;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
@@ -216,8 +213,19 @@ by a 3x3 matrix</p></li>
 <div class="section" id="relationship-to-matlab-tools">
 <h2>Relationship to MATLAB tools<a class="headerlink" href="#relationship-to-matlab-tools" title="Permalink to this headline">¶</a></h2>
 <p>This package replicates, as much as possible, the functionality of the <a class="reference external" href="https://github.com/petercorke/spatial-math">Spatial Math Toolbox</a> for MATLAB ®
-which underpins the <a class="reference external" href="https://github.com/petercorke/robotics-toolbox-matlab">Robotics Toolbox</a> for MATLAB.
-The design considerations included:</p>
+which underpins the <a class="reference external" href="https://github.com/petercorke/robotics-toolbox-matlab">Robotics Toolbox</a> for MATLAB. It comprises:</p>
+<ul>
+<li><p>the <em>classic</em> functions (which date back to the origin of the Robotics Toolbox for MATLAB) such as <code class="docutils literal notranslate"><span class="pre">rotx</span></code>, <code class="docutils literal notranslate"><span class="pre">trotz</span></code>, <code class="docutils literal notranslate"><span class="pre">eul2tr</span></code> etc. as the <code class="docutils literal notranslate"><span class="pre">base</span></code> package which you can access by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>and works with NumPy arrays.  This package also includes a set of functions to deal with quaternions and unit-quaternions represented as 4-element
+Numpy arrays.</p>
+</li>
+<li><p>the classes (which appeared in Robotics Toolbox for MATLAB release 10 in 2017) such as <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> etc.  The only significant difference
+is that the MATLAB <code class="docutils literal notranslate"><span class="pre">Twist</span></code> class is now called <code class="docutils literal notranslate"><span class="pre">Twist3</span></code>.</p></li>
+</ul>
+<p>The design considerations included:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>being as similar as possible to the MATLAB Toolbox function names and semantics</p></li>
@@ -229,10 +237,37 @@ The design considerations included:</p>
 <li><p>Classes are _fairly_ polymorphic, they share many common constructor options and methods</p></li>
 </ul>
 </div></blockquote>
-</div>
 <div class="section" id="spatial-math-classes">
-<h2>Spatial math classes<a class="headerlink" href="#spatial-math-classes" title="Permalink to this headline">¶</a></h2>
-<p>The package provides classes to abstract and implementing appropriate operations for the following groups:</p>
+<h3>Spatial math classes<a class="headerlink" href="#spatial-math-classes" title="Permalink to this headline">¶</a></h3>
+<p>The package provides classes to represent pose and orientation in 3D and 2D
+space:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 42%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Represents</p></th>
+<th class="head"><p>in 3D</p></th>
+<th class="head"><p>in 2D</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pose</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SE3</span></code>
+<code class="docutils literal notranslate"><span class="pre">Twist3</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SE2</span></code>
+<code class="docutils literal notranslate"><span class="pre">Twist2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>orientation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SO3</span></code>
+<code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SO2</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>These classes to abstract and implementing appropriate operations for the following groups:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -266,13 +301,13 @@ The design considerations included:</p>
 <td><p>orientation in 2D</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SO2</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{se(2)}\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{se(3)}\)</span></p></td>
+<td><p>twist in 3D</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Twist3</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mbox{se(2)}\)</span></p></td>
 <td><p>twist in 2D</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Twist2</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mbox{se(3)}\)</span></p></td>
-<td><p>twist in 3D</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">Twist</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbb{H}\)</span></p></td>
 <td><p>quaternion</p></td>
@@ -303,7 +338,7 @@ The design considerations included:</p>
 </tr>
 </tbody>
 </table>
-<p>In addition to the merits outlined above, classes ensure that the numerical value is always valid because the
+<p>In addition to the merits of classes outlined above, classes ensure that the numerical value is always valid because the
 constraints (eg. orthogonality, unit norm) are enforced when the object is constructed.  For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)))</span>
 <span class="gt">Traceback (most recent call last):</span>
@@ -319,11 +354,11 @@ However a list of these items:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.4</span><span class="p">),</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)]</span>
 </pre></div>
 </div>
-<p>has the type <cite>list</cite> and the elements are not enforced to be homogeneous, ie. a list could contain a mixture of classes.
+<p>has the type <cite>list</cite> and the elements are not guaranteed to be homogeneous, ie. a list could contain a mixture of classes.
 This requires careful coding, or additional user code to check the validity of all elements in the list.
-We could create a NumPy array of these objects, the upside being it could be a multi-dimensional array, but the again NumPy does not
+We could create a NumPy array of these objects, the upside being it could be more than one-dimensional, but the again NumPy does not
 enforce homogeneity of object types in an array.</p>
-<p>The Spatial Math package give these classes list <em>super powers</em> so that, for example, a single <cite>SE3</cite> object can contain a list of SE(3) poses:</p>
+<p>The Spatial Math package give these classes list <em>super powers</em> so that, for example, a single <cite>SE3</cite> object can contain a sequence of SE(3) values:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="go">4</span>
@@ -338,10 +373,10 @@ enforce homogeneity of object types in an array.</p>
 section <a class="reference internal" href="#list-powers"><span class="std std-ref">List capability</span></a>
 The pose objects are a list subclass so we can index it or slice it as we
 would a list, but the result each time belongs to the class it was sliced from.</p>
+</div>
+</div>
 <div class="section" id="operators-for-pose-objects">
-<h3>Operators for pose objects<a class="headerlink" href="#operators-for-pose-objects" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="group-operations">
-<h4>Group operations<a class="headerlink" href="#group-operations" title="Permalink to this headline">¶</a></h4>
+<h2>Operators for pose objects<a class="headerlink" href="#operators-for-pose-objects" title="Permalink to this headline">¶</a></h2>
 <p>The classes represent mathematical groups, and the group arithmetic rules are enforced.
 The operator <code class="docutils literal notranslate"><span class="pre">*</span></code> denotes composition and the result will be of the same type as the operand:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
@@ -376,9 +411,6 @@ is performed then the inverse is taken.</p>
 <span class="go">          [0., 0., 0., 1.]]))</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="constructors">
-<h4>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h4>
 <p>For every group the identity value can be constructed by instantiating the class with no arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">UnitQuaternion</span><span class="p">()</span>
 <span class="go">1.000000 &lt;&lt; 0.000000, 0.000000, 0.000000 &gt;&gt;</span>
@@ -405,9 +437,6 @@ Rand          random rotation
 Exp           specified as se(2) or se(3) matrix
 empty         no values
 ———–   ————————————————–</p>
-</div>
-<div class="section" id="non-group-operations">
-<h4>Non-group operations<a class="headerlink" href="#non-group-operations" title="Permalink to this headline">¶</a></h4>
 <p>The classes <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> support vector transformation when
 premultiplying a vector (or a set of vectors columnwise in a NumPy array) using the <code class="docutils literal notranslate"><span class="pre">*</span></code> operator.
 This is either rotation about the origin (for <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code>) or rotation and translation (<code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>).
@@ -457,9 +486,8 @@ and the operations are performed elementwise, for example:</p>
 whereas a general quaternion uses single angle brackets.  The product of a general quaternion and a
 unit quaternion is always a general quaternion.</p>
 </div>
-</div>
 <div class="section" id="displaying-values">
-<h3>Displaying values<a class="headerlink" href="#displaying-values" title="Permalink to this headline">¶</a></h3>
+<h2>Displaying values<a class="headerlink" href="#displaying-values" title="Permalink to this headline">¶</a></h2>
 <p>Each class has a compact text representation via its <em>repr</em> method and its <code class="docutils literal notranslate"><span class="pre">str()</span></code> method.
 The <code class="docutils literal notranslate"><span class="pre">printline()</span></code> methods prints a single-line for tabular listing to the console, file and returns a string:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
@@ -475,7 +503,7 @@ The <code class="docutils literal notranslate"><span class="pre">printline()</sp
 <p>with rotational elements in red, translational elements in blue and constants in grey.</p>
 </div>
 <div class="section" id="graphics">
-<h3>Graphics<a class="headerlink" href="#graphics" title="Permalink to this headline">¶</a></h3>
+<h2>Graphics<a class="headerlink" href="#graphics" title="Permalink to this headline">¶</a></h2>
 <p>Each class has a <code class="docutils literal notranslate"><span class="pre">plot</span></code> method that displays the corresponding pose as a coordinate frame, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -490,8 +518,8 @@ The <code class="docutils literal notranslate"><span class="pre">printline()</sp
 </div>
 <img alt="_images/animate.gif" src="_images/animate.gif" />
 </div>
-<div class="section" id="id1">
-<h3>Constructors<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="constructors">
+<h2>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h2>
 <p>The constructor for each class can accept:</p>
 <ul>
 <li><p>no arguments, in which case the identity element is created:</p>
@@ -544,7 +572,7 @@ The <code class="docutils literal notranslate"><span class="pre">printline()</sp
 </ul>
 </div>
 <div class="section" id="list-capability">
-<span id="list-powers"></span><h3>List capability<a class="headerlink" href="#list-capability" title="Permalink to this headline">¶</a></h3>
+<span id="list-powers"></span><h2>List capability<a class="headerlink" href="#list-capability" title="Permalink to this headline">¶</a></h2>
 <p>Each of these object classes has <code class="docutils literal notranslate"><span class="pre">UserList</span></code> as a base class which means it inherits all the functionality of
 a Python list</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
@@ -627,7 +655,7 @@ Slice notation is also available, eg. <code class="docutils literal notranslate"
 </table>
 </div>
 <div class="section" id="vectorization">
-<h3>Vectorization<a class="headerlink" href="#vectorization" title="Permalink to this headline">¶</a></h3>
+<h2>Vectorization<a class="headerlink" href="#vectorization" title="Permalink to this headline">¶</a></h2>
 <p>For most methods, if applied to an object that contains N elements, the result will be the appropriate return object type with N elements.</p>
 <p>Most binary operations (<cite>*</cite>, <cite>*=</cite>, <cite>**</cite>, <cite>+</cite>, <cite>+=</cite>, <cite>-</cite>, <cite>-=</cite>, <cite>==</cite>, <cite>!=</cite>) are vectorized.  For the case:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span> <span class="o">=</span> <span class="n">X</span> <span class="n">op</span> <span class="n">Y</span>
@@ -677,7 +705,7 @@ Slice notation is also available, eg. <code class="docutils literal notranslate"
 <p>Any other combination of lengths is not allowed and will raise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> exception.</p>
 </div>
 <div class="section" id="implementation">
-<h3>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 25%" />
@@ -723,10 +751,8 @@ Slice notation is also available, eg. <code class="docutils literal notranslate"
 </table>
 <p>This online documentation includes just the method shown in bold.
 The other related methods all invoke that method.</p>
-</div>
-</div>
 <div class="section" id="low-level-spatial-math">
-<h2>Low-level spatial math<a class="headerlink" href="#low-level-spatial-math" title="Permalink to this headline">¶</a></h2>
+<h3>Low-level spatial math<a class="headerlink" href="#low-level-spatial-math" title="Permalink to this headline">¶</a></h3>
 <p>All the classes just described abstract the <code class="docutils literal notranslate"><span class="pre">base</span></code> package which represent the spatial-math object as a numpy.ndarray.</p>
 <p>The inputs to functions in this package are either floats, lists, tuples or numpy.ndarray objects describing vectors or arrays.  Functions that require a vector can be passed a list, tuple or numpy.ndarray for a vector – described in the documentation as being of type <em>array_like</em>.</p>
 <p>Numpy vectors are somewhat different to MATLAB, and is a gnarly aspect of numpy.  Numpy arrays have a shape described by a shape tuple which is a list of the dimensions.  Typically all <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> vectors have the shape (N,), that is, they have only one dimension.  The <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> product of an (M,N) array and a (N,) vector is a (M,) array.  A numpy column vector has shape (N,1) and a row vector has shape (1,N) but functions also accept row (1,N)  and column (N,1) vectors.
@@ -848,8 +874,10 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
 </pre></div>
 </div>
 <p>Functions exist to convert to and from SO(3) rotation matrices and a 3-vector representation.  The latter is often used for SLAM and bundle adjustment applications, being a minimal representation of orientation.</p>
-<div class="section" id="id2">
-<h3>Graphics<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>Graphics<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>If <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> is installed then we can add 2D coordinate frames to a figure in a variety of styles:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -860,9 +888,9 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
  <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id2">
 <img alt="_images/transforms2d.png" src="_images/transforms2d.png" />
-<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot2</span></code></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot2</span></code></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>If a figure does not yet exist one is added.  If a figure exists but there is no 2D axes then one is added.  To add to an existing axes you can pass this in using the <code class="docutils literal notranslate"><span class="pre">axes</span></code> argument.  By default the frames are drawn with lines or arrows of unit length.  Autoscaling is enabled.</p>
 <p>Similarly, we can plot 3D coordinate frames in a variety of styles:</p>
@@ -873,9 +901,9 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
  <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="nd">@trotx</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </td></tr></table></div>
-<div class="figure align-center" id="id4">
+<div class="figure align-center" id="id3">
 <img alt="_images/transforms3d.png" src="_images/transforms3d.png" />
-<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot</span></code></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot</span></code></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">dims</span></code> option in lines 1 and 3 sets the workspace dimensions.  Note that the last set value is what is displayed.</p>
 <p>Depending on the backend you are using you may need to include</p>
@@ -884,7 +912,7 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
 </div>
 </div>
 <div class="section" id="symbolic-support">
-<h3>Symbolic support<a class="headerlink" href="#symbolic-support" title="Permalink to this headline">¶</a></h3>
+<h2>Symbolic support<a class="headerlink" href="#symbolic-support" title="Permalink to this headline">¶</a></h2>
 <p>Some functions have support for symbolic variables, for example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span>
 
@@ -931,7 +959,7 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
 </div>
 </div>
 <div class="section" id="matlab-compatability">
-<h3>MATLAB compatability<a class="headerlink" href="#matlab-compatability" title="Permalink to this headline">¶</a></h3>
+<h2>MATLAB compatability<a class="headerlink" href="#matlab-compatability" title="Permalink to this headline">¶</a></h2>
 <p>We can create a MATLAB like environment by</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spatialmath</span>  <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span>  <span class="kn">import</span> <span class="o">*</span>
@@ -943,7 +971,6 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>

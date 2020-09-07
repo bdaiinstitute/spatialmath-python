@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>spatialmath.geom3d &mdash; Spatial Maths package 0.7.0
+  <title>spatialmath.geom3d &mdash; Spatial Maths package 0.8.0
  documentation</title>
   
 
@@ -164,10 +164,12 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
+<span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
-   
+<span class="c1"># ======================================================================== #</span>
+
 <div class="viewcode-block" id="Plane"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plane">[docs]</a><span class="k">class</span> <span class="nc">Plane</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a plane object from linear coefficients</span>
@@ -185,8 +187,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plane</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span></div>
     
     <span class="c1"># point and normal</span>
-<div class="viewcode-block" id="Plane.PN"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plane.PN">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">PN</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="Plane.PN"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plane.PN">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">PN</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a plane object from point and normal</span>
 <span class="sd">        </span>
@@ -200,11 +202,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># normal to the plane</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># point on the plane</span>
-        <span class="k">return</span> <span class="n">Plane</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)])</span></div>
     
     <span class="c1"># point and normal</span>
-<div class="viewcode-block" id="Plane.P3"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plane.P3">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">P3</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="Plane.P3"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plane.P3">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">P3</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a plane object from three points</span>
 <span class="sd">        </span>
@@ -222,7 +224,7 @@
         <span class="c1"># compute a normal</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v2</span><span class="o">-</span><span class="n">v1</span><span class="p">,</span> <span class="n">v3</span><span class="o">-</span><span class="n">v1</span><span class="p">)</span>
         
-        <span class="k">return</span> <span class="n">Plane</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span></div>
         
     <span class="c1"># line and point</span>
     <span class="c1"># 3 points</span>
@@ -278,7 +280,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plane</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Plucker"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker">[docs]</a><span class="k">class</span> <span class="nc">Plucker</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
+<span class="c1"># ======================================================================== #</span>
+
+<div class="viewcode-block" id="Plucker"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker">[docs]</a><span class="k">class</span> <span class="nc">Plucker</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plucker coordinate class</span>
 <span class="sd">    </span>
@@ -393,6 +397,12 @@
         <span class="c1"># needed to allow __rmul__ to work if left multiplied by ndarray</span>
         <span class="c1">#self.__array_priority__ = 100  </span>
 
+<div class="viewcode-block" id="Plucker.shape"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.shape">[docs]</a>    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="Plucker.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span></div>
 
 <div class="viewcode-block" id="Plucker.PQ"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.PQ">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">PQ</span><span class="p">(</span><span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1147,13 +1157,29 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;Plucker([</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s2">&quot;Plucker([</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Plucker([</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> \
-                <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;  [</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span> <span class="o">+</span>\
-                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">])&quot;</span></div>
+                <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;  [</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span> <span class="o">+</span>\
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">])&quot;</span>
         
-        
+    <span class="k">def</span> <span class="nf">_repr_pretty_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pretty string for IPython (superclass method)</span>
+
+<span class="sd">        :param p: pretty printer handle (ignored)</span>
+<span class="sd">        :param cycle: pretty printer flag (ignored)</span>
+
+<span class="sd">        Print colorized output when variable is displayed in IPython, ie. on a line by</span>
+<span class="sd">        itself.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            In [1]: x</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span></div>
+
 <span class="c1">#         function z = side(self1, pl2)</span>
 <span class="c1">#             Plucker.side Plucker side operator</span>
 <span class="c1"># </span>

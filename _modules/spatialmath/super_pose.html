@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.7.0
+  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.8.0
  documentation</title>
   
 
@@ -216,8 +216,8 @@
 <span class="sd">    Arithmetic operators are overloaded but the operation they perform depend</span>
 <span class="sd">    on the types of the operands.  For example:</span>
 
-<span class="sd">    - ``*`` will compose two instances of the same subclass, and the result will be</span>
-<span class="sd">      an instance of the same subclass, since this is a group operator.</span>
+<span class="sd">    - ``*`` will compose two instances of the same subclass, and the result will</span>
+<span class="sd">      be an instance of the same subclass, since this is a group operator.</span>
 <span class="sd">    - ``+`` will add two instances of the same subclass, and the result will be</span>
 <span class="sd">      a matrix, not an instance of the same subclass, since addition is not a group operator.</span>
 
@@ -424,9 +424,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Logarithm of pose (superclass method)</span>
 
-<span class="sd">        :return: logarithm</span>
-<span class="sd">        :rtype: numpy.ndarray</span>
-<span class="sd">        :raises: ValueError</span>
+<span class="sd">        :return: logarithm :rtype: numpy.ndarray :raises: ValueError</span>
 
 <span class="sd">        An efficient closed-form solution of the matrix logarithm.</span>
 
@@ -435,10 +433,8 @@
 <span class="sd">        -----  ---------------------------------------</span>
 <span class="sd">        Pose   Shape   Structure</span>
 <span class="sd">        =====  ======  ===============================</span>
-<span class="sd">        SO2    (2,2)   skew-symmetric</span>
-<span class="sd">        SE2    (3,3)   augmented skew-symmetric</span>
-<span class="sd">        SO3    (3,3)   skew-symmetric</span>
-<span class="sd">        SE3    (4,4)   augmented skew-symmetric</span>
+<span class="sd">        SO2    (2,2)   skew-symmetric SE2    (3,3)   augmented skew-symmetric</span>
+<span class="sd">        SO3    (3,3)   skew-symmetric SE3    (4,4)   augmented skew-symmetric</span>
 <span class="sd">        =====  ======  ===============================</span>
 
 <span class="sd">        Example::</span>
@@ -452,9 +448,9 @@
 <span class="sd">                   [ 0. ,  0. ,  0. ,  0. ]])</span>
 
 
-<span class="sd">        :seealso: :func:`~spatialmath.base.transforms2d.trlog2`, :func:`~spatialmath.base.transforms3d.trlog`</span>
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms2d.trlog2`,</span>
+<span class="sd">        :func:`~spatialmath.base.transforms3d.trlog`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;in log&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -520,18 +516,18 @@
             <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">A</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># SO(2) or SE(2)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(s) &gt; 1, len(X) must == 1&#39;</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(X) &gt; 1, len(s) must == 1&#39;</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># SO(3) or SE(3)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(s) &gt; 1, len(X) must == 1&#39;</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(X) &gt; 1, len(s) must == 1&#39;</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

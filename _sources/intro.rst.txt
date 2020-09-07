@@ -7,7 +7,9 @@ Introduction
 Spatial maths capability underpins all of robotics and robotic vision. 
 It provides the means to describe the relative position and orientation of objects in 2D or 3D space.  
 This package provides Python classes and functions to represent, print, plot, manipulate and covert between such representations.
-This includes relevant mathematical objects such as rotation matrices :math:`R \in SO(2), SO(3)`, homogeneous transformation matrices :math:`T \in SE(2), SE(3)` and quaternions :math:`q \in \mathbb{H}`.
+This includes relevant mathematical objects such as rotation matrices :math:`R \in SO(2), SO(3)`, 
+homogeneous transformation matrices :math:`T \in SE(2), SE(3)`, quaternions :math:`q \in \mathbb{H}`,
+and twists :math:`t in se(2), se(3)`.
 
 For example, we can create a rigid-body transformation that is a rotation about the x-axis of 30 degrees::
 
@@ -20,7 +22,7 @@ For example, we can create a rigid-body transformation that is a rotation about 
 which results in a NumPy 4x4 array that belongs to the group SE(3).  We could also create a class instance::
 
   >>> from spatialmath import *
-  >>> T = sm.SE3.Rx(30, 'deg')
+  >>> T = SE3.Rx(30, 'deg')
   >>> type(T)
   <class 'spatialmath.pose3d.SE3'>
   >>> print(T)
@@ -40,9 +42,19 @@ While functions and classes can provide similar functionality the class provide 
 
 
 Relationship to MATLAB tools
-============================
+----------------------------
 This package replicates, as much as possible, the functionality of the `Spatial Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB |reg| 
-which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. 
+which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. It comprises:
+
+* the *classic* functions (which date back to the origin of the Robotics Toolbox for MATLAB) such as ``rotx``, ``trotz``, ``eul2tr`` etc. as the ``base`` package which you can access by::
+
+    from spatialmath.base import *
+
+  and works with NumPy arrays.  This package also includes a set of functions to deal with quaternions and unit-quaternions represented as 4-element
+  Numpy arrays.
+* the classes (which appeared in Robotics Toolbox for MATLAB release 10 in 2017) such as ``SE3``, ``UnitQuaternion`` etc.  The only significant difference
+  is that the MATLAB ``Twist`` class is now called ``Twist3``.
+
 The design considerations included:
 
   - being as similar as possible to the MATLAB Toolbox function names and semantics
@@ -57,7 +69,19 @@ The design considerations included:
 Spatial math classes
 ====================
 
-The package provides classes to abstract and implementing appropriate operations for the following groups:
+The package provides classes to represent pose and orientation in 3D and 2D
+space:
+
+============  ==================  =============
+Represents    in 3D               in 2D
+============  ==================  =============
+pose          ``SE3``             ``SE2``
+              ``Twist3``          ``Twist2``
+orientation   ``SO3``             ``SO2``
+              ``UnitQuaternion``  
+============  ==================  =============
+
+These classes to abstract and implementing appropriate operations for the following groups:
 
 ======================  ============================    =======================
 Group                   Name                            Class
@@ -67,8 +91,8 @@ Group                   Name                            Class
 :math:`S^3`             unit quaternion                 ``UnitQuaternion``
 :math:`\mbox{SE(2)}`    rigid-body translation in 2D    ``SE2``
 :math:`\mbox{SO(2)}`    orientation in 2D               ``SO2``
+:math:`\mbox{se(3)}`    twist in 3D                     ``Twist3``
 :math:`\mbox{se(2)}`    twist in 2D                     ``Twist2``
-:math:`\mbox{se(3)}`    twist in 3D                     ``Twist``
 :math:`\mathbb{H}`      quaternion                      ``Quaternion``
 :math:`M^6`             spatial velocity                ``SpatialVelocity``
 :math:`M^6`             spatial acceleration            ``SpatialAcceleration``
@@ -78,7 +102,7 @@ Group                   Name                            Class
 ======================  ============================    =======================
 
 
-In addition to the merits outlined above, classes ensure that the numerical value is always valid because the 
+In addition to the merits of classes outlined above, classes ensure that the numerical value is always valid because the 
 constraints (eg. orthogonality, unit norm) are enforced when the object is constructed.  For example::
 
   >>> SE3(np.zeros((4,4)))
@@ -94,12 +118,12 @@ However a list of these items::
 
   >>> X = [SE3.Rx(0), SE3.Rx(0.2), SE3.Rx(0.4), SE3.Rx(0.6)]
 
-has the type `list` and the elements are not enforced to be homogeneous, ie. a list could contain a mixture of classes.
+has the type `list` and the elements are not guaranteed to be homogeneous, ie. a list could contain a mixture of classes.
 This requires careful coding, or additional user code to check the validity of all elements in the list.
-We could create a NumPy array of these objects, the upside being it could be a multi-dimensional array, but the again NumPy does not
+We could create a NumPy array of these objects, the upside being it could be more than one-dimensional, but the again NumPy does not
 enforce homogeneity of object types in an array.
 
-The Spatial Math package give these classes list *super powers* so that, for example, a single `SE3` object can contain a list of SE(3) poses::
+The Spatial Math package give these classes list *super powers* so that, for example, a single `SE3` object can contain a sequence of SE(3) values::
 
   >>> X = SE3.Rx([0, 0.2, 0.4, 0.6])
   >>> len(x)
