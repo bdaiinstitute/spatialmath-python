@@ -185,7 +185,7 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_numtypes</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="assertmatrix"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.assertmatrix">[docs]</a><span class="k">def</span> <span class="nf">assertmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<div class="viewcode-block" id="assertmatrix"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.assertmatrix">[docs]</a><span class="k">def</span> <span class="nf">assertmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assert that argument is a 2D matrix</span>
 
@@ -194,17 +194,27 @@
 <span class="sd">    :type shape: 2-tuple</span>
 <span class="sd">    :raises: AssertionError</span>
 
-<span class="sd">    - ``assertsmatrix(A, (2,3))`` raises an ``AssertionError`` if ``A`` is not</span>
+<span class="sd">    - ``assertsmatrix(A, (2,3))`` raises an ``ValueError`` if ``A`` is not</span>
 <span class="sd">      a 2x3 NumPy ndarray, ie. shape=(2,3).</span>
-<span class="sd">    - ``assertsmatrix(A, (2,None))`` raises an ``AssertionError`` if ``A`` is not</span>
+<span class="sd">    - ``assertsmatrix(A, (2,None))`` raises an ``ValueError`` if ``A`` is not</span>
 <span class="sd">      a 2xN NumPy ndarray, ie. shape=(2,N).</span>
-<span class="sd">    - ``assertsmatrix(A, (None,3))`` raises an ``AssertionError`` if ``A`` is not</span>
+<span class="sd">    - ``assertsmatrix(A, (None,3))`` raises an ``ValueError`` if ``A`` is not</span>
 <span class="sd">      a Nx3 NumPy ndarray, ie. shape=(N,3).</span>
 
 <span class="sd">    :seealso: :func:`ismatrix`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">ismatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span></div>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a numpy ndarray&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a real numpy ndarray&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect number of matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="ismatrix"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.ismatrix">[docs]</a><span class="k">def</span> <span class="nf">ismatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -232,15 +242,15 @@
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 
-<span class="c1"># def verifymatrix(m, shape):</span>
-<span class="c1">#     if not isinstance(m, np.ndarray):</span>
-<span class="c1">#         raise TypeError(&quot;input must be a numpy ndarray&quot;)</span>
+<div class="viewcode-block" id="verifymatrix"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.verifymatrix">[docs]</a><span class="k">def</span> <span class="nf">verifymatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a numpy ndarray&quot;</span><span class="p">)</span>
 
-<span class="c1">#     if not m.shape == shape:</span>
-<span class="c1">#         raise ValueError(&quot;incorrect matrix dimensions, &quot;</span>
-<span class="c1">#                          &quot;expecting {0}&quot;.format(shape))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, &quot;</span>
+                         <span class="s2">&quot;expecting </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span></div>
 
- <span class="c1"># and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive</span>
+<span class="c1"># and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive</span>
 
 
 <div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">):</span>
