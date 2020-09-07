@@ -944,7 +944,7 @@ def trlog(T, check=True, twist=False):
                 w = trn.vex(S)
                 theta = vec.norm(w)
                 Ginv = np.eye(3) - S / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) / theta * S @ S
-                v = Ginv @ t 
+                v = Ginv @ t
                 if twist:
                     return np.r_[v, w]
                 else:
@@ -1421,13 +1421,13 @@ def _vec2s(fmt, v):
 try:
     import matplotlib.pyplot as plt
     _matplotlib_exists = True
-except ImportError:  # pragma: no cover        
+except ImportError:  # pragma: no cover      
     _matplotlib_exists = False
 
 def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
-            textcolor=None, labels=('X', 'Y', 'Z'), length=1, arrow=True, 
-            projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05, 
-            d2=1.15, **kwargs):
+           textcolor=None, labels=('X', 'Y', 'Z'), length=1, arrow=True,
+           projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05,
+           d2=1.15, **kwargs):
     """
     Plot a 3D coordinate frame
 
