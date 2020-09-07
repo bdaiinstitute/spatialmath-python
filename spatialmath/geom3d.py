@@ -10,10 +10,12 @@ from spatialmath import base as sm
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from spatialmath import SE3
+from spatialmath.smuserlist import SMUserList
 
 _eps = np.finfo(np.float64).eps
 
-   
+# ======================================================================== #
+
 class Plane:
     r"""
     Create a plane object from linear coefficients
@@ -31,8 +33,8 @@ class Plane:
         self.plane = arg.getvector(c, 4)
     
     # point and normal
-    @staticmethod
-    def PN(p, n):
+    @classmethod
+    def PN(cls, p, n):
         """
         Create a plane object from point and normal
         
@@ -46,11 +48,11 @@ class Plane:
         """
         n = arg.getvector(n, 3)  # normal to the plane
         p = arg.getvector(p, 3)  # point on the plane
-        return Plane(np.r_[n, -np.dot(n, p)])
+        return cls(np.r_[n, -np.dot(n, p)])
     
     # point and normal
-    @staticmethod
-    def P3(p):
+    @classmethod
+    def P3(cls, p):
         """
         Create a plane object from three points
         
@@ -68,7 +70,7 @@ class Plane:
         # compute a normal
         n = np.cross(v2-v1, v3-v1)
         
-        return Plane(n, v1)
+        return cls(n, v1)
         
     # line and point
     # 3 points
@@ -124,7 +126,9 @@ class Plane:
         """
         return str(self.plane)
 
-class Plucker(UserList):
+# ======================================================================== #
+
+class Plucker(SMUserList):
     """
     Plucker coordinate class
     
@@ -239,6 +243,12 @@ class Plucker(UserList):
         # needed to allow __rmul__ to work if left multiplied by ndarray
         #self.__array_priority__ = 100  
 
+    def shape(self):
+        return (6,)
+
+    @staticmethod
+    def isvalid(x):
+        return x.shape == self.shape
 
     @staticmethod
     def PQ(P=None, Q=None):
@@ -993,13 +1003,29 @@ See also Twist.char.
         """
         
         if len(self) == 1:
-            return "Plucker([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self))
+            return "Plucker([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self.A))
         else:
             return "Plucker([\n" + \
-                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self]) +\
+                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self.data]) +\
                 "\n])"
         
-        
+    def _repr_pretty_(self, p, cycle):
+        """
+        Pretty string for IPython (superclass method)
+
+        :param p: pretty printer handle (ignored)
+        :param cycle: pretty printer flag (ignored)
+
+        Print colorized output when variable is displayed in IPython, ie. on a line by
+        itself.
+
+        Example::
+
+            In [1]: x
+
+        """
+        print(self.__str__())
+
 #         function z = side(self1, pl2)
 #             Plucker.side Plucker side operator
 # 
