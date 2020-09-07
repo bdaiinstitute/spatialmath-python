@@ -246,24 +246,38 @@ class SE2(SO2):
         """
         Construct new SE(2) object
 
-        :param unit: angular units 'deg' or 'rad' [default] if applicable
-        :type unit: str, optional
-        :param check: check for valid SE(2) elements if applicable, default to True
-        :type check: bool
-        :return: homogeneous rigid-body transformation matrix
-        :rtype: SE2 instance
+        :param unit: angular units 'deg' or 'rad' [default] if applicable :type
+        unit: str, optional :param check: check for valid SE(2) elements if
+        applicable, default to True :type check: bool :return: homogeneous
+        rigid-body transformation matrix :rtype: SE2 instance
 
-        - ``SE2()`` is an SE2 instance representing a null motion -- the identity matrix
-        - ``SE2(x, y)`` is an SE2 instance representing a pure translation of (``x``, ``y``)
-        - ``SE2(t)`` is an SE2 instance representing a pure translation of (``x``, ``y``) where``t``=[x,y] is a 2-element array_like
-        - ``SE2(x, y, theta)`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` radians
-        - ``SE2(x, y, theta, unit='deg')`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` degrees
-        - ``SE2(t)`` is an SE2 instance representing a translation of (``x``, ``y``) and a rotation of ``theta`` where ``t``=[x,y,theta] is a 3-element array_like
-        - ``SE2(T)`` is an SE2 instance with rigid-body motion described by the SE(2) matrix T which is a 3x3 numpy array.  If ``check``
-          is ``True`` check the matrix belongs to SE(2).
-        - ``SE2([T1, T2, ... TN])`` is an SE2 instance containing a sequence of N rigid-body motions, each described by an SE(2) matrix
-          Ti which is a 3x3 numpy array. If ``check`` is ``True`` then check each matrix belongs to SE(2).
-        - ``SE2([X1, X2, ... XN])`` is an SE2 instance containing a sequence of N rigid-body motions, where each Xi is an SE2 instance.
+        - ``SE2()`` is an SE2 instance representing a null motion -- the
+          identity matrix
+        - ``SE2(theta)`` is an SE2 instance representing a pure rotation of
+          ``theta`` radians
+        - ``SE2(theta, unit='deg')`` as above but ``theta`` in degrees
+        - ``SE2(x, y)`` is an SE2 instance representing a pure translation of
+          (``x``, ``y``)
+        - ``SE2(t)`` is an SE2 instance representing a pure translation of
+          (``x``, ``y``) where``t``=[x,y] is a 2-element array_like
+        - ``SE2(x, y, theta)`` is an SE2 instance representing a translation of
+          (``x``, ``y``) and a rotation of ``theta`` radians
+        - ``SE2(x, y, theta, unit='deg')`` as above but ``theta`` in degrees
+        - ``SE2(t)`` where ``t``=[x,y] is a 3-element array_like, is an SE2
+          instance representing a pure translation of (``x``, ``y``)
+        - ``SE2(t)`` where ``t``=[x,y] is a 3-element array_like, is an SE2
+          instance representing a translation of (``x``, ``y``) and a rotation
+          of ``theta`` radians
+        - ``SE2(t, unit='deg')`` as above but ``theta`` in degrees
+        - ``SE2(T)`` is an SE2 instance with rigid-body motion described by the
+          SE(2) matrix T which is a 3x3 numpy array.  If ``check`` is ``True``
+          check the matrix belongs to SE(2).
+        - ``SE2([T1, T2, ... TN])`` is an SE2 instance containing a sequence of
+          N rigid-body motions, each described by an SE(2) matrix Ti which is a
+          3x3 numpy array. If ``check`` is ``True`` then check each matrix
+          belongs to SE(2).
+        - ``SE2([X1, X2, ... XN])`` is an SE2 instance containing a sequence of
+          N rigid-body motions, where each Xi is an SE2 instance.
 
         """
         super().__init__()  # activate the UserList semantics
@@ -281,12 +295,15 @@ class SE2(SO2):
                 # SE2(x, y, theta)
                 self.data = [tr.trot2(theta, t=[x, y], unit=unit)]
             elif y is None and theta is None:
-                if argcheck.isvector(x, 2):
+                arg = argcheck.getvector(x)
+                if len(arg) == 1:
+                    self.data = [tr.trot2(arg[0], unit=unit)]
+                elif len(arg) == 2:
                     # SE2([x,y])
-                    self.data = [tr.transl2(x)]
-                elif argcheck.isvector(x, 3):
+                    self.data = [tr.transl2(arg)]
+                elif len(arg) == 3:
                     # SE2([x,y,theta])
-                    self.data = [tr.trot2(x[2], t=x[:2], unit=unit)]
+                    self.data = [tr.trot2(arg[2], t=arg[:2], unit=unit)]
                 else:
                     super().arghandler(x, check=check)
         else:
