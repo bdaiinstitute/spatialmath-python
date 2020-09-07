@@ -20,15 +20,27 @@ Spatial mathematics capability underpins all of robotics and robotic vision wher
 
 # What it does
 
-Provides a set of classes:
+The package provides classes to represent pose and orientation in 3D and 2D
+space:
 
- * `SO2` for orientation in 2-dimensions
- * `SE2` for position and orientation (pose) in 2-dimensions
- * `SO3` for orientation in 3-dimensions
- * `SE3` for position and orientation (pose) in 3-dimensions
- * `UnitQuaternion` for orientation in 3-dimensions
+| Represents   | in 3D            |   in 2D  |
+| ------------ | ---------------- | -------- |
+| pose         | ``SE3`` ``Twist3``          |   ``SE2`` ``Twist2`` |
+| orientation  | ``SO3`` ``UnitQuaternion`` |            ``SO2``  |
+                
+                
+More specifically:
 
-which provide convenience and type safety.  These classes have methods and overloaded operators to support:
+ * `SE3` matrices belonging to the group SE(3) for position and orientation (pose) in 3-dimensions
+ * `SO3` matrices belonging to the group SO(3) for orientation in 3-dimensions
+ *  `UnitQuaternion` belonging to the group S3 for orientation in 3-dimensions
+ * `Twist3` vectors belonging to the group se(3) for pose in 3-dimensions
+ * `SE2` matrices belonging to the group SE(2) for position and orientation (pose) in 2-dimensions
+ * `SO2` matrices belonging to the group SO(2) for orientation in 2-dimensions
+ * `Twist2` vectors belonging to the group se(2) for pose in 2-dimensions
+
+
+These classes provide convenience and type safety, as well as methods and overloaded operators to support:
 
  * composition, using the `*` operator
  * point transformation, using the `*` operator
@@ -43,9 +55,9 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/fig1.png)
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/animate.gif)
 
 # Getting going
 
@@ -199,7 +211,7 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 >>> T.plot()
 ```
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/fig1.png)
 
 `printline` is a compact single line format for tabular listing, whereas `print` shows the underlying matrix and for consoles that support it, it is colorised, with rotational elements in red and translational elements in blue.
 
@@ -292,7 +304,7 @@ array([-60,  12,  30,  24])
 
 ## Graphics
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs//transforms3d.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs//transforms3d.png)
 
 The functions support various plotting styles
 
@@ -314,7 +326,7 @@ and it can be saved to a file by
 tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
 ```
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/doc/source/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/figs/animate.gif)
 
 At the moment we can only save as an MP4, but the following incantation will covert that to an animated GIF for embedding in web pages
 
