@@ -132,11 +132,11 @@ def getvector(v, dim=None, out='array'):
         v = [v]
 
     if isinstance(v, (list, tuple)):
+        dt = np.float64  # return np arrays of this type
         if _sympy:
             if any([isinstance(x, sympy.Expr) for x in v]):
                 dt = None
-        else:
-            dt = np.float64
+            
         if dim is not None and v and len(v) != dim:
             raise ValueError("incorrect vector length")
         if out == 'sequence':
