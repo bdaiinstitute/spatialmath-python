@@ -62,8 +62,8 @@ class SMPose(SMUserList):
     Arithmetic operators are overloaded but the operation they perform depend
     on the types of the operands.  For example:
 
-    - ``*`` will compose two instances of the same subclass, and the result will be
-      an instance of the same subclass, since this is a group operator.
+    - ``*`` will compose two instances of the same subclass, and the result will
+      be an instance of the same subclass, since this is a group operator.
     - ``+`` will add two instances of the same subclass, and the result will be
       a matrix, not an instance of the same subclass, since addition is not a group operator.
 
@@ -270,9 +270,7 @@ class SMPose(SMUserList):
         """
         Logarithm of pose (superclass method)
 
-        :return: logarithm
-        :rtype: numpy.ndarray
-        :raises: ValueError
+        :return: logarithm :rtype: numpy.ndarray :raises: ValueError
 
         An efficient closed-form solution of the matrix logarithm.
 
@@ -281,10 +279,8 @@ class SMPose(SMUserList):
         -----  ---------------------------------------
         Pose   Shape   Structure
         =====  ======  ===============================
-        SO2    (2,2)   skew-symmetric
-        SE2    (3,3)   augmented skew-symmetric
-        SO3    (3,3)   skew-symmetric
-        SE3    (4,4)   augmented skew-symmetric
+        SO2    (2,2)   skew-symmetric SE2    (3,3)   augmented skew-symmetric
+        SO3    (3,3)   skew-symmetric SE3    (4,4)   augmented skew-symmetric
         =====  ======  ===============================
 
         Example::
@@ -298,9 +294,9 @@ class SMPose(SMUserList):
                    [ 0. ,  0. ,  0. ,  0. ]])
 
 
-        :seealso: :func:`~spatialmath.base.transforms2d.trlog2`, :func:`~spatialmath.base.transforms3d.trlog`
+        :seealso: :func:`~spatialmath.base.transforms2d.trlog2`,
+        :func:`~spatialmath.base.transforms3d.trlog`
         """
-        print('in log')
         if self.N == 2:
             log = [tr.trlog2(x, twist=twist) for x in self.data]
         else:
