@@ -260,8 +260,10 @@ class SO3(SMPose):
         :seealso: Twist.ad.
 
         """
-
-        return self.R
+        return np.array([
+            [self.R, tr.skew(self.t) @ self.R],
+            [np.zeros((3, 3)), self.R]
+            ])
 # ------------------------------------------------------------------------ #
 
     @staticmethod
