@@ -1,8 +1,11 @@
+import math
+from math import pi
 import numpy.testing as nt
 import unittest
 
 from spatialmath import *
 from spatialmath.base import *
+from spatialmath.super_pose import SMPose
 
 import numpy as np
 from math import pi, sin, cos
@@ -525,10 +528,10 @@ class TestUnitQuaternion(unittest.TestCase):
         self.assertTrue(q1 == q2)  # because of double wrapping
         self.assertFalse(q1 == q3)
 
-        nt.assert_array_almost_equal([q1, q1, q1] == [q1, q1, q1], [True, True, True])
-        nt.assert_array_almost_equal([q1, q2, q3] == [q1, q2, q3], [True, True, True])
-        nt.assert_array_almost_equal([q1, q1, q3] == q1, [True, True, False])
-        nt.assert_array_almost_equal(q3 == [q1, q1, q3], [False, False, True])
+        nt.assert_array_almost_equal(UnitQuaternion([q1, q1, q1]) == UnitQuaternion([q1, q1, q1]), [True, True, True])
+        nt.assert_array_almost_equal(UnitQuaternion([q1, q2, q3]) == UnitQuaternion([q1, q2, q3]), [True, True, True])
+        nt.assert_array_almost_equal(UnitQuaternion([q1, q1, q3]) == q1, [True, True, False])
+        nt.assert_array_almost_equal(q3 == UnitQuaternion([q1, q1, q3]), [False, False, True])
 
     def test_logical(self):
         rx = UnitQuaternion.Rx(pi / 2)

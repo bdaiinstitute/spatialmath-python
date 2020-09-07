@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-import numpy as np
-
-from spatialmath.base import argcheck
-from spatialmath import base as tr
-from spatialmath import super_pose as sp
-# from spatialmath import Twist
-import spatialmath as sm
-
 """
-Classes to abstract 3D pose and orientation using matrices in SO(3) and SE(3)
+Classes to abstract 3D pose and orientation using matrices in SE(3) and SO(3)
 
 To use::
 
@@ -27,15 +18,26 @@ To use::
     :parts: 1
 """
 
+# pylint: disable=invalid-name
+
+import numpy as np
+
+from spatialmath.base import argcheck
+from spatialmath import base as tr
+# from spatialmath import Twist
+from spatialmath.super_pose import SMPose
+import spatialmath as sm
+
+
 # ============================== SO3 =====================================#
 
 
-class SO3(sp.SMPose):
+class SO3(SMPose):
     """
     SO(3) subclass
 
-    This subclass represents rotations in 3D space.  Internally it is a 3x3 orthogonal matrix belonging
-    to the group SO(3).
+    This subclass represents rotations in 3D space.  Internally it is a 3x3 
+    orthogonal matrix belonging to the group SO(3).
 
  .. inheritance-diagram:: spatialmath.pose3d.SO3
     :top-classes: collections.UserList
@@ -60,12 +62,21 @@ class SO3(sp.SMPose):
 
         if arg is None:
             # empty constructor
-            if type(self) is SO3:
+            if isinstance(self, SO3):
                 self.data = [np.eye(3)]  # identity rotation
         else:
-            super()._arghandler(arg, check=check)
+            super().arghandler(arg, check=check)
 
 # ------------------------------------------------------------------------ #
+    @property
+    def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (3,3)
+        :rtype: tuple
+        """
+        return (3, 3)
 
     @property
     def R(self):
@@ -76,7 +87,7 @@ class SO3(sp.SMPose):
         :rtype: numpy.ndarray, shape=(3,3)
 
         ``x.R`` returns the rotation matrix, when `x` is `SO3` or `SE3`. If `len(x)` is:
-            
+
         - 1, return an ndarray with shape=(3,3)
         - N>1, return ndarray with shape=(N,3,3)
         """
@@ -156,7 +167,7 @@ class SO3(sp.SMPose):
         rotations about the Z, Y, Z axes respectively.
 
         If `len(x)` is:
-            
+
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
@@ -196,7 +207,7 @@ class SO3(sp.SMPose):
               to the optic axis and x-axis parallel to the pixel rows.
 
         If `len(x)` is:
-            
+
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
@@ -240,12 +251,12 @@ class SO3(sp.SMPose):
     def Ad(self):
         """
         Adjoint of SO(3)
-        
+
         :return: adjoint matrix
         :rtype: numpy.ndarray, shape=(3,3)
-        
+
         - ``SEO.Ad`` is the 6x6 adjoint matrix
-        
+
         :seealso: Twist.ad.
 
         """
@@ -284,12 +295,12 @@ class SO3(sp.SMPose):
 
         - ``SE3.Rx(theta)`` is an SO(3) rotation of ``theta`` radians about the x-axis
         - ``SE3.Rx(theta, "deg")`` as above but ``theta`` is in degrees
-        
+
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
-        
+
         Example::
-            
+
             >>> x = SO3.Rx(np.linspace(0, math.pi, 20))
             >>> len(x)
             20
@@ -314,12 +325,12 @@ class SO3(sp.SMPose):
 
         - ``SO3.Ry(theta)`` is an SO(3) rotation of ``theta`` radians about the y-axis
         - ``SO3.Ry(theta, "deg")`` as above but ``theta`` is in degrees
-        
+
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
         Example::
-            
+
             >>> x = SO3.Ry(np.linspace(0, math.pi, 20))
             >>> len(x)
             20
@@ -342,15 +353,15 @@ class SO3(sp.SMPose):
         :type unit: str
         :return: SO(3) rotation
         :rtype: SO3 instance
-        
+
         - ``SO3.Rz(theta)`` is an SO(3) rotation of ``theta`` radians about the z-axis
         - ``SO3.Rz(theta, "deg")`` as above but ``theta`` is in degrees
-        
+
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
         Example::
-            
+
             >>> x = SE3.Rz(np.linspace(0, math.pi, 20))
             >>> len(x)
             20
@@ -372,9 +383,9 @@ class SO3(sp.SMPose):
 
         - ``SO3.Rand()`` is a random SO(3) rotation.
         - ``SO3.Rand(N)`` is a sequence of N random rotations.
-        
+
         Example::
-            
+
             >>> x = SO3.Rand()
             >>> x
             SO3(array([[ 0.1805082 , -0.97959019,  0.08842995],
@@ -399,7 +410,7 @@ class SO3(sp.SMPose):
 
         ``SO3.Eul(angles)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
-        
+
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
         corresponding to the rows of ``angles``.
 
@@ -439,7 +450,7 @@ class SO3(sp.SMPose):
 
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
         corresponding to the rows of angles.
-        
+
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
         if argcheck.isvector(angles, 3):
@@ -498,7 +509,7 @@ class SO3(sp.SMPose):
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
         return cls(tr.angvec2r(theta, v, unit=unit), check=False)
-    
+
     @classmethod
     def Exp(cls, S, check=True, so3=True):
         r"""
@@ -508,8 +519,6 @@ class SO3(sp.SMPose):
         :type S: numpy ndarray
         :param check: check that passed matrix is valid so(3), default True
         :type check: bool
-        :param so3: input is an so(3) matrix (default True)
-        :type so3: bool
         :return: SO(3) rotation
         :rtype: SO3 instance
 
@@ -519,7 +528,7 @@ class SO3(sp.SMPose):
           vector (the unique elements of the so(3) skew-symmetric matrix)
         - ``SO3.Exp(T)`` is a sequence of SO(3) rotations defined by an Nx3 matrix
           of twist vectors, one per row.
-          
+
         Note:
         - if :math:`\theta \eq 0` the result in an identity matrix
         - an input 3x3 matrix is ambiguous, it could be the first or third case above.  In this
@@ -540,8 +549,8 @@ class SE3(SO3):
     """
     SE(3) subclass
 
-    This subclass represents rigid-body motion in 3D space.  Internally it is a 4x4 homogeneous transformation matrix belonging
-    to the group SE(3).
+    This subclass represents rigid-body motion in 3D space.  Internally it is a 
+    4x4 homogeneous transformation matrix belonging to the group SE(3).
 
  .. inheritance-diagram:: spatialmath.pose3d.SE3
     :top-classes: collections.UserList
@@ -560,7 +569,7 @@ class SE3(SO3):
         :type z: float
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
-        
+
         - ``SE3()`` is a null motion -- the identity matrix
         - ``SE3(x, y, z)`` is a pure translation of (x,y,z)
         - ``SE3(T)`` where T is a 4x4 numpy array representing an SE(3) matrix.  If ``check``
@@ -585,13 +594,22 @@ class SE3(SO3):
                 self.data = [tr.transl(x)]
             elif isinstance(x, np.ndarray) and x.shape[1] == 3:
                 # SE3( Nx3 )
-                self.data = [tr.transl(T) for T in x]   
+                self.data = [tr.transl(T) for T in x]
             else:
-                super()._arghandler(x, check=check)
+                super().arghandler(x, check=check)
         else:
             raise ValueError('bad argument to constructor')
 
 # ------------------------------------------------------------------------ #
+    @property
+    def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (4,4)
+        :rtype: tuple
+        """
+        return (4, 4)
 
     @property
     def t(self):
@@ -625,14 +643,14 @@ class SE3(SO3):
         Returns the inverse taking into account its structure
 
         :math:`T = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
-        
+
         :seealso: :func:`~spatialmath.base.transform3d.trinv`
         """
         if len(self) == 1:
             return SE3(tr.trinv(self.A))
         else:
             return SE3([tr.trinv(x) for x in self.A], check=False)
-    
+
     def delta(self, X2):
         r"""
         Infinitesimal difference of SE(3)
@@ -641,28 +659,28 @@ class SE3(SO3):
         :type X2: SE3
         :return: differential motion vector
         :rtype: numpy.ndarray, shape=(6,)
-            
+
         - ``X1.delta(X2)`` is the differential motion (6x1) corresponding to
           infinitesimal motion (in the X1 frame) from pose X1 to X2.
-    
+
         The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
         represents infinitesimal translation and rotation.
-    
+
         Notes:
-            
+
         - the displacement is only an approximation to the motion T, and assumes
           that X1 ~ X2.
         - Can be considered as an approximation to the effect of spatial velocity over a
           a time interval, average spatial velocity multiplied by time.
-        
+
         Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
-        
+
         :seealso: :func:`~spatialmath.base.transform3d.tr2delta`
         """
         return tr.tr2delta(self.A, X2.A)
 
-    def Twist(self):
-        return sm.Twist(self)
+    def Twist3(self):
+        return sm.Twist3(self.log(twist=True))
 # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -696,7 +714,7 @@ class SE3(SO3):
 
         - ``SE3.Rx(THETA)`` is an SO(3) rotation of THETA radians about the x-axis
         - ``SE3.Rx(THETA, "deg")`` as above but THETA is in degrees
-        
+
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
         """
@@ -736,14 +754,14 @@ class SE3(SO3):
 
         - ``SE3.Rz(THETA)`` is an SO(3) rotation of THETA radians about the z-axis
         - ``SE3.Rz(THETA, "deg")`` as above but THETA is in degrees
-        
+
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
         """
         return cls([tr.trotz(x, unit) for x in argcheck.getvector(theta)], check=False)
 
     @classmethod
-    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):
+    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
         """
         Create a random SE(3)
 
@@ -757,7 +775,7 @@ class SE3(SO3):
         :type N: int
         :return: homogeneous transformation matrix
         :rtype: SE3 instance
-        
+
         Return an SE3 instance with random rotation and translation.
 
         - ``SE3.Rand()`` is a random SE(3) translation.
@@ -773,7 +791,7 @@ class SE3(SO3):
         return cls([tr.transl(x, y, z) @ tr.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
 
     @classmethod
-    def Eul(cls, angles, unit='rad'):
+    def Eul(cls, angles, *, unit='rad'):
         r"""
         Create an SE(3) pure rotation from Euler angles
 
@@ -786,7 +804,7 @@ class SE3(SO3):
 
         ``SE3.Eul(ANGLES)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
-        
+
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
         corresponding to the rows of angles.
 
@@ -798,7 +816,7 @@ class SE3(SO3):
             return cls([tr.eul2tr(a, unit=unit) for a in angles], check=False)
 
     @classmethod
-    def RPY(cls, angles, order='zyx', unit='rad'):
+    def RPY(cls, angles, *, order='zyx', unit='rad'):
         """
         Create an SO(3) pure rotation from roll-pitch-yaw angles
 
@@ -823,7 +841,7 @@ class SE3(SO3):
             - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
-              
+
         If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
         corresponding to the rows of angles.
 
@@ -890,7 +908,7 @@ class SE3(SO3):
         return cls(tr.angvec2tr(theta, v, unit=unit), check=False)
 
     @classmethod
-    def Exp(cls, S):
+    def Exp(cls, S, check=True):
         """
         Create an SE(3) rotation matrix from se(3)
 
@@ -900,17 +918,17 @@ class SE3(SO3):
         :rtype: SO3 instance
 
         - ``SE3.Exp(S)`` is an SE(3) rotation defined by its Lie algebra
-          which is a 3x3 se(3) matrix (skew symmetric)
+          which is a 4x4 se(3) matrix (skew symmetric)
         - ``SE3.Exp(t)`` is an SE(3) rotation defined by a 6-element twist
           vector (the unique elements of the se(3) skew-symmetric matrix)
 
         :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if isinstance(S, np.ndarray) and S.shape[1] == 6:
-            return cls([tr.trexp(s) for s in S], check=False)
+        if isinstance(S, list):
+            return cls([tr.exp(s) for s in S], check=False)
         else:
             return cls(tr.trexp(S), check=False)
-    
+
     @classmethod
     def Tx(cls, x):
         """
@@ -952,7 +970,7 @@ class SE3(SO3):
         `SE3.Tz(D)`` is an SE(3) translation of D along the z-axis
         """
         return cls(tr.transl(0, 0, z), check=False)
-    
+
     @classmethod
     def Delta(cls, d):
         r"""
@@ -962,21 +980,21 @@ class SE3(SO3):
         :type d: 6-element array_like
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
-            
+
 
         - ``T = delta2tr(d)`` is an SE(3) representing differential 
           motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
-    
+
         Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
-        
+
         :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
 
         """
         return tr.tr2delta(d)
 
-            
+
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose3d.py").read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose3d.py").read())  # pylint: disable=exec-used

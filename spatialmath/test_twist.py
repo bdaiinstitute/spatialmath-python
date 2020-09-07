@@ -10,12 +10,13 @@ from spatialmath.twist import *
 from spatialmath import super_pose # as sp
 from spatialmath.base import *
 from spatialmath.base import argcheck
-
+from spatialmath.super_pose import SMPose
+from spatialmath.twist import SMTwist
 
 def array_compare(x, y):
-    if isinstance(x, sp.SMPose):
+    if isinstance(x, SMPose):
         x = x.A
-    if isinstance(y, sp.SMPose):
+    if isinstance(y, SMPose):
         y = y.A
     if isinstance(x, SMTwist):
         x = x.S
@@ -29,30 +30,30 @@ class Twist3dTest(unittest.TestCase):
     def test_constructor(self):
         
         s = [1, 2, 3, 4, 5, 6]
-        x = Twist(s)
-        self.assertIsInstance(x, Twist)
+        x = Twist3(s)
+        self.assertIsInstance(x, Twist3)
         self.assertEqual(len(x), 1)
         array_compare(x.v, [1, 2, 3])
         array_compare(x.w, [4, 5, 6])
         array_compare(x.S, s)
         
-        x = Twist([1,2,3], [4,5,6])
+        x = Twist3([1,2,3], [4,5,6])
         array_compare(x.v, [1, 2, 3])
         array_compare(x.w, [4, 5, 6])
         array_compare(x.S, s)
 
-        y = Twist(x)
+        y = Twist3(x)
         array_compare(x, y)
         
-        x = Twist(SE3())
+        x = Twist3(SE3())
         array_compare(x, [0,0,0,0,0,0])
         
         
     def test_list(self):
-        x = Twist([1, 0, 0, 0, 0, 0])
-        y = Twist([1, 0, 0, 0, 0, 0])
+        x = Twist3([1, 0, 0, 0, 0, 0])
+        y = Twist3([1, 0, 0, 0, 0, 0])
                    
-        a = Twist(x)
+        a = Twist3(x)
         a.append(y)
         self.assertEqual(len(a), 2)
         array_compare(a[0], x)
@@ -60,17 +61,17 @@ class Twist3dTest(unittest.TestCase):
         
     def test_conversion_SE3(self):
         T = SE3.Rx(0)
-        tw = Twist(T)
+        tw = Twist3(T)
         array_compare(tw.SE3(), T)
         self.assertIsInstance(tw.SE3(), SE3)
         self.assertEqual(len(tw.SE3()), 1)
 
         T = SE3.Rx(0) * SE3(1, 2, 3)
-        array_compare(Twist(T).SE3(), T)
+        array_compare(Twist3(T).SE3(), T)
         
     def test_conversion_se3(self):
         s = [1, 2, 3, 4, 5, 6]
-        x = Twist(s)
+        x = Twist3(s)
         
         array_compare(x.se3(), np.array([[ 0., -6.,  5.,  1.],
                     [ 6.,  0., -4.,  2.],
@@ -81,41 +82,41 @@ class Twist3dTest(unittest.TestCase):
         pass
         
     def test_list_constuctor(self):
-        x = Twist([1, 0, 0, 0, 0, 0])
+        x = Twist3([1, 0, 0, 0, 0, 0])
         
-        a = Twist([x,x,x,x])
-        self.assertIsInstance(a, Twist)
+        a = Twist3([x,x,x,x])
+        self.assertIsInstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
-        a = Twist([x.se3(), x.se3(), x.se3(), x.se3()])
-        self.assertIsInstance(a, Twist)
+        a = Twist3([x.se3(), x.se3(), x.se3(), x.se3()])
+        self.assertIsInstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
-        a = Twist([x.S, x.S, x.S, x.S])
-        self.assertIsInstance(a, Twist)
+        a = Twist3([x.S, x.S, x.S, x.S])
+        self.assertIsInstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
-        s = [1, 2, 3, 4, 5, 6]
-        a = Twist([s, s, s, s])
-        self.assertIsInstance(a, Twist)
+        s = np.r_[1, 2, 3, 4, 5, 6]
+        a = Twist3([s, s, s, s])
+        self.assertIsInstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
     def test_predicate(self):
-        x = Twist.R([1, 2, 3], [0, 0, 0])
+        x = Twist3.R([1, 2, 3], [0, 0, 0])
         self.assertFalse(x.isprismatic)
         
         # check prismatic twist
-        x = Twist.P([1, 2, 3])
+        x = Twist3.P([1, 2, 3])
         self.assertTrue(x.isprismatic)
         
-        self.assertTrue(Twist.isvalid(x.se3()))
-        self.assertTrue(Twist.isvalid(x.S))
+        self.assertTrue(Twist3.isvalid(x.se3()))
+        self.assertTrue(Twist3.isvalid(x.S))
         
-        self.assertFalse(Twist.isvalid(2))
-        self.assertFalse(Twist.isvalid(np.eye(4)))
+        self.assertFalse(Twist3.isvalid(2))
+        self.assertFalse(Twist3.isvalid(np.eye(4)))
         
     def test_str(self):
-        x = Twist([1, 2, 3, 4, 5, 6])
+        x = Twist3([1, 2, 3, 4, 5, 6])
         s = str(x)
         self.assertIsInstance(s, str)
         self.assertEqual(len(s), 14)
@@ -130,40 +131,40 @@ class Twist3dTest(unittest.TestCase):
     def test_variant_constructors(self):
         
         # check rotational twist
-        x = Twist.R([1, 2, 3], [0, 0, 0])
+        x = Twist3.R([1, 2, 3], [0, 0, 0])
         array_compare(x, np.r_[0, 0, 0, unitvec([1, 2, 3])])
         
         # check prismatic twist
-        x = Twist.P([1, 2, 3])
+        x = Twist3.P([1, 2, 3])
         array_compare(x, np.r_[unitvec([1, 2, 3]), 0, 0, 0, ])
     
     def test_SE3_twists(self):
-        tw = Twist( SE3.Rx(0) )
+        tw = Twist3( SE3.Rx(0) )
         array_compare(tw, np.r_[0, 0, 0,  0, 0, 0])
                       
-        tw = Twist( SE3.Rx(pi / 2) )
+        tw = Twist3( SE3.Rx(pi / 2) )
         array_compare(tw, np.r_[0, 0, 0,  pi / 2, 0, 0])
                       
-        tw = Twist( SE3.Ry(pi / 2) )
+        tw = Twist3( SE3.Ry(pi / 2) )
         array_compare(tw, np.r_[0, 0, 0,  0, pi / 2, 0])
                       
-        tw = Twist( SE3.Rz(pi / 2) )
+        tw = Twist3( SE3.Rz(pi / 2) )
         array_compare(tw, np.r_[0, 0, 0,  0, 0, pi / 2])
         
-        tw = Twist( SE3([1, 2, 3]) )
+        tw = Twist3( SE3([1, 2, 3]) )
         array_compare(tw, [1, 2, 3,  0, 0, 0])
                       
-        tw = Twist( SE3([1, 2, 3]) * SE3.Ry(pi / 2))
+        tw = Twist3( SE3([1, 2, 3]) * SE3.Ry(pi / 2))
         array_compare(tw, np.r_[-pi / 2, 2, pi,  0, pi / 2, 0])
         
     def test_exp(self):
-        tw = Twist.R([1, 0, 0], [0, 0, 0])
+        tw = Twist3.R([1, 0, 0], [0, 0, 0])
         array_compare(tw.exp(pi/2), SE3.Rx(pi/2))
         
-        tw = Twist.R([0, 1, 0], [0, 0, 0])
+        tw = Twist3.R([0, 1, 0], [0, 0, 0])
         array_compare(tw.exp(pi/2), SE3.Ry(pi/2))
         
-        tw = Twist.R([0, 0, 1], [0, 0, 0])
+        tw = Twist3.R([0, 0, 1], [0, 0, 0])
         array_compare(tw.exp(pi/2), SE3.Rz(pi / 2))
     
     def test_arith(self):
@@ -173,8 +174,8 @@ class Twist3dTest(unittest.TestCase):
         T1 = SE3(1, 2, 3) * SE3.Rx(pi / 2)
         T2 = SE3(4, 5, -6) * SE3.Ry(-pi / 2)
         
-        x1 = Twist(T1)
-        x2 = Twist(T2)
+        x1 = Twist3(T1)
+        x2 = Twist3(T2)
 
         array_compare( (x1 * x2).exp(), T1 * T2)
         array_compare( (x2 * x1).exp(), T2 * T1)
@@ -184,10 +185,10 @@ class Twist3dTest(unittest.TestCase):
         T1 = SE3(1, 2, 3) * SE3.Rx(pi / 2)
         T2 = SE3(4, 5, -6) * SE3.Ry(-pi / 2)
         
-        x1 = Twist(T1)
-        x2 = Twist(T2)
+        x1 = Twist3(T1)
+        x2 = Twist3(T2)
         
-        x = Twist([x1, x2])
+        x = Twist3([x1, x2])
         array_compare( x.prod().SE3(), T1 * T2)
         
 
@@ -359,5 +360,6 @@ class Twist2dTest(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
+
 
     unittest.main()

@@ -102,118 +102,7 @@ class SMPose(SMUserList):
         super().__init__(pose)  # initialize UserList
         return pose
 
-    def _arghandler(self, arg, check=True):
-        """
-        Assign value to pose subclasses (superclass method)
-        
-        :param self: the pose object to be set
-        :type self: SO2, SE2, SO3, SE3 instance
-        :param arg: value of pose
-        :param check: check type of argument, defaults to True
-        :type check: TYPE, optional
-        :raises ValueError: bad type passed
-
-        The value ``arg`` can be any of:
-            
-        # a numpy.ndarray of the appropriate shape and value which is valid for the subclass
-        # a list whose elements all meet the criteria above
-        # an instance of the subclass
-        # a list whose elements are all instances of the subclass
-        
-        Examples::
-
-            SE3( np.identity(4))
-            SE3( [np.identity(4), np.identity(4)])
-            SE3( SE3() )
-            SE3( [SE3(), SE3()])
-
-        """
-
-        if isinstance(arg, np.ndarray):
-            # it's a numpy array
-            assert arg.shape == self.shape, 'array must have valid shape for the class'
-            assert type(self).isvalid(arg), 'array must have valid value for the class'
-            self.data.append(arg)
-        elif isinstance(arg, list):
-            # construct from a list
-            if isinstance(arg[0], np.ndarray):
-                #print('list of numpys')
-                # possibly a list of numpy arrays
-                s = self.shape
-                if check:
-                    checkfunc = type(self).isvalid # lambda function
-                    assert all(map(lambda x: x.shape == s and checkfunc(x), arg)), 'all elements of list must have valid shape and value for the class'
-                else:
-                    assert all(map(lambda x: x.shape == s, arg))
-                self.data = arg
-            elif type(arg[0]) == type(self):
-                # possibly a list of objects of same type
-                assert all(map(lambda x: type(x) == type(self), arg)), 'all elements of list must have same type'
-                self.data = [x.A for x in arg]
-            else:
-                raise ValueError('bad list argument to constructor')
-        elif type(self) == type(arg):
-            # it's an object of same type, do copy
-            self.data = arg.data.copy()
-        else:
-            raise ValueError('bad argument to constructor')
-
 # ------------------------------------------------------------------------ #
-
-    @property
-    def A(self):
-        """
-        Interal array representation (superclass property)
-        
-        :param self: the pose object
-        :type self: SO2, SE2, SO3, SE3 instance
-        :return: The numeric array
-        :rtype: numpy.ndarray
-        
-        Each pose subclass SO(N) or SE(N) are stored internally as a numpy array. This property returns
-        the array, shape depends on the particular subclass.
-        
-        Examples::
-            
-            >>> x = SE3()
-            >>> x.A
-            array([[1., 0., 0., 0.],
-                   [0., 1., 0., 0.],
-                   [0., 0., 1., 0.],
-                   [0., 0., 0., 1.]])
-
-        :seealso: `shape`, `N`
-        """
-        # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
-        
-    @property
-    def shape(self):
-        """
-        Shape of the object's matrix representation (superclass property)
-
-        :return: matrix shape
-        :rtype: 2-tuple of ints
-
-        (2,2) for ``SO2``, (3,3) for ``SE2`` and ``SO3``, and (4,4) for ``SE3``.
-        
-        Example::
-            
-            >>> x = SE3()
-            >>> x.shape
-            (4, 4)
-        """
-        if type(self).__name__ == 'SO2':
-            return (2, 2)
-        elif type(self).__name__ == 'SO3':
-            return (3, 3)
-        elif type(self).__name__ == 'SE2':
-            return (3, 3)
-        elif type(self).__name__ == 'SE3':
-            return (4, 4)
 
     @property
     def about(self):
@@ -233,7 +122,7 @@ class SMPose(SMUserList):
             SE3[20]
         """
         return "{:s}[{:d}]".format(type(self).__name__, len(self))
-    
+
     @property
     def N(self):
         """
@@ -245,9 +134,9 @@ class SMPose(SMUserList):
         Dimension of the group is 2 for ``SO2`` or ``SE2``, and 3 for ``SO3`` or ``SE3``.
         This corresponds to the dimension of the space, 2D or 3D, to which these
         rotations or rigid-body motions apply.
-        
+
         Example::
-            
+
             >>> x = SE3()
             >>> x.N
             3
@@ -283,13 +172,13 @@ class SMPose(SMUserList):
         return type(self).__name__ == 'SE2' or type(self).__name__ == 'SE3'
 
 
-        
 # ------------------------------------------------------------------------ #
 
 
 # ------------------------------------------------------------------------ #
 
     # --------- compatibility methods
+
 
     def isrot(self):
         """
@@ -300,9 +189,9 @@ class SMPose(SMUserList):
 
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SO3)``.
-        
+
         Example::
-            
+
             >>> x = SO3()
             >>> x.isrot()
             True
@@ -323,7 +212,7 @@ class SMPose(SMUserList):
         In Python use ``isinstance(x, SO2)``.
 
         Example::
-            
+
             >>> x = SO2()
             >>> x.isrot()
             True
@@ -342,9 +231,9 @@ class SMPose(SMUserList):
 
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SE3)``.
-        
+
         Example::
-            
+
             >>> x = SO3()
             >>> x.isrot()
             False
@@ -363,9 +252,9 @@ class SMPose(SMUserList):
 
         For compatibility with Spatial Math Toolbox for MATLAB.
         In Python use ``isinstance(x, SE2)``.
-        
+
         Example::
-            
+
             >>> x = SO2()
             >>> x.isrot()
             False
@@ -374,19 +263,19 @@ class SMPose(SMUserList):
             True
         """
         return type(self).__name__ == 'SE2'
-    
+
      #----------------------- functions
 
-    def log(self):
+    def log(self, twist=False):
         """
         Logarithm of pose (superclass method)
 
         :return: logarithm
         :rtype: numpy.ndarray
         :raises: ValueError
-    
+
         An efficient closed-form solution of the matrix logarithm.
-        
+
         =====  ======  ===============================
         Input         Output
         -----  ---------------------------------------
@@ -397,7 +286,7 @@ class SMPose(SMUserList):
         SO3    (3,3)   skew-symmetric
         SE3    (4,4)   augmented skew-symmetric
         =====  ======  ===============================
-        
+
         Example::
 
             >>> x = SE3.Rx(0.3)
@@ -407,15 +296,15 @@ class SMPose(SMUserList):
                    [ 0. ,  0. , -0.3,  0. ],
                    [-0. ,  0.3,  0. ,  0. ],
                    [ 0. ,  0. ,  0. ,  0. ]])
-            
+
 
         :seealso: :func:`~spatialmath.base.transforms2d.trlog2`, :func:`~spatialmath.base.transforms3d.trlog`
         """
         print('in log')
         if self.N == 2:
-            log = [tr.trlog2(x) for x in self.data]
+            log = [tr.trlog2(x, twist=twist) for x in self.data]
         else:
-            log = [tr.trlog(x) for x in self.data]
+            log = [tr.trlog(x, twist=twist) for x in self.data]
         if len(log) == 1:
             return log[0]
         else:
@@ -424,14 +313,14 @@ class SMPose(SMUserList):
     def interp(self, s=None, start=None):
         """
         Interpolate pose (superclass method)
-        
+
         :param start: initial pose
         :type start: same as ``self``
         :param s: interpolation coefficient, range 0 to 1
         :type s: float or array_like
         :return: interpolated pose
         :rtype: SO2, SE2, SO3, SE3 instance
-        
+
         - ``X.interp(s)`` interpolates the pose X between identity when s=0
           and X when s=1.
 
@@ -444,7 +333,7 @@ class SMPose(SMUserList):
          ======  ======  ===========  ===============================
 
         Example::
-            
+
             >>> x = SE3.Rx(0.3)
             >>> print(x.interp(0))
             SE3(array([[1., 0., 0., 0.],
@@ -464,49 +353,46 @@ class SMPose(SMUserList):
                        [ 0.        ,  0.98614323, -0.16589613,  0.        ],
                        [ 0.        ,  0.16589613,  0.98614323,  0.        ],
                        [ 0.        ,  0.        ,  0.        ,  1.        ]]))
-            
+
         Notes:
-            
+
         #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
-    
+
         :seealso: :func:`~spatialmath.base.transforms3d.trinterp`, :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
         """
         s = argcheck.getvector(s)
         if start is not None:
             assert len(start) == 1, 'len(start) must == 1'
             start = start.A
-        else:
-            start = self.__class__().A
-            
+
         if self.N == 2:
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([tr.trinterp2(self.A, start=start, s=_s) for _s in s])
+                return self.__class__([tr.trinterp2(start, self.A, s=_s) for _s in s])
             else:
                 assert len(s) == 1, 'if len(X) > 1, len(s) must == 1'
-                return self.__class__([tr.trinterp2(x, start=start, s=s[0]) for x in self.data])
+                return self.__class__([tr.trinterp2(start, x, s=s[0]) for x in self.data])
         elif self.N == 3:
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([tr.trinterp(self.A, start=start, s=_s) for _s in s])
+                return self.__class__([tr.trinterp(start, self.A, s=_s) for _s in s])
             else:
                 assert len(s) == 1, 'if len(X) > 1, len(s) must == 1'
-                return self.__class__([tr.trinterp(x, start=start, s=s[0]) for x in self.data])
-        
-    
+                return self.__class__([tr.trinterp(start, x, s=s[0]) for x in self.data])
+
     def norm(self):
         """
         Normalize pose (superclass method)
-        
+
         :return: pose
         :rtype: SO2, SE2, SO3, SE3 instance
-    
+
         - ``X.norm()`` is an equivalent pose object but the rotational matrix 
           part of all values has been adjusted to ensure it is a proper orthogonal
           matrix rotation.
-          
+
         Example::
-            
+
             >>> x = SE3()
             >>> y = x.norm()
             >>> y
@@ -514,13 +400,13 @@ class SMPose(SMUserList):
                        [0., 1., 0., 0.],
                        [0., 0., 1., 0.],
                        [0., 0., 0., 1.]]))
-    
+
         Notes:
-            
+
         #. Only the direction of A vector (the z-axis) is unchanged.
         #. Used to prevent finite word length arithmetic causing transforms to 
            become 'unnormalized'.
-           
+
         :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`
         """
         if self.N == 2:
@@ -561,7 +447,7 @@ class SMPose(SMUserList):
     def printline(self, **kwargs):
         """
         Print pose as a single line (superclass method)
-    
+
         :param label: text label to put at start of line
         :type label: str
         :param file: file to write formatted string to. [default, stdout]
@@ -572,23 +458,23 @@ class SMPose(SMUserList):
         :type unit: str
         :return: optional formatted string
         :rtype: str
-        
+
         For SO(3) or SE(3) also:
-        
+
         :param orient: 3-angle convention to use
         :type orient: str
-        
+
         - ``X.printline()`` print ``X`` in single-line format to ``stdout``, followed
           by a newline
         - ``X.printline(file=None)`` return a string containing ``X`` in 
           single-line format
-        
+
         Example::
-            
+
             >>> x=SE3.Rx(0.3)
             >>> x.printline()
             t =        0,        0,        0; rpy/zyx =       17,        0,        0 deg
-        
+
         If `X` contains a sequence, print one line per element.
 
         """
@@ -605,12 +491,12 @@ class SMPose(SMUserList):
     def __repr__(self):
         """
         Readable representation of pose (superclass method)
-        
+
         :return: readable representation of the pose as a list of arrays
         :rtype: str
-        
+
         Example::
-            
+
             >>> x = SE3.Rx(0.3)
             >>> x
             SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
@@ -620,7 +506,7 @@ class SMPose(SMUserList):
 
         """
         name = type(self).__name__
-        if len(self) ==  0:
+        if len(self) == 0:
             return name + '([])'
         elif len(self) == 1:
             # need to indent subsequent lines of the native repr string by 4 spaces
@@ -652,22 +538,22 @@ class SMPose(SMUserList):
 
         :return: readable representation of the pose
         :rtype: str
-        
+
         Convert the pose's matrix value to a simple grid of numbers.
-        
+
         Example::
-            
+
             >>> x = SE3.Rx(0.3)
             >>> print(x)
                1           0           0           0            
                0           0.955336   -0.29552     0            
                0           0.29552     0.955336    0            
                0           0           0           1 
-        
+
         Notes:
-            
+
             - By default, the output is colorised for an ANSI terminal console:
-                
+
                 * red: rotational elements
                 * blue: translational elements
                 * white: constant elements
@@ -678,23 +564,23 @@ class SMPose(SMUserList):
     def _string(self, color=False, tol=10):
         """
         Pretty print the matrix value
-        
+
         :param color: colorise the output, defaults to False
         :type color: bool, optional
         :param tol: zero values smaller than tol*eps, defaults to 10
         :type tol: float, optional
         :return: multiline matrix representation
         :rtype: str
-        
+
         Convert a matrix to a simple grid of numbers with optional
         colorization for an ANSI terminal console:
-                
+
                 * red: rotational elements
                 * blue: translational elements
                 * white: constant elements
-        
+
         Example::
-            
+
             >>> x = SE3.Rx(0.3)
             >>> print(str(x))
                1           0           0           0            
@@ -705,9 +591,9 @@ class SMPose(SMUserList):
         """
         #print('in __str__', _color)
 
-        FG = lambda c: fg(c) if _color else ''
-        BG = lambda c: bg(c) if _color else ''
-        ATTR = lambda c: attr(c) if _color else ''
+        def FG(c): return fg(c) if _color else ''
+        def BG(c): return bg(c) if _color else ''
+        def ATTR(c): return attr(c) if _color else ''
 
         def mformat(self, X):
             # X is an ndarray value to be display
@@ -753,38 +639,38 @@ class SMPose(SMUserList):
                 output_str += fg('green') + '[{:d}] =\n'.format(count) + attr(0) + mformat(self, X)
 
         return output_str
-    
+
     # ----------------------- graphics
-    
+
     def plot(self, *args, **kwargs):
         """
         Plot pose object as a coordinate frame (superclass method)
-        
+
         :param `**kwargs`: plotting options
-        
+
         - ``X.plot()`` displays the pose ``X`` as a coordinate frame in either
           2D or 3D.  There are many options, see the links below.
 
         Example::
-            
+
             >>> X = SE3.Rx(0.3)
             >>> X.plot(frame='A', color='green')
-    
+
         :seealso: :func:`~spatialmath.base.transforms3d.trplot`, :func:`~spatialmath.base.transforms2d.trplot2`
         """
         if self.N == 2:
             tr.trplot2(self.A, *args, **kwargs)
         else:
             tr.trplot(self.A, *args, **kwargs)
-            
+
     def animate(self, *args, start=None, **kwargs):
         """
         Plot pose object as an animated coordinate frame (superclass method)
-        
+
         :param start: initial pose, defaults to null/identity
         :type start: same as ``self``
         :param `**kwargs`: plotting options
-        
+
         - ``X.animate()`` displays the pose ``X`` as a coordinate frame moving
           from the origin in either 2D or 3D.  There are many options, see the 
           links below.
@@ -793,7 +679,7 @@ class SMPose(SMUserList):
           many options, see the links below.
 
         Example::
-            
+
             >>> X = SE3.Rx(0.3)
             >>> X.animate(frame='A', color='green')
             >>> X.animate(start=SE3.Ry(0.2))
@@ -812,6 +698,7 @@ class SMPose(SMUserList):
 
     #----------------------- arithmetic
 
+
     def __mul__(left, right):
         """
         Overloaded ``*`` operator (superclass method)
@@ -822,7 +709,7 @@ class SMPose(SMUserList):
         :raises: ValueError
 
         Pose composition, scaling or vector transformation:
-        
+
         - ``X * Y`` compounds the poses ``X`` and ``Y``
         - ``X * s`` performs elementwise multiplication of the elements of ``X`` by ``s``
         - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
@@ -839,16 +726,16 @@ class SMPose(SMUserList):
         Pose             N-vector         N-vector     vector transform
         Pose             NxM matrix       NxM matrix   transform each column
         ==============   ==============   ===========  ======================
-        
+
         Notes:
-            
+
         #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
         #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
         #. scalar x Pose is handled by ``__rmul__``
         #. scalar multiplication is commutative but the result is not a group
            operation so the result will be a matrix
         #. Any other input combinations result in a ValueError.
-        
+
         For pose composition the ``left`` and ``right`` operands may be a sequence
 
         =========   ==========   ====  ================================
@@ -861,7 +748,7 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         For vector transformation there are three cases
-        
+
         =========  ===========  =====  ==========================
               Multiplicands             Product
         ----------------------  ---------------------------------
@@ -871,9 +758,9 @@ class SMPose(SMUserList):
         M          (N,)         (N,M)  vector transformations
         1          (N,M)        (N,M)  column transformation
         =========  ===========  =====  ==========================
-        
+
         Notes:
-            
+
         #. for the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous
            form, transformed, then converted back to Euclidean form.
 
@@ -915,17 +802,17 @@ class SMPose(SMUserList):
                 return tr.h2e(left.A @ tr.e2h(right))
             elif isinstance(right, np.ndarray) and left.isSO and right.shape[0] == left.N and len(left) == right.shape[1]:
                 # SO(n) x matrix
-                return np.c_[[x.A @ y for x,y in zip(right, left.T)]].T
+                return np.c_[[x.A @ y for x, y in zip(right, left.T)]].T
             elif isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N and len(left) == right.shape[1]:
                 # SE(n) x matrix
-                return np.c_[[tr.h2e(x.A @ tr.e2h(y)) for x,y in zip(right, left.T)]].T
+                return np.c_[[tr.h2e(x.A @ tr.e2h(y)) for x, y in zip(right, left.T)]].T
             else:
                 raise ValueError('bad operands')
         elif isinstance(right, (int, np.int64, float, np.float64)):
             return left._op2(right, lambda x, y: x * y)
         else:
             return NotImplemented
-        
+
     def __rmul__(right, left):
         """
         Overloaded ``*`` operator (superclass method)
@@ -934,17 +821,17 @@ class SMPose(SMUserList):
         :arg right: right multiplicand
         :return: product
         :raises: NotImplemented
-        
+
         Left-multiplication by a scalar
-        
+
         - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
 
         Notes:
-            
+
         #. For other left-operands return ``NotImplemented``.  Other classes
           such as ``Plucker`` and ``Twist`` implement left-multiplication by
           an ``SE33`` using their own ``__rmul__`` methods.
-        
+
         """
         if isinstance(left, (int, np.int64, float, np.float64)):
             return right.__mul__(left)
@@ -971,13 +858,13 @@ class SMPose(SMUserList):
     def __pow__(self, n):
         """
         Overloaded ``**`` operator (superclass method)
-        
+
         :param n: pose
         :return: pose to the power n
         :type self: SO2, SE2, SO3, SE3
 
         Raise all elements of pose to the specified power.
-        
+
         - ``X**n`` raise all values in ``X`` to the power ``n``
         """
 
@@ -990,16 +877,16 @@ class SMPose(SMUserList):
     def __truediv__(left, right):
         """
         Overloaded ``/`` operator (superclass method)
-        
+
         :arg left: left multiplicand
         :arg right: right multiplicand
         :return: product
         :raises ValueError: for incompatible arguments
         :return: matrix
         :rtype: numpy ndarray
-        
+
         Pose composition or scaling:
-        
+
         - ``X / Y`` compounds the poses ``X`` and ``Y.inv()``
         - ``X / s`` performs elementwise multiplication of the elements of ``X`` by ``s``
 
@@ -1011,15 +898,15 @@ class SMPose(SMUserList):
         Pose             Pose             Pose         matrix product by inverse
         Pose             scalar           NxN matrix   element-wise division
         ==============   ==============   ===========  =========================
-        
+
         Notes:
-            
+
         #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
         #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
         #. scalar multiplication is not a group operation so the result will 
            be a matrix
         #. Any other input combinations result in a ValueError.
-        
+
         For pose composition the ``left`` and ``right`` operands may be a sequence
 
         =========   ==========   ====  ================================
@@ -1058,17 +945,17 @@ class SMPose(SMUserList):
     def __add__(left, right):
         """
         Overloaded ``+`` operator (superclass method)
-        
+
         :arg left: left addend
         :arg right: right addend
         :return: sum
         :raises ValueError: for incompatible arguments
         :return: matrix
         :rtype: numpy ndarray, shape=(N,N)
-        
+
         Add elements of two poses.  This is not a group operation so the
         result is a matrix not a pose class.
-                
+
         - ``X + Y`` is the element-wise sum of the matrix value of ``X`` and ``Y``
         - ``X + s`` is the element-wise sum of the matrix value of ``X`` and ``s``
         - ``s + X`` is the element-wise sum of the matrix value of ``s`` and ``X``
@@ -1082,18 +969,18 @@ class SMPose(SMUserList):
         Pose             scalar           NxN matrix   element-wise sum
         scalar           Pose             NxN matrix   element-wise sum
         ==============   ==============   ===========  ========================
-        
+
         Notes:
-            
+
         #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
         #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
         #. scalar + Pose is handled by ``__radd__``
         #. scalar addition is commutative
         #. Any other input combinations result in a ValueError.
-        
+
         For pose addition the ``left`` and ``right`` operands may be a sequence which
         results in the result being a sequence:
-            
+
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
@@ -1115,11 +1002,11 @@ class SMPose(SMUserList):
         :arg right: right addend
         :return: sum
         :raises ValueError: for incompatible arguments
-        
+
         Left-addition by a scalar
-        
+
         - ``s + X`` performs elementwise addition of the elements of ``X`` and ``s``
-        
+
         """
         return left.__add__(right)
 
@@ -1129,17 +1016,17 @@ class SMPose(SMUserList):
     def __sub__(left, right):
         """
         Overloaded ``-`` operator (superclass method)
-        
+
         :arg left: left minuend
         :arg right: right subtrahend
         :return: difference
         :raises ValueError: for incompatible arguments
         :return: matrix
         :rtype: numpy ndarray, shape=(N,N)
-        
+
         Subtract elements of two poses.  This is not a group operation so the
         result is a matrix not a pose class.
-                
+
         - ``X - Y`` is the element-wise difference of the matrix value of ``X`` and ``Y``
         - ``X - s`` is the element-wise difference of the matrix value of ``X`` and ``s``
         - ``s - X`` is the element-wise difference of ``s`` and the matrix value of ``X``
@@ -1153,14 +1040,14 @@ class SMPose(SMUserList):
         Pose             scalar           NxN matrix   element-wise sum
         scalar           Pose             NxN matrix   element-wise sum
         ==============   ==============   ===========  ==============================
-        
+
         Notes:
-            
+
         #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
         #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
         #. scalar - Pose is handled by ``__rsub__``
         #. Any other input combinations result in a ValueError.
-        
+
         For pose addition the ``left`` and ``right`` operands may be a sequence which
         results in the result being a sequence:
 
@@ -1186,11 +1073,11 @@ class SMPose(SMUserList):
         :arg right: right subtrahend
         :return: difference
         :raises ValueError: for incompatible arguments
-        
+
         Left-addition by a scalar
-        
+
         - ``s + X`` performs elementwise addition of the elements of ``X`` and ``s``
-        
+
         """
         return -left.__sub__(right)
 
@@ -1200,22 +1087,22 @@ class SMPose(SMUserList):
     def __eq__(left, right):
         """
         Overloaded ``==`` operator (superclass method)
-        
+
         :param left: left side of comparison
         :type self: SO2, SE2, SO3, SE3
         :param right: right side of comparison
         :type self: SO2, SE2, SO3, SE3
         :return: poses are equal
         :rtype: bool
-        
+
         Test two poses for equality
-        
+
         - ``X == Y`` is true of the poses are of the same type and numerically
           equal.
 
         If either operand contains a sequence the results is a sequence 
         according to:
-        
+
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
@@ -1232,22 +1119,22 @@ class SMPose(SMUserList):
     def __ne__(left, right):
         """
         Overloaded ``!=`` operator
-        
+
         :param left: left side of comparison
         :type self: SO2, SE2, SO3, SE3
         :param right: right side of comparison
         :type self: SO2, SE2, SO3, SE3
         :return: poses are not equal
         :rtype: bool
-        
+
         Test two poses for inequality
-        
+
         - ``X == Y`` is true of the poses are of the same type but not numerically
           equal.
-          
+
         If either operand contains a sequence the results is a sequence 
         according to:
-        
+
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
@@ -1260,10 +1147,10 @@ class SMPose(SMUserList):
         """
         return [not x for x in self == right]
 
-    def _op2(left, right, op): 
+    def _op2(left, right, op):
         """
         Perform binary operation
-        
+
         :param left: left side of comparison
         :type self: SO2, SE2, SO3, SE3
         :param right: right side of comparison
@@ -1273,7 +1160,7 @@ class SMPose(SMUserList):
         :raises ValueError: arguments are not compatible
         :return: list of matrices
         :rtype: list
-        
+
         Peform a binary operation on a pair of operands.  If either operand
         contains a sequence the results is a sequence accordinging to this
         truth table.

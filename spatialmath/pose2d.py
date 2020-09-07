@@ -1,19 +1,47 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import numpy as np
+"""
+Classes to abstract 2D pose and orientation using matrices in SE(2) and SO(2)
+
+To use::
+
+    from spatialmath.pose2d import *
+    T = SE2(1, 2, 0.3)
+
+    import spatialmath as sm
+    T = sm.SE2.Rx(1, 2, 0.3)
+
+
+ .. inheritance-diagram:: spatialmath.pose3d
+    :top-classes: collections.UserList
+    :parts: 1
+"""
+
+# pylint: disable=invalid-name
+
 import math
+import numpy as np
 
 from spatialmath.base import argcheck
 from spatialmath import base as tr
-from spatialmath import super_pose as sp
+from spatialmath.super_pose import SMPose
 import spatialmath.pose3d as p3
 
 # ============================== SO2 =====================================#
 
 
-class SO2(sp.SMPose):
+class SO2(SMPose):
+    """
+    SO(2) subclass
 
+    This subclass represents rotations in 2D space.  Internally it is a 2x2 orthogonal matrix belonging
+    to the group SO(2).
+
+ .. inheritance-diagram:: spatialmath.pose2d.SO2
+    :top-classes: collections.UserList
+    :parts: 1
+    """
     # SO2()  identity matrix
     # SO2(angle, unit)
     # SO2( obj )   # deep copy
@@ -42,13 +70,13 @@ class SO2(sp.SMPose):
         - ``SO2([R1, R2, ... RN])`` is an SO2 instance containing a sequence of N rotations, each described by an SO(2) matrix
           Ri which is a 2x2 numpy array. If ``check`` is ``True`` then check each matrix belongs to SO(2).
         - ``SO2([X1, X2, ... XN])`` is an SO2 instance containing a sequence of N rotations, where each Xi is an SO2 instance.
-        
+
         """
         super().__init__()  # activate the UserList semantics
 
         if arg is None:
             # empty constructor
-            if type(self) is SO2:
+            if isinstance(self, SO2):
                 self.data = [np.eye(2)]
         elif argcheck.isvector(arg):
             # SO2(value)
@@ -58,11 +86,20 @@ class SO2(sp.SMPose):
         elif isinstance(arg, np.ndarray) and arg.shape == (2, 2):
             self.data = [arg]
         else:
-            super()._arghandler(arg, check=check)
+            super().arghandler(arg, check=check)
+
+    @property
+    def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (2,2)
+        :rtype: tuple
+        """
+        return (2, 2)
 
     @classmethod
     def Rand(cls, *, arange=(0, 2 * math.pi), unit='rad', N=1):
-
         r"""
         Construct new SO(2) with random rotation
 
@@ -76,16 +113,16 @@ class SO2(sp.SMPose):
         :rtype: SO2 instance
 
         - ``SO2.Rand()`` is a random SO(2) rotation.
-        - ``SO2.Rand([-90, 90], unit='deg')`` is a random SO(2) rotation between 
+        - ``SO2.Rand([-90, 90], unit='deg')`` is a random SO(2) rotation between
           -90 and +90 degrees.
         - ``SO2.Rand(N)`` is a sequence of N random rotations.
-        
+
         Rotations are uniform over the specified interval.
 
         """
         rand = np.random.uniform(low=arange[0], high=arange[1], size=N)  # random values in the range
         return cls([tr.rot2(x) for x in argcheck.getunit(rand, unit)])
-    
+
     @classmethod
     def Exp(cls, S, check=True):
         """
@@ -103,7 +140,7 @@ class SO2(sp.SMPose):
 
         :seealso: :func:`spatialmath.base.transforms2d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if argcheck.ismatrix(S, (-1, 2)) and not so2:
+        if isinstance(S, (list, tuple)):
             return cls([tr.trexp2(s, check=check) for s in S])
         else:
             return cls(tr.trexp2(S, check=check), check=False)
@@ -131,9 +168,9 @@ class SO2(sp.SMPose):
         :rtype: SO2 instance
 
         - ``x.inv()`` is the inverse of `x`.
-        
+
         Notes:
-            
+
             - for elements of SO(2) this is the transpose.
             - if `x` contains a sequence, returns an `SO2` with a sequence of inverses
         """
@@ -151,7 +188,7 @@ class SO2(sp.SMPose):
         :rtype: numpy.ndarray, shape=(2,2)
 
         ``x.R`` returns the rotation matrix, when `x` is `SO2` or `SE2`. If `len(x)` is:
-            
+
         - 1, return an ndarray with shape=(2,2)
         - N>1, return ndarray with shape=(N,2,2)
         """
@@ -160,39 +197,50 @@ class SO2(sp.SMPose):
     def theta(self, unit='rad'):
         """
         SO(2) as a rotation angle
-        
+
         :param unit: angular units 'deg' or 'rad' [default]
         :type unit: str, optional
         :return: rotation angle
         :rtype: float or list
-        
+
         ``x.theta`` is the rotation angle such that `x` is `SO2(x.theta)`.
-        
+
         """
         if unit == 'deg':
             conv = 180.0 / math.pi
         else:
             conv = 1.0
-            
+
         if len(self) == 1:
             return conv * math.atan2(self.A[1, 0], self.A[0, 0])
         else:
             return [conv * math.atan2(x.A[1, 0], x.A[0, 0]) for x in self]
-    
+
     def SE2(self):
         """
         Create SE(2) from SO(2)
-        
+
         :return: SE(2) with same rotation but zero translation
         :rtype: SE2 instance
 
         """
         return SE2(tr.rt2tr(self.A, [0, 0]))
 
-    
+
 # ============================== SE2 =====================================#
 
 class SE2(SO2):
+    """
+    SE(2) subclass
+
+    This subclass represents rigid-body motion (pose) in 2D space.  Internally
+    it is a 3x3 homogeneous transformation matrix belonging to the group SE(2).
+
+ .. inheritance-diagram:: spatialmath.pose2d.SE2
+    :top-classes: collections.UserList
+    :parts: 1
+    """
+
     # constructor needs to take ndarray -> SO2, or list of ndarray -> SO2
     def __init__(self, x=None, y=None, theta=None, *, unit='rad', check=True):
         """
@@ -204,7 +252,7 @@ class SE2(SO2):
         :type check: bool
         :return: homogeneous rigid-body transformation matrix
         :rtype: SE2 instance
-        
+
         - ``SE2()`` is an SE2 instance representing a null motion -- the identity matrix
         - ``SE2(x, y)`` is an SE2 instance representing a pure translation of (``x``, ``y``)
         - ``SE2(t)`` is an SE2 instance representing a pure translation of (``x``, ``y``) where``t``=[x,y] is a 2-element array_like
@@ -216,7 +264,7 @@ class SE2(SO2):
         - ``SE2([T1, T2, ... TN])`` is an SE2 instance containing a sequence of N rigid-body motions, each described by an SE(2) matrix
           Ti which is a 3x3 numpy array. If ``check`` is ``True`` then check each matrix belongs to SE(2).
         - ``SE2([X1, X2, ... XN])`` is an SE2 instance containing a sequence of N rigid-body motions, where each Xi is an SE2 instance.
-        
+
         """
         super().__init__()  # activate the UserList semantics
 
@@ -240,15 +288,25 @@ class SE2(SO2):
                     # SE2([x,y,theta])
                     self.data = [tr.trot2(x[2], t=x[:2], unit=unit)]
                 else:
-                    super()._arghandler(x, check=check)
+                    super().arghandler(x, check=check)
         else:
             raise ValueError('bad arguments to constructor')
 
+    @property
+    def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (3,3)
+        :rtype: tuple
+        """
+        return (3, 3)
+
     @classmethod
-    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), arange=(0, 2 * math.pi), unit='rad', N=1):
+    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), arange=(0, 2 * math.pi), unit='rad', N=1):  # pylint: disable=arguments-differ
         r"""
         Construct a new random SE(2)
-    
+
         :param xrange: x-axis range [min,max], defaults to [-1, 1]
         :type xrange: 2-element sequence, optional
         :param yrange: y-axis range [min,max], defaults to [-1, 1]
@@ -261,19 +319,19 @@ class SE2(SO2):
         :type unit: str, optional
         :return: homogeneous rigid-body transformation matrix
         :rtype: SE2 instance
-    
+
         Return an SE2 instance with random rotation and translation.
 
         - ``SE2.Rand()`` is a random SE(2) rotation.
         - ``SE2.Rand(N)`` is an SE2 object containing a sequence of N random
           poses.
-        
+
         Example, create random ten vehicles in the xy-plane::
-            
+
             >>> x = SE3.Rand(N=10, xrange=[-2,2], yrange=[-2,2])
             >>> len(x)
             10
-    
+
         """
         x = np.random.uniform(low=xrange[0], high=xrange[1], size=N)  # random values in the range
         y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
@@ -281,7 +339,7 @@ class SE2(SO2):
         return cls([tr.trot2(t, t=[x, y]) for (t, x, y) in zip(x, y, argcheck.getunit(theta, unit))])
 
     @classmethod
-    def Exp(cls, S, check=True, se2=True):
+    def Exp(cls, S, check=True):  # pylint: disable=arguments-differ
         """
         Construct a new SE(2) from se(2) Lie algebra
 
@@ -289,8 +347,6 @@ class SE2(SO2):
         :type S: numpy ndarray
         :param check: check that passed matrix is valid se(2), default True
         :type check: bool
-        :param se2: input is an se(2) matrix (default True)
-        :type se2: bool
         :return: homogeneous transform matrix
         :rtype: SE2 instance
 
@@ -299,18 +355,18 @@ class SE2(SO2):
         - ``SE2.Exp(t)`` is an SE(2) rotation defined by a 3-element twist
           vector array_like (the unique elements of the se(2) skew-symmetric matrix)
         - ``SE2.Exp(T)`` is a sequence of SE(2) rigid-body motions defined by an Nx3 matrix of twist vectors, one per row.
-          
+
         Note:
-            
+
         - an input 3x3 matrix is ambiguous, it could be the first or third case above. In this case the argument ``se2`` is the decider.
 
         :seealso: :func:`spatialmath.base.transforms2d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if isinstance(S, np.ndarray) and S.shape[1] == 3 and not se2:
+        if isinstance(S, (list, tuple)):
             return cls([tr.trexp2(s) for s in S])
         else:
             return cls(tr.trexp2(S), check=False)
-        
+
     @staticmethod
     def isvalid(x):
         """
@@ -345,17 +401,17 @@ class SE2(SO2):
             return self.A[:2, 2]
         else:
             return np.array([x[:2, 2] for x in self.A])
-    
+
     def xyt(self):
         r"""
         SE(2) as a configuration vector
-        
-        :return: An array :math:`[x, y, \theta]`
-        :rtype: numpy.ndarray
-        
-        ``x.xyt`` is the rigidbody motion in minimal form as a translation and rotation expressed 
-        in vector form as :math:`[x, y, \theta]`.  If ``len(x)`` is:
-            
+
+        :return: An array :math:`[x, y, \theta]` :rtype: numpy.ndarray
+
+        ``x.xyt`` is the rigidbody motion in minimal form as a translation and
+        rotation expressed in vector form as :math:`[x, y, \theta]`.  If
+        ``len(x)`` is:
+
         - 1, return an ndarray with shape=(3,)
         - N>1, return an ndarray with shape=(N,3)
         """
@@ -374,7 +430,7 @@ class SE2(SO2):
         :rtype: SE2
 
         Notes:
-            
+
             - for elements of SE(2) this takes into account the matrix structure :math:`T^{-1} = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
             - if `x` contains a sequence, returns an `SE2` with a sequence of inverses
 
@@ -383,16 +439,16 @@ class SE2(SO2):
             return SE2(tr.rt2tr(self.R.T, -self.R.T @ self.t))
         else:
             return SE2([tr.rt2tr(x.R.T, -x.R.T @ x.t) for x in self])
-        
+
     def SE3(self, z=0):
         """
         Create SE(3) from SE(2)
-        
+
         :param z: default z coordinate, defaults to 0
         :type z: float
         :return: SE(2) with same rotation but zero translation
         :rtype: SE2 instance
-        
+
         "Lifts" 2D rigid-body motion to 3D, rotation in the xy-plane (about the z-axis) and
         z-coordinate is settable.
 
@@ -404,10 +460,10 @@ class SE2(SO2):
             y[2, 3] = z
             return y
         return p3.SE3([lift3(x) for x in self])
-    
+
 
 if __name__ == '__main__':  # pragma: no cover
 
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose2d.py").read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose2d.py").read())  # pylint: disable=exec-used

@@ -1,6 +1,19 @@
 """
-Provide quaternion and unit-quaternion abstractions as classes
+Classes to abstract quaternions and unit-quaternions.
+
+To use::
+
+    from spatialmath.quaternion import *
+    T = UnitQuaternion.Rx(0.3)
+
+    import spatialmath as sm
+    T = sm.UnitQuaternion.Rx(0.3)
+
+ .. inheritance-diagram:: spatialmath.quaternion
+    :top-classes: collections.UserList
+    :parts: 1
 """
+# pylint: disable=invalid-name
 
 import math
 import numpy as np
@@ -26,7 +39,7 @@ class Quaternion(SMUserList):
        :parts: 1
     """
 
-    def __init__(self, s: Any =None, v=None, check=True):
+    def __init__(self, s: Any = None, v=None, check=True):
         r"""
         Construct a new quaternion
 
@@ -78,12 +91,12 @@ class Quaternion(SMUserList):
             if isinstance(s[0], np.ndarray):
                 if check:
                     assert argcheck.isvectorlist(s, 4), \
-                           'list must comprise 4-vectors'
+                        'list must comprise 4-vectors'
                 self.data = s
             elif isinstance(s[0], self.__class__):
                 # possibly a list of objects of same type
                 assert all(map(lambda x: isinstance(x, self.__class__), s)), \
-                       'all elements of list must have same type'
+                    'all elements of list must have same type'
                 self.data = [x._A for x in s]
             else:
                 raise ValueError('incorrect list')
@@ -96,6 +109,28 @@ class Quaternion(SMUserList):
 
         else:
             raise ValueError('bad argument to Quaternion constructor')
+
+    @property
+    def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (4,)
+        :rtype: tuple
+        """
+        return (4,)
+
+    @staticmethod
+    def isvalid(x):
+        """
+        Test if matrix is valid quaternion
+
+        :param x: matrix to test
+        :type x: numpy.ndarray
+        :return: true of the matrix is 4x1.
+        :rtype: bool
+        """
+        return x.shape == (4,)
 
     @property
     def s(self):
@@ -163,7 +198,7 @@ class Quaternion(SMUserList):
             - N>1, return a NumPy array shape=(N,4).
 
         Examples::
-        
+
             >>> Quaternion([1,2,3,4]).vec
             array([1., 2., 3., 4.])
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec
@@ -306,8 +341,8 @@ class Quaternion(SMUserList):
         """
 
         assert isinstance(other, Quaternion), \
-               'operands to inner must be Quaternion subclass'
-        return self._op2(other, quat.inner, list1=False)
+            'operands to inner must be Quaternion subclass'
+        return self.binop(other, quat.inner, list1=False)
 
     def __eq__(left, right):
         """
@@ -335,8 +370,8 @@ class Quaternion(SMUserList):
         :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
         """
         assert isinstance(left, type(right)), \
-               'operands to == are of different types'
-        return left._op2(right, quat.isequal, list1=False)
+            'operands to == are of different types'
+        return left.binop(right, quat.isequal, list1=False)
 
     def __ne__(left, right):
         """
@@ -362,7 +397,7 @@ class Quaternion(SMUserList):
         :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
         """
         assert isinstance(left, type(right)), 'operands to == are of different types'
-        return left._op2(right, lambda x, y: not quat.isequal(x, y), list1=False)
+        return left.binop(right, lambda x, y: not quat.isequal(x, y), list1=False)
 
     def __mul__(left, right):
         """
@@ -428,7 +463,7 @@ class Quaternion(SMUserList):
         """
         if isinstance(right, left.__class__):
             # quaternion * [unit]quaternion case
-            return Quaternion(left._op2(right, quat.qqmul))
+            return Quaternion(left.binop(right, quat.qqmul))
 
         elif argcheck.isscalar(right):
             # quaternion * scalar case
@@ -516,7 +551,7 @@ class Quaternion(SMUserList):
 
         :seealso: :func:`spatialmath.base.pow`
         """
-        return self.__class__([quat.pow(q._A, n) for q in self])
+        return self.__class__([quat.qpow(q._A, n) for q in self])
 
     def __ipow__(self, n):
         """
@@ -603,7 +638,7 @@ class Quaternion(SMUserList):
         """
         # results is not in the group, return an array, not a class
         assert isinstance(left, type(right)), 'operands to + are of different types'
-        return Quaternion(left._op2(right, lambda x, y: x + y))
+        return Quaternion(left.binop(right, lambda x, y: x + y))
 
     def __sub__(left, right):
         """
@@ -664,7 +699,7 @@ class Quaternion(SMUserList):
         # results is not in the group, return an array, not a class
         # TODO allow class +/- a conformant array
         assert isinstance(left, type(right)), 'operands to - are of different types'
-        return Quaternion(left._op2(right, lambda x, y: x - y))
+        return Quaternion(left.binop(right, lambda x, y: x - y))
 
     def __neg__(self):
         r"""
@@ -684,39 +719,17 @@ class Quaternion(SMUserList):
             -0.379049 << -0.454859, -0.530669, -0.606478 >>
         """
 
-        return UnitQuaternion([-x for x in self.data])
-
-    def _op2(self, other, op, list1=True):
-
-        if len(self) == 1:
-            if len(other) == 1:
-                if list1:
-                    return [op(self._A, other._A)]
-                else:
-                    return op(self._A, other._A)
-            else:
-                #print('== 1xN')
-                return [op(self._A, x._A) for x in other]
-        else:
-            if len(other) == 1:
-                #print('== Nx1')
-                return [op(x._A, other._A) for x in self]
-            elif len(self) == len(other):
-                #print('== NxN')
-                return [op(x._A, y._A) for (x, y) in zip(self, other)]
-            else:
-                raise ValueError('length of lists to == must be same length')
-
+        return UnitQuaternion([-x for x in self.data])  # pylint: disable=invalid-unary-operand-type
 
     def __repr__(self):
         """
         Readable representation of pose (superclass method)
-        
+
         :return: readable representation of the pose as a list of arrays
         :rtype: str
-        
+
         Example::
-            
+
             >>> q = Quaternion([1,2,3,4])
             >>> q
             Quaternion(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
@@ -726,7 +739,7 @@ class Quaternion(SMUserList):
 
         """
         name = type(self).__name__
-        if len(self) ==  0:
+        if len(self) == 0:
             return name + '([])'
         elif len(self) == 1:
             # need to indent subsequent lines of the native repr string by 4 spaces
@@ -741,9 +754,9 @@ class Quaternion(SMUserList):
 
         :return: readable representation of quaternion
         :rtype: str
-        
+
         Format the quaternion elements into a single line format.  For example::
-            
+
             >>> q = Quaternion([1,2,3,4])
             >>> print(x)
             1.000000 < 2.000000, 3.000000, 4.000000 >
@@ -887,6 +900,18 @@ class UnitQuaternion(Quaternion):
     #     #return self.__class__(self.data[i])
     #     return self.__class__(self.data[i])
 
+    @staticmethod
+    def isvalid(x):
+        """
+        Test if matrix is valid unit quaternion
+
+        :param x: matrix to test
+        :type x: numpy.ndarray
+        :return: true of the matrix is 4x1.
+        :rtype: bool
+        """
+        return x.shape == (4,) and tr.isunitvec(x)
+
     @property
     def R(self):
         """
@@ -1022,7 +1047,7 @@ class UnitQuaternion(Quaternion):
             0.955336 << 0.000000, 0.000000, 0.295520 >>
         """
         angles = argcheck.getunit(argcheck.getvector(angle), unit)
-        return cls([np.r_[math.cos(a /2 ), 0, 0, math.sin(a / 2)] for a in angles], check=False)
+        return cls([np.r_[math.cos(a / 2), 0, 0, math.sin(a / 2)] for a in angles], check=False)
 
     @classmethod
     def Rand(cls, N=1):
@@ -1249,7 +1274,6 @@ class UnitQuaternion(Quaternion):
         """
         return cls(quat.v2q(vec))
 
-
     def inv(self):
         """
         Inverse of unit quaternion
@@ -1396,7 +1420,7 @@ class UnitQuaternion(Quaternion):
         """
         if isinstance(left, right.__class__):
             # quaternion * quaternion case (same class)
-            return right.__class__(left._op2(right, quat.qqmul))
+            return right.__class__(left.binop(right, quat.qqmul))
 
         elif argcheck.isscalar(right):
             # quaternion * scalar case
@@ -1479,7 +1503,7 @@ class UnitQuaternion(Quaternion):
         """
 
         assert isinstance(left, type(right)), 'operands to / are of different types'
-        return UnitQuaternion(left._op2(right, lambda x, y: tr.qqmul(x, tr.conj(y))))
+        return UnitQuaternion(left.binop(right, lambda x, y: tr.qqmul(x, tr.conj(y))))
 
     def __eq__(left, right):
         """
@@ -1509,7 +1533,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
         """
-        return left._op2(right, lambda x, y: quat.isequal(x, y, unitq=True), list1=False)
+        return left.binop(right, lambda x, y: quat.isequal(x, y, unitq=True), list1=False)
 
     def __ne__(left, right):
         """
@@ -1538,7 +1562,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
         """
-        return left._op2(right, lambda x, y: not quat.isequal(x, y, unitq=True), list1=False)
+        return left.binop(right, lambda x, y: not quat.isequal(x, y, unitq=True), list1=False)
 
     def interp(self, s=0, dest=None, shortest=False):
         """
@@ -1596,29 +1620,29 @@ class UnitQuaternion(Quaternion):
     def plot(self, *args, **kwargs):
         """
         Plot unit quaternion as a coordinate frame
-        
+
         :param `**kwargs`: plotting options
-        
+
         - ``q.plot()`` displays the orientation ``q`` as a coordinate frame in 3D.
           There are many options, see the links below.
 
         Example::
-            
+
             >>> q = UnitQuaternion.Rx(0.3)
             >>> q.plot(frame='A', color='green')
-    
+
         :seealso: :func:`~spatialmath.base.transforms3d.trplot`
         """
         tr.trplot(tr.q2r(self._A), *args, **kwargs)
-    
+
     def animate(self, *args, **kwargs):
         """
         Plot unit quaternion as an animated coordinate frame
-        
+
         :param start: initial pose, defaults to null/identity
         :type start: UnitQuaternion
         :param `**kwargs`: plotting options
-        
+
         - ``q.animate()`` displays the orientation ``q`` as a coordinate frame moving
           from the origin in either 3D.  There are 
           many options, see the links below.
@@ -1627,7 +1651,7 @@ class UnitQuaternion(Quaternion):
           many options, see the links below.
 
         Example::
-            
+
             >>> X = UnitQuaternion.Rx(0.3)
             >>> X.animate(frame='A', color='green')
             >>> X.animate(start=UnitQuaternion.Ry(0.2))
@@ -1661,7 +1685,7 @@ class UnitQuaternion(Quaternion):
               to the optic axis and x-axis parallel to the pixel rows.
 
         If ``len(x)`` is:
-            
+
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
@@ -1680,8 +1704,7 @@ class UnitQuaternion(Quaternion):
         else:
             return np.array([tr.tr2rpy(q.R, unit=unit, order=order) for q in self])
 
-
-    def eul(self, unit='rad', order='zyx'):
+    def eul(self, unit='rad'):
         r"""
         Unit quaternion as Euler angles
 
@@ -1695,7 +1718,7 @@ class UnitQuaternion(Quaternion):
         rotations about the Z, Y, Z axes respectively.
 
         If ``len(x)`` is:
-            
+
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
@@ -1716,7 +1739,6 @@ class UnitQuaternion(Quaternion):
             return tr.tr2eul(self.R, unit=unit)
         else:
             return np.array([tr.tr2eul(q.R, unit=unit) for q in self])
-
 
     def angvec(self, unit='rad'):
         r"""
@@ -1786,4 +1808,4 @@ if __name__ == '__main__':  # pragma: no cover
 
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_quaternion.py").read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_quaternion.py").read())  # pylint: disable=exec-used

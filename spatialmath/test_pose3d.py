@@ -11,16 +11,17 @@ from spatialmath.pose3d import *
 from spatialmath.base import *
 from spatialmath.base import argcheck
 import spatialmath as sm
-
+from spatialmath.super_pose import SMPose
+from spatialmath.twist import SMTwist
 
 def array_compare(x, y):
-    if isinstance(x, sm.SMPose):
+    if isinstance(x, SMPose):
         x = x.A
-    if isinstance(y, sm.SMPose):
+    if isinstance(y, SMPose):
         y = y.A
-    if isinstance(x, sm.SMTwist):
+    if isinstance(x, SMTwist):
         x = x.S
-    if isinstance(y, sm.SMTwist):
+    if isinstance(y, SMTwist):
         y = y.S
     nt.assert_array_almost_equal(x, y)
 
@@ -128,6 +129,10 @@ class TestSO3(unittest.TestCase):
         R2 = SO3(R)
         R = SO3.Ry(pi / 2)
         array_compare(R2, rotx(pi / 2))
+
+    def test_shape(self):
+        a = SO3()
+        self.assertEqual(a._A.shape, a.shape)
 
     def test_about(self):
         R = SO3()
@@ -570,6 +575,7 @@ class TestSO3(unittest.TestCase):
         # .T
         pass
 
+# ============================== SE3 =====================================#
 
 class TestSE3(unittest.TestCase):
 
@@ -686,6 +692,10 @@ class TestSE3(unittest.TestCase):
         R2 = SE3(R)
         R = SE3.Ry(pi / 2)
         array_compare(R2, trotx(pi / 2))
+
+    def test_shape(self):
+        a = SE3()
+        self.assertEqual(a._A.shape, a.shape)
 
     def test_listpowers(self):
         R = SE3()

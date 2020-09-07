@@ -11,15 +11,17 @@ from spatialmath.pose2d import *
 from spatialmath.base import *
 import spatialmath.base.argcheck as argcheck
 import spatialmath as sm
+from spatialmath.super_pose import SMPose
+from spatialmath.twist import SMTwist
 
 def array_compare(x, y):
-    if isinstance(x, sm.SMPose):
+    if isinstance(x, SMPose):
         x = x.A
-    if isinstance(y, sm.SMPose):
+    if isinstance(y, SMPose):
         y = y.A
-    if isinstance(x, sm.SMTwist):
+    if isinstance(x, SMTwist):
         x = x.S
-    if isinstance(y, sm.SMTwist):
+    if isinstance(y, SMTwist):
         y = y.S
     nt.assert_array_almost_equal(x, y)
 
@@ -38,9 +40,6 @@ class TestSO2(unittest.TestCase):
         self.assertIsInstance(x, SO2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.eye(2,2))
-        
-
-        
         
         ## from angle
         
@@ -92,13 +91,26 @@ class TestSO2(unittest.TestCase):
         s = str( SO2())
         self.assertIsInstance(s, str)
     
-    
-    def test_staticconstructors(self):
+    def test_shape(self):
+        a = SO2()
+        self.assertEqual(a._A.shape, a.shape)
 
-        pass
-        
-        ## exponential
-        # array_compare(SO2.exp( skew(0.3)).R, rot2(0.3))
+    def test_constructor_Exp(self):
+
+        array_compare(SO2.Exp( skew(0.3)).R, rot2(0.3))
+        array_compare(SO2.Exp( 0.3).R, rot2(0.3))
+
+        x = SO2.Exp([0, 0.3, 1])
+        self.assertEqual(len(x), 3)
+        array_compare(x[0], rot2(0))
+        array_compare(x[1], rot2(0.3))
+        array_compare(x[2], rot2(1))
+
+        x = SO2.Exp([skew(x) for x in [0, 0.3, 1]])
+        self.assertEqual(len(x), 3)
+        array_compare(x[0], rot2(0))
+        array_compare(x[1], rot2(0.3))
+        array_compare(x[2], rot2(1))
     
     def test_isa(self):
         
@@ -226,6 +238,7 @@ class TestSO2(unittest.TestCase):
         # R.animate(start=R2)
         
         
+# ============================== SE2 =====================================#
 
 class TestSE2(unittest.TestCase):
 
@@ -298,7 +311,10 @@ class TestSE2(unittest.TestCase):
         array_compare(x[0], T1)
         array_compare(x[1], T2)
 
-            
+    def test_shape(self):
+        a = SE2()
+        self.assertEqual(a._A.shape, a.shape)
+
     def test_concat(self):
         x = SE2()
         xx = SE2([x, x, x, x])
@@ -307,14 +323,22 @@ class TestSE2(unittest.TestCase):
         self.assertEqual(len(xx), 4)
     
     
-    def test_staticconstructors(self):
-        
-        ## exponential
-        array_compare(SE2.Exp(np.zeros((3,3))), np.eye(3,3))
-        t = [1, 2]
-        array_compare(SE2.Exp(skewa(np.r_[t, 0])), transl2(t))
-    
-    
+    def test_constructor_Exp(self):
+
+        array_compare(SE2.Exp(skewa([1,2,0])), transl2(1,2))
+        array_compare(SE2.Exp(np.r_[1,2,0]), transl2(1,2))
+
+        x = SE2.Exp([(1,2,0), (3,4,0), (5,6,0)])
+        self.assertEqual(len(x), 3)
+        array_compare(x[0], transl2(1,2))
+        array_compare(x[1], transl2(3,4))
+        array_compare(x[2], transl2(5,6))
+
+        x = SE2.Exp([skewa(x) for x in [(1,2,0), (3,4,0), (5,6,0)]])
+        self.assertEqual(len(x), 3)
+        array_compare(x[0], transl2(1,2))
+        array_compare(x[1], transl2(3,4))
+        array_compare(x[2], transl2(5,6))
     
     def test_isa(self):
         
@@ -419,9 +443,9 @@ class TestSE2(unittest.TestCase):
     def test_defs(self):
         
         # log
-        x = SE2.Exp([2, 3, 0.5])
-        array_compare(x.log(), np.array([[0, -0.5, 2], [0.5, 0, 3], [0, 0, 0]]))
-    
+        # x = SE2.Exp([2, 3, 0.5])
+        # array_compare(x.log(), np.array([[0, -0.5, 2], [0.5, 0, 3], [0, 0, 0]]))
+        pass
     
     def test_conversions(self):
         
@@ -476,13 +500,11 @@ class TestSE2(unittest.TestCase):
         
         T1.plot(block=False, dims=[-2,2])
         
-        # T1.animate(repeat=False, dims=[-2,2])
-        # T1.animate(T0=T2, repeat=False, dims=[-2,2])
+        T1.animate(repeat=False, dims=[-2,2], nframes=10)
+        T1.animate(T0=T2, repeat=False, dims=[-2,2], nframes=10)
 
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
-    R = SO2( 0.3)
-    R2 = SO2(0.6)
-    R.animate()
+
     unittest.main(buffer=True)
