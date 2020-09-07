@@ -748,6 +748,23 @@ class Quaternion(SMUserList):
             # format this as a list of ndarrays
             return name + '([\n  ' + ',\n  '.join([v.__repr__() for v in self.data]) + ' ])'
 
+    def _repr_pretty_(self, p, cycle):
+        """
+        Pretty string for IPython (superclass method)
+
+        :param p: pretty printer handle (ignored)
+        :param cycle: pretty printer flag (ignored)
+
+        Print colorized output when variable is displayed in IPython, ie. on a line by
+        itself.
+
+        Example::
+
+            In [1]: x
+
+        """
+        print(self.__str__())
+
     def __str__(self):
         """
         Pretty string representation of quaternion
