@@ -135,8 +135,8 @@ def getvector(v, dim=None, out='array'):
         if _sympy:
             if any([isinstance(x, sympy.Expr) for x in v]):
                 dt = None
-            else:
-                dt = np.float64
+        else:
+            dt = np.float64
         if dim is not None and v and len(v) != dim:
             raise ValueError("incorrect vector length")
         if out == 'sequence':
@@ -331,5 +331,5 @@ def isvectorlist(x, n):
 
 if __name__ == '__main__':
     import pathlib
-
+    
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_argcheck.py").read())  # pylint: disable=exec-used
