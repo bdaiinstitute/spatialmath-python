@@ -31,7 +31,7 @@ def isscalar(x):
     return isinstance(x, _numtypes)
 
 
-def assertmatrix(m, shape):
+def assertmatrix(m, shape=None):
     """
     Assert that argument is a 2D matrix
 
@@ -40,17 +40,27 @@ def assertmatrix(m, shape):
     :type shape: 2-tuple
     :raises: AssertionError
 
-    - ``assertsmatrix(A, (2,3))`` raises an ``AssertionError`` if ``A`` is not
+    - ``assertsmatrix(A, (2,3))`` raises an ``ValueError`` if ``A`` is not
       a 2x3 NumPy ndarray, ie. shape=(2,3).
-    - ``assertsmatrix(A, (2,None))`` raises an ``AssertionError`` if ``A`` is not
+    - ``assertsmatrix(A, (2,None))`` raises an ``ValueError`` if ``A`` is not
       a 2xN NumPy ndarray, ie. shape=(2,N).
-    - ``assertsmatrix(A, (None,3))`` raises an ``AssertionError`` if ``A`` is not
+    - ``assertsmatrix(A, (None,3))`` raises an ``ValueError`` if ``A`` is not
       a Nx3 NumPy ndarray, ie. shape=(N,3).
 
     :seealso: :func:`ismatrix`
     """
-    assert ismatrix(m, shape)
 
+    if not isinstance(m, np.ndarray):
+        raise TypeError("input must be a numpy ndarray")
+    if m.dtype.kind == 'c':
+        raise TypeError("input must be a real numpy ndarray")
+    if shape is not None:
+        if len(shape) != len(m.shape):
+            raise ValueError("incorrect number of matrix dimensions, expecting {}, got {}".format(shape, m.shape))
+        if shape[0] is not None and shape[0] > 0 and shape[0] != m.shape[0]:
+            raise ValueError("incorrect matrix dimensions, expecting {}, got {}".format(shape, m.shape))
+        if len(shape) > 1 and shape[1] is not None and shape[1] > 0 and shape[1] != m.shape[1]:
+            raise ValueError("incorrect matrix dimensions, expecting {}, got {}".format(shape, m.shape))
 
 def ismatrix(m, shape):
     """
@@ -78,15 +88,15 @@ def ismatrix(m, shape):
         return False
     return True
 
-# def verifymatrix(m, shape):
-#     if not isinstance(m, np.ndarray):
-#         raise TypeError("input must be a numpy ndarray")
+def verifymatrix(m, shape):
+    if not isinstance(m, np.ndarray):
+        raise TypeError("input must be a numpy ndarray")
 
-#     if not m.shape == shape:
-#         raise ValueError("incorrect matrix dimensions, "
-#                          "expecting {0}".format(shape))
+    if not m.shape == shape:
+        raise ValueError("incorrect matrix dimensions, "
+                         "expecting {0}".format(shape))
 
- # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
+# and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 
 def getvector(v, dim=None, out='array'):
