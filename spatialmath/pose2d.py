@@ -294,7 +294,8 @@ class SE2(SO2):
             elif y is not None and theta is not None:
                 # SE2(x, y, theta)
                 self.data = [tr.trot2(theta, t=[x, y], unit=unit)]
-            elif y is None and theta is None:
+            elif y is None and theta is None and argcheck.isnumberlist(x):
+                # SE2(arg)
                 arg = argcheck.getvector(x)
                 if len(arg) == 1:
                     self.data = [tr.trot2(arg[0], unit=unit)]
@@ -306,6 +307,8 @@ class SE2(SO2):
                     self.data = [tr.trot2(arg[2], t=arg[:2], unit=unit)]
                 else:
                     super().arghandler(x, check=check)
+            else:
+                self.arghandler(x, check=check)
         else:
             raise ValueError('bad arguments to constructor')
 
