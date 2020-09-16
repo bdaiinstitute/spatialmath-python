@@ -557,7 +557,7 @@ class SMPose(SMUserList):
         """
         return self._string(color=True)
 
-    def _string(self, color=False, tol=10):
+    def _string(self, color=False, tol=500):
         """
         Pretty print the matrix value
 
