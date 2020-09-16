@@ -99,7 +99,7 @@ def verifymatrix(m, shape):
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 
-def getvector(v, dim=None, out='array'):
+def getvector(v, dim=None, out='array', dtype=np.float64):
     """
     Return a vector value
 
@@ -108,6 +108,8 @@ def getvector(v, dim=None, out='array'):
     :type dim: int or None
     :param out: output format, default is 'array'
     :type out: str
+    :param dtype: datatype for NumPy array return (default np.float64)
+    :type dtype: NumPy type
     :return: vector value in specified format
 
     The passed vector can be any of:
@@ -126,13 +128,17 @@ def getvector(v, dim=None, out='array'):
     'row'       row vector, a 2D NumPy array, shape=(1,N)
     'col'       column vector, 2D NumPy array, shape=(N,1)
     ==========  ===============================================
+
+    For 'array', 'row' or 'col' the NumPy dtype defaults to ``np.float64`` but
+    can be overriden using the ``dtype`` argument.
     """
     if isinstance(v, (int, np.int64, float)) or (
             _sympy and isinstance(v, sympy.Expr)):  # handle scalar case
         v = [v]
 
     if isinstance(v, (list, tuple)):
-        dt = np.float64  # return np arrays of this type
+        # list or tuple was passed in
+        dt = dtype
         if _sympy:
             if any([isinstance(x, sympy.Expr) for x in v]):
                 dt = None
@@ -149,6 +155,7 @@ def getvector(v, dim=None, out='array'):
             return np.array(v, dtype=dt).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
+
     elif isinstance(v, np.ndarray):
         s = v.shape
         if dim is not None:
@@ -158,7 +165,7 @@ def getvector(v, dim=None, out='array'):
         v = v.flatten()
 
         if v.dtype.kind != 'O':
-            dt = np.float64
+            dt = dtype
 
         if out == 'sequence':
             return list(v.flatten())
