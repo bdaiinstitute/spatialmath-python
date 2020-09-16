@@ -38,7 +38,7 @@ upload: .FORCE
 	twine upload dist/*
 
 clean: .FORCE
-	(cd docsrc; make clean)
+	(cd docs; make clean)
 	-rm -r *.egg-info
 	-rm -r dist
 
