@@ -253,7 +253,7 @@
 <span class="c1"># and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive</span>
 
 
-<div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a vector value</span>
 
@@ -262,6 +262,8 @@
 <span class="sd">    :type dim: int or None</span>
 <span class="sd">    :param out: output format, default is &#39;array&#39;</span>
 <span class="sd">    :type out: str</span>
+<span class="sd">    :param dtype: datatype for NumPy array return (default np.float64)</span>
+<span class="sd">    :type dtype: NumPy type</span>
 <span class="sd">    :return: vector value in specified format</span>
 
 <span class="sd">    The passed vector can be any of:</span>
@@ -280,13 +282,17 @@
 <span class="sd">    &#39;row&#39;       row vector, a 2D NumPy array, shape=(1,N)</span>
 <span class="sd">    &#39;col&#39;       column vector, 2D NumPy array, shape=(N,1)</span>
 <span class="sd">    ==========  ===============================================</span>
+
+<span class="sd">    For &#39;array&#39;, &#39;row&#39; or &#39;col&#39; the NumPy dtype defaults to ``np.float64`` but</span>
+<span class="sd">    can be overriden using the ``dtype`` argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
             <span class="n">_sympy</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Expr</span><span class="p">)):</span>  <span class="c1"># handle scalar case</span>
         <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>  <span class="c1"># return np arrays of this type</span>
+        <span class="c1"># list or tuple was passed in</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="k">if</span> <span class="n">_sympy</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Expr</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]):</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
@@ -303,6 +309,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid output specifier&quot;</span><span class="p">)</span>
+
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -312,7 +319,7 @@
         <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">dtype</span>
 
         <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
@@ -502,7 +509,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 08-Sep-2020.
+        Last updated on 16-Sep-2020.
       </span>
 
     </p>
