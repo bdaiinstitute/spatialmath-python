@@ -68,14 +68,14 @@ class SMUserList(UserList, ABC):
 
     @staticmethod
     @abstractstaticmethod
-    def isvalid(x):
+    def isvalid(x, check=True):
         pass
 
     def _import(self, x, check=True):
-        if self.isvalid(x):
+        if self.isvalid(x, check=check):
             return x
         else:
-            raise TypeError('bad type passed')
+            raise TypeError('invalid type or value passed to constructor')
 
     @classmethod
     def Empty(cls):
@@ -136,7 +136,7 @@ class SMUserList(UserList, ABC):
 
         if isinstance(arg, np.ndarray):
             # it's a numpy array
-            self.data = [self._import(arg)]
+            self.data = [self._import(arg, check=check)]
 
         elif type(arg) == type(self):
             # it's an object of same type, do copy

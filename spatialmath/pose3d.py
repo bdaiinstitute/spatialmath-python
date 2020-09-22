@@ -264,10 +264,10 @@ class SO3(SMPose):
             [self.R, tr.skew(self.t) @ self.R],
             [np.zeros((3, 3)), self.R]
             ])
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
 
     @staticmethod
-    def isvalid(x):
+    def isvalid(x, check=True):
         """
         Test if matrix is valid SO(3)
 
@@ -682,10 +682,10 @@ class SE3(SO3):
 
     def Twist3(self):
         return sm.Twist3(self.log(twist=True))
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
 
     @staticmethod
-    def isvalid(x):
+    def isvalid(x, check=True):
         """
         Test if matrix is valid SE(3)
 
@@ -697,9 +697,9 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transform3d.ishom`
         """
-        return tr.ishom(x, check=True)
+        return tr.ishom(x, check=check)
 
-# ---------------- variant constructors ---------------------------------- #
+    # ---------------- variant constructors ---------------------------------- #
 
     @classmethod
     def Rx(cls, theta, unit='rad'):
