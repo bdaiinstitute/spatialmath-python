@@ -296,7 +296,7 @@ def transl(x, y=None, z=None):
         ValueError('bad argument')
 
 
-def ishom(T, check=False, tol=10):
+def ishom(T, check=False, tol=100):
     """
     Test if matrix belongs to SE(3)
 
@@ -316,7 +316,7 @@ def ishom(T, check=False, tol=10):
     return isinstance(T, np.ndarray) and T.shape == (4, 4) and (not check or (trn.isR(T[:3, :3], tol=tol) and np.all(T[3, :] == np.array([0, 0, 0, 1]))))
 
 
-def isrot(R, check=False, tol=10):
+def isrot(R, check=False, tol=100):
     """
     Test if matrix belongs to SO(3)
 
