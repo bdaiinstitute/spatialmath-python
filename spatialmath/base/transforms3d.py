@@ -188,10 +188,9 @@ def trotx(theta, unit="rad", t=None):
 
     :seealso: :func:`~rotx`
     """
-    T = np.pad(rotx(theta, unit), (0, 1), mode='constant')
+    T = trn.r2t(rotx(theta, unit))
     if t is not None:
         T[:3, 3] = argcheck.getvector(t, 3, 'array')
-    T[3, 3] = 1.0
     return T
 
 
@@ -216,10 +215,9 @@ def troty(theta, unit="rad", t=None):
 
     :seealso: :func:`~roty`
     """
-    T = np.pad(roty(theta, unit), (0, 1), mode='constant')
+    T = trn.r2t(roty(theta, unit))
     if t is not None:
         T[:3, 3] = argcheck.getvector(t, 3, 'array')
-    T[3, 3] = 1.0
     return T
 
 
@@ -244,10 +242,9 @@ def trotz(theta, unit="rad", t=None):
 
     :seealso: :func:`~rotz`
     """
-    T = np.pad(rotz(theta, unit), (0, 1), mode='constant')
+    T = trn.r2t(rotz(theta, unit))
     if t is not None:
         T[:3, 3] = argcheck.getvector(t, 3, 'array')
-    T[3, 3] = 1.0
     return T
 
 # ---------------------------------------------------------------------------------------#
