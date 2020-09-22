@@ -149,9 +149,9 @@ class SO3(SMPose):
         Returns the inverse, which for elements of SO(3) is the transpose.
         """
         if len(self) == 1:
-            return SO3(self.A.T)
+            return SO3(self.A.T, check=False)
         else:
-            return SO3([x.T for x in self.A])
+            return SO3([x.T for x in self.A], check=False)
 
     def eul(self, unit='deg'):
         r"""
@@ -648,7 +648,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transform3d.trinv`
         """
         if len(self) == 1:
-            return SE3(tr.trinv(self.A))
+            return SE3(tr.trinv(self.A), check=False)
         else:
             return SE3([tr.trinv(x) for x in self.A], check=False)
 
