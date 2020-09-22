@@ -32,7 +32,7 @@ import spatialmath as sm
 # ============================== SO3 =====================================#
 
 
-class SO3(SMPose):
+class SO3(SMPose):  
     """
     SO(3) subclass
 
@@ -67,7 +67,7 @@ class SO3(SMPose):
         else:
             super().arghandler(arg, check=check)
 
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
     @property
     def shape(self):
         """
@@ -135,7 +135,7 @@ class SO3(SMPose):
         """
         return self.A[:3, 2]
 
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
 
     def inv(self):
         """
@@ -281,7 +281,7 @@ class SO3(SMPose):
         """
         return tr.isrot(x, check=True)
 
-# ---------------- variant constructors ---------------------------------- #
+    # ---------------- variant constructors ---------------------------------- #
 
     @classmethod
     def Rx(cls, theta, unit='rad'):
@@ -582,7 +582,6 @@ class SE3(SO3):
         - ``SE3([X1, X2, ... XN])`` where each Xi is an SE3 instance, is an SE3 instance containing N rotations.
         """
         super().__init__()  # activate the UserList semantics
-
         if x is None:
             # SE3()
             # empty constructor
@@ -602,7 +601,7 @@ class SE3(SO3):
         else:
             raise ValueError('bad argument to constructor')
 
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
     @property
     def shape(self):
         """
@@ -633,7 +632,7 @@ class SE3(SO3):
         else:
             return np.array([x[:3, 3] for x in self.A])
 
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
 
     def inv(self):
         r"""
