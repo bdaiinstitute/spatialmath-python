@@ -74,19 +74,17 @@ class SO2(SMPose):
         """
         super().__init__()  # activate the UserList semantics
 
-        if arg is None:
-            # empty constructor
-            if isinstance(self, SO2):
-                self.data = [np.eye(2)]
-        elif argcheck.isvector(arg):
-            # SO2(value)
-            # SO2(list of values)
-            self.data = [tr.rot2(x, unit) for x in argcheck.getvector(arg)]
+        if  super().arghandler(arg, check=check):
+            return
 
-        elif isinstance(arg, np.ndarray) and arg.shape == (2, 2):
-            self.data = [arg]
+        elif argcheck.isscalar(arg):
+            self.data = [tr.rot2(arg)]
+            
         else:
-            super().arghandler(arg, check=check)
+            raise ValueError('bad argument to constructor')
+
+    def _identity(self):
+        return np.eye(2)
 
     @property
     def shape(self):
@@ -282,35 +280,39 @@ class SE2(SO2):
         """
         super().__init__()  # activate the UserList semantics
 
-        if x is None and y is None and theta is None:
-            # SE2()
-            # empty constructor
-            self.data = [np.eye(3)]
+        if y is None and theta is None:
+            # just one argument passed
+
+            if super().arghandler(x, check=check):
+                return
+
+            elif argcheck.isscalar(x):
+                self.data = [tr.rot2(arg)]
+            elif len(arg) == 2:
+                # SE2([x,y])
+                self.data = [tr.transl2(arg)]
+            elif len(arg) == 3:
+                # SE2([x,y,theta])
+                self.data = [tr.trot2(arg[2], t=arg[:2], unit=unit)]
+
+            else:
+                raise ValueError('bad argument to constructor')
 
         elif x is not None:
+            
             if y is not None and theta is None:
                 # SE2(x, y)
                 self.data = [tr.transl2(x, y)]
+        
             elif y is not None and theta is not None:
-                # SE2(x, y, theta)
-                self.data = [tr.trot2(theta, t=[x, y], unit=unit)]
-            elif y is None and theta is None and argcheck.isnumberlist(x):
-                # SE2(arg)
-                arg = argcheck.getvector(x)
-                if len(arg) == 1:
-                    self.data = [tr.trot2(arg[0], unit=unit)]
-                elif len(arg) == 2:
-                    # SE2([x,y])
-                    self.data = [tr.transl2(arg)]
-                elif len(arg) == 3:
-                    # SE2([x,y,theta])
-                    self.data = [tr.trot2(arg[2], t=arg[:2], unit=unit)]
-                else:
-                    super().arghandler(x, check=check)
-            else:
-                self.arghandler(x, check=check)
+                    # SE2(x, y, theta)
+                    self.data = [tr.trot2(theta, t=[x, y], unit=unit)]
+
         else:
             raise ValueError('bad arguments to constructor')
+
+    def _identity(self):
+        return np.eye(2)
 
     @property
     def shape(self):
