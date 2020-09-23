@@ -61,10 +61,10 @@ class SO2(SMPose):
         :rtype: SO2 instance
 
         - ``SO2()`` is an SO2 instance representing a null rotation -- the identity matrix.
-        - ``SO2(theta)`` is an SO2 instance representing a rotation by ``theta`` radians.  If ``theta`` is array_like
-          `[theta1, theta2, ... thetaN]` then an SO2 instance containing a sequence of N rotations.
-        - ``SO2(theta, unit='deg')`` is an SO2 instance representing a rotation by ``theta`` degrees.  If ``theta`` is array_like
-          `[theta1, theta2, ... thetaN]` then an SO2 instance containing a sequence of N rotations.
+        - ``SO2(θ)`` is an SO2 instance representing a rotation by ``θ`` radians.  If ``θ`` is array_like
+          `[θ1, θ2, ... θN]` then an SO2 instance containing a sequence of N rotations.
+        - ``SO2(θ, unit='deg')`` is an SO2 instance representing a rotation by ``θ`` degrees.  If ``θ`` is array_like
+          `[θ1, θ2, ... θN]` then an SO2 instance containing a sequence of N rotations.
         - ``SO2(R)`` is an SO2 instance with rotation described by the SO(2) matrix R which is a 2x2 numpy array.  If ``check``
           is ``True`` check the matrix belongs to SO(2).
         - ``SO2([R1, R2, ... RN])`` is an SO2 instance containing a sequence of N rotations, each described by an SO(2) matrix
@@ -251,22 +251,22 @@ class SE2(SO2):
 
         - ``SE2()`` is an SE2 instance representing a null motion -- the
           identity matrix
-        - ``SE2(theta)`` is an SE2 instance representing a pure rotation of
-          ``theta`` radians
-        - ``SE2(theta, unit='deg')`` as above but ``theta`` in degrees
+        - ``SE2(θ)`` is an SE2 instance representing a pure rotation of
+          ``θ`` radians
+        - ``SE2(θ, unit='deg')`` as above but ``θ`` in degrees
         - ``SE2(x, y)`` is an SE2 instance representing a pure translation of
           (``x``, ``y``)
         - ``SE2(t)`` is an SE2 instance representing a pure translation of
           (``x``, ``y``) where``t``=[x,y] is a 2-element array_like
-        - ``SE2(x, y, theta)`` is an SE2 instance representing a translation of
-          (``x``, ``y``) and a rotation of ``theta`` radians
-        - ``SE2(x, y, theta, unit='deg')`` as above but ``theta`` in degrees
-        - ``SE2(t)`` where ``t``=[x,y] is a 3-element array_like, is an SE2
+        - ``SE2(x, y, θ)`` is an SE2 instance representing a translation of
+          (``x``, ``y``) and a rotation of ``θ`` radians
+        - ``SE2(x, y, θ, unit='deg')`` as above but ``θ`` in degrees
+        - ``SE2(t)`` where ``t``=[x,y] is a 2-element array_like, is an SE2
           instance representing a pure translation of (``x``, ``y``)
-        - ``SE2(t)`` where ``t``=[x,y] is a 3-element array_like, is an SE2
+        - ``SE2(q)`` where ``q``=[x,y,θ] is a 3-element array_like, is an SE2
           instance representing a translation of (``x``, ``y``) and a rotation
-          of ``theta`` radians
-        - ``SE2(t, unit='deg')`` as above but ``theta`` in degrees
+          of ``θ`` radians
+        - ``SE2(t, unit='deg')`` as above but ``θ`` in degrees
         - ``SE2(T)`` is an SE2 instance with rigid-body motion described by the
           SE(2) matrix T which is a 3x3 numpy array.  If ``check`` is ``True``
           check the matrix belongs to SE(2).
