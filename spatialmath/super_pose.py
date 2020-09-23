@@ -632,7 +632,7 @@ class SMPose(SMUserList):
             # sequence case
             for count, X in enumerate(self.data):
                 # add separator lines and the index
-                output_str += fg('green') + '[{:d}] =\n'.format(count) + attr(0) + mformat(self, X)
+                output_str += FG('green') + '[{:d}] =\n'.format(count) + ATTR(0) + mformat(self, X)
 
         return output_str
 
