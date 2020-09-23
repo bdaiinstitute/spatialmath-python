@@ -101,7 +101,7 @@ def rot2(theta, unit='rad'):
     R = np.array([
         [ct, -st],
         [st, ct]])
-    if not isinstance(theta, sym.Symbol):
+    if not _issymbol(theta):
         R = R.round(15)
     return R
 
