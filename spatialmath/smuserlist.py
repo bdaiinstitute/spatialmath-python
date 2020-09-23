@@ -72,7 +72,7 @@ class SMUserList(UserList, ABC):
         pass
 
     def _import(self, x, check=True):
-        if self.isvalid(x, check=check):
+        if not check or self.isvalid(x, check=check):
             return x
         else:
             raise TypeError('invalid type or value passed to constructor')
@@ -134,14 +134,18 @@ class SMUserList(UserList, ABC):
             Twist3(SE3())
         """
 
-        if isinstance(arg, np.ndarray):
+        if arg is None:
+            # empty constructor
+            self.data = [self._identity()]
+
+        elif isinstance(arg, np.ndarray):
             # it's a numpy array
             self.data = [self._import(arg, check=check)]
 
         elif type(arg) == type(self):
             # it's an object of same type, do copy
             self.data = arg.data.copy()
-            
+
         elif isinstance(arg, list):
             # it's a list of things
             if isinstance(arg[0], np.ndarray):
@@ -164,8 +168,12 @@ class SMUserList(UserList, ABC):
             except AttributeError:
                 raise ValueError('argument has no conversion method to this type') from None
             self.data = [converter(arg).A]
+
         else:
-            raise ValueError('unknown argument')
+            # don't know this argument, let object __init__ deal with it
+            return False
+
+        return True
 
     @property
     def _A(self):

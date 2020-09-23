@@ -58,15 +58,11 @@ class SO3(SMPose):
 
         :seealso: `SMPose.pose_arghandler`
         """
-        super().__init__()  # activate the UserList semantics
+        if not super().arghandler(arg, check=check):
+            raise ValueError('bad argument to constructor')
 
-        if arg is None:
-            # empty constructor
-            if isinstance(self, SO3):
-                self.data = [np.eye(3)]  # identity rotation
-        else:
-            super().arghandler(arg, check=check)
-
+    def _identity(self):
+        return np.eye(3)
     # ------------------------------------------------------------------------ #
     @property
     def shape(self):
@@ -581,26 +577,28 @@ class SE3(SO3):
           check the matrix belongs to SE(3).
         - ``SE3([X1, X2, ... XN])`` where each Xi is an SE3 instance, is an SE3 instance containing N rotations.
         """
-        super().__init__()  # activate the UserList semantics
-        if x is None:
-            # SE3()
-            # empty constructor
-            self.data = [np.eye(4)]
-        elif y is not None and z is not None:
-            # SE3(x, y, z)
-            self.data = [tr.transl(x, y, z)]
-        elif y is None and z is None:
-            if argcheck.isvector(x, 3):
+        if y is None and z is None:
+            # just one argument passed
+
+            if super().arghandler(x, check=check):
+                return
+            elif argcheck.isvector(x, 3):
                 # SE3( [x, y, z] )
                 self.data = [tr.transl(x)]
             elif isinstance(x, np.ndarray) and x.shape[1] == 3:
                 # SE3( Nx3 )
                 self.data = [tr.transl(T) for T in x]
-            else:
-                super().arghandler(x, check=check)
-        else:
-            raise ValueError('bad argument to constructor')
 
+            else:
+                raise ValueError('bad argument to constructor')
+
+        elif y is not None and z is not None:
+            # SE3(x, y, z)
+            self.data = [tr.transl(x, y, z)]
+
+    def _identity(self):
+        return np.eye(4)
+        
     # ------------------------------------------------------------------------ #
     @property
     def shape(self):
