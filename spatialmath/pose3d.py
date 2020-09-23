@@ -284,15 +284,15 @@ class SO3(SMPose):
         """
         Construct a new SO(3) from X-axis rotation
 
-        :param theta: rotation angle about the X-axis
-        :type theta: float or array_like
+        :param θ: rotation angle about the X-axis
+        :type θ: float or array_like
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: SO(3) rotation
         :rtype: SO3 instance
 
-        - ``SE3.Rx(theta)`` is an SO(3) rotation of ``theta`` radians about the x-axis
-        - ``SE3.Rx(theta, "deg")`` as above but ``theta`` is in degrees
+        - ``SE3.Rx(θ)`` is an SO(3) rotation of ``θ`` radians about the x-axis
+        - ``SE3.Rx(θ, "deg")`` as above but ``θ`` is in degrees
 
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
@@ -314,17 +314,17 @@ class SO3(SMPose):
         """
         Construct a new SO(3) from Y-axis rotation
 
-        :param theta: rotation angle about Y-axis
-        :type theta: float or array_like
+        :param θ: rotation angle about Y-axis
+        :type θ: float or array_like
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: SO(3) rotation
         :rtype: SO3 instance
 
-        - ``SO3.Ry(theta)`` is an SO(3) rotation of ``theta`` radians about the y-axis
-        - ``SO3.Ry(theta, "deg")`` as above but ``theta`` is in degrees
+        - ``SO3.Ry(θ)`` is an SO(3) rotation of ``θ`` radians about the y-axis
+        - ``SO3.Ry(θ, "deg")`` as above but ``θ`` is in degrees
 
-        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        If ``θ`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
         Example::
@@ -345,17 +345,17 @@ class SO3(SMPose):
         """
         Construct a new SO(3) from Z-axis rotation
 
-        :param theta: rotation angle about Z-axis
-        :type theta: float or array_like
+        :param θ: rotation angle about Z-axis
+        :type θ: float or array_like
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: SO(3) rotation
         :rtype: SO3 instance
 
-        - ``SO3.Rz(theta)`` is an SO(3) rotation of ``theta`` radians about the z-axis
-        - ``SO3.Rz(theta, "deg")`` as above but ``theta`` is in degrees
+        - ``SO3.Rz(θ)`` is an SO(3) rotation of ``θ`` radians about the z-axis
+        - ``SO3.Rz(θ, "deg")`` as above but ``θ`` is in degrees
 
-        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        If ``θ`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
         Example::
@@ -689,8 +689,8 @@ class SE3(SO3):
 
         :param x: matrix to test
         :type x: numpy.ndarray
-        :return: true of the matrix is 4x4 and a valid element of SE(3), ie. it is an
-            homogeneous transformation matrix.
+        :return: true of the matrix is 4x4 and a valid element of SE(3), ie. it
+        is an homogeneous transformation matrix.
         :rtype: bool
 
         :seealso: :func:`~spatialmath.base.transform3d.ishom`
@@ -704,18 +704,18 @@ class SE3(SO3):
         """
         Create SE(3) pure rotation about the X-axis
 
-        :param theta: rotation angle about X-axis
-        :type theta: float
+        :param θ: rotation angle about X-axis
+        :type θ: float
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
-        - ``SE3.Rx(THETA)`` is an SO(3) rotation of THETA radians about the x-axis
-        - ``SE3.Rx(THETA, "deg")`` as above but THETA is in degrees
+        - ``SE3.Rx(θ)`` is an SO(3) rotation of θ radians about the x-axis
+        - ``SE3.Rx(θ, "deg")`` as above but θ is in degrees
 
-        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
-        elements.
+        If ``θ`` is an array then the result is a sequence of rotations defined
+        by consecutive elements.
         """
         return cls([tr.trotx(x, unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -724,17 +724,18 @@ class SE3(SO3):
         """
         Create SE(3) pure rotation about the Y-axis
 
-        :param theta: rotation angle about X-axis
-        :type theta: float
+        :param θ: rotation angle about X-axis
+        :type θ: float
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
-        - ``SE3.Ry(THETA)`` is an SO(3) rotation of THETA radians about the y-axis
-        - ``SE3.Ry(THETA, "deg")`` as above but THETA is in degrees
+        - ``SE3.Ry(θ)`` is an SO(3) rotation of θ radians about the y-axis
+        - ``SE3.Ry(θ, "deg")`` as above but θ is in degrees
 
-        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
+        If ``θ`` is an array then the result is a sequence of rotations defined
+        by consecutive
         elements.
         """
         return cls([tr.troty(x, unit) for x in argcheck.getvector(theta)], check=False)
@@ -744,18 +745,18 @@ class SE3(SO3):
         """
         Create SE(3) pure rotation about the Z-axis
 
-        :param theta: rotation angle about Z-axis
-        :type theta: float
+        :param θ: rotation angle about Z-axis
+        :type θ: float
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
-        - ``SE3.Rz(THETA)`` is an SO(3) rotation of THETA radians about the z-axis
-        - ``SE3.Rz(THETA, "deg")`` as above but THETA is in degrees
+        - ``SE3.Rz(θ)`` is an SO(3) rotation of θ radians about the z-axis
+        - ``SE3.Rz(θ, "deg")`` as above but θ is in degrees
 
-        If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
-        elements.
+        If ``θ`` is an array then the result is a sequence of rotations defined
+        by consecutive elements.
         """
         return cls([tr.trotz(x, unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -801,11 +802,13 @@ class SE3(SO3):
         :return: 4x4 homogeneous transformation matrix
         :rtype: SE3 instance
 
-        ``SE3.Eul(ANGLES)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
-        correspond to consecutive rotations about the Z, Y, Z axes respectively.
+        ``SE3.Eul(ANGLES)`` is an SO(3) rotation defined by a 3-vector of Euler
+        angles :math:`(\phi, \theta, \psi)` which correspond to consecutive
+        rotations about the Z, Y, Z axes respectively.
 
-        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
-        corresponding to the rows of angles.
+        If ``angles`` is an Nx3 matrix then the result is a sequence of
+        rotations each defined by Euler angles corresponding to the rows of
+        angles.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
         """
