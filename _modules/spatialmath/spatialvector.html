@@ -171,12 +171,12 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
 <span class="kn">import</span> <span class="nn">spatialmath.base.argcheck</span> <span class="k">as</span> <span class="nn">arg</span>
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">tr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
 
-<div class="viewcode-block" id="SpatialVector"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector">[docs]</a><span class="k">class</span> <span class="nc">SpatialVector</span><span class="p">(</span><span class="n">UserList</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="SpatialVector"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector">[docs]</a><span class="k">class</span> <span class="nc">SpatialVector</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial 6-vector abstract superclass</span>
 
@@ -234,188 +234,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad arguments to constructor&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SpatialVector.Empty"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.Empty">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct a new spatial vector with zero vectors (superclass method)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_identity</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,))</span>
+    
+<div class="viewcode-block" id="SpatialVector.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
-<span class="sd">        :param cls: The spatial vector subclass</span>
-<span class="sd">        :type cls: SpatialVelocity, SpatialAcceleration, SpatialForce</span>
-<span class="sd">        :return: a spatial vector array with no values</span>
-<span class="sd">        :rtype: SpatialVelocity, SpatialAcceleration, SpatialForce or SpatialMomentum instance</span>
-
-<span class="sd">        This constructs an empty pose container which can be appended to.  For example::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SpatialVelocity.Empty()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            0</span>
-<span class="sd">            &gt;&gt;&gt; x.append(SpatialVelocity([1,2,3,4,5,6)</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">X</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">X</span></div>
-
-        <span class="c1"># ------------------------------------------------------------------------ #</span>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Access value of a spatial object (superclass method)</span>
-
-<span class="sd">        :param i: index of element to return</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :return: the specific element of the pose</span>
-<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises IndexError: if the element is out of bounds</span>
-
-<span class="sd">        Note that only a single index is supported, slices are not.</span>
-
-<span class="sd">        Example::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; x[1]</span>
-<span class="sd">               1           0           0           0</span>
-<span class="sd">               0           0          -1           0</span>
-<span class="sd">               0           1           0           0</span>
-<span class="sd">               0           0           0           1</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;getitem&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assign a value to a pose object (superclass method)</span>
-
-<span class="sd">        :param i: index of element to assign to</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of assigned value</span>
-
-<span class="sd">        Assign the argument to an element of the object&#39;s internal list of values.</span>
-<span class="sd">        This supports the assignement operator, for example::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SE3([SE3() for i in range(10)]) # sequence of ten identity values</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            10</span>
-<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(0.2)   # assign to position 3 in the list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
-
-<div class="viewcode-block" id="SpatialVector.append"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Append a value to a pose object (superclass method)</span>
-
-<span class="sd">        :param x: the value to append</span>
-<span class="sd">        :type x: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of appended object</span>
-
-<span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
-
-<span class="sd">        Examples::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-<span class="sd">            &gt;&gt;&gt; x.append(SE3.Rx(0.1))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;in append method&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of spatial vector&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append a spatial vector sequence - use extend&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">V</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SpatialVector.extend"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extend sequence of values of a pose object (superclass method)</span>
-
-<span class="sd">        :param x: the value to extend</span>
-<span class="sd">        :type x: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of appended object</span>
-
-<span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
-
-<span class="sd">        Examples::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            1</span>
-<span class="sd">            &gt;&gt;&gt; x.append(SE3.Rx(0.1))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># print(&#39;in extend method&#39;)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant extend a singleton pose  - use append&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SpatialVector.insert"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert a value to a pose object (superclass method)</span>
-
-<span class="sd">        :param i: element to insert value before</span>
-<span class="sd">        :type i: int</span>
-<span class="sd">        :param value: the value to insert</span>
-<span class="sd">        :type value: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises ValueError: incorrect type of inserted value</span>
-
-<span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
-
-<span class="sd">        Examples::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SE3()</span>
-<span class="sd">            &gt;&gt;&gt; x.insert(0, SE3.Rx(0.1)) # insert at position 0 in the list</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant append different type of pose object&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cant insert a pose sequence - must have len() == 1&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">V</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SpatialVector.pop"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pop value of a pose object (superclass method)</span>
-
-<span class="sd">        :return: the specific element of the pose</span>
-<span class="sd">        :rtype: SO2, SE2, SO3, SE3 instance</span>
-<span class="sd">        :raises IndexError: if there are no values to pop</span>
-
-<span class="sd">        Removes the first pose value from the sequence in the pose object.</span>
-
-<span class="sd">        Example::</span>
-
-<span class="sd">            &gt;&gt;&gt; x = SE3.Rx([0, math.pi/2, math.pi])</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; y = x.pop()</span>
-<span class="sd">            &gt;&gt;&gt; y</span>
-<span class="sd">            SE3(array([[ 1.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00, -1.0000000e+00, -1.2246468e-16,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00,  1.2246468e-16, -1.0000000e+00,  0.0000000e+00],</span>
-<span class="sd">                       [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  1.0000000e+00]]))</span>
-<span class="sd">            &gt;&gt;&gt; len(x)</span>
-<span class="sd">            2</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span></div>
+<div class="viewcode-block" id="SpatialVector.shape"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.shape">[docs]</a>    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)</span></div>
 
     <span class="c1"># ------------------------------------------------------------------------ #</span>
     <span class="nd">@property</span>
@@ -763,7 +590,7 @@
 <div class="viewcode-block" id="SpatialMomentum.__init__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialMomentum.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="SpatialInertia"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialInertia">[docs]</a><span class="k">class</span> <span class="nc">SpatialInertia</span><span class="p">(</span><span class="n">UserList</span><span class="p">):</span>
+<div class="viewcode-block" id="SpatialInertia"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialInertia">[docs]</a><span class="k">class</span> <span class="nc">SpatialInertia</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial inertia class</span>
 
@@ -814,7 +641,7 @@
             <span class="n">C</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
                                 <span class="p">[</span><span class="n">m</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">m</span> <span class="o">@</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">],</span>
-                                <span class="p">[</span><span class="n">m</span> <span class="o">@</span> <span class="n">C</span><span class="p">,</span>         <span class="n">I</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">C</span> <span class="o">*</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+                                <span class="p">[</span><span class="n">m</span> <span class="o">@</span> <span class="n">C</span><span class="p">,</span>         <span class="n">I</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">C</span> <span class="o">@</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
                               <span class="p">])</span>
         <span class="k">elif</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">I</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">arg</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="s1">&#39;I must be 6x6 matrix&#39;</span></div>
@@ -1121,7 +948,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 16-Sep-2020.
+        Last updated on 24-Sep-2020.
       </span>
 
     </p>
