@@ -1228,8 +1228,13 @@ def trinv(T):
 
     """
     assert ishom(T), 'expecting SE(3) matrix'
-    (R, t) = trn.tr2rt(T)
-    return trn.rt2tr(R.T, -R.T@t)
+    R = T[:3, :3]
+    t = T[:3, 3]
+    Ti = np.zeros((4,4))
+    Ti[:3, :3] = R.T
+    Ti[:3, 3] = -R.T @ t
+    Ti[3,3] = 1
+    return Ti
 
 
 def tr2delta(T0, T1=None):
