@@ -2,7 +2,11 @@
 Classes
 *******
 
-The top-level classes 
+The top-level classes
+
+.. inheritance-diagram:: spatialmath.pose3d.SE3 spatialmath.pose3d.SO3 spatialmath.pose2d.SE2 spatialmath.pose2d.SO2 spatialmath.quaternion.UnitQuaternion spatialmath.twist.Twist3 spatialmath.twist.Twist2 spatialmath.spatialvector.SpatialVelocity spatialmath.spatialvector.SpatialAcceleration spatialmath.spatialvector.SpatialForce spatialmath.spatialvector.SpatialMomentum spatialmath.SpatialInertia
+   :top-classes: collections.UserList
+   :parts: 2
 
 3D-space
 ========
@@ -129,6 +133,17 @@ Twists se(2)
    :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
    :exclude-members: count, copy, index, sort, remove
    
+Spatial Vectors
+---------------
+
+.. autoclass:: spatialmath.spatialvector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __mul__,  __truediv__, __add__, __sub__, __eq__, __ne__, __pow__,   __init__
+   :exclude-members: count, copy, index, sort, remove
+
 Geometry
 --------
 
@@ -138,6 +153,8 @@ Geometry
    :show-inheritance:
    :inherited-members:
    :special-members: __mul__, __rmul__, __eq__, __ne__, __init__, __or__, __xor__
+
+
 
 ***********************
 Function library (base)
