@@ -841,10 +841,10 @@ class TestQuaternion(unittest.TestCase):
 
         # unit
         qu = q.unit()
-        u = UnitQuaternion()
+        uu = UnitQuaternion()
         self.assertIsInstance(q, Quaternion)
         nt.assert_array_almost_equal(qu.vec, v / np.linalg.norm(v))
-        qcompare(Quaternion([q, u, q]).unit(), UnitQuaternion([qu, u, qu]))
+        qcompare(Quaternion([q, u, q]).unit(), UnitQuaternion([qu, uu, qu]))
 
         # inner
         nt.assert_equal(u.inner(u), 1)
