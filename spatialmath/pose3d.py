@@ -61,7 +61,8 @@ class SO3(SMPose):
         if not super().arghandler(arg, check=check):
             raise ValueError('bad argument to constructor')
 
-    def _identity(self):
+    @staticmethod
+    def _identity():
         return np.eye(3)
     # ------------------------------------------------------------------------ #
     @property
@@ -596,7 +597,8 @@ class SE3(SO3):
             # SE3(x, y, z)
             self.data = [tr.transl(x, y, z)]
 
-    def _identity(self):
+    @staticmethod
+    def _identity():
         return np.eye(4)
         
     # ------------------------------------------------------------------------ #

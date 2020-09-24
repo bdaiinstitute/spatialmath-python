@@ -221,19 +221,29 @@ class Twist3(SMTwist):
         - The argument 'P' for prismatic is synonymous with 'T'.
         """
 
-        super().__init__()   # enable UserList superpowers
+        # super().__init__()   # enable UserList superpowers
 
-        if arg is None:
-            # Twist()
-            self.data = [np.r_[0, 0, 0, 0, 0, 0]]
-        elif argcheck.isvector(arg, 6):
-            # Twist(array_like)
-            self.data = [argcheck.getvector(arg)]
+        if w is None:
+            # zero or one arguments passed
+            if super().arghandler(arg, convertfrom=(SE3,), check=check):
+                return
+
+            elif argcheck.isvector(arg, 6):
+                # Twist(array_like)
+                self.data = [argcheck.getvector(arg)]
+                return
+
         elif w is not None and argcheck.isvector(w, 3) and argcheck.isvector(arg,3):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
-        else:
-            super().arghandler(arg, (SE3,), check=check)
+            return
+
+        raise ValueError('bad twist value')
+            
+
+    @staticmethod
+    def _identity():
+        return np.zeros((6,))
 
     def _import(self, value, check=True):
         if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
@@ -679,7 +689,7 @@ class Twist2(SMTwist):
           moment vector (1 element) and direction vector (2 elements).
         """
 
-        super().__init__()   # enable UserList superpowers
+        #super().__init__()   # enable UserList superpowers
 
         if arg is None:
             self.data = [np.r_[0.0, 0.0, 0.0, ]]
@@ -731,6 +741,10 @@ class Twist2(SMTwist):
 
         else:
             raise ValueError('bad argument to constructor')
+
+    @staticmethod
+    def _identity():
+        return np.zeros((3,))
 
     @property
     def shape(self):
@@ -1009,6 +1023,4 @@ if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
 
-
-
-    # exec(open(pathlib.Path(__file__).parent.absolute() / "test_twist.py").read())
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_twist.py").read())

@@ -72,18 +72,20 @@ class SO2(SMPose):
         - ``SO2([X1, X2, ... XN])`` is an SO2 instance containing a sequence of N rotations, where each Xi is an SO2 instance.
 
         """
-        super().__init__()  # activate the UserList semantics
-
         if  super().arghandler(arg, check=check):
             return
 
         elif argcheck.isscalar(arg):
-            self.data = [tr.rot2(arg)]
-            
+            self.data = [tr.rot2(arg, unit=unit)]
+
+        elif argcheck.isvector(arg):
+            self.data = [tr.rot2(x, unit=unit) for x in argcheck.getvector(arg)]
+
         else:
             raise ValueError('bad argument to constructor')
 
-    def _identity(self):
+    @staticmethod
+    def _identity():
         return np.eye(2)
 
     @property
@@ -144,7 +146,7 @@ class SO2(SMPose):
             return cls(tr.trexp2(S, check=check), check=False)
 
     @staticmethod
-    def isvalid(x):
+    def isvalid(x, check=True):
         """
         Test if matrix is valid SO(2)
 
@@ -156,7 +158,7 @@ class SO2(SMPose):
 
         :seealso: :func:`~spatialmath.base.transform3d.isrot`
         """
-        return tr.isrot2(x, check=True)
+        return not check or tr.isrot2(x, check=True)
 
     def inv(self):
         """
@@ -278,8 +280,6 @@ class SE2(SO2):
           N rigid-body motions, where each Xi is an SE2 instance.
 
         """
-        super().__init__()  # activate the UserList semantics
-
         if y is None and theta is None:
             # just one argument passed
 
@@ -287,13 +287,13 @@ class SE2(SO2):
                 return
 
             elif argcheck.isscalar(x):
-                self.data = [tr.rot2(arg)]
-            elif len(arg) == 2:
+                self.data = [tr.trot2(x, unit=unit)]
+            elif len(x) == 2:
                 # SE2([x,y])
-                self.data = [tr.transl2(arg)]
-            elif len(arg) == 3:
+                self.data = [tr.transl2(x)]
+            elif len(x) == 3:
                 # SE2([x,y,theta])
-                self.data = [tr.trot2(arg[2], t=arg[:2], unit=unit)]
+                self.data = [tr.trot2(x[2], t=x[:2], unit=unit)]
 
             else:
                 raise ValueError('bad argument to constructor')
@@ -311,8 +311,9 @@ class SE2(SO2):
         else:
             raise ValueError('bad arguments to constructor')
 
-    def _identity(self):
-        return np.eye(2)
+    @staticmethod
+    def _identity():
+        return np.eye(3)
 
     @property
     def shape(self):
@@ -390,7 +391,7 @@ class SE2(SO2):
             return cls(tr.trexp2(S), check=False)
 
     @staticmethod
-    def isvalid(x):
+    def isvalid(x, check=True):
         """
         Test if matrix is valid SE(2)
 
@@ -402,7 +403,7 @@ class SE2(SO2):
 
         :seealso: :func:`~spatialmath.base.transform2d.ishom`
         """
-        return tr.ishom2(x, check=True)
+        return not check or tr.ishom2(x, check=True)
 
     @property
     def t(self):

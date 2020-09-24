@@ -78,37 +78,24 @@ class Quaternion(SMUserList):
         """
         super().__init__()
 
-        if s is None and v is None:
-            self.data = [np.array([0, 0, 0, 0])]
+        if v is None:
+            # single argument
+            if super().arghandler(s, check=False):
+                return
+
+            elif argcheck.isvector(s, 4):
+                self.data = [argcheck.getvector(s)]
 
         elif argcheck.isscalar(s) and argcheck.isvector(v, 3):
+            # Quaternion(s, v)
             self.data = [np.r_[s, argcheck.getvector(v)]]
-
-        elif argcheck.isvector(s, 4):
-            self.data = [argcheck.getvector(s)]
-
-        elif isinstance(s, list):
-            if isinstance(s[0], np.ndarray):
-                if check:
-                    assert argcheck.isvectorlist(s, 4), \
-                        'list must comprise 4-vectors'
-                self.data = s
-            elif isinstance(s[0], self.__class__):
-                # possibly a list of objects of same type
-                assert all(map(lambda x: isinstance(x, self.__class__), s)), \
-                    'all elements of list must have same type'
-                self.data = [x._A for x in s]
-            else:
-                raise ValueError('incorrect list')
-
-        elif isinstance(s, np.ndarray) and s.shape[1] == 4:
-            self.data = [x for x in s]
-
-        elif isinstance(s, Quaternion):
-            self.data = s.data
 
         else:
             raise ValueError('bad argument to Quaternion constructor')
+
+    @staticmethod
+    def _identity():
+        return np.zeros((4,))
 
     @property
     def shape(self):
@@ -849,8 +836,42 @@ class UnitQuaternion(Quaternion):
         """
         super().__init__()
 
-        if s is None and v is None:
-            self.data = [quat.eye()]
+        if v is None:
+            # single argument
+            if super().arghandler(s, check=check):
+                return
+
+            elif argcheck.isvector(s, 4):
+                # UnitQuaternion(q)   q is 4-vector
+                q = argcheck.getvector(s)
+                if norm:
+                    s = quat.unit(s)
+                self.data = [s]
+
+            elif isinstance(s, np.ndarray) and tr.isrot(s, check=check):
+                # UnitQuaternion(R) R is 3x3 rotation matrix
+                self.data = [quat.r2q(s)]
+
+            elif isinstance(s, np.ndarray) and tr.ishom(s, check=check):
+                # UnitQuaternion(T) T is 4x4 homogeneous transformation matrix
+                self.data = [quat.r2q(tr.t2r(s))]
+
+            elif isinstance(s, np.ndarray) and s.shape[1] == 4:
+                if norm:
+                    self.data = [quat.qnorm(x) for x in s]
+                else:
+                    self.data = [x for x in s]
+
+            elif isinstance(s, p3d.SO3):
+                # UnitQuaternion(x) x is SO3 or SE3
+                self.data = [quat.r2q(x.R) for x in s]
+
+            elif isinstance(s[0], p3d.SO3):
+                # list of SO3/SE3
+                self.data = [quat.r2q(x.R) for x in s]
+
+            else:
+                raise ValueError('bad argument to UnitQuaternion constructor')
 
         elif argcheck.isscalar(s) and argcheck.isvector(v, 3):
             # UnitQuaternion(s, v)   s is scalar, v is 3-vector
@@ -858,67 +879,17 @@ class UnitQuaternion(Quaternion):
             if norm:
                 q = quat.unit(q)
             self.data = [q]
-
-        elif argcheck.isvector(s, 4):
-            # UnitQuaternion(q)   q is 4-vector
-            q = argcheck.getvector(s)
-            if norm:
-                s = quat.unit(s)
-            self.data = [s]
-
-        elif isinstance(s, list):
-            # UnitQuaternion(list)
-            if isinstance(s[0], np.ndarray):
-                # list of 4-vectors or SO(3) or SE(3)
-                if argcheck.isvectorlist(s, 4):
-                    # TODO should check each element
-                    self.data = s
-                elif tr.isrot(s[0], check=False) or tr.ishom(s[0], check=False):
-                    self.data = [quat.r2q(x, check=check) for x in s]
-
-            elif isinstance(s[0], p3d.SO3):
-                # list of SO3/SE3
-                self.data = [quat.r2q(x.R) for x in s]
-
-            elif isinstance(s[0], self.__class__):
-                # possibly a list of objects of same type
-                assert all(map(lambda x: isinstance(x, type(self)), s)), 'all elements of list must have same type'
-                self.data = [x._A for x in s]
-            else:
-                raise ValueError('incorrect list')
-
-        elif isinstance(s, p3d.SO3):
-            # UnitQuaternion(x) x is SO3 or SE3
-            self.data = [quat.r2q(x.R) for x in s]
-
-        elif isinstance(s, np.ndarray) and tr.isrot(s, check=check):
-            # UnitQuaternion(R) R is 3x3 rotation matrix
-            self.data = [quat.r2q(s)]
-
-        elif isinstance(s, np.ndarray) and tr.ishom(s, check=check):
-            # UnitQuaternion(T) T is 4x4 homogeneous transformation matrix
-            self.data = [quat.r2q(tr.t2r(s))]
-
-        elif isinstance(s, np.ndarray) and s.shape[1] == 4:
-            if norm:
-                self.data = [quat.qnorm(x) for x in s]
-            else:
-                self.data = [x for x in s]
-
-        elif isinstance(s, UnitQuaternion):
-            # UnitQuaternion(Q) Q is a UnitQuaternion instance, clone it
-            self.data = s.data
-
+        
         else:
             raise ValueError('bad argument to UnitQuaternion constructor')
 
-    # def __getitem__(self, i):
-    #     print('uq getitem', i)
-    #     #return self.__class__(self.data[i])
-    #     return self.__class__(self.data[i])
 
     @staticmethod
-    def isvalid(x):
+    def _identity():
+        return quat.eye()
+
+    @staticmethod
+    def isvalid(x, check=True):
         """
         Test if matrix is valid unit quaternion
 
@@ -927,7 +898,7 @@ class UnitQuaternion(Quaternion):
         :return: true of the matrix is 4x1.
         :rtype: bool
         """
-        return x.shape == (4,) and tr.isunitvec(x)
+        return x.shape == (4,) and (not check or tr.isunitvec(x))
 
     @property
     def R(self):

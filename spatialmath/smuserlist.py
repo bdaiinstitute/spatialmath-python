@@ -8,6 +8,7 @@ from collections import UserList
 from abc import ABC, abstractproperty, abstractstaticmethod
 import numpy as np
 import spatialmath.base.argcheck as argcheck
+import copy
 
 _numtypes = (int, np.int64, float, np.float64)
 
@@ -71,11 +72,15 @@ class SMUserList(UserList, ABC):
     def isvalid(x, check=True):
         pass
 
+    @abstractstaticmethod
+    def _identity():
+        pass
+
     def _import(self, x, check=True):
         if not check or self.isvalid(x, check=check):
             return x
         else:
-            raise TypeError('invalid type or value passed to constructor')
+            return None
 
     @classmethod
     def Empty(cls):
@@ -140,7 +145,11 @@ class SMUserList(UserList, ABC):
 
         elif isinstance(arg, np.ndarray):
             # it's a numpy array
-            self.data = [self._import(arg, check=check)]
+            x = self._import(arg, check=check)
+            if x is not None:
+                self.data = [x]
+            else:
+                return False
 
         elif type(arg) == type(self):
             # it's an object of same type, do copy
@@ -157,7 +166,11 @@ class SMUserList(UserList, ABC):
                 assert all(map(lambda x: type(x) == type(self), arg)), 'elements of list are incorrect type'
                 self.data = [x.A for x in arg]
             else:
-                raise ValueError('list of unknown values')
+                return False
+
+        elif isinstance(arg, self.__class__):
+            # instance of same type, clone it
+            self.data = copy.copy(arg.data)
 
         elif arg.__class__ in convertfrom:
             # see if we can convert passed argument to this type
