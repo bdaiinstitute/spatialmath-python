@@ -39,14 +39,16 @@ extensions = [
     'sphinx.ext.viewcode', 
     'sphinx.ext.mathjax',
     'sphinx.ext.coverage',
-    'sphinx_markdown_tables',
     'sphinx.ext.doctest',
     'sphinx.ext.inheritance_diagram',
     ]
     #'recommonmark',
     #'sphinx.ext.autosummary',
+    #'sphinx_markdown_tables',
     #    
 
+# inheritance_node_attrs = dict(style='rounded,filled', fillcolor='lightblue')
+inheritance_node_attrs = dict(style='rounded')
 
 autosummary_generate = True
 autodoc_member_order = 'bysource'
