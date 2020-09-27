@@ -851,6 +851,20 @@ class SMPose(SMUserList):
         """
         return left.__mul__(right)
 
+    def prod(self):
+        r"""
+        Product of elements
+
+        :return: Product of elements
+
+        For a pose instance with N values return the matrix product of those
+        elements :math:`\prod_i^N T_i`.
+        """
+        Tprod = self.__class__._identity()  # identity value
+        for T in self.data:
+            Tprod = Tprod @ T
+        return Tprod
+
     def __pow__(self, n):
         """
         Overloaded ``**`` operator (superclass method)
