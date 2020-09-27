@@ -127,25 +127,11 @@ class SMTwist(SMUserList):
         :rtype: bool
         """
         if len(self) == 1:
-            return tr.isunittwist(self.S)
+            return base.isunittwist(self.S)
         else:
-            return [tr.isunittwist(x) for x in self.data]
+            return [base.isunittwist(x) for x in self.data]
 
-    def prod(self):
-        """
-        %Twist3.prod Compound array of twists
-        %
-        TW.prod is a twist representing the product (composition) of the
-        successive elements of TW (1xN), an array of Twists.
-                %
-                %
-        See also RTBPose.prod, Twist3.mtimes.
-        """
-        out = self[0]
 
-        for t in self[1:]:
-            out *= t
-        return out
 
 # ======================================================================== #
 
@@ -586,12 +572,19 @@ class Twist3(SMTwist):
         if theta is None:
             theta = 1
         else:
-            theta = argcheck.getunit(theta, units)
+            theta = base.getunit(theta, units)
 
         if isinstance(theta, (int, np.int64, float, np.float64)):
-            return SE3(tr.trexp(self.S * theta))
+            return SE3(base.trexp(self.S * theta))
         else:
-            return SE3([tr.trexp(self.S * t) for t in theta])
+            return SE3([base.trexp(self.S * t) for t in theta])
+
+    def prod(self):
+        twprod = base.trexp(self.data[0])
+
+        for tw in self.data[1:]:
+            twprod = twprod @ base.trexp(tw)
+        return Twist3(base.trlog(twprod))
 
     def __str__(self):
         """
@@ -687,58 +680,22 @@ class Twist2(SMTwist):
           moment vector (1 element) and direction vector (2 elements).
         """
 
-        #super().__init__()   # enable UserList superpowers
+        if w is None:
+            # zero or one arguments passed
+            if super().arghandler(arg, convertfrom=(SE2,), check=check):
+                return
 
-        if arg is None:
-            self.data = [np.r_[0.0, 0.0, 0.0, ]]
+            elif base.isvector(arg, 6):
+                # Twist(array_like)
+                self.data = [base.getvector(arg)]
+                return
 
-        elif isinstance(arg, Twist2):
-            # clone it
-            self.data = [np.r_[arg.v, arg.w]]
+        elif w is not None and base.isvector(w, 1) and base.isvector(arg,2):
+            # Twist(v, w)
+            self.data = [np.r_[arg, w]]
+            return
 
-        elif argcheck.isvector(arg, 3):
-            s = argcheck.getvector(arg)
-            self.data = [s]
-
-        elif argcheck.isvector(arg, 2) and argcheck.isvector(w, 1):
-            v = argcheck.getvector(arg)
-            w = argcheck.getvector(w)
-            self.data = [np.r_[v, w]]
-
-        elif isinstance(arg, SE2):
-            S = tr.trlog2(arg.A)  # use closed form for SE(2)
-
-            skw, v = tr.tr2rt(S)
-            w = tr.vex(skw)
-            self.data = [np.r_[v, w]]
-
-        elif Twist2.isvalid(arg):
-            # it's an augmented skew matrix, unpack it
-            skw, v = tr.tr2rt(arg)
-            w = tr.vex(skw)
-            self.data = [np.r_[v, w]]
-
-        elif isinstance(arg, list):
-            # construct from a list
-
-            if isinstance(arg[0], np.ndarray):
-                # possibly a list of numpy arrays
-                if check:
-                    assert all(map(lambda x: Twist2.isvalid(x), arg)), 'all elements of list must have valid shape and value for the class'
-                self.data = arg
-            elif type(arg[0]) == type(self):
-                # possibly a list of objects of same type
-                assert all(map(lambda x: type(x) == type(self), arg)), 'all elements of list must have same type'
-                self.data = [x.S for x in arg]
-            elif type(arg[0]) == list:
-                # possibly a list of 3-lists
-                assert all(map(lambda x: isinstance(x, list) and len(x) == 3, arg)), 'all elements of list must have same type'
-                self.data = [np.r_[x] for x in arg]
-            else:
-                raise ValueError('bad list argument to constructor')
-
-        else:
-            raise ValueError('bad argument to constructor')
+        raise ValueError('bad twist value')
 
     @staticmethod
     def _identity():
@@ -754,6 +711,15 @@ class Twist2(SMTwist):
         """
         return (3,)
 
+    def _import(self, value, check=True):
+        if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
+            if value.shape == (3,3):
+                # it's an se(3)
+                return base.vexa(value)
+            elif value.shape == (3,):
+                # it's a twist vector
+                return value
+        raise TypeError('bad type passed')
     # -------------------- variant constructors ----------------------------#
 
     @classmethod
@@ -838,22 +804,21 @@ class Twist2(SMTwist):
 
     @staticmethod
     def isvalid(v, check=True):
-        if argcheck.isvector(v, 3):
+        if base.isvector(v, 3):
             return True
-        elif argcheck.ismatrix(v, (3, 3)):
+        elif base.ismatrix(v, (3, 3)):
             # maybe be an se(2)
             if not all(v.diagonal() == 0):  # check diagonal is zero
                 return False
             if not all(v[2, :] == 0):  # check bottom row is zero
                 return False
-            if not tr.isskew(v[:2, :2]):
+            if not base.isskew(v[:2, :2]):
                 # top left 2x2is skew symmetric
                 return False
             return True
         return False
 
-    @property
-    def SE2(tw):
+    def SE2(self):
         """
         %Twist3.SE Convert twist to SE2 or SE3 object
         %
@@ -929,9 +894,9 @@ class Twist2(SMTwist):
 
         See also SE3.Ad.
         """
-        x = np.array([skew(self.w), skew(self.v), [np.zeros((3, 3)), skew(self.w)]])
+        return np.array([base.skew(self.w), base.skew(self.v), [np.zeros((3, 3)), base.skew(self.w)]])
 
-    def __mul__(left, right):
+    def __mul__(self, right):
         """
         Twist3.mtimes Multiply twist by twist or scalar
 
@@ -946,7 +911,7 @@ class Twist2(SMTwist):
         TW * T compounds a twist with an SE2/3 transformation
         %
         """
-
+        left = self
         if isinstance(right, Twist2):
             # twist composition
             return Twist2(left.exp() * right.exp())
@@ -955,14 +920,27 @@ class Twist2(SMTwist):
         else:
             raise ValueError('twist *, incorrect right operand')
 
-    def __imul__(left, right):
-        return left.__mul__(right)
-
-    def __rmul(right, left):
-        if isinstance(left, (int, np.int64, float, np.float64)):
-            return Twist2(right.S * left)
+    def __rmul(self, left):
+        if base.isscalar(left):
+            return Twist2(self.S * left)
         else:
             raise ValueError('twist *, incorrect left operand')
+
+    def prod(self):
+        """
+        %Twist3.prod Compound array of twists
+        %
+        TW.prod is a twist representing the product (composition) of the
+        successive elements of TW (1xN), an array of Twists.
+                %
+                %
+        See also RTBPose.prod, Twist3.mtimes.
+        """
+        twprod = base.trexp2(self.data[0])
+
+        for tw in self.data[1:]:
+            twprod = twprod @ base.trexp2(tw)
+        return Twist2(base.trlog2(twprod, twist=True))
 
     def __str__(self):
         """
