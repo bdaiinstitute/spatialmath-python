@@ -151,11 +151,7 @@ class SMUserList(UserList, ABC):
             else:
                 return False
 
-        elif type(arg) == type(self):
-            # it's an object of same type, do copy
-            self.data = arg.data.copy()
-
-        elif isinstance(arg, list):
+        elif isinstance(arg, (list, tuple)):
             # it's a list of things
             if isinstance(arg[0], np.ndarray):
                 # possibly a list of numpy arrays
@@ -165,6 +161,10 @@ class SMUserList(UserList, ABC):
                 # possibly a list of objects of same type
                 assert all(map(lambda x: type(x) == type(self), arg)), 'elements of list are incorrect type'
                 self.data = [x.A for x in arg]
+
+            elif argcheck.isnumberlist(arg) and len(self.shape) == 1 and len(arg) == self.shape[0]:
+                self.data = [np.array(arg)]
+
             else:
                 return False
 
