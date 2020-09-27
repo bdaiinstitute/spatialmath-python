@@ -13,8 +13,6 @@ if __name__ == '__main__':
 
     N = 100000
 
-
-
     transforms_setup = '''
 import spatialmath as sm
 import numpy as np
@@ -32,61 +30,64 @@ Rt1 = Rt(R1, t1)
 Rt2 = Rt(R2, t2)
 '''
     t = timeit.timeit(stmt='sm.base.getvector(0.2)', setup=transforms_setup, number=N)
-    print(f"getvector(x):        {t:.3g} μs")
+    print(f"getvector(x):        {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.base.rotx(0.2, unit="rad")', setup=transforms_setup, number=N)
-    print(f"transforms.rotx:     {t:.3g} μs")
+    print(f"transforms.rotx:     {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.base.trotx(0.2, unit="rad")', setup=transforms_setup, number=N)
-    print(f"transforms.trotx:    {t:.3g} μs")
+    print(f"transforms.trotx:    {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.base.t2r(T1)', setup=transforms_setup, number=N)
-    print(f"transforms.t2r:      {t:.3g} μs")
+    print(f"transforms.t2r:      {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.base.r2t(R1)', setup=transforms_setup, number=N)
-    print(f"transforms.r2t:      {t:.3g} μs")
+    print(f"transforms.r2t:      {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.SE3.Rx(0.2)', setup=transforms_setup, number=N)
-    print(f"SE3.Rx:              {t:.3g} μs")
+    print(f"SE3.Rx:              {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='T1[:3,:3]', setup=transforms_setup, number=N)
-    print(f"T1[:3,:3]:           {t:.3g} μs")
+    print(f"T1[:3,:3]:           {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='X1.A', setup=transforms_setup, number=N)
-    print(f"SE3.A:               {t:.3g} μs")
+    print(f"SE3.A:               {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.SE3()', setup=transforms_setup, number=N)
-    print(f"SE3():               {t:.3g} μs")
+    print(f"SE3():               {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.SE3(T1)', setup=transforms_setup, number=N)
-    print(f"SE3(T1):             {t:.3g} μs")
+    print(f"SE3(T1):             {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.SE3(T1, check=False)', setup=transforms_setup, number=N)
-    print(f"SE3(T1 check=False): {t:.3g} μs")
+    print(f"SE3(T1 check=False): {t/N*1e6:.3g} μs")
+
+    t = timeit.timeit(stmt='sm.SE3([T1], check=False)', setup=transforms_setup, number=N)
+    print(f"SE3([T1]):           {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='X1 * X2', setup=transforms_setup, number=N)
-    print(f"SE3 *:               {t:.3g} μs")
+    print(f"SE3 *:               {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='T1 @ T2', setup=transforms_setup, number=N)
-    print(f"4x4 @:               {t:.3g} μs")
+    print(f"4x4 @:               {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='T1[:3,:3] @ T2[:3,:3] + T1[:3,:3] @ T2[:3,3]', setup=transforms_setup, number=N)
-    print(f"R1*R2, R1*t:         {t:.3g} μs")
+    print(f"R1*R2, R1*t:         {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='(Rt1.R @ Rt2.R, Rt1.R @ Rt2.t)', setup=transforms_setup, number=N)
-    print(f"T1 * T2 (R, t):      {t:.3g} μs")
+    print(f"T1 * T2 (R, t):      {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='X1.inv()', setup=transforms_setup, number=N)
-    print(f"SE3.inv:             {t:.3g} μs")
+    print(f"SE3.inv:             {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='sm.base.trinv(T1)', setup=transforms_setup, number=N)
-    print(f"base.trinv:          {t:.3g} μs")
+    print(f"base.trinv:          {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='(Rt1.R.T, -Rt1.R.T @ Rt1.t)', setup=transforms_setup, number=N)
-    print(f"base.trinv (R,t):    {t:.3g} μs")
+    print(f"base.trinv (R,t):    {t/N*1e6:.3g} μs")
 
     t = timeit.timeit(stmt='np.linalg.inv(T1)', setup=transforms_setup, number=N)
-    print(f"np.linalg.inv:       {t:.3g} μs")
+    print(f"np.linalg.inv:       {t/N*1e6:.3g} μs")
 
 if False:
     quat_setup = '''
