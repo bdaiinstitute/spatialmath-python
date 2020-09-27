@@ -1228,6 +1228,7 @@ def trinv(T):
 
     """
     assert ishom(T), 'expecting SE(3) matrix'
+    # inline this code for speed, don't use tr2rt and rt2tr
     R = T[:3, :3]
     t = T[:3, 3]
     Ti = np.zeros((4,4))
