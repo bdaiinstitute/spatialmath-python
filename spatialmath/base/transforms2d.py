@@ -258,7 +258,7 @@ def trlog2(T, check=True, twist=False):
                 return np.zeros((3, 3))
         else:
             if twist:
-                return trn.vex(scipy.linalg.logm(T))
+                return trn.vexa(scipy.linalg.logm(T))
             else:
                 return scipy.linalg.logm(T)
 
