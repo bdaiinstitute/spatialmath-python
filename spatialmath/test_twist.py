@@ -249,15 +249,15 @@ class Twist2dTest(unittest.TestCase):
     def test_conversion_SE2(self):
         T = SE2(1, 2, 0.3)
         tw = Twist2(T)
-        array_compare(tw.SE2, T)
-        self.assertIsInstance(tw.SE2, SE2)
-        self.assertEqual(len(tw.SE2), 1)
+        array_compare(tw.SE2(), T)
+        self.assertIsInstance(tw.SE2(), SE2)
+        self.assertEqual(len(tw.SE2()), 1)
         
     def test_conversion_se2(self):
         s = [1, 2, 3]
         x = Twist2(s)
         
-        array_compare(x.se2, np.array([[ 0., -3.,  1.],
+        array_compare(x.se2(), np.array([[ 0., -3.,  1.],
                                        [ 3.,  0.,  2.],
                                        [ 0.,  0.,  0.]]))
 
@@ -268,7 +268,7 @@ class Twist2dTest(unittest.TestCase):
         self.assertIsInstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
-        a = Twist2([x.se2, x.se2, x.se2, x.se2])
+        a = Twist2([x.se2(), x.se2(), x.se2(), x.se2()])
         self.assertIsInstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
@@ -276,7 +276,7 @@ class Twist2dTest(unittest.TestCase):
         self.assertIsInstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
-        s = [1, 2, 3]
+        s = np.r_[1, 2, 3]
         a = Twist2([s, s, s, s])
         self.assertIsInstance(a, Twist2)
         self.assertEqual(len(a), 4)
@@ -289,7 +289,7 @@ class Twist2dTest(unittest.TestCase):
         x = Twist2.P([1, 2])
         self.assertTrue(x.isprismatic)
         
-        self.assertTrue(Twist2.isvalid(x.se2))
+        self.assertTrue(Twist2.isvalid(x.se2()))
         self.assertTrue(Twist2.isvalid(x.S))
         
         self.assertFalse(Twist2.isvalid(2))
@@ -356,7 +356,7 @@ class Twist2dTest(unittest.TestCase):
         x2 = Twist2(T2)
         
         x = Twist2([x1, x2])
-        array_compare( x.prod().SE2, T1 * T2)
+        array_compare( x.prod().SE2(), T1 * T2)
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
