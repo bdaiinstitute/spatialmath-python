@@ -243,8 +243,13 @@ class Plucker(SMUserList):
         # needed to allow __rmul__ to work if left multiplied by ndarray
         #self.__array_priority__ = 100  
 
+    @property
     def shape(self):
         return (6,)
+
+    @staticmethod
+    def _identity():
+        return np.zeros((6,))
 
     @staticmethod
     def isvalid(x):
