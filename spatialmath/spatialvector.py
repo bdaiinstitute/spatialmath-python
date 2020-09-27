@@ -22,7 +22,7 @@ import spatialmath.base as tr
 import numpy as np
 from spatialmath.smuserlist import SMUserList
 
-class SpatialVector(SMUserList, ABC):
+class SpatialVector(SMUserList):
     """
     Spatial 6-vector abstract superclass
 
@@ -50,7 +50,6 @@ class SpatialVector(SMUserList, ABC):
     :seealso: :func:`SpatialM6`, :func:`SpatialF6`, :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.
     """
 
-    @abstractmethod
     def __init__(self, value):
         """
         Create a new spatial vector (abstract superclass)
@@ -524,7 +523,7 @@ class SpatialInertia(SMUserList):
         assert type(left) == type(right), 'spatial inertia can only be added to spatial inertia'
         return SpatialInertia(a.I + b.I)
 
-    def __mul__(left, right):
+    def __mul__(self, right):
         """
         Spatial inertia product
 
@@ -536,17 +535,18 @@ class SpatialInertia(SMUserList):
           the SpatialAcceleration ``A``.
         - ``SI * V`` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.
         """
+        left = self
 
         if isinstance(right, SpatialAcceleration):
-            v = SpatialForce(a.I * b.vw);  # F = ma
+            v = SpatialForce(left.I @ right.V);  # F = ma
         elif instance(right, SpatialVelocity):
             # crf(v(i).vw)*model.I(i).I*v(i).vw;
             # v = Wrench( a.cross() * I.I * a.vw );
-            v = SpatialMomentum(a.I * b.vw)   # M = mv
+            v = SpatialMomentum(left.I * right.V)   # M = mv
         else:
             raise TypeError('bad postmultiply operands for Inertia *')
 
-    def __rmul__(right, left):
+    def __rmul__(self, left):
         """
         Spatial inertia product
 
@@ -558,7 +558,7 @@ class SpatialInertia(SMUserList):
           the SpatialAcceleration ``A``.
         - ``V * SI `` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.
         """
-        return right.__mul__(left)
+        return self.__mul__(left)
 
 if __name__ == "__main__":
 
