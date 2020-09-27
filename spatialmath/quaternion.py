@@ -21,7 +21,7 @@ from typing import Any
 from spatialmath import base as tr
 from spatialmath.base import quaternions as quat
 from spatialmath.base import argcheck
-from spatialmath import pose3d as p3d
+from spatialmath.pose3d import SO3, SE3
 from spatialmath.smuserlist import SMUserList
 
 class Quaternion(SMUserList):
@@ -839,14 +839,9 @@ class UnitQuaternion(Quaternion):
         if v is None:
             # single argument
             if super().arghandler(s, check=check):
-                return
-
-            elif argcheck.isvector(s, 4):
-                # UnitQuaternion(q)   q is 4-vector
-                q = argcheck.getvector(s)
                 if norm:
-                    s = quat.unit(s)
-                self.data = [s]
+                    self.data = [quat.unit(q) for q in self.data]
+                return
 
             elif isinstance(s, np.ndarray) and tr.isrot(s, check=check):
                 # UnitQuaternion(R) R is 3x3 rotation matrix
@@ -862,11 +857,11 @@ class UnitQuaternion(Quaternion):
                 else:
                     self.data = [x for x in s]
 
-            elif isinstance(s, p3d.SO3):
+            elif isinstance(s, SO3):
                 # UnitQuaternion(x) x is SO3 or SE3
                 self.data = [quat.r2q(x.R) for x in s]
 
-            elif isinstance(s[0], p3d.SO3):
+            elif isinstance(s[0], SO3):
                 # list of SO3/SE3
                 self.data = [quat.r2q(x.R) for x in s]
 
@@ -1769,7 +1764,7 @@ class UnitQuaternion(Quaternion):
                     [ 0.29552021,  0.95533649,  0.        ],
                     [ 0.        ,  0.        ,  1.        ]]))
         """
-        return p3d.SO3(self.R, check=False)
+        return SO3(self.R, check=False)
 
     def SE3(self):
         """
@@ -1789,7 +1784,7 @@ class UnitQuaternion(Quaternion):
                     [ 0.        ,  0.        ,  1.        ,  0.        ],
                     [ 0.        ,  0.        ,  0.        ,  1.        ]]))
         """
-        return p3d.SE3(tr.r2t(self.R), check=False)
+        return SE3(tr.r2t(self.R), check=False)
 
 
 if __name__ == '__main__':  # pragma: no cover
