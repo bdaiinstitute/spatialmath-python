@@ -676,6 +676,46 @@
         <span class="c1"># dealing with matrix</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))])</span></div>
 
+<div class="viewcode-block" id="homtrans"><a class="viewcode-back" href="../../../spatialmath.html#spatialmath.base.transformsNd.homtrans">[docs]</a><span class="k">def</span> <span class="nf">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply a homogeneous transformation to a Euclidean vector</span>
+
+<span class="sd">    :param T: homogeneous transformation</span>
+<span class="sd">    :type T: Numpy array (3,3) or (4,4)</span>
+<span class="sd">    :param p: Vector(s) to be transformed</span>
+<span class="sd">    :type p: Numpy array (2,), (2,N), (3,) or (3,N)</span>
+<span class="sd">    :return: transformed Euclidean vector(s)</span>
+<span class="sd">    :rtype: Numpy array (2,), (2,N), (3,) or (3,N)</span>
+
+<span class="sd">    ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the points </span>
+<span class="sd">    stored columnwise in ``p``.</span>
+
+<span class="sd">    - If ``T`` is in SE(2) (3x3) and</span>
+<span class="sd">        - ``p`` is 2xN (2D points) they are considered Euclidean (:math:`\mathbb{R}^2`)</span>
+<span class="sd">        - ``p`` is 3xN (2D points) they are considered projective (:math:`\mathbb{P}^2`)</span>
+<span class="sd">    - If ``T`` is in SE(3) (4x4) and</span>
+<span class="sd">        - ``p`` is 3xN (3D points) they are considered Euclidean (:math:`\mathbb{R}^3`)</span>
+<span class="sd">        - ``p`` is 4xN (3D points) they are considered projective (:math:`\mathbb{P}^3`)</span>
+
+<span class="sd">    The return value and ``p`` have the same number of rows, ie. if Euclidean points are given</span>
+<span class="sd">    then Euclidean points are returned, if projective points are given then</span>
+<span class="sd">    projective points are returned.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">    - If T is a homogeneous transformation defining the pose of {B} with respect to {A},</span>
+<span class="sd">    then the points are defined with respect to frame {B} and are transformed to be</span>
+<span class="sd">    with respect to frame {A}.</span>
+
+<span class="sd">    :seealso: :func:`e2h`, :func:`h2e`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Euclidean vector</span>
+        <span class="k">return</span> <span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">e2h</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="c1"># homogeneous vector</span>
+        <span class="k">return</span> <span class="n">T</span> <span class="o">@</span> <span class="n">p</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;matrices and point data do not conform&#39;</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
@@ -696,7 +736,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 24-Sep-2020.
+        Last updated on 27-Sep-2020.
       </span>
 
     </p>

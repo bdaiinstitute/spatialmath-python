@@ -177,10 +177,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
-<span class="c1"># from spatialmath import Twist</span>
+<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">tr</span>
 <span class="kn">from</span> <span class="nn">spatialmath.super_pose</span> <span class="kn">import</span> <span class="n">SMPose</span>
-<span class="kn">import</span> <span class="nn">spatialmath</span> <span class="k">as</span> <span class="nn">sm</span>
 
 
 <span class="c1"># ============================== SO3 =====================================#</span>
@@ -694,7 +692,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
 
-
 <span class="c1"># ============================== SE3 =====================================#</span>
 
 
@@ -835,7 +832,10 @@
         <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">X2</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Twist3"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.Twist3">[docs]</a>    <span class="k">def</span> <span class="nf">Twist3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">sm</span><span class="o">.</span><span class="n">Twist3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+        <span class="kn">from</span> <span class="nn">spatialmath.twist</span> <span class="kn">import</span> <span class="n">Twist3</span>
+
+        <span class="k">return</span> <span class="n">Twist3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
     <span class="c1"># ------------------------------------------------------------------------ #</span>
 
 <div class="viewcode-block" id="SE3.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.pose3d.SE3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1171,7 +1171,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 24-Sep-2020.
+        Last updated on 27-Sep-2020.
       </span>
 
     </p>

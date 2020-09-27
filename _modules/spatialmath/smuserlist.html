@@ -305,11 +305,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="c1"># it&#39;s an object of same type, do copy</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="c1"># it&#39;s a list of things</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
                 <span class="c1"># possibly a list of numpy arrays</span>
@@ -319,6 +315,10 @@
                 <span class="c1"># possibly a list of objects of same type</span>
                 <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">arg</span><span class="p">)),</span> <span class="s1">&#39;elements of list are incorrect type&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isnumberlist</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="p">)]</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
@@ -703,57 +703,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
 
-
-
-<span class="c1">#    def binop(left, right, op): </span>
-
-
-<span class="c1">#         if isinstance(right, left.__class__):</span>
-<span class="c1">#             # class by class</span>
-<span class="c1">#             if len(left) == 1:</span>
-<span class="c1">#                 if len(right) == 1:</span>
-<span class="c1">#                     #print(&#39;== 1x1&#39;)</span>
-<span class="c1">#                     return op(left.A, right.A)</span>
-<span class="c1">#                 else:</span>
-<span class="c1">#                     #print(&#39;== 1xN&#39;)</span>
-<span class="c1">#                     return [op(left.A, x) for x in right.A]</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 if len(right) == 1:</span>
-<span class="c1">#                     #print(&#39;== Nx1&#39;)</span>
-<span class="c1">#                     return [op(x, right.A) for x in left.A]</span>
-<span class="c1">#                 elif len(left) == len(right):</span>
-<span class="c1">#                     #print(&#39;== NxN&#39;)</span>
-<span class="c1">#                     return [op(x, y) for (x, y) in zip(left.A, right.A)]</span>
-<span class="c1">#                 else:</span>
-<span class="c1">#                     raise ValueError(&#39;length of lists to == must be same length&#39;)</span>
-<span class="c1">#         elif isinstance(right, (float, int, np.float64, np.int64)) or (isinstance(right, np.ndarray):</span>
-<span class="c1">#             # class by matrix</span>
-<span class="c1">#             if len(left) == 1:</span>
-<span class="c1">#                 return op(left.A, right)</span>
-<span class="c1">#             else:</span>
-<span class="c1">#                 return [op(x, right) for x in left.A]</span>
-
-
-    <span class="c1"># def _op2(self, other, op, list1=True):</span>
-
-    <span class="c1">#     if len(self) == 1:</span>
-    <span class="c1">#         if len(other) == 1:</span>
-    <span class="c1">#             if list1:</span>
-    <span class="c1">#                 return [op(self._A, other._A)]</span>
-    <span class="c1">#             else:</span>
-    <span class="c1">#                 return op(self._A, other._A)</span>
-    <span class="c1">#         else:</span>
-    <span class="c1">#             #print(&#39;== 1xN&#39;)</span>
-    <span class="c1">#             return [op(self._A, x._A) for x in other]</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         if len(other) == 1:</span>
-    <span class="c1">#             #print(&#39;== Nx1&#39;)</span>
-    <span class="c1">#             return [op(x._A, other._A) for x in self]</span>
-    <span class="c1">#         elif len(self) == len(other):</span>
-    <span class="c1">#             #print(&#39;== NxN&#39;)</span>
-    <span class="c1">#             return [op(x._A, y._A) for (x, y) in zip(self, other)]</span>
-    <span class="c1">#         else:</span>
-    <span class="c1">#             raise ValueError(&#39;length of lists to == must be same length&#39;)</span>
 </pre></div>
 
            </div>
@@ -769,7 +718,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 24-Sep-2020.
+        Last updated on 27-Sep-2020.
       </span>
 
     </p>

@@ -176,7 +176,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
 
-<div class="viewcode-block" id="SpatialVector"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector">[docs]</a><span class="k">class</span> <span class="nc">SpatialVector</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="SpatialVector"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector">[docs]</a><span class="k">class</span> <span class="nc">SpatialVector</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial 6-vector abstract superclass</span>
 
@@ -204,8 +204,7 @@
 <span class="sd">    :seealso: :func:`SpatialM6`, :func:`SpatialF6`, :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SpatialVector.__init__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.__init__">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="SpatialVector.__init__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialVector.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new spatial vector (abstract superclass)</span>
 
@@ -678,7 +677,7 @@
         <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">),</span> <span class="s1">&#39;spatial inertia can only be added to spatial inertia&#39;</span>
         <span class="k">return</span> <span class="n">SpatialInertia</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">I</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">I</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SpatialInertia.__mul__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialInertia.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+<div class="viewcode-block" id="SpatialInertia.__mul__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.spatialvector.SpatialInertia.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spatial inertia product</span>
 
@@ -690,17 +689,18 @@
 <span class="sd">          the SpatialAcceleration ``A``.</span>
 <span class="sd">        - ``SI * V`` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">SpatialAcceleration</span><span class="p">):</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">I</span> <span class="o">*</span> <span class="n">b</span><span class="o">.</span><span class="n">vw</span><span class="p">);</span>  <span class="c1"># F = ma</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">I</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">V</span><span class="p">);</span>  <span class="c1"># F = ma</span>
         <span class="k">elif</span> <span class="n">instance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">SpatialVelocity</span><span class="p">):</span>
             <span class="c1"># crf(v(i).vw)*model.I(i).I*v(i).vw;</span>
             <span class="c1"># v = Wrench( a.cross() * I.I * a.vw );</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialMomentum</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">I</span> <span class="o">*</span> <span class="n">b</span><span class="o">.</span><span class="n">vw</span><span class="p">)</span>   <span class="c1"># M = mv</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialMomentum</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">I</span> <span class="o">*</span> <span class="n">right</span><span class="o">.</span><span class="n">V</span><span class="p">)</span>   <span class="c1"># M = mv</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad postmultiply operands for Inertia *&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spatial inertia product</span>
 
@@ -712,7 +712,7 @@
 <span class="sd">          the SpatialAcceleration ``A``.</span>
 <span class="sd">        - ``V * SI `` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
@@ -948,7 +948,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 24-Sep-2020.
+        Last updated on 27-Sep-2020.
       </span>
 
     </p>
