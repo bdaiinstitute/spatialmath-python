@@ -17,6 +17,7 @@ Spatial mathematics capability underpins all of robotics and robotic vision wher
 
 * GitHub repository [https://github.com/petercorke/spatialmath-python](https://github.com/petercorke/spatialmath-python)      
 * Documentation [https://petercorke.github.io/spatialmath-python](https://petercorke.github.io/spatialmath-python)
+* Additional details on Wiki [https://github.com/petercorke/spatialmath-python/wiki](https://github.com/petercorke/spatialmath-python/wiki)
 * Dependencies: `numpy`, `scipy`, `matplotlib`, `ffmpeg` (if rendering animations as a movie)
 
 
