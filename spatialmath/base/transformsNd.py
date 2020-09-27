@@ -522,6 +522,46 @@ def e2h(v):
         # dealing with matrix
         return np.vstack([v, np.ones((1, v.shape[1]))])
 
+def homtrans(T, p):
+    r"""
+    Apply a homogeneous transformation to a Euclidean vector
+
+    :param T: homogeneous transformation
+    :type T: Numpy array (3,3) or (4,4)
+    :param p: Vector(s) to be transformed
+    :type p: Numpy array (2,), (2,N), (3,) or (3,N)
+    :return: transformed Euclidean vector(s)
+    :rtype: Numpy array (2,), (2,N), (3,) or (3,N)
+
+    ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the points 
+    stored columnwise in ``p``.
+
+    - If ``T`` is in SE(2) (3x3) and
+        - ``p`` is 2xN (2D points) they are considered Euclidean (:math:`\mathbb{R}^2`)
+        - ``p`` is 3xN (2D points) they are considered projective (:math:`\mathbb{P}^2`)
+    - If ``T`` is in SE(3) (4x4) and
+        - ``p`` is 3xN (3D points) they are considered Euclidean (:math:`\mathbb{R}^3`)
+        - ``p`` is 4xN (3D points) they are considered projective (:math:`\mathbb{P}^3`)
+
+    The return value and ``p`` have the same number of rows, ie. if Euclidean points are given
+    then Euclidean points are returned, if projective points are given then
+    projective points are returned.
+
+    Notes:
+    - If T is a homogeneous transformation defining the pose of {B} with respect to {A},
+    then the points are defined with respect to frame {B} and are transformed to be
+    with respect to frame {A}.
+
+    :seealso: :func:`e2h`, :func:`h2e`
+    """
+    if p.shape[0] == T.shape[0] - 1:
+        # Euclidean vector
+        return h2e( T @ e2h(p) )
+    elif p.shape[0] == T.shape[0]:
+        # homogeneous vector
+        return T @ p
+    else:
+        raise ValueError('matrices and point data do not conform')
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
