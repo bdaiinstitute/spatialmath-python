@@ -574,7 +574,7 @@ class Twist3(SMTwist):
         else:
             theta = base.getunit(theta, units)
 
-        if isinstance(theta, (int, np.int64, float, np.float64)):
+        if base.isscalar(theta):
             return SE3(base.trexp(self.S * theta))
         else:
             return SE3([base.trexp(self.S * t) for t in theta])
@@ -864,7 +864,7 @@ class Twist2(SMTwist):
         else:
             theta = base.getunit(theta, units)
 
-        if isinstance(theta, (int, np.int64, float, np.float64)):
+        if base.isscalar(theta):
             return SE2(base.trexp2(self.S * theta))
         else:
             return SE2([base.trexp2(self.S * t) for t in theta])
@@ -915,7 +915,7 @@ class Twist2(SMTwist):
         if isinstance(right, Twist2):
             # twist composition
             return Twist2(left.exp() * right.exp())
-        elif isinstance(right, (int, np.int64, float, np.float64)):
+        elif base.isscalar(right):
             return Twist2(left.S * right)
         else:
             raise ValueError('twist *, incorrect right operand')

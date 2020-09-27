@@ -804,7 +804,7 @@ class SMPose(SMUserList):
                 return np.c_[[tr.h2e(x.A @ tr.e2h(y)) for x, y in zip(right, left.T)]].T
             else:
                 raise ValueError('bad operands')
-        elif isinstance(right, (int, np.int64, float, np.float64)):
+        elif argcheck.isscalar(right):
             return left._op2(right, lambda x, y: x * y)
         else:
             return NotImplemented
@@ -829,7 +829,7 @@ class SMPose(SMUserList):
           an ``SE33`` using their own ``__rmul__`` methods.
 
         """
-        if isinstance(left, (int, np.int64, float, np.float64)):
+        if argcheck.isscalar(left):
             return right.__mul__(left)
         else:
             return NotImplemented
@@ -931,7 +931,7 @@ class SMPose(SMUserList):
         """
         if isinstance(left, right.__class__):
             return left.__class__(left._op2(right.inv(), lambda x, y: x @ y), check=False)
-        elif isinstance(right, (int, np.int64, float, np.float64)):
+        elif argcheck.isscalar(right):
             return left._op2(right, lambda x, y: x / y)
         else:
             raise ValueError('bad operands')
@@ -1204,7 +1204,7 @@ class SMPose(SMUserList):
                     return [op(x, y) for (x, y) in zip(left.A, right.A)]
                 else:
                     raise ValueError('length of lists to == must be same length')
-        elif isinstance(right, (float, int, np.float64, np.int64)) or (isinstance(right, np.ndarray) and right.shape == left.shape):
+        elif argcheck.isscalar(right) or (isinstance(right, np.ndarray) and right.shape == left.shape):
             # class by matrix
             if len(left) == 1:
                 return op(left.A, right)
