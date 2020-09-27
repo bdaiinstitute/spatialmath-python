@@ -484,6 +484,10 @@ class SE2(SO2):
             return y
         return p3.SE3([lift3(x) for x in self])
 
+    def Twist2(self):
+        from spatialmath.twist import Twist2
+
+        return Twist2(self.log(twist=True))
 
 if __name__ == '__main__':  # pragma: no cover
 

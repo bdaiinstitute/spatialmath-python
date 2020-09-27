@@ -1,12 +1,12 @@
 import numpy as np
 import math
 
-from spatialmath.base import argcheck
-import spatialmath.base as tr
-from spatialmath import super_pose as sp
-from spatialmath import SO3, SE3, SO2, SE2, Plucker
+from spatialmath.pose3d import SO3, SE3
+from spatialmath.pose2d import SO2, SE2
+from spatialmath.geom3d import Plucker
+import spatialmath.base as base
 from spatialmath.smuserlist import SMUserList
-
+from spatialmath.spatialvector import SpatialVelocity, SpatialAcceleration, SpatialForce
 
 class SMTwist(SMUserList):
     """
@@ -99,9 +99,9 @@ class SMTwist(SMUserList):
 
         """
         if len(self) == 1:
-            return tr.iszerovec(self.w)
+            return base.iszerovec(self.w)
         else:
-            return [tr.iszerovec(x.w) for x in self.data]
+            return [base.iszerovec(x.w) for x in self.data]
 
     @property
     def unit(self):
@@ -111,12 +111,12 @@ class SMTwist(SMUserList):
         TW.unit() is a Twist object representing a unit aligned with the Twist
         TW.
         """
-        if tr.iszerovec(self.w):
+        if base.iszerovec(self.w):
             # rotational twist
-            return Twist(self.S / tr.norm(S.w))
+            return Twist3(self.S / base.norm(S.w))
         else:
             # prismatic twist
-            return Twist(tr.unitvec(self.v), [0, 0, 0])
+            return Twist3(base.unitvec(self.v), [0, 0, 0])
 
     @property
     def isunit(self):
@@ -228,12 +228,12 @@ class Twist3(SMTwist):
             if super().arghandler(arg, convertfrom=(SE3,), check=check):
                 return
 
-            elif argcheck.isvector(arg, 6):
+            elif base.isvector(arg, 6):
                 # Twist(array_like)
-                self.data = [argcheck.getvector(arg)]
+                self.data = [base.getvector(arg)]
                 return
 
-        elif w is not None and argcheck.isvector(w, 3) and argcheck.isvector(arg,3):
+        elif w is not None and base.isvector(w, 3) and base.isvector(arg,3):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
             return
@@ -249,7 +249,7 @@ class Twist3(SMTwist):
         if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
             if value.shape == (4,4):
                 # it's an se(3)
-                return tr.vexa(value)
+                return base.vexa(value)
             elif value.shape == (6,):
                 # it's a twist vector
                 return value
@@ -329,10 +329,10 @@ class Twist3(SMTwist):
 
         """
 
-        w = tr.unitvec(argcheck.getvector(a, 3))
-        v = -np.cross(w, argcheck.getvector(q, 3))
+        w = base.unitvec(base.getvector(a, 3))
+        v = -np.cross(w, base.getvector(q, 3))
         if p is not None:
-            pitch = argcheck.getvector(p, 3)
+            pitch = base.getvector(p, 3)
             v = v + pitch * w
         return cls(v, w)
 
@@ -348,7 +348,7 @@ class Twist3(SMTwist):
 
         """
         w = np.r_[0, 0, 0]
-        v = tr.unitvec(argcheck.getvector(a, 3))
+        v = base.unitvec(base.getvector(a, 3))
 
         return cls(v, w)
 
@@ -365,15 +365,15 @@ class Twist3(SMTwist):
         :rtype: bool
 
         """
-        if argcheck.isvector(v, 6):
+        if base.isvector(v, 6):
             return True
-        elif argcheck.ismatrix(v, (4, 4)):
+        elif base.ismatrix(v, (4, 4)):
             # maybe be an se(3)
             if not all(v.diagonal() == 0):  # check diagonal is zero
                 return False
             if not all(v[3, :] == 0):  # check bottom row is zero
                 return False
-            if not tr.isskew(v[:3, :3]):
+            if not base.isskew(v[:3, :3]):
                 # top left 3x3 is skew symmetric
                 return False
             return True
@@ -391,7 +391,7 @@ class Twist3(SMTwist):
         - ``X.ad()`` is the 6x6 logarithm of the adjoint matrix of the corresponding
           homogeneous transformation.
         """
-        return np.array([tr.skew(self.w), tr.skew(self.v), [np.zeros((3, 3)), tr.skew(self.w)]])
+        return np.array([base.skew(self.w), base.skew(self.v), [np.zeros((3, 3)), base.skew(self.w)]])
 
     def Ad(self):
         """
@@ -429,9 +429,9 @@ class Twist3(SMTwist):
           skew-symmetric 4x4 matrix.
         """
         if len(self) == 1:
-            return tr.skewa(self.S)
+            return base.skewa(self.S)
         else:
-            return [tr.skewa(x.S) for x in self]
+            return [base.skewa(x.S) for x in self]
 
     def pitch(self):
         """
@@ -478,11 +478,11 @@ class Twist3(SMTwist):
 
         - ``X.theta`` is the rotation about the twist axis in units of radians.
         """
-        return tr.norm(self.w)
+        return base.norm(self.w)
 
     # ------------------------- arithmetic -------------------------------#
 
-    def __mul__(left, right):
+    def __mul__(self, right):
         """
         Overloaded ``*`` operator
 
@@ -533,31 +533,29 @@ class Twist3(SMTwist):
 
         """
         # TODO TW * T compounds a twist with an SE2/3 transformation
+        left = self
 
         if isinstance(right, Twist3):
             # twist composition -> Twist
-            return Twist3(left.binop(right, lambda x, y: tr.trlog(tr.trexp(x) @ tr.trexp(y), twist=True)))
+            return Twist3(left.binop(right, lambda x, y: base.trlog(base.trexp(x) @ base.trexp(y), twist=True)))
         elif isinstance(right, SE3):
             # twist * SE3 -> SE3
-            return SE3(left.binop(right, lambda x, y: tr.trexp(x) @ y), check=False)
-        elif argcheck.isscalar(right):
+            return SE3(left.binop(right, lambda x, y: base.trexp(x) @ y), check=False)
+        elif base.isscalar(right):
             # return Twist(left.S * right)
             return Twist3(left.binop(right, lambda x, y: x * y))
         elif isinstance(right, SpatialVelocity):
-            return SpatialVelocity(a.Ad @ b.vw)
+            return SpatialVelocity(left.Ad @ right.V)
         elif isinstance(right, SpatialAcceleration):
-            return SpatialAcceleration(a.Ad @ b.vw)
+            return SpatialAcceleration(left.Ad @ right.V)
         elif isinstance(right, SpatialForce):
-            return SpatialForce(a.Ad @ b.vw)
+            return SpatialForce(left.Ad @ right.V)
         else:
             raise ValueError('twist *, incorrect right operand')
 
-    def __imul__(left, right):
-        return left.__mul__(right)
-
-    def __rmul(right, left):
-        if argcheck.isscalar(left):
-            return Twist3(right.S * left)
+    def __rmul(self, left):
+        if base.isscalar(left):
+            return Twist3(self.S * left)
         else:
             raise ValueError('twist *, incorrect left operand')
 
@@ -771,7 +769,7 @@ class Twist2(SMTwist):
         - ``Twist3.R(q)`` is a 2D Twist object representing rotation about the 2D point ``q``.
         """
 
-        q = argcheck.getvector(q, 2)
+        q = base.getvector(q, 2)
         v = -np.cross(np.r_[0.0, 0.0, 1.0], np.r_[q, 0.0])
         return cls(v[:2], 1)
 
@@ -788,7 +786,7 @@ class Twist2(SMTwist):
         - ``Twist3.P(q)`` is a 2D Twist object representing 2D-translation in the direction ``a``.
         """
         w = 0
-        v = tr.unitvec(argcheck.getvector(a, 2))
+        v = base.unitvec(base.getvector(a, 2))
         return cls(v, w)
 
     @property
@@ -864,9 +862,8 @@ class Twist2(SMTwist):
             See also Twist3.T, SE2, SE3.
         """
 
-        return SE2(tw.exp())
+        return SE2(self.exp())
 
-    @property
     def se2(self):
         """
         Twist3.se Return the twist matrix
@@ -876,9 +873,9 @@ class Twist2(SMTwist):
 
         """
         if len(self) == 1:
-            return tr.skewa(self.S)
+            return base.skewa(self.S)
         else:
-            return [tr.skewa(x.S) for x in self]
+            return [base.skewa(x.S) for x in self]
 
     def exp(self, theta=None, units='rad'):
         """
@@ -900,12 +897,12 @@ class Twist2(SMTwist):
         if theta is None:
             theta = 1
         else:
-            theta = argcheck.getunit(theta, units)
+            theta = base.getunit(theta, units)
 
         if isinstance(theta, (int, np.int64, float, np.float64)):
-            return SE2(tr.trexp2(self.S * theta))
+            return SE2(base.trexp2(self.S * theta))
         else:
-            return SE2([tr.trexp2(self.S * t) for t in theta])
+            return SE2([base.trexp2(self.S * t) for t in theta])
 
     @property
     def unit(self):
@@ -915,12 +912,12 @@ class Twist2(SMTwist):
         TW.unit() is a Twist object representing a unit aligned with the Twist
         TW.
         """
-        if tr.iszerovec(self.w):
+        if base.iszerovec(self.w):
             # rotational twist
-            return Twist2(self.S / tr.norm(S.w))
+            return Twist2(self.S / base.norm(S.w))
         else:
             # prismatic twist
-            return Twist2(tr.unitvec(self.v), [0, 0, 0])
+            return Twist2(base.unitvec(self.v), [0, 0, 0])
 
     @property
     def ad(self):

@@ -23,10 +23,8 @@ To use::
 import numpy as np
 
 from spatialmath.base import argcheck
-from spatialmath import base as tr
-# from spatialmath import Twist
+import spatialmath.base as tr
 from spatialmath.super_pose import SMPose
-import spatialmath as sm
 
 
 # ============================== SO3 =====================================#
@@ -540,7 +538,6 @@ class SO3(SMPose):
         else:
             return cls(tr.trexp(S, check=check), check=False)
 
-
 # ============================== SE3 =====================================#
 
 
@@ -681,7 +678,10 @@ class SE3(SO3):
         return tr.tr2delta(self.A, X2.A)
 
     def Twist3(self):
-        return sm.Twist3(self.log(twist=True))
+
+        from spatialmath.twist import Twist3
+
+        return Twist3(self.log(twist=True))
     # ------------------------------------------------------------------------ #
 
     @staticmethod
