@@ -758,24 +758,24 @@ class Test3D(unittest.TestCase):
         R = rotx(0.3) @  roty(0.4)
         s = trprint(R, file=None)
         self.assertIsInstance(s, str)
-        self.assertEqual(len(s), 43)
+        self.assertEqual(len(s), 42)
 
         T = transl(1, 2, 3) @ trotx(0.3) @  troty(0.4)
         s = trprint(T, file=None)
         self.assertIsInstance(s, str)
-        self.assertEqual(len(s), 76)
+        self.assertEqual(len(s), 75)
         self.assertTrue('rpy' in s)
         self.assertTrue('zyx' in s)
 
         s = trprint(T, file=None, orient='rpy/xyz')
         self.assertIsInstance(s, str)
-        self.assertEqual(len(s), 76)
+        self.assertEqual(len(s), 75)
         self.assertTrue('rpy' in s)
         self.assertTrue('xyz' in s)
 
         s = trprint(T, file=None, orient='eul')
         self.assertIsInstance(s, str)
-        self.assertEqual(len(s), 72)
+        self.assertEqual(len(s), 71)
         self.assertTrue('eul' in s)
         self.assertFalse('zyx' in s)
 
