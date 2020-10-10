@@ -596,10 +596,21 @@ class SMPose(SMUserList):
 
         """
         #print('in __str__', _color)
-
-        def FG(c): return fg(c) if _color else ''
-        def BG(c): return bg(c) if _color else ''
-        def ATTR(c): return attr(c) if _color else ''
+        
+        if _color:
+            # bgcol = bg('grey_93')
+            bgcol = ''
+            trcol = fg('blue')
+            rotcol = fg('red')
+            constcol = fg('grey_50')
+            reset = attr(0)
+            indexcol = bg('yellow_2')
+        else:
+            bgcol = ''
+            trcol = ''
+            rotcol = ''
+            constcol = ''
+            reset = ''
 
         def mformat(self, X):
             # X is an ndarray value to be display
@@ -620,15 +631,15 @@ class SMPose(SMUserList):
                     if rownum < n:
                         if colnum < n:
                             # rotation part
-                            s = FG('red') + BG('grey_93') + s + ATTR(0)
+                            s = rotcol + bgcol + s + reset
                         else:
                             # translation part
-                            s = FG('blue') + BG('grey_93') + s + ATTR(0)
+                            s = trcol + bgcol + s + reset
                     else:
                         # bottom row
-                        s = FG('grey_50') + BG('grey_93') + s + ATTR(0)
+                        s = constcol + bgcol + s + reset
                     rowstr += s
-                out += rowstr + BG('grey_93') + '  ' + ATTR(0) + '\n'
+                out += rowstr + bgcol + '  ' + reset + '\n'
             return out
 
         output_str = ''
@@ -642,7 +653,8 @@ class SMPose(SMUserList):
             # sequence case
             for count, X in enumerate(self.data):
                 # add separator lines and the index
-                output_str += FG('green') + '[{:d}] =\n'.format(count) + ATTR(0) + mformat(self, X)
+                output_str += indexcol + '[{:d}] ='.format(count) + reset \
+                    + '\n' + mformat(self, X)
 
         return output_str
 
