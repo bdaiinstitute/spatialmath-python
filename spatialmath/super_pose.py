@@ -436,7 +436,7 @@ class SMPose(SMUserList):
         .. todo:: No need to simplify the constants in bottom row
         """
         vf = np.vectorize(sympy.simplify)
-        return self.__class__([vf(x) for x in self.data], chec=False)
+        return self.__class__([vf(x) for x in self.data], check=False)
 
     # ----------------------- i/o stuff
 
