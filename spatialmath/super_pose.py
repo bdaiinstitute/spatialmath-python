@@ -936,22 +936,6 @@ class SMPose(SMUserList):
         else:
             raise ValueError('bad operands')
 
-    # def __itruediv__(left, right):
-    #     """
-    #     Overloaded ``/=`` operator (superclass method)
-
-    #     :arg left: left dividend
-    #     :arg right: right divisor
-    #     :return: quotient
-    #     :raises: ValueError
-
-    #     - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``
-    #     - ``X /= s`` performs elementwise division of the elements of ``X`` by ``s``
-
-    #     :seealso: ``__truediv__``
-    #     """
-    #     return left.__truediv__(right)
-
     def __add__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
@@ -1210,3 +1194,9 @@ class SMPose(SMUserList):
                 return op(left.A, right)
             else:
                 return [op(x, right) for x in left.A]
+
+if __name__ == "__main__":
+    from spatialmath import SE3
+    x = SE3.Rand(N=6)
+
+    print(x)
