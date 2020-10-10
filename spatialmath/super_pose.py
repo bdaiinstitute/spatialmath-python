@@ -446,13 +446,15 @@ class SMPose(SMUserList):
 
         :param label: text label to put at start of line
         :type label: str
-        :param file: file to write formatted string to. [default, stdout]
-        :type file: str
         :param fmt: conversion format for each number as used by ``format()``
         :type fmt: str
+        :param label: text label to put at start of line
+        :type label: str
+        :param orient: 3-angle convention to use
+        :type orient: str
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :return: optional formatted string
+        :return: formatted string
         :rtype: str
 
         For SO(3) or SE(3) also:
