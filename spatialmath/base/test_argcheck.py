@@ -28,6 +28,56 @@ class Test_check(unittest.TestCase):
 
         self.assertFalse(ismatrix(1, (-1, -1)))
 
+    def test_getmatrix(self):
+
+        a = np.random.rand(4,3)
+        self.assertEqual(getmatrix(a, (4,3)).shape, (4,3))
+        self.assertEqual(getmatrix(a, (None,3)).shape, (4,3))
+        self.assertEqual(getmatrix(a, (4,None)).shape, (4,3))
+        self.assertEqual(getmatrix(a, (None,None)).shape, (4,3))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (5, 3))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (5, None))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (None, 4))
+
+        with self.assertRaises(TypeError):
+            m = getmatrix({}, (4,3))
+
+        a = np.r_[1,2,3,4]
+        self.assertEqual(getmatrix(a, (1, 4)).shape, (1,4))
+        self.assertEqual(getmatrix(a, (4, 1)).shape, (4,1))
+        self.assertEqual(getmatrix(a, (2, 2)).shape, (2,2))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (5, None))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (None,5))
+
+        a = 7
+        self.assertEqual(getmatrix(a, (1, 1)).shape, (1,1))
+        self.assertEqual(getmatrix(a, (None, None)).shape, (1,1))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (2,1))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (1,2))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (None,2))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (2,None))
+
+        a = 7.0
+        self.assertEqual(getmatrix(a, (1, 1)).shape, (1,1))
+        self.assertEqual(getmatrix(a, (None, None)).shape, (1,1))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (2,1))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (1,2))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (None,2))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (2,None))
+
     def test_unit(self):
         nt.assert_equal(getunit(5, 'rad'), 5)
         nt.assert_equal(getunit(5, 'deg'), 5 * math.pi / 180.0)
