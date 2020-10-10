@@ -312,6 +312,21 @@ def angdiff(a, b):
 
     return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
 
+def removesmall(v, tol=100):
+    """
+    Set small values to zero
+
+    :param v: Input vector
+    :type v: array-like
+    :param tol: Tolerance in units of eps, defaults to 100
+    :type tol: int, optional
+    :return: Input vector with small values set to zero
+    :rtype: NumPy ndarray
+
+    Values with absolute value less than ``tol`` will be set to zero.
+    """
+    return np.where(abs(v) < tol * _eps, 0, v)
+
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
