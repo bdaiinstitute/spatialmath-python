@@ -695,7 +695,7 @@ class SMPose(SMUserList):
     #----------------------- arithmetic
 
 
-    def __mul__(left, right):
+    def __mul__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -809,7 +809,7 @@ class SMPose(SMUserList):
         else:
             return NotImplemented
 
-    def __rmul__(right, left):
+    def __rmul__(right, left):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -834,7 +834,7 @@ class SMPose(SMUserList):
         else:
             return NotImplemented
 
-    def __imul__(left, right):
+    def __imul__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -884,7 +884,7 @@ class SMPose(SMUserList):
     # def __ipow__(self, n):
     #     return self.__pow__(n)
 
-    def __truediv__(left, right):
+    def __truediv__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -952,7 +952,7 @@ class SMPose(SMUserList):
     #     """
     #     return left.__truediv__(right)
 
-    def __add__(left, right):
+    def __add__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1004,7 +1004,7 @@ class SMPose(SMUserList):
         # results is not in the group, return an array, not a class
         return left._op2(right, lambda x, y: x + y)
 
-    def __radd__(left, right):
+    def __radd__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1023,7 +1023,7 @@ class SMPose(SMUserList):
     # def __iadd__(left, right):
     #     return left.__add__(right)
 
-    def __sub__(left, right):
+    def __sub__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1075,7 +1075,7 @@ class SMPose(SMUserList):
         # TODO allow class +/- a conformant array
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(left, right):
+    def __rsub__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1094,7 +1094,7 @@ class SMPose(SMUserList):
     # def __isub__(left, right):
     #     return left.__sub__(right)
 
-    def __eq__(left, right):
+    def __eq__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
@@ -1126,7 +1126,7 @@ class SMPose(SMUserList):
         assert type(left) == type(right), 'operands to == are of different types'
         return left._op2(right, lambda x, y: np.allclose(x, y))
 
-    def __ne__(left, right):
+    def __ne__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``!=`` operator
 
@@ -1155,9 +1155,9 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
-        return [not x for x in self == right]
+        return [not x for x in left == right]
 
-    def _op2(left, right, op):
+    def _op2(left, right, op):  # pylint: disable=no-self-argument
         """
         Perform binary operation
 
