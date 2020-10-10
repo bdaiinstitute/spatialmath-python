@@ -873,7 +873,7 @@ class SMPose(SMUserList):
         Tprod = self.__class__._identity()  # identity value
         for T in self.data:
             Tprod = Tprod @ T
-        return Tprod
+        return self.__class__(Tprod)
 
     def __pow__(self, n):
         """
