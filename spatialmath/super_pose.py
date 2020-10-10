@@ -526,7 +526,15 @@ class SMPose(SMUserList):
             In [1]: x
 
         """
-        print(self.__str__())
+        # see https://ipython.org/ipython-doc/stable/api/generated/IPython.lib.pretty.html
+        s = str(self).split('\n')
+        p.begin_group(4, self.__class__.__name__ + ':' +  s[0])
+        p.break_()
+        for i, s in enumerate(s[1:]):
+            p.text(s)
+            if i < len(s) - 2:
+                p.break_()
+        p.end_group(4, '')
 
     def __str__(self):
         """
