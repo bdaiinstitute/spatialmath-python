@@ -53,7 +53,7 @@ from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
 from spatialmath.base import quaternions as quat
 from spatialmath.base import animate
-import spatialmath.base.symbolic as sym
+from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 

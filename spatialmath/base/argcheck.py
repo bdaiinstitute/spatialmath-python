@@ -9,11 +9,10 @@ Utilities functions for testing passed arguments to spatialmath.
 
 import math
 import numpy as np
-from spatialmath.base.symbolic import issymbol, symtype
-
+from spatialmath.base import symbolic as sym
 
 # valid scalar types
-_scalartypes = (int, np.int64, float, np.float64) + symtype
+_scalartypes = (int, np.int64, float, np.float64) + sym.symtype
 
 def isscalar(x):
     """
@@ -218,7 +217,7 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
     if isinstance(v, (list, tuple)):
         # list or tuple was passed in
 
-        if issymbol(v):
+        if sym.issymbol(v):
             dt = None
             
         if dim is not None and v and len(v) != dim:

@@ -19,7 +19,7 @@ from spatialmath.base import vectors as vec
 from spatialmath.base import transforms2d as t2d
 from spatialmath.base import transforms3d as t3d
 from spatialmath.base import argcheck
-import spatialmath.base.symbolic as sym
+from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
