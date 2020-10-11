@@ -48,36 +48,9 @@ from spatialmath.base import argcheck
 from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
 from spatialmath.base import animate
-
-
-try:  # pragma: no cover
-    #print('Using SymPy')
-    import sympy as sym
-
-    def _issymbol(x):
-        return isinstance(x, sym.Symbol)
-except ImportError:
-    def _issymbol(x):  # pylint: disable=unused-argument
-        return False
+import spatialmath.base.symbolic as sym
 
 _eps = np.finfo(np.float64).eps
-
-
-# ---------------------------------------------------------------------------------------#
-
-
-def _cos(theta):
-    if _issymbol(theta):
-        return sym.cos(theta)
-    else:
-        return math.cos(theta)
-
-
-def _sin(theta):
-    if _issymbol(theta):
-        return sym.sin(theta)
-    else:
-        return math.sin(theta)
 
 
 # ---------------------------------------------------------------------------------------#
@@ -96,13 +69,11 @@ def rot2(theta, unit='rad'):
     - ``ROT2(THETA, 'deg')`` as above but THETA is in degrees.
     """
     theta = argcheck.getunit(theta, unit)
-    ct = _cos(theta)
-    st = _sin(theta)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     R = np.array([
         [ct, -st],
         [st, ct]])
-    if not _issymbol(theta):
-        R = R.round(15)
     return R
 
 

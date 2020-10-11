@@ -53,34 +53,11 @@ from spatialmath.base import vectors as vec
 from spatialmath.base import transformsNd as trn
 from spatialmath.base import quaternions as quat
 from spatialmath.base import animate
-
-try:  # pragma: no cover
-    # print('Using SymPy')
-    import sympy as sym
-
-    def _issymbol(x):
-        return isinstance(x, sym.Symbol)
-except ImportError:
-    def _issymbol(x):  # pylint: disable=unused-argument
-        return False
+import spatialmath.base.symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
-
-
-def _cos(theta):
-    if _issymbol(theta):
-        return sym.cos(theta)
-    else:
-        return math.cos(theta)
-
-
-def _sin(theta):
-    if _issymbol(theta):
-        return sym.sin(theta)
-    else:
-        return math.sin(theta)
 
 
 def rotx(theta, unit="rad"):
@@ -102,8 +79,8 @@ def rotx(theta, unit="rad"):
     """
 
     theta = argcheck.getunit(theta, unit)
-    ct = _cos(theta)
-    st = _sin(theta)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     R = np.array([
         [1, 0, 0],
         [0, ct, -st],
@@ -131,8 +108,8 @@ def roty(theta, unit="rad"):
     """
 
     theta = argcheck.getunit(theta, unit)
-    ct = _cos(theta)
-    st = _sin(theta)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     R = np.array([
         [ct, 0, st],
         [0, 1, 0],
@@ -159,8 +136,8 @@ def rotz(theta, unit="rad"):
     :seealso: :func:`~yrotz`
     """
     theta = argcheck.getunit(theta, unit)
-    ct = _cos(theta)
-    st = _sin(theta)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     R = np.array([
         [ct, -st, 0],
         [st, ct, 0],
@@ -1315,7 +1292,7 @@ def tr2jac(T, samebody=False):
         return np.block([[R.T, Z], [Z, R.T]])
 
 
-def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
+def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', degsym=True, unit='deg'):
     """
     Compact display of SO(3) or SE(3) matrices
 
@@ -1394,11 +1371,15 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
         else:
             seq = None
         angles = tr2rpy(T, order=seq, unit=unit)
-        s += ' {} = {} {}'.format(orient, _vec2s(fmt, angles), unit)
+        if degsym and unit == "deg":
+            fmt += "\u00b0"
+        s += ' {} = {}'.format(orient, _vec2s(fmt, angles))
 
     elif a[0].startswith('eul'):
         angles = tr2eul(T, unit)
-        s += ' eul = {} {}'.format(_vec2s(fmt, angles), unit)
+        if degsym and unit == "deg":
+            fmt += "\u00b0"
+        s += ' eul = {}'.format(_vec2s(fmt, angles))
 
     elif a[0] == 'angvec':
         # as a vector and angle
@@ -1406,7 +1387,10 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', uni
         if theta == 0:
             s += ' R = nil'
         else:
-            s += ' angvec = ({} {} | {})'.format(fmt.format(theta), unit, _vec2s(fmt, v))
+            theta = fmt.format(theta)
+            if degsym and unit == "deg":
+                theta += "\u00b0"
+            s += ' angvec = ({} | {})'.format(theta, _vec2s(fmt, v))
     else:
         raise ValueError('bad orientation format')
 

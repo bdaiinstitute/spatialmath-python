@@ -19,6 +19,7 @@ from spatialmath.base import vectors as vec
 from spatialmath.base import transforms2d as t2d
 from spatialmath.base import transforms3d as t3d
 from spatialmath.base import argcheck
+import spatialmath.base.symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
@@ -41,21 +42,25 @@ def r2t(R, check=False):
 
     :seealso: t2r, rt2tr
     """
-
-    assert isinstance(R, np.ndarray)
     dim = R.shape
     assert dim[0] == dim[1], 'Matrix must be square'
-
-    if check and np.abs(np.linalg.det(R) - 1) < 100 * _eps:
-        raise ValueError('Invalid rotation matrix ')
-
-    # T = np.pad(R, (0, 1), mode='constant')
-    # T[-1, -1] = 1.0
     n = dim[0] + 1
     m = dim[0]
-    T = np.zeros((n, n))
+
+    if R.dtype == 'O':
+        # symbolic matrix
+        T = np.zeros((n, n), dtype='O')
+    else:
+        # numeric matrix
+        assert isinstance(R, np.ndarray)
+        if check and np.abs(np.linalg.det(R) - 1) < 100 * _eps:
+            raise ValueError('Invalid rotation matrix ')
+
+        # T = np.pad(R, (0, 1), mode='constant')
+        # T[-1, -1] = 1.0
+        T = np.zeros((n, n))
     T[:m,:m] = R
-    T[-1, -1] = 1.0
+    T[-1, -1] = 1
 
     return T
 
