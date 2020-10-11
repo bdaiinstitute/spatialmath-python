@@ -612,7 +612,7 @@ class Twist3(SMTwist):
                 raise ValueError('length of twist and theta not consistent')
 
     def prod(self):
-        """
+        r"""
         Product of 3D twists
  
         :return: Product of elements

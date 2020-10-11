@@ -96,7 +96,7 @@ def ismatrix(m, shape):
     return True
 
 def getmatrix(m, shape):
-    """
+    r"""
     Converrt argument to 2D array
 
     :param m: input value
@@ -119,7 +119,7 @@ def getmatrix(m, shape):
          reshaped to ``shape``.  A n-array could be reshaped as (n,1) or (1,n)
          or any other shape with the correct number of elements.  A value of
          ``None`` in the shape stands for unspecified, ie. ``(None, 2)`` will 
-         attempt to reshape ``m`` as an array with shape (k,2) where $k \times 2 \eq n$.
+         attempt to reshape ``m`` as an array with shape (k,2) where :math:`k \times 2 \eq n`.
        - If ``m`` is a scalar, return an array of shape (1,1)
 
     :seealso: ismatrix, verifymatrix
