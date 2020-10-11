@@ -54,6 +54,15 @@ class Test_check(unittest.TestCase):
         with self.assertRaises(ValueError):
             m = getmatrix(a, (None,5))
 
+        a = [1,2,3,4]
+        self.assertEqual(getmatrix(a, (1, 4)).shape, (1,4))
+        self.assertEqual(getmatrix(a, (4, 1)).shape, (4,1))
+        self.assertEqual(getmatrix(a, (2, 2)).shape, (2,2))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (5, None))
+        with self.assertRaises(ValueError):
+            m = getmatrix(a, (None,5))
+
         a = 7
         self.assertEqual(getmatrix(a, (1, 1)).shape, (1,1))
         self.assertEqual(getmatrix(a, (None, None)).shape, (1,1))

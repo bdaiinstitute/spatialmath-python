@@ -89,14 +89,20 @@ def ismatrix(m, shape):
     return True
 
 def getmatrix(m, shape):
-    if isinstance(m, np.ndarray):
-        # passed a 1D or 2D array
+    if isinstance(m, np.ndarray) and len(m.shape) == 2:
+        # passed a 2D array
         mshape = m.shape
 
-        if len(mshape) == 1:
+        if (shape[0] is None or shape[0] == mshape[0]) and (shape[1] is None or shape[1] == mshape[1]):
+                return m
+        else:
+            raise ValueError(f"expecting {shape} but got {mshape}")
+
+    elif isvector(m):
             # passed a 1D array
+            m = getvector(m)
             if shape[0] is not None and shape[1] is not None:
-                if m.size == np.prod(shape):
+                if len(m) == np.prod(shape):
                     return m.reshape(shape)
                 else:
                     raise ValueError('array cannot be reshaped')
@@ -105,23 +111,8 @@ def getmatrix(m, shape):
             elif shape[0] is None and shape[1] is not None:
                 return m.reshape((-1, shape[1]))
             else:
-                return m
+                return m.reshape((1, -1))
 
-        elif len(mshape) == 2:
-            # passed a 2D array
-            if (shape[0] is None or shape[0] == mshape[0]) and (shape[1] is None or shape[1] == mshape[1]):
-                return m
-            else:
-                raise ValueError(f"expecting {shape} but got {mshape}")
-        else:
-            raise ValueError('expecting 1D or 2D array')
-
-    elif isscalar(m):
-        # passed a scalar
-        if (shape[0] is None or shape[0] == 1) and (shape[1] is None or shape[1] == 1):
-            return np.array([[m]])
-        else:
-            raise ValueError('required shape not compatible with passed scalar')
     else:
         raise TypeError('argument must be scalar or ndarray')
   
