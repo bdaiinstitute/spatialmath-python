@@ -848,7 +848,7 @@ class SMPose(SMUserList):
 
         #. For other left-operands return ``NotImplemented``.  Other classes
           such as ``Plucker`` and ``Twist`` implement left-multiplication by
-          an ``SE33`` using their own ``__rmul__`` methods.
+          an ``SE3`` using their own ``__rmul__`` methods.
 
         """
         if argcheck.isscalar(left):
