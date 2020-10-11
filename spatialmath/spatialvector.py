@@ -153,7 +153,7 @@ class SpatialVector(SMUserList):
         return  self.__class__([-x for x in self.data])
 
 
-    def __add__(left, right):
+    def __add__(left, right):  # pylint: disable=no-self-argument
         """
         Addition for spatial vectors
 
@@ -170,7 +170,7 @@ class SpatialVector(SMUserList):
 
         return left.__class__([x + y for x, y in zip(left.data, right.data)])
 
-    def __sub__(left, right):
+    def __sub__(left, right):  # pylint: disable=no-self-argument
         """
         Subtraction Addition for spatial vectors
 
@@ -272,14 +272,14 @@ class SpatialM6(SpatialVector):
         else:
             raise TypeError('type mismatch')
 
-    def __mul(left, right):
+    def __mul(left, right):  # pylint: disable=no-self-argument
         return left.cross(right)
 
-    def __rmul(right, left):
+    def __rmul(right, left):  # pylint: disable=no-self-argument
         if isinstance(left, SpatialInertia):
             # result is SpatialMomentum
             pass  # TODO
-        elif isinstance(left, Twist):
+        elif isinstance(left, Twist3):
             # result is transformed SpatialVelocity or SpatialAcceleration
             # Twist * SpatialVelocity -> SpatialVelocity
             # Twist * SpatialAcceleration -> SpatialAcceleration
@@ -411,7 +411,7 @@ class SpatialForce(SpatialF6):
         super().__init__(value)
 # n = SpatialForce(val);
 
-    def __rmul(right, left):
+    def __rmul(right, left):  # pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
         return SpatialForce(left.Ad.T @ right.V)
 
@@ -509,7 +509,7 @@ class SpatialInertia(SMUserList):
         return str(self.I)
 
 
-    def __add__(left, right):
+    def __add__(left, right):  # pylint: disable=no-self-argument
         """
         Spatial inertia addition
         :param left:
@@ -523,7 +523,7 @@ class SpatialInertia(SMUserList):
         assert type(left) == type(right), 'spatial inertia can only be added to spatial inertia'
         return SpatialInertia(a.I + b.I)
 
-    def __mul__(self, right):
+    def __mul__(self, right):  # pylint: disable=no-self-argument
         """
         Spatial inertia product
 
@@ -538,15 +538,15 @@ class SpatialInertia(SMUserList):
         left = self
 
         if isinstance(right, SpatialAcceleration):
-            v = SpatialForce(left.I @ right.V);  # F = ma
-        elif instance(right, SpatialVelocity):
+            v = SpatialForce(left.I @ right.V)  # F = ma
+        elif isinstance(right, SpatialVelocity):
             # crf(v(i).vw)*model.I(i).I*v(i).vw;
             # v = Wrench( a.cross() * I.I * a.vw );
             v = SpatialMomentum(left.I * right.V)   # M = mv
         else:
             raise TypeError('bad postmultiply operands for Inertia *')
 
-    def __rmul__(self, left):
+    def __rmul__(self, left):  # pylint: disable=no-self-argument
         """
         Spatial inertia product
 

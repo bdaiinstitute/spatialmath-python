@@ -6,7 +6,7 @@ from collections import namedtuple
 from collections import UserList
 
 from  spatialmath.base import argcheck as arg
-from spatialmath import base as sm
+import spatialmath.base as base
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from spatialmath import SE3
@@ -227,16 +227,14 @@ class Plucker(SMUserList):
         :seealso: Plucker.PQ, Plucker.Planes, Plucker.PointDir
         """
         super().__init__()  # enable list powers
+
         if w is None:
-            # single parameter
-            if isinstance(v, Plucker):
-                self.data = [v.A]
-            elif arg.isvector(v, 6):
-                pl = arg.getvector(v)
-                self.data = [pl]
-            else:
-                raise ValueError('bad argument')
+            # zero or one arguments passed
+            if super().arghandler(v, convertfrom=(SE3,)):
+                return
+
         else:
+            # additional arguments
             assert arg.isvector(v, 3) and arg.isvector(w, 3), 'expecting two 3-vectors'
             self.data = [np.r_[v, w]]
             
@@ -252,8 +250,8 @@ class Plucker(SMUserList):
         return np.zeros((6,))
 
     @staticmethod
-    def isvalid(x):
-        return x.shape == self.shape
+    def isvalid(x, check=False):
+        return x.shape == (6,)
 
     @staticmethod
     def PQ(P=None, Q=None):
@@ -396,7 +394,7 @@ class Plucker(SMUserList):
 
         ``line.uw`` is a unit-vector parallel to the line.
         """
-        return sm.unitvec(self.w)
+        return base.unitvec(self.w)
     
     @property
     def vec(self):
@@ -430,7 +428,8 @@ class Plucker(SMUserList):
            given by :math:`\vee C M C^T` where :math:`C \in \mathbf{R}^{3 \times 4}` is the camera matrix.
         """
         
-        v = self.v; w = self.w;
+        v = self.v
+        w = self.w
         
         # the following matrix is at odds with H&Z pg. 72
         return np.array([
@@ -471,7 +470,7 @@ class Plucker(SMUserList):
         """
         return math.sqrt(np.dot(self.v, self.v) / np.dot(self.w, self.w) )
 
-    def point(L, lam):
+    def point(self, lam):
         r"""
         Generate point on line
        
@@ -488,7 +487,7 @@ class Plucker(SMUserList):
         :seealso: Plucker.pp, Plucker.closest, Plucker.uw
         """
         lam = arg.getvector(lam, out='row')
-        return L.pp.reshape((3,1)) + L.uw.reshape((3,1)) * lam
+        return self.pp.reshape((3,1)) + self.uw.reshape((3,1)) * lam
 
     # ------------------------------------------------------------------------- #
     #  TESTS ON PLUCKER OBJECTS
@@ -520,7 +519,7 @@ class Plucker(SMUserList):
         else:
             raise ValueError('bad argument')
 
-    def __eq__(l1, l2):
+    def __eq__(l1, l2):  # pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
         
@@ -536,9 +535,9 @@ class Plucker(SMUserList):
         space.  Note that because of the over parameterization, lines can be
         equivalent even if their coordinate vectors are different.
         """
-        return abs( 1 - np.dot(sm.unitvec(l1.vec), sm.unitvec(l2.vec))) < 10*_eps
+        return abs( 1 - np.dot(base.unitvec(l1.vec), base.unitvec(l2.vec))) < 10*_eps
     
-    def __ne__(l1, l2):
+    def __ne__(l1, l2):  # pylint: disable=no-self-argument
         """
         Test if two lines are not equivalent
         
@@ -556,7 +555,7 @@ class Plucker(SMUserList):
         
         return not l1.__eq__(l2)
     
-    def isparallel(l1, l2, tol=10*_eps):
+    def isparallel(l1, l2, tol=10*_eps):  # pylint: disable=no-self-argument
         """
         Test if lines are parallel
         
@@ -577,7 +576,7 @@ class Plucker(SMUserList):
         return np.linalg.norm(np.cross(l1.w, l2.w) ) < tol
 
     
-    def __or__(l1, l2):
+    def __or__(l1, l2):  # pylint: disable=no-self-argument
         """
         Test if lines are parallel as a binary operator
         
@@ -595,7 +594,7 @@ class Plucker(SMUserList):
         return l1.isparallel(l2)
 
     
-    def __xor__(l1, l2):
+    def __xor__(l1, l2):  # pylint: disable=no-self-argument
         
         """
         Test if lines intersect as a binary operator
@@ -623,7 +622,7 @@ class Plucker(SMUserList):
     # ------------------------------------------------------------------------- #       
    
             
-    def intersects(l1, l2):
+    def intersects(l1, l2):  # pylint: disable=no-self-argument
         """
         Intersection point of two lines
         
@@ -644,12 +643,12 @@ class Plucker(SMUserList):
             # lines do intersect
             return -(np.dot(l1.v, l2.w) * np.eye(3, 3) + \
                   l1.w.reshape((3,1)) @ l2.v.reshape((1,3)) - \
-                  l2.w.reshape((3,1)) @ l1.v.reshape((1,3))) * sm.unitvec(np.cross(l1.w, l2.w))
+                  l2.w.reshape((3,1)) @ l1.v.reshape((1,3))) * base.unitvec(np.cross(l1.w, l2.w))
         else:
             # lines don't intersect
             return None
     
-    def distance(l1, l2):
+    def distance(l1, l2):  # pylint: disable=no-self-argument
         """
         Minimum distance between lines
         
@@ -680,7 +679,7 @@ class Plucker(SMUserList):
         return l
 
     
-    def closest(line, x):
+    def closest(self, x):
         """
         Point on line closest to given point
         
@@ -709,14 +708,14 @@ class Plucker(SMUserList):
 
         x = arg.getvector(x, 3)
 
-        lam = np.dot(x - line.pp, line.uw)
-        p = line.point(lam).flatten()  # is the closest point on the line
+        lam = np.dot(x - self.pp, self.uw)
+        p = self.point(lam).flatten()  # is the closest point on the line
         d = np.linalg.norm( x - p)
         
         return namedtuple('closest', 'p d lam')(p, d, lam)
     
     
-    def commonperp(l1, l2):
+    def commonperp(l1, l2):  # pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
         
@@ -740,12 +739,12 @@ class Plucker(SMUserList):
             # lines are skew or intersecting
             w = np.cross(l1.w, l2.w)
             v = np.cross(l1.v, l2.w) - np.cross(l2.v, l1.w) + \
-                (l1 * l2) * np.dot(l1.w, l2.w) * sm.unitvec(np.cross(l1.w, l2.w))
+                (l1 * l2) * np.dot(l1.w, l2.w) * base.unitvec(np.cross(l1.w, l2.w))
             
         return Plucker(v, w)
 
 
-    def __mul__(left, right):
+    def __mul__(left, right):  # pylint: disable=no-self-argument
         r"""
         Reciprocal product
         
@@ -771,7 +770,7 @@ class Plucker(SMUserList):
         else:
             raise ValueError('bad arguments')
         
-    def __rmul__(right, left):
+    def __rmul__(right, left):  # pylint: disable=no-self-argument
         """
         Line transformation
 
@@ -788,7 +787,7 @@ class Plucker(SMUserList):
         :seealso: Plucker.__mul__
         """
         if isinstance(left, SE3):
-            A = np.r_[ np.c_[left.R,          sm.skew(-left.t) @ left.R],
+            A = np.r_[ np.c_[left.R,          base.skew(-left.t) @ left.R],
                        np.c_[np.zeros((3,3)), left.R]
                         ]
             return Plucker( A @ right.vec)  # premultiply by SE3
@@ -800,7 +799,7 @@ class Plucker(SMUserList):
     # ------------------------------------------------------------------------- #       
 
 
-    def intersect_plane(line, plane):
+    def intersect_plane(line, plane):  # pylint: disable=no-self-argument
         r"""
         Line intersection with a plane
         
@@ -851,7 +850,7 @@ class Plucker(SMUserList):
         else:
             return None
 
-    def intersect_volume(line, bounds):
+    def intersect_volume(self, bounds):
         """
         Line intersection with a volume
         
@@ -890,6 +889,14 @@ class Plucker(SMUserList):
         for face in range(0, 6):
             # for each face of the bounding volume
             #  x=xmin, x=xmax, y=ymin, y=ymax, z=zmin, z=zmax
+
+            # planes are:
+            #  0 normal in x direction, xmin
+            #  1 normal in x direction, xmax
+            #  2 normal in y direction, ymin
+            #  3 normal in y direction, ymax
+            #  4 normal in z direction, zmin
+            #  5 normal in z direction, zmax
             
             i = face // 2  # 0, 1, 2
             I = np.eye(3,3)
@@ -899,14 +906,15 @@ class Plucker(SMUserList):
             
             # find where line pierces the plane
             try:
-                p, lam = line.intersect_plane(plane)
+                p, lam = self.intersect_plane(plane)
             except TypeError:
                 continue  # no intersection with this plane
             
-#            # print('face %d: n=(%f, %f, %f), p=(%f, %f, %f)' % (face, plane.n, plane.p))
-#            print('      : p=(%f, %f, %f)  ' % p)
+            # print('face %d: n=(%f, %f, %f)' % (face, plane.n[0], plane.n[1], plane.n[2]))
+            # print('       : p=(%f, %f, %f)  ' % (p[0], p[1], p[2]))
             
             # print('face', face, ' point ', p, ' plane ', plane)
+            # print('lamda', lam, self.point(lam))
             # find if intersection point is within the cube face
             #  test x,y,z simultaneously
             k = (p >= bounds23[:,0]) & (p <= bounds23[:,1])
@@ -919,8 +927,7 @@ class Plucker(SMUserList):
 
         # put them in ascending order
         intersections.sort()
-        
-        p = line.point(intersections)
+        p = self.point(intersections)
         
         return namedtuple('intersect_volume', 'p lam')(p, intersections)
 
@@ -929,7 +936,7 @@ class Plucker(SMUserList):
     #  PLOT AND DISPLAY
     # ------------------------------------------------------------------------- #   
     
-    def plot(line, bounds=None, **kwargs):
+    def plot(self, *pos, bounds=None, axis=None, **kwargs):
         """
          Plot a line
          
@@ -954,24 +961,32 @@ class Plucker(SMUserList):
             
         :seealso: Plucker.intersect_volume
         """
-        
-        if bounds is None:
+        if axis is None:
             ax = plt.gca()
+        else:
+            ax = axis
+
+        if bounds is None:
             bounds = np.r_[ax.get_xlim(), ax.get_ylim(), ax.get_zlim()]
         else:
+            bounds = base.getvector(bounds, 6)
             ax.set_xlim(bounds[:2])
             ax.set_ylim(bounds[2:4])
             ax.set_zlim(bounds[4:6])
+
+        # print(bounds)
         
         #U = self.Q - self.P;
         #line.p = self.P; line.v = unit(U);
         
-        P, lam = line.intersect_volume(bounds)
-        
-        if len(lam) > 0:
-            return ax.plot(P[0,:], P[1,:], P[2,:], **kwargs)
-        else:
-            return None
+        lines = []
+        for line in self:
+            P, lam = line.intersect_volume(bounds)
+            
+            if len(lam) > 0:
+                l = ax.plot3D(P[0,:], P[1,:], P[2,:], *pos, **kwargs)
+                lines.append(l)
+        return lines
 
     def __str__(self):
         """
@@ -990,7 +1005,7 @@ class Plucker(SMUserList):
 
         """
         
-        return '\n'.join(['{{ {:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}}}'.format(*list(x.vec)) for x in self])
+        return '\n'.join(['{{ {:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}}}'.format(*list(base.removesmall(x.vec))) for x in self])
 
     def __repr__(self):
         """
@@ -1016,7 +1031,7 @@ See also Twist.char.
         
     def _repr_pretty_(self, p, cycle):
         """
-        Pretty string for IPython (superclass method)
+        Pretty string for IPython
 
         :param p: pretty printer handle (ignored)
         :param cycle: pretty printer flag (ignored)
@@ -1029,7 +1044,16 @@ See also Twist.char.
             In [1]: x
 
         """
-        print(self.__str__())
+        if len(self) == 1:
+            p.begin_group(8, 'Plücker ')
+            p.text(str(self))
+            p.end_group(8, '')
+        else:
+            p.begin_group(8, 'Plücker(')
+            for i, x in enumerate(self):
+                p.break_()
+                p.text(str(x))
+            p.end_group(8, ')')
 
 #         function z = side(self1, pl2)
 #             Plucker.side Plucker side operator
