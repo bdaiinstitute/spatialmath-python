@@ -10,7 +10,7 @@
 
 # Spatial Maths for Python
 
-![RTB-P logo](https://github.com/petercorke/robotics-toolbox-python/raw/master/docs/figs/CartesianSnakes_LogoW.png)
+![RTB-P logo](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png)
 
 This is a Python implementation of the [Spatial Math Toolbox for MATLAB<sup>&reg;</sup>](https://github.com/petercorke/spatial-math), which is a standalone component of the [Robotics Toolbox for MATLAB<sup>&reg;</sup>](https://github.com/petercorke/robotics-toolbox-matlab).
 
@@ -60,9 +60,9 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/docs/figs/fig1.png)
+![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/fig1.png)
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/source/docs/figs/animate.gif)
+![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/animate.gif)
 
 # Getting going
 
