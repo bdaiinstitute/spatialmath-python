@@ -59,3 +59,10 @@ def zero():
 
 def pi():
     return S.Pi
+
+def simplify(x):
+    if _symbolics:
+        return sympy.simplify(x)
+    else:
+        return x
+

@@ -8,16 +8,9 @@ import copy
 from spatialmath.base import argcheck
 from spatialmath import base as tr
 from spatialmath.smuserlist import SMUserList
-
+from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
-
-try:
-    import sympy
-    _sympy = True
-except ImportError:
-    _sympy = False
-
 
 # colored printing of matrices to the terminal
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
@@ -435,7 +428,7 @@ class SMPose(SMUserList):
 
         .. todo:: No need to simplify the constants in bottom row
         """
-        vf = np.vectorize(sympy.simplify)
+        vf = np.vectorize(sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
 
     # ----------------------- i/o stuff
@@ -621,7 +614,7 @@ class SMPose(SMUserList):
                 rowstr = '  '
                 # format the columns
                 for colnum, element in enumerate(row):
-                    if _sympy and isinstance(element, sympy.Expr):
+                    if sym.issymbol(element):
                         s = '{:<12s}'.format(str(element))
                     else:
                         if tol > 0 and abs(element) < tol * _eps:
