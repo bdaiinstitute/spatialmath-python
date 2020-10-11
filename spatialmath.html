@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Classes &mdash; Spatial Maths package 0.8.2
+  <title>Classes &mdash; Spatial Maths package 0.8.3
  documentation</title>
   
 
@@ -238,7 +238,7 @@ size=&quot;8.0, 12.0&quot;;
   &quot;spatialvector.SpatialM6&quot; -&gt; &quot;spatialvector.SpatialVelocity&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;super_pose.SMPose&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;Superclass for SO(N) and SE(N) objects&quot;];
   &quot;smuserlist.SMUserList&quot; -&gt; &quot;super_pose.SMPose&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
-  &quot;twist.SMTwist&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;Superclass for 2D and 3D twist objects&quot;];
+  &quot;twist.SMTwist&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;Superclass for 3D and 2D twist objects&quot;];
   &quot;smuserlist.SMUserList&quot; -&gt; &quot;twist.SMTwist&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;twist.Twist2&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded];
   &quot;twist.SMTwist&quot; -&gt; &quot;twist.Twist2&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
@@ -2286,13 +2286,14 @@ vector.  Parallel to the y-axis of the frame defined by this pose.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<em>str</em>) – text label to put at start of line</p></li>
-<li><p><strong>file</strong> (<em>str</em>) – file to write formatted string to. [default, stdout]</p></li>
 <li><p><strong>fmt</strong> (<em>str</em>) – conversion format for each number as used by <code class="docutils literal notranslate"><span class="pre">format()</span></code></p></li>
+<li><p><strong>label</strong> – text label to put at start of line</p></li>
+<li><p><strong>orient</strong> (<em>str</em>) – 3-angle convention to use</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>optional formatted string</p>
+<dd class="field-even"><p>formatted string</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -4440,13 +4441,14 @@ become ‘unnormalized’.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<em>str</em>) – text label to put at start of line</p></li>
-<li><p><strong>file</strong> (<em>str</em>) – file to write formatted string to. [default, stdout]</p></li>
 <li><p><strong>fmt</strong> (<em>str</em>) – conversion format for each number as used by <code class="docutils literal notranslate"><span class="pre">format()</span></code></p></li>
+<li><p><strong>label</strong> – text label to put at start of line</p></li>
+<li><p><strong>orient</strong> (<em>str</em>) – 3-angle convention to use</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>optional formatted string</p>
+<dd class="field-even"><p>formatted string</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
@@ -11818,7 +11820,7 @@ behaviours.</p></li>
 
 <dl class="py method">
 <dt id="spatialmath.geom3d.Plucker.isvalid">
-<em class="property">static </em><code class="sig-name descname">isvalid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plucker.isvalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.geom3d.Plucker.isvalid" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">isvalid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">check</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plucker.isvalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.geom3d.Plucker.isvalid" title="Permalink to this definition">¶</a></dt>
 <dd><p>A decorator indicating abstract staticmethods.</p>
 <p>Similar to abstractmethod.</p>
 <p>Usage:</p>
@@ -12519,7 +12521,7 @@ numpy.ndarray, shape=(N,).</p></li>
 
 <dl class="py method">
 <dt id="spatialmath.geom3d.Plucker.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plucker.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.geom3d.Plucker.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">pos</span></em>, <em class="sig-param"><span class="n">bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plucker.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.geom3d.Plucker.plot" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Plot a line</p>
 </div></blockquote>
@@ -12914,11 +12916,11 @@ that the value is a 1D array.</p></li>
 </div>
 <div class="section" id="module-spatialmath.Twist2">
 <span id="twists-se-2"></span><h3>Twists se(2)<a class="headerlink" href="#module-spatialmath.Twist2" title="Permalink to this headline">¶</a></h3>
-<p>Superclass for 2D and 3D twist objects</p>
+<p>Superclass for 3D and 2D twist objects</p>
 <p>Subclasses are:</p>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3</span></code> representing rigid-body motion in 3D as a 6-vector</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Twist2</span></code> representing rigid-body motion in 2D as a 3-vector</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist</span></code> representing rigid-body motion in 3D as a 6-vector</p></li>
 </ul>
 <p>A twist is the unique elements of the logarithm of the corresponding SE(N)
 matrix.</p>
@@ -12929,26 +12931,46 @@ on the types of the operands.  For example:</p>
 an instance of the same subclass, since this is a group operator.</p></li>
 </ul>
 <p>These classes all inherit from <code class="docutils literal notranslate"><span class="pre">UserList</span></code> which enables them to 
-represent a sequence of values, ie. an <code class="docutils literal notranslate"><span class="pre">Twist</span></code> instance can contain
+represent a sequence of values, ie. a <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> instance can contain
 a sequence of twists.  Most of the Python <code class="docutils literal notranslate"><span class="pre">list</span></code> operators
 are applicable:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist</span><span class="p">()</span>  <span class="c1"># new instance with zero value</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">()</span>  <span class="c1"># new instance with zero value</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>     <span class="c1"># it is a sequence of one value</span>
 <span class="go">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># append to itself</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>       <span class="c1"># it is a sequence of two values</span>
 <span class="go">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>         <span class="c1"># the element has a 4x4 matrix value</span>
-<span class="go">SE3([</span>
-<span class="go">array([[1., 0., 0., 0.],</span>
-<span class="go">       [0., 1., 0., 0.],</span>
-<span class="go">       [0., 0., 1., 0.],</span>
-<span class="go">    [0., 0., 0., 1.]]) ])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>  <span class="c1"># set an elements of the sequence</span>
+<span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span><span class="o">.</span><span class="n">Twist3</span><span class="p">()</span>  <span class="c1"># set an elements of the sequence</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>         <span class="c1"># reverse the elements in the sequence</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>            <span class="c1"># delete an element</span>
 </pre></div>
 </div>
+<p>References:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“Mechanics, planning and control”
+Park &amp; Lynch, Cambridge, 2016.</p></li>
+</ul>
+</div></blockquote>
+<p>This class is subclassed for the 3D and 2D cases</p>
+digraph inheritance0b71ef29c6 {
+bgcolor=transparent;
+rankdir=LR;
+size=&quot;8.0, 12.0&quot;;
+  &quot;abc.ABC&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;Helper class that provides a standard way to create an ABC using&quot;];
+  &quot;collections.UserList&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;A more or less complete user-defined wrapper around list objects.&quot;];
+  &quot;smuserlist.SMUserList&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;List properties for spatial math classes&quot;];
+  &quot;collections.UserList&quot; -&gt; &quot;smuserlist.SMUserList&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;abc.ABC&quot; -&gt; &quot;smuserlist.SMUserList&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;twist.SMTwist&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;Superclass for 3D and 2D twist objects&quot;];
+  &quot;smuserlist.SMUserList&quot; -&gt; &quot;twist.SMTwist&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;twist.Twist2&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded];
+  &quot;twist.SMTwist&quot; -&gt; &quot;twist.Twist2&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;twist.Twist3&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=rounded,tooltip=&quot;TWIST SE(2) and SE(3) Twist class&quot;];
+  &quot;twist.SMTwist&quot; -&gt; &quot;twist.Twist3&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+}
 <dl class="py attribute">
 <dt id="spatialmath.Twist2.A">
 <code class="sig-prename descclassname">spatialmath.Twist2.</code><code class="sig-name descname">A</code><a class="headerlink" href="#spatialmath.Twist2.A" title="Permalink to this definition">¶</a></dt>
@@ -12991,12 +13013,6 @@ are applicable:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">X.S</span></code> is a 3-vector if X is a <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> instance, and a 6-vector if
 X is a <code class="docutils literal notranslate"><span class="pre">Twist</span></code> instance.</p></li>
 </ul>
-<p>Notes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- the vector is the unique elements of the se(N) representation
-- the vector is sometimes referred to as the twist coordinate vector.
-- if ``len(X)`` &gt; 1 then return a list of vectors.
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -13014,10 +13030,10 @@ homogeneous transformation.</p>
 <dd><p>Test for prismatic twist (superclass property)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>If twist is purely prismatic</p>
+<dd class="field-odd"><p>Whether twist is purely prismatic</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>book</p>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 <p>Example:</p>
@@ -14555,7 +14571,7 @@ attached to the same moving body.</p></li>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.trprint">
-<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">trprint</code><span class="sig-paren">(</span><em class="sig-param">T</em>, <em class="sig-param">orient='rpy/zyx'</em>, <em class="sig-param">label=None</em>, <em class="sig-param">file=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">fmt='{:8.2g}'</em>, <em class="sig-param">unit='deg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trprint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">spatialmath.base.transforms3d.</code><code class="sig-name descname">trprint</code><span class="sig-paren">(</span><em class="sig-param">T</em>, <em class="sig-param">orient='rpy/zyx'</em>, <em class="sig-param">label=None</em>, <em class="sig-param">file=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em>, <em class="sig-param">fmt='{:8.2g}'</em>, <em class="sig-param">degsym=True</em>, <em class="sig-param">unit='deg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trprint" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Compact display of SO(3) or SE(3) matrices</p>
 <dl class="field-list simple">
@@ -16160,6 +16176,27 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 </ul>
 </dd></dl>
 
+<dl class="py function">
+<dt id="spatialmath.base.vectors.removesmall">
+<code class="sig-prename descclassname">spatialmath.base.vectors.</code><code class="sig-name descname">removesmall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#removesmall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.vectors.removesmall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set small values to zero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array-like</em>) – Input vector</p></li>
+<li><p><strong>tol</strong> (<em>int</em><em>, </em><em>optional</em>) – Tolerance in units of eps, defaults to 100</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input vector with small values set to zero</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NumPy ndarray</p>
+</dd>
+</dl>
+<p>Values with absolute value less than <code class="docutils literal notranslate"><span class="pre">tol</span></code> will be set to zero.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-0">
 <span id="graphic-animation"></span><h3>Graphic animation<a class="headerlink" href="#module-0" title="Permalink to this headline">¶</a></h3>
@@ -16443,6 +16480,27 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 </ul>
 </dd></dl>
 
+<dl class="py function">
+<dt id="id27">
+<code class="sig-prename descclassname">spatialmath.base.vectors.</code><code class="sig-name descname">removesmall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#removesmall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#id27" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set small values to zero</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array-like</em>) – Input vector</p></li>
+<li><p><strong>tol</strong> (<em>int</em><em>, </em><em>optional</em>) – Tolerance in units of eps, defaults to 100</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input vector with small values set to zero</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NumPy ndarray</p>
+</dd>
+</dl>
+<p>Values with absolute value less than <code class="docutils literal notranslate"><span class="pre">tol</span></code> will be set to zero.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-spatialmath.base.argcheck">
 <span id="argument-checking"></span><h3>Argument checking<a class="headerlink" href="#module-spatialmath.base.argcheck" title="Permalink to this headline">¶</a></h3>
@@ -16462,7 +16520,7 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">isscalar(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a Python or NumPy int or real float.</p>
+<p><code class="docutils literal notranslate"><span class="pre">isscalar(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a Python or numPy int or real float.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -16482,11 +16540,11 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 </dl>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A,</span> <span class="pre">(2,3))</span></code> raises an <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is not
-a 2x3 NumPy ndarray, ie. shape=(2,3).</p></li>
+a 2x3 numPy ndarray, ie. shape=(2,3).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A,</span> <span class="pre">(2,None))</span></code> raises an <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is not
-a 2xN NumPy ndarray, ie. shape=(2,N).</p></li>
+a 2xN numPy ndarray, ie. shape=(2,N).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A,</span> <span class="pre">(None,3))</span></code> raises an <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is not
-a Nx3 NumPy ndarray, ie. shape=(N,3).</p></li>
+a Nx3 numPy ndarray, ie. shape=(N,3).</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -16513,17 +16571,79 @@ a Nx3 NumPy ndarray, ie. shape=(N,3).</p></li>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
+<p>Tests if the argument is a 2D matrix with a specified shape <code class="docutils literal notranslate"><span class="pre">shape</span></code> but
+this can indicate an unspecified (wildcard) dimension, for example:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">issmatrix(A,</span> <span class="pre">(2,3))</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is a 2x3 NumPy ndarray.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">issmatrix(A,</span> <span class="pre">(2,None))</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is a 2xN NumPy ndarray.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">issmatrix(A,</span> <span class="pre">(None,3))</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is an Nx3 NumPy ndarray.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issmatrix(A,</span> <span class="pre">(2,3))</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is a 2x3 numPy ndarray.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issmatrix(A,</span> <span class="pre">(2,None))</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is a 2xN numPy ndarray.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issmatrix(A,</span> <span class="pre">(None,3))</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">A</span></code> is an Nx3 numPy ndarray.</p></li>
 </ul>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>getmatrix, verifymatrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.getmatrix">
+<code class="sig-prename descclassname">spatialmath.base.argcheck.</code><code class="sig-name descname">getmatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#getmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.getmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converrt argument to 2D array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> (<em>2D NumPy ndarray</em><em>, </em><em>1D array-like</em><em> or </em><em>scalar</em>) – input value</p></li>
+<li><p><strong>shape</strong> (<em>2-tupe</em>) – shape of returned matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">m</span></code> is inconsistent with <code class="docutils literal notranslate"><span class="pre">shape</span></code></p></li>
+<li><p><strong>TypeError</strong> – if <code class="docutils literal notranslate"><span class="pre">m</span></code> is not required type</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a 2D array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>NumPy ndarray</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">getmatrix(m,</span> <span class="pre">shape)</span></code> is a 2D matrix with shape <code class="docutils literal notranslate"><span class="pre">shape</span></code> formed from
+<code class="docutils literal notranslate"><span class="pre">m</span></code> which can be a 2D array, 1D array-like or a scalar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>ismatrix, verifymatrix</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="spatialmath.base.argcheck.verifymatrix">
 <code class="sig-prename descclassname">spatialmath.base.argcheck.</code><code class="sig-name descname">verifymatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#verifymatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.verifymatrix" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Test if argument is array of specified type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> – value to be tested</p></li>
+<li><p><strong>shape</strong> (<em>2-tuple</em>) – desired shape of value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – argument is not a NumPy array</p></li>
+<li><p><strong>ValueError</strong> – argument has incorrect shape</p></li>
+</ul>
+</dd>
+</dl>
+<p>Raises an exception if the argument <code class="docutils literal notranslate"><span class="pre">m</span></code> is not a NumPy array of the 
+specified shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>getmatrix, ismatrix</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="spatialmath.base.argcheck.getvector">
@@ -16535,7 +16655,7 @@ a Nx3 NumPy ndarray, ie. shape=(N,3).</p></li>
 <li><p><strong>v</strong> – passed vector</p></li>
 <li><p><strong>dim</strong> (<em>int</em><em> or </em><em>None</em>) – required dimension, or None if any length is ok</p></li>
 <li><p><strong>out</strong> (<em>str</em>) – output format, default is ‘array’</p></li>
-<li><p><strong>dtype</strong> (<em>NumPy type</em>) – datatype for NumPy array return (default np.float64)</p></li>
+<li><p><strong>dtype</strong> (<em>numPy type</em>) – datatype for numPy array return (default np.float64)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -16545,8 +16665,8 @@ a Nx3 NumPy ndarray, ie. shape=(N,3).</p></li>
 <p>The passed vector can be any of:</p>
 <ul class="simple">
 <li><p>Python native list or tuple</p></li>
-<li><p>NumPy 1D array, ie. shape=(N,)</p></li>
-<li><p>NumPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)</p></li>
+<li><p>numPy 1D array, ie. shape=(N,)</p></li>
+<li><p>numPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)</p></li>
 </ul>
 <p>The returned vector will be in the format specified by <code class="docutils literal notranslate"><span class="pre">out</span></code>:</p>
 <table class="docutils align-default">
@@ -16564,17 +16684,17 @@ a Nx3 NumPy ndarray, ie. shape=(N,3).</p></li>
 <td><p>Python list, or tuple if a tuple was passed in</p></td>
 </tr>
 <tr class="row-odd"><td><p>‘array’</p></td>
-<td><p>1D NumPy array, shape=(N,)</p></td>
+<td><p>1D numPy array, shape=(N,)</p></td>
 </tr>
 <tr class="row-even"><td><p>‘row’</p></td>
-<td><p>row vector, a 2D NumPy array, shape=(1,N)</p></td>
+<td><p>row vector, a 2D numPy array, shape=(1,N)</p></td>
 </tr>
 <tr class="row-odd"><td><p>‘col’</p></td>
-<td><p>column vector, 2D NumPy array, shape=(N,1)</p></td>
+<td><p>column vector, 2D numPy array, shape=(N,1)</p></td>
 </tr>
 </tbody>
 </table>
-<p>For ‘array’, ‘row’ or ‘col’ the NumPy dtype defaults to <code class="docutils literal notranslate"><span class="pre">np.float64</span></code> but
+<p>For ‘array’, ‘row’ or ‘col’ the numPy dtype defaults to <code class="docutils literal notranslate"><span class="pre">np.float64</span></code> but
 can be overriden using the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument.</p>
 </dd></dl>
 
@@ -16629,8 +16749,8 @@ an N-element vector.</p></li>
 <ul class="simple">
 <li><p>a Python native int or float, a 1-vector</p></li>
 <li><p>Python native list or tuple</p></li>
-<li><p>NumPy 1D array, ie. shape=(N,)</p></li>
-<li><p>NumPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)</p></li>
+<li><p>numPy 1D array, ie. shape=(N,)</p></li>
+<li><p>numPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)</p></li>
 </ul>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
@@ -16693,15 +16813,15 @@ an N-element vector.</p></li>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">isnumberlist(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x``</span></code> is a list of scalars.</p>
+<p><code class="docutils literal notranslate"><span class="pre">isscalarberlist(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x``</span></code> is a list of scalars.</p>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isscalarberlist</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">([</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalarberlist</span><span class="p">([</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">])</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalarberlist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalarberlist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
 <span class="go">False</span>
 </pre></div>
 </div>
@@ -16723,7 +16843,7 @@ an N-element vector.</p></li>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">isvectorlist(x,</span> <span class="pre">n)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x``</span></code> is a list or tuple of
-1D NumPy arrays of shape=(n,).</p>
+1D numPy arrays of shape=(n,).</p>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">True</span>
@@ -16764,7 +16884,7 @@ an N-element vector.</p></li>
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 27-Sep-2020.
+        Last updated on 11-Oct-2020.
       </span>
 
     </p>

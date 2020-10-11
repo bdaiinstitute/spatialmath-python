@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>spatialmath.geom3d &mdash; Spatial Maths package 0.8.2
+  <title>spatialmath.geom3d &mdash; Spatial Maths package 0.8.3
  documentation</title>
   
 
@@ -160,7 +160,7 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
 
 <span class="kn">from</span>  <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span> <span class="k">as</span> <span class="n">arg</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">sm</span>
+<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">base</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
@@ -381,16 +381,14 @@
 <span class="sd">        :seealso: Plucker.PQ, Plucker.Planes, Plucker.PointDir</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>  <span class="c1"># enable list powers</span>
+
         <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># single parameter</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Plucker</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">arg</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-                <span class="n">pl</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">pl</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument&#39;</span><span class="p">)</span>
+            <span class="c1"># zero or one arguments passed</span>
+            <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">convertfrom</span><span class="o">=</span><span class="p">(</span><span class="n">SE3</span><span class="p">,)):</span>
+                <span class="k">return</span>
+
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># additional arguments</span>
             <span class="k">assert</span> <span class="n">arg</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s1">&#39;expecting two 3-vectors&#39;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">]]</span></div>
             
@@ -406,8 +404,8 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,))</span>
 
 <div class="viewcode-block" id="Plucker.isvalid"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span></div>
+    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)</span></div>
 
 <div class="viewcode-block" id="Plucker.PQ"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.PQ">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">PQ</span><span class="p">(</span><span class="n">P</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -550,7 +548,7 @@
 
 <span class="sd">        ``line.uw`` is a unit-vector parallel to the line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">sm</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -584,7 +582,8 @@
 <span class="sd">           given by :math:`\vee C M C^T` where :math:`C \in \mathbf{R}^{3 \times 4}` is the camera matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">;</span> <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
         
         <span class="c1"># the following matrix is at odds with H&amp;Z pg. 72</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
@@ -625,7 +624,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="p">)</span>
 
-<div class="viewcode-block" id="Plucker.point"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.point">[docs]</a>    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">lam</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.point"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.point">[docs]</a>    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lam</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate point on line</span>
 <span class="sd">       </span>
@@ -642,7 +641,7 @@
 <span class="sd">        :seealso: Plucker.pp, Plucker.closest, Plucker.uw</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lam</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">L</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="n">L</span><span class="o">.</span><span class="n">uw</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">lam</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">uw</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">lam</span></div>
 
     <span class="c1"># ------------------------------------------------------------------------- #</span>
     <span class="c1">#  TESTS ON PLUCKER OBJECTS</span>
@@ -674,7 +673,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Plucker.__eq__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.__eq__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if two lines are equivalent</span>
 <span class="sd">        </span>
@@ -690,9 +689,9 @@
 <span class="sd">        space.  Note that because of the over parameterization, lines can be</span>
 <span class="sd">        equivalent even if their coordinate vectors are different.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">vec</span><span class="p">),</span> <span class="n">sm</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">l2</span><span class="o">.</span><span class="n">vec</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">*</span><span class="n">_eps</span></div>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">vec</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">l2</span><span class="o">.</span><span class="n">vec</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">*</span><span class="n">_eps</span></div>
     
-<div class="viewcode-block" id="Plucker.__ne__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.__ne__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if two lines are not equivalent</span>
 <span class="sd">        </span>
@@ -710,7 +709,7 @@
         
         <span class="k">return</span> <span class="ow">not</span> <span class="n">l1</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Plucker.isparallel"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.isparallel">[docs]</a>    <span class="k">def</span> <span class="nf">isparallel</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">_eps</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.isparallel"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.isparallel">[docs]</a>    <span class="k">def</span> <span class="nf">isparallel</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">_eps</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if lines are parallel</span>
 <span class="sd">        </span>
@@ -731,7 +730,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span></div>
 
     
-<div class="viewcode-block" id="Plucker.__or__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__or__">[docs]</a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.__or__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__or__">[docs]</a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if lines are parallel as a binary operator</span>
 <span class="sd">        </span>
@@ -749,7 +748,7 @@
         <span class="k">return</span> <span class="n">l1</span><span class="o">.</span><span class="n">isparallel</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span></div>
 
     
-<div class="viewcode-block" id="Plucker.__xor__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.__xor__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if lines intersect as a binary operator</span>
@@ -777,7 +776,7 @@
     <span class="c1"># ------------------------------------------------------------------------- #       </span>
    
             
-<div class="viewcode-block" id="Plucker.intersects"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.intersects">[docs]</a>    <span class="k">def</span> <span class="nf">intersects</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.intersects"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.intersects">[docs]</a>    <span class="k">def</span> <span class="nf">intersects</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Intersection point of two lines</span>
 <span class="sd">        </span>
@@ -798,12 +797,12 @@
             <span class="c1"># lines do intersect</span>
             <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> \
                   <span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">@</span> <span class="n">l2</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="o">-</span> \
-                  <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">@</span> <span class="n">l1</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span> <span class="o">*</span> <span class="n">sm</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+                  <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">@</span> <span class="n">l1</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span> <span class="o">*</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># lines don&#39;t intersect</span>
             <span class="k">return</span> <span class="kc">None</span></div>
     
-<div class="viewcode-block" id="Plucker.distance"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.distance"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Minimum distance between lines</span>
 <span class="sd">        </span>
@@ -834,7 +833,7 @@
         <span class="k">return</span> <span class="n">l</span></div>
 
     
-<div class="viewcode-block" id="Plucker.closest"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.closest">[docs]</a>    <span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.closest"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.closest">[docs]</a>    <span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Point on line closest to given point</span>
 <span class="sd">        </span>
@@ -863,14 +862,14 @@
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-        <span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">pp</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">uw</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># is the closest point on the line</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uw</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># is the closest point on the line</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span> <span class="n">x</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span> <span class="s1">&#39;p d lam&#39;</span><span class="p">)(</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span></div>
     
     
-<div class="viewcode-block" id="Plucker.commonperp"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.commonperp">[docs]</a>    <span class="k">def</span> <span class="nf">commonperp</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.commonperp"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.commonperp">[docs]</a>    <span class="k">def</span> <span class="nf">commonperp</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Common perpendicular to two lines</span>
 <span class="sd">        </span>
@@ -894,12 +893,12 @@
             <span class="c1"># lines are skew or intersecting</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l2</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="o">+</span> \
-                <span class="p">(</span><span class="n">l1</span> <span class="o">*</span> <span class="n">l2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">sm</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+                <span class="p">(</span><span class="n">l1</span> <span class="o">*</span> <span class="n">l2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
             
         <span class="k">return</span> <span class="n">Plucker</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Plucker.__mul__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.__mul__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reciprocal product</span>
 <span class="sd">        </span>
@@ -925,7 +924,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad arguments&#39;</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="Plucker.__rmul__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.__rmul__"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Line transformation</span>
 
@@ -942,7 +941,7 @@
 <span class="sd">        :seealso: Plucker.__mul__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">SE3</span><span class="p">):</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">left</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>          <span class="n">sm</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="o">-</span><span class="n">left</span><span class="o">.</span><span class="n">t</span><span class="p">)</span> <span class="o">@</span> <span class="n">left</span><span class="o">.</span><span class="n">R</span><span class="p">],</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">left</span><span class="o">.</span><span class="n">R</span><span class="p">,</span>          <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="o">-</span><span class="n">left</span><span class="o">.</span><span class="n">t</span><span class="p">)</span> <span class="o">@</span> <span class="n">left</span><span class="o">.</span><span class="n">R</span><span class="p">],</span>
                        <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span> <span class="n">left</span><span class="o">.</span><span class="n">R</span><span class="p">]</span>
                         <span class="p">]</span>
             <span class="k">return</span> <span class="n">Plucker</span><span class="p">(</span> <span class="n">A</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">vec</span><span class="p">)</span>  <span class="c1"># premultiply by SE3</span>
@@ -954,7 +953,7 @@
     <span class="c1"># ------------------------------------------------------------------------- #       </span>
 
 
-<div class="viewcode-block" id="Plucker.intersect_plane"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.intersect_plane">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_plane</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.intersect_plane"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.intersect_plane">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_plane</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Line intersection with a plane</span>
 <span class="sd">        </span>
@@ -1005,7 +1004,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Plucker.intersect_volume"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.intersect_volume">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_volume</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.intersect_volume"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.intersect_volume">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Line intersection with a volume</span>
 <span class="sd">        </span>
@@ -1044,6 +1043,14 @@
         <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
             <span class="c1"># for each face of the bounding volume</span>
             <span class="c1">#  x=xmin, x=xmax, y=ymin, y=ymax, z=zmin, z=zmax</span>
+
+            <span class="c1"># planes are:</span>
+            <span class="c1">#  0 normal in x direction, xmin</span>
+            <span class="c1">#  1 normal in x direction, xmax</span>
+            <span class="c1">#  2 normal in y direction, ymin</span>
+            <span class="c1">#  3 normal in y direction, ymax</span>
+            <span class="c1">#  4 normal in z direction, zmin</span>
+            <span class="c1">#  5 normal in z direction, zmax</span>
             
             <span class="n">i</span> <span class="o">=</span> <span class="n">face</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># 0, 1, 2</span>
             <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
@@ -1053,14 +1060,15 @@
             
             <span class="c1"># find where line pierces the plane</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">p</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">intersect_plane</span><span class="p">(</span><span class="n">plane</span><span class="p">)</span>
+                <span class="n">p</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect_plane</span><span class="p">(</span><span class="n">plane</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="k">continue</span>  <span class="c1"># no intersection with this plane</span>
             
-<span class="c1">#            # print(&#39;face %d: n=(%f, %f, %f), p=(%f, %f, %f)&#39; % (face, plane.n, plane.p))</span>
-<span class="c1">#            print(&#39;      : p=(%f, %f, %f)  &#39; % p)</span>
+            <span class="c1"># print(&#39;face %d: n=(%f, %f, %f)&#39; % (face, plane.n[0], plane.n[1], plane.n[2]))</span>
+            <span class="c1"># print(&#39;       : p=(%f, %f, %f)  &#39; % (p[0], p[1], p[2]))</span>
             
             <span class="c1"># print(&#39;face&#39;, face, &#39; point &#39;, p, &#39; plane &#39;, plane)</span>
+            <span class="c1"># print(&#39;lamda&#39;, lam, self.point(lam))</span>
             <span class="c1"># find if intersection point is within the cube face</span>
             <span class="c1">#  test x,y,z simultaneously</span>
             <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="n">bounds23</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;=</span> <span class="n">bounds23</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
@@ -1073,8 +1081,7 @@
 
         <span class="c1"># put them in ascending order</span>
         <span class="n">intersections</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-        
-        <span class="n">p</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">intersections</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">intersections</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;intersect_volume&#39;</span><span class="p">,</span> <span class="s1">&#39;p lam&#39;</span><span class="p">)(</span><span class="n">p</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span></div>
 
@@ -1083,7 +1090,7 @@
     <span class="c1">#  PLOT AND DISPLAY</span>
     <span class="c1"># ------------------------------------------------------------------------- #   </span>
     
-<div class="viewcode-block" id="Plucker.plot"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Plucker.plot"><a class="viewcode-back" href="../../spatialmath.html#spatialmath.geom3d.Plucker.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pos</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">         Plot a line</span>
 <span class="sd">         </span>
@@ -1108,24 +1115,32 @@
 <span class="sd">            </span>
 <span class="sd">        :seealso: Plucker.intersect_volume</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">axis</span>
+
+        <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlim</span><span class="p">()]</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">bounds</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">bounds</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+
+        <span class="c1"># print(bounds)</span>
         
         <span class="c1">#U = self.Q - self.P;</span>
         <span class="c1">#line.p = self.P; line.v = unit(U);</span>
         
-        <span class="n">P</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">intersect_volume</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">P</span><span class="p">[</span><span class="mi">2</span><span class="p">,:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">P</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">intersect_volume</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot3D</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">P</span><span class="p">[</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">P</span><span class="p">[</span><span class="mi">2</span><span class="p">,:],</span> <span class="o">*</span><span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lines</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1144,7 +1159,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;{{ </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1">; </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">vec</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;{{ </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1">; </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1"> </span><span class="si">{:.5g}</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">removesmall</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">vec</span><span class="p">)))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1170,7 +1185,7 @@
         
     <span class="k">def</span> <span class="nf">_repr_pretty_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pretty string for IPython (superclass method)</span>
+<span class="sd">        Pretty string for IPython</span>
 
 <span class="sd">        :param p: pretty printer handle (ignored)</span>
 <span class="sd">        :param cycle: pretty printer flag (ignored)</span>
@@ -1183,7 +1198,16 @@
 <span class="sd">            In [1]: x</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">begin_group</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;Plücker &#39;</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">end_group</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">begin_group</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;Plücker(&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">break_</span><span class="p">()</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">end_group</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span></div>
 
 <span class="c1">#         function z = side(self1, pl2)</span>
 <span class="c1">#             Plucker.side Plucker side operator</span>
@@ -1244,7 +1268,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 27-Sep-2020.
+        Last updated on 11-Oct-2020.
       </span>
 
     </p>

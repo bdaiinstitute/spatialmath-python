@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.8.2
+  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.8.3
  documentation</title>
   
 
@@ -162,16 +162,9 @@
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
 <span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
-
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">symbolic</span> <span class="k">as</span> <span class="n">sym</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sympy</span>
-    <span class="n">_sympy</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">_sympy</span> <span class="o">=</span> <span class="kc">False</span>
-
 
 <span class="c1"># colored printing of matrices to the terminal</span>
 <span class="c1">#   colored package has much finer control than colorama, but the latter is available by default with anaconda</span>
@@ -589,8 +582,8 @@
 
 <span class="sd">        .. todo:: No need to simplify the constants in bottom row</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">vf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">simplify</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">vf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="n">chec</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">vf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">simplify</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">vf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># ----------------------- i/o stuff</span>
 
@@ -600,13 +593,15 @@
 
 <span class="sd">        :param label: text label to put at start of line</span>
 <span class="sd">        :type label: str</span>
-<span class="sd">        :param file: file to write formatted string to. [default, stdout]</span>
-<span class="sd">        :type file: str</span>
 <span class="sd">        :param fmt: conversion format for each number as used by ``format()``</span>
 <span class="sd">        :type fmt: str</span>
+<span class="sd">        :param label: text label to put at start of line</span>
+<span class="sd">        :type label: str</span>
+<span class="sd">        :param orient: 3-angle convention to use</span>
+<span class="sd">        :type orient: str</span>
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :return: optional formatted string</span>
+<span class="sd">        :return: formatted string</span>
 <span class="sd">        :rtype: str</span>
 
 <span class="sd">        For SO(3) or SE(3) also:</span>
@@ -680,7 +675,15 @@
 <span class="sd">            In [1]: x</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span>
+        <span class="c1"># see https://ipython.org/ipython-doc/stable/api/generated/IPython.lib.pretty.html</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">begin_group</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span>  <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">break_</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">break_</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">end_group</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -740,10 +743,21 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#print(&#39;in __str__&#39;, _color)</span>
-
-        <span class="k">def</span> <span class="nf">FG</span><span class="p">(</span><span class="n">c</span><span class="p">):</span> <span class="k">return</span> <span class="n">fg</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="n">_color</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">def</span> <span class="nf">BG</span><span class="p">(</span><span class="n">c</span><span class="p">):</span> <span class="k">return</span> <span class="n">bg</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="n">_color</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">def</span> <span class="nf">ATTR</span><span class="p">(</span><span class="n">c</span><span class="p">):</span> <span class="k">return</span> <span class="n">attr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="n">_color</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="n">_color</span><span class="p">:</span>
+            <span class="c1"># bgcol = bg(&#39;grey_93&#39;)</span>
+            <span class="n">bgcol</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">trcol</span> <span class="o">=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+            <span class="n">rotcol</span> <span class="o">=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+            <span class="n">constcol</span> <span class="o">=</span> <span class="n">fg</span><span class="p">(</span><span class="s1">&#39;grey_50&#39;</span><span class="p">)</span>
+            <span class="n">reset</span> <span class="o">=</span> <span class="n">attr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">indexcol</span> <span class="o">=</span> <span class="n">bg</span><span class="p">(</span><span class="s1">&#39;yellow_2&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bgcol</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">trcol</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">rotcol</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">constcol</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">reset</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
         <span class="k">def</span> <span class="nf">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
             <span class="c1"># X is an ndarray value to be display</span>
@@ -754,7 +768,7 @@
                 <span class="n">rowstr</span> <span class="o">=</span> <span class="s1">&#39;  &#39;</span>
                 <span class="c1"># format the columns</span>
                 <span class="k">for</span> <span class="n">colnum</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">_sympy</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Expr</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">sym</span><span class="o">.</span><span class="n">issymbol</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
                         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&lt;12s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">tol</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
@@ -764,15 +778,15 @@
                     <span class="k">if</span> <span class="n">rownum</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">colnum</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
                             <span class="c1"># rotation part</span>
-                            <span class="n">s</span> <span class="o">=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">s</span> <span class="o">=</span> <span class="n">rotcol</span> <span class="o">+</span> <span class="n">bgcol</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">reset</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="c1"># translation part</span>
-                            <span class="n">s</span> <span class="o">=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="n">s</span> <span class="o">=</span> <span class="n">trcol</span> <span class="o">+</span> <span class="n">bgcol</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">reset</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># bottom row</span>
-                        <span class="n">s</span> <span class="o">=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;grey_50&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">constcol</span> <span class="o">+</span> <span class="n">bgcol</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="n">reset</span>
                     <span class="n">rowstr</span> <span class="o">+=</span> <span class="n">s</span>
-                <span class="n">out</span> <span class="o">+=</span> <span class="n">rowstr</span> <span class="o">+</span> <span class="n">BG</span><span class="p">(</span><span class="s1">&#39;grey_93&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">out</span> <span class="o">+=</span> <span class="n">rowstr</span> <span class="o">+</span> <span class="n">bgcol</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">reset</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="k">return</span> <span class="n">out</span>
 
         <span class="n">output_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -786,7 +800,8 @@
             <span class="c1"># sequence case</span>
             <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
                 <span class="c1"># add separator lines and the index</span>
-                <span class="n">output_str</span> <span class="o">+=</span> <span class="n">FG</span><span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;[</span><span class="si">{:d}</span><span class="s1">] =</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="o">+</span> <span class="n">ATTR</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+                <span class="n">output_str</span> <span class="o">+=</span> <span class="n">indexcol</span> <span class="o">+</span> <span class="s1">&#39;[</span><span class="si">{:d}</span><span class="s1">] =&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="o">+</span> <span class="n">reset</span> \
+                    <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">mformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">output_str</span>
 
@@ -849,7 +864,7 @@
     <span class="c1">#----------------------- arithmetic</span>
 
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -963,7 +978,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -980,7 +995,7 @@
 
 <span class="sd">        #. For other left-operands return ``NotImplemented``.  Other classes</span>
 <span class="sd">          such as ``Plucker`` and ``Twist`` implement left-multiplication by</span>
-<span class="sd">          an ``SE33`` using their own ``__rmul__`` methods.</span>
+<span class="sd">          an ``SE3`` using their own ``__rmul__`` methods.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
@@ -988,7 +1003,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*=`` operator (superclass method)</span>
 
@@ -1017,7 +1032,7 @@
         <span class="n">Tprod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_identity</span><span class="p">()</span>  <span class="c1"># identity value</span>
         <span class="k">for</span> <span class="n">T</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="n">Tprod</span> <span class="o">=</span> <span class="n">Tprod</span> <span class="o">@</span> <span class="n">T</span>
-        <span class="k">return</span> <span class="n">Tprod</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">Tprod</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1038,7 +1053,7 @@
     <span class="c1"># def __ipow__(self, n):</span>
     <span class="c1">#     return self.__pow__(n)</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``/`` operator (superclass method)</span>
 
@@ -1090,23 +1105,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
 
-    <span class="c1"># def __itruediv__(left, right):</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     Overloaded ``/=`` operator (superclass method)</span>
-
-    <span class="c1">#     :arg left: left dividend</span>
-    <span class="c1">#     :arg right: right divisor</span>
-    <span class="c1">#     :return: quotient</span>
-    <span class="c1">#     :raises: ValueError</span>
-
-    <span class="c1">#     - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``</span>
-    <span class="c1">#     - ``X /= s`` performs elementwise division of the elements of ``X`` by ``s``</span>
-
-    <span class="c1">#     :seealso: ``__truediv__``</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     return left.__truediv__(right)</span>
-
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``+`` operator (superclass method)</span>
 
@@ -1158,7 +1157,7 @@
         <span class="c1"># results is not in the group, return an array, not a class</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``+`` operator (superclass method)</span>
 
@@ -1177,7 +1176,7 @@
     <span class="c1"># def __iadd__(left, right):</span>
     <span class="c1">#     return left.__add__(right)</span>
 
-    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``-`` operator (superclass method)</span>
 
@@ -1229,7 +1228,7 @@
         <span class="c1"># TODO allow class +/- a conformant array</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``-`` operator (superclass method)</span>
 
@@ -1248,7 +1247,7 @@
     <span class="c1"># def __isub__(left, right):</span>
     <span class="c1">#     return left.__sub__(right)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``==`` operator (superclass method)</span>
 
@@ -1280,7 +1279,7 @@
         <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">),</span> <span class="s1">&#39;operands to == are of different types&#39;</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``!=`` operator</span>
 
@@ -1309,9 +1308,9 @@
 <span class="sd">        =========   ==========   ====  ================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="ow">not</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">right</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="ow">not</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_op2</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_op2</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform binary operation</span>
 
@@ -1364,6 +1363,12 @@
                 <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -1379,7 +1384,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 27-Sep-2020.
+        Last updated on 11-Oct-2020.
       </span>
 
     </p>
