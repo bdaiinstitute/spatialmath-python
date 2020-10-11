@@ -39,6 +39,8 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3 :: Only'],
 
+    python_requires='>=3.6',
+    
     project_urls={
         'Documentation': 'https://petercorke.github.io/spatialmath-python',
         'Source': 'https://github.com/petercorke/spatialmath-python',
@@ -52,11 +54,9 @@ setup(
 
     author_email='rvc@petercorke.com',  # TODO
 
-    keywords='python SO2 SE2 SO3 SE3 rotation euler roll-pitch-yaw quaternion transforms robotics vision pose',
+    keywords='python SO2 SE2 SO3 SE3 twist translation orientation rotation euler-angles roll-pitch-yaw roll-pitch-yaw-angles quaternion unit-quaternion rotation-matrix transforms robotics robot vision pose',
 
     license='MIT',  # TODO
-
-    python_requires='>=3.5',
 
     packages=find_packages(exclude=["test_*", "TODO*"]),
 
