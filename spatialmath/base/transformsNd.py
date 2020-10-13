@@ -326,7 +326,8 @@ def skew(v):
     - This is the inverse of the function ``vex()``.
     - These are the generator matrices for the Lie algebras so(2) and so(3).
 
-    :seealso: vex, skewa
+    :seealso: :func:`vex`, :func:`skewa`
+    :SymPy: supported
     """
     v = argcheck.getvector(v, None, 'sequence')
     if len(v) == 1:
@@ -361,20 +362,21 @@ def vex(s):
     - ``S`` is 2x2 - so(2) case - where ``S`` :math:`= \left[ \begin{array}{cc} 0 & -v \\ v & 0 \end{array} \right]` then return :math:`[v]`
     - ``S`` is 3x3 - so(3) case -  where ``S`` :math:`= \left[ \begin{array}{ccc} 0 & -v_z & v_y \\ v_z & 0 & -v_x \\ -v_y & v_x & 0\end{array} \right]` then return :math:`[v_x, v_y, v_z]`.
 
-    Notes:
+    .. note::
 
-    - This is the inverse of the function ``skew()``.
-    - Only rudimentary checking (zero diagonal) is done to ensure that the matrix
-      is actually skew-symmetric.
-    - The function takes the mean of the two elements that correspond to each unique
-      element of the matrix.
+        - This is the inverse of the function ``skew()``.
+        - Only rudimentary checking (zero diagonal) is done to ensure that the matrix
+          is actually skew-symmetric.
+        - The function takes the mean of the two elements that correspond to each unique
+          element of the matrix.
 
-    :seealso: skew, vexa
+    :seealso: :func:`skew`, :func:`vexa`
+    :SymPy: supported
     """
     if s.shape == (3, 3):
-        return 0.5 * np.array([s[2, 1] - s[1, 2], s[0, 2] - s[2, 0], s[1, 0] - s[0, 1]])
+        return np.array([s[2, 1] - s[1, 2], s[0, 2] - s[2, 0], s[1, 0] - s[0, 1]]) / 2
     elif s.shape == (2, 2):
-        return 0.5 * np.array([s[1, 0] - s[0, 1]])
+        return np.array([s[1, 0] - s[0, 1]]) / 2
     else:
         raise ValueError("Argument must be 2x2 or 3x3 matrix")
 
@@ -396,23 +398,24 @@ def skewa(v):
     - ``len(V)`` is 3 then S = :math:`\left[ \begin{array}{ccc} 0 & -v_3 & v_1 \\ v_3 & 0 & v_2 \\ 0 & 0 & 0 \end{array} \right]`
     - ``len(V)`` is 6 then S = :math:`\left[ \begin{array}{cccc} 0 & -v_6 & v_5 & v_1 \\ v_6 & 0 & -v_4 & v_2 \\ -v_5 & v_4 & 0 & v_3 \\ 0 & 0 & 0 & 0 \end{array} \right]`
 
-    Notes:
+    .. note::
 
-    - This is the inverse of the function ``vexa()``.
-    - These are the generator matrices for the Lie algebras se(2) and se(3).
-    - Map twist vectors in 2D and 3D space to se(2) and se(3).
+        - This is the inverse of the function ``vexa()``.
+        - These are the generator matrices for the Lie algebras se(2) and se(3).
+        - Map twist vectors in 2D and 3D space to se(2) and se(3).
 
-    :seealso: vexa, skew
+    :seealso: :func:`vexa`, :func:`skew`
+    :SymPy: supported
     """
 
-    v = argcheck.getvector(v, None, 'sequence')
+    v = argcheck.getvector(v, None)
     if len(v) == 3:
-        omega = np.zeros((3, 3))
+        omega = np.zeros((3, 3), dtype=v.dtype)
         omega[:2, :2] = skew(v[2])
         omega[:2, 2] = v[0:2]
         return omega
     elif len(v) == 6:
-        omega = np.zeros((4, 4))
+        omega = np.zeros((4, 4), dtype=v.dtype)
         omega[:3, :3] = skew(v[3:6])
         omega[:3, 3] = v[0:3]
         return omega
@@ -436,15 +439,16 @@ def vexa(Omega):
     - ``S`` is 4x4 - se(3) case -  where ``S`` :math:`= \left[ \begin{array}{cccc} 0 & -v_6 & v_5 & v_1 \\ v_6 & 0 & -v_4 & v_2 \\ -v_5 & v_4 & 0 & v_3 \\ 0 & 0 & 0 & 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3, v_4, v_5, v_6]`.
 
 
-    Notes:
+    .. note::
 
-    - This is the inverse of the function ``skewa``.
-    - Only rudimentary checking (zero diagonal) is done to ensure that the matrix
-      is actually skew-symmetric.
-    - The function takes the mean of the two elements that correspond to each unique
-      element of the matrix.
+        - This is the inverse of the function ``skewa``.
+        - Only rudimentary checking (zero diagonal) is done to ensure that the matrix
+          is actually skew-symmetric.
+        - The function takes the mean of the two elements that correspond to each unique
+          element of the matrix.
 
-    :seealso: skewa, vex
+    :seealso: :func:`skewa`, :func:`vex`
+    :SymPy: supported
     """
     if Omega.shape == (4, 4):
         return np.hstack((t3d.transl(Omega), vex(t2r(Omega))))

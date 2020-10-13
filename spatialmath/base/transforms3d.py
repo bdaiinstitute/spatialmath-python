@@ -76,6 +76,7 @@ def rotx(theta, unit="rad"):
     - ``rotx(THETA, "deg")`` as above but THETA is in degrees
 
     :seealso: :func:`~trotx`
+    :SymPy: supported
     """
 
     theta = argcheck.getunit(theta, unit)
@@ -105,6 +106,7 @@ def roty(theta, unit="rad"):
     - ``roty(THETA, "deg")`` as above but THETA is in degrees
 
     :seealso: :func:`~troty`
+    :SymPy: supported
     """
 
     theta = argcheck.getunit(theta, unit)
@@ -134,6 +136,7 @@ def rotz(theta, unit="rad"):
     - ``rotz(THETA, "deg")`` as above but THETA is in degrees
 
     :seealso: :func:`~yrotz`
+    :SymPy: supported
     """
     theta = argcheck.getunit(theta, unit)
     ct = sym.cos(theta)
@@ -164,6 +167,7 @@ def trotx(theta, unit="rad", t=None):
     - ``trotx(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
     :seealso: :func:`~rotx`
+    :SymPy: supported
     """
     T = trn.r2t(rotx(theta, unit))
     if t is not None:
@@ -191,6 +195,7 @@ def troty(theta, unit="rad", t=None):
     - ``troty(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
     :seealso: :func:`~roty`
+    :SymPy: supported
     """
     T = trn.r2t(roty(theta, unit))
     if t is not None:
@@ -218,6 +223,7 @@ def trotz(theta, unit="rad", t=None):
     - ``trotz(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
     :seealso: :func:`~rotz`
+    :SymPy: supported
     """
     T = trn.r2t(rotz(theta, unit))
     if t is not None:
@@ -254,20 +260,21 @@ def transl(x, y=None, z=None):
       3-element numpy array.
 
     :seealso: :func:`~spatialmath.base.transforms2d.transl2`
+    :SymPy: supported
    """
 
-    if np.isscalar(x):
-        T = np.identity(4)
-        T[:3, 3] = [x, y, z]
-        return T
+    if argcheck.isscalar(x) and y is not None and z is not None:
+        t = np.r_[x, y, z]
     elif argcheck.isvector(x, 3):
-        T = np.identity(4)
-        T[:3, 3] = argcheck.getvector(x, 3, out='array')
-        return T
+        t = argcheck.getvector(x, 3, out='array')
     elif argcheck.ismatrix(x, (4, 4)):
         return x[:3, 3]
     else:
-        ValueError('bad argument')
+        raise ValueError('bad argument')
+    
+    T = np.identity(4, dtype=t.dtype)
+    T[:3, 3] = t
+    return T
 
 
 def ishom(T, check=False, tol=100):
@@ -439,6 +446,8 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
       (PHI THETA PSI).
 
     :seealso: :func:`~rpy2r`, :func:`~eul2tr`, :func:`~tr2eul`
+
+    :SymPy: supported
     """
 
     if np.isscalar(phi):
@@ -479,6 +488,8 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
     - The translational part is zero.
 
     :seealso: :func:`~rpy2tr`, :func:`~eul2r`, :func:`~tr2eul`
+
+    :SymPy: supported
     """
 
     R = eul2r(phi, theta, psi, unit=unit)
@@ -509,6 +520,8 @@ def angvec2r(theta, v, unit='rad'):
     - If ``THETA ~= 0`` then ``V`` must have a finite length.
 
     :seealso: :func:`~angvec2tr`, :func:`~tr2angvec`
+
+    :SymPy: not supported
     """
     assert np.isscalar(theta) and argcheck.isvector(v, 3), "Arguments must be theta and vector"
 
@@ -548,6 +561,8 @@ def angvec2tr(theta, v, unit='rad'):
     - The translational part is zero.
 
     :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
+
+    :SymPy: not supported
     """
     return trn.r2t(angvec2r(theta, v, unit=unit))
 
@@ -585,6 +600,8 @@ def oa2r(o, a=None):
     - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
 
     :seealso: :func:`~oa2tr`
+
+    :SymPy: not supported
     """
     o = argcheck.getvector(o, 3, out='array')
     a = argcheck.getvector(a, 3, out='array')
@@ -618,16 +635,18 @@ def oa2tr(o, a=None):
         3. normalize N', O', A
         4. stack horizontally into rotation matrix
 
-    Notes:
+    .. note:
 
-    - The A vector is the only guaranteed to have the same direction in the resulting
-      rotation matrix
-    - O and A do not have to be unit-length, they are normalized
-    - O and A do not have to be orthogonal, so long as they are not parallel
-    - The translational part is zero.
-    - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+        - The A vector is the only guaranteed to have the same direction in the resulting
+        rotation matrix
+        - O and A do not have to be unit-length, they are normalized
+        - O and A do not have to be orthogonal, so long as they are not parallel
+        - The translational part is zero.
+        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
 
     :seealso: :func:`~oa2r`
+
+    :SymPy: not supported
     """
     return trn.r2t(oa2r(o, a))
 
@@ -651,9 +670,9 @@ def tr2angvec(T, unit='rad', check=False):
 
     By default the angle is in radians but can be changed setting `unit='deg'`.
 
-    Notes:
+    .. note::
 
-    - If the input is SE(3) the translation component is ignored.
+        - If the input is SE(3) the translation component is ignored.
 
     :seealso: :func:`~angvec2r`, :func:`~angvec2tr`, :func:`~tr2rpy`, :func:`~tr2eul`
     """
@@ -703,10 +722,10 @@ def tr2eul(T, unit='rad', flip=False, check=False):
 
     By default the angles are in radians but can be changed setting `unit='deg'`.
 
-    Notes:
+    .. note::
 
-    - There is a singularity for the case where :math:`\theta=0` in which case :math:`\phi` is arbitrarily set to zero and :math:`\phi` is set to :math:`\phi+\psi`.
-    - If the input is SE(3) the translation component is ignored.
+        - There is a singularity for the case where :math:`\theta=0` in which case :math:`\phi` is arbitrarily set to zero and :math:`\phi` is set to :math:`\phi+\psi`.
+        - If the input is SE(3) the translation component is ignored.
 
     :seealso: :func:`~eul2r`, :func:`~eul2tr`, :func:`~tr2rpy`, :func:`~tr2angvec`
     """
@@ -769,10 +788,10 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
 
     By default the angles are in radians but can be changed setting `unit='deg'`.
 
-    Notes:
+    .. note::
 
-    - There is a singularity for the case where P=:math:`\pi/2` in which case R is arbitrarily set to zero and Y is the sum (R+Y).
-    - If the input is SE(3) the translation component is ignored.
+        - There is a singularity for the case where P=:math:`\pi/2` in which case R is arbitrarily set to zero and Y is the sum (R+Y).
+        - If the input is SE(3) the translation component is ignored.
 
     :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`, :func:`~tr2angvec`
     """
@@ -891,7 +910,6 @@ def trlog(T, check=True, twist=False):
       4x4 augumented skew-symmetric matrix. The equivalent vector from ``vexa()`` is the twist
       vector (6x1) comprising [v w].
 
-
     :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`, :func:`~spatialmath.base.transformsNd.vexa`
     """
 
@@ -988,7 +1006,6 @@ def trexp(S, theta=None, check=True):
       unit-norm vector representing a rotation axis and a rotation magnitude
       given by ``THETA``. ``W`` is expressed as a 3-vector (array_like).
 
-
     For se(3) the results is an SE(3) homogeneous transformation matrix:
 
     - ``trexp(SIGMA)`` is the matrix exponential of the se(3) element ``SIGMA`` which is
@@ -1077,11 +1094,11 @@ def trnorm(T):
       transformation T (4x4) is normalised while the translational part is
       unchanged.
 
-    Notes:
+    .. note::
 
-    - Only the direction of A (the z-axis) is unchanged.
-    - Used to prevent finite word length arithmetic causing transforms to
-      become 'unnormalized'.
+        - Only the direction of A (the z-axis) is unchanged.
+        - Used to prevent finite word length arithmetic causing transforms to
+          become 'unnormalized'.
     """
 
     assert ishom(T) or isrot(T), 'expecting 3x3 or 4x4 hom xform'
@@ -1121,9 +1138,9 @@ def trinterp(start, end, s=None):
     - ``trinterp(R0, R1, S)`` as above but interpolated
       between R0 (3x3) when S=0 and R1 (3x3) when S=1.
 
-    Notes:
+    .. note::
 
-    - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
+        - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
     :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
     """
@@ -1182,7 +1199,7 @@ def delta2tr(d):
     ``T = delta2tr(d)`` is an SE(3) matrix representing differential
     motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
 
-    Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 
     :seealso: :func:`~tr2delta`
     """
@@ -1203,12 +1220,13 @@ def trinv(T):
 
     :math:`\begin{pmatrix} {\bf R} & t \\ 0\,0\,0 & 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T & -{\bf R}^T t \\ 0\,0\, 0 & 1 \end{pmatrix}`
 
+    :SymPy: supported
     """
     assert ishom(T), 'expecting SE(3) matrix'
     # inline this code for speed, don't use tr2rt and rt2tr
     R = T[:3, :3]
     t = T[:3, 3]
-    Ti = np.zeros((4,4))
+    Ti = np.zeros((4,4), dtype=T.dtype)
     Ti[:3, :3] = R.T
     Ti[:3, 3] = -R.T @ t
     Ti[3,3] = 1
@@ -1588,3 +1606,5 @@ if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used
+    
+

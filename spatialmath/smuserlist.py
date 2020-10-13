@@ -87,9 +87,15 @@ class SMUserList(UserList, ABC):
         """
         Construct an empty instance (superclass method)
         
-        :return: a quaternion instance with zero values
-        :rtype: Quaternion
+        :return: pose instance with zero values
 
+        Example::
+
+            >>> x = SE3.Empty()
+            >>> x
+            SE3([])
+            >>> len(x)
+            0
         """
         x = cls()
         x.data = []
@@ -97,6 +103,43 @@ class SMUserList(UserList, ABC):
 
     @classmethod
     def Alloc(cls, n=1):
+        """
+        Construct an instance with N default values (superclass method)
+
+        :param n: Number of values, defaults to 1
+        :type n: int, optional
+        :return: pose instance with ``n`` default values
+
+        ``X.Alloc(N)`` creates an instance of the pose class ``X`` with ``N``
+        default values, ie. ``len(X)`` will be ``N``.
+
+        ``X`` can be considered a vector of pose objects, and those elements
+        can be referenced ``X[i]`` or assigned to ``X[i] = ...``.
+
+        .. note:: The default value depends on the pose class and is the result
+                  of the empty constructor. For ``SO2``, 
+                  ``SE2``, ``SO3``, ``SE3`` it is an identity matrix, for a
+                  twist class ``Twist2`` or ``Twist3`` it is a zero vector,
+                  for a ``UnitQuaternion`` or ``Quaternion`` it is a zero
+                  vector.
+
+        Example::
+
+            >>> x = SE3.Alloc(10)
+            >>> len(x)
+            10
+            >>> x[3] = SE3.Rx(.2)
+            >>> x[2:4]
+            SE3([
+            array([[1., 0., 0., 0.],
+                [0., 1., 0., 0.],
+                [0., 0., 1., 0.],
+                [0., 0., 0., 1.]]),
+            array([[ 1.        ,  0.        ,  0.        ,  0.        ],
+                [ 0.        ,  0.98006658, -0.19866933,  0.        ],
+                [ 0.        ,  0.19866933,  0.98006658,  0.        ],
+                [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
+        """
         x = cls()
         x.data = x.data * n
         return x

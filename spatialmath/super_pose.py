@@ -130,9 +130,10 @@ class SMPose(SMUserList):
 
         Example::
 
-            >>> x = SE3()
-            >>> x.N
+            >>> SE3().N
             3
+            >>> SE2().N
+            2
         """
         if type(self).__name__ == 'SO2' or type(self).__name__ == 'SE2':
             return 2
@@ -321,6 +322,8 @@ class SMPose(SMUserList):
 
         :seealso: :func:`~spatialmath.base.transforms2d.trlog2`,
         :func:`~spatialmath.base.transforms3d.trlog`
+
+        :SymPy: not supported
         """
         if self.N == 2:
             log = [tr.trlog2(x, twist=twist) for x in self.data]
@@ -379,7 +382,9 @@ class SMPose(SMUserList):
 
         #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-        :seealso: :func:`~spatialmath.base.transforms3d.trinterp`, :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
+        :seealso: :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
+
+        :SymPy: not supported
         """
         s = argcheck.getvector(s)
         if start is not None:
@@ -459,6 +464,8 @@ class SMPose(SMUserList):
            [0, 0, 0, 1.00000000000000]], dtype=object))
 
         .. todo:: No need to simplify the constants in bottom row
+
+        :SymPy: supported
         """
         vf = np.vectorize(sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
