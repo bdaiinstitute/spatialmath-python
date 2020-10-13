@@ -259,6 +259,38 @@ class SMPose(SMUserList):
 
      #----------------------- functions
 
+    def det(self):
+        """
+        Determinant of rotational component (superclass method)
+
+        :return: Determinant of rotational component
+        :rtype: float or NumPy array
+
+        ``x.det()`` is the determinant of the rotation component of the values
+        of ``x``.  
+
+        Example::
+            >>> x=SE3.Rand()
+            >>> x.det()
+            1.0000000000000004
+            >>> x=SE3.Rand(N=2)
+            >>> x.det()
+            [0.9999999999999997, 1.0000000000000002]
+
+        :SymPy: not supported
+        """
+        if type(self).__name__ in ('SO3', 'SE3'):
+            if len(self) == 1:
+                return np.linalg.det(self.A[:3,:3])
+            else:
+                return [np.linalg.det(T[:3,:3]) for T in self.data]
+        elif type(self).__name__ in ('SO2', 'SE2'):
+            if len(self) == 1:
+                return np.linalg.det(self.A[:2,:2])
+            else:
+                return [np.linalg.det(T[:2,:2]) for T in self.data]
+
+
     def log(self, twist=False):
         """
         Logarithm of pose (superclass method)
