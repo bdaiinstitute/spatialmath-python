@@ -22,6 +22,7 @@ import sys
 project = 'Spatial Maths package'
 copyright = '2020, Peter Corke'
 author = 'Peter Corke'
+version = '0.9'
 
 print(__file__)
 # The full version, including alpha/beta/rc tags
@@ -73,13 +74,16 @@ html_theme = 'sphinx_rtd_theme'
 #html_theme = 'sphinxdoc'
 
 html_theme_options = {
-    'logo': '../../figs/icon.png',
     'github_user': 'petercorke',
-    'github_repo': 'spatialmath-python',
-    'logo_name': False,
-    'description': 'Spatial maths and geometry for Python'
-    
+    #'github_repo': 'spatialmath-python',
+    #'logo_name': False,
+    'logo_only': False,
+    #'description': 'Spatial maths and geometry for Python',
+    'display_version': True,
+    'prev_next_buttons_location': 'both',
+
     }
+html_logo = '../figs/CartesianSnakes_LogoW.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
