@@ -46,15 +46,23 @@ class SO3(SMPose):
         """
         Construct new SO(3) object
 
-        - ``SO3()`` is an SO3 instance representing null rotation -- the identity matrix
-        - ``SO3(R)`` is an SO3 instance with rotation matrix R which is a 3x3 numpy array representing an valid rotation matrix.  If ``check``
-          is ``True`` check the matrix value.
-        - ``SO3([R1, R2, ... RN])`` where each Ri is a 3x3 numpy array of rotation matrices, is
-          an SO3 instance containing N rotations. If ``check`` is ``True``
-          then each matrix is checked for validity.
-        - ``SO3([X1, X2, ... XN])`` where each Xi is an SO3 instance, is an SO3 instance containing N rotations.
+        :rtype: SO3 instance
 
-        :seealso: `SMPose.pose_arghandler`
+        There are multiple call signatures:
+
+        - ``SO3()`` is an ``SO3`` instance with one value -- a 3x3 identity
+          matrix which corresponds to a null rotation
+        - ``SO3(R)`` is an ``SO3`` instance with with the value ``R`` which is a
+          3x3 numpy array representing an SO(3) rotation matrix.  If ``check``
+          is ``True`` check the matrix belongs to SO(3).
+        - ``SO3([R1, R2, ... RN])`` is an ``SO3`` instance wwith ``N`` values
+          given by the elements ``Ri`` each of which is a 3x3 NumPy array
+          representing an SO(3) matrix. If ``check`` is ``True`` check the
+          matrix belongs to SO(3).
+        - ``SO3([X1, X2, ... XN])`` is an ``SO3`` instance with ``N`` values
+          given by the elements ``Xi`` each of which is an SO3 instance.
+
+        :SymPy: supported
         """
         if not super().arghandler(arg, check=check):
             raise ValueError('bad argument to constructor')
@@ -70,6 +78,8 @@ class SO3(SMPose):
 
         :return: (3,3)
         :rtype: tuple
+
+        Each value within the ``SO3`` instance is a NumPy array of this shape.
         """
         return (3, 3)
 
@@ -81,10 +91,22 @@ class SO3(SMPose):
         :return: rotational component
         :rtype: numpy.ndarray, shape=(3,3)
 
-        ``x.R`` returns the rotation matrix, when `x` is `SO3` or `SE3`. If `len(x)` is:
+        ``x.R`` is the rotation matrix component of ``x`` as an array with
+        shape (3,3). If ``len(x) > 1``, return an array with shape=(N,3,3).
 
-        - 1, return an ndarray with shape=(3,3)
-        - N>1, return ndarray with shape=(N,3,3)
+        .. note:: The i'th rotation matrix is ``x[i,:,:]`` or simply ``x[i]``.
+                  This is different to the MATLAB version where the i'th
+                  rotation matrix would be ``x(:,:,i)``.
+
+        Example::
+
+        >>> x = SO3.Rx(0.3)
+        >>> x.R
+        array([[ 1.        ,  0.        ,  0.        ],
+               [ 0.        ,  0.95533649, -0.29552021],
+               [ 0.        ,  0.29552021,  0.95533649]])
+
+        :SymPy: supported
         """
         if len(self) == 1:
             return self.A[:3, :3]
@@ -99,8 +121,9 @@ class SO3(SMPose):
         :return: normal vector
         :rtype: numpy.ndarray, shape=(3,)
 
-        Is the first column of the rotation submatrix, sometimes called the normal
-        vector.  Parallel to the x-axis of the frame defined by this pose.
+        This is the first column of the rotation submatrix, sometimes called the
+        *normal vector*.  It is parallel to the x-axis of the frame defined by
+        this pose.
         """
         return self.A[:3, 0]
 
@@ -112,8 +135,9 @@ class SO3(SMPose):
         :return: orientation vector
         :rtype: numpy.ndarray, shape=(3,)
 
-        Is the second column of the rotation submatrix, sometimes called the orientation
-        vector.  Parallel to the y-axis of the frame defined by this pose.
+        This is the second column of the rotation submatrix, sometimes called
+        the *orientation vector*.  It is parallel to the y-axis of the frame
+        defined by this pose.
         """
         return self.A[:3, 1]
 
@@ -125,8 +149,9 @@ class SO3(SMPose):
         :return: approach vector
         :rtype: numpy.ndarray, shape=(3,)
 
-        Is the third column of the rotation submatrix, sometimes called the approach
-        vector.  Parallel to the z-axis of the frame defined by this pose.
+        This is the third column of the rotation submatrix, sometimes called the
+        *approach vector*.  It is parallel to the z-axis of the frame defined by
+        this pose.
         """
         return self.A[:3, 2]
 
@@ -136,12 +161,12 @@ class SO3(SMPose):
         """
         Inverse of SO(3)
 
-        :param self: pose
-        :type self: SE3 instance
         :return: inverse
-        :rtype: SO2
+        :rtype: SO2 instance
 
-        Returns the inverse, which for elements of SO(3) is the transpose.
+        Efficiently compute the inverse of each of the SO(3) values taking into
+        account the matrix structure.  For an SO(3) matrix the inverse is the
+        transpose.
         """
         if len(self) == 1:
             return SO3(self.A.T, check=False)
@@ -161,15 +186,13 @@ class SO3(SMPose):
         a 3-vector :math:`(\phi, \theta, \psi)` which correspond to consecutive
         rotations about the Z, Y, Z axes respectively.
 
-        If `len(x)` is:
+        If ``len(x)`` is:
 
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
-        - ndarray with shape=(3,), if len(R) == 1
-        - ndarray with shape=(N,3), if len(R) = N > 1
-
-        :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, ::func:`spatialmath.base.transforms3d.tr2eul`
+        :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.tr2eul`
+        :SymPy: not supported
         """
         if len(self) == 1:
             return tr.tr2eul(self.A, unit=unit)
@@ -191,13 +214,13 @@ class SO3(SMPose):
         a 3-vector :math:`(r, p, y)` which correspond to successive rotations about the axes
         specified by ``order``:
 
-            - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
               then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
               and y-axis sideways.
-            - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
               then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
               and y-axis between the gripper fingers.
-            - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
 
@@ -206,7 +229,8 @@ class SO3(SMPose):
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
-        :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, ::func:`spatialmath.base.transforms3d.tr2rpy`
+        :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.tr2rpy`
+        :SymPy: not supported
         """
         if len(self) == 1:
             return tr.tr2rpy(self.A, unit=unit, order=order)
@@ -620,10 +644,8 @@ class SE3(SO3):
         :return: translational component of SE(3)
         :rtype: numpy.ndarray
 
-        ``T.t`` returns an:
-
-        - ndarray with shape=(3,), if ``len(T)`` == 1
-        - ndarray with shape=(N,3), if ``len(T)`` = N > 1
+        ``x.t`` is the translational component of ``x`` as an array with
+        shape (3,). If ``len(x) > 1``, return an array with shape=(N,3).
 
         Example::
 
@@ -653,7 +675,7 @@ class SE3(SO3):
         :rtype: SE3 instance
 
         Efficiently compute the inverse of each of the SE(3) values taking into
-        account the matrix structure
+        account the matrix structure.
 
         :math:`T = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
 
@@ -1084,6 +1106,27 @@ class SE3(SO3):
             return cls(tr.trexp(S), check=False)
 
     @classmethod
+    def Delta(cls, d):
+        r"""
+        Create SE(3) from differential motion
+
+        :param d: differential motion
+        :type d: 6-element array_like
+        :return: SE(3) matrix
+        :rtype: SE3 instance
+
+
+        ``T = delta2tr(d)`` is an SE(3) representing differential 
+        motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
+
+        :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+
+        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
+        :SymPy: supported
+        """
+        return cls(tr.delta2tr(d))
+
+    @classmethod
     def Tx(cls, x):
         """
         Create an SE(3) translation along the X-axis
@@ -1093,7 +1136,7 @@ class SE3(SO3):
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-        `SE3.Tz(x)`` is an SE(3) translation of ``x`` along the x-axis
+        `SE3.Tx(x)` is an SE(3) translation of ``x`` along the x-axis
 
         Example::
             >>> SE3.Tx(2)
@@ -1129,7 +1172,7 @@ class SE3(SO3):
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-        `SE3.Tz(y)`` is an SE(3) translation of ``y`` along the y-axis
+        `SE3.Ty(y) is an SE(3) translation of ``y`` along the y-axis
         Example::
             >>> SE3.Ty(2)
             SE3(array([[1., 0., 0., 0.],
@@ -1163,7 +1206,7 @@ class SE3(SO3):
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-        `SE3.Tz(z)`` is an SE(3) translation of ``z`` along the z-axis
+        `SE3.Tz(z)` is an SE(3) translation of ``z`` along the z-axis
         Example::
             >>> SE3.Tz(2)
             SE3(array([[1., 0., 0., 0.],
@@ -1187,26 +1230,6 @@ class SE3(SO3):
         """
         return cls([tr.transl(0, 0, _z) for _z in argcheck.getvector(z)], check=False)
 
-    @classmethod
-    def Delta(cls, d):
-        r"""
-        Create SE(3) from differential motion
-
-        :param d: differential motion
-        :type d: 6-element array_like
-        :return: SE(3) matrix
-        :rtype: SE3 instance
-
-
-        ``T = delta2tr(d)`` is an SE(3) representing differential 
-        motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
-
-        :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
-
-        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
-        :SymPy: supported
-        """
-        return cls(tr.delta2tr(d))
 
 
 if __name__ == '__main__':   # pragma: no cover

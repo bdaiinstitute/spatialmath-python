@@ -271,6 +271,7 @@ class SMPose(SMUserList):
         of ``x``.  
 
         Example::
+
             >>> x=SE3.Rand()
             >>> x.det()
             1.0000000000000004
@@ -445,23 +446,25 @@ class SMPose(SMUserList):
         Symbolically simplify matrix values (superclass method)
 
         :return: pose with symbolic elements
-        :rtype: SO2, SE2, SO3, SE3 instance
+        :rtype: pose instance
 
-        Apply symbolic simplification to every element of
+        Apply symbolic simplification to every element of every value in the
+        pose instane. 
+
         Example::
 
-        >>> a = SE3.Rx(sympy.symbols('theta')
-        >>> b = a * a
-        >>> b
-        SE3(array([[1, 0, 0, 0.0],
-           [0, -sin(theta)**2 + cos(theta)**2, -2*sin(theta)*cos(theta), 0],
-           [0, 2*sin(theta)*cos(theta), -sin(theta)**2 + cos(theta)**2, 0],
-           [0.0, 0, 0, 1.0]], dtype=object)
-        >>> b.simplify()
-           SE3(array([[1, 0, 0, 0],
-           [0, cos(2*theta), -sin(2*theta), 0],
-           [0, sin(2*theta), cos(2*theta), 0],
-           [0, 0, 0, 1.00000000000000]], dtype=object))
+            >>> a = SE3.Rx(sympy.symbols('theta')
+            >>> b = a * a
+            >>> b
+            SE3(array([[1, 0, 0, 0.0],
+            [0, -sin(theta)**2 + cos(theta)**2, -2*sin(theta)*cos(theta), 0],
+            [0, 2*sin(theta)*cos(theta), -sin(theta)**2 + cos(theta)**2, 0],
+            [0.0, 0, 0, 1.0]], dtype=object)
+            >>> b.simplify()
+            SE3(array([[1, 0, 0, 0],
+            [0, cos(2*theta), -sin(2*theta), 0],
+            [0, sin(2*theta), cos(2*theta), 0],
+            [0, 0, 0, 1.00000000000000]], dtype=object))
 
         .. todo:: No need to simplify the constants in bottom row
 
@@ -474,7 +477,7 @@ class SMPose(SMUserList):
 
     def printline(self, **kwargs):
         """
-        Print pose as a single line (superclass method)
+        Stringify pose as a single line (superclass method)
 
         :param label: text label to put at start of line
         :type label: str
@@ -482,30 +485,35 @@ class SMPose(SMUserList):
         :type fmt: str
         :param label: text label to put at start of line
         :type label: str
-        :param orient: 3-angle convention to use
+        :param orient: 3-angle convention to use, optional, ``SO3`` and ``SE3``
+                       only
         :type orient: str
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
+        :param file: file to write formatted string to. [default, stdout]
+        :type file: 
         :return: formatted string
         :rtype: str
 
-        For SO(3) or SE(3) also:
+        - ``X.printline()`` print ``X`` in single-line format
+        - ``X.printline(file=None)`` is a string representing the pose ``X`` in single-line format
 
-        :param orient: 3-angle convention to use
-        :type orient: str
-
-        - ``X.printline()`` print ``X`` in single-line format to ``stdout``, followed
-          by a newline
-        - ``X.printline(file=None)`` return a string containing ``X`` in 
-          single-line format
+        If ``X`` has multiple values, print one per line.
 
         Example::
 
             >>> x=SE3.Rx(0.3)
             >>> x.printline()
-            t =        0,        0,        0; rpy/zyx =       17,        0,        0 deg
-
-        If `X` contains a sequence, print one line per element.
+            t =        0,        0,        0; rpy/zyx =       17°,        0°,        0°
+            >>> x = SE3.Rx([0.2, 0.3])
+            >>> x.printline()
+            t =        0,        0,        0; rpy/zyx =       11°,        0°,        0°
+            t =        0,        0,        0; rpy/zyx =       17°,        0°,        0°
+        >> x = SE2(1, 2, 0.3)
+            >>> x.printline()
+            t =        1,        2;       17 deg
+        
+        .. note:: The formatted string is always returned.
 
         """
         s = []
@@ -535,15 +543,24 @@ class SMPose(SMUserList):
                        [ 0.        ,  0.        ,  0.        ,  1.        ]]))
 
         """
+
+        # TODO: really should iterate over all the elements, can have a symb
+        #       element and ~eps values
+        def trim(x):
+            if x.dtype == 'O':
+                return x
+            else:
+                return tr.removesmall(x)
+
         name = type(self).__name__
         if len(self) == 0:
             return name + '([])'
         elif len(self) == 1:
             # need to indent subsequent lines of the native repr string by 4 spaces
-            return name + '(' + self.A.__repr__().replace('\n', '\n    ') + ')'
+            return name + '(' + trim(self.A).__repr__().replace('\n', '\n    ') + ')'
         else:
             # format this as a list of ndarrays
-            return name + '([\n' + ',\n'.join([v.__repr__() for v in self.data]) + ' ])'
+            return name + '([\n' + ',\n'.join([trim(v).__repr__() for v in self.data]) + ' ])'
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -745,7 +762,64 @@ class SMPose(SMUserList):
 
 
 # ------------------------------------------------------------------------ #
+    def prod(self):
+        r"""
+        Product of elements (superclass method)
 
+        :return: Product of elements
+        :rtype: pose instance
+
+        ``x.prod()`` is the product of the values held by ``x``, ie.
+        :math:`\prod_i^N T_i`.
+
+        Example::
+
+            >>> x = SE3.Rx([0, 0.1, 0.2, 0.3])
+            >>> x.prod()
+            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
+                       [ 0.        ,  0.82533561, -0.56464247,  0.        ],
+                       [ 0.        ,  0.56464247,  0.82533561,  0.        ],
+                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+        """
+        Tprod = self.__class__._identity()  # identity value
+        for T in self.data:
+            Tprod = Tprod @ T
+        return self.__class__(Tprod)
+
+    def __pow__(self, n):
+        """
+        Overloaded ``**`` operator (superclass method)
+
+        :param n: exponent
+        :type n: int
+        :return: pose to the power ``n``
+        :rtype: pose instance
+
+        ``X**n`` raise all values held in `X` to the specified power using repeated
+        multiplication.  If ``n`` < 0 then the result is inverted.
+
+        Example::
+
+            >>> SE3.Rx(0.1) ** 2
+            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
+                       [ 0.        ,  0.98006658, -0.19866933,  0.        ],
+                       [ 0.        ,  0.19866933,  0.98006658,  0.        ],
+                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+            >>> SE3.Rx([0, 0.1]) ** 2
+            SE3([
+            array([[1., 0., 0., 0.],
+                   [0., 1., 0., 0.],
+                   [0., 0., 1., 0.],
+                   [0., 0., 0., 1.]]),
+            array([[ 1.        ,  0.        ,  0.        ,  0.        ],
+                   [ 0.        ,  0.98006658, -0.19866933,  0.        ],
+                   [ 0.        ,  0.19866933,  0.98006658,  0.        ],
+                   [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
+
+        """
+
+        assert type(n) is int, 'exponent must be an int'
+        return self.__class__([np.linalg.matrix_power(x, n) for x in self.data], check=False)
     #----------------------- arithmetic
 
 
@@ -753,17 +827,16 @@ class SMPose(SMUserList):
         """
         Overloaded ``*`` operator (superclass method)
 
-        :arg left: left multiplicand
-        :arg right: right multiplicand
-        :return: product
-        :raises: ValueError
+        :return: Product of two operands
+        :rtype: pose instance
+        :raises NotImplemented: for incompatible arguments
 
         Pose composition, scaling or vector transformation:
 
         - ``X * Y`` compounds the poses ``X`` and ``Y``
-        - ``X * s`` performs elementwise multiplication of the elements of ``X`` by ``s``
-        - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
-        - ``X * v`` linear transform of the vector ``v``
+        - ``X * s`` performs element-wise multiplication of the elements of ``X`` by ``s``
+        - ``s * X`` performs element-wise multiplication of the elements of ``X`` by ``s``
+        - ``X * v`` linear transformation of the vector ``v`` where ``v`` is array-like
 
         ==============   ==============   ===========  ======================
                    Multiplicands                   Product
@@ -777,16 +850,17 @@ class SMPose(SMUserList):
         Pose             NxM matrix       NxM matrix   transform each column
         ==============   ==============   ===========  ======================
 
-        Notes:
+        .. note::
 
-        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
-        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
-        #. scalar x Pose is handled by ``__rmul__``
-        #. scalar multiplication is commutative but the result is not a group
-           operation so the result will be a matrix
-        #. Any other input combinations result in a ValueError.
+            #. Pose is an ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
+            #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
+            #. Scalar x Pose is handled by __rmul__`
+            #. Scalar multiplication is commutative but the result is not a group
+               operation so the result will be a matrix
+            #. Any other input combinations result in a ValueError.
 
-        For pose composition the ``left`` and ``right`` operands may be a sequence
+        For pose composition either or both operands may hold more than one value which
+        results in the composition holding more than one value according to:
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
@@ -797,7 +871,20 @@ class SMPose(SMUserList):
          M          M             M    ``prod[i] = left[i] * right[i]``
         =========   ==========   ====  ================================
 
-        For vector transformation there are three cases
+        Example::
+
+            >>> SE3.Rx(pi/2) * SE3.Ry(pi/2)
+            SE3(array([[0., 0., 1., 0.],
+                    [1., 0., 0., 0.],
+                    [0., 1., 0., 0.],
+                    [0., 0., 0., 1.]]))
+            >>> SE3.Rx(pi/2) * 2
+            array([[ 2.0000000e+00,  0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+                   [ 0.0000000e+00,  1.2246468e-16, -2.0000000e+00,  0.0000000e+00],
+                   [ 0.0000000e+00,  2.0000000e+00,  1.2246468e-16,  0.0000000e+00],
+                   [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00,  2.0000000e+00]])
+
+        For vector transformation there are three cases:
 
         =========  ===========  =====  ==========================
               Multiplicands             Product
@@ -809,11 +896,15 @@ class SMPose(SMUserList):
         1          (N,M)        (N,M)  column transformation
         =========  ===========  =====  ==========================
 
-        Notes:
+        .. note:: For the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous
+                  form, transformed, then converted back to Euclidean form.
 
-        #. for the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous
-           form, transformed, then converted back to Euclidean form.
+        Example:: 
 
+            >>> SE3.Rx(pi/2) * [0, 1, 0]
+            array([0.000000e+00, 6.123234e-17, 1.000000e+00])
+            >>> SE3.Rx(pi/2) * np.r_[0, 0, 1]
+            array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
         if isinstance(left, right.__class__):
             #print('*: pose x pose')
@@ -867,10 +958,9 @@ class SMPose(SMUserList):
         """
         Overloaded ``*`` operator (superclass method)
 
-        :arg left: left multiplicand
-        :arg right: right multiplicand
-        :return: product
-        :raises: NotImplemented
+        :return: Product of two operands
+        :rtype: pose instance
+        :raises NotImplemented: for incompatible arguments
 
         Left-multiplication by a scalar
 
@@ -888,66 +978,14 @@ class SMPose(SMUserList):
         else:
             return NotImplemented
 
-    def __imul__(left, right):  # pylint: disable=no-self-argument
-        """
-        Overloaded ``*=`` operator (superclass method)
-
-        :arg left: left multiplicand
-        :arg right: right multiplicand
-        :return: product
-        :raises: ValueError
-
-        - ``X *= Y`` compounds the poses ``X`` and ``Y`` and places the result in ``X``
-        - ``X *= s`` performs elementwise multiplication of the elements of ``X``
-          and ``s`` and places the result in ``X``
-
-        :seealso: ``__mul__``
-        """
-        return left.__mul__(right)
-
-    def prod(self):
-        r"""
-        Product of elements
-
-        :return: Product of elements
-
-        For a pose instance with N values return the matrix product of those
-        elements :math:`\prod_i^N T_i`.
-        """
-        Tprod = self.__class__._identity()  # identity value
-        for T in self.data:
-            Tprod = Tprod @ T
-        return self.__class__(Tprod)
-
-    def __pow__(self, n):
-        """
-        Overloaded ``**`` operator (superclass method)
-
-        :param n: pose
-        :return: pose to the power n
-        :type self: SO2, SE2, SO3, SE3
-
-        Raise all elements of pose to the specified power.
-
-        - ``X**n`` raise all values in ``X`` to the power ``n``
-        """
-
-        assert type(n) is int, 'exponent must be an int'
-        return self.__class__([np.linalg.matrix_power(x, n) for x in self.data], check=False)
-
-    # def __ipow__(self, n):
-    #     return self.__pow__(n)
 
     def __truediv__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
-        :arg left: left multiplicand
-        :arg right: right multiplicand
-        :return: product
+        :return: Product of right operand and inverse of left operand
+        :rtype: pose instance or NumPy array
         :raises ValueError: for incompatible arguments
-        :return: matrix
-        :rtype: numpy ndarray
 
         Pose composition or scaling:
 
@@ -963,23 +1001,24 @@ class SMPose(SMUserList):
         Pose             scalar           NxN matrix   element-wise division
         ==============   ==============   ===========  =========================
 
-        Notes:
+        .. notes::
 
-        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
-        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
-        #. scalar multiplication is not a group operation so the result will 
-           be a matrix
-        #. Any other input combinations result in a ValueError.
+            #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
+            #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
+            #. Scalar multiplication is not a group operation so the result will 
+               be a matrix
+            #. Any other input combinations result in a ValueError.
 
-        For pose composition the ``left`` and ``right`` operands may be a sequence
+        For pose composition either or both operands may hold more than one value which
+        results in the composition holding more than one value according to:
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
-         1          1             1    ``prod = left * right.inv()``
-         1          M             M    ``prod[i] = left * right[i].inv()``
-         N          1             M    ``prod[i] = left[i] * right.inv()``
-         M          M             M    ``prod[i] = left[i] * right[i].inv()``
+         1          1             1    ``quo = left * right.inv()``
+         1          M             M    ``quo[i] = left * right[i].inv()``
+         N          1             M    ``quo[i] = left[i] * right.inv()``
+         M          M             M    ``quo[i] = left[i] * right[i].inv()``
         =========   ==========   ====  ================================
 
         """
@@ -994,19 +1033,17 @@ class SMPose(SMUserList):
         """
         Overloaded ``+`` operator (superclass method)
 
-        :arg left: left addend
-        :arg right: right addend
-        :return: sum
+        :return: Sum of two operands
+        :rtype: NumPy ndarray, shape=(N,N)
         :raises ValueError: for incompatible arguments
-        :return: matrix
-        :rtype: numpy ndarray, shape=(N,N)
 
-        Add elements of two poses.  This is not a group operation so the
+
+        Add the elements of two poses.  This is not a group operation so the
         result is a matrix not a pose class.
 
         - ``X + Y`` is the element-wise sum of the matrix value of ``X`` and ``Y``
-        - ``X + s`` is the element-wise sum of the matrix value of ``X`` and ``s``
-        - ``s + X`` is the element-wise sum of the matrix value of ``s`` and ``X``
+        - ``X + s`` is the element-wise sum of the matrix value of ``X`` and scalar ``s``
+        - ``s + X`` is the element-wise sum of the scalar ``s`` and the matrix value of ``X``
 
         ==============   ==============   ===========  ========================
                    Operands                   Sum
@@ -1018,24 +1055,24 @@ class SMPose(SMUserList):
         scalar           Pose             NxN matrix   element-wise sum
         ==============   ==============   ===========  ========================
 
-        Notes:
+        .. note::
 
-        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
-        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
-        #. scalar + Pose is handled by ``__radd__``
-        #. scalar addition is commutative
-        #. Any other input combinations result in a ValueError.
+            #. Pose is an ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
+            #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
+            #. scalar + Pose is handled by :meth:`__radd__`
+            #. Addition is commutative
+            #. Any other input combinations result in a ``ValueError``.
 
-        For pose addition the ``left`` and ``right`` operands may be a sequence which
-        results in the result being a sequence:
+        For pose addition either or both operands may hold more than one value which
+        results in the sum holding more than one value according to:
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
-         1          1             1    ``prod = left + right``
-         1          M             M    ``prod[i] = left + right[i]``
-         N          1             M    ``prod[i] = left[i] + right``
-         M          M             M    ``prod[i] = left[i] + right[i]``
+         1          1             1    ``sum = left + right``
+         1          M             M    ``sum[i] = left + right[i]``
+         N          1             M    ``sum[i] = left[i] + right``
+         M          M             M    ``sum[i] = left[i] + right[i]``
         =========   ==========   ====  ================================
 
         """
@@ -1046,15 +1083,14 @@ class SMPose(SMUserList):
         """
         Overloaded ``+`` operator (superclass method)
 
-        :arg left: left addend
-        :arg right: right addend
-        :return: sum
+        :return: Sum of two operands
         :raises ValueError: for incompatible arguments
 
         Left-addition by a scalar
 
         - ``s + X`` performs elementwise addition of the elements of ``X`` and ``s``
 
+        :seealso: :meth:`__add__`
         """
         return left.__add__(right)
 
@@ -1065,19 +1101,18 @@ class SMPose(SMUserList):
         """
         Overloaded ``-`` operator (superclass method)
 
-        :arg left: left minuend
-        :arg right: right subtrahend
-        :return: difference
-        :raises ValueError: for incompatible arguments
+        :return: Difference of two operands
         :return: matrix
         :rtype: numpy ndarray, shape=(N,N)
+        :raises ValueError: for incompatible arguments
+
 
         Subtract elements of two poses.  This is not a group operation so the
         result is a matrix not a pose class.
 
         - ``X - Y`` is the element-wise difference of the matrix value of ``X`` and ``Y``
-        - ``X - s`` is the element-wise difference of the matrix value of ``X`` and ``s``
-        - ``s - X`` is the element-wise difference of ``s`` and the matrix value of ``X``
+        - ``X - s`` is the element-wise difference of the matrix value of ``X`` and the scalar ``s``
+        - ``s - X`` is the element-wise difference of the scalar ``s`` and the matrix value of ``X``
 
         ==============   ==============   ===========  ==============================
                    Operands                   Sum
@@ -1089,23 +1124,23 @@ class SMPose(SMUserList):
         scalar           Pose             NxN matrix   element-wise sum
         ==============   ==============   ===========  ==============================
 
-        Notes:
+        .. note::
 
-        #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
-        #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
-        #. scalar - Pose is handled by ``__rsub__``
-        #. Any other input combinations result in a ValueError.
+            #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
+            #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
+            #. scalar - Pose is handled by :meth:`__rsub__`
+            #. Any other input combinations result in a ``ValueError``.
 
-        For pose addition the ``left`` and ``right`` operands may be a sequence which
-        results in the result being a sequence:
+        For pose subtraction either or both operands may hold more than one value which
+        results in the difference holding more than one value according to:
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
-         1          1             1    ``prod = left - right``
-         1          M             M    ``prod[i] = left - right[i]``
-         N          1             M    ``prod[i] = left[i] - right``
-         M          M             M    ``prod[i] = left[i]  right[i]``
+         1          1             1    ``diff = left - right``
+         1          M             M    ``diff[i] = left - right[i]``
+         N          1             M    ``diff[i] = left[i] - right``
+         M          M             M    ``diff[i] = left[i]  right[i]``
         =========   ==========   ====  ================================
         """
 
@@ -1117,15 +1152,14 @@ class SMPose(SMUserList):
         """
         Overloaded ``-`` operator (superclass method)
 
-        :arg left: left minuend
-        :arg right: right subtrahend
-        :return: difference
+        :return: Difference of two operands
         :raises ValueError: for incompatible arguments
 
         Left-addition by a scalar
 
-        - ``s + X`` performs elementwise addition of the elements of ``X`` and ``s``
+        - ``s - X`` performs elementwise addition of the elements of ``X`` and ``s``
 
+    :seealso: :meth:`__sub__`
         """
         return -left.__sub__(right)
 
@@ -1136,28 +1170,24 @@ class SMPose(SMUserList):
         """
         Overloaded ``==`` operator (superclass method)
 
-        :param left: left side of comparison
-        :type self: SO2, SE2, SO3, SE3
-        :param right: right side of comparison
-        :type self: SO2, SE2, SO3, SE3
-        :return: poses are equal
-        :rtype: bool
+        :return: Equality of two operands
+        :rtype: bool or list of bool
 
         Test two poses for equality
 
-        - ``X == Y`` is true of the poses are of the same type and numerically
-          equal.
+        ``X == Y`` is true of the poses are of the same type and numerically
+        equal.
 
-        If either operand contains a sequence the results is a sequence 
-        according to:
+        If either or both operands may hold more than one value which
+        results in the equality test holding more than one value according to:
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
-         1          1             1    ``ret = left == right``
-         1          M             M    ``ret[i] = left == right[i]``
-         N          1             M    ``ret[i] = left[i] == right``
-         M          M             M    ``ret[i] = left[i] == right[i]``
+         1          1             1    ``eq = left == right``
+         1          M             M    ``eq[i] = left == right[i]``
+         N          1             M    ``eq[i] = left[i] == right``
+         M          M             M    ``eq[i] = left[i] == right[i]``
         =========   ==========   ====  ================================
 
         """
@@ -1166,30 +1196,26 @@ class SMPose(SMUserList):
 
     def __ne__(left, right):  # pylint: disable=no-self-argument
         """
-        Overloaded ``!=`` operator
+        Overloaded ``!=`` operator (superclass method)
 
-        :param left: left side of comparison
-        :type self: SO2, SE2, SO3, SE3
-        :param right: right side of comparison
-        :type self: SO2, SE2, SO3, SE3
-        :return: poses are not equal
-        :rtype: bool
+        :return: Inequality of two operands
+        :rtype: bool or list of bool
 
         Test two poses for inequality
 
-        - ``X == Y`` is true of the poses are of the same type but not numerically
+        - ``X != Y`` is true of the poses are of the same type but not numerically
           equal.
 
-        If either operand contains a sequence the results is a sequence 
-        according to:
+        If either or both operands may hold more than one value which
+        results in the inequality test holding more than one value according to:
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  ================================
-         1          1             1    ``ret = left != right``
-         1          M             M    ``ret[i] = left != right[i]``
-         N          1             M    ``ret[i] = left[i] != right``
-         M          M             M    ``ret[i] = left[i] != right[i]``
+         1          1             1    ``ne = left != right``
+         1          M             M    ``ne[i] = left != right[i]``
+         N          1             M    ``ne[i] = left[i] != right``
+         M          M             M    ``ne[i] = left[i] != right[i]``
         =========   ==========   ====  ================================
 
         """

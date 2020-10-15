@@ -717,17 +717,21 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     ``tr2eul(R)`` are the Euler angles corresponding to
     the rotation part of ``R``.
 
-    The 3 angles :math:`[\phi, \theta, \psi` correspond to sequential rotations about the
+    The 3 angles :math:`[\phi, \theta, \psi]` correspond to sequential rotations about the
     Z, Y and Z axes respectively.
 
     By default the angles are in radians but can be changed setting `unit='deg'`.
 
     .. note::
 
-        - There is a singularity for the case where :math:`\theta=0` in which case :math:`\phi` is arbitrarily set to zero and :math:`\phi` is set to :math:`\phi+\psi`.
+        - There is a singularity for the case where :math:`\theta=0` in which 
+          case we arbitrarily set :math:`\phi = 0` and :math:`\phi` is set to
+          :math:`\phi+\psi`.
         - If the input is SE(3) the translation component is ignored.
 
     :seealso: :func:`~eul2r`, :func:`~eul2tr`, :func:`~tr2rpy`, :func:`~tr2angvec`
+    :SymPy: not supported
+
     """
 
     if argcheck.ismatrix(T, (4, 4)):
@@ -779,21 +783,25 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     ``tr2rpy(R)`` are the roll-pitch-yaw angles corresponding to
     the rotation part of ``R``.
 
-    The 3 angles RPY=[R,P,Y] correspond to sequential rotations about the
+    The 3 angles RPY = :math:`[\theta_R, \theta_P, \theta_Y]` correspond to sequential rotations about the
     Z, Y and X axes respectively.  The axis order sequence can be changed by
     setting:
 
-    - `order='xyz'`  for sequential rotations about X, Y, Z axes
-    - `order='yxz'`  for sequential rotations about Y, X, Z axes
+    - ``order='xyz'``  for sequential rotations about X, Y, Z axes
+    - ``order='yxz'``  for sequential rotations about Y, X, Z axes
 
-    By default the angles are in radians but can be changed setting `unit='deg'`.
+    By default the angles are in radians but can be changed setting ``unit='deg'``.
 
     .. note::
 
-        - There is a singularity for the case where P=:math:`\pi/2` in which case R is arbitrarily set to zero and Y is the sum (R+Y).
+        - There is a singularity for the case where :math:`\theta_P = \pi/2` in
+          which case we arbitrarily set :math:`\theta_R=0` and 
+          :math:`\theta_Y = \theta_R + \theta_Y`.
         - If the input is SE(3) the translation component is ignored.
 
-    :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`, :func:`~tr2angvec`
+    :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`, 
+              :func:`~tr2angvec`
+    :SymPy: not supported
     """
 
     if argcheck.ismatrix(T, (4, 4)):
@@ -983,10 +991,10 @@ def trexp(S, theta=None, check=True):
     """
     Exponential of so(3) or se(3) matrix
 
-    :param S: so(3), se(3) matrix or equivalent velctor
+    :param S: so(3), se(3) matrix or equivalent vector
     :type T: numpy.ndarray, shape=(3,3), (3,), (4,4), or (6,)
-    :param theta: motion
-    :type theta: float
+    :param θ: motion
+    :type θ: float
     :return: 3x3 or 4x4 matrix exponential in SO(3) or SE(3)
     :rtype: numpy.ndarray, shape=(3,3) or (4,4)
 
@@ -995,29 +1003,29 @@ def trexp(S, theta=None, check=True):
 
     For so(3) the results is an SO(3) rotation matrix:
 
-    - ``trexp(S)`` is the matrix exponential of the so(3) element ``S`` which is a 3x3
-       skew-symmetric matrix.
-    - ``trexp(S, THETA)`` as above but for an so(3) motion of S*THETA, where ``S`` is
-      unit-norm skew-symmetric matrix representing a rotation axis and a rotation magnitude
-      given by ``THETA``.
-    - ``trexp(W)`` is the matrix exponential of the so(3) element ``W`` expressed as
-      a 3-vector (array_like).
-    - ``trexp(W, THETA)`` as above but for an so(3) motion of W*THETA where ``W`` is a
+    - ``trexp(Ω)`` is the matrix exponential of the so(3) element ``Ω`` which is
+      a 3x3 skew-symmetric matrix.
+    - ``trexp(Ω, θ)`` as above but for an so(3) motion of Ωθ, where ``Ω`` is
+      unit-norm skew-symmetric matrix representing a rotation axis and a
+      rotation magnitude given by ``θ``.
+    - ``trexp(ω)`` is the matrix exponential of the so(3) element ``ω``
+      expressed as a 3-vector (array_like).
+    - ``trexp(ω, θ)`` as above but for an so(3) motion of ωθ where ``ω`` is a
       unit-norm vector representing a rotation axis and a rotation magnitude
-      given by ``THETA``. ``W`` is expressed as a 3-vector (array_like).
+      given by ``θ``. ``ω`` is expressed as a 3-vector (array_like).
 
     For se(3) the results is an SE(3) homogeneous transformation matrix:
 
-    - ``trexp(SIGMA)`` is the matrix exponential of the se(3) element ``SIGMA`` which is
+    - ``trexp(Σ)`` is the matrix exponential of the se(3) element ``Σ`` which is
       a 4x4 augmented skew-symmetric matrix.
-    - ``trexp(SIGMA, THETA)`` as above but for an se(3) motion of SIGMA*THETA, where ``SIGMA``
-      must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
-      matrix.
-    - ``trexp(TW)`` is the matrix exponential of the se(3) element ``TW`` represented as
-      a 6-vector which can be considered a screw motion.
-    - ``trexp(TW, THETA)`` as above but for an se(3) motion of TW*THETA, where ``TW``
-      must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
-      matrix.
+    - ``trexp(Σ, θ)`` as above but for an se(3) motion of Σθ, where ``Σ`` must
+      represent a unit-twist, ie. the rotational component is a unit-norm
+      skew-symmetric matrix.
+    - ``trexp(S)`` is the matrix exponential of the se(3) element ``S``
+      represented as a 6-vector which can be considered a screw motion.
+    - ``trexp(S, θ)`` as above but for an se(3) motion of Sθ, where ``S`` must
+      represent a unit-twist, ie. the rotational component is a unit-norm
+      skew-symmetric matrix.
 
      :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`
     """
@@ -1075,7 +1083,7 @@ def trexp(S, theta=None, check=True):
 
 
 def trnorm(T):
-    """
+    r"""
     Normalize an SO(3) or SE(3) matrix
 
     :param T: SO(3) or SE(3) matrix
@@ -1085,20 +1093,24 @@ def trnorm(T):
     :rtype: np.ndarray, shape=(3,3) or (4,4)
 
     - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation
-      matrix (3x3) which is "close" to the input matrix R (3x3). If R
-      = [N,O,A] the O and A vectors are made unit length and the normal vector
-      is formed from N = O x A, and then we ensure that O and A are orthogonal
-      by O = A x N.
-
+      matrix (3x3) which is *close* to the input matrix R (3x3).
     - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous
       transformation T (4x4) is normalised while the translational part is
       unchanged.
 
+    The steps in normalization are:
+
+    #. If :math:`\mathbf{R} = [n, o, a]`
+    #. Form unit vectors :math:`\hat{o}, \hat{a}` from  :math:`o, a` respectively
+    #. Form the normal vector :math:`\hat{n} = \hat{o} \times \hat{a}`
+    #. Recompute :math:`\hat{o} = \hat{a} \times \hat{n}` to ensure that :math:`\hat{o}, \hat{a}` are orthogonal
+    #. Form the normalized SO(3) matrix :math:`\mathbf{R} = [\hat{n}, \hat{o}, \hat{a}]`
+
     .. note::
 
-        - Only the direction of A (the z-axis) is unchanged.
+        - Only the direction of a-vector (the z-axis) is unchanged.
         - Used to prevent finite word length arithmetic causing transforms to
-          become 'unnormalized'.
+          become 'unnormalized', ie. determinant :math:`\ne 1`.
     """
 
     assert ishom(T) or isrot(T), 'expecting 3x3 or 4x4 hom xform'
@@ -1191,17 +1203,18 @@ def delta2tr(d):
     r"""
     Convert differential motion to SE(3)
 
-    :param d: differential motion as a 6-vector
-    :type d: array_like
+    :param Δ: differential motion as a 6-vector
+    :type Δ: array_like
     :return: SE(3) matrix
     :rtype: np.ndarray, shape=(4,4)
 
-    ``T = delta2tr(d)`` is an SE(3) matrix representing differential
-    motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`.
+    ``delta2tr(Δ)`` is an SE(3) matrix representing differential
+    motion :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
 
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 
     :seealso: :func:`~tr2delta`
+    :SymPy: supported
     """
 
     return np.eye(4, 4) + trn.skewa(d)
@@ -1245,25 +1258,26 @@ def tr2delta(T0, T1=None):
     :rtype: np.ndarray, shape=(6,)
 
 
-    - ``tr2delta(T0, T1)`` is the differential motion (6x1) corresponding to
+    - ``tr2delta(T0, T1)`` is the differential motion Δ (6x1) corresponding to
       infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
 
     - ``tr2delta(T)`` as above but the motion is from the world frame to the pose represented by T.
 
-    The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
+    The vector :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
     represents infinitessimal translation and rotation, and is an approximation to the
     instantaneous spatial velocity multiplied by time step.
 
-    Notes:
+    .. note::
 
-    - D is only an approximation to the motion T, and assumes
-      that T0 ~ T1 or T ~ eye(4,4).
-    - Can be considered as an approximation to the effect of spatial velocity over a
-      a time interval, average spatial velocity multiplied by time.
+        - Δ is only an approximation to the motion T, and assumes
+          that T0 ~ T1 or T ~ eye(4,4).
+        - Can be considered as an approximation to the effect of spatial velocity over a
+          a time interval, average spatial velocity multiplied by time.
 
-    Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 
     :seealso: :func:`~delta2tr`
+    :SymPy: supported
     """
 
     if T1 is None:
@@ -1280,7 +1294,7 @@ def tr2delta(T0, T1=None):
 
 
 def tr2jac(T, samebody=False):
-    """
+    r"""
     SE(3) adjoint
 
     :param T: an SE(3) matrix
@@ -1289,7 +1303,7 @@ def tr2jac(T, samebody=False):
     :rtype: np.ndarray, shape=(6,6)
 
     Computes an adjoint matrix that maps spatial velocity between two frames defined by
-    an SE(3) matrix.  It acts like a Jacobian matrix.
+    an SE(3) matrix.  It is a Jacobian matrix.
 
     - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or
       differential motion from frame {A} to frame {B} where the pose of {B}
@@ -1297,10 +1311,13 @@ def tr2jac(T, samebody=False):
 
     - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both
       attached to the same moving body.
+
+    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+    :SymPy: supported
     """
 
     assert ishom(T), 'expecting an SE(3) matrix'
-    Z = np.zeros((3, 3))
+    Z = np.zeros((3, 3), dtype=T.dtype)
 
     if samebody:
         (R, t) = trn.tr2rt(T)
@@ -1321,7 +1338,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
     :param orient: 3-angle convention to use
     :type orient: str
     :param file: file to write formatted string to. [default, stdout]
-    :type file: str
+    :type file: file object
     :param fmt: conversion format for each number
     :type fmt: str
     :param unit: angular units: 'rad' [default], or 'deg'
@@ -1369,6 +1386,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
      - Default formatting is for readable columns of data
 
     :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
+    :SymPy: not supported
     """
 
     s = ''
@@ -1481,6 +1499,7 @@ def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # py
             trplot(T, frame='A', color='green')
             trplot(T1, 'labels', 'NOA');
 
+    :SymPy: not supported
     """
 
     # TODO
@@ -1593,6 +1612,7 @@ def tranimate(T, **kwargs):
 
             tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
             tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+    :SymPy: not supported
     """
     if not _matplotlib_exists:
         print('matplotlib is not installed: pip install matplotlib')

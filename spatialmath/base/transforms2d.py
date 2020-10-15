@@ -421,7 +421,7 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     :param label: text label to put at start of line
     :type label: str
     :param file: file to write formatted string to
-    :type file: str
+    :type file: file object
     :param fmt: conversion format for each number
     :type fmt: str
     :param unit: angular units: 'rad' [default], or 'deg'
