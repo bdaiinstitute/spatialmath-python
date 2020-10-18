@@ -355,7 +355,7 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`
     """
 
-    if np.isscalar(roll):
+    if argcheck.isscalar(roll):
         angles = [roll, pitch, yaw]
     else:
         angles = argcheck.getvector(roll, 3)
@@ -1624,6 +1624,9 @@ def tranimate(T, **kwargs):
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
+
+    a,b,c = sym.symbol('a,b,c')
+    T = rpy2r(a,b,c)
 
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used
     
