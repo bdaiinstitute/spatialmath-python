@@ -133,6 +133,18 @@ class SMTwist(SMUserList):
         else:
             return [base.isunittwist(x) for x in self.data]
 
+    def inv(self):
+        """
+        Inverse of Twist (superclass method)
+
+        :return: inverse
+        :rtype: Twist instance
+
+        Compute the inverse of each of the values within the twist instance.
+        The inverse is the negative of the twist vector.
+        """
+        return self.__class__([-t for t in self.data])
+
 
 # ======================================================================== #
 
