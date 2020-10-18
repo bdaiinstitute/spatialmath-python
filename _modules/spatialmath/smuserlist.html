@@ -56,10 +56,17 @@
           
 
           
+            
+            <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+          
           </a>
 
           
             
+            
+              <div class="version">
+                0.9
+              </div>
             
           
 
@@ -86,7 +93,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html">Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spatialmath.html#function-library-base">Function library (base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functions.html">Function library (base)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../indices.html">Indices</a></li>
 </ul>
 
@@ -241,9 +248,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an empty instance (superclass method)</span>
 <span class="sd">        </span>
-<span class="sd">        :return: a quaternion instance with zero values</span>
-<span class="sd">        :rtype: Quaternion</span>
+<span class="sd">        :return: pose instance with zero values</span>
 
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = SE3.Empty()</span>
+<span class="sd">            &gt;&gt;&gt; x</span>
+<span class="sd">            SE3([])</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -251,6 +264,43 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Alloc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an instance with N default values (superclass method)</span>
+
+<span class="sd">        :param n: Number of values, defaults to 1</span>
+<span class="sd">        :type n: int, optional</span>
+<span class="sd">        :return: pose instance with ``n`` default values</span>
+
+<span class="sd">        ``X.Alloc(N)`` creates an instance of the pose class ``X`` with ``N``</span>
+<span class="sd">        default values, ie. ``len(X)`` will be ``N``.</span>
+
+<span class="sd">        ``X`` can be considered a vector of pose objects, and those elements</span>
+<span class="sd">        can be referenced ``X[i]`` or assigned to ``X[i] = ...``.</span>
+
+<span class="sd">        .. note:: The default value depends on the pose class and is the result</span>
+<span class="sd">                  of the empty constructor. For ``SO2``, </span>
+<span class="sd">                  ``SE2``, ``SO3``, ``SE3`` it is an identity matrix, for a</span>
+<span class="sd">                  twist class ``Twist2`` or ``Twist3`` it is a zero vector,</span>
+<span class="sd">                  for a ``UnitQuaternion`` or ``Quaternion`` it is a zero</span>
+<span class="sd">                  vector.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = SE3.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(.2)</span>
+<span class="sd">            &gt;&gt;&gt; x[2:4]</span>
+<span class="sd">            SE3([</span>
+<span class="sd">            array([[1., 0., 0., 0.],</span>
+<span class="sd">                [0., 1., 0., 0.],</span>
+<span class="sd">                [0., 0., 1., 0.],</span>
+<span class="sd">                [0., 0., 0., 1.]]),</span>
+<span class="sd">            array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
+<span class="sd">                [ 0.        ,  0.98006658, -0.19866933,  0.        ],</span>
+<span class="sd">                [ 0.        ,  0.19866933,  0.98006658,  0.        ],</span>
+<span class="sd">                [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">n</span>
         <span class="k">return</span> <span class="n">x</span>
@@ -341,14 +391,6 @@
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># get the underlying numpy array</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -456,6 +498,19 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t insert a multivalued element - must have len() == 1&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">A</span>
+
+    <span class="c1"># flag these binary operators as being not supported</span>
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -718,7 +773,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 11-Oct-2020.
+        Last updated on 18-Oct-2020.
       </span>
 
     </p>

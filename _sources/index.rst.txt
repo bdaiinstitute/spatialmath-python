@@ -11,5 +11,7 @@ Spatial Maths for Python
    :maxdepth: 2
 
    intro
+   3D-space
    spatialmath
+   functions
    indices
