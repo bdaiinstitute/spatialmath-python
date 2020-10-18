@@ -240,14 +240,6 @@ class SMUserList(UserList, ABC):
             return self.data
 
     @property
-    def _A(self):
-        # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
-
-    @property
     def A(self):
         # get the underlying numpy array
         if len(self.data) == 1:
@@ -345,6 +337,19 @@ class SMUserList(UserList, ABC):
         if len(value) > 1:
             raise ValueError("can't insert a multivalued element - must have len() == 1")
         self.data[i] = value.A
+
+    # flag these binary operators as being not supported
+    def __lt__(self, other):
+        return NotImplementedError
+
+    def __le__(self, other):
+        return NotImplementedError
+
+    def __gt__(self, other):
+        return NotImplementedError
+
+    def __ge__(self, other):
+        return NotImplementedError
 
     def append(self, item):
         """
