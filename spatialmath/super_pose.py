@@ -85,18 +85,20 @@ class SMPose(SMUserList):
     is installed.  Class variables control the colorization and can be assigned
     to at any time.
 
-    ===========  ===================  ============================================
-    Variable     Default              Description
-    ===========  ===================  ============================================
-    _rotcolor    'red'                Foreground color of rotation submatrix
-    _transcolor  'blue'               Foreground color of rotation submatrix
-    _constcolor  'grey_50'            Foreground color of matrix constant elements
-    _bgcolor     None                 Background color of matrix
-    _indexcolor  (None, 'yellow_2')   Foreground, background color of index tag
-    _format      '{:< 12g}'           Format string for each matrix element
-    ===========  ===================  ============================================
+    ===============  ===================  ============================================
+    Variable         Default              Description
+    ===============  ===================  ============================================
+    _rotcolor        'red'                Foreground color of rotation submatrix
+    _transcolor      'blue'               Foreground color of rotation submatrix
+    _constcolor      'grey_50'            Foreground color of matrix constant elements
+    _bgcolor         None                 Background color of matrix
+    _indexcolor      (None, 'yellow_2')   Foreground, background color of index tag
+    _format          '{:< 12g}'           Format string for each matrix element
+    _suppress_small  True                 Suppress *small* values, set to zero
+    _suppress_tol    100                  Threshold for *small* values in eps units
+    ===============  ===================  ============================================
 
-    None means no colorization is performed.
+    ``None`` means no colorization is performed.
 
     For example::
 
@@ -110,6 +112,8 @@ class SMPose(SMUserList):
     _constcolor = 'grey_50'
     _indexcolor = (None, 'yellow_2')
     _format = '{:< 12g}'
+    _suppress_small = True
+    _suppress_tol = 100
 
 
     def __new__(cls, *args, **kwargs):
@@ -645,7 +649,7 @@ class SMPose(SMUserList):
         """
         return self._string(color=True)
 
-    def _string(self, color=False, tol=500):
+    def _string(self, color=False):
         """
         Pretty print the matrix value
 
@@ -708,7 +712,7 @@ class SMPose(SMUserList):
                     if sym.issymbol(element):
                         s = '{:<12s}'.format(str(element))
                     else:
-                        if tol > 0 and abs(element) < tol * _eps:
+                        if self._suppress_small and abs(element) < self._suppress_tol * _eps:
                             element = 0
                         s = self._format.format(element)
 
