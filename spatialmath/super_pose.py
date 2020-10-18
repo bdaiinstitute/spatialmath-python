@@ -710,7 +710,7 @@ class SMPose(SMUserList):
                     else:
                         if tol > 0 and abs(element) < tol * _eps:
                             element = 0
-                        s = '{:< 12g}'.format(element)
+                        s = self._format.format(element)
 
                     if rownum < n:
                         if colnum < n:
