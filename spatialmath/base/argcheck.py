@@ -241,8 +241,8 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
 
         v = v.flatten()
 
-        if v.dtype.kind != 'O':
-            dt = dtype
+        if v.dtype.kind == 'O':
+            dt = 'O'
 
         if out == 'sequence':
             return list(v.flatten())
@@ -415,5 +415,5 @@ def isvectorlist(x, n):
 
 if __name__ == '__main__':
     import pathlib
-    
+
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_argcheck.py").read())  # pylint: disable=exec-used
