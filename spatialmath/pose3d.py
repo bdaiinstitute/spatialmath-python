@@ -16,6 +16,8 @@ To use::
  .. inheritance-diagram:: spatialmath.pose3d
     :top-classes: collections.UserList
     :parts: 1
+    
+.. image:: ../figs/pose-values.png
 """
 
 # pylint: disable=invalid-name
@@ -1235,5 +1237,10 @@ class SE3(SO3):
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
+
+    SE3._bgcolor = 'yellow'
+    SE3._format = '{:< 6.2f}'
+    a = SE3()
+    print(a)
 
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose3d.py").read())  # pylint: disable=exec-used
