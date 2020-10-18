@@ -863,7 +863,7 @@ class SMPose(SMUserList):
         Overloaded ``*`` operator (superclass method)
 
         :return: Product of two operands
-        :rtype: pose instance
+        :rtype: Pose instance or NumPy array
         :raises NotImplemented: for incompatible arguments
 
         Pose composition, scaling or vector transformation:
@@ -931,8 +931,10 @@ class SMPose(SMUserList):
         1          (N,M)        (N,M)  column transformation
         =========  ===========  =====  ==========================
 
-        .. note:: For the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous
-                  form, transformed, then converted back to Euclidean form.
+        .. note:: 
+            - The vector is an array-like, a 1D NumPy array or a list/tuple
+            - For the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous
+              form, transformed, then converted back to Euclidean form.
 
         Example:: 
 
@@ -994,7 +996,7 @@ class SMPose(SMUserList):
         Overloaded ``*`` operator (superclass method)
 
         :return: Product of two operands
-        :rtype: pose instance
+        :rtype: Pose instance or NumPy array
         :raises NotImplemented: for incompatible arguments
 
         Left-multiplication by a scalar
@@ -1007,12 +1009,28 @@ class SMPose(SMUserList):
           such as ``Plucker`` and ``Twist`` implement left-multiplication by
           an ``SE3`` using their own ``__rmul__`` methods.
 
+        :seealso: :func:`__mul__`
         """
         if argcheck.isscalar(left):
             return right.__mul__(left)
         else:
             return NotImplemented
 
+    def __imul__(left, right):  # pylint: disable=no-self-argument
+        """
+        Overloaded ``*=`` operator (superclass method)
+
+        :return: Product of two operands
+        :rtype: Pose instance or NumPy array
+        :raises ValueError: for incompatible arguments
+
+        - ``X *= Y`` compounds the poses ``X`` and ``Y`` and places the result in ``X``
+        - ``X *= s`` performs elementwise multiplication of the elements of ``X``
+          and ``s`` and places the result in ``X``
+
+        :seealso: ``__mul__``
+        """
+        return left.__mul__(right)
 
     def __truediv__(left, right):  # pylint: disable=no-self-argument
         """
@@ -1025,7 +1043,7 @@ class SMPose(SMUserList):
         Pose composition or scaling:
 
         - ``X / Y`` compounds the poses ``X`` and ``Y.inv()``
-        - ``X / s`` performs elementwise multiplication of the elements of ``X`` by ``s``
+        - ``X / s`` performs elementwise division of the elements of ``X`` by ``s``
 
         ==============   ==============   ===========  =========================
                    Multiplicands                   Quotient
@@ -1064,12 +1082,28 @@ class SMPose(SMUserList):
         else:
             raise ValueError('bad operands')
 
+    def __itruediv__(left, right):  # pylint: disable=no-self-argument
+        """
+        Overloaded ``/=`` operator (superclass method)
+
+        :return: Product of right operand and inverse of left operand
+        :rtype: Pose instance or NumPy array
+        :raises ValueError: for incompatible arguments
+
+        - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``
+        - ``X /= s`` performs elementwise division of the elements of ``X``
+          by ``s`` and places the result in ``X``
+
+        :seealso: ``__truediv__``
+        """
+        return left.__truediv__(right)
+
     def __add__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
         :return: Sum of two operands
-        :rtype: NumPy ndarray, shape=(N,N)
+        :rtype: NumPy array, shape=(N,N)
         :raises ValueError: for incompatible arguments
 
 
@@ -1119,6 +1153,7 @@ class SMPose(SMUserList):
         Overloaded ``+`` operator (superclass method)
 
         :return: Sum of two operands
+        :rtype: NumPy array, shape=(N,N)
         :raises ValueError: for incompatible arguments
 
         Left-addition by a scalar
@@ -1129,16 +1164,29 @@ class SMPose(SMUserList):
         """
         return left.__add__(right)
 
-    # def __iadd__(left, right):
-    #     return left.__add__(right)
+
+    def __iadd__(left, right):  # pylint: disable=no-self-argument
+        """
+        Overloaded ``+=`` operator (superclass method)
+
+        :return: Sum of two operands
+        :rtype: NumPy array, shape=(N,N)
+        :raises ValueError: for incompatible arguments
+
+        - ``X += Y`` adds the matrix values of ``X`` and ``Y`` and places the result in ``X``
+        - ``X += s`` elementwise addition of the matrix elements of ``X``
+          and ``s`` and places the result in ``X``
+
+        :seealso: ``__add__``
+        """
+        return left.__add__(right)
 
     def __sub__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
         :return: Difference of two operands
-        :return: matrix
-        :rtype: numpy ndarray, shape=(N,N)
+        :rtype: NumPy array, shape=(N,N)
         :raises ValueError: for incompatible arguments
 
 
@@ -1188,18 +1236,33 @@ class SMPose(SMUserList):
         Overloaded ``-`` operator (superclass method)
 
         :return: Difference of two operands
+        :rtype: NumPy array, shape=(N,N)
         :raises ValueError: for incompatible arguments
 
         Left-addition by a scalar
 
         - ``s - X`` performs elementwise addition of the elements of ``X`` and ``s``
 
-    :seealso: :meth:`__sub__`
+        :seealso: :meth:`__sub__`
         """
         return -left.__sub__(right)
 
-    # def __isub__(left, right):
-    #     return left.__sub__(right)
+    def __isub__(left, right):  # pylint: disable=no-self-argument
+        """
+        Overloaded ``-=`` operator (superclass method)
+
+        :return: Difference of two operands
+        :rtype: NumPy array, shape=(N,N)
+        :raises: ValueError
+
+        - ``X -= Y`` is the element-wise difference of the matrix value of ``X``
+          and ``Y`` and places the result in ``X``
+        - ``X -= s`` is the element-wise difference of the matrix value of ``X``
+          and the scalar ``s`` and places the result in ``X``
+
+        :seealso: ``__sub__``
+        """
+        return left.__sub__(right)
 
     def __eq__(left, right):  # pylint: disable=no-self-argument
         """
