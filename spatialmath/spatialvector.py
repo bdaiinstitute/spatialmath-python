@@ -64,7 +64,7 @@ class SpatialVector(SMUserList):
 
         :seealso: :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.
         """
-        print('spatialVec6 init')
+        # print('spatialVec6 init')
         super().__init__()
 
         if value is None:
@@ -89,6 +89,8 @@ class SpatialVector(SMUserList):
     def shape(self):
         return (6,)
 
+    def __getitem__(self, i):
+        return self.__class__(self.data[i])
     # ------------------------------------------------------------------------ #
     @property
     def V(self):
@@ -266,9 +268,9 @@ class SpatialM6(SpatialVector):
                             [0,     0,     0,     -v[4],  v[3],  0]
                         ])
         if isinstance(other, SpatialVelocity):
-            return SpatialAcceleration(vcross * other.V)  # * operator
+            return SpatialAcceleration(vcross @ other.V)  # * operator
         elif isinstance(other, SpatialF6):
-            return SpatialAcceleration(-vcross * other.V)  # x* operator
+            return SpatialForce(-vcross @ other.V)  # x* operator
         else:
             raise TypeError('type mismatch')
 
@@ -477,19 +479,40 @@ class SpatialInertia(SMUserList):
         - ``SpatialInertia(I)`` is a spatial inertia object with a value equal
           to ``I`` (6x6).
         """
-        if m is not None and c is not None:
-            assert arg.isvector(c, 3), 'c must be 3-vector'
+        super().__init__()
+
+        if m is None and c is None and I is None:
+            I = np.zeros((6,6))
+        elif m is None and c is None and I is not None:
+            I = arg.getmatrix(I, (6,6))
+        elif m is not None and c is not None:
+            c = arg.getvector(c, 3)
             if I is None:
                 I = np.zeros((3,3))
             else:
-                assert arg.ismatrix(I, (3,3)), 'I must be 3x3 matrix'
+                I = arg.getmatrix(I, (3,3))
             C = tr.skew(c)
-            self.I = np.array([
-                                [m * np.eye(3), m @ C.T],
-                                [m @ C,         I + m * C @ C.T]
-                              ])
-        elif m is None and c is None and I is not None:
-            assert arg.ismatrix(I, (6, 6)), 'I must be 6x6 matrix'
+            I = np.block([
+                    [m * np.eye(3), m * C.T],
+                    [m * C,         I + m * C @ C.T]
+                    ])
+        else:
+            raise ValueError('bad values')
+
+        self.data = [I]
+
+    @staticmethod
+    def _identity():
+        return np.zeros((3,3))
+    
+    def isvalid(self, x, check):
+        return True
+
+    def shape(self):
+        return (3,3)
+
+    def __getitem__(self, i):
+        return SpatialInertia(self.data[i])
 
     def __repr__(self):
 
@@ -506,7 +529,7 @@ class SpatialInertia(SMUserList):
         return self.__str__()
 
     def __str__(self):
-        return str(self.I)
+        return str(self.A)
 
 
     def __add__(left, right):  # pylint: disable=no-self-argument
@@ -538,11 +561,11 @@ class SpatialInertia(SMUserList):
         left = self
 
         if isinstance(right, SpatialAcceleration):
-            v = SpatialForce(left.I @ right.V)  # F = ma
+            return SpatialForce(left.A @ right.V)  # F = ma
         elif isinstance(right, SpatialVelocity):
             # crf(v(i).vw)*model.I(i).I*v(i).vw;
             # v = Wrench( a.cross() * I.I * a.vw );
-            v = SpatialMomentum(left.I * right.V)   # M = mv
+            return SpatialMomentum(left.A @ right.V)   # M = mv
         else:
             raise TypeError('bad postmultiply operands for Inertia *')
 
