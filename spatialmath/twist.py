@@ -556,11 +556,11 @@ class Twist3(SMTwist):
             # return Twist(left.S * right)
             return Twist3(left.binop(right, lambda x, y: x * y))
         elif isinstance(right, SpatialVelocity):
-            return SpatialVelocity(left.Ad @ right.V)
+            return SpatialVelocity(left.Ad() @ right.V)
         elif isinstance(right, SpatialAcceleration):
-            return SpatialAcceleration(left.Ad @ right.V)
+            return SpatialAcceleration(left.Ad() @ right.V)
         elif isinstance(right, SpatialForce):
-            return SpatialForce(left.Ad @ right.V)
+            return SpatialForce(left.Ad().T @ right.V)
         else:
             raise ValueError('twist *, incorrect right operand')
 
