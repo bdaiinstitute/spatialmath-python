@@ -81,7 +81,36 @@ class SMPose(SMUserList):
         >>> x.reverse()         # reverse the elements in the sequence
         >>> del x[1]            # delete an element
 
+    For console printing colorization is supported if the package ``colored``
+    is installed.  Class variables control the colorization and can be assigned
+    to at any time.
+
+    ===========  ===================  ============================================
+    Variable     Default              Description
+    ===========  ===================  ============================================
+    _rotcolor    'red'                Foreground color of rotation submatrix
+    _transcolor  'blue'               Foreground color of rotation submatrix
+    _constcolor  'grey_50'            Foreground color of matrix constant elements
+    _bgcolor     None                 Background color of matrix
+    _indexcolor  (None, 'yellow_2')   Foreground, background color of index tag
+    _format      '{:< 12g}'           Format string for each matrix element
+    ===========  ===================  ============================================
+
+    None means no colorization is performed.
+
+    For example::
+
+        >> SE3._bgcolor = None
+        >> SE3._indexcolor = ('green', None)
     """
+
+    _rotcolor = 'red'
+    _transcolor = 'blue'
+    _bgcolor = None
+    _constcolor = 'grey_50'
+    _indexcolor = (None, 'yellow_2')
+    _format = '{:< 12g}'
+
 
     def __new__(cls, *args, **kwargs):
         """
@@ -647,13 +676,19 @@ class SMPose(SMUserList):
         #print('in __str__', _color)
         
         if _color:
-            # bgcol = bg('grey_93')
-            bgcol = ''
-            trcol = fg('blue')
-            rotcol = fg('red')
-            constcol = fg('grey_50')
+
+            def color(c, f):
+                if c is None:
+                    return ''
+                else:
+                    return f(c)
+            bgcol = color(self._bgcolor, bg)
+            trcol = color(self._transcolor, fg) + bgcol
+            rotcol = color(self._rotcolor, fg) + bgcol
+            constcol = color(self._constcolor, fg) + bgcol
+            indexcol = color(self._indexcolor[0], fg) \
+                       + color(self._indexcolor[1], bg)
             reset = attr(0)
-            indexcol = bg('yellow_2')
         else:
             bgcol = ''
             trcol = ''
