@@ -1,3 +1,5 @@
+# Spatial Maths for Python
+
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![pypi downloads](https://img.shields.io/pypi/dw/spatialmath-python)
 ![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
@@ -7,20 +9,27 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/petercorke/spatialmath-python/graphs/commit-activity)
 [![GitHub stars](https://img.shields.io/github/stars/petercorke/spatialmath-python.svg?style=social&label=Star)](https://GitHub.com/petercorke/spatialmath-python/stargazers/)
+[![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
 
-# Spatial Maths for Python
 
-![RTB-P logo](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png)
-
-This is a Python implementation of the [Spatial Math Toolbox for MATLAB<sup>&reg;</sup>](https://github.com/petercorke/spatial-math), which is a standalone component of the [Robotics Toolbox for MATLAB<sup>&reg;</sup>](https://github.com/petercorke/robotics-toolbox-matlab).
+<table style="border:0px">
+<tr style="border:0px">
+<td style="border:0px">
+<img src="https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png" width="200"></td>
+<td style="border:0px">
+A Python implementation of the <a href="https://github.com/petercorke/spatial-math">Spatial Math Toolbox for MATLAB<sup>&reg;</sup></a>
+<ul>
+<li><a href="https://github.com/petercorke/spatialmath-python">GitHub repository </a></li>
+<li><a href="https://petercorke.github.io/spatialmath-python">Documentation</a></li>
+<li><a href="https://github.com/petercorke/spatialmath-python/wiki">Examples and details</a></li>
+<li><a href="installation#">Installation</a></li>
+</ul>
+</td>
+</tr>
+</table>
 
 Spatial mathematics capability underpins all of robotics and robotic vision where we need to describe the position, orientation or pose of objects in 2D or 3D spaces.
 
-
-* GitHub repository [https://github.com/petercorke/spatialmath-python](https://github.com/petercorke/spatialmath-python)      
-* Documentation [https://petercorke.github.io/spatialmath-python](https://petercorke.github.io/spatialmath-python)
-* Additional details on Wiki [https://github.com/petercorke/spatialmath-python/wiki](https://github.com/petercorke/spatialmath-python/wiki)
-* Dependencies: `numpy`, `scipy`, `matplotlib`, `ffmpeg` (if rendering animations as a movie)
 
 
 # What it does
@@ -64,14 +73,14 @@ The class, method and functions names largely mirror those of the MATLAB toolbox
 
 ![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/animate.gif)
 
-# Getting going
+# Installation
 
 ## Using pip
 
 Install a snapshot from PyPI
 
 ```
-% pip install spatialmath-python
+pip install spatialmath-python
 ```
 
 ## From GitHub
@@ -79,10 +88,14 @@ Install a snapshot from PyPI
 Install the current code base from GitHub and pip install a link to that cloned copy
 
 ```
-% git clone https://github.com/petercorke/spatialmath-python.git
-% cd spatialmath-python
-% pip install -e .
+git clone https://github.com/petercorke/spatialmath-python.git
+cd spatialmath-python
+pip install -e .
 ```
+
+## Dependencies
+
+`numpy`, `scipy`, `matplotlib`, `ffmpeg` (if rendering animations as a movie)
 
 # Examples
 
