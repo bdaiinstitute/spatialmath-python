@@ -42,12 +42,13 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
     'sphinx.ext.inheritance_diagram',
+    'sphinx_autorun',
     ]
+    #'sphinx-prompt',
     #'recommonmark',
     #'sphinx.ext.autosummary',
     #'sphinx_markdown_tables',
     #    
-
 # inheritance_node_attrs = dict(style='rounded,filled', fillcolor='lightblue')
 inheritance_node_attrs = dict(style='rounded')
 
@@ -62,7 +63,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['test_*']
 
-
+add_module_names = False 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -81,6 +82,7 @@ html_theme_options = {
     #'description': 'Spatial maths and geometry for Python',
     'display_version': True,
     'prev_next_buttons_location': 'both',
+    'analytics_id': 'G-11Q6WJM565',
 
     }
 html_logo = '../figs/CartesianSnakes_LogoW.png'
@@ -94,3 +96,18 @@ html_logo = '../figs/CartesianSnakes_LogoW.png'
 html_last_updated_fmt = '%d-%b-%Y'
 # extensions = ['rst2pdf.pdfbuilder']
 # pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Your Name'),]
+latex_engine = 'xelatex'
+# maybe need to set graphics path in here somewhere
+# \graphicspath{{figures/}{../figures/}{C:/Users/me/Documents/project/figures/}}
+# https://stackoverflow.com/questions/63452024/how-to-include-image-files-in-sphinx-latex-pdf-files
+latex_elements = {
+    # The paper size ('letterpaper' or 'a4paper').
+    'papersize': 'a4paper',
+    #'releasename':" ",
+    # Sonny, Lenny, Glenn, Conny, Rejne, Bjarne and Bjornstrup
+    # 'fncychap': '\\usepackage[Lenny]{fncychap}',
+    'fncychap': '\\usepackage{fncychap}',
+}
+
+autorun_languages = {}
+autorun_languages['pycon_output_encoding'] = 'UTF-8'
