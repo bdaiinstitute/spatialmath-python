@@ -128,7 +128,7 @@ class Test_check(unittest.TestCase):
 
     def test_isvector(self):
         l = [1, 2, 3]
-        nt.assert_raises(AssertionError, assertvector, l, 4)
+        nt.assert_raises(ValueError, assertvector, l, 4)
 
     def test_getvector(self):
         l = [1, 2, 3]
