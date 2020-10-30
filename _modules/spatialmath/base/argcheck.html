@@ -92,8 +92,8 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../spatialmath.html">Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functions.html">Function library (base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatialmath.html">Class reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions.html">Function reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../indices.html">Indices</a></li>
 </ul>
 
@@ -163,7 +163,9 @@
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Utilities functions for testing passed arguments to spatialmath.</span>
+<span class="sd">Utility functions for testing and converting passed arguments.  Used in all</span>
+<span class="sd">spatialmath functions and classes to provides for flexibility in argument types </span>
+<span class="sd">that can be passed.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># pylint: disable=invalid-name</span>
@@ -180,10 +182,18 @@
 <span class="sd">    Test if argument is a real scalar</span>
 
 <span class="sd">    :param x: value to test</span>
-<span class="sd">    :return: True if scalar</span>
+<span class="sd">    :return: whether value is a scalar</span>
 <span class="sd">    :rtype: bool</span>
 
 <span class="sd">    ``isscalar(x)`` is ``True`` if ``x`` is a Python or numPy int or real float.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import isscalar</span>
+<span class="sd">        &gt;&gt;&gt; isscalar(1)</span>
+<span class="sd">        &gt;&gt;&gt; isscalar(1.2)</span>
+<span class="sd">        &gt;&gt;&gt; isscalar([1])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">)</span></div>
 
@@ -195,14 +205,19 @@
 <span class="sd">    :param m: value to test</span>
 <span class="sd">    :param shape: required shape</span>
 <span class="sd">    :type shape: 2-tuple</span>
-<span class="sd">    :raises: AssertionError</span>
+<span class="sd">    :raises TypeError: if value is not a real Numpy array</span>
+<span class="sd">    :raise ValueError: if value is not of the specified shape</span>
 
-<span class="sd">    - ``assertsmatrix(A, (2,3))`` raises an ``ValueError`` if ``A`` is not</span>
-<span class="sd">      a 2x3 numPy ndarray, ie. shape=(2,3).</span>
-<span class="sd">    - ``assertsmatrix(A, (2,None))`` raises an ``ValueError`` if ``A`` is not</span>
-<span class="sd">      a 2xN numPy ndarray, ie. shape=(2,N).</span>
-<span class="sd">    - ``assertsmatrix(A, (None,3))`` raises an ``ValueError`` if ``A`` is not</span>
-<span class="sd">      a Nx3 numPy ndarray, ie. shape=(N,3).</span>
+<span class="sd">    Tests if the argument is a real 2D matrix with a specified shape ``shape``</span>
+<span class="sd">    but the value ``None`` indicate an unspecified (wildcard, don&#39;t care)</span>
+<span class="sd">    dimension.</span>
+
+<span class="sd">    - ``assertsmatrix(A)`` raises an exception if ``m`` is not convertible to</span>
+<span class="sd">      a 2D array</span>
+<span class="sd">    - ``assertsmatrix(A, (N,M))`` as above but ``m`` must have shape</span>
+<span class="sd">      (``N``,``M``)</span>
+<span class="sd">    - ``assertsmatrix(A, (N,None))`` as above but ``m`` must have ``N`` rows</span>
+<span class="sd">    - ``assertsmatrix(A, (None,M))`` as above but ``m`` must have ``M`` columns</span>
 
 <span class="sd">    :seealso: :func:`ismatrix`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -213,7 +228,7 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a real numPy ndarray&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect scalarber of matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect scalar of matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
@@ -223,25 +238,27 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if argument is a real 2D matrix</span>
 
-<span class="sd">    :param m: value to test</span>
-<span class="sd">    :param shape: required shape</span>
-<span class="sd">    :type shape: 2-tuple</span>
-<span class="sd">    :return: True if value is of specified shape</span>
-<span class="sd">    :rtype: bool</span>
+<span class="sd">    :param m: value to test :param shape: required shape :type shape: 2-tuple</span>
+<span class="sd">    :return: True if value is of specified shape :rtype: bool</span>
 
-<span class="sd">    Tests if the argument is a 2D matrix with a specified shape ``shape`` but</span>
-<span class="sd">    this can indicate an unspecified (wildcard) dimension, for example:</span>
+<span class="sd">    Tests if the argument is a real 2D matrix with a specified shape ``shape``</span>
+<span class="sd">    but the value ``None`` indicate an unspecified (wildcard, don&#39;t care)</span>
+<span class="sd">    dimension, for example:</span>
 
-<span class="sd">    - ``issmatrix(A, (2,3))`` is ``True`` if ``A`` is a 2x3 numPy ndarray.</span>
-<span class="sd">    - ``issmatrix(A, (2,None))`` is ``True`` if ``A`` is a 2xN numPy ndarray.</span>
-<span class="sd">    - ``issmatrix(A, (None,3))`` is ``True`` if ``A`` is an Nx3 numPy ndarray.</span>
+<span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">    .. notes::</span>
-<span class="sd">       - Unlike ``verifymatrix`` this function:</span>
-<span class="sd">         - checks the argument is real valued</span>
-<span class="sd">         - allows the shape to have an unspecified dimension</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import ismatrix</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; A = np.zeros((2,3))</span>
+<span class="sd">        &gt;&gt;&gt; ismatrix(A, (2,3))</span>
+<span class="sd">        &gt;&gt;&gt; ismatrix(A, (None,3))</span>
+<span class="sd">        &gt;&gt;&gt; ismatrix(A, (2,None))</span>
+<span class="sd">        &gt;&gt;&gt; ismatrix(A, (2,4))</span>
 
-<span class="sd">    :seealso: getmatrix, verifymatrix</span>
+<span class="sd">    .. note:: Unlike ``verifymatrix`` this function: - checks the argument is</span>
+<span class="sd">                real valued - allows the shape to have an unspecified dimension</span>
+
+<span class="sd">    :seealso: :func:`getmatrix`, :func:`verifymatrix`, :func:`assertmatrix`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -257,12 +274,11 @@
 
 <div class="viewcode-block" id="getmatrix"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.argcheck.getmatrix">[docs]</a><span class="k">def</span> <span class="nf">getmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converrt argument to 2D array</span>
+<span class="sd">    Convert argument to 2D array</span>
 
 <span class="sd">    :param m: input value</span>
-<span class="sd">    :type m: 2D NumPy ndarray, 1D array-like or scalar</span>
 <span class="sd">    :param shape: shape of returned matrix</span>
-<span class="sd">    :type shape: 2-tupe</span>
+<span class="sd">    :type shape: 2-tuple</span>
 <span class="sd">    :raises ValueError: if ``m`` is inconsistent with ``shape``</span>
 <span class="sd">    :raises TypeError: if ``m`` is not required type</span>
 <span class="sd">    :return: a 2D array</span>
@@ -271,7 +287,18 @@
 <span class="sd">    ``getmatrix(m, shape)`` is a 2D matrix with shape ``shape`` formed from</span>
 <span class="sd">    ``m`` which can be a 2D array, 1D array-like or a scalar.</span>
 
-<span class="sd">    .. notes::</span>
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import getmatrix</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; getmatrix(3, (1,1))</span>
+<span class="sd">        &gt;&gt;&gt; getmatrix([3,4], (1,2))</span>
+<span class="sd">        &gt;&gt;&gt; getmatrix([3,4], (2, 1))</span>
+<span class="sd">        &gt;&gt;&gt; getmatrix([3,4,5,6], (2,2))</span>
+<span class="sd">        &gt;&gt;&gt; getmatrix(np.r_[3,4,5,6], (2,2))</span>
+
+<span class="sd">    .. note::</span>
+
 <span class="sd">       - If ``m`` is a 2D array its shape is compared to ``shape`` - a 2-tuple</span>
 <span class="sd">         where ``None`` stands for unspecified, ie. ``(None, 2)`` will match</span>
 <span class="sd">         any array where the second dimension is 2.</span>
@@ -282,7 +309,7 @@
 <span class="sd">         attempt to reshape ``m`` as an array with shape (k,2) where :math:`k \times 2 \eq n`.</span>
 <span class="sd">       - If ``m`` is a scalar, return an array of shape (1,1)</span>
 
-<span class="sd">    :seealso: ismatrix, verifymatrix</span>
+<span class="sd">    :seealso: :func:`ismatrix`, :func:`verifymatrix`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="c1"># passed a 2D array</span>
@@ -314,7 +341,7 @@
 
 <div class="viewcode-block" id="verifymatrix"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.argcheck.verifymatrix">[docs]</a><span class="k">def</span> <span class="nf">verifymatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Test if argument is array of specified type</span>
+<span class="sd">    Assert that argument is array of specified size</span>
 
 <span class="sd">    :param m: value to be tested</span>
 <span class="sd">    :param shape: desired shape of value</span>
@@ -325,7 +352,10 @@
 <span class="sd">    Raises an exception if the argument ``m`` is not a NumPy array of the </span>
 <span class="sd">    specified shape.</span>
 
-<span class="sd">    :seealso: getmatrix, ismatrix</span>
+<span class="sd">    .. note:: Unlike ``assertmatrix`` the specified shape cannot have wildcard</span>
+<span class="sd">              dimensions.</span>
+
+<span class="sd">    :seealso: :func:`assertmatrix`,:func:`getmatrix`, :func:`ismatrix`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a numPy ndarray&quot;</span><span class="p">)</span>
@@ -349,12 +379,19 @@
 <span class="sd">    :param dtype: datatype for numPy array return (default np.float64)</span>
 <span class="sd">    :type dtype: numPy type</span>
 <span class="sd">    :return: vector value in specified format</span>
+<span class="sd">    :raise TypeError: value is not a list or NumPy array</span>
+<span class="sd">    :raise ValueError: incorrect number of elements</span>
 
-<span class="sd">    The passed vector can be any of:</span>
+<span class="sd">    - ``getvector(vec)`` is ``vec`` converted to the output format ``out`` </span>
+<span class="sd">      where ``vec`` is any of:</span>
 
-<span class="sd">    - Python native list or tuple</span>
-<span class="sd">    - numPy 1D array, ie. shape=(N,)</span>
-<span class="sd">    - numPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)</span>
+<span class="sd">        - a Python native int or float, a 1-vector</span>
+<span class="sd">        - Python native list or tuple</span>
+<span class="sd">        - numPy real 1D array, ie. shape=(N,)</span>
+<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) </span>
+<span class="sd">          or (N,1)</span>
+
+<span class="sd">    - ``getvector(vec, N)`` as above but must be an ``N``-element vector.</span>
 
 <span class="sd">    The returned vector will be in the format specified by ``out``:</span>
 
@@ -362,13 +399,33 @@
 <span class="sd">    format      return type</span>
 <span class="sd">    ==========  ===============================================</span>
 <span class="sd">    &#39;sequence&#39;  Python list, or tuple if a tuple was passed in</span>
-<span class="sd">    &#39;array&#39;     1D numPy array, shape=(N,)</span>
+<span class="sd">    &#39;list&#39;      Python list</span>
+<span class="sd">    &#39;array&#39;     1D numPy array, shape=(N,)  [default]</span>
 <span class="sd">    &#39;row&#39;       row vector, a 2D numPy array, shape=(1,N)</span>
 <span class="sd">    &#39;col&#39;       column vector, 2D numPy array, shape=(N,1)</span>
 <span class="sd">    ==========  ===============================================</span>
 
-<span class="sd">    For &#39;array&#39;, &#39;row&#39; or &#39;col&#39; the numPy dtype defaults to ``np.float64`` but</span>
-<span class="sd">    can be overriden using the ``dtype`` argument.</span>
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import getvector</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; getvector([1,2])  # list</span>
+<span class="sd">        &gt;&gt;&gt; getvector([1,2], out=&#39;row&#39;)  # list</span>
+<span class="sd">        &gt;&gt;&gt; getvector([1,2], out=&#39;col&#39;)  # list</span>
+<span class="sd">        &gt;&gt;&gt; getvector((1,2))  # tuple</span>
+<span class="sd">        &gt;&gt;&gt; getvector(np.r_[1,2,3], out=&#39;sequence&#39;)  # numpy array</span>
+<span class="sd">        &gt;&gt;&gt; getvector(1)  # scalar</span>
+<span class="sd">        &gt;&gt;&gt; getvector([1])</span>
+<span class="sd">        &gt;&gt;&gt; getvector([[1]])</span>
+
+<span class="sd">    .. note:: </span>
+<span class="sd">        - For &#39;array&#39;, &#39;row&#39; or &#39;col&#39; output the NumPy dtype defaults to the</span>
+<span class="sd">          ``dtype`` of ``v`` if it is a NumPy array, otherwise it is</span>
+<span class="sd">          set to the value specified by the ``dtype`` keyword which defaults</span>
+<span class="sd">          to ``np.float64``.</span>
+<span class="sd">        - If ``v`` is symbolic the ``dtype`` is retained as ``&#39;O&#39;``</span>
+
+<span class="sd">    :seealso: :func:`isvector`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">dtype</span>
 
@@ -385,6 +442,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect vector length&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;list&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;row&#39;</span><span class="p">:</span>
@@ -405,7 +464,7 @@
         <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="s1">&#39;O&#39;</span>
 
-        <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
@@ -419,21 +478,30 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid input type&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="assertvector"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.argcheck.assertvector">[docs]</a><span class="k">def</span> <span class="nf">assertvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+<div class="viewcode-block" id="assertvector"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.argcheck.assertvector">[docs]</a><span class="k">def</span> <span class="nf">assertvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assert that argument is a real vector</span>
 
 <span class="sd">    :param v: passed vector</span>
-<span class="sd">    :param dim: required dimension, or None if any length is ok</span>
+<span class="sd">    :param dim: required dimension</span>
 <span class="sd">    :type dim: int or None</span>
-<span class="sd">    :raises: AssertionError</span>
+<span class="sd">    :raises ValueError: if not a vector of specified length</span>
 
-<span class="sd">    - ``assertvector(vec, N)`` raises an ``AssertionError`` if ``vec`` is not</span>
-<span class="sd">      an N-element vector.</span>
+<span class="sd">    - ``assertvector(vec)`` raise an exception if ``vec`` is not a vector, ie. </span>
+<span class="sd">      it is not any of:</span>
 
-<span class="sd">    :seealso: :func:`isvector`</span>
+<span class="sd">        - a Python native int or float, a 1-vector</span>
+<span class="sd">        - Python native list or tuple</span>
+<span class="sd">        - numPy real 1D array, ie. shape=(N,)</span>
+<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) </span>
+<span class="sd">          or (N,1)</span>
+
+<span class="sd">    - ``assertvector(vec, N)`` as above but must also check the length is ``N``.</span>
+
+<span class="sd">    :seealso: :func:`getvector`, :func:`isvector`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="isvector"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.argcheck.isvector">[docs]</a><span class="k">def</span> <span class="nf">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -441,32 +509,32 @@
 <span class="sd">    Test if argument is a real vector</span>
 
 <span class="sd">    :param v: value to test</span>
-<span class="sd">    :param dim: required dimension, or None if any length is ok</span>
-<span class="sd">    :type dim: int</span>
-<span class="sd">    :return: True if is vector of specified length</span>
+<span class="sd">    :param dim: required dimension</span>
+<span class="sd">    :type dim: int or None</span>
+<span class="sd">    :return: whether value is a valid vector</span>
 <span class="sd">    :rtype: bool</span>
 
-<span class="sd">    - ``isvector(vec, N)`` is ``True`` if ``vec`` is an N-element vector.</span>
+<span class="sd">    - ``isvector(vec)`` is ``True`` if ``vec`` is a vector, ie. any of:</span>
 
-<span class="sd">    A valid vector can be any of:</span>
+<span class="sd">        - a Python native int or float, a 1-vector</span>
+<span class="sd">        - Python native list or tuple</span>
+<span class="sd">        - numPy real 1D array, ie. shape=(N,)</span>
+<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) </span>
+<span class="sd">          or (N,1)</span>
 
-<span class="sd">    - a Python native int or float, a 1-vector</span>
-<span class="sd">    - Python native list or tuple</span>
-<span class="sd">    - numPy 1D array, ie. shape=(N,)</span>
-<span class="sd">    - numPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)</span>
+<span class="sd">    - ``isvector(vec, N)`` as above but must also be an ``N``-element vector.</span>
 
-<span class="sd">    Examples::</span>
+<span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; isvector([1,2])</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; isvector((1,2))</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; isvector(np.r_[1,2,3])</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; isvector(1)</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; isvector([1,2], 3)</span>
-<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import isvector</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; isvector([1,2])  # list</span>
+<span class="sd">        &gt;&gt;&gt; isvector((1,2))  # tuple</span>
+<span class="sd">        &gt;&gt;&gt; isvector(np.r_[1,2,3])  # numpy array</span>
+<span class="sd">        &gt;&gt;&gt; isvector(1)  # scalar</span>
+<span class="sd">        &gt;&gt;&gt; isvector([1,2], 3)  # list</span>
+
+<span class="sd">    :seealso: :func:`getvector`, :func:`assertvector`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">dim</span><span class="p">)</span> \
        <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">),</span> <span class="n">v</span><span class="p">)):</span>
@@ -491,22 +559,21 @@
 <span class="sd">    Convert value according to angular units</span>
 
 <span class="sd">    :param v: the value in radians or degrees</span>
-<span class="sd">    :type v: float or np.ndarray</span>
+<span class="sd">    :type v: array_like</span>
 <span class="sd">    :param unit: the angular unit, &quot;rad&quot; or &quot;deg&quot;</span>
 <span class="sd">    :type unit: str</span>
 <span class="sd">    :return: the converted value in radians</span>
-<span class="sd">    :rtype: float</span>
+<span class="sd">    :rtype: array_like</span>
 
-<span class="sd">    Examples::</span>
+<span class="sd">    .. runblock:: pycon</span>
 
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import getunit</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; getunit(1.5, &#39;rad&#39;)</span>
-<span class="sd">        1.5</span>
 <span class="sd">        &gt;&gt;&gt; getunit(90, &#39;deg&#39;)</span>
-<span class="sd">        1.5707963267948966</span>
+<span class="sd">        &gt;&gt;&gt; getunit([90, 180], &#39;deg&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; getunit(np.r_[0.5, 1], &#39;rad&#39;)</span>
-<span class="sd">        array([0.5, 1. ])</span>
 <span class="sd">        &gt;&gt;&gt; getunit(np.r_[90, 180], &#39;deg&#39;)</span>
-<span class="sd">        array([1.57079633, 3.14159265])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;rad&quot;</span><span class="p">:</span>
@@ -528,18 +595,16 @@
 <span class="sd">    :return: True if the argument is a list of real scalars</span>
 <span class="sd">    :rtype: bool</span>
 
-<span class="sd">    ``isscalarberlist(x)`` is ``True`` if ``x```` is a list of scalars.</span>
+<span class="sd">    ``isscalarlist(x)`` is ``True`` if ``x```` is a list of scalars.</span>
 
-<span class="sd">    Examples::</span>
+<span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; isscalarberlist((1,2,3))</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; isscalarberlist([1.1, 2.2, 3.3])</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; isscalarberlist(1)</span>
-<span class="sd">        False</span>
-<span class="sd">        &gt;&gt;&gt; isscalarberlist(np.r_[1,2])</span>
-<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import isnumberlist</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; isnumberlist((1,2,3))</span>
+<span class="sd">        &gt;&gt;&gt; isnumberlist([1.1, 2.2, 3.3])</span>
+<span class="sd">        &gt;&gt;&gt; isnumberlist(1)</span>
+<span class="sd">        &gt;&gt;&gt; isnumberlist(np.r_[1,2])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> \
@@ -554,21 +619,18 @@
 <span class="sd">    :return: True if the argument is a list of n-vectors</span>
 <span class="sd">    :rtype: bool</span>
 
-<span class="sd">    ``isvectorlist(x, n)`` is ``True`` if ``x```` is a list or tuple of</span>
+<span class="sd">    ``isvectorlist(x, n)`` is ``True`` if ``x`` is a list or tuple of</span>
 <span class="sd">    1D numPy arrays of shape=(n,).</span>
 
 
-<span class="sd">    Examples::</span>
+<span class="sd">    .. runblock:: pycon</span>
 
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import isvectorlist</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6]], 2)</span>
-<span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist((np.r_[1,2], np.r_[3,4], np.r_[5,6]), 2)</span>
-<span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist([(1,2), (3,4), (5,6)], 2)</span>
-<span class="sd">        False</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6,7]], 2)</span>
-<span class="sd">        False</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> \
            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,),</span> <span class="n">x</span><span class="p">))</span></div>
@@ -593,7 +655,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 18-Oct-2020.
+        Last updated on 30-Oct-2020.
       </span>
 
     </p>
@@ -625,6 +687,18 @@
 
   
   
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'G-11Q6WJM565', 'auto');
+    ga('send', 'pageview');
+    </script>
+
     
    
 

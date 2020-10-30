@@ -92,8 +92,8 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../spatialmath.html">Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../functions.html">Function library (base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatialmath.html">Class reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../functions.html">Function reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../indices.html">Indices</a></li>
 </ul>
 
@@ -182,6 +182,12 @@
 <span class="sd">    Creates an identity quaternion, with the scalar part equal to one, and</span>
 <span class="sd">    a zero vector value.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import eye, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = eye()</span>
+<span class="sd">        &gt;&gt;&gt; qprint(q)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
 
@@ -198,6 +204,11 @@
 <span class="sd">    Creates a pure quaternion, with a zero scalar value and the vector part</span>
 <span class="sd">    equal to the passed vector value.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import pure, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = pure([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; qprint(q)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span></div>
@@ -215,6 +226,12 @@
 <span class="sd">    Returns the norm, length or magnitude of the input quaternion which is</span>
 <span class="sd">    :math:`\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}`</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qnorm</span>
+<span class="sd">        &gt;&gt;&gt; q = qnorm([1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; print(q)</span>
+
 <span class="sd">    :seealso: unit</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -230,10 +247,20 @@
 <span class="sd">    :type v: array_like</span>
 <span class="sd">    :return: a pure quaternion</span>
 <span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+<span class="sd">    :raises ValueError: if the quaternion has zero norm</span>
 
 <span class="sd">    Creates a unit quaternion, with unit norm, by scaling the input quaternion.</span>
 
-<span class="sd">    .. seealso:: norm</span>
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import unit, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = unit([1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; qprint(q)</span>
+
+<span class="sd">    .. note:: If the quaternion norm is less than ``tol * eps`` an exception is</span>
+<span class="sd">              raised.</span>
+
+<span class="sd">    :seealso: norm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">nm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
@@ -241,7 +268,7 @@
     <span class="k">return</span> <span class="n">q</span> <span class="o">/</span> <span class="n">nm</span></div>
 
 
-<div class="viewcode-block" id="isunit"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.quaternions.isunit">[docs]</a><span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="isunit"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.quaternions.isunit">[docs]</a><span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if quaternion has unit length</span>
 
@@ -251,6 +278,14 @@
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether quaternion has unit length</span>
 <span class="sd">    :rtype: bool</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import eye, pure, isunit</span>
+<span class="sd">        &gt;&gt;&gt; q = eye()</span>
+<span class="sd">        &gt;&gt;&gt; isunit(q)</span>
+<span class="sd">        &gt;&gt;&gt; q = pure([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; isunit(q)</span>
 
 <span class="sd">    :seealso: unit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -277,6 +312,14 @@
 <span class="sd">    For unit-quaternions ``unitq=True`` the double mapping is taken into account,</span>
 <span class="sd">    that is ``q`` and ``-q`` represent the same orientation and ``isequal(q, -q, unitq=True)`` will</span>
 <span class="sd">    return ``True``.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import isequal</span>
+<span class="sd">        &gt;&gt;&gt; q1 = [1, 2, 3, 4]</span>
+<span class="sd">        &gt;&gt;&gt; q2 = [-1, -2, -3, -4]</span>
+<span class="sd">        &gt;&gt;&gt; isequal(q1, q2)</span>
+<span class="sd">        &gt;&gt;&gt; isequal(q1, q2, unitq=True)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">q2</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -300,9 +343,18 @@
 <span class="sd">    of the scalar part is made positive, if necessary by multiplying the</span>
 <span class="sd">    entire quaternion by -1, then the vector part is taken.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import q2v</span>
+<span class="sd">        &gt;&gt;&gt; from math import sqrt</span>
+<span class="sd">        &gt;&gt;&gt; q = [1 / sqrt(2), 0, 1 / sqrt(2), 0]</span>
+<span class="sd">        &gt;&gt;&gt; print(q2v(q))</span>
+<span class="sd">        &gt;&gt;&gt; q = [-1 / sqrt(2), 0, 1 / sqrt(2), 0]</span>
+<span class="sd">        &gt;&gt;&gt; print(q2v(q))</span>
+<span class="sd">        </span>
 <span class="sd">    .. warning:: There is no check that the passed value is a unit-quaternion.</span>
 
-<span class="sd">    .. seealso:: v2q</span>
+<span class="sd">    :seealso: :func:`~v2q`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -320,11 +372,24 @@
 <span class="sd">    :type v: array_like</span>
 <span class="sd">    :return: a unit quaternion</span>
 <span class="sd">    :rtype: numpy.ndarray, shape=(4,)</span>
+<span class="sd">    :raises ValueError:</span>
 
 <span class="sd">    Returns a unit-quaternion reconsituted from just its vector part.  Assumes</span>
 <span class="sd">    that the scalar part was positive, so :math:`s = \sqrt{1-||v||}`.</span>
 
-<span class="sd">    .. seealso:: q2v</span>
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import v2q, qprint</span>
+<span class="sd">        &gt;&gt;&gt; from math import sqrt</span>
+<span class="sd">        &gt;&gt;&gt; v = [0, 1 / sqrt(2), 0]</span>
+<span class="sd">        &gt;&gt;&gt; qprint(v2q(v))</span>
+<span class="sd">        &gt;&gt;&gt; v = [0, -1 / sqrt(2), 0]</span>
+<span class="sd">        &gt;&gt;&gt; qprint(v2q(v))</span>
+
+<span class="sd">    .. warning:: There is no check that the value is the vector part of</span>
+<span class="sd">                 a unit-quaternion, and this can lead to a math domain error.</span>
+
+<span class="sd">    :seealso: :func:`q2v`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
@@ -441,11 +506,21 @@
 
 <span class="sd">    Raises a quaternion to the specified power using repeated multiplication.</span>
 
-<span class="sd">    Notes:</span>
+<span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">    - power must be an integer</span>
-<span class="sd">    - power can be negative, in which case the conjugate is taken</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qpow, qqmul, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = [1, 2, 3, 4]</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qqmul(q, q))</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qpow(q, 2))</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qpow(q, -2)) # conjugate of above</span>
 
+<span class="sd">    .. note:</span>
+
+<span class="sd">        - Power must be an integer</span>
+<span class="sd">        - Power can be negative, in which case the conjugate is taken</span>
+
+<span class="sd">    :seealso: :func:`qqmul`</span>
+<span class="sd">    :SymPy: supported for ``q`` but not ``power``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;Power must be an integer&quot;</span>
@@ -470,6 +545,13 @@
 
 <span class="sd">    Conjugate of quaternion, the vector part is negated.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import conj, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = [1, 2, 3, 4]</span>
+<span class="sd">        &gt;&gt;&gt; qprint(conj(q))</span>
+
+<span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span></div>
@@ -486,9 +568,15 @@
 
 <span class="sd">    Returns an SO(3) rotation matrix corresponding to this unit-quaternion.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import q2r</span>
+<span class="sd">        &gt;&gt;&gt; q = [0, 0, 1, 0]  # rotation of 180deg about y-axis</span>
+<span class="sd">        &gt;&gt;&gt; print(q2r(q))</span>
+
 <span class="sd">    .. warning:: There is no check that the passed value is a unit-quaternion.</span>
 
-<span class="sd">    :seealso: r2q</span>
+<span class="sd">    :seealso: :func:`r2q`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -513,13 +601,20 @@
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: unit-quaternion</span>
 <span class="sd">    :rtype: numpy.ndarray, shape=(3,)</span>
+<span class="sd">    :raises ValueError: for non SO(3) argument</span>
 
 <span class="sd">    Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import r2q, qprint, rotx</span>
+<span class="sd">        &gt;&gt;&gt; R = rotx(90, &#39;deg&#39;) # rotation of 90deg about x-axis</span>
+<span class="sd">        &gt;&gt;&gt; print(R)</span>
+<span class="sd">        &gt;&gt;&gt; qprint(r2q(R))</span>
+
 <span class="sd">    .. warning:: There is no check that the passed matrix is a valid rotation matrix.</span>
 
-<span class="sd">    :seealso: q2r</span>
-
+<span class="sd">    :seealso: :func:`q2r`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tr</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="s2">&quot;Argument must be 3x3 rotation matrix&quot;</span>
     <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
@@ -796,7 +891,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 18-Oct-2020.
+        Last updated on 30-Oct-2020.
       </span>
 
     </p>
@@ -828,6 +923,18 @@
 
   
   
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'G-11Q6WJM565', 'auto');
+    ga('send', 'pageview');
+    </script>
+
     
    
 

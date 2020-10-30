@@ -1,6 +1,6 @@
-*******
-Classes
-*******
+***************
+Class reference
+***************
 
 The pose classes form a hierarchy.
 
