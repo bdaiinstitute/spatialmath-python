@@ -96,9 +96,9 @@ class SO3(SMPose):
         ``x.R`` is the rotation matrix component of ``x`` as an array with
         shape (3,3). If ``len(x) > 1``, return an array with shape=(N,3,3).
 
-        .. note:: The i'th rotation matrix is ``x[i,:,:]`` or simply ``x[i]``.
-                  This is different to the MATLAB version where the i'th
-                  rotation matrix would be ``x(:,:,i)``.
+        .. warning:: The i'th rotation matrix is ``x[i,:,:]`` or simply 
+            ``x[i]``. This is different to the MATLAB version where the i'th
+            rotation matrix is ``x(:,:,i)``.
 
         Example::
 
@@ -175,7 +175,7 @@ class SO3(SMPose):
         else:
             return SO3([x.T for x in self.A], check=False)
 
-    def eul(self, unit='deg'):
+    def eul(self, unit='rad', flip=False):
         r"""
         SO(3) or SE(3) as Euler angles
 
@@ -201,7 +201,7 @@ class SO3(SMPose):
         else:
             return np.array([tr.tr2eul(x, unit=unit) for x in self.A]).T
 
-    def rpy(self, unit='deg', order='zyx'):
+    def rpy(self, unit='rad', order='zyx'):
         """
         SO(3) or SE(3) as roll-pitch-yaw angles
 
@@ -269,22 +269,6 @@ class SO3(SMPose):
         """
         return tr.tr2angvec(self.R, unit=unit)
 
-    def Ad(self):
-        """
-        Adjoint of SO(3)
-
-        :return: adjoint matrix
-        :rtype: numpy.ndarray, shape=(3,3)
-
-        - ``SEO.Ad`` is the 6x6 adjoint matrix
-
-        :seealso: Twist.ad.
-
-        """
-        return np.block([
-            [self.R,           tr.skew(self.t) @ self.R],
-            [np.zeros((3, 3)), self.R]
-            ])
     # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -732,6 +716,58 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.tr2delta`
         """
         return tr.tr2delta(self.A, X2.A)
+
+    def Ad(self):
+        """
+        Adjoint of SE(3)
+
+        :return: adjoint matrix
+        :rtype: numpy.ndarray, shape=(6,6)
+
+        ``SE3.Ad`` is the 6x6 adjoint matrix
+
+        If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`
+        and the SE(3) represents the pose of {B} relative to {A}, 
+        ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then
+        :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.
+
+        .. warning:: Do not use this method to map velocities 
+            between robot base and end-effector frames - use ``jacob()``.
+
+        .. note:: Use this method to map velocities between two frames on
+            the same rigid-body.  
+
+        :reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+        :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
+        :SymPy: supported
+        """
+        return tr2jac(self.A, samebody=True)
+
+    def jacob(self):
+        """
+        Velocity transform for Se(3)
+
+        :return: Jacobian matrix
+        :rtype: numpy.ndarray, shape=(6,6)
+
+        ``SEO.jacob`` is the 6x6 adjoint matrix
+
+        If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`
+        and the SE(3) represents the pose of {B} relative to {A}, 
+        ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then
+        :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.
+
+        .. warning:: Do not use this method to map velocities between two frames
+            on the same rigid-body.
+            
+        .. note:: Use this method to map velocities between robot base and
+            end-effector frames, rather than ``Ad()``.
+
+        :seealso: SE3.Ad, Twist.ad, :func:`~spatialmath.base.tr2jac`
+        :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+        :SymPy: supported
+        """
+        return tr2jac(self.A, samebody=False)
 
     def Twist3(self):
         """
@@ -1239,8 +1275,9 @@ if __name__ == '__main__':   # pragma: no cover
     import pathlib
 
     SE3._bgcolor = 'yellow'
-    SE3._format = '{:< 6.2f}'
-    a = SE3()
+    # SE3._format = '{:< 6.2f}'
+    SE3._supress_small = False
+    a = SE3.Rx(np.pi/2)
     print(a)
 
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose3d.py").read())  # pylint: disable=exec-used

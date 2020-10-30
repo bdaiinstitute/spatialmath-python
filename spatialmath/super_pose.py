@@ -16,11 +16,11 @@ _eps = np.finfo(np.float64).eps
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
 try:
     from colored import fg, bg, attr
-    _color = True
+    _colored = True
     # print('using colored output')
 except ImportError:
     # print('colored not found')
-    _color = False
+    _colored = False
 
 # try:
 #     import colorama
@@ -114,6 +114,7 @@ class SMPose(SMUserList):
     _format = '{:< 12g}'
     _suppress_small = True
     _suppress_tol = 100
+    _color = _colored
 
 
     def __new__(cls, *args, **kwargs):
@@ -679,7 +680,7 @@ class SMPose(SMUserList):
         """
         #print('in __str__', _color)
         
-        if _color:
+        if self._color:
 
             def color(c, f):
                 if c is None:
