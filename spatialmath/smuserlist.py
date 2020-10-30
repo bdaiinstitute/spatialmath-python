@@ -414,11 +414,14 @@ class SMUserList(UserList, ABC):
         """
         Pop value from an instance (superclass method)
 
-        :return: the first value 
+        :param i: item in the list to pop, default is last
+        :type i: int
+        :return: the popped value
         :rtype: instance of same type
         :raises IndexError: if there are no values to pop
 
-        Removes the first quaternion value from the instancet.
+        Removes a value from the value list and returns it.  The original
+        instance is modified.
         
         Example::
             
