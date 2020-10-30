@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Utilities functions for testing passed arguments to spatialmath.
+Utility functions for testing and converting passed arguments.  Used in all
+spatialmath functions and classes to provides for flexibility in argument types 
+that can be passed.
 """
 
 # pylint: disable=invalid-name
@@ -19,10 +21,18 @@ def isscalar(x):
     Test if argument is a real scalar
 
     :param x: value to test
-    :return: True if scalar
+    :return: whether value is a scalar
     :rtype: bool
 
     ``isscalar(x)`` is ``True`` if ``x`` is a Python or numPy int or real float.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import isscalar
+        >>> isscalar(1)
+        >>> isscalar(1.2)
+        >>> isscalar([1])
+
     """
     return isinstance(x, _scalartypes)
 
@@ -34,14 +44,19 @@ def assertmatrix(m, shape=None):
     :param m: value to test
     :param shape: required shape
     :type shape: 2-tuple
-    :raises: AssertionError
+    :raises TypeError: if value is not a real Numpy array
+    :raise ValueError: if value is not of the specified shape
 
-    - ``assertsmatrix(A, (2,3))`` raises an ``ValueError`` if ``A`` is not
-      a 2x3 numPy ndarray, ie. shape=(2,3).
-    - ``assertsmatrix(A, (2,None))`` raises an ``ValueError`` if ``A`` is not
-      a 2xN numPy ndarray, ie. shape=(2,N).
-    - ``assertsmatrix(A, (None,3))`` raises an ``ValueError`` if ``A`` is not
-      a Nx3 numPy ndarray, ie. shape=(N,3).
+    Tests if the argument is a real 2D matrix with a specified shape ``shape``
+    but the value ``None`` indicate an unspecified (wildcard, don't care)
+    dimension.
+
+    - ``assertsmatrix(A)`` raises an exception if ``m`` is not convertible to
+      a 2D array
+    - ``assertsmatrix(A, (N,M))`` as above but ``m`` must have shape
+      (``N``,``M``)
+    - ``assertsmatrix(A, (N,None))`` as above but ``m`` must have ``N`` rows
+    - ``assertsmatrix(A, (None,M))`` as above but ``m`` must have ``M`` columns
 
     :seealso: :func:`ismatrix`
     """
@@ -52,7 +67,7 @@ def assertmatrix(m, shape=None):
         raise TypeError("input must be a real numPy ndarray")
     if shape is not None:
         if len(shape) != len(m.shape):
-            raise ValueError("incorrect scalarber of matrix dimensions, expecting {}, got {}".format(shape, m.shape))
+            raise ValueError("incorrect scalar of matrix dimensions, expecting {}, got {}".format(shape, m.shape))
         if shape[0] is not None and shape[0] > 0 and shape[0] != m.shape[0]:
             raise ValueError("incorrect matrix dimensions, expecting {}, got {}".format(shape, m.shape))
         if len(shape) > 1 and shape[1] is not None and shape[1] > 0 and shape[1] != m.shape[1]:
@@ -62,25 +77,27 @@ def ismatrix(m, shape):
     """
     Test if argument is a real 2D matrix
 
-    :param m: value to test
-    :param shape: required shape
-    :type shape: 2-tuple
-    :return: True if value is of specified shape
-    :rtype: bool
+    :param m: value to test :param shape: required shape :type shape: 2-tuple
+    :return: True if value is of specified shape :rtype: bool
 
-    Tests if the argument is a 2D matrix with a specified shape ``shape`` but
-    this can indicate an unspecified (wildcard) dimension, for example:
+    Tests if the argument is a real 2D matrix with a specified shape ``shape``
+    but the value ``None`` indicate an unspecified (wildcard, don't care)
+    dimension, for example:
 
-    - ``issmatrix(A, (2,3))`` is ``True`` if ``A`` is a 2x3 numPy ndarray.
-    - ``issmatrix(A, (2,None))`` is ``True`` if ``A`` is a 2xN numPy ndarray.
-    - ``issmatrix(A, (None,3))`` is ``True`` if ``A`` is an Nx3 numPy ndarray.
+    .. runblock:: pycon
 
-    .. notes::
-       - Unlike ``verifymatrix`` this function:
-         - checks the argument is real valued
-         - allows the shape to have an unspecified dimension
+        >>> from spatialmath.base import ismatrix
+        >>> import numpy as np
+        >>> A = np.zeros((2,3))
+        >>> ismatrix(A, (2,3))
+        >>> ismatrix(A, (None,3))
+        >>> ismatrix(A, (2,None))
+        >>> ismatrix(A, (2,4))
 
-    :seealso: getmatrix, verifymatrix
+    .. note:: Unlike ``verifymatrix`` this function: - checks the argument is
+                real valued - allows the shape to have an unspecified dimension
+
+    :seealso: :func:`getmatrix`, :func:`verifymatrix`, :func:`assertmatrix`
     """
     if not isinstance(m, np.ndarray):
         return False
@@ -96,12 +113,11 @@ def ismatrix(m, shape):
 
 def getmatrix(m, shape):
     r"""
-    Converrt argument to 2D array
+    Convert argument to 2D array
 
     :param m: input value
-    :type m: 2D NumPy ndarray, 1D array-like or scalar
     :param shape: shape of returned matrix
-    :type shape: 2-tupe
+    :type shape: 2-tuple
     :raises ValueError: if ``m`` is inconsistent with ``shape``
     :raises TypeError: if ``m`` is not required type
     :return: a 2D array
@@ -110,7 +126,18 @@ def getmatrix(m, shape):
     ``getmatrix(m, shape)`` is a 2D matrix with shape ``shape`` formed from
     ``m`` which can be a 2D array, 1D array-like or a scalar.
 
-    .. notes::
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import getmatrix
+        >>> import numpy as np
+        >>> getmatrix(3, (1,1))
+        >>> getmatrix([3,4], (1,2))
+        >>> getmatrix([3,4], (2, 1))
+        >>> getmatrix([3,4,5,6], (2,2))
+        >>> getmatrix(np.r_[3,4,5,6], (2,2))
+
+    .. note::
+
        - If ``m`` is a 2D array its shape is compared to ``shape`` - a 2-tuple
          where ``None`` stands for unspecified, ie. ``(None, 2)`` will match
          any array where the second dimension is 2.
@@ -121,7 +148,7 @@ def getmatrix(m, shape):
          attempt to reshape ``m`` as an array with shape (k,2) where :math:`k \times 2 \eq n`.
        - If ``m`` is a scalar, return an array of shape (1,1)
 
-    :seealso: ismatrix, verifymatrix
+    :seealso: :func:`ismatrix`, :func:`verifymatrix`
     """
     if isinstance(m, np.ndarray) and len(m.shape) == 2:
         # passed a 2D array
@@ -153,7 +180,7 @@ def getmatrix(m, shape):
 
 def verifymatrix(m, shape):
     """
-    Test if argument is array of specified type
+    Assert that argument is array of specified size
 
     :param m: value to be tested
     :param shape: desired shape of value
@@ -164,7 +191,10 @@ def verifymatrix(m, shape):
     Raises an exception if the argument ``m`` is not a NumPy array of the 
     specified shape.
 
-    :seealso: getmatrix, ismatrix
+    .. note:: Unlike ``assertmatrix`` the specified shape cannot have wildcard
+              dimensions.
+
+    :seealso: :func:`assertmatrix`,:func:`getmatrix`, :func:`ismatrix`
     """
     if not isinstance(m, np.ndarray):
         raise TypeError("input must be a numPy ndarray")
@@ -188,12 +218,19 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
     :param dtype: datatype for numPy array return (default np.float64)
     :type dtype: numPy type
     :return: vector value in specified format
+    :raise TypeError: value is not a list or NumPy array
+    :raise ValueError: incorrect number of elements
 
-    The passed vector can be any of:
+    - ``getvector(vec)`` is ``vec`` converted to the output format ``out`` 
+      where ``vec`` is any of:
 
-    - Python native list or tuple
-    - numPy 1D array, ie. shape=(N,)
-    - numPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)
+        - a Python native int or float, a 1-vector
+        - Python native list or tuple
+        - numPy real 1D array, ie. shape=(N,)
+        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+          or (N,1)
+
+    - ``getvector(vec, N)`` as above but must be an ``N``-element vector.
 
     The returned vector will be in the format specified by ``out``:
 
@@ -201,13 +238,33 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
     format      return type
     ==========  ===============================================
     'sequence'  Python list, or tuple if a tuple was passed in
-    'array'     1D numPy array, shape=(N,)
+    'list'      Python list
+    'array'     1D numPy array, shape=(N,)  [default]
     'row'       row vector, a 2D numPy array, shape=(1,N)
     'col'       column vector, 2D numPy array, shape=(N,1)
     ==========  ===============================================
 
-    For 'array', 'row' or 'col' the numPy dtype defaults to ``np.float64`` but
-    can be overriden using the ``dtype`` argument.
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import getvector
+        >>> import numpy as np
+        >>> getvector([1,2])  # list
+        >>> getvector([1,2], out='row')  # list
+        >>> getvector([1,2], out='col')  # list
+        >>> getvector((1,2))  # tuple
+        >>> getvector(np.r_[1,2,3], out='sequence')  # numpy array
+        >>> getvector(1)  # scalar
+        >>> getvector([1])
+        >>> getvector([[1]])
+
+    .. note:: 
+        - For 'array', 'row' or 'col' output the NumPy dtype defaults to the
+          ``dtype`` of ``v`` if it is a NumPy array, otherwise it is
+          set to the value specified by the ``dtype`` keyword which defaults
+          to ``np.float64``.
+        - If ``v`` is symbolic the ``dtype`` is retained as ``'O'``
+
+    :seealso: :func:`isvector`
     """
     dt = dtype
 
@@ -224,6 +281,8 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
             raise ValueError("incorrect vector length")
         if out == 'sequence':
             return v
+        elif out == 'list':
+            return list(v)
         elif out == 'array':
             return np.array(v, dtype=dt)
         elif out == 'row':
@@ -244,7 +303,7 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
         if v.dtype.kind == 'O':
             dt = 'O'
 
-        if out == 'sequence':
+        if out in ('sequence', 'list'):
             return list(v.flatten())
         elif out == 'array':
             return v.astype(dt)
@@ -258,21 +317,30 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
         raise TypeError("invalid input type")
 
 
-def assertvector(v, dim):
+def assertvector(v, dim, msg=None):
     """
     Assert that argument is a real vector
 
     :param v: passed vector
-    :param dim: required dimension, or None if any length is ok
+    :param dim: required dimension
     :type dim: int or None
-    :raises: AssertionError
+    :raises ValueError: if not a vector of specified length
 
-    - ``assertvector(vec, N)`` raises an ``AssertionError`` if ``vec`` is not
-      an N-element vector.
+    - ``assertvector(vec)`` raise an exception if ``vec`` is not a vector, ie. 
+      it is not any of:
 
-    :seealso: :func:`isvector`
+        - a Python native int or float, a 1-vector
+        - Python native list or tuple
+        - numPy real 1D array, ie. shape=(N,)
+        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+          or (N,1)
+
+    - ``assertvector(vec, N)`` as above but must also check the length is ``N``.
+
+    :seealso: :func:`getvector`, :func:`isvector`
     """
-    assert isvector(v, dim)
+    if not isvector(v, dim):
+        raise ValueError(msg)
 
 
 def isvector(v, dim=None):
@@ -280,32 +348,32 @@ def isvector(v, dim=None):
     Test if argument is a real vector
 
     :param v: value to test
-    :param dim: required dimension, or None if any length is ok
-    :type dim: int
-    :return: True if is vector of specified length
+    :param dim: required dimension
+    :type dim: int or None
+    :return: whether value is a valid vector
     :rtype: bool
 
-    - ``isvector(vec, N)`` is ``True`` if ``vec`` is an N-element vector.
+    - ``isvector(vec)`` is ``True`` if ``vec`` is a vector, ie. any of:
 
-    A valid vector can be any of:
+        - a Python native int or float, a 1-vector
+        - Python native list or tuple
+        - numPy real 1D array, ie. shape=(N,)
+        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+          or (N,1)
 
-    - a Python native int or float, a 1-vector
-    - Python native list or tuple
-    - numPy 1D array, ie. shape=(N,)
-    - numPy 2D array with a singleton dimension, ie. shape=(1,N) or (N,1)
+    - ``isvector(vec, N)`` as above but must also be an ``N``-element vector.
 
-    Examples::
+    .. runblock:: pycon
 
-        >>> isvector([1,2])
-        True
-        >>> isvector((1,2))
-        True
-        >>> isvector(np.r_[1,2,3])
-        True
-        >>> isvector(1)
-        True
-        >>> isvector([1,2], 3)
-        False
+        >>> from spatialmath.base import isvector
+        >>> import numpy as np
+        >>> isvector([1,2])  # list
+        >>> isvector((1,2))  # tuple
+        >>> isvector(np.r_[1,2,3])  # numpy array
+        >>> isvector(1)  # scalar
+        >>> isvector([1,2], 3)  # list
+
+    :seealso: :func:`getvector`, :func:`assertvector`
     """
     if isinstance(v, (list, tuple)) and (dim is None or len(v) == dim) \
        and all(map(lambda x: isinstance(x, _scalartypes), v)):
@@ -330,22 +398,21 @@ def getunit(v, unit):
     Convert value according to angular units
 
     :param v: the value in radians or degrees
-    :type v: float or np.ndarray
+    :type v: array_like
     :param unit: the angular unit, "rad" or "deg"
     :type unit: str
     :return: the converted value in radians
-    :rtype: float
+    :rtype: array_like
 
-    Examples::
+    .. runblock:: pycon
 
+        >>> from spatialmath.base import getunit
+        >>> import numpy as np
         >>> getunit(1.5, 'rad')
-        1.5
         >>> getunit(90, 'deg')
-        1.5707963267948966
+        >>> getunit([90, 180], 'deg')
         >>> getunit(np.r_[0.5, 1], 'rad')
-        array([0.5, 1. ])
         >>> getunit(np.r_[90, 180], 'deg')
-        array([1.57079633, 3.14159265])
     """
 
     if unit == "rad":
@@ -367,18 +434,16 @@ def isnumberlist(x):
     :return: True if the argument is a list of real scalars
     :rtype: bool
 
-    ``isscalarberlist(x)`` is ``True`` if ``x```` is a list of scalars.
+    ``isscalarlist(x)`` is ``True`` if ``x```` is a list of scalars.
 
-    Examples::
+    .. runblock:: pycon
 
-        >>> isscalarberlist((1,2,3))
-        True
-        >>> isscalarberlist([1.1, 2.2, 3.3])
-        True
-        >>> isscalarberlist(1)
-        False
-        >>> isscalarberlist(np.r_[1,2])
-        False
+        >>> from spatialmath.base import isnumberlist
+        >>> import numpy as np
+        >>> isnumberlist((1,2,3))
+        >>> isnumberlist([1.1, 2.2, 3.3])
+        >>> isnumberlist(1)
+        >>> isnumberlist(np.r_[1,2])
     """
 
     return isinstance(x, (list, tuple)) and len(x) > 0 \
@@ -393,21 +458,18 @@ def isvectorlist(x, n):
     :return: True if the argument is a list of n-vectors
     :rtype: bool
 
-    ``isvectorlist(x, n)`` is ``True`` if ``x```` is a list or tuple of
+    ``isvectorlist(x, n)`` is ``True`` if ``x`` is a list or tuple of
     1D numPy arrays of shape=(n,).
 
 
-    Examples::
+    .. runblock:: pycon
 
+        >>> from spatialmath.base import isvectorlist
+        >>> import numpy as np
         >>> isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6]], 2)
-        True
         >>> isvectorlist((np.r_[1,2], np.r_[3,4], np.r_[5,6]), 2)
-        True
         >>> isvectorlist([(1,2), (3,4), (5,6)], 2)
-        False
         >>> isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6,7]], 2)
-        False
-
     """
     return isinstance(x, (list, tuple)) and len(x) > 0 \
            and all(map(lambda x: isinstance(x, np.ndarray) and x.shape == (n,), x))
