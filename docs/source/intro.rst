@@ -41,30 +41,6 @@ While functions and classes can provide similar functionality the class provide 
 - representing not a just a single value, but a sequence, which are handled by the operators with implicit broadcasting of values
 
 
-Relationship to MATLAB tools
-----------------------------
-This package replicates, as much as possible, the functionality of the `Spatial Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB |reg| 
-which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. It comprises:
-
-* the *classic* functions (which date back to the origin of the Robotics Toolbox for MATLAB) such as ``rotx``, ``trotz``, ``eul2tr`` etc. as the ``base`` package which you can access by::
-
-    from spatialmath.base import *
-
-  and works with NumPy arrays.  This package also includes a set of functions to deal with quaternions and unit-quaternions represented as 4-element
-  Numpy arrays.
-* the classes (which appeared in Robotics Toolbox for MATLAB release 10 in 2017) such as ``SE3``, ``UnitQuaternion`` etc.  The only significant difference
-  is that the MATLAB ``Twist`` class is now called ``Twist3``.
-
-The design considerations included:
-
-  - being as similar as possible to the MATLAB Toolbox function names and semantics
-  - but balancing the tension of being as Pythonic as possible
-  - use Python keyword arguments to replace the MATLAB Toolbox string options supported using ``tb_optparse()``
-  - use NumPy arrays internally to represent for rotation and homogeneous transformation matrices, quaternions and vectors
-  - all functions that accept a vector can accept a list, tuple, or ``np.ndarray``
-  - A class instance can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences
-  - Classes are _fairly_ polymorphic, they share many common constructor options and methods
-
 
 Spatial math classes
 ====================
@@ -120,8 +96,13 @@ However a list of these items::
 
 has the type `list` and the elements are not guaranteed to be homogeneous, ie. a list could contain a mixture of classes.
 This requires careful coding, or additional user code to check the validity of all elements in the list.
-We could create a NumPy array of these objects, the upside being it could be more than one-dimensional, but the again NumPy does not
-enforce homogeneity of object types in an array.
+We could create a NumPy array of these objects, the upside being it could be more than one-dimensional, but again NumPy does not
+enforce homogeneity of objectd within an array (with ``dtype='O'``).
+
+.. image:: ../figs/pose-values.png
+      :width: 600
+      :alt: A SpatialMath pose class can hold multiple values
+
 
 The Spatial Math package give these classes list *super powers* so that, for example, a single `SE3` object can contain a sequence of SE(3) values::
 
@@ -137,7 +118,7 @@ The Spatial Math package give these classes list *super powers* so that, for exa
 The classes inherit from ``collections.UserList`` and have all the functionality of Python lists, and this is discussed further in
 section :ref:`list-powers`
 The pose objects are a list subclass so we can index it or slice it as we
-would a list, but the result each time belongs to the class it was sliced from.  
+would a list, but the result always belongs to the class it was sliced from.  
 
 
 Operators for pose objects
@@ -282,7 +263,7 @@ The classes ``SE3``, ``SO3``, ``SE2`` and ``SO2`` can provide colorized text out
   >>> T = SE3()
   >>> T.print()
 
-.. image:: ../../figs/colored_output.png
+.. image:: ../figs/colored_output.png
 
 with rotational elements in red, translational elements in blue and constants in grey.
 
@@ -294,7 +275,7 @@ Each class has a ``plot`` method that displays the corresponding pose as a coord
   >>> X = SE3.Rand()
   >>> X.plot()
 
-.. image:: figs/fig1.png
+.. image:: ../figs/fig1.png
 
 and there are many display options.
 
@@ -303,7 +284,7 @@ The ``animate`` method animates the motion of the coordinate frame from the null
   >>> X = SE3.Rand()
   >>> X.animate(frame='A', arrow=False)
 
-.. image:: figs/animate.gif
+.. image:: ../figs/animate.gif
 
 
 Constructors
@@ -420,6 +401,9 @@ Method              Operation
 
 Vectorization
 -------------
+
+.. image:: ../figs/broadcasting.png
+
 
 For most methods, if applied to an object that contains N elements, the result will be the appropriate return object type with N elements.
 
@@ -664,10 +648,35 @@ but you can't write a symbolic value into a floating point matrix
     .
   TypeError: can't convert expression to float
 
-MATLAB compatability
---------------------
+Relationship to MATLAB tools
+----------------------------
 
-We can create a MATLAB like environment by
+This package replicates, as much as possible, the functionality of the `Spatial Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB |reg| 
+which underpins the `Robotics Toolbox <https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB. It comprises:
+
+* the *classic* functions (which date back to the origin of the Robotics Toolbox
+  for MATLAB) such as ``rotx``, ``trotz``, ``eul2tr`` etc. which can be imported
+  from the ``base`` package
+
+    from spatialmath.base import rotx, trotx
+
+  and works with NumPy arrays.  This package also includes a set of functions, not present in the MATLAB version, to handle quaternions and unit-quaternions which are represented as 4-element
+  Numpy arrays.
+* the classes (which appeared in Robotics Toolbox for MATLAB release 10 in 2017) such as ``SE3``, ``UnitQuaternion`` etc.  The only significant difference
+  is that the MATLAB ``Twist`` class is now called ``Twist3``.
+
+The design considerations included:
+
+  - being as similar as possible to the MATLAB Toolbox function names and semantics
+  - but balancing the tension of being as Pythonic as possible
+  - use Python keyword arguments to replace the MATLAB Toolbox string options supported using ``tb_optparse()``
+  - use NumPy arrays internally to represent for rotation and homogeneous transformation matrices, quaternions and vectors
+  - all functions that accept a vector can accept a list, tuple, or ``np.ndarray``
+  - A class instance can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences
+  - Classes are _fairly_ polymorphic, they share many common constructor options and methods
+
+
+We can create a MATLAB-like environment by
 
 .. code-block:: python
 
@@ -678,10 +687,13 @@ which has familiar functions like ``rotx`` and ``rpy2r`` available, as well as c
 
 .. code-block:: python
 
-  R = rotx(0.3)
-  R2 = rpy2r(0.1, 0.2, 0.3)
+    R = rotx(0.3)
+    R2 = rpy2r(0.1, 0.2, 0.3)
 
-  T = SE3(1, 2, 3)
+    T = SE3(1, 2, 3)
+
+.. note::  None of the functions are *vectorized*, whereas many of the MATLAB
+           equivalents are.  Vectorization is done by the classes.
 
 .. |reg|    unicode:: U+000AE .. REGISTERED SIGN
 
