@@ -1310,7 +1310,7 @@ def tr2jac(T, samebody=False):
       relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
 
     - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both
-      attached to the same moving body.
+      attached to the same moving body.  This is the adjoint matrix
 
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
     :SymPy: supported
@@ -1320,6 +1320,7 @@ def tr2jac(T, samebody=False):
     Z = np.zeros((3, 3), dtype=T.dtype)
 
     if samebody:
+        # Adjoint case
         (R, t) = trn.tr2rt(T)
         return np.block([[R.T, (trn.skew(t)@R).T], [Z, R.T]])
     else:
@@ -1368,15 +1369,13 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
     - 'angvec' angle and axis
 
 
-    Example:
+    .. runblock:: pycon
 
-    >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
-    >>> trprint(T, file=None, label='T')
-    'T: t =        1,        2,        3; rpy/zyx =       10,       20,       30 deg'
-    >>> trprint(T, file=None, label='T', orient='angvec')
-    'T: t =        1,        2,        3; angvec = (      56 deg |     0.12,     0.62,     0.78)'
-    >>> trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')
-    'T: t =        1,        2,        3; angvec = (   56.04 deg |    0.124,   0.6156,   0.7782)'
+        >>> from spatialmath.base import transl, rpy2tr, trprint
+        >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
+        >>> trprint(T, file=None)
+        >>> trprint(T, file=None, label='T', orient='angvec')
+        >>> trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')
 
     Notes:
 
