@@ -21,6 +21,12 @@ def eye():
     Creates an identity quaternion, with the scalar part equal to one, and
     a zero vector value.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import eye, qprint
+        >>> q = eye()
+        >>> qprint(q)
+
     """
     return np.r_[1, 0, 0, 0]
 
@@ -37,6 +43,11 @@ def pure(v):
     Creates a pure quaternion, with a zero scalar value and the vector part
     equal to the passed vector value.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import pure, qprint
+        >>> q = pure([1, 2, 3])
+        >>> qprint(q)
     """
     v = argcheck.getvector(v, 3)
     return np.r_[0, v]
@@ -54,6 +65,12 @@ def qnorm(q):
     Returns the norm, length or magnitude of the input quaternion which is
     :math:`\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}`
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import qnorm
+        >>> q = qnorm([1, 2, 3, 4])
+        >>> print(q)
+
     :seealso: unit
 
     """
@@ -69,10 +86,20 @@ def unit(q, tol=10):
     :type v: array_like
     :return: a pure quaternion
     :rtype: numpy.ndarray, shape=(4,)
+    :raises ValueError: if the quaternion has zero norm
 
     Creates a unit quaternion, with unit norm, by scaling the input quaternion.
 
-    .. seealso:: norm
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import unit, qprint
+        >>> q = unit([1, 2, 3, 4])
+        >>> qprint(q)
+
+    .. note:: If the quaternion norm is less than ``tol * eps`` an exception is
+              raised.
+
+    :seealso: norm
     """
     q = argcheck.getvector(q, 4)
     nm = np.linalg.norm(q)
@@ -80,7 +107,7 @@ def unit(q, tol=10):
     return q / nm
 
 
-def isunit(q, tol=10):
+def isunit(q, tol=100):
     """
     Test if quaternion has unit length
 
@@ -90,6 +117,14 @@ def isunit(q, tol=10):
     :type tol: float
     :return: whether quaternion has unit length
     :rtype: bool
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import eye, pure, isunit
+        >>> q = eye()
+        >>> isunit(q)
+        >>> q = pure([1, 2, 3])
+        >>> isunit(q)
 
     :seealso: unit
     """
@@ -116,6 +151,14 @@ def isequal(q1, q2, tol=100, unitq=False):
     For unit-quaternions ``unitq=True`` the double mapping is taken into account,
     that is ``q`` and ``-q`` represent the same orientation and ``isequal(q, -q, unitq=True)`` will
     return ``True``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import isequal
+        >>> q1 = [1, 2, 3, 4]
+        >>> q2 = [-1, -2, -3, -4]
+        >>> isequal(q1, q2)
+        >>> isequal(q1, q2, unitq=True)
     """
     q1 = argcheck.getvector(q1, 4)
     q2 = argcheck.getvector(q2, 4)
@@ -139,9 +182,18 @@ def q2v(q):
     of the scalar part is made positive, if necessary by multiplying the
     entire quaternion by -1, then the vector part is taken.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import q2v
+        >>> from math import sqrt
+        >>> q = [1 / sqrt(2), 0, 1 / sqrt(2), 0]
+        >>> print(q2v(q))
+        >>> q = [-1 / sqrt(2), 0, 1 / sqrt(2), 0]
+        >>> print(q2v(q))
+        
     .. warning:: There is no check that the passed value is a unit-quaternion.
 
-    .. seealso:: v2q
+    :seealso: :func:`~v2q`
 
     """
     q = argcheck.getvector(q, 4)
@@ -159,11 +211,24 @@ def v2q(v):
     :type v: array_like
     :return: a unit quaternion
     :rtype: numpy.ndarray, shape=(4,)
+    :raises ValueError:
 
     Returns a unit-quaternion reconsituted from just its vector part.  Assumes
     that the scalar part was positive, so :math:`s = \sqrt{1-||v||}`.
 
-    .. seealso:: q2v
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import v2q, qprint
+        >>> from math import sqrt
+        >>> v = [0, 1 / sqrt(2), 0]
+        >>> qprint(v2q(v))
+        >>> v = [0, -1 / sqrt(2), 0]
+        >>> qprint(v2q(v))
+
+    .. warning:: There is no check that the value is the vector part of
+                 a unit-quaternion, and this can lead to a math domain error.
+
+    :seealso: :func:`q2v`
     """
     v = argcheck.getvector(v, 3)
     s = math.sqrt(1 - np.sum(v**2))
@@ -280,11 +345,21 @@ def qpow(q, power):
 
     Raises a quaternion to the specified power using repeated multiplication.
 
-    Notes:
+    .. runblock:: pycon
 
-    - power must be an integer
-    - power can be negative, in which case the conjugate is taken
+        >>> from spatialmath.base import qpow, qqmul, qprint
+        >>> q = [1, 2, 3, 4]
+        >>> qprint(qqmul(q, q))
+        >>> qprint(qpow(q, 2))
+        >>> qprint(qpow(q, -2)) # conjugate of above
 
+    .. note:
+
+        - Power must be an integer
+        - Power can be negative, in which case the conjugate is taken
+
+    :seealso: :func:`qqmul`
+    :SymPy: supported for ``q`` but not ``power``.
     """
     q = argcheck.getvector(q, 4)
     assert isinstance(power, int), "Power must be an integer"
@@ -309,6 +384,13 @@ def conj(q):
 
     Conjugate of quaternion, the vector part is negated.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import conj, qprint
+        >>> q = [1, 2, 3, 4]
+        >>> qprint(conj(q))
+
+    :SymPy: supported
     """
     q = argcheck.getvector(q, 4)
     return np.r_[q[0], -q[1:4]]
@@ -325,9 +407,15 @@ def q2r(q):
 
     Returns an SO(3) rotation matrix corresponding to this unit-quaternion.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import q2r
+        >>> q = [0, 0, 1, 0]  # rotation of 180deg about y-axis
+        >>> print(q2r(q))
+
     .. warning:: There is no check that the passed value is a unit-quaternion.
 
-    :seealso: r2q
+    :seealso: :func:`r2q`
 
     """
     q = argcheck.getvector(q, 4)
@@ -352,13 +440,20 @@ def r2q(R, check=False, tol=100):
     :type tol: float
     :return: unit-quaternion
     :rtype: numpy.ndarray, shape=(3,)
+    :raises ValueError: for non SO(3) argument
 
     Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import r2q, qprint, rotx
+        >>> R = rotx(90, 'deg') # rotation of 90deg about x-axis
+        >>> print(R)
+        >>> qprint(r2q(R))
+
     .. warning:: There is no check that the passed matrix is a valid rotation matrix.
 
-    :seealso: q2r
-
+    :seealso: :func:`q2r`
     """
     assert R.shape == (3, 3) and tr.isR(R), "Argument must be 3x3 rotation matrix"
     if check:
