@@ -1,6 +1,6 @@
-***********************
-Function library (base)
-***********************
+******************
+Function reference
+******************
 
 blah blah blah
 
@@ -61,7 +61,7 @@ Vectors
 Graphic animation
 -----------------
 
-.. automodule:: spatialmath.base.vectors
+.. automodule:: spatialmath.base.animate
    :members:
    :undoc-members:
    :show-inheritance:
