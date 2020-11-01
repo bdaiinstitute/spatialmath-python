@@ -1,6 +1,7 @@
 # Spatial Maths for Python
 
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/spatialmath-python.svg)](https://pypi.python.org/pypi/ansicolortags/)
+
 [![pypi downloads](https://img.shields.io/pypi/dw/spatialmath-python)
 ![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/petercorke/spatialmath-python.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/petercorke/spatialmath-python/context:python)
