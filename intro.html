@@ -97,22 +97,26 @@
 <li class="toctree-l2"><a class="reference internal" href="#spatial-math-classes">Spatial math classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#operators-for-pose-objects">Operators for pose objects</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#group-operations">Group operations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#constructors">Constructors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vector-transformation">Vector transformation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#non-group-operations">Non-group operations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#displaying-values">Displaying values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#graphics">Graphics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Constructors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constructors">Constructors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-capability">List capability</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#vectorization">Vectorization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#symbolic-operations">Symbolic operations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#low-level-spatial-math">Low-level spatial math</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Graphics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Graphics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#symbolic-support">Symbolic support</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#relationship-to-matlab-tools">Relationship to MATLAB tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#relationship-to-matlab-tools">Relationship to MATLAB tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-matlab-like-environment-in-python">Creating a MATLAB-like environment in Python</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -200,35 +204,36 @@
 It provides the means to describe the relative position and orientation of objects in 2D or 3D space.
 This package provides Python classes and functions to represent, print, plot, manipulate and covert between such representations.
 This includes relevant mathematical objects such as rotation matrices <span class="math notranslate nohighlight">\(R \in SO(2), SO(3)\)</span>,
-homogeneous transformation matrices <span class="math notranslate nohighlight">\(T \in SE(2), SE(3)\)</span>, quaternions <span class="math notranslate nohighlight">\(q \in \mathbb{H}\)</span>,
-and twists <span class="math notranslate nohighlight">\(t in se(2), se(3)\)</span>.</p>
+homogeneous transformation matrices <span class="math notranslate nohighlight">\(T \in SE(2), SE(3)\)</span>, unit quaternions <span class="math notranslate nohighlight">\(q \in S^3\)</span>,
+and twists <span class="math notranslate nohighlight">\(t \in se(2), se(3)\)</span>.</p>
 <p>For example, we can create a rigid-body transformation that is a rotation about the x-axis of 30 degrees:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">base</span><span class="o">.</span><span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
 <span class="go">array([[ 1.       ,  0.       ,  0.       ],</span>
-<span class="go">      [ 0.       ,  0.8660254, -0.5      ],</span>
-<span class="go">      [ 0.       ,  0.5      ,  0.8660254]])</span>
+<span class="go">       [ 0.       ,  0.8660254, -0.5      ],</span>
+<span class="go">       [ 0.       ,  0.5      ,  0.8660254]])</span>
 </pre></div>
 </div>
-<p>which results in a NumPy 4x4 array that belongs to the group SE(3).  We could also create a class instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<p>which results in a NumPy $4 times 4$ array that belongs to the group SE(3).  We could also create a class instance:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">&lt;class &#39;spatialmath.pose3d.SE3&#39;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">  1           0           0           0</span>
-<span class="go">  0           0.866025   -0.5         0</span>
-<span class="go">  0           0.5         0.866025    0</span>
-<span class="go">  0           0           0           1</span>
+<span class="go">  [38;5;1m 1          [0m[38;5;1m 0          [0m[38;5;1m 0          [0m[38;5;4m 0          [0m  [0m</span>
+<span class="go">  [38;5;1m 0          [0m[38;5;1m 0.866025   [0m[38;5;1m-0.5        [0m[38;5;4m 0          [0m  [0m</span>
+<span class="go">  [38;5;1m 0          [0m[38;5;1m 0.5        [0m[38;5;1m 0.866025   [0m[38;5;4m 0          [0m  [0m</span>
+<span class="go">  [38;5;244m 0          [0m[38;5;244m 0          [0m[38;5;244m 0          [0m[38;5;244m 1          [0m  [0m</span>
+
 </pre></div>
 </div>
-<p>which is <em>internally</em> represented as a 4x4 NumPy array.</p>
+<p>which is <em>internally</em> represented as a $4 times 4$ NumPy array.</p>
 <p>While functions and classes can provide similar functionality the class provide the benefits of:</p>
 <ul class="simple">
 <li><p>type safety, it is not possible to mix a 3D rotation matrix with a 2D rigid-body motion, even though both are represented
-by a 3x3 matrix</p></li>
+by a $3 times 3$ matrix</p></li>
 <li><p>operator overloading allows for convenient and readable expression of algorithms</p></li>
-<li><p>representing not a just a single value, but a sequence, which are handled by the operators with implicit broadcasting of values</p></li>
+<li><p>representing not a just a single value, but a sequence of values, which are handled by the operators with implicit broadcasting of values</p></li>
 </ul>
 <div class="section" id="spatial-math-classes">
 <h2>Spatial math classes<a class="headerlink" href="#spatial-math-classes" title="Permalink to this headline">¶</a></h2>
@@ -248,19 +253,29 @@ space:</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>pose</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SE3</span></code>
+<td><p><code class="docutils literal notranslate"><span class="pre">SE3</span></code>,
 <code class="docutils literal notranslate"><span class="pre">Twist3</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SE2</span></code>
-<code class="docutils literal notranslate"><span class="pre">Twist2</span></code></p></td>
+<td><blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">SE2</span></code>,</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">Twist2</span></code></p>
+</td>
 </tr>
 <tr class="row-odd"><td><p>orientation</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SO3</span></code>
+<td><p><code class="docutils literal notranslate"><span class="pre">SO3</span></code> ,
 <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SO2</span></code></p></td>
 </tr>
 </tbody>
 </table>
-<p>These classes to abstract and implementing appropriate operations for the following groups:</p>
+<p>Additional classes include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> a general quaternion, and parent class to <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Plucker</span></code> to represent a line in 3D space</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Plane</span></code> to represent a plane in 3D space</p></li>
+</ul>
+<p>These classes abstract, and implement appropriate operations, for the following
+groups:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -278,51 +293,55 @@ space:</p>
 <td><p>rigid-body translation in 3D</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SE3</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{SO(3)}\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{se(3)}\)</span></p></td>
+<td><p>twist in 3D</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Twist3</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mbox{SO(3)}\)</span></p></td>
 <td><p>orientation in 3D</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SO3</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(S^3\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(S^3\)</span></p></td>
 <td><p>unit quaternion</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{SE(2)}\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mbox{SE(2)}\)</span></p></td>
 <td><p>rigid-body translation in 2D</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SE2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{se(2)}\)</span></p></td>
+<td><p>twist in 2D</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Twist2</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mbox{SO(2)}\)</span></p></td>
 <td><p>orientation in 2D</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SO2</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mbox{se(3)}\)</span></p></td>
-<td><p>twist in 3D</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">Twist3</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mbox{se(2)}\)</span></p></td>
-<td><p>twist in 2D</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">Twist2</span></code></p></td>
-</tr>
 <tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\mathbb{H}\)</span></p></td>
 <td><p>quaternion</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Quaternion</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(M^6\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(P^5\)</span></p></td>
+<td><p>Plücker lines</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Plucker</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(M^6\)</span></p></td>
 <td><p>spatial velocity</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SpatialVelocity</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(M^6\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(M^6\)</span></p></td>
 <td><p>spatial acceleration</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SpatialAcceleration</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(F^6\)</span></p></td>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(F^6\)</span></p></td>
 <td><p>spatial force</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SpatialForce</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(F^6\)</span></p></td>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(F^6\)</span></p></td>
 <td><p>spatial momentum</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SpatialMomentum</span></code></p></td>
 </tr>
-<tr class="row-even"><td><div class="line-block">
+<tr class="row-odd"><td><div class="line-block">
 <div class="line"><br /></div>
 </div>
 </td>
@@ -341,29 +360,39 @@ constraints (eg. orthogonality, unit norm) are enforced when the object is const
 </pre></div>
 </div>
 <p>Type safety and type validity are particularly important when we deal with a sequence of values.
-In robotics we frequently deal with trajectories of poses or rotation to describe objects moving in the
-world.
-However a list of these items:</p>
+In robotics we frequently deal with a multiplicity of objects (poses, cameras), or a trajectory of
+objects moving over time.
+However a list of these items, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.4</span><span class="p">),</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)]</span>
 </pre></div>
 </div>
 <p>has the type <cite>list</cite> and the elements are not guaranteed to be homogeneous, ie. a list could contain a mixture of classes.
 This requires careful coding, or additional user code to check the validity of all elements in the list.
 We could create a NumPy array of these objects, the upside being it could be more than one-dimensional, but again NumPy does not
-enforce homogeneity of objectd within an array (with <code class="docutils literal notranslate"><span class="pre">dtype='O'</span></code>).</p>
+enforce homogeneity of objects within an array (with <code class="docutils literal notranslate"><span class="pre">dtype='O'</span></code>).</p>
 <a class="reference internal image-reference" href="../figs/pose-values.png"><img alt="A SpatialMath pose class can hold multiple values" src="../figs/pose-values.png" style="width: 600px;" /></a>
 <p>The Spatial Math package give these classes list <em>super powers</em> so that, for example, a single <cite>SE3</cite> object can contain a sequence of SE(3) values:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="go">  1           0           0           0</span>
-<span class="go">  0           0.980067   -0.198669    0</span>
-<span class="go">  0           0.198669    0.980067    0</span>
-<span class="go">  0           0           0           1</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;x&#39; is not defined</span>
 </pre></div>
 </div>
-<p>The classes inherit from <code class="docutils literal notranslate"><span class="pre">collections.UserList</span></code> and have all the functionality of Python lists, and this is discussed further in
+<p>The classes form a rich hierarchy</p>
+<div class="graphviz"><img src="_images/inheritance-ebaddbfd0633691a3632ccc3481f5ad2adeaba0e.png" alt="Inheritance diagram of spatialmath.SE3, spatialmath.SO3, spatialmath.SE2, spatialmath.SO2, spatialmath.Twist3, spatialmath.Twist2, spatialmath.UnitQuaternion, spatialmath.spatialvector" usemap="#inheritance8a10d5ee9d" class="inheritance graphviz" /></div>
+<map id="inheritance8a10d5ee9d" name="inheritance8a10d5ee9d">
+<area shape="rect" id="node2" href="classes-3d.html#spatialmath.quaternion.Quaternion" target="_top" title="A quaternion is a compact method of representing a 3D rotation that has" alt="" coords="278,31,373,56"/>
+<area shape="rect" id="node21" href="classes-3d.html#spatialmath.quaternion.UnitQuaternion" target="_top" title="A unit quaternion has 2 parts, a scalar :math:`s`, and a 3&#45;vector :math:`v` and is typically written as" alt="" coords="428,5,549,31"/>
+<area shape="rect" id="node14" href="classes-3d.html#spatialmath.spatialvector.SpatialVector" target="_top" title="Spatial 6&#45;vector abstract superclass" alt="" coords="271,228,379,253"/>
+<area shape="rect" id="node16" href="classes-3d.html#spatialmath.spatialvector.SpatialInertia" target="_top" title="Spatial inertia class" alt="" coords="271,277,380,303"/>
+<area shape="rect" id="node6" href="classes-3d.html#spatialmath.pose3d.SE3" target="_top" title="SE(3) subclass" alt="" coords="635,104,707,129"/>
+<area shape="rect" id="node7" href="classes-3d.html#spatialmath.pose3d.SO3" target="_top" title="SO(3) subclass" alt="" coords="453,104,525,129"/>
+<area shape="rect" id="node11" href="classes-3d.html#spatialmath.spatialvector.SpatialAcceleration" target="_top" title="Spatial acceleration class" alt="" coords="597,203,745,228"/>
+<area shape="rect" id="node12" href="classes-3d.html#spatialmath.spatialvector.SpatialM6" target="_top" title="Create a new spatial motion class (abstract class)" alt="" coords="445,252,532,277"/>
+<area shape="rect" id="node18" href="classes-3d.html#spatialmath.spatialvector.SpatialVelocity" target="_top" title="Spatial velocity class" alt="" coords="612,252,731,277"/>
+<area shape="rect" id="node13" href="classes-3d.html#spatialmath.spatialvector.SpatialF6" target="_top" title="Abstract spatial force class" alt="" coords="447,301,530,327"/>
+<area shape="rect" id="node15" href="classes-3d.html#spatialmath.spatialvector.SpatialForce" target="_top" title="Spatial force class" alt="" coords="620,301,723,327"/>
+<area shape="rect" id="node17" href="classes-3d.html#spatialmath.spatialvector.SpatialMomentum" target="_top" title="Spatial momentum class" alt="" coords="601,351,742,376"/>
+</map><p>Ultimately they all inherit from <code class="docutils literal notranslate"><span class="pre">collections.UserList</span></code> and have all the functionality of Python lists, and this is discussed further in
 section <a class="reference internal" href="#list-powers"><span class="std std-ref">List capability</span></a>
 The pose objects are a list subclass so we can index it or slice it as we
 would a list, but the result always belongs to the class it was sliced from.</p>
@@ -373,7 +402,8 @@ would a list, but the result always belongs to the class it was sliced from.</p>
 <h4>Group operations<a class="headerlink" href="#group-operations" title="Permalink to this headline">¶</a></h4>
 <p>The classes represent mathematical groups, and the group arithmetic rules are enforced.
 The operator <code class="docutils literal notranslate"><span class="pre">*</span></code> denotes composition and the result will be of the same type as the operand:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">&lt;class &#39;spatialmath.pose3d.SE3&#39;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">T</span> <span class="o">*</span> <span class="n">T</span>
@@ -381,105 +411,82 @@ The operator <code class="docutils literal notranslate"><span class="pre">*</spa
 <span class="go">&lt;class &#39;spatialmath.pose3d.SE3&#39;&gt;</span>
 </pre></div>
 </div>
-<p>The implementation depends on the class:</p>
+<p>The implementation of composition depends on the class:</p>
 <ul class="simple">
-<li><p>for SO(n) and SE(n) composition is implemented by matrix multiplication of the underlying matrix values,</p></li>
-<li><p>for unit-quaternions composition is implemented by the Hamilton product of the underlying vector value,</p></li>
+<li><p>for SO(n) and SE(n) composition is imatrix multiplication of the underlying matrix values,</p></li>
+<li><p>for unit-quaternions composition is the Hamilton product of the underlying vector value,</p></li>
 <li><p>for twists it is the logarithm of the product of exponentiating the two twists</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">**</span></code> denotes repeated composition so the exponent must be an integer.  If the negative exponent the repeated multiplication
+<p>The <code class="docutils literal notranslate"><span class="pre">**</span></code> operator denotes repeated composition, so the exponent must be an integer.  If the negative exponent the repeated multiplication
 is performed then the inverse is taken.</p>
 <p>The group inverse is given by the <code class="docutils literal notranslate"><span class="pre">inv()</span></code> method:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">*</span> <span class="n">T</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">*</span> <span class="n">T</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
 <span class="go">SE3(array([[1., 0., 0., 0.],</span>
-<span class="go">          [0., 1., 0., 0.],</span>
-<span class="go">          [0., 0., 1., 0.],</span>
-<span class="go">          [0., 0., 0., 1.]]))</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
 </pre></div>
 </div>
 <p>and <code class="docutils literal notranslate"><span class="pre">/</span></code> denotes multiplication by the inverse:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">/</span> <span class="n">T</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">/</span> <span class="n">T</span>
 <span class="go">SE3(array([[1., 0., 0., 0.],</span>
-<span class="go">          [0., 1., 0., 0.],</span>
-<span class="go">          [0., 0., 1., 0.],</span>
-<span class="go">          [0., 0., 0., 1.]]))</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="constructors">
-<h4>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h4>
-<p>For every group the identity value can be constructed by instantiating the class with no arguments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">UnitQuaternion</span><span class="p">()</span>
-<span class="go">1.000000 &lt;&lt; 0.000000, 0.000000, 0.000000 &gt;&gt;</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="p">()</span>
-<span class="go">SE3(array([[1., 0., 0., 0.],</span>
-<span class="go">          [0., 1., 0., 0.],</span>
-<span class="go">          [0., 0., 1., 0.],</span>
-<span class="go">          [0., 0., 0., 1.]]))</span>
-</pre></div>
-</div>
-<p>Other constructors are implemented as class methods and are common to <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code>
-and begin with an uppercase letter:</p>
-<p>———–   ————————————————–
-Constructor   Meaning
-———–   ————————————————–
-Rx            Pure rotation about the x-axis
-Ry            Pure rotation about the y-axis
-Rz            Pure rotation about the z-axis
-RPY           specified as roll-pitch-yaw angles
-Eul           specified as Euler angles
-AngVec        specified as rotational axis and rotation angle
-Rand          random rotation
-Exp           specified as se(2) or se(3) matrix
-empty         no values
-———–   ————————————————–</p>
+<div class="section" id="vector-transformation">
+<h4>Vector transformation<a class="headerlink" href="#vector-transformation" title="Permalink to this headline">¶</a></h4>
+<p>The classes <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> support vector transformation when
+premultiplying a vector (or a set of vectors columnwise in a NumPy array) using the <code class="docutils literal notranslate"><span class="pre">*</span></code> operator.
+This is either rotation about the origin (for <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code>) or rotation and translation (<code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>).</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> this is performed directly using Hamilton products <span class="math notranslate nohighlight">\(q \circ \mathring{v} \circ q^{-1}\)</span>.
+For <code class="docutils literal notranslate"><span class="pre">SO3</span></code> and <code class="docutils literal notranslate"><span class="pre">SO2</span></code> this is a matrix-vector product, for <code class="docutils literal notranslate"><span class="pre">SE3</span></code> and <code class="docutils literal notranslate"><span class="pre">SE2</span></code> this is a matrix-vector product with the vectors
+being first converted to homogeneous form, and the result converted back to Euclidean form.</p>
 </div>
 <div class="section" id="non-group-operations">
 <h4>Non-group operations<a class="headerlink" href="#non-group-operations" title="Permalink to this headline">¶</a></h4>
-<p>The classes <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> support vector transformation when
-premultiplying a vector (or a set of vectors columnwise in a NumPy array) using the <code class="docutils literal notranslate"><span class="pre">*</span></code> operator.
-This is either rotation about the origin (for <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code>) or rotation and translation (<code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>).
-For <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> this is performed directly using Hamilton products <span class="math notranslate nohighlight">\(q \circ \mathring{v} \circ q^{-1}\)</span>.
-For <code class="docutils literal notranslate"><span class="pre">SO3</span></code> and <code class="docutils literal notranslate"><span class="pre">SO2</span></code> this is a matrix-vector product, for <code class="docutils literal notranslate"><span class="pre">SE3</span></code> and <code class="docutils literal notranslate"><span class="pre">SE2</span></code> this is a matrix-vector product with the vectors
-being first converted to homogeneous form, and the result converted back to Euclidean form.</p>
-<p>Scalar multiplication, addition and subtraction are not defined group operations so the result will be a NumPy array rather than a class,
-and the operations are performed elementwise, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<p>Addition, subtraction and scalar multiplication are not defined group operations
+so the result will be a NumPy array rather than a class. The operations are
+performed elementwise, for example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">-</span> <span class="n">T</span>
 <span class="go">array([[0., 0., 0., 0.],</span>
-<span class="go">      [0., 0., 0., 0.],</span>
-<span class="go">      [0., 0., 0., 0.],</span>
-<span class="go">      [0., 0., 0., 0.]])</span>
+<span class="go">       [0., 0., 0., 0.],</span>
+<span class="go">       [0., 0., 0., 0.],</span>
+<span class="go">       [0., 0., 0., 0.]])</span>
 </pre></div>
 </div>
 <p>or in the case of a scalar broadcast to each element:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">-</span> <span class="mi">1</span>
-<span class="go">array([[ 0.        , -1.        , -1.        , -1.        ],</span>
-<span class="go">      [-1.        , -0.04466351, -1.29552021, -1.        ],</span>
-<span class="go">      [-1.        , -0.70447979, -0.04466351, -1.        ],</span>
-<span class="go">      [-1.        , -1.        , -1.        ,  0.        ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mi">2</span> <span class="o">*</span> <span class="n">T</span>
-<span class="go">array([[ 2.        ,  0.        ,  0.        ,  0.        ],</span>
-<span class="go">      [ 0.        ,  1.91067298, -0.59104041,  0.        ],</span>
-<span class="go">      [ 0.        ,  0.59104041,  1.91067298,  0.        ],</span>
-<span class="go">      [ 0.        ,  0.        ,  0.        ,  2.        ]])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;T&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;T&#39; is not defined</span>
 </pre></div>
 </div>
-<p>The exception is the <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> class which supports these since a quaternion is a ring not a group:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
-<span class="go">1.000000 &lt; 2.000000, 3.000000, 4.000000 &gt;</span>
+<p>The exception is the <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> class which supports these since a
+quaternion is a ring not a group:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mi">2</span> <span class="o">*</span> <span class="n">q</span>
-<span class="go">2.000000 &lt; 4.000000, 6.000000, 8.000000 &gt;</span>
+<span class="go">Quaternion(array([2, 4, 6, 8]))</span>
 </pre></div>
 </div>
 <p>Compare this to the unit quaternion case:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
-<span class="go">0.182574 &lt;&lt; 0.365148, 0.547723, 0.730297 &gt;&gt;</span>
-
+<span class="go">UnitQuaternion(array([0.18257419, 0.36514837, 0.54772256, 0.73029674]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mi">2</span> <span class="o">*</span> <span class="n">q</span>
-<span class="go">0.365148 &lt; 0.730297, 1.095445, 1.460593 &gt;</span>
+<span class="go">Quaternion(array([0.36514837, 0.73029674, 1.09544512, 1.46059349]))</span>
 </pre></div>
 </div>
 <p>Noting that unit quaternions are denoted by double angle bracket delimiters of their vector part,
@@ -489,10 +496,13 @@ unit quaternion is always a general quaternion.</p>
 </div>
 <div class="section" id="displaying-values">
 <h3>Displaying values<a class="headerlink" href="#displaying-values" title="Permalink to this headline">¶</a></h3>
-<p>Each class has a compact text representation via its <em>repr</em> method and its <code class="docutils literal notranslate"><span class="pre">str()</span></code> method.
-The <code class="docutils literal notranslate"><span class="pre">printline()</span></code> methods prints a single-line for tabular listing to the console, file and returns a string:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
-<span class="go">t =      0.6,    -0.29,    -0.98; rpy/zyx =  1.5e+02,       36,      -44 deg</span>
+<p>Each class has a compact text representation via its <code class="docutils literal notranslate"><span class="pre">__repr__</span></code> method and its
+<code class="docutils literal notranslate"><span class="pre">str()</span></code> method. The <code class="docutils literal notranslate"><span class="pre">printline()</span></code> methods prints a single-line for tabular
+listing to the console, file and returns a string:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
+<span class="go">t =    -0.81,    -0.17,    -0.46; rpy/zyx =  1.5e+02°,       27°,      -71°</span>
 </pre></div>
 </div>
 <p>The classes <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code> and <code class="docutils literal notranslate"><span class="pre">SO2</span></code> can provide colorized text output to the console:</p>
@@ -500,8 +510,61 @@ The <code class="docutils literal notranslate"><span class="pre">printline()</sp
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="_images/colored_output.png" src="_images/colored_output.png" />
+<a class="reference internal image-reference" href="_images/colored_output.png"><img alt="_images/colored_output.png" src="_images/colored_output.png" style="width: 300px;" /></a>
 <p>with rotational elements in red, translational elements in blue and constants in grey.</p>
+<p>The foreground and background colors can be controlled using the following
+class variables for the <code class="docutils literal notranslate"><span class="pre">SMPose</span></code> subclasses</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 24%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>_rotcolor</p></td>
+<td><p>‘red’</p></td>
+<td><p>Foreground color of rotation submatrix</p></td>
+</tr>
+<tr class="row-odd"><td><p>_transcolor</p></td>
+<td><p>‘blue’</p></td>
+<td><p>Foreground color of rotation submatrix</p></td>
+</tr>
+<tr class="row-even"><td><p>_constcolor</p></td>
+<td><p>‘grey_50’</p></td>
+<td><p>Foreground color of matrix constant elements</p></td>
+</tr>
+<tr class="row-odd"><td><p>_bgcolor</p></td>
+<td><p>None</p></td>
+<td><p>Background color of matrix</p></td>
+</tr>
+<tr class="row-even"><td><p>_indexcolor</p></td>
+<td><p>(None, ‘yellow_2’)</p></td>
+<td><p>Foreground, background color of index tag</p></td>
+</tr>
+<tr class="row-odd"><td><p>_format</p></td>
+<td><p>‘{:&lt; 12g}’</p></td>
+<td><p>Format string for each matrix element</p></td>
+</tr>
+<tr class="row-even"><td><p>_suppress_small</p></td>
+<td><p>True</p></td>
+<td><p>Suppress <em>small</em> values, set to zero</p></td>
+</tr>
+<tr class="row-odd"><td><p>_suppress_tol</p></td>
+<td><p>100</p></td>
+<td><p>Threshold for <em>small</em> values in eps units</p></td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">_rotcolor</span> <span class="o">=</span> <span class="s1">&#39;green&#39;</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="graphics">
 <h3>Graphics<a class="headerlink" href="#graphics" title="Permalink to this headline">¶</a></h3>
@@ -519,92 +582,159 @@ The <code class="docutils literal notranslate"><span class="pre">printline()</sp
 </div>
 <img alt="_images/animate.gif" src="_images/animate.gif" />
 </div>
-<div class="section" id="id1">
-<h3>Constructors<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="constructors">
+<h3>Constructors<a class="headerlink" href="#constructors" title="Permalink to this headline">¶</a></h3>
 <p>The constructor for each class can accept:</p>
-<ul>
-<li><p>no arguments, in which case the identity element is created:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE2</span><span class="p">()</span>
-<span class="go">SE2(array([[1., 0., 0.],</span>
-<span class="go">          [0., 1., 0.],</span>
-<span class="go">          [0., 0., 1.]]))</span>
+<ul class="simple">
+<li><p>no arguments, in which case the identity element is created:</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">UnitQuaternion</span><span class="p">()</span>
+<span class="go">UnitQuaternion(array([1., 0., 0., 0.]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="p">()</span>
+<span class="go">SE3(array([[1., 0., 0., 0.],</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
 </pre></div>
 </div>
-</li>
-<li><p>class specific values, eg. <code class="docutils literal notranslate"><span class="pre">SE2(x,</span> <span class="pre">y,</span> <span class="pre">theta)</span></code> or <code class="docutils literal notranslate"><span class="pre">SE3(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code>, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<ul class="simple">
+<li><p>class specific values, eg. <code class="docutils literal notranslate"><span class="pre">SE2(x,</span> <span class="pre">y,</span> <span class="pre">theta)</span></code> or <code class="docutils literal notranslate"><span class="pre">SE3(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code>, for example:</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
 <span class="go">SE2(array([[ 0.95533649, -0.29552021,  1.        ],</span>
-<span class="go">          [ 0.29552021,  0.95533649,  2.        ],</span>
-<span class="go">          [ 0.        ,  0.        ,  1.        ]]))</span>
+<span class="go">           [ 0.29552021,  0.95533649,  2.        ],</span>
+<span class="go">           [ 0.        ,  0.        ,  1.        ]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">UnitQuaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">1.000000 &lt;&lt; 0.000000, 0.000000, 0.000000 &gt;&gt;</span>
+<span class="go">UnitQuaternion(array([1., 0., 0., 0.]))</span>
 </pre></div>
 </div>
-</li>
-<li><p>a numeric value for the class as a NumPy array or a 1D list or tuple which will be checked for validity:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<ul class="simple">
+<li><p>a numeric value for the class as a NumPy array or a 1D list or tuple which will be checked for validity:</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 <span class="go">SE2(array([[1., 0., 0.],</span>
-<span class="go">          [0., 1., 0.],</span>
-<span class="go">          [0., 0., 1.]]))</span>
+<span class="go">           [0., 1., 0.],</span>
+<span class="go">           [0., 0., 1.]]))</span>
 </pre></div>
 </div>
-</li>
-<li><p>a list of numeric values, each of which will be checked for validity:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE2</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
+<ul class="simple">
+<li><p>a list of numeric values, each of which will be checked for validity:</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE2</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span>
 <span class="go">SE2([</span>
 <span class="go">array([[1., 0., 0.],</span>
-<span class="go">      [0., 1., 0.],</span>
-<span class="go">      [0., 0., 1.]]),</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 1.]]),</span>
 <span class="go">array([[1., 0., 0.],</span>
-<span class="go">      [0., 1., 0.],</span>
-<span class="go">      [0., 0., 1.]]),</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 1.]]),</span>
 <span class="go">array([[1., 0., 0.],</span>
-<span class="go">      [0., 1., 0.],</span>
-<span class="go">      [0., 0., 1.]]),</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 1.]]),</span>
 <span class="go">array([[1., 0., 0.],</span>
-<span class="go">      [0., 1., 0.],</span>
-<span class="go">      [0., 0., 1.]]) ])</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 1.]]) ])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="go">4</span>
 </pre></div>
 </div>
-</li>
-</ul>
+<p>Other constructors are implemented as class methods and are common to <code class="docutils literal notranslate"><span class="pre">SE3</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">Twist3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO2</span></code> <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> and <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> and
+begin with an uppercase letter:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 82%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constructor</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Rx</p></td>
+<td><p>Pure rotation about the x-axis</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ry</p></td>
+<td><p>Pure rotation about the y-axis</p></td>
+</tr>
+<tr class="row-even"><td><p>Rz</p></td>
+<td><p>Pure rotation about the z-axis</p></td>
+</tr>
+<tr class="row-odd"><td><p>RPY</p></td>
+<td><p>specified as roll-pitch-yaw angles</p></td>
+</tr>
+<tr class="row-even"><td><p>Eul</p></td>
+<td><p>specified as Euler angles</p></td>
+</tr>
+<tr class="row-odd"><td><p>AngVec</p></td>
+<td><p>specified as rotational axis and rotation angle</p></td>
+</tr>
+<tr class="row-even"><td><p>Rand</p></td>
+<td><p>random rotation</p></td>
+</tr>
+<tr class="row-odd"><td><p>Exp</p></td>
+<td><p>specified as se(2) or se(3) matrix</p></td>
+</tr>
+<tr class="row-even"><td><p>empty</p></td>
+<td><p>no values</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alloc</p></td>
+<td><p>N identity values</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="list-capability">
 <span id="list-powers"></span><h3>List capability<a class="headerlink" href="#list-capability" title="Permalink to this headline">¶</a></h3>
 <p>Each of these object classes has <code class="docutils literal notranslate"><span class="pre">UserList</span></code> as a base class which means it inherits all the functionality of
 a Python list</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-<span class="go">   1</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-<span class="go">  32</span>
-<span class="go">&gt;&gt; R[0]</span>
-<span class="go">   1         0         0</span>
-<span class="go">   0         1         0</span>
-<span class="go">   0         0         1</span>
-<span class="go">&gt;&gt; R[-1]</span>
-<span class="go">   1         0         0</span>
-<span class="go">   0         0.996542  0.0830894</span>
-<span class="go">   0        -0.0830894 0.996542</span>
+<span class="go">32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">SO3(array([[1., 0., 0.],</span>
+<span class="go">           [0., 1., 0.],</span>
+<span class="go">           [0., 0., 1.]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">SO3(array([[ 1.       ,  0.       ,  0.       ],</span>
+<span class="go">           [ 0.       ,  0.9965421,  0.0830894],</span>
+<span class="go">           [ 0.       , -0.0830894,  0.9965421]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+<span class="go">SO3([</span>
+<span class="go">array([[ 1.        ,  0.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.92106099, -0.38941834],</span>
+<span class="go">       [ 0.        ,  0.38941834,  0.92106099]]),</span>
+<span class="go">array([[ 1.        ,  0.        ,  0.        ],</span>
+<span class="go">       [ 0.        ,  0.82533561, -0.56464247],</span>
+<span class="go">       [ 0.        ,  0.56464247,  0.82533561]]) ])</span>
 </pre></div>
 </div>
 <p>where each item is an object of the same class as that it was extracted from.
 Slice notation is also available, eg. <code class="docutils literal notranslate"><span class="pre">R[0:-1:3]</span></code> is a new SO3 instance containing every third element of <code class="docutils literal notranslate"><span class="pre">R</span></code>.</p>
-<p>In particular it includes an iterator allowing comprehensions</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">eul</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">R</span><span class="p">]</span>
-<span class="go">[array([ 90.        ,   4.76616702, -90.        ]),</span>
-<span class="go"> array([ 90.        ,  16.22532292, -90.        ]),</span>
-<span class="go"> array([ 90.        ,  27.68447882, -90.        ]),</span>
-<span class="go">   .</span>
-<span class="go">   .</span>
-<span class="go"> array([-90.       ,  11.4591559,  90.       ]),</span>
-<span class="go"> array([0., 0., 0.])]</span>
+<p>In particular it includes an iterator allowing comprehensions:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+<span class="go">32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eul</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">eul</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">R</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">eul</span><span class="p">)</span>
+<span class="go">32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eul</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+<span class="go">array([-1.57079633,  2.        ,  1.57079633])</span>
 </pre></div>
 </div>
 <p>Useful functions that be used on such objects include</p>
@@ -658,8 +788,10 @@ Slice notation is also available, eg. <code class="docutils literal notranslate"
 <div class="section" id="vectorization">
 <h3>Vectorization<a class="headerlink" href="#vectorization" title="Permalink to this headline">¶</a></h3>
 <img alt="../figs/broadcasting.png" src="../figs/broadcasting.png" />
-<p>For most methods, if applied to an object that contains N elements, the result will be the appropriate return object type with N elements.</p>
-<p>Most binary operations (<cite>*</cite>, <cite>*=</cite>, <cite>**</cite>, <cite>+</cite>, <cite>+=</cite>, <cite>-</cite>, <cite>-=</cite>, <cite>==</cite>, <cite>!=</cite>) are vectorized.  For the case:</p>
+<p>For most methods, if applied to an object that contains N elements, the result
+will be the appropriate return object type with N elements.</p>
+<p>Most binary operations are vectorized: <code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">*=</span></code>, <code class="docutils literal notranslate"><span class="pre">**</span></code>, <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">/=</span></code>, <code class="docutils literal notranslate"><span class="pre">+</span></code>, <code class="docutils literal notranslate"><span class="pre">+=</span></code>, <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">-=</span></code>,
+<code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">!=</span></code>.  For the case:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Z</span> <span class="o">=</span> <span class="n">X</span> <span class="n">op</span> <span class="n">Y</span>
 </pre></div>
 </div>
@@ -705,6 +837,34 @@ Slice notation is also available, eg. <code class="docutils literal notranslate"
 </tbody>
 </table>
 <p>Any other combination of lengths is not allowed and will raise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> exception.</p>
+<p>In addition:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Plucker</span></code> objects support the <code class="docutils literal notranslate"><span class="pre">^</span></code> and <code class="docutils literal notranslate"><span class="pre">|</span></code> operators to test intersection
+and parallelity respectively.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpatialVector</span></code> subclass objects support the <code class="docutils literal notranslate"><span class="pre">^</span></code> operator to indicate the
+spatial vector cross product.</p></li>
+</ul>
+</div>
+<div class="section" id="symbolic-operations">
+<h3>Symbolic operations<a class="headerlink" href="#symbolic-operations" title="Permalink to this headline">¶</a></h3>
+<p>The Toolbox supports SymPy which provides powerful symbolic support for Python
+and it works well in conjunction with NumPy, ie. a NumPy array can contain
+symbolic elements.  Many the Toolbox methods and functions contain extra logic
+to ensure that symbolic operations work as expected. While this also adds to the
+overhead it means that for the user, working with symbols is as easy as working
+with numbers.  For example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spatialmath.base.symbolic</span> <span class="k">as</span> <span class="nn">sym</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="go">SE3(array([[1, 0, 0, 0],</span>
+<span class="go">           [0, cos(theta), -sin(theta), 0],</span>
+<span class="go">           [0, sin(theta), cos(theta), 0],</span>
+<span class="go">           [0, 0, 0, 1]], dtype=object))</span>
+</pre></div>
+</div>
+<p>SymPy allows any expression to be converted to runnable code in a variety of
+languages including C, Python and Octave/MATLAB.</p>
 </div>
 <div class="section" id="implementation">
 <h3>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
@@ -749,6 +909,12 @@ Slice notation is also available, eg. <code class="docutils literal notranslate"
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-=</span></code></p></td>
 <td><p>__isub__</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">==</span></code></p></td>
+<td><p>__eq__</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">!=</span></code></p></td>
+<td><p>__ne__</p></td>
+</tr>
 </tbody>
 </table>
 <p>This online documentation includes just the method shown in bold.
@@ -757,12 +923,9 @@ The other related methods all invoke that method.</p>
 </div>
 <div class="section" id="low-level-spatial-math">
 <h2>Low-level spatial math<a class="headerlink" href="#low-level-spatial-math" title="Permalink to this headline">¶</a></h2>
-<p>All the classes just described abstract the <code class="docutils literal notranslate"><span class="pre">base</span></code> package which represent the spatial-math object as a numpy.ndarray.</p>
-<p>The inputs to functions in this package are either floats, lists, tuples or numpy.ndarray objects describing vectors or arrays.  Functions that require a vector can be passed a list, tuple or numpy.ndarray for a vector – described in the documentation as being of type <em>array_like</em>.</p>
-<p>Numpy vectors are somewhat different to MATLAB, and is a gnarly aspect of numpy.  Numpy arrays have a shape described by a shape tuple which is a list of the dimensions.  Typically all <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code> vectors have the shape (N,), that is, they have only one dimension.  The <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> product of an (M,N) array and a (N,) vector is a (M,) array.  A numpy column vector has shape (N,1) and a row vector has shape (1,N) but functions also accept row (1,N)  and column (N,1) vectors.
-Iterating over a numpy.ndarray is done by row, not columns as in MATLAB.  Iterating over a 1D array (N,) returns consecutive elements, iterating a row vector (1,N) returns the entire row, iterating a column vector (N,1) returns consecutive elements (rows).</p>
-<p>For example an SE(2) pose is represented by a 3x3 numpy array, an ndarray with shape=(3,3). A unit quaternion is
-represented by a 4-element numpy array, an ndarray with shape=(4,).</p>
+<p>The classes above abstract the <code class="docutils literal notranslate"><span class="pre">base</span></code> package which represent the spatial-math
+types as 1D and 2D  arrays implemented by NumPy n-dimensional arrays - the
+<code class="docutils literal notranslate"><span class="pre">ndarray</span></code> class.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 33%" />
@@ -772,7 +935,7 @@ represented by a 4-element numpy array, an ndarray with shape=(4,).</p>
 <thead>
 <tr class="row-odd"><th class="head"><p>Spatial object</p></th>
 <th class="head"><p>equivalent class</p></th>
-<th class="head"><p>numpy.ndarray shape</p></th>
+<th class="head"><p>NumPy ndarray.shape</p></th>
 </tr>
 </thead>
 <tbody>
@@ -802,11 +965,54 @@ represented by a 4-element numpy array, an ndarray with shape=(4,).</p>
 </tr>
 </tbody>
 </table>
-<p>Tjhe classes <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, <code class="docutils literal notranslate"><span class="pre">`SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">`SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> can operate conveniently on lists but the <code class="docutils literal notranslate"><span class="pre">base</span></code> functions do not support this.
-If you wish to work with these functions and create lists of pose objects you could keep the numpy arrays in high-order numpy arrays (ie. add an extra dimensions),
-or keep them in a list, tuple or any other python contai described in the [high-level spatial math section](#high-level-classes).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">SpatialVector</span></code> and <code class="docutils literal notranslate"><span class="pre">Plucker</span></code> objects have no equivalent in the
+<code class="docutils literal notranslate"><span class="pre">base</span></code> package.</p>
+</div>
+<p>Inputs to functions in this package are either floats, lists, tuples or
+numpy.ndarray objects describing vectors or arrays.</p>
+<p>NumPy arrays have a shape described by a shape tuple which is a list of the
+dimensions.  Typically all <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> <strong>vectors</strong> have the shape <code class="docutils literal notranslate"><span class="pre">(N,)</span></code>, that is,
+they have only one dimension.  The <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> product of an <code class="docutils literal notranslate"><span class="pre">(M,N)</span></code> array and a <code class="docutils literal notranslate"><span class="pre">(N,)</span></code>
+vector is an <code class="docutils literal notranslate"><span class="pre">(M,)</span></code> vector.</p>
+<p>A numpy column vector has shape <code class="docutils literal notranslate"><span class="pre">(N,1)</span></code> and a row vector
+has shape <code class="docutils literal notranslate"><span class="pre">(1,N)</span></code> but functions also accept row <code class="docutils literal notranslate"><span class="pre">(1,N)</span></code>  and column <code class="docutils literal notranslate"><span class="pre">(N,1)</span></code>
+where a vector argument is required.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For a user transitioning from MATLAB the most significant
+differences are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the use of 1D arrays – all MATLAB arrays have two dimensions,
+even if one of them is equal to one.</p></li>
+<li><p>Iterating over a 1D array (N,) returns consecutive elements</p></li>
+<li><p>Iterating over a 2D NumPy array is done by row, not columns as in MATLAB.</p></li>
+<li><p>Iterating over a row vector <code class="docutils literal notranslate"><span class="pre">(1,N)</span></code> returns the entire row</p></li>
+<li><p>Iterating a column vector <code class="docutils literal notranslate"><span class="pre">(N,1)</span></code> returns consecutive elements (rows).</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Functions that require vector can be passed a list, tuple or numpy.ndarray
+for a vector – described in the documentation as being of type
+<em>array_like</em>.</p></li>
+<li><p>The documentation refers to NumPy arrays succinctly as
+- <code class="docutils literal notranslate"><span class="pre">ndarray(N)</span></code> for a 1D array of length <code class="docutils literal notranslate"><span class="pre">N</span></code>
+- <code class="docutils literal notranslate"><span class="pre">ndarray(N,M)</span></code> for a 2D array of dimension $N times M$.</p></li>
+</ul>
+</div>
+<p>The classes <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, <code class="docutils literal notranslate"><span class="pre">`SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">`SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> can operate
+conveniently on lists but the <code class="docutils literal notranslate"><span class="pre">base</span></code> functions do not support this. If you
+wish to work with these functions and create lists of pose objects you could
+keep the numpy arrays in high-order numpy arrays (ie. add an extra dimensions),
+or keep them in a list, tuple or any other Python container described in the
+<cite>high-level spatial math section</cite> &lt;#high-level-classes&gt;`_.</p>
 <p>Let’s show a simple example:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-pycon notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -817,131 +1023,161 @@ or keep them in a list, tuple or any other python contai described in the [high-
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">spatialmath.base.transforms</span> <span class="k">as</span> <span class="nn">base</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">base</span><span class="o">.</span><span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
- <span class="n">array</span><span class="p">([[</span> <span class="mf">1.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-        <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.95533649</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.29552021</span><span class="p">],</span>
-        <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.29552021</span><span class="p">,</span>  <span class="mf">0.95533649</span><span class="p">]])</span>
-
- <span class="o">&gt;&gt;&gt;</span> <span class="n">base</span><span class="o">.</span><span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
- <span class="n">array</span><span class="p">([[</span> <span class="mf">1.</span>       <span class="p">,</span>  <span class="mf">0.</span>       <span class="p">,</span>  <span class="mf">0.</span>       <span class="p">],</span>
-        <span class="p">[</span> <span class="mf">0.</span>       <span class="p">,</span>  <span class="mf">0.8660254</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span>      <span class="p">],</span>
-        <span class="p">[</span> <span class="mf">0.</span>       <span class="p">,</span>  <span class="mf">0.5</span>      <span class="p">,</span>  <span class="mf">0.8660254</span><span class="p">]])</span>
-
- <span class="o">&gt;&gt;&gt;</span> <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">roty</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
+    <span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">roboticstoolbox.base</span> <span class="kn">import</span> <span class="o">*</span>
+     <span class="o">^</span>
+<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
+    <span class="o">&gt;&gt;</span> <span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+     <span class="o">^</span>
+<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
+    <span class="o">&gt;&gt;</span> <span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+     <span class="o">^</span>
+<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
+    <span class="o">&gt;&gt;</span> <span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="o">@</span> <span class="n">roty</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+     <span class="o">^</span>
+<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
 </pre></div>
 </td></tr></table></div>
-<p>At line 1 we import all the base functions into the namespae <code class="docutils literal notranslate"><span class="pre">base</span></code>.
-In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> operator to perform matrix multiplication.  The <cite>*</cite> operator performs element-wise multiplication, which is equivalent to the MATLAB <code class="docutils literal notranslate"><span class="pre">.*</span></code> operator.</p>
+<p>At line 1 we import all the base functions into the current namespace. In line
+12 when we multiply the matrices we need to use the <cite>&#64;</cite> operator to perform
+matrix multiplication.  The <cite>*</cite> operator performs element-wise multiplication,
+which is equivalent to the MATLAB <code class="docutils literal notranslate"><span class="pre">.*</span></code> operator.</p>
 <p>We also support multiple ways of passing vector information to functions that require it:</p>
 <ul class="simple">
 <li><p>as separate positional arguments</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">array([[1., 0., 1.],</span>
+<span class="go">       [0., 1., 2.],</span>
+<span class="go">       [0., 0., 1.]])</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>as a list or a tuple</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transl2</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
-<span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
-
-<span class="n">transl2</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
-<span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+<span class="go">array([[1., 0., 1.],</span>
+<span class="go">       [0., 1., 2.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+<span class="go">array([[1., 0., 1.],</span>
+<span class="go">       [0., 1., 2.],</span>
+<span class="go">       [0., 0., 1.]])</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>or as a <cite>numpy</cite> array</p></li>
+<li><p>or as a NumPy array</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">transl2</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span> <span class="p">)</span>
-<span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;np&#39; is not defined</span>
 </pre></div>
 </div>
-<p>There is a single module that deals with quaternions, regular quaternions and unit quaternions, and the representation is a <cite>numpy</cite> array of four elements.  As above, functions can accept the <cite>numpy</cite> array, a list, dict or <cite>numpy</cite> row or column vectors.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spatialmath.base.quaternion</span> <span class="k">as</span> <span class="nn">quat</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">qqmul</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
-<span class="go">array([-60,  12,  30,  24])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">quat</span><span class="o">.</span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-<span class="go">-60.000000 &lt; 12.000000, 30.000000, 24.000000 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">quat</span><span class="o">.</span><span class="n">qnorm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-<span class="go">72.24956747275377</span>
+<p>There is a single module that deals with quaternions, regular quaternions and
+unit quaternions. In both cases, the representation is a NumPy array of four elements.
+As above, functions can accept a NumPy array, a list, dict or NumPy row or
+column vectors.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;quat&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;q&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;q&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;q&#39; is not defined</span>
 </pre></div>
 </div>
-<p>Functions exist to convert to and from SO(3) rotation matrices and a 3-vector representation.  The latter is often used for SLAM and bundle adjustment applications, being a minimal representation of orientation.</p>
-<div class="section" id="id2">
-<h3>Graphics<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Functions exist to convert to and from SO(3) rotation matrices and a minimal 3-vector
+quaternion representation.  The latter is often used for SLAM and bundle adjustment
+applications, being a minimal representation of orientation.</p>
+<div class="section" id="id1">
+<h3>Graphics<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>If <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> is installed then we can add 2D coordinate frames to a figure in a variety of styles:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">trplot2</span><span class="p">(</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">rviz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
- <span class="n">trplot2</span><span class="p">(</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
- <span class="n">trplot2</span><span class="p">(</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="nd">@trot2</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
- <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">trplot2</span><span class="p">(</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">rviz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">trplot2</span><span class="p">(</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">trplot2</span><span class="p">(</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="nd">@trot2</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<div class="figure align-center" id="id3">
-<img alt="./figs/transforms2d.png" src="./figs/transforms2d.png" />
-<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot2</span></code></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<div class="figure align-center" id="id2">
+<img alt="_images/transforms2d.png" src="_images/transforms2d.png" />
+<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot2</span></code></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>If a figure does not yet exist one is added.  If a figure exists but there is no 2D axes then one is added.  To add to an existing axes you can pass this in using the <code class="docutils literal notranslate"><span class="pre">axes</span></code> argument.  By default the frames are drawn with lines or arrows of unit length.  Autoscaling is enabled.</p>
 <p>Similarly, we can plot 3D coordinate frames in a variety of styles:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">rviz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
- <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
- <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="nd">@trotx</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">rviz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">trplot</span><span class="p">(</span> <span class="n">transl</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="nd">@trotx</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </td></tr></table></div>
-<div class="figure align-center" id="id4">
-<img alt="./figs/transforms3d.png" src="./figs/transforms3d.png" />
-<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot</span></code></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<div class="figure align-center" id="id3">
+<img alt="_images/transforms3d.png" src="_images/transforms3d.png" />
+<p class="caption"><span class="caption-text">Output of <code class="docutils literal notranslate"><span class="pre">trplot</span></code></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">dims</span></code> option in lines 1 and 3 sets the workspace dimensions.  Note that the last set value is what is displayed.</p>
 <p>Depending on the backend you are using you may need to include</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="symbolic-support">
 <h3>Symbolic support<a class="headerlink" href="#symbolic-support" title="Permalink to this headline">¶</a></h3>
-<p>Some functions have support for symbolic variables, for example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span>
-
-<span class="n">theta</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">rotx</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
-<span class="p">[[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
- <span class="p">[</span><span class="mi">0</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)]</span>
- <span class="p">[</span><span class="mi">0</span> <span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]]</span>
+<p>Some functions have support for symbolic variables, for example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spatialmath.base.symbolic</span> <span class="k">as</span> <span class="nn">sym</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rotx</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+<span class="go">[[1 0 0]</span>
+<span class="go"> [0 cos(theta) -sin(theta)]</span>
+<span class="go"> [0 sin(theta) cos(theta)]]</span>
 </pre></div>
 </div>
-<p>The resulting <cite>numpy</cite> array is an array of symbolic objects not numbers &amp;ndash; the constants are also symbolic objects.  You can read the elements of the matrix</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<p>The resulting NumPy array is an array of symbolic objects not numbers –
+the constants are also symbolic objects.  You can slice out the elements of the
+matrix</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spatialmath.base.symbolic</span> <span class="k">as</span> <span class="nn">sym</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
-<span class="go">  1</span>
+<span class="go">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="go"> int</span>
-
+<span class="go">&lt;class &#39;int&#39;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
 <span class="go">cos(theta)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="go"> cos</span>
+<span class="go">cos</span>
 </pre></div>
 </div>
-<p>We see that the symbolic constants are converted back to Python numeric types on read.</p>
-<p>Similarly when we assign an element or slice of the symbolic matrix to a numeric value, they are converted to symbolic constants on the way in.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">22</span>
+<p>We see that the symbolic constants have been converted back to Python numeric
+types.</p>
+<p>Similarly when we assign an element or slice of the symbolic matrix to a numeric
+value, they are converted to symbolic constants on the way in.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">spatialmath.base.symbolic</span> <span class="k">as</span> <span class="nn">sym</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trotx</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">22</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">[[1 0 0 22]</span>
 <span class="go"> [0 cos(theta) -sin(theta) 0]</span>
@@ -949,30 +1185,34 @@ In line 12 when we multiply the matrices we need to use the <cite>&#64;</cite> o
 <span class="go"> [0 0 0 1]]</span>
 </pre></div>
 </div>
-<p>but you can’t write a symbolic value into a floating point matrix</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trotx</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="n">theta</span>
-<span class="gt">Traceback (most recent call last):</span>
-<span class="gr">  .</span>
-<span class="gr">  .</span>
-<span class="gr">TypeError</span>: <span class="n">can&#39;t convert expression to float</span>
-</pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You can’t write a symbolic value directly into a floating point matrix (ie.
+one whose <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">np.float64</span></code> or similar). The array must be first converted
+to <em>object type</em> using <code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">T.astype('O')</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Not all functions support symbolic operations.  For those that do,
+this is noted in the last line of the docstring: <strong>SymPy: support</strong></p>
 </div>
 </div>
 <div class="section" id="relationship-to-matlab-tools">
 <h3>Relationship to MATLAB tools<a class="headerlink" href="#relationship-to-matlab-tools" title="Permalink to this headline">¶</a></h3>
-<p>This package replicates, as much as possible, the functionality of the <a class="reference external" href="https://github.com/petercorke/spatial-math">Spatial Math Toolbox</a> for MATLAB ®
-which underpins the <a class="reference external" href="https://github.com/petercorke/robotics-toolbox-matlab">Robotics Toolbox</a> for MATLAB. It comprises:</p>
+<p>This package replicates, as much as possible, the functionality of the <a class="reference external" href="https://github.com/petercorke/spatial-math">Spatial
+Math Toolbox</a> for MATLAB®
+which underpins the <a class="reference external" href="https://github.com/petercorke/robotics-toolbox-matlab">Robotics Toolbox</a> for MATLAB®. It
+comprises:</p>
 <ul>
 <li><p>the <em>classic</em> functions (which date back to the origin of the Robotics Toolbox
 for MATLAB) such as <code class="docutils literal notranslate"><span class="pre">rotx</span></code>, <code class="docutils literal notranslate"><span class="pre">trotz</span></code>, <code class="docutils literal notranslate"><span class="pre">eul2tr</span></code> etc. which can be imported
-from the <code class="docutils literal notranslate"><span class="pre">base</span></code> package</p>
-<blockquote>
-<div><p>from spatialmath.base import rotx, trotx</p>
-</div></blockquote>
-<p>and works with NumPy arrays.  This package also includes a set of functions, not present in the MATLAB version, to handle quaternions and unit-quaternions which are represented as 4-element
-Numpy arrays.</p>
+from the <code class="docutils literal notranslate"><span class="pre">base</span></code> package:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">rotx</span><span class="p">,</span> <span class="n">trotx</span>
+</pre></div>
+</div>
+<p>and works with NumPy arrays.  This package also includes a set of functions,
+not present in the MATLAB version, to handle quaternions, unit-quaternions
+which are represented as 4-element NumPy arrays, and twists.</p>
 </li>
 <li><p>the classes (which appeared in Robotics Toolbox for MATLAB release 10 in 2017) such as <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> etc.  The only significant difference
 is that the MATLAB <code class="docutils literal notranslate"><span class="pre">Twist</span></code> class is now called <code class="docutils literal notranslate"><span class="pre">Twist3</span></code>.</p></li>
@@ -981,30 +1221,33 @@ is that the MATLAB <code class="docutils literal notranslate"><span class="pre">
 <blockquote>
 <div><ul class="simple">
 <li><p>being as similar as possible to the MATLAB Toolbox function names and semantics</p></li>
-<li><p>but balancing the tension of being as Pythonic as possible</p></li>
-<li><p>use Python keyword arguments to replace the MATLAB Toolbox string options supported using <code class="docutils literal notranslate"><span class="pre">tb_optparse()</span></code></p></li>
-<li><p>use NumPy arrays internally to represent for rotation and homogeneous transformation matrices, quaternions and vectors</p></li>
-<li><p>all functions that accept a vector can accept a list, tuple, or <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code></p></li>
-<li><p>A class instance can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time sequences</p></li>
-<li><p>Classes are _fairly_ polymorphic, they share many common constructor options and methods</p></li>
+<li><p>while balancing the tension of being as Pythonic as possible</p></li>
+<li><p>using Python keyword arguments to replace the MATLAB Toolbox string options supported using <code class="docutils literal notranslate"><span class="pre">tb_optparse()</span></code></p></li>
+<li><p>using NumPy arrays internally to represent rotation and homogeneous transformation matrices, quaternions, twists and vectors</p></li>
+<li><p>allowing all functions that accept a vector can accept a list, tuple, or NumPy array</p></li>
+<li><p>allowing a class instance can hold a sequence of elements, they are polymorphic with lists, which can be used to represent trajectories or time  sequences</p></li>
+<li><p>having classes that are <em>generally</em> polymorphic, ie. they share many common constructor options and methods</p></li>
 </ul>
 </div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>None of the functions in the <code class="docutils literal notranslate"><span class="pre">base</span></code> package are <em>vectorized</em>, whereas many of the MATLAB
+equivalents are.  Vectorization is done by the classes.</p>
+</div>
+<div class="section" id="creating-a-matlab-like-environment-in-python">
+<h4>Creating a MATLAB-like environment in Python<a class="headerlink" href="#creating-a-matlab-like-environment-in-python" title="Permalink to this headline">¶</a></h4>
 <p>We can create a MATLAB-like environment by</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spatialmath</span>  <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span>  <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span>  <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span>  <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
-<p>which has familiar functions like <code class="docutils literal notranslate"><span class="pre">rotx</span></code> and <code class="docutils literal notranslate"><span class="pre">rpy2r</span></code> available, as well as classes like <code class="docutils literal notranslate"><span class="pre">SE3</span></code></p>
+<p>which has the familiar <em>classic</em> functions like <code class="docutils literal notranslate"><span class="pre">rotx</span></code> and <code class="docutils literal notranslate"><span class="pre">rpy2r</span></code> available, as well as classes like <code class="docutils literal notranslate"><span class="pre">SE3</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">R2</span> <span class="o">=</span> <span class="n">rpy2r</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>None of the functions are <em>vectorized</em>, whereas many of the MATLAB
-equivalents are.  Vectorization is done by the classes.</p>
 </div>
 </div>
 </div>
@@ -1033,7 +1276,7 @@ equivalents are.  Vectorization is done by the classes.</p>
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 30-Oct-2020.
+        Last updated on 01-Nov-2020.
       </span>
 
     </p>
