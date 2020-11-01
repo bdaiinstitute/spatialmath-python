@@ -111,3 +111,12 @@ latex_elements = {
 
 autorun_languages = {}
 autorun_languages['pycon_output_encoding'] = 'UTF-8'
+autorun_languages['pycon_input_encoding'] = 'UTF-8'
+autorun_languages['pycon_runfirst'] = """
+from spatialmath import SE3
+SE3._color = False
+import numpy as np
+np.set_printoptions(precision=4, suppress=True)
+from ansitable import ANSITable
+ANSITable._color = False
+"""
