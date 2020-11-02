@@ -523,7 +523,7 @@ where a vector argument is required.
   differences are:
     - the use of 1D arrays -- all MATLAB arrays have two dimensions,
       even if one of them is equal to one.
-    - Iterating over a 1D array (N,) returns consecutive elements
+    - Iterating over a 1D NumPy array (N,) returns consecutive elements
     - Iterating over a 2D NumPy array is done by row, not columns as in MATLAB.  
     - Iterating over a row vector ``(1,N)`` returns the entire row
     - Iterating a column vector ``(N,1)`` returns consecutive elements (rows).
@@ -532,11 +532,12 @@ where a vector argument is required.
   - Functions that require vector can be passed a list, tuple or numpy.ndarray
     for a vector -- described in the documentation as being of type
     *array_like*. 
-  - The documentation refers to NumPy arrays succinctly as
-    - ``ndarray(N)`` for a 1D array of length ``N``
-    - ``ndarray(N,M)`` for a 2D array of dimension $N \times M$.
+  - This toolbox documentation refers to NumPy arrays succinctly as:
 
-The classes ``SO2``, ```SE2``, ```SO3``, ``SE3``, ``UnitQuaternion`` can operate
+    - ``ndarray(N)`` for a 1D array of length ``N``
+    - ``ndarray(N,M)`` for a 2D array of dimension :math:`N \times M`.
+
+The classes ``SO2``, ``SE2``, ``SO3``, ``SE3``, ``UnitQuaternion`` can operate
 conveniently on lists but the ``base`` functions do not support this. If you
 wish to work with these functions and create lists of pose objects you could
 keep the numpy arrays in high-order numpy arrays (ie. add an extra dimensions),
@@ -546,16 +547,17 @@ or keep them in a list, tuple or any other Python container described in the
 Let's show a simple example:
 
 .. runblock:: pycon
-   :linenos:
+    :linenos:
 
-      >>> from roboticstoolbox.base import *
-      >>> rotx(0.3)
-      >>> rotx(30, unit='deg')
-      >>> R = rotx(0.3) @ roty(0.2)
+    >>> from spatialmath.base import *
+    >>> rotx(0.3)
+    >>> rotx(30, unit='deg')
+    >>> R = rotx(0.3) @ roty(0.2)
+    >>> R
 
 At line 1 we import all the base functions into the current namespace. In line
-12 when we multiply the matrices we need to use the `@` operator to perform
-matrix multiplication.  The `*` operator performs element-wise multiplication,
+10 when we multiply the matrices we need to use the ``@`` operator to perform
+matrix multiplication.  The ``*`` operator performs element-wise multiplication,
 which is equivalent to the MATLAB ``.*`` operator.
 
 We also support multiple ways of passing vector information to functions that require it:

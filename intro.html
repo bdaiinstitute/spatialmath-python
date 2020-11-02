@@ -505,7 +505,7 @@ listing to the console, file and returns a string:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
-<span class="go">t =     0.42,    -0.89,    -0.34; rpy/zyx = -1.1e+02°,     -2.3°, -1.5e+02°</span>
+<span class="go">t =   0.0048,    -0.14,     0.52; rpy/zyx =       48°,      -11°,  1.6e+02°</span>
 </pre></div>
 </div>
 <p>The classes <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code> and <code class="docutils literal notranslate"><span class="pre">SO2</span></code> can provide colorized text output to the console:</p>
@@ -994,7 +994,7 @@ differences are:</p>
 <div><ul class="simple">
 <li><p>the use of 1D arrays – all MATLAB arrays have two dimensions,
 even if one of them is equal to one.</p></li>
-<li><p>Iterating over a 1D array (N,) returns consecutive elements</p></li>
+<li><p>Iterating over a 1D NumPy array (N,) returns consecutive elements</p></li>
 <li><p>Iterating over a 2D NumPy array is done by row, not columns as in MATLAB.</p></li>
 <li><p>Iterating over a row vector <code class="docutils literal notranslate"><span class="pre">(1,N)</span></code> returns the entire row</p></li>
 <li><p>Iterating a column vector <code class="docutils literal notranslate"><span class="pre">(N,1)</span></code> returns consecutive elements (rows).</p></li>
@@ -1007,12 +1007,15 @@ even if one of them is equal to one.</p></li>
 <li><p>Functions that require vector can be passed a list, tuple or numpy.ndarray
 for a vector – described in the documentation as being of type
 <em>array_like</em>.</p></li>
-<li><p>The documentation refers to NumPy arrays succinctly as
-- <code class="docutils literal notranslate"><span class="pre">ndarray(N)</span></code> for a 1D array of length <code class="docutils literal notranslate"><span class="pre">N</span></code>
-- <code class="docutils literal notranslate"><span class="pre">ndarray(N,M)</span></code> for a 2D array of dimension $N times M$.</p></li>
+<li><p>This toolbox documentation refers to NumPy arrays succinctly as:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ndarray(N)</span></code> for a 1D array of length <code class="docutils literal notranslate"><span class="pre">N</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ndarray(N,M)</span></code> for a 2D array of dimension <span class="math notranslate nohighlight">\(N \times M\)</span>.</p></li>
+</ul>
+</li>
 </ul>
 </div>
-<p>The classes <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, <code class="docutils literal notranslate"><span class="pre">`SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">`SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> can operate
+<p>The classes <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> can operate
 conveniently on lists but the <code class="docutils literal notranslate"><span class="pre">base</span></code> functions do not support this. If you
 wish to work with these functions and create lists of pose objects you could
 keep the numpy arrays in high-order numpy arrays (ie. add an extra dimensions),
@@ -1030,23 +1033,27 @@ or keep them in a list, tuple or any other Python container described in the
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="o">&gt;&gt;</span> <span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-     <span class="o">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="o">&gt;&gt;</span> <span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
-     <span class="o">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="o">&gt;&gt;</span> <span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="o">@</span> <span class="n">roty</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
-     <span class="o">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">array([[ 1.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9553, -0.2955],</span>
+<span class="go">       [ 0.    ,  0.2955,  0.9553]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rotx</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">array([[ 1.   ,  0.   ,  0.   ],</span>
+<span class="go">       [ 0.   ,  0.866, -0.5  ],</span>
+<span class="go">       [ 0.   ,  0.5  ,  0.866]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="o">@</span> <span class="n">roty</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span>
+<span class="go">array([[ 0.9801,  0.    ,  0.1987],</span>
+<span class="go">       [ 0.0587,  0.9553, -0.2896],</span>
+<span class="go">       [-0.1898,  0.2955,  0.9363]])</span>
 </pre></div>
 </td></tr></table></div>
 <p>At line 1 we import all the base functions into the current namespace. In line
-12 when we multiply the matrices we need to use the <cite>&#64;</cite> operator to perform
-matrix multiplication.  The <cite>*</cite> operator performs element-wise multiplication,
+10 when we multiply the matrices we need to use the <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> operator to perform
+matrix multiplication.  The <code class="docutils literal notranslate"><span class="pre">*</span></code> operator performs element-wise multiplication,
 which is equivalent to the MATLAB <code class="docutils literal notranslate"><span class="pre">.*</span></code> operator.</p>
 <p>We also support multiple ways of passing vector information to functions that require it:</p>
 <ul class="simple">
