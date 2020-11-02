@@ -19,7 +19,7 @@ For example, we can create a rigid-body transformation that is a rotation about 
       >>> rotx(30, 'deg')
 
 
-which results in a NumPy $4 \times 4$ array that belongs to the group SE(3).  We could also create a class instance:
+which results in a NumPy :math:`4 \times 4` array that belongs to the group SE(3).  We could also create a class instance:
 
 .. runblock:: pycon
 
@@ -28,12 +28,12 @@ which results in a NumPy $4 \times 4$ array that belongs to the group SE(3).  We
     >>> type(T)
     >>> print(T)                
 
-which is *internally* represented as a $4 \times 4$ NumPy array.
+which is *internally* represented as a :math:`4 \times 4` NumPy array.
 
 While functions and classes can provide similar functionality the class provide the benefits of:
 
 - type safety, it is not possible to mix a 3D rotation matrix with a 2D rigid-body motion, even though both are represented
-  by a $3 \times 3$ matrix
+  by a :math:`3 \times 3` matrix
 - operator overloading allows for convenient and readable expression of algorithms
 - representing not a just a single value, but a sequence of values, which are handled by the operators with implicit broadcasting of values
 
@@ -114,7 +114,7 @@ The Spatial Math package give these classes list *super powers* so that, for exa
 
     >>> from spatialmath import *
     >>> X = SE3.Rx([0, 0.2, 0.4, 0.6])
-    >>> len(x)
+    >>> len(X)
     >>> print(X[1])          
 
 
@@ -257,6 +257,7 @@ class variables for the ``SMPose`` subclasses
 ===============  ===================  ============================================
 Variable         Default              Description
 ===============  ===================  ============================================
+_color           True                 Enable all colorization
 _rotcolor        'red'                Foreground color of rotation submatrix
 _transcolor      'blue'               Foreground color of rotation submatrix
 _constcolor      'grey_50'            Foreground color of matrix constant elements
