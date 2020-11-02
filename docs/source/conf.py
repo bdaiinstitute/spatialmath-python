@@ -117,6 +117,4 @@ from spatialmath import SE3
 SE3._color = False
 import numpy as np
 np.set_printoptions(precision=4, suppress=True)
-from ansitable import ANSITable
-ANSITable._color = False
 """
