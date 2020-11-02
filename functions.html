@@ -1780,7 +1780,14 @@ single-line format:</p>
 <li><p>‘eul’ Euler angles in ZYZ axis order</p></li>
 <li><p>‘angvec’ angle and axis</p></li>
 </ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transl</span><span class="p">,</span> <span class="n">rpy2tr</span><span class="p">,</span> <span class="n">trprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">@</span> <span class="n">rpy2tr</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="go">&#39;t =        1,        2,        3; rpy/zyx =       10°,       20°,       30°&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;angvec&#39;</span><span class="p">)</span>
+<span class="go">&#39;T: t =        1,        2,        3; angvec = (      36° |     0.12,     0.62,     0.78)&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;angvec&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:8.4g}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="go">&#39;T: t =        1,        2,        3; angvec = (   35.82° |    0.124,   0.6156,   0.7782)&#39;</span>
 </pre></div>
 </div>
 <p>Notes:</p>
@@ -2479,7 +2486,10 @@ with respect to frame {A}.</p>
 </dl>
 <p>Creates an identity quaternion, with the scalar part equal to one, and
 a zero vector value.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">eye</span><span class="p">,</span> <span class="n">qprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">eye</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">1.000000 &lt; 0.000000, 0.000000, 0.000000 &gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2501,7 +2511,10 @@ a zero vector value.</p>
 </dl>
 <p>Creates a pure quaternion, with a zero scalar value and the vector part
 equal to the passed vector value.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">pure</span><span class="p">,</span> <span class="n">qprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">pure</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">0.000000 &lt; 1.000000, 2.000000, 3.000000 &gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2523,7 +2536,10 @@ equal to the passed vector value.</p>
 </dl>
 <p>Returns the norm, length or magnitude of the input quaternion which is
 <span class="math notranslate nohighlight">\(\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}\)</span></p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">qnorm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">qnorm</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">5.477225575051661</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2552,7 +2568,10 @@ equal to the passed vector value.</p>
 </dd>
 </dl>
 <p>Creates a unit quaternion, with unit norm, by scaling the input quaternion.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">unit</span><span class="p">,</span> <span class="n">qprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">unit</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">0.182574 &lt; 0.365148, 0.547723, 0.730297 &gt;</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -2585,7 +2604,13 @@ raised.</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">eye</span><span class="p">,</span> <span class="n">pure</span><span class="p">,</span> <span class="n">isunit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">eye</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">pure</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2619,7 +2644,13 @@ raised.</p>
 <p>For unit-quaternions <code class="docutils literal notranslate"><span class="pre">unitq=True</span></code> the double mapping is taken into account,
 that is <code class="docutils literal notranslate"><span class="pre">q</span></code> and <code class="docutils literal notranslate"><span class="pre">-q</span></code> represent the same orientation and <code class="docutils literal notranslate"><span class="pre">isequal(q,</span> <span class="pre">-q,</span> <span class="pre">unitq=True)</span></code> will
 return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isequal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isequal</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isequal</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2642,7 +2673,14 @@ return <code class="docutils literal notranslate"><span class="pre">True</span><
 <p>Returns a unique 3-vector representing the input unit-quaternion. The sign
 of the scalar part is made positive, if necessary by multiplying the
 entire quaternion by -1, then the vector part is taken.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">q2v</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q2v</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+<span class="go">[0.     0.7071 0.    ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q2v</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+<span class="go">[-0.     -0.7071 -0.    ]</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -2676,7 +2714,14 @@ entire quaternion by -1, then the vector part is taken.</p>
 </dl>
 <p>Returns a unit-quaternion reconsituted from just its vector part.  Assumes
 that the scalar part was positive, so <span class="math notranslate nohighlight">\(s = \sqrt{1-||v||}\)</span>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">v2q</span><span class="p">,</span> <span class="n">qprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">v2q</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="go">0.707107 &lt; 0.000000, 0.707107, 0.000000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">v2q</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="go">0.707107 &lt; 0.000000, -0.707107, 0.000000 &gt;</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -2823,7 +2868,14 @@ by its vector component.</p>
 </dd>
 </dl>
 <p>Raises a quaternion to the specified power using repeated multiplication.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">qpow</span><span class="p">,</span> <span class="n">qqmul</span><span class="p">,</span> <span class="n">qprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">qqmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span>
+<span class="go">-28.000000 &lt; 4.000000, 6.000000, 8.000000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">qpow</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">-28.000000 &lt; 4.000000, 6.000000, 8.000000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">qpow</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># conjugate of above</span>
+<span class="go">-28.000000 &lt; -4.000000, -6.000000, -8.000000 &gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2852,7 +2904,10 @@ by its vector component.</p>
 </dd>
 </dl>
 <p>Conjugate of quaternion, the vector part is negated.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">conj</span><span class="p">,</span> <span class="n">qprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">conj</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+<span class="go">1.000000 &lt; -2.000000, -3.000000, -4.000000 &gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2878,7 +2933,12 @@ by its vector component.</p>
 </dd>
 </dl>
 <p>Returns an SO(3) rotation matrix corresponding to this unit-quaternion.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">q2r</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># rotation of 180deg about y-axis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+<span class="go">[[-1.  0.  0.]</span>
+<span class="go"> [ 0.  1.  0.]</span>
+<span class="go"> [ 0.  0. -1.]]</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -2915,7 +2975,14 @@ by its vector component.</p>
 </dd>
 </dl>
 <p>Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">r2q</span><span class="p">,</span> <span class="n">qprint</span><span class="p">,</span> <span class="n">rotx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span> <span class="c1"># rotation of 90deg about x-axis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+<span class="go">[[ 1.  0.  0.]</span>
+<span class="go"> [ 0.  0. -1.]</span>
+<span class="go"> [ 0.  1.  0.]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">r2q</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+<span class="go">0.707107 &lt; 0.707107, 0.000000, 0.000000 &gt;</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -3930,7 +3997,13 @@ that can be passed.</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">isscalar(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a Python or numPy int or real float.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isscalar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalar</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalar</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalar</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3986,7 +4059,17 @@ a 2D array</p></li>
 <p>Tests if the argument is a real 2D matrix with a specified shape <code class="docutils literal notranslate"><span class="pre">shape</span></code>
 but the value <code class="docutils literal notranslate"><span class="pre">None</span></code> indicate an unspecified (wildcard, don’t care)
 dimension, for example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">ismatrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -4027,7 +4110,21 @@ real valued - allows the shape to have an unspecified dimension</p>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">getmatrix(m,</span> <span class="pre">shape)</span></code> is a 2D matrix with shape <code class="docutils literal notranslate"><span class="pre">shape</span></code> formed from
 <code class="docutils literal notranslate"><span class="pre">m</span></code> which can be a 2D array, 1D array-like or a scalar.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getmatrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">array([[3.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">array([[3., 4.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">array([[3.],</span>
+<span class="go">       [4.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">array([[3., 4.],</span>
+<span class="go">       [5., 6.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">array([[3., 4.],</span>
+<span class="go">       [5., 6.]])</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -4150,7 +4247,25 @@ or (N,1)</p></li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getvector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># list</span>
+<span class="go">array([1., 2.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">)</span>  <span class="c1"># list</span>
+<span class="go">array([[1., 2.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>  <span class="c1"># list</span>
+<span class="go">array([[1.],</span>
+<span class="go">       [2.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># tuple</span>
+<span class="go">array([1., 2.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;sequence&#39;</span><span class="p">)</span>  <span class="c1"># numpy array</span>
+<span class="go">[1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># scalar</span>
+<span class="go">array([1.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">array([1.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="go">array([[1.]])</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -4239,7 +4354,18 @@ or (N,1)</p></li>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">isvector(vec,</span> <span class="pre">N)</span></code> as above but must also be an <code class="docutils literal notranslate"><span class="pre">N</span></code>-element vector.</p></li>
 </ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isvector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># list</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># tuple</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># numpy array</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># scalar</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># list</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -4267,7 +4393,18 @@ or (N,1)</p></li>
 <dd class="field-odd"><p>array_like</p>
 </dd>
 </dl>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getunit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+<span class="go">1.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">1.5707963267948966</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">[1.5707963267948966, 3.141592653589793]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+<span class="go">array([0.5, 1. ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">array([1.5708, 3.1416])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4288,7 +4425,16 @@ or (N,1)</p></li>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">isscalarlist(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x``</span></code> is a list of scalars.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isnumberlist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">([</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4310,7 +4456,16 @@ or (N,1)</p></li>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">isvectorlist(x,</span> <span class="pre">n)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a list or tuple of
 1D numPy arrays of shape=(n,).</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isvectorlist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">)],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
