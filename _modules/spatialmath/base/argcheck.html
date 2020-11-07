@@ -628,14 +628,60 @@
 <span class="sd">        &gt;&gt;&gt; from spatialmath.base import isvectorlist</span>
 <span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6]], 2)</span>
-<span class="sd">        &gt;&gt;&gt; isvectorlist((np.r_[1,2], np.r_[3,4], np.r_[5,6]), 2)</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist([(1,2), (3,4), (5,6)], 2)</span>
 <span class="sd">        &gt;&gt;&gt; isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6,7]], 2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> \
-           <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,),</span> <span class="n">x</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">islistof</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,))</span></div>
 
+<div class="viewcode-block" id="islistof"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.argcheck.islistof">[docs]</a><span class="k">def</span> <span class="nf">islistof</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">what</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if argument is a list of specified type</span>
 
+<span class="sd">    :param value: the value to test</span>
+<span class="sd">    :type value: list or tuple</span>
+<span class="sd">    :param what: type, tuple of types or function</span>
+<span class="sd">    :type what: type or callable</span>
+<span class="sd">    :param n: length of list, defaults to None</span>
+<span class="sd">    :type n: int, optional</span>
+<span class="sd">    :return: whether ``value`` is a specified list</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    Tests that every element of ``value`` is of the desired type.  The type</span>
+<span class="sd">    is specified by ``what`` and can be:</span>
+
+<span class="sd">    * a single type, eg. ``int``</span>
+<span class="sd">    * a tuple of types, eg. ``(int, float)``</span>
+<span class="sd">    * a reference to a function which is passed each elemnent of the list and</span>
+<span class="sd">      returns True if it is a valid member of the list.</span>
+
+<span class="sd">    The length of the list can also be tested by specifying the argument ``n``.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import islistof</span>
+<span class="sd">        &gt;&gt;&gt; a = [3, 4, 5]</span>
+<span class="sd">        &gt;&gt;&gt; islistof(a, int)</span>
+<span class="sd">        &gt;&gt;&gt; islistof(a, int, 2)</span>
+<span class="sd">        &gt;&gt;&gt; a = [3, 4.5, 5.6]</span>
+<span class="sd">        &gt;&gt;&gt; islistof(a, int)</span>
+<span class="sd">        &gt;&gt;&gt; islistof(a, (int, float))</span>
+<span class="sd">        &gt;&gt;&gt; a = [[1,2], [3, 4], [5,6]]</span>
+<span class="sd">        &gt;&gt;&gt; islistof(a, lambda x: islistof(x, int, 2))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="c1"># it&#39;s a type or tuple of types</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">what</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">what</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad value of what&#39;</span><span class="p">)</span></div>
+
+        
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
 
@@ -655,7 +701,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 02-Nov-2020.
+        Last updated on 07-Nov-2020.
       </span>
 
     </p>
