@@ -467,14 +467,60 @@ def isvectorlist(x, n):
         >>> from spatialmath.base import isvectorlist
         >>> import numpy as np
         >>> isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6]], 2)
-        >>> isvectorlist((np.r_[1,2], np.r_[3,4], np.r_[5,6]), 2)
         >>> isvectorlist([(1,2), (3,4), (5,6)], 2)
         >>> isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6,7]], 2)
     """
-    return isinstance(x, (list, tuple)) and len(x) > 0 \
-           and all(map(lambda x: isinstance(x, np.ndarray) and x.shape == (n,), x))
+    return islistof(x, lambda x: isinstance(x, np.ndarray) and x.shape == (n,))
 
+def islistof(value, what, n=None):
+    """
+    Test if argument is a list of specified type
 
+    :param value: the value to test
+    :type value: list or tuple
+    :param what: type, tuple of types or function
+    :type what: type or callable
+    :param n: length of list, defaults to None
+    :type n: int, optional
+    :return: whether ``value`` is a specified list
+    :rtype: bool
+
+    Tests that every element of ``value`` is of the desired type.  The type
+    is specified by ``what`` and can be:
+
+    * a single type, eg. ``int``
+    * a tuple of types, eg. ``(int, float)``
+    * a reference to a function which is passed each elemnent of the list and
+      returns True if it is a valid member of the list.
+
+    The length of the list can also be tested by specifying the argument ``n``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import islistof
+        >>> a = [3, 4, 5]
+        >>> islistof(a, int)
+        >>> islistof(a, int, 2)
+        >>> a = [3, 4.5, 5.6]
+        >>> islistof(a, int)
+        >>> islistof(a, (int, float))
+        >>> a = [[1,2], [3, 4], [5,6]]
+        >>> islistof(a, lambda x: islistof(x, int, 2))
+    """
+    if not isinstance(value, (list, tuple)):
+        return False
+    if n is not None and len(value) != n:
+        return False
+    
+    if isinstance(what, type) or isinstance(what, tuple):
+        # it's a type or tuple of types
+        return all([isinstance(x, what) for x in value])
+    elif callable(what):
+        return all([what(x) for x in value])
+    else:
+        raise ValueError('bad value of what')
+
+        
 if __name__ == '__main__':
     import pathlib
 
