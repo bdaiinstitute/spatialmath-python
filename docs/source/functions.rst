@@ -78,3 +78,12 @@ Argument checking
    :inherited-members:
    :special-members:
 
+Symbolics
+---------
+
+.. automodule:: spatialmath.base.symbolic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members:
