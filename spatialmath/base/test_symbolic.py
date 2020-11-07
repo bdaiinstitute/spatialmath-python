@@ -48,7 +48,7 @@ class Test_symbolic(unittest.TestCase):
         self.assertTrue(isinstance(sqrt(theta), sp.Expr))
         self.assertTrue(isinstance(sqrt(1.0), float))
 
-        x = 
+        x = (theta - 1) * (theta + 1) - theta ** 2
         self.assertEqual(simplify(x).evalf(), -1)
 
     def test_constants(self):
