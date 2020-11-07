@@ -28,6 +28,31 @@ class Test_check(unittest.TestCase):
 
         self.assertFalse(ismatrix(1, (-1, -1)))
 
+    def test_assertmatrix(self):
+
+        with self.assertRaises(TypeError):
+            assertmatrix(3)
+        with self.assertRaises(TypeError):
+            assertmatrix('not a matrix')
+
+        with self.assertRaises(TypeError):
+            a = np.eye(3, 3, dtype=complex)
+            assertmatrix(a)
+
+        a = np.eye(3, 3)
+
+        assertmatrix(a)
+        assertmatrix(a, (3, 3))
+        assertmatrix(a, (None, 3))
+        assertmatrix(a, (3, None))
+
+        with self.assertRaises(ValueError):
+            assertmatrix(a, (4, 3))
+        with self.assertRaises(ValueError):
+            assertmatrix(a, (4, None))
+        with self.assertRaises(ValueError):
+            assertmatrix(a, (None, 4))
+
     def test_getmatrix(self):
 
         a = np.random.rand(4,3)
@@ -86,6 +111,18 @@ class Test_check(unittest.TestCase):
             m = getmatrix(a, (None,2))
         with self.assertRaises(ValueError):
             m = getmatrix(a, (2,None))
+
+    def test_verifymatrix(self):
+        with self.assertRaises(TypeError):
+            assertmatrix(3)
+        with self.assertRaises(TypeError):
+            verifymatrix([3, 4])
+
+        a = np.eye(3, 3)
+
+        verifymatrix(a, (3,3))
+        with self.assertRaises(ValueError):
+            verifymatrix(a, (3,4))
 
     def test_unit(self):
         nt.assert_equal(getunit(5, 'rad'), 5)
@@ -385,8 +422,33 @@ class Test_check(unittest.TestCase):
         nt.assert_equal(isnumberlist([]), False)
         nt.assert_equal(isnumberlist(np.array([1, 2, 3])), False)
 
+    def test_isvectorlist(self):
+        a = [np.r_[1,2], np.r_[3,4], np.r_[5,6]]
+        self.assertTrue(isvectorlist(a, 2))
 
+        a = [(1,2), (3,4), (5,6)]
+        self.assertFalse(isvectorlist(a, 2))
+
+        a = [np.r_[1,2], np.r_[3,4], np.r_[5,6,7]]
+        self.assertFalse(isvectorlist(a, 2))
+
+    def test_islistof(self):
+
+        a = [3, 4, 5]
+        self.assertTrue(islistof(a, int))
+        self.assertFalse(islistof(a, float))
+        self.assertTrue(islistof(a, lambda x: isinstance(x, int)))
+
+        self.assertTrue(islistof(a, int, 3))
+        self.assertFalse(islistof(a, int, 2))
+
+        a = [3, 4.5, 5.6]
+        self.assertFalse(islistof(a, int))
+        self.assertTrue(islistof(a, (int, float)))
+        a = [[1,2], [3, 4], [5,6]]
+        self.assertTrue(islistof(a, lambda x: islistof(x, int, 2)))
+        
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
 
     unittest.main()
