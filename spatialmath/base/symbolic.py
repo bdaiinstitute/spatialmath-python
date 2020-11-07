@@ -8,7 +8,7 @@ try:  # pragma: no cover
     _symbolics = True
     symtype = (sympy.Expr,)
 
-except ImportError:
+except ImportError:  # pragma: no cover
     _symbolics = False
     symtype = ()
 
@@ -16,9 +16,53 @@ except ImportError:
 # ---------------------------------------------------------------------------------------#
 
 def symbol(name, real=True):
+    """
+    Create symbolic variables
+
+    :param name: symbol names
+    :type name: str
+    :param real: assume variable is real, defaults to True
+    :type real: bool, optional
+    :return: SymPy symbols
+    :rtype: sympy
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> theta = symbol('theta')
+        >>> theta
+        >>> theta, psi = symbol('theta psi')
+        >>> theta
+        >>> psi
+        >>> q = symbol('q_:6')
+        >>> q
+
+    .. note:: In Jupyter symbols are pretty printed.
+
+        - symbols named after greek letters will appear as greek letters
+        - underscore means subscript as it does in LaTex, so the symbols ``q``
+          above will be subscripted.
+
+    :seealso: :func:`sympy.symbols`
+    """
     return sympy.symbols(name, real=real)
 
 def issymbol(var):
+    """
+    Test if variable is symbolic
+
+    :param var: variable to test
+    :return: whether variable is symbolic
+    :rtype: bool
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> theta = symbol('theta')
+        >>> issymbol(theta)
+        >>> issymbol(3.4)
+
+    """
     if _symbolics:
         if isinstance(var, (list, tuple)):
             return any([isinstance(x, symtype) for x in var])
@@ -28,39 +72,165 @@ def issymbol(var):
         return False
 
 def sin(theta):
+    """
+    Generalized sine function
+
+    :param ϴ: argument
+    :type ϴ: float or symbolic
+    :return: sin(ϴ)
+    :rtype: float or symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> theta = symbol('theta')
+        >>> sin(theta)
+        >>> sin(0.5)
+
+    :seealso: :func:`sympy.sin`
+    """
     if issymbol(theta):
         return sympy.sin(theta)
     else:
         return math.sin(theta)
 
 def cos(theta):
+    """
+    Generalized cosine function
+
+    :param ϴ: argument
+    :type ϴ: float or symbolic
+    :return: cos(ϴ)
+    :rtype: float or symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> theta = symbol('theta')
+        >>> cos(theta)
+        >>> cos(0.5)
+    
+    :seealso: :func:`sympy.cos`
+    """
     if issymbol(theta):
         return sympy.cos(theta)
     else:
         return math.cos(theta)
 
 def sqrt(v):
+    """
+    Generalized sqrt function
+
+    :param v: argument
+    :type v: float or symbolic
+    :return: √ v
+    :rtype: float or symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> x = symbol('x')
+        >>> sqrt(x ** 2)
+        >>> sqrt(4)
+
+    :seealso: :func:`sympy.sqrt`
+    """
     if issymbol(v):
         return sympy.sqrt(v)
     else:
         return math.sqrt(v)    
 
 def zero():
+    """
+    Symbolic constant: zero
+
+    :return: 0
+    :rtype: symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> x = symbol('x')
+        >>> zero()
+        >>> x + zero()
+
+    :seealso: :func:`sympy.S.Zero`
+    """
     return S.Zero
 
 def one():
+    """
+    Symbolic constant: one
+
+    :return: 1
+    :rtype: symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> x = symbol('x')
+        >>> one()
+        >>> one() * x
+
+    :seealso: :func:`sympy.S.One`
+    """
     return S.One
 
 def negative_one():
+    """
+    Symbolic constant: negative one
+
+    :return: -1
+    :rtype: symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> x = symbol('x')
+        >>> negative_one()
+        >>> negative_one() * x
+    
+    :seealso: :func:`sympy.S.NegativeOne`
+    """
     return S.NegativeOne
 
-def zero():
-    return S.Zero
-
 def pi():
+    """
+    Symbolic constant: pi
+
+    :return: π
+    :rtype: symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> import math
+        >>> sin(pi())
+        >>> sin(math.pi)
+
+    :seealso: :func:`sympy.S.Pi`
+    """
     return S.Pi
 
 def simplify(x):
+    """
+    Symbolic simplification
+
+    :param x: expression to simplofy
+    :type x: symbolic
+    :return: -1
+    :rtype: symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> x = symbol('x')
+        >>> y = (x - 1) * (x + 1) - x ** 2
+        >>> y
+        >>> simplify(y)
+    
+    :seealso: :func:`sympy.simplify`
+    """
     if _symbolics:
         return sympy.simplify(x)
     else:
