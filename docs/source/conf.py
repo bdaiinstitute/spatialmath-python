@@ -109,6 +109,43 @@ latex_elements = {
     'fncychap': '\\usepackage{fncychap}',
 }
 
+# see https://stackoverflow.com/questions/9728292/creating-latex-math-macros-within-sphinx
+mathjax_config = {
+    'TeX': {
+        'Macros': {
+            # RVC Math notation
+            #  - not possible to do the if/then/else approach
+            #  - subset only
+            "presup": [r"\,{}^{\scriptscriptstyle #1}\!", 1],
+            # groups
+            "SE": [r"\mathbf{SE}(#1)", 1],
+            "SO": [r"\mathbf{SO}(#1)", 1],
+            "se": [r"\mathbf{se}(#1)", 1],
+            "so": [r"\mathbf{so}(#1)", 1],
+            # vectors
+            "vec": [r"\boldsymbol{#1}", 1],
+            "dvec": [r"\dot{\boldsymbol{#1}}", 1],
+            "ddvec": [r"\ddot{\boldsymbol{#1}}", 1],
+            "fvec": [r"\presup{#1}\boldsymbol{#2}", 2],
+            "fdvec": [r"\presup{#1}\dot{\boldsymbol{#2}}", 2],
+            "fddvec": [r"\presup{#1}\ddot{\boldsymbol{#2}}", 2],
+            "norm": [r"\Vert #1 \Vert", 1],
+            # matrices
+            "mat": [r"\mathbf{#1}", 1],
+            "fmat": [r"\presup{#1}\mathbf{#2}", 2],
+            # skew matrices
+            "sk": [r"\left[#1\right]", 1],
+            "skx": [r"\left[#1\right]_{\times}", 1],
+            "vex": [r"\vee\left( #1\right)", 1],
+            "vexx": [r"\vee_{\times}\left( #1\right)", 1],
+            # quaternions
+            "q": r"\mathring{q}",
+            "fq": [r"\presup{#1}\mathring{q}", 1],
+
+        }
+   }
+}
+
 autorun_languages = {}
 autorun_languages['pycon_output_encoding'] = 'UTF-8'
 autorun_languages['pycon_input_encoding'] = 'UTF-8'
