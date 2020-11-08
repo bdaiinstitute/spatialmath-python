@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Plucker line &mdash; Spatial Maths package 0.8.3
+ documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plane" href="3d_plane.html" />
+    <link rel="prev" title="Quaternion" href="3d_quaternion.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Spatial Maths package
+          
+
+          
+            
+            <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="spatialmath.html">Class reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="spatialmath.html#d-space">3D-space</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#pose-in-3d">Pose in 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#orientation-in-3d">Orientation in 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#d-spatial-vectors">6D spatial vectors</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="spatialmath.html#geometry">Geometry</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="3d_quaternion.html">Quaternion</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Plucker line</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3d_plane.html">Plane</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spatialmath.html#id1">2D-space</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Function reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spatial Maths package</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="spatialmath.html">Class reference</a> &raquo;</li>
+        
+      <li>Plucker line</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/3d_plucker.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="3d_plane.html" class="btn btn-neutral float-right" title="Plane" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="3d_quaternion.html" class="btn btn-neutral float-left" title="Quaternion" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-spatialmath.geom3d.Plucker">
+<span id="plucker-line"></span><h1>Plucker line<a class="headerlink" href="#module-spatialmath.geom3d.Plucker" title="Permalink to this headline">¶</a></h1>
+<p>Plucker coordinate class</p>
+<p>Concrete class to represent a 3D line using Plucker coordinates.</p>
+<p>Methods:</p>
+<p>Plucker            Contructor from points
+Plucker.planes     Constructor from planes
+Plucker.pointdir   Constructor from point and direction</p>
+<p>Information and test methods::
+closest            closest point on line
+commonperp         common perpendicular for two lines
+contains           test if point is on line
+distance           minimum distance between two lines
+intersects         intersection point for two lines
+intersect_plane    intersection points with a plane
+intersect_volume   intersection points with a volume
+pp                 principal point
+ppd                principal point distance from origin
+point              generate point on line</p>
+<p>Conversion methods::
+char               convert to human readable string
+double             convert to 6-vector
+skew               convert to 4x4 skew symmetric matrix</p>
+<p>Display and print methods::
+display            display in human readable form
+plot               plot line</p>
+<p>Operators:
+*                  multiply Plucker matrix by a general matrix
+|                  test if lines are parallel
+^                  test if lines intersect
+==                 test if two lines are equivalent
+~=                 test if lines are not equivalent</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This is reference (handle) class object</p></li>
+<li><p>Plucker objects can be used in vectors and arrays</p></li>
+</ul>
+</div></blockquote>
+<p>References:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ken Shoemake, “Ray Tracing News”, Volume 11, Number 1
+<a class="reference external" href="http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3">http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3</a></p></li>
+<li><p>Matt Mason lecture notes <a class="reference external" href="http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf">http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf</a></p></li>
+<li><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p596-7.</p></li>
+</ul>
+</div></blockquote>
+<p>Implementation notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The internal representation is a 6-vector [v, w] where v (moment), w (direction).</p></li>
+<li><p>There is a huge variety of notation used across the literature, as well as the ordering
+of the direction and moment components in the 6-vector.</p></li>
+</ul>
+</div></blockquote>
+<p>Copyright (C) 1993-2019 Peter I. Corke</p>
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.A">
+<code class="sig-name descname">A</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.A" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.pp">
+<code class="sig-name descname">pp</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal point of the line</p>
+<p><code class="docutils literal notranslate"><span class="pre">line.pp</span></code> is the point on the line that is closest to the origin.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Same as Plucker.point(0)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.ppd, Plucker.point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.ppd">
+<code class="sig-name descname">ppd</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.ppd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance from principal point to the origin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Distance from principal point to the origin</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.ppd</span></code> is the distance from the principal point to the origin.
+This is the smallest distance of any point on the line
+to the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.pp</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.shape">
+<code class="sig-name descname">shape</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.skew">
+<code class="sig-name descname">skew</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.skew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line as a Plucker skew-matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Skew-symmetric matrix form of Plucker coordinates</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(4,4)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">line.skew()</span></code> is the Plucker matrix, a 4x4 skew-symmetric matrix
+representation of the line.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>For two homogeneous points P and Q on the line, <span class="math notranslate nohighlight">\(PQ^T-QP^T\)</span> is also skew
+symmetric.</p></li>
+<li><p>The projection of Plucker line by a perspective camera is a homogeneous line (3x1)
+given by <span class="math notranslate nohighlight">\(\vee C M C^T\)</span> where <span class="math notranslate nohighlight">\(C \in \mathbf{R}^{3 \times 4}\)</span> is the camera matrix.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.uw">
+<code class="sig-name descname">uw</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.uw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line direction as a unit vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Line direction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.uw</span></code> is a unit-vector parallel to the line.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.v">
+<code class="sig-name descname">v</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moment vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the moment vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.vec">
+<code class="sig-name descname">vec</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line as a Plucker coordinate vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Coordinate vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(6,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.vec</span></code> is the  Plucker coordinate vector <code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector)
+is the moment and W (3-vector) is the line direction.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="spatialmath.geom3d.Plucker.w">
+<code class="sig-name descname">w</code><a class="headerlink" href="#spatialmath.geom3d.Plucker.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direction vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the direction vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.uw</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="3d_plane.html" class="btn btn-neutral float-right" title="Plane" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="3d_quaternion.html" class="btn btn-neutral float-left" title="Quaternion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Peter Corke
+      <span class="lastupdated">
+        Last updated on 08-Nov-2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'G-11Q6WJM565', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

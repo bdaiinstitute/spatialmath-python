@@ -33,6 +33,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -183,23 +184,13 @@
     <span class="c1"># print(&#39;colored not found&#39;)</span>
     <span class="n">_colored</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="c1"># try:</span>
-<span class="c1">#     import colorama</span>
-<span class="c1">#     colorama.init()</span>
-<span class="c1">#     print(&#39;using colored output&#39;)</span>
-<span class="c1">#     from colorama import Fore, Back, Style</span>
-
-<span class="c1"># except:</span>
-<span class="c1">#     class color:</span>
-<span class="c1">#         def __init__(self):</span>
-<span class="c1">#             self.RED = &#39;&#39;</span>
-<span class="c1">#             self.BLUE = &#39;&#39;</span>
-<span class="c1">#             self.BLACK = &#39;&#39;</span>
-<span class="c1">#             self.DIM = &#39;&#39;</span>
-
-<span class="c1"># print(Fore.RED + &#39;1.00 2.00 &#39; + Fore.BLUE + &#39;3.00&#39;)</span>
-<span class="c1"># print(Fore.RED + &#39;1.00 2.00 &#39; + Fore.BLUE + &#39;3.00&#39;)</span>
-<span class="c1"># print(Fore.BLACK + Style.DIM + &#39;0 0 1&#39;)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">ansitable</span> <span class="kn">import</span> <span class="n">ANSIMatrix</span>
+    <span class="n">_ANSIMatrix</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># print(&#39;using colored output&#39;)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c1"># print(&#39;colored not found&#39;)</span>
+    <span class="n">_ANSIMatrix</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <span class="k">class</span> <span class="nc">SMPose</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">):</span>
@@ -257,14 +248,18 @@
 <span class="sd">    _format          &#39;{:&lt; 12g}&#39;           Format string for each matrix element</span>
 <span class="sd">    _suppress_small  True                 Suppress *small* values, set to zero</span>
 <span class="sd">    _suppress_tol    100                  Threshold for *small* values in eps units</span>
+<span class="sd">    _ansimatrix      False                Display with matrix brackets</span>
 <span class="sd">    ===============  ===================  ============================================</span>
 
-<span class="sd">    ``None`` means no colorization is performed.</span>
+<span class="sd">    If color is specified as ``None`` it means no colorization is performed.</span>
 
 <span class="sd">    For example::</span>
 
 <span class="sd">        &gt;&gt; SE3._bgcolor = None</span>
 <span class="sd">        &gt;&gt; SE3._indexcolor = (&#39;green&#39;, None)</span>
+
+<span class="sd">    .. note:: The ``_ansimatrix`` option requires that the ``ansitable`` package</span>
+<span class="sd">        is installed.  It does not currently support colorization of elements.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_rotcolor</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
@@ -276,7 +271,8 @@
     <span class="n">_suppress_small</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">_suppress_tol</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">_color</span> <span class="o">=</span> <span class="n">_colored</span>
-
+    <span class="n">_ansimatrix</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_ansiformatter</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -809,9 +805,18 @@
 <span class="sd">                * white: constant elements</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_ANSIMatrix</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansimatrix</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string_matrix</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string_color</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_string_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansiformatter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ansiformatter</span> <span class="o">=</span> <span class="n">ANSIMatrix</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;thick&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansiformatter</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_string_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pretty print the matrix value</span>
 
@@ -1231,14 +1236,15 @@
 <span class="sd">        For pose composition either or both operands may hold more than one value which</span>
 <span class="sd">        results in the composition holding more than one value according to:</span>
 
-<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        =========   ==========   ====  =====================================</span>
 <span class="sd">        len(left)   len(right)   len     operation</span>
-<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        =========   ==========   ====  =====================================</span>
+
 <span class="sd">         1          1             1    ``quo = left * right.inv()``</span>
 <span class="sd">         1          M             M    ``quo[i] = left * right[i].inv()``</span>
 <span class="sd">         N          1             M    ``quo[i] = left[i] * right.inv()``</span>
 <span class="sd">         M          M             M    ``quo[i] = left[i] * right[i].inv()``</span>
-<span class="sd">        =========   ==========   ====  ================================</span>
+<span class="sd">        =========   ==========   ====  =====================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
@@ -1559,7 +1565,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 07-Nov-2020.
+        Last updated on 08-Nov-2020.
       </span>
 
     </p>

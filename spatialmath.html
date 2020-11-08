@@ -33,13 +33,14 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="3D-space" href="classes-3d.html" />
+    <link rel="next" title="SE(3) matrix" href="3d_pose_SE3.html" />
     <link rel="prev" title="Introduction" href="intro.html" /> 
 </head>
 
@@ -95,8 +96,48 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Class reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classes-3d.html">3D-space</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-2d.html">2D-space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#d-space">3D-space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pose-in-3d">Pose in 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="3d_pose_SE3.html">SE(3) matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3d_pose_twist.html">se(3) twist</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#orientation-in-3d">Orientation in 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="3d_orient_SO3.html">SO(3) matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3d_orient_unitquaternion.html">Unit quaternion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#d-spatial-vectors">6D spatial vectors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="6d_spatial.html">Spatial vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_m6.html">Spatial M6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_velocity.html">Spatial velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_acceleration.html">Spatial acceleration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_f6.html">Spatial F6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_force.html">Spatial force</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_momentum.html">Spatial momentum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="6d_inertia.html">Spatial inertia</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#geometry">Geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="3d_quaternion.html">Quaternion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3d_plucker.html">Plucker line</a></li>
+<li class="toctree-l4"><a class="reference internal" href="3d_plane.html">Plane</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">2D-space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pose-in-2d">Pose in 2D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="2d_pose_SE2.html">SE(2) matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="2d_pose_twist.html">se(2) twist</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#orientation-in-2d">Orientation in 2D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="2d_orient_SO2.html">SO(2) matrix</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="functions.html">Function reference</a></li>
@@ -163,7 +204,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="classes-3d.html" class="btn btn-neutral float-right" title="3D-space" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="3d_pose_SE3.html" class="btn btn-neutral float-right" title="SE(3) matrix" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -177,27 +218,76 @@
             
   <div class="section" id="class-reference">
 <h1>Class reference<a class="headerlink" href="#class-reference" title="Permalink to this headline">¶</a></h1>
-<p>The pose classes form a hierarchy.</p>
-<a class="reference internal image-reference" href="../figs/classes.png"><img alt="../figs/classes.png" src="../figs/classes.png" style="width: 600px;" /></a>
-<p>They all inherit from the abstract class
+<a class="reference internal image-reference" href="_images/classes.png"><img alt="_images/classes.png" src="_images/classes.png" style="width: 600px;" /></a>
+<p>(click to enlarged)</p>
+<p>The Spatial Math Toolbox classes form a hierarchy.
+They all inherit from the abstract class
 <code class="docutils literal notranslate"><span class="pre">SMUserList</span></code> which embues them  with list-like functionality.</p>
+<div class="section" id="d-space">
+<h2>3D-space<a class="headerlink" href="#d-space" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pose-in-3d">
+<h3>Pose in 3D<a class="headerlink" href="#pose-in-3d" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="classes-3d.html">3D-space</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classes-3d.html#pose-in-3d">Pose in 3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-3d.html#orientation-in-3d">Orientation in 3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-3d.html#module-spatialmath.spatialvector">6D spatial vectors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-3d.html#general-quaternions">General quaternions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-3d.html#module-spatialmath.geom3d">Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d_pose_SE3.html">SE(3) matrix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d_pose_twist.html">se(3) twist</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="classes-2d.html">2D-space</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classes-2d.html#pose-in-2d">Pose in 2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-2d.html#orientation-in-2d">Orientation in 2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="classes-2d.html#geometry">Geometry</a></li>
+</div>
+</div>
+<div class="section" id="orientation-in-3d">
+<h3>Orientation in 3D<a class="headerlink" href="#orientation-in-3d" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="3d_orient_SO3.html">SO(3) matrix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d_orient_unitquaternion.html">Unit quaternion</a></li>
 </ul>
-</li>
+</div>
+</div>
+<div class="section" id="d-spatial-vectors">
+<h3>6D spatial vectors<a class="headerlink" href="#d-spatial-vectors" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="6d_spatial.html">Spatial vector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_m6.html">Spatial M6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_velocity.html">Spatial velocity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_acceleration.html">Spatial acceleration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_f6.html">Spatial F6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_force.html">Spatial force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_momentum.html">Spatial momentum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6d_inertia.html">Spatial inertia</a></li>
 </ul>
+</div>
+</div>
+<div class="section" id="geometry">
+<h3>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="3d_quaternion.html">Quaternion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d_plucker.html">Plucker line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d_plane.html">Plane</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>2D-space<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pose-in-2d">
+<h3>Pose in 2D<a class="headerlink" href="#pose-in-2d" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2d_pose_SE2.html">SE(2) matrix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2d_pose_twist.html">se(2) twist</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="orientation-in-2d">
+<h3>Orientation in 2D<a class="headerlink" href="#orientation-in-2d" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2d_orient_SO2.html">SO(2) matrix</a></li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 
@@ -209,7 +299,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="classes-3d.html" class="btn btn-neutral float-right" title="3D-space" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="3d_pose_SE3.html" class="btn btn-neutral float-right" title="SE(3) matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -224,7 +314,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 07-Nov-2020.
+        Last updated on 08-Nov-2020.
       </span>
 
     </p>

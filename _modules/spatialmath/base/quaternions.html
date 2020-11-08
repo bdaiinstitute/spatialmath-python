@@ -33,6 +33,7 @@
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -836,7 +837,7 @@
     <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span><span class="p">),</span> <span class="n">tr</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="qprint"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.quaternions.qprint">[docs]</a><span class="k">def</span> <span class="nf">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+<div class="viewcode-block" id="qprint"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.quaternions.qprint">[docs]</a><span class="k">def</span> <span class="nf">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{: .4f}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format a quaternion</span>
 
@@ -844,7 +845,7 @@
 <span class="sd">    :type q: array_like</span>
 <span class="sd">    :arg delim: 2-list of delimeters [default (&#39;&lt;&#39;, &#39;&gt;&#39;)]</span>
 <span class="sd">    :type delim: list or tuple of strings</span>
-<span class="sd">    :arg fmt: printf-style format soecifier [default &#39;%f&#39;]</span>
+<span class="sd">    :arg fmt: printf-style format soecifier [default &#39;{: .4f}&#39;]</span>
 <span class="sd">    :type fmt: str</span>
 <span class="sd">    :arg file: destination for formatted string [default sys.stdout]</span>
 <span class="sd">    :type file: file object</span>
@@ -864,8 +865,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;# </span><span class="si">%s</span><span class="s2"> #, #, # </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">template</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">delim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;# </span><span class="si">{}</span><span class="s2"> #, #, # </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">delim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -891,7 +892,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 07-Nov-2020.
+        Last updated on 08-Nov-2020.
       </span>
 
     </p>
