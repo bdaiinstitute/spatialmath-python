@@ -247,17 +247,17 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct an empty instance (superclass method)</span>
+<span class="sd">        Construct an empty instance (SMUserList superclass method)</span>
 <span class="sd">        </span>
 <span class="sd">        :return: pose instance with zero values</span>
 
 <span class="sd">        Example::</span>
 
-<span class="sd">            &gt;&gt;&gt; x = SE3.Empty()</span>
-<span class="sd">            &gt;&gt;&gt; x</span>
-<span class="sd">            SE3([])</span>
+<span class="sd">            &gt;&gt;&gt; x = X.Empty()</span>
 <span class="sd">            &gt;&gt;&gt; len(x)</span>
 <span class="sd">            0</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -266,7 +266,7 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Alloc</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct an instance with N default values (superclass method)</span>
+<span class="sd">        Construct an instance with N default values (SMUserList superclass method)</span>
 
 <span class="sd">        :param n: Number of values, defaults to 1</span>
 <span class="sd">        :type n: int, optional</span>
@@ -287,20 +287,11 @@
 
 <span class="sd">        Example::</span>
 
-<span class="sd">            &gt;&gt;&gt; x = SE3.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
 <span class="sd">            &gt;&gt;&gt; len(x)</span>
 <span class="sd">            10</span>
-<span class="sd">            &gt;&gt;&gt; x[3] = SE3.Rx(.2)</span>
-<span class="sd">            &gt;&gt;&gt; x[2:4]</span>
-<span class="sd">            SE3([</span>
-<span class="sd">            array([[1., 0., 0., 0.],</span>
-<span class="sd">                [0., 1., 0., 0.],</span>
-<span class="sd">                [0., 0., 1., 0.],</span>
-<span class="sd">                [0., 0., 0., 1.]]),</span>
-<span class="sd">            array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
-<span class="sd">                [ 0.        ,  0.98006658, -0.19866933,  0.        ],</span>
-<span class="sd">                [ 0.        ,  0.19866933,  0.98006658,  0.        ],</span>
-<span class="sd">                [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">n</span>
@@ -308,7 +299,7 @@
 
     <span class="k">def</span> <span class="nf">arghandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">convertfrom</span><span class="o">=</span><span class="p">(),</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Standard constructor support (superclass method)</span>
+<span class="sd">        Standard constructor support (SMUserList superclass method)</span>
 
 <span class="sd">        :param self: the instance to be initialized :type self: SMUserList</span>
 <span class="sd">        instance :param arg: initial value :param convertfrom: list of classes</span>
@@ -395,7 +386,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># get the underlying numpy array</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Spatial vector as an array</span>
+<span class="sd">        :return: Moment vector</span>
+<span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
+<span class="sd">        - ``X.v`` is a 3-vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -403,47 +399,29 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># get the underlying numpy array</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Array value of an instance (SMUserList superclass method)</span>
+
+<span class="sd">        :return: NumPy array value of this instance</span>
+<span class="sd">        :rtype: ndarray</span>
+
+<span class="sd">        - ``X.A`` is a NumPy array that represents the value of this instance, </span>
+<span class="sd">          and has a shape given by ``X.shape``.</span>
+
+<span class="sd">        .. note:: This assumes that ``len(X)`` == 1, ie. it is a single-valued</span>
+<span class="sd">            instance. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
 
-    <span class="c1"># @property</span>
-    <span class="c1"># def A(self):</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     Interal array representation (superclass property)</span>
-        
-    <span class="c1">#     :param self: the pose object</span>
-    <span class="c1">#     :type self: SO2, SE2, SO3, SE3 instance</span>
-    <span class="c1">#     :return: The numeric array</span>
-    <span class="c1">#     :rtype: numpy.ndarray</span>
-        
-    <span class="c1">#     Each pose subclass SO(N) or SE(N) are stored internally as a numpy array. This property returns</span>
-    <span class="c1">#     the array, shape depends on the particular subclass.</span>
-        
-    <span class="c1">#     Examples::</span>
-            
-    <span class="c1">#         &gt;&gt;&gt; x = SE3()</span>
-    <span class="c1">#         &gt;&gt;&gt; x.A</span>
-    <span class="c1">#         array([[1., 0., 0., 0.],</span>
-    <span class="c1">#                [0., 1., 0., 0.],</span>
-    <span class="c1">#                [0., 0., 1., 0.],</span>
-    <span class="c1">#                [0., 0., 0., 1.]])</span>
-
-    <span class="c1">#     :seealso: `shape`, `N`</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     # get the underlying numpy array</span>
-    <span class="c1">#     if len(self.data) == 1:</span>
-    <span class="c1">#         return self.data[0]</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         return self.data</span>
-
     <span class="c1"># ------------------------------------------------------------------------ #</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Access value of an instance (superclass method)</span>
+<span class="sd">        Access value of an instance (SMUserList superclass method)</span>
 
 <span class="sd">        :param i: index of element to return</span>
 <span class="sd">        :type i: int</span>
@@ -455,11 +433,17 @@
 <span class="sd">        </span>
 <span class="sd">        Example::</span>
 <span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; q = UnitQuaternion.Rx([0, 0.3, 0.6])</span>
-<span class="sd">            &gt;&gt;&gt; len(q)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; q[1]</span>
-<span class="sd">            0.988771 &lt;&lt; 0.149438, 0.000000, 0.000000 &gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; y = x[1]</span>
+<span class="sd">            &gt;&gt;&gt; len(y)</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; y = x[1:5]</span>
+<span class="sd">            &gt;&gt;&gt; len(y)</span>
+<span class="sd">            4</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
@@ -478,7 +462,7 @@
         
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assign a value to an instance (superclass method)</span>
+<span class="sd">        Assign a value to an instance (SMUserList superclass method)</span>
 <span class="sd">        </span>
 <span class="sd">        :param i: index of element to assign to</span>
 <span class="sd">        :type i: int</span>
@@ -489,10 +473,13 @@
 <span class="sd">        Assign the argument to an element of the object&#39;s internal list of values.</span>
 <span class="sd">        This supports the assignement operator, for example::</span>
 <span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; q = Quaternion([Quaternion() for i in range(10)]) # sequence of ten identity values</span>
-<span class="sd">            &gt;&gt;&gt; len(q)</span>
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
 <span class="sd">            10</span>
-<span class="sd">            &gt;&gt;&gt; q[3] = Quaternion([1,2,3,4])   # assign to position 3 in the list</span>
+<span class="sd">            &gt;&gt;&gt; x[3] = X()   # assign to position 3 in the list</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t insert different type of object&quot;</span><span class="p">)</span>
@@ -515,14 +502,24 @@
 
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Append a value to an instance (superclass method)</span>
+<span class="sd">        Append a value to an instance (SMUserList superclass method)</span>
 <span class="sd">        </span>
 <span class="sd">        :param x: the value to append</span>
 <span class="sd">        :type x: Quaternion or UnitQuaternion instance</span>
 <span class="sd">        :raises ValueError: incorrect type of appended object</span>
 
 <span class="sd">        Appends the argument to the object&#39;s internal list of values.</span>
-<span class="sd">    </span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; x.append(X())   # append to the list</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            11</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#print(&#39;in append method&#39;)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
@@ -534,13 +531,24 @@
 
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extend sequence of values in an instance (superclass method)</span>
+<span class="sd">        Extend sequence of values in an instance (SMUserList superclass method)</span>
 <span class="sd">        </span>
 <span class="sd">        :param x: the value to extend</span>
 <span class="sd">        :type x: instance of same type</span>
 <span class="sd">        :raises ValueError: incorrect type of appended object</span>
 
 <span class="sd">        Appends the argument&#39;s values to the object&#39;s internal list of values.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; x.append(X.Alloc(5))   # extend the list</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            15</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#print(&#39;in extend method&#39;)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
@@ -549,7 +557,7 @@
 
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert a value to an instance (superclass method)</span>
+<span class="sd">        Insert a value to an instance (SMUserList superclass method)</span>
 
 <span class="sd">        :param i: element to insert value before</span>
 <span class="sd">        :type i: int</span>
@@ -558,13 +566,23 @@
 <span class="sd">        :raises ValueError: incorrect type of inserted value</span>
 
 <span class="sd">        Inserts the argument into the object&#39;s internal list of values.</span>
-<span class="sd">        </span>
-<span class="sd">        Examples::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; q = UnitQuaternion()</span>
-<span class="sd">            &gt;&gt;&gt; q.insert(0, UnitQuaternion.Rx(0.1)) # insert at position 0 in the list</span>
-<span class="sd">            &gt;&gt;&gt; len(q)</span>
-<span class="sd">            2</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; x.insert(0, X())   # insert at start of list</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            11</span>
+<span class="sd">            &gt;&gt;&gt; x.insert(10, X())   # append to the list</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            11</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
+
+<span class="sd">        .. note:: If ``i`` is beyond the end of the list, the item is appended</span>
+<span class="sd">            to the list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can&#39;t insert different type of object&quot;</span><span class="p">)</span>
@@ -574,7 +592,7 @@
         
     <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pop value from an instance (superclass method)</span>
+<span class="sd">        Pop value from an instance (SMUserList superclass method)</span>
 
 <span class="sd">        :param i: item in the list to pop, default is last</span>
 <span class="sd">        :type i: int</span>
@@ -586,14 +604,18 @@
 <span class="sd">        instance is modified.</span>
 <span class="sd">        </span>
 <span class="sd">        Example::</span>
-<span class="sd">            </span>
-<span class="sd">            &gt;&gt;&gt; q = UnitQuaternion.Rx([0, 0.3, 0.6])</span>
-<span class="sd">            &gt;&gt;&gt; len(q)</span>
-<span class="sd">            3</span>
-<span class="sd">            &gt;&gt;&gt; q.pop()</span>
-<span class="sd">            1.000000 &lt;&lt; 0.000000, 0.000000, 0.000000 &gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt; len(q)</span>
-<span class="sd">            2</span>
+
+<span class="sd">            &gt;&gt;&gt; x = X.Alloc(10)</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; y = x.pop()  # pop the last value x[9]</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            9</span>
+<span class="sd">            &gt;&gt;&gt; y = x.pop(0)  # pop the first value x[0]</span>
+<span class="sd">            &gt;&gt;&gt; len(x)</span>
+<span class="sd">            8</span>
+
+<span class="sd">        where ``X`` is any of the SMTB classes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
 
