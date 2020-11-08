@@ -22,23 +22,13 @@ except ImportError:
     # print('colored not found')
     _colored = False
 
-# try:
-#     import colorama
-#     colorama.init()
-#     print('using colored output')
-#     from colorama import Fore, Back, Style
-
-# except:
-#     class color:
-#         def __init__(self):
-#             self.RED = ''
-#             self.BLUE = ''
-#             self.BLACK = ''
-#             self.DIM = ''
-
-# print(Fore.RED + '1.00 2.00 ' + Fore.BLUE + '3.00')
-# print(Fore.RED + '1.00 2.00 ' + Fore.BLUE + '3.00')
-# print(Fore.BLACK + Style.DIM + '0 0 1')
+try:
+    from ansitable import ANSIMatrix
+    _ANSIMatrix = True
+    # print('using colored output')
+except ImportError:
+    # print('colored not found')
+    _ANSIMatrix = False
 
 
 class SMPose(SMUserList):
@@ -96,14 +86,18 @@ class SMPose(SMUserList):
     _format          '{:< 12g}'           Format string for each matrix element
     _suppress_small  True                 Suppress *small* values, set to zero
     _suppress_tol    100                  Threshold for *small* values in eps units
+    _ansimatrix      False                Display with matrix brackets
     ===============  ===================  ============================================
 
-    ``None`` means no colorization is performed.
+    If color is specified as ``None`` it means no colorization is performed.
 
     For example::
 
         >> SE3._bgcolor = None
         >> SE3._indexcolor = ('green', None)
+
+    .. note:: The ``_ansimatrix`` option requires that the ``ansitable`` package
+        is installed.  It does not currently support colorization of elements.
     """
 
     _rotcolor = 'red'
@@ -115,7 +109,8 @@ class SMPose(SMUserList):
     _suppress_small = True
     _suppress_tol = 100
     _color = _colored
-
+    _ansimatrix = _ANSIMatrix
+    _ansiformatter = None
 
     def __new__(cls, *args, **kwargs):
         """
@@ -648,9 +643,18 @@ class SMPose(SMUserList):
                 * white: constant elements
 
         """
-        return self._string(color=True)
+        if self._ansimatrix:
+            return self._string_matrix()
+        else:
+            return self._string_color(color=True)
 
-    def _string(self, color=False):
+    def _string_matrix(self):
+        if self._ansiformatter is None:
+            self._ansiformatter = ANSIMatrix(style='thick')
+
+        return self._ansiformatter.str(self.A)
+
+    def _string_color(self, color=False):
         """
         Pretty print the matrix value
 
@@ -1070,14 +1074,15 @@ class SMPose(SMUserList):
         For pose composition either or both operands may hold more than one value which
         results in the composition holding more than one value according to:
 
-        =========   ==========   ====  ================================
+        =========   ==========   ====  =====================================
         len(left)   len(right)   len     operation
-        =========   ==========   ====  ================================
+        =========   ==========   ====  =====================================
+
          1          1             1    ``quo = left * right.inv()``
          1          M             M    ``quo[i] = left * right[i].inv()``
          N          1             M    ``quo[i] = left[i] * right.inv()``
          M          M             M    ``quo[i] = left[i] * right[i].inv()``
-        =========   ==========   ====  ================================
+        =========   ==========   ====  =====================================
 
         """
         if isinstance(left, right.__class__):
