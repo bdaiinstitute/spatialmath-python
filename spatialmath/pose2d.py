@@ -33,7 +33,7 @@ import spatialmath.pose3d as p3
 
 class SO2(SMPose):
     """
-    SO(2) subclass
+    SO(2) matrix class
 
     This subclass represents rotations in 2D space.  Internally it is a 2x2 orthogonal matrix belonging
     to the group SO(2).
@@ -231,7 +231,7 @@ class SO2(SMPose):
 
 class SE2(SO2):
     """
-    SE(2) subclass
+    SE(2) matrix class
 
     This subclass represents rigid-body motion (pose) in 2D space.  Internally
     it is a 3x3 homogeneous transformation matrix belonging to the group SE(2).

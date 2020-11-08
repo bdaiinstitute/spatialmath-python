@@ -26,13 +26,13 @@ from spatialmath.smuserlist import SMUserList
 
 class Quaternion(SMUserList):
     r"""
-    A quaternion is a compact method of representing a 3D rotation that has
-    computational advantages including speed and numerical robustness.
+    Quaternion class
 
-    A quaternion has 2 parts, a scalar :math:`s`, and a 3-vector :math:`v` and
-    is typically written as
+    A quaternion can be considered an ordered pair :math:`(s, \vec{v})`
+    where :math:`s \in \mathbb{R}` is the *scalar* part and :math:`\vec{v} = (v_x, v_y, v_z) \in \mathbb{R}^3`
+    is the *vector* part and is often written as
 
-    :math:`q = s \langle v_x, v_y, v_z \rangle`
+    .. math:: \q = s \langle v_x, v_y, v_z \rangle
 
     .. inheritance-diagram:: spatialmath.quaternion.Quaternion
        :top-classes: collections.UserList
@@ -60,21 +60,18 @@ class Quaternion(SMUserList):
         - ``Quaternion(M)`` construct a new quaternion with ``N`` values where
           ``Q`` is a 4xN NumPy array.
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion()
-            0.000000 < 0.000000, 0.000000, 0.000000 >
             >>> Quaternion(1, [2,3,4])
-            1.000000 < 2.000000, 3.000000, 4.000000 >
             >>> Quaternion([1,2,3,4])
-            1.000000 < 2.000000, 3.000000, 4.000000 >
-
             >>> q=Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
             >>> len(q)
-            2
-            >>> q
-            1.000000 < 2.000000, 3.000000, 4.000000 >
-            5.000000 < 6.000000, 7.000000, 8.000000 >
+            >>> print(q)
+
         """
         super().__init__()
 
@@ -110,12 +107,23 @@ class Quaternion(SMUserList):
     @staticmethod
     def isvalid(x):
         """
-        Test if matrix is valid quaternion
+        Test if vector is valid quaternion
 
-        :param x: matrix to test
+        :param x: vector to test
         :type x: numpy.ndarray
-        :return: true of the matrix is 4x1.
+        :arg check: explicitly check vector is unit length [default True]
+        :type check: bool
+        :return: True if the matrix has shape (4,).
         :rtype: bool
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
+            >>> import numpy as np
+            >>> Quaternion.isvalid(np.r_[1, 0, 0, 0])
+            >>> Quaternion.isvalid(np.r_[1, 2, 3, 4])
         """
         return x.shape == (4,)
 
@@ -132,12 +140,13 @@ class Quaternion(SMUserList):
             - 1, return a scalar float
             - N>1, return a NumPy array shape=(N,) is returned.
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).s
-            1.0
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).s
-            array([1., 5.])
 
         """
         if len(self) == 1:
@@ -158,13 +167,14 @@ class Quaternion(SMUserList):
             - 1, return a NumPy array shape=(3,)
             - N>1, return a NumPy array shape=(N,3).
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).v
-            array([2., 3., 4.])
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).v
-            array([[2., 3., 4.],
-                [6., 7., 8.]])
+
         """
         if len(self) == 1:
             return self._A[1:4]
@@ -184,13 +194,13 @@ class Quaternion(SMUserList):
             - 1, return a NumPy array shape=(4,)
             - N>1, return a NumPy array shape=(N,4).
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).vec
-            array([1., 2., 3., 4.])
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec
-            array([[1., 2., 3., 4.],
-                [5., 6., 7., 8.]])
         """
         if len(self) == 1:
             return self._A
@@ -209,10 +219,12 @@ class Quaternion(SMUserList):
         vector part set to ``v``,
         ie. :math:`q = 0 \langle v_x, v_y, v_z \rangle`
 
-        Examples::
+        Example:
 
-            >>> Quaternion.pure([1,2,3])
-            0.000000 < 1.000000, 2.000000, 3.000000 >
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
+            >>> print(Quaternion.pure([1,2,3]))
         """
         return cls(s=0, v=argcheck.getvector(v, 3))
 
@@ -225,10 +237,14 @@ class Quaternion(SMUserList):
         ``q.conj()`` is the quaternion ``q`` with the vector part negated, ie.
         :math:`q = s \langle -v_x, -v_y, -v_z \rangle`
 
-        Examples::
+        Example:
 
-            >>> Quaternion.pure([1,2,3]).conj()
-            0.000000 < -1.000000, -2.000000, -3.000000 >
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
+            >>> print(Quaternion.pure([1,2,3]).conj())
+
+        :seealso: :func:`~spatialmath.base.quaternions.conj`
         """
 
         return self.__class__([quat.conj(q._A) for q in self])
@@ -239,16 +255,19 @@ class Quaternion(SMUserList):
 
         :rtype: float
 
-        ``q.norm()`` is the norm or length of the quaternion and is equal to
+        ``q.norm()`` is the norm or length of the quaternion 
         :math:`\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}`
 
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).norm()
-            5.477225575051661
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).norm()
-            array([ 5.47722558, 13.19090596])
+
+        :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
         if len(self) == 1:
             return quat.qnorm(self._A)
@@ -263,17 +282,21 @@ class Quaternion(SMUserList):
 
         ``q.unit()`` is the quaternion ``q`` normalized to have a unit length.
 
-        Examples::
+        Example:
 
-            >>> Quaternion([1,2,3,4]).unit()
-            0.182574 << 0.365148, 0.547723, 0.730297 >>
-            >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).unit()
-            0.182574 << 0.365148, 0.547723, 0.730297 >>
-            0.379049 << 0.454859, 0.530669, 0.606478 >>
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
+            >>> q = Quaternion([1,2,3,4])
+            >>> print(q)
+            >>> print(q.unit())
+            >>> print(Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).unit())
 
         Note that the return type is different, a ``UnitQuaternion``, which is
         distinguished by the use of double angle brackets to delimit the 
         vector part.
+
+        :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
         return UnitQuaternion([quat.unit(q._A) for q in self], norm=False)
 
@@ -288,21 +311,16 @@ class Quaternion(SMUserList):
         This matrix, multiplied by the 4-vector equivalent of a second quaternion, results in the 4-vector
         equivalent of the Hamilton product.
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).matrix
-            array([[ 1., -2., -3., -4.],
-            [ 2.,  1., -4.,  3.],
-            [ 3.,  4.,  1., -2.],
-            [ 4., -3.,  2.,  1.]])
+            >>> Quaternion([1,2,3,4]) * Quaternion([5,6,7,8])   # Hamilton product
+            >>> Quaternion([1,2,3,4]).matrix @ Quaternion([5,6,7,8]).vec  # matrix-vector product
 
-            # Hamilton product
-            >>> Quaternion([1,2,3,4]) * Quaternion([5,6,7,8])  
-            -60.000000 < 12.000000, 30.000000, 24.000000 >
-
-            # matrix-vector product
-            >>> Quaternion([1,2,3,4]).matrix @ Quaternion([5,6,7,8]).vec  
-            array([-60.,  12.,  30.,  24.])
+        :seealso: :func:`~spatialmath.base.quaternions.matrix`
         """
 
         return quat.matrix(self._A)
@@ -319,12 +337,15 @@ class Quaternion(SMUserList):
         ie. ``numpy.dot(q1.vec, q2.vec)``.
         The value of ``q.inner(q)`` is the same as ``q.norm ** 2``.
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).inner(Quaternion([5,6,7,8]))
-            70.0
             >>> numpy.dot([1,2,3,4], [5,6,7,8])
-            70
+
+        :seealso: :func:`~spatialmath.base.quaternions.inner`
         """
 
         assert isinstance(other, Quaternion), \
@@ -335,26 +356,24 @@ class Quaternion(SMUserList):
         """
         Overloaded ``==`` operator
 
-        :rtype: bool
-
+        :return: Equality of two operands
+        :rtype: bool or list of bool
         ``q1 == q2`` is True if ``q1` is elementwise equal to ``q2``.
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> q1 = Quaternion([1,2,3,4])
             >>> q2 = Quaternion([5,6,7,8])
             >>> q1 == q1
-            True
             >>> q1 == q2
-            False
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) == q1
-            [True, False]
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) == q2
-            [False, True]
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) == Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            [True, True]
 
-        :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__ne__`, :func:`~spatialmath.base.quaternions.isequal`
         """
         assert isinstance(left, type(right)), \
             'operands to == are of different types'
@@ -368,7 +387,11 @@ class Quaternion(SMUserList):
 
         ``q1 != q2`` is True if ``q` is elementwise not equal to ``q2``.
 
-        Examples::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> q1 = Quaternion([1,2,3,4])
             >>> q2 = Quaternion([5,6,7,8])
@@ -381,7 +404,7 @@ class Quaternion(SMUserList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) != q2
             [True, False]
 
-        :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__ne__`, :func:`~spatialmath.base.quaternions.isequal`
         """
         assert isinstance(left, type(right)), 'operands to == are of different types'
         return left.binop(right, lambda x, y: not quat.isequal(x, y), list1=False)
@@ -425,7 +448,11 @@ class Quaternion(SMUserList):
          N      M       -    ``ValueError``
         ====   =====   ====  ================================
 
-        Examples::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> Quaternion([1,2,3,4]) * Quaternion([5,6,7,8])
             -60.000000 < 12.000000, 30.000000, 24.000000 >
@@ -446,7 +473,7 @@ class Quaternion(SMUserList):
             -28.000000 < 4.000000, 6.000000, 8.000000 >
             -124.000000 < 60.000000, 70.000000, 80.000000 >
 
-        :seealso: :func:`__rmul__`, :func:`__imul__`, :func:`spatialmath.base.qqmul`
+        :seealso: :func:`__rmul__`, :func:`__imul__`, :func:`~spatialmath.base.quaternions.qqmul`
         """
         if isinstance(right, left.__class__):
             # quaternion * [unit]quaternion case
@@ -474,13 +501,13 @@ class Quaternion(SMUserList):
 
         ``s * q`` is the scalar product, where ``s`` is a scalar.
 
-        Examples::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> 2 * Quaternion([1,2,3,4])
-            2.000000 < 4.000000, 6.000000, 8.000000 >
             >>> 2 * Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            2.000000 < 4.000000, 6.000000, 8.000000 >
-            10.000000 < 12.000000, 14.000000, 16.000000 >
 
         :seealso: :func:`__mul__`
         """
@@ -502,16 +529,16 @@ class Quaternion(SMUserList):
         ``q1 *= q2`` sets ``q1 := q1 * q2``
         ``q1 *= s`` sets ``q1 := q1 * s`` where ``s`` is a scalar
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> q = Quaternion([1,2,3,4])
             >>> q *= Quaternion([5,6,7,8])
-            >>> q
-            -60.000000 < 12.000000, 30.000000, 24.000000 >
-
+            >>> print(q)
             >>> q *= 2
-            >>> q
-            -120.000000 < 24.000000, 60.000000, 48.000000 >
+            >>> print(q)
 
         :seealso: :func:`__mul__`
         """
@@ -526,17 +553,16 @@ class Quaternion(SMUserList):
         ``q ** N`` computes the product of ``q`` with itself ``N-1`` times, where ``N`` must be
         an integer.  If ``N``<0 the result is conjugated.
 
-        Examples::
+        Example:
 
-            >>> Quaternion([1,2,3,4]) ** 2
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-            >>> Quaternion([1,2,3,4]) ** -1
-            1.000000 < -2.000000, -3.000000, -4.000000 >
-            >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) ** 2
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-            -124.000000 < 60.000000, 70.000000, 80.000000 >
+        .. runblock:: pycon
 
-        :seealso: :func:`spatialmath.base.pow`
+            >>> from spatialmath import Quaternion
+            >>> print(Quaternion([1,2,3,4]) ** 2)
+            >>> print(Quaternion([1,2,3,4]) ** -1)
+            >>> print(Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) ** 2)
+
+        :seealso: :func:`spatialmath.base.quaternions.qpow`
         """
         return self.__class__([quat.qpow(q._A, n) for q in self])
 
@@ -549,7 +575,11 @@ class Quaternion(SMUserList):
         ``q **= N`` computes the product of ``q`` with itself ``N-1`` times, where ``N`` must be
         an integer.  If ``N``<0 the result is conjugated.
 
-        Examples::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> q = Quaternion([1,2,3,4])
             >>> q **= 2
@@ -602,17 +632,21 @@ class Quaternion(SMUserList):
         ====   =====   ====  ================================
         left   right   len     operation
         ====   =====   ====  ================================
-         1      1       1    ``prod = left + right``
-         1      N       N    ``prod[i] = left + right[i]``
-         N      1       N    ``prod[i] = left[i] + right``
-         N      N       N    ``prod[i] = left[i] + right[i]``
+         1      1       1    ``sum = left + right``
+         1      N       N    ``sum[i] = left + right[i]``
+         N      1       N    ``sum[i] = left[i] + right``
+         N      N       N    ``sum[i] = left[i] + right[i]``
          N      M       -    ``ValueError``
         ====   =====   ====  ================================
 
         A scalar of length N is a list, tuple or numpy array.
         A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
 
-        Examples::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> Quaternion([1,2,3,4]) + Quaternion([5,6,7,8])
             6.000000 < 8.000000, 10.000000, 12.000000 >
@@ -659,17 +693,21 @@ class Quaternion(SMUserList):
         ====   =====   ====  ================================
         left   right   len     operation
         ====   =====   ====  ================================
-         1      1       1    ``prod = left - right``
-         1      N       N    ``prod[i] = left - right[i]``
-         N      1       N    ``prod[i] = left[i] - right``
-         N      N       N    ``prod[i] = left[i] - right[i]``
+         1      1       1    ``diff = left - right``
+         1      N       N    ``diff[i] = left - right[i]``
+         N      1       N    ``diff[i] = left[i] - right``
+         N      N       N    ``diff[i] = left[i] - right[i]``
          N      M       -    ``ValueError``
         ====   =====   ====  ================================
 
         A scalar of length N is a list, tuple or numpy array.
         A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.
 
-        Examples::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> Quaternion([1,2,3,4]) - Quaternion([5,6,7,8])
             -4.000000 < -4.000000, -4.000000, -4.000000 >
@@ -696,7 +734,11 @@ class Quaternion(SMUserList):
 
         ``-q`` is a quaternion with all its components negated.
 
-        Examples::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> -Quaternion([1,2,3,4])
             -0.182574 << -0.365148, -0.547723, -0.730297 >>
@@ -715,7 +757,11 @@ class Quaternion(SMUserList):
         :return: readable representation of the pose as a list of arrays
         :rtype: str
 
-        Example::
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
 
             >>> q = Quaternion([1,2,3,4])
             >>> q
@@ -761,6 +807,11 @@ class Quaternion(SMUserList):
 
         Format the quaternion elements into a single line format.  For example::
 
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
             >>> q = Quaternion([1,2,3,4])
             >>> print(x)
             1.000000 < 2.000000, 3.000000, 4.000000 >
@@ -769,6 +820,8 @@ class Quaternion(SMUserList):
 
             Note that unit quaternions are denoted by different delimiters for
             the vector part.
+
+                    :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
         if isinstance(self, UnitQuaternion):
             delim = ('<<', '>>')
@@ -779,23 +832,28 @@ class Quaternion(SMUserList):
 
 class UnitQuaternion(Quaternion):
     r"""
+    Unit quaternion class
 
-    A unit quaternion has 2 parts, a scalar :math:`s`, and a 3-vector :math:`v` and is typically written as
+    A unit quaternion can be considered an ordered pair :math:`(s, \vec{v})`
+    where :math:`s \in \mathbb{R}` is the *scalar* part and :math:`\vec{v} = (v_x, v_y, v_z) \in \mathbb{R}^3`
+    is the *vector* part and is often written as
 
-    :math:`q = s \langle v_x, v_y, v_z \rangle`
+    .. math:: \q = s \langle v_x, v_y, v_z \rangle
 
-    and has a unit length constraint, that is, :math:`s^2+v_x^2+v_y^2+v_z^2 = 1`.
+    and subject to a unit-length constraint :math:`s^2+v_x^2+v_y^2+v_z^2 = 1`.
 
-    A unit-quaternion can be considered as a rotation :math:`\theta` about a
-    unit-vector in space :math:`v=[v_x, v_y, v_z]`, so the unit quaternion can also be
-    written as :math:`q = \cos \theta/2 \sin \theta/2 <v_x v_y v_z>`.
+    A unit-quaternion can be considered as a rotation :math:`\theta` about the
+    vector :math:`\vec{v}`, so the unit quaternion can also be
+    written as 
+    
+    .. math:: \q = \cos \frac{\theta}{2} \sin \frac{\theta}{2} <v_x v_y v_z>
 
-    The quaternion :math:`q` and :math:`-q` represent the equivalent rotation, and this is referred to
+    The quaternion :math:`\q` and :math:`-\q` represent the equivalent rotation, and this is referred to
     as a double mapping.
 
- .. inheritance-diagram:: spatialmath.quaternion.UnitQuaternion
-    :top-classes: collections.UserList
-    :parts: 1
+    .. inheritance-diagram:: spatialmath.quaternion.UnitQuaternion
+        :top-classes: collections.UserList
+        :parts: 1
 
     The ``UnitQuaternion`` class inherits many methods from the ``Quaternion`` class
 
@@ -807,23 +865,24 @@ class UnitQuaternion(Quaternion):
 
         :arg norm: explicitly normalize the quaternion [default True]
         :type norm: bool
-        :arg check: explicitly check dimension of passed lists [default True]
+        :arg check: explicitly check validity of argument [default True]
         :type check: bool
-        :return: new unit uaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
         :raises: ValueError
 
         - ``UnitQuaternion()`` constructs the identity quaternion 1<0,0,0>
         - ``UnitQuaternion(s, v)`` constructs a unit quaternion with specified
           real ``s`` and ``v`` vector parts. ``v`` is a 3-vector given as a
-          list, tuple, numpy.ndarray
+          list, tuple, or ndarray(3). If ``norm`` is True the resulting 
+          quaternion is normalized.
         - ``UnitQuaternion(v)`` constructs a unit quaternion with specified
-          elements from ``v`` which is a 4-vector given as a list, tuple, numpy.ndarray
-        - ``UnitQuaternion(R)`` constructs a unit quaternion from an SO(2)
-          rotation matrix given as a 3x3 numpy.ndarray. If ``check`` is True
-          test the matrix for orthogonality.
+          elements from ``v`` which is a 4-vector given as a list, tuple, or ndarray(4)
+        - ``UnitQuaternion(R)`` constructs a unit quaternion from an SO(3)
+          rotation matrix given as a ndarray(3,3). If ``check`` is True
+          test the rotation submatrix for orthogonality.
         - ``UnitQuaternion(T)`` constructs a unit quaternion from an SE(3)
-          homogeneous transformation matrix given as a 4x4 numpy.ndarray. If ``check`` is True
+          homogeneous transformation matrix given as a ndarray(4,4). If ``check`` is True
           test the matrix for orthogonality.
         - ``UnitQuaternion(X)`` constructs a unit quaternion from the rotational
           part of ``X`` which is an SO3 or SE3 instance.  If len(X) > 1 then
@@ -831,7 +890,16 @@ class UnitQuaternion(Quaternion):
         - ``UnitQuaternion([q1, q2 .. qN])`` construct a new unit quaternion with ``N`` values where each element is a 4-vector
         - ``UnitQuaternion([Q1, Q2 .. QN])`` construct a new unit quaternion with ``N`` values where each element is a UnitQuaternion instance
         - ``UnitQuaternion([X1, X2 .. XN])`` construct a new unit quaternion with ``N`` values where each element is an SO3 or SE3 instance
-        - ``UnitQuaternion(M)`` construct a new unit quaternion with ``N`` values where ``Q`` is a 4xN NumPy array.
+        - ``UnitQuaternion(M)`` construct a new unit quaternion with ``N`` values where ``Q`` is a Nx4 NumPy array.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ as UQ
+            >>> q = UQ()
+            >>> q         # repr()
+            >>> print(q)  # str()
 
         """
         super().__init__()
@@ -839,9 +907,8 @@ class UnitQuaternion(Quaternion):
         if v is None:
             # single argument
             if super().arghandler(s, check=check):
-                if norm:
-                    self.data = [quat.unit(q) for q in self.data]
-                return
+                # create unit quaternion
+                self.data = [quat.unit(q) for q in self.data]
 
             elif isinstance(s, np.ndarray) and tr.isrot(s, check=check):
                 # UnitQuaternion(R) R is 3x3 rotation matrix
@@ -886,29 +953,57 @@ class UnitQuaternion(Quaternion):
     @staticmethod
     def isvalid(x, check=True):
         """
-        Test if matrix is valid unit quaternion
+        Test if vector is valid unit quaternion
 
-        :param x: matrix to test
+        :param x: vector to test
         :type x: numpy.ndarray
-        :return: true of the matrix is 4x1.
+        :arg check: explicitly check vector is unit length [default True]
+        :type check: bool
+        :return: True if the matrix has shape (4,).
         :rtype: bool
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion 
+            >>> import numpy as np
+            >>> UnitQuaternion.isvalid(np.r_[1, 0, 0, 0])
+            >>> UnitQuaternion.isvalid(np.r_[1, 2, 3, 4])
         """
         return x.shape == (4,) and (not check or tr.isunitvec(x))
 
     @property
     def R(self):
         """
-        Unit quaternion as rotation matrix
+        Unit quaternion as a rotation matrix
 
         :return: equivalent rotational matrix
-        :rtype: numpy.ndarray, shape=(3,3)
+        :rtype: ndarray(3,3)
 
         ``q.R`` returns the rotation matrix which describes the equivalent rotation. If ``len(x)`` is:
 
             - 1, return an ndarray with shape=(3,3)
             - N>1, return ndarray with shape=(N,3,3)
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q = UQ.Rx(0.3)
+            >>> q.R
+            >>> q = UQ.Rx([0.3, 0.4])
+            >>> q.R
+            
+        .. warning:: The i'th rotation matrix is ``x[i,:,:]`` or simply 
+            ``x[i]``. This is different to the MATLAB version where the i'th
+            rotation matrix is ``x(:,:,i)``.        
         """
-        return quat.q2r(self._A)
+        if len(self) > 1:
+            return np.array([quat.q2r(q) for q in self.data])
+        else:
+            return quat.q2r(self._A)
 
     @property
     def vec3(self):
@@ -919,23 +1014,23 @@ class UnitQuaternion(Quaternion):
         :rtype: numpy array, shape=(3,)
 
         ``q.vec3`` is the vector part of a unit quaternion.  If ``q`` has a negative scalar
-        part we take the vector part of equivalent unit quaternion with a positive scalar part ``-q``.
+        part we take the vector part of ``-q``, since  ``q`` and ``-q`` represent the
+        same rotation.
 
         This vector part is a minimal unique representation of the unit quaternion and can be used in
         optimization procedures such as bundle adjustment.
 
-        Examples::
+        Example:
 
-            >>> q = UnitQuaternion.Rz(-4)
-            >>> q
-            -0.416147 << 0.000000, 0.000000, -0.909297 >>
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q = UQ.Rz(-4)
+            >>> print(q)
             >>> q.vec3
-            array([-0.        , -0.        ,  0.90929743])
-            >>> q2 = UnitQuaternion.Vec3(q.vec3)
-            >>> q2
-            0.416147 << -0.000000, -0.000000, 0.909297 >>
+            >>> q2 = UQ.Vec3(q.vec3)
+            >>> print(q2)
             >>> q == q2
-            True
 
         :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Vec3`
         """
@@ -945,29 +1040,27 @@ class UnitQuaternion(Quaternion):
     @classmethod
     def Rx(cls, angle, unit='rad'):
         """
-        Construct a UnitQuaternion object representing rotation about X-axis
+        Construct a UnitQuaternion object representing rotation about the X-axis
 
-        :arg angle: rotation angle
-        :type angle: float or array_like
+        :arg θ: rotation angle
+        :type θ: float or array_like
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        - ``UnitQuaternion(theta)`` constructs a unit quaternion representing a
-          rotation of `theta` radians about the X-axis.
-        - ``UnitQuaternion(theta, 'deg')`` constructs a unit quaternion representing a
-          rotation of `theta` degrees about the X-axis.
+        - ``UnitQuaternion(θ)`` constructs a unit quaternion representing a
+          rotation of ``θ`` radians about the X-axis.
+        - ``UnitQuaternion(θ, 'deg')`` constructs a unit quaternion representing a
+          rotation of ``θ`` degrees about the X-axis.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rx(0.3)
-            0.988771 << 0.149438, 0.000000, 0.000000 >>
-
-            >>> UnitQuaternion.Rx([0, 0.3, 0.6])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            0.988771 << 0.149438, 0.000000, 0.000000 >>
-            0.955336 << 0.295520, 0.000000, 0.000000 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rx(0.3))
+            >>> print(UQ.Rx([0, 0.3, 0.6]))
         """
         angles = argcheck.getunit(argcheck.getvector(angle), unit)
         return cls([np.r_[math.cos(a / 2), math.sin(a / 2), 0, 0] for a in angles], check=False)
@@ -975,29 +1068,27 @@ class UnitQuaternion(Quaternion):
     @classmethod
     def Ry(cls, angle, unit='rad'):
         """
-        Construct a UnitQuaternion object representing rotation about Y-axis
+        Construct a UnitQuaternion object representing rotation about the Y-axis
 
-        :arg angle: rotation angle
-        :type angle: float or array_like
+        :arg θ: rotation angle
+        :type θ: float or array_like
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        - ``UnitQuaternion(theta)`` constructs a unit quaternion representing a
-          rotation of `theta` radians about the Y-axis.
-        - ``UnitQuaternion(theta, 'deg')`` constructs a unit quaternion representing a
-          rotation of `theta` degrees about the Y-axis.
+        - ``UnitQuaternion(θ)`` constructs a unit quaternion representing a
+          rotation of ``θ`` radians about the Y-axis.
+        - ``UnitQuaternion(θ, 'deg')`` constructs a unit quaternion representing a
+          rotation of ``θ`` degrees about the Y-axis.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Ry(0.3)
-            0.988771 << 0.000000, 0.149438, 0.000000 >>
-
-            >>> UnitQuaternion.Ry([0, 0.3, 0.6])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            0.988771 << 0.000000, 0.149438, 0.000000 >>
-            0.955336 << 0.000000, 0.295520, 0.000000 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Ry(0.3))
+            >>> print(UQ.Ry([0, 0.3, 0.6]))
         """
         angles = argcheck.getunit(argcheck.getvector(angle), unit)
         return cls([np.r_[math.cos(a / 2), 0, math.sin(a / 2), 0] for a in angles], check=False)
@@ -1005,29 +1096,27 @@ class UnitQuaternion(Quaternion):
     @classmethod
     def Rz(cls, angle, unit='rad'):
         """
-        Construct a UnitQuaternion object representing rotation about Z-axis
+        Construct a UnitQuaternion object representing rotation about the Z-axis
 
-        :arg angle: rotation angle
-        :type angle: float or array_like
+        :arg θ: rotation angle
+        :type θ: float or array_like
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        - ``UnitQuaternion(theta)`` constructs a unit quaternion representing a
-          rotation of `theta` radians about the Z-axis.
-        - ``UnitQuaternion(theta, 'deg')`` constructs a unit quaternion representing a
-          rotation of `theta` degrees about the Z-axis.
+        - ``UnitQuaternion(θ)`` constructs a unit quaternion representing a
+          rotation of ``θ`` radians about the Z-axis.
+        - ``UnitQuaternion(θ, 'deg')`` constructs a unit quaternion representing a
+          rotation of ``θ`` degrees about the Z-axis.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rz(0.3)
-            0.988771 << 0.000000, 0.000000, 0.149438 >>
-
-            >>> UnitQuaternion.Rz([0, 0.3, 0.6])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            0.988771 << 0.000000, 0.000000, 0.149438 >>
-            0.955336 << 0.000000, 0.000000, 0.295520 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rz(0.3))
+            >>> print(UQ.Rz([0, 0.3, 0.6]))
         """
         angles = argcheck.getunit(argcheck.getvector(angle), unit)
         return cls([np.r_[math.cos(a / 2), 0, 0, math.sin(a / 2)] for a in angles], check=False)
@@ -1039,24 +1128,22 @@ class UnitQuaternion(Quaternion):
 
         :param N: number of random rotations
         :type N: int
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: random unit-quaternion
+        :rtype: UnitQuaternion instance
 
         - ``UnitQuaternion.Rand()`` is a uniformly distributed random unit quaternion value.
         - ``SO3.Rand(N)`` is a unit quaternion instance containing a sequence of N random unit quaternion
           values.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rand()
-            0.622093 << -0.679361, 0.337190, -0.194349 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rand())
+            >>> print(UQ.Rand(3))
 
-            >>> UnitQuaternion.Rand(3)
-            0.117153 << -0.838230, 0.219071, -0.485442 >>
-            -0.088206 << -0.397185, 0.852524, -0.328127 >>
-            -0.204108 << -0.203155, -0.687019, 0.667138 >>
-
-        :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
+        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Rand`
         """
         return cls([quat.rand() for i in range(0, N)], check=False)
 
@@ -1065,22 +1152,25 @@ class UnitQuaternion(Quaternion):
         r"""
         Construct a new unit quaternion from Euler angles
 
-        :param angles: 3-vector of Euler angles
-        :type angles: array_like
+        :param 𝚪: 3-vector of Euler angles
+        :type 𝚪: array_like
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        ``UnitQuaternion.Eul(ANGLES)`` is a unit quaternion that describes the 3D rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
-        correspond to consecutive rotations about the Z, Y, Z axes respectively.
+        ``UnitQuaternion.Eul(𝚪)`` is a unit quaternion that describes the 3D
+        rotation defined by a 3-vector of Euler angles :math:`\Gamma = (\phi, \theta, \psi)` which correspond to consecutive rotations about the Z, Y, Z axes
+        respectively.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Eul([0.1, 0.2, 0.3])
-            0.975170 << 0.009967, 0.099335, 0.197677 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Eul([0.1, 0.2, 0.3]))
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.RPY`, :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
+        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.RPY`, :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         """
         return cls(quat.r2q(tr.eul2r(angles, unit=unit)), check=False)
 
@@ -1089,34 +1179,36 @@ class UnitQuaternion(Quaternion):
         """
         Construct a new unit quaternion from roll-pitch-yaw angles
 
-        :param angles: 3-vector of roll-pitch-yaw angles
-        :type angles: array_like
+        :param 𝚪: 3-vector of roll-pitch-yaw angles
+        :type 𝚪: array_like
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
         :type unit: str
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        ``UnitQuaternion.RPY(ANGLES)`` is a unit quaternion that describes the 3D rotation defined by a  3-vector of roll, pitch, yaw angles :math:`(r, p, y)`
+        ``UnitQuaternion.RPY(𝚪)`` is a unit quaternion that describes the 3D rotation defined by a  3-vector of roll, pitch, yaw angles :math:`\Gamma = (r, p, y)`
         which correspond to successive rotations about the axes specified by ``order``:
 
-            - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
               then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
               and y-axis sideways.
-            - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
-              then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
               and y-axis between the gripper fingers.
-            - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.RPY([0.1, 0.2, 0.3])
-            0.983347 << 0.034271, 0.106021, 0.143572 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.RPY([0.1, 0.2, 0.3]))
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Eul`, :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
+        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Eul`, :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.rpy2r`
         """
         return cls(quat.r2q(tr.rpy2r(angles, unit=unit, order=order)), check=False)
 
@@ -1129,28 +1221,29 @@ class UnitQuaternion(Quaternion):
         :type o: array_like
         :param a: 3-vector parallel to the Z-axis
         :type a: array_like
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        ``SO3.OA(O, A)`` is a unit quaternion that describes the 3D rotation defined in terms of
+        ``UnitQuaternion.OA(O, A)`` is a unit quaternion that describes the 3D rotation defined in terms of
         vectors parallel to the Y- and Z-axes of its reference frame.  In robotics these axes are
         respectively called the orientation and approach vectors defined such that
         R = [N O A] and N = O x A.
 
-        Notes:
+        Example:
 
-        - The A vector is the only guaranteed to have the same direction in the resulting
-          rotation matrix
-        - O and A do not have to be unit-length, they are normalized
-        - O and A do not have to be orthogonal, so long as they are not parallel
-        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.OA([0,0,-1], [0,1,0]))
 
-        Examples::
+        .. notes::
 
-            >>> UnitQuaternion.OA([0,0,-1], [0,1,0])
-            0.707107 << -0.707107, 0.000000, -0.000000 >>
+            - Only the ``A`` vector is guaranteed to have the same direction in the resulting
+            rotation matrix
+            - ``O`` and ``A`` do not have to be unit-length, they are normalized
+            - ``O`` and ``A` do not have to be orthogonal, so long as they are not parallel
 
-        :seealso: :func:`spatialmath.base.transforms3d.oa2r`
+        :seealso: :func:`~spatialmath.base.transforms3d.oa2r`
         """
         return cls(quat.r2q(tr.oa2r(o, a)), check=False)
 
@@ -1165,27 +1258,24 @@ class UnitQuaternion(Quaternion):
         :type unit: str
         :param v: rotation axis, 3-vector
         :type v: array_like
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        ``SO3.AngVec(θ, v)`` is a unit quaternion that describes the 3D rotation
+        ``UnitQuaternion.AngVec(θ, v)`` is a unit quaternion that describes the 3D rotation
         defined by a rotation of ``θ`` about the 3-vector ``v``.
 
-        Notes:
+        Example:
 
-        - If :math:`\theta = 0` then return an identity unit quaternion,
-        - Otherwise :math:`\lVert v \rVert > 0`.
-        - :math:`v` does not have to be a unit vector.
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.AngVec(0, [1,0,0]))
+            >>> print(UQ.AngVec(90, [1,0,0], unit='deg'))
 
-        Examples::
+        .. note:: :math:`\theta = 0` the result in an identity quaternion, otherwise
+            ``V`` must have a finite length, ie. :math:`|V| > 0`.
 
-            >>> UnitQuaternion.AngVec(0, [1,0,0])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.AngVec(90, [1,0,0], unit='deg')
-            0.707107 << 0.707107, 0.000000, 0.000000 >>
-
-        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, 
-        :func:`spatialmath.base.transforms3d.angvec2r`
+        :seealso: :func:`~spatialmath.UnitQuaternion.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         v = argcheck.getvector(v, 3)
         argcheck.isscalar(theta)
@@ -1195,31 +1285,28 @@ class UnitQuaternion(Quaternion):
     @classmethod
     def EulerVec(cls, w):
         r"""
-        Construct a new unit quaternion from Euler rotation vector
+        Construct a new unit quaternion from an Euler rotation vector
 
-        :param w: rotation axis
-        :type w: 3-element array_like
-        :return: new unit-quaternion
-        :rtype: UnitQuaternion
+        :param ω: rotation axis
+        :type ω: 3-element array_like
+        :return: unit-quaternion
+        :rtype: UnitQuaternion instance
 
-        ``SO3.EulerVec(ω)`` is a unit quaternion that describes the 3D rotation
+        ``UnitQuaternion.EulerVec(ω)`` is a unit quaternion that describes the 3D rotation
         defined by a rotation of :math:`\theta = \lVert \omega \rVert` about the
         unit 3-vector :math:`\omega / \lVert \omega \rVert`.
 
-        Notes:
+        Example:
 
-        - If :math:`\lVert \omega \rVert = 0` then return an identity unit quaternion,
-        - Otherwise :math:`\lVert v \rVert > 0`.
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.EulerVec([0.5,0,0]))
 
-        Examples::
+        .. note:: :math:`\theta \eq 0` the result in an identity matrix, otherwise
+            ``V`` must have a finite length, ie. :math:`|V| > 0`.
 
-            >>> UnitQuaternion.AngVec(0, [1,0,0])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.AngVec(90, [1,0,0], unit='deg')
-            0.707107 << 0.707107, 0.000000, 0.000000 >>
-
-        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, \
-        :func:`spatialmath.base.transforms3d.angvec2r`
+        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         assert argcheck.isvector(w, 3), 'w must be a 3-vector'
         w = argcheck.getvector(w)
@@ -1237,21 +1324,23 @@ class UnitQuaternion(Quaternion):
         :type vec: 3-element array_like
 
         ``UnitQuaternion.Vec(v)`` is a new unit quaternion with the specified vector part
-        and the scalar part is :math:`s = \sqrt{1 - v_x^2 - v_y^2 - v_z^2}`.  The unit quaternion
-        will always have a positive scalar part.
+        and the scalar part is
+        
+        .. math:: s = \sqrt{1 - v_x^2 - v_y^2 - v_z^2}
+        
+        The unit quaternion will always have a positive scalar part.
 
-        Examples::
+        Example:
 
-            >>> q = UnitQuaternion.Rz(-4)
-            >>> q
-            -0.416147 << 0.000000, 0.000000, -0.909297 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q = UQ.Rz(-4)
+            >>> print(q)
             >>> q.vec3
-            array([-0.        , -0.        ,  0.90929743])
-            >>> q2 = UnitQuaternion.Vec3(q.vec3)
-            >>> q2
-            0.416147 << -0.000000, -0.000000, 0.909297 >>
+            >>> q2 = UQ.Vec3(q.vec3)
+            >>> print(q2)
             >>> q == q2
-            True
 
         :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.vec3`
         """
@@ -1262,20 +1351,19 @@ class UnitQuaternion(Quaternion):
         Inverse of unit quaternion
 
         :return: unit-quaternion
-        :rtype: UnitQuaternion
+        :rtype: UnitQuaternion instance
 
-        - ``q.inv()`` is the inverse of the unit-quaternion.  This is a group operation
-          and the product of the unit-quaternion and its inverse is the identity quaternion.
+        ``q.inv()`` is the inverse of the unit-quaternion.  This is a group operation
+        and the product of the unit-quaternion and its inverse is the identity quaternion.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rx(0.3).inv()
-            0.988771 << -0.149438, -0.000000, -0.000000 >>
-            >>> UnitQuaternion.Rx(0.3).inv() * UnitQuaternion.Rx(0.3)
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.Rx([0.3, 0.6]).inv()
-            0.988771 << -0.149438, -0.000000, -0.000000 >>
-            0.955336 << -0.295520, -0.000000, -0.000000 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternio
+            >>> print(UQ.Rx(0.3).inv())
+            >>> print(UQ.Rx(0.3).inv() * UQ.Rx(0.3))
+            >>> print(UQ.Rx([0.3, 0.6]).inv())
 
         """
         return UnitQuaternion([quat.conj(q._A) for q in self])
@@ -1286,28 +1374,27 @@ class UnitQuaternion(Quaternion):
         Multiply unit quaternions defined by unique vector parts
 
         :param qv1: vector representation of first multiplicand
-        :type qv1: numpy array, shape=(3,)
+        :type qv1: ndarray(3)
         :param qv1: vector representation of second multiplicand
-        :type qv1: numpy array, shape=(3,)
+        :type qv1: ndarray(3)
 
         ``UnitQuaternion(qv1, qv2)`` is the Hamilton product of two unit quaternions
         represented in minimal vector form.
 
-        Examples::
+        Example:
 
-            >>> q1 = UnitQuaternion.Rx(0.3)
-            >>> q2 = UnitQuaternion.Ry(-0.3)
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q1 = UQ.Rx(0.3)
+            >>> q2 = UQ.Ry(-0.3)
             >>> qv1 = q1.vec3
             >>> qv1
-            array([0.14943813, 0.        , 0.        ])
             >>> qv2 = q2.vec3
-            >>> qv = UnitQuaternion.qvmul(qv1, qv2)
+            >>> qv = UQ.qvmul(qv1, qv2)
             >>> qv
-            array([ 0.1477601 , -0.1477601 , -0.02233176])
-            >>> UnitQuaternion.Vec3(qv)
-            0.977668 << 0.147760, -0.147760, -0.022332 >>
-            >>> UnitQuaternion.Rx(0.3) * UnitQuaternion.Ry(-0.3)
-            0.977668 << 0.147760, -0.147760, -0.022332 >>
+            >>> print(UQ.Vec3(qv))
+            >>> print(UQ.Rx(0.3) * UQ.Ry(-0.3))
 
         :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.vec3`, :func:`~spatialmath.quaternion.UnitQuaternion.Vec3`
         """
@@ -1315,12 +1402,12 @@ class UnitQuaternion(Quaternion):
 
     def dot(self, omega):
         """
-        Rate of change of unit quaternion
+        Rate of change of a unit quaternion in world frame
 
-        :param omega: angular velocity in world frame
-        :type omega: 3-element array_like
+        :param ω: angular velocity in world frame
+        :type ω: 3-element array_like
         :return: rate of change of unit quaternion
-        :rtype: numpy.ndarray, shape=(4,)
+        :rtype: ndarray(4)
 
         ``q.dot(ω)`` is the rate of change of the elements of the unit quaternion ``q``
         which represents the orientation of a body frame with angular velocity ``ω`` in
@@ -1330,12 +1417,12 @@ class UnitQuaternion(Quaternion):
 
     def dotb(self, omega):
         """
-        Rate of change of unit quaternion in body frame
+        Rate of change of a unit quaternion in body frame
 
-        :param omega: angular velocity in body frame
-        :type omega: 3-element array_like
+        :param ω: angular velocity in body frame
+        :type ω: 3-element array_like
         :return: rate of change of unit quaternion
-        :rtype: numpy.ndarray, shape=(4,)
+        :rtype: ndarray(4)
 
         ``q.dotb(ω)`` is the rate of change of the elements of the unit quaternion ``q``
         which represents the orientation of a body frame with angular velocity ``ω`` in
@@ -1347,10 +1434,6 @@ class UnitQuaternion(Quaternion):
         """
         Multiply unit quaternion
 
-        :arg left: left multiplicand
-        :type left: UnitQuaternion
-        :arg right: right multiplicand
-        :type left: UnitQuaternion, Quaternion, 3-vector, 3xN array, float
         :return: product
         :rtype: Quaternion, UnitQuaternion
         :raises: ValueError
@@ -1369,6 +1452,15 @@ class UnitQuaternion(Quaternion):
 
         Any other input combinations result in a ValueError.
 
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rx(0.3) * UQ.Rx(0.4))
+            >>> print(UQ.Rx(0.3) * 2)
+            >>> print(UQ.Rx(0.3) * [1, 2, 3])
+
         Note that left and right can have a length greater than 1 in which case:
 
         ====   =====   ====  ================================
@@ -1378,26 +1470,25 @@ class UnitQuaternion(Quaternion):
          1      N       N    ``prod[i] = left * right[i]``
          N      1       N    ``prod[i] = left[i] * right``
          N      N       N    ``prod[i] = left[i] * right[i]``
-         N      M       -    ``ValueError``
+         N      M       n/a    ``ValueError``
         ====   =====   ====  ================================
 
         A scalar of length N is a list, tuple or numpy array.
         A 3-vector of length N is a 3xN numpy array, where each column is 
         a 3-vector.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rx(0.3) * UnitQuaternion.Rx(0.3)
-            0.955336 << 0.295520, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.Rx(0.3) * UnitQuaternion.Rx([0.3, 0.6])
-            0.955336 << 0.295520, 0.000000, 0.000000 >>
-            0.900447 << 0.434966, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.Rx([0.3, 0.6]) * UnitQuaternion.Rx(0.3)
-            0.955336 << 0.295520, 0.000000, 0.000000 >>
-            0.900447 << 0.434966, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.Rx([0.3, 0.6]) * UnitQuaternion.Rx([0.3, 0.6])
-            0.955336 << 0.295520, 0.000000, 0.000000 >>
-            0.825336 << 0.564642, 0.000000, 0.000000 >>
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rx(0.3) * UQ.Rx(0.4))
+            >>> q = UQ.Rx(0.3)
+            >>> q *= UQ.Rx(0.4))
+            >>> print(q)
+            >>> print(UQ.Rx(0.3) * UQ.Rx([0.4, 0.6])
+            >>> print(UQ.Rx([0.3, 0.6]) * UQ.Rx(0.3))
+            >>> print(UQ.Rx([0.3, 0.6]) * UQ.Rx([0.3, 0.6]))
 
         :seealso: :func:`~spatialmath.Quaternion.__mul__`
         """
@@ -1437,10 +1528,6 @@ class UnitQuaternion(Quaternion):
         """
         Multiply unit quaternion in place
 
-        :arg left: left multiplicand
-        :type left: UnitQuaternion
-        :arg right: right multiplicand
-        :type right: UnitQuaternion, Quaternion, float
         :return: product
         :rtype: UnitQuaternion, Quaternion
         :raises: ValueError
@@ -1450,8 +1537,8 @@ class UnitQuaternion(Quaternion):
 
         Example::
 
-            >>> q = UnitQuaternion.Rx(0.3)
-            >>> q *= UnitQuaternion.Rx(0.3)
+            >>> q = UQ.Rx(0.3)
+            >>> q *= UQ.Rx(0.3)
             >>> q
             0.955336 << 0.295520, 0.000000, 0.000000 >>
 
@@ -1466,27 +1553,59 @@ class UnitQuaternion(Quaternion):
 
         :rtype: Quaternion or UnitQuaternion
 
-        ``q1 / q2`` is equivalent to ``q1 * q1.inv()``.
+        - ``q1 / q2`` is equivalent to ``q1 * q1.inv()``.
+        - ``q / s`` performs elementwise division of the elements of ``q`` by 
+          ``s``. This is not a group operation so the result will be a 
+          Quaternion.
 
-        Examples::
+        ==============   ==============   ==============  ===========================
+                   Multiplicands                   Quotient
+        -------------------------------   -------------------------------------------
+            left             right            type           result
+        ==============   ==============   ==============  ===========================
+        UnitQuaternion   UnitQuaternion   UnitQuaternion  Hamilton product by inverse
+        UnitQuaternion   scalar           Quaternion      element-wise division
+        ==============   ==============   ==============  ===========================
 
-            >>> UnitQuaternion.Rx(0.3) / UnitQuaternion.Rx(0.3)
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            >>> UnitQuaternion.Rx([0.3, 0.6]) / UnitQuaternion.Rx(0.3)
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            0.988771 << 0.149438, 0.000000, 0.000000 >>
+        Any other input combinations result in a ValueError.
 
-            >>> UnitQuaternion.Rx(0.3) / UnitQuaternion.Rx([0.3, 0.6])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            0.988771 << -0.149438, 0.000000, 0.000000 >>
+        Example:
 
-            >>> UnitQuaternion.Rx([0.3, 0.6]) / UnitQuaternion.Rx([0.3, 0.6])
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rx(0.3) / UQ.Rx(0.3))
+            >>> print(UQ.Rx(0.3) / 2)
+
+        For pose composition either or both operands may hold more than one value which
+        results in the composition holding more than one value according to:
+
+        =========   ==========   ====  =====================================
+        len(left)   len(right)   len     operation
+        =========   ==========   ====  =====================================
+         1          1             1    ``quo = left * right.inv()``
+         1          M             M    ``quo[i] = left * right[i].inv()``
+         N          1             M    ``quo[i] = left[i] * right.inv()``
+         M          M             M    ``quo[i] = left[i] * right[i].inv()``
+        =========   ==========   ====  =====================================
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> print(UQ.Rx(0.3) / UQ.Rx(0.3))
+            >>> print(UQ.Rx([0.3, 0.6]) / UQ.Rx(0.3))
+            >>> print(UQ.Rx(0.3) / UQ.Rx([0.3, 0.6]))
+            >>> print(UQ.Rx([0.3, 0.6]) / UQ.Rx([0.3, 0.6]))
+
         """
-
-        assert isinstance(left, type(right)), 'operands to / are of different types'
-        return UnitQuaternion(left.binop(right, lambda x, y: tr.qqmul(x, tr.conj(y))))
+        if isinstance(left, right.__class__):
+            return UnitQuaternion(left.binop(right, lambda x, y: tr.qqmul(x, tr.conj(y))))
+        elif argcheck.isscalar(right):
+            return Quaternion(left.binop(right, lambda x, y: x / y))
+        else:
+            raise ValueError('bad operands')
 
     def __eq__(left, right):
         """
@@ -1494,27 +1613,24 @@ class UnitQuaternion(Quaternion):
 
         :rtype: bool
 
-        ``q1 == q2`` is True if ``q1` is elementwise equal to ``q2`` and accounts for the
-        double mapping.
+        ``q1 == q2`` is True if ``q1`` is elementwise equal to ``q2`` and accounts for the
+        double mapping. Supports broadcasting.
 
-        Examples::
+        Example:
 
-            >>> q1 = UnitQuaternion.Rx(0.3)
-            >>> q2 = UnitQuaternion.Ry(0.3)
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q1 = UQ.Rx(0.3)
+            >>> q2 = UQ.Ry(0.3)
             >>> q1 == q1
-            True
             >>> q1 == (-q1)
-            True
             >>> q1 == q2
-            False
-            >>> UnitQuaternion([q1, q2]) == q1
-            [True, False]
-            >>> UnitQuaternion([q1, q2]) == q2
-            [False, True]
-            >>> UnitQuaternion([q1, q2]) == UnitQuaternion([q1, q2])
-            [True, True]
+            >>> UQ([q1, q2]) == q1
+            >>> UQ([q1, q2]) == q2
+            >>> UQ([q1, q2]) == UQ([q1, q2])
 
-        :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__ne__`, :func:`~spatialmath.base.quaternions.isequal`
         """
         return left.binop(right, lambda x, y: quat.isequal(x, y, unitq=True), list1=False)
 
@@ -1524,37 +1640,58 @@ class UnitQuaternion(Quaternion):
 
         :rtype: bool
 
-        ``q1 != q2`` is True if ``q` is elementwise not equal to ``q2``.
+        ``q1 != q2`` is True if ``q1`` is elementwise not equal to ``q2`` and accounts for the
+        double mapping. Supports broadcasting.
 
-        Examples::
+        Example:
 
-            >>> q1 = UnitQuaternion.Rx(0.3)
-            >>> q2 = UnitQuaternion.Ry(0.3)
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q1 = UQ.Rx(0.3)
+            >>> q2 = UQ.Ry(0.3)
             >>> q1 != q1
-            True
             >>> q1 != (-q1)
-            False
-            >> q1 != q2
-            True
-            >>> UnitQuaternion([q1, q2]) == q1
-            [False, True]
-            >>> UnitQuaternion([q1, q2]) == q2
-            [True, False]
-            >>> UnitQuaternion([q1, q2]) == UnitQuaternion([q1, q2])
-            [False, False]
+            >>> q1 != q2
+            >>> UQ([q1, q2]) == q1
+            >>> UQ([q1, q2]) == q2
+            >>> UQ([q1, q2]) == UQ([q1, q2])
 
-        :seealso: :func:`__ne__`, :func:`spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__eq__`, :func:`~spatialmath.base.quaternions.isequal`
         """
         return left.binop(right, lambda x, y: not quat.isequal(x, y, unitq=True), list1=False)
 
     def interp(self, s=0, dest=None, shortest=False):
         """
-        Algorithm source: https://en.wikipedia.org/wiki/Slerp
-        :param qr: UnitQuaternion
+        Interpolate between two unit quaternions
+
+        :param dest: destination unit quaternion
+        :type dest: UnitQuaternion
         :param shortest: Take the shortest path along the great circle
         :param s: interpolation in range [0,1]
         :type s: float
-        :return: interpolated UnitQuaternion
+        :return: interpolated unit quaternion
+        :rtype: UnitQuaternion instance
+
+        - ``q.interp(s)`` is a unit quaternion that is interpolated between
+          the identity quaternion and ``q``.  Spherical linear interpolation (slerp) is used.
+
+        - ``q1.interp(s, dest=q2)`` as above but interpolated between
+          ``q1`` and ``q2``.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q1 = UQ.Rx(0.3); q2 = UQ.Rz(-0.4)
+            >>> print(q1)
+            >>> print(q2)
+            >>> print(q1.interp(0, q2))    # this is q1
+            >>> print(q1.interp(1, q2))    # this is q2
+            >>> print(q1.interp(0.5, q2))  # this is in between
+
+        :seealso: :func:`~spatialmath.base.quaternions.slerp`
         """
         # TODO vectorize
 
@@ -1611,7 +1748,7 @@ class UnitQuaternion(Quaternion):
 
         Example::
 
-            >>> q = UnitQuaternion.Rx(0.3)
+            >>> q = UQ.Rx(0.3)
             >>> q.plot(frame='A', color='green')
 
         :seealso: :func:`~spatialmath.base.transforms3d.trplot`
@@ -1635,9 +1772,9 @@ class UnitQuaternion(Quaternion):
 
         Example::
 
-            >>> X = UnitQuaternion.Rx(0.3)
+            >>> X = UQ.Rx(0.3)
             >>> X.animate(frame='A', color='green')
-            >>> X.animate(start=UnitQuaternion.Ry(0.2))
+            >>> X.animate(start=UQ.Ry(0.2))
 
         :see :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms3d.trplot`
         """
@@ -1651,7 +1788,7 @@ class UnitQuaternion(Quaternion):
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 3-vector of roll-pitch-yaw angles
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3)
 
         ``q.rpy`` is the roll-pitch-yaw angle representation of the 3D rotation.  The angles are
         a 3-vector :math:`(r, p, y)` which correspond to successive rotations about the axes
@@ -1672,11 +1809,15 @@ class UnitQuaternion(Quaternion):
         - 1, return an ndarray with shape=(3,)
         - N>1, return ndarray with shape=(N,3)
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rx(0.3).rpy()
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+
+            >>> UQ.Rx(0.3).rpy()
             array([ 0.3, -0. ,  0. ])
-            >>> UnitQuaternion.Rz([0.2, 0.3]).rpy()
+            >>> UQ.Rz([0.2, 0.3]).rpy()
             array([[ 0. , -0. ,  0.2],
                 [ 0. , -0. ,  0.3]])
 
@@ -1694,7 +1835,7 @@ class UnitQuaternion(Quaternion):
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 3-vector of Euler angles
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3)
 
         ``q.eul`` is the Euler angle representation of the rotation.  Euler angles are
         a 3-vector :math:`(\phi, \theta, \psi)` which correspond to consecutive
@@ -1708,11 +1849,15 @@ class UnitQuaternion(Quaternion):
         - ndarray with shape=(3,), if len(R) == 1
         - ndarray with shape=(N,3), if len(R) = N > 1
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rz(0.3).eul()
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+
+            >>> UQ.Rz(0.3).eul()
             array([0. , 0. , 0.3])
-            >>> UnitQuaternion.Ry([0.3, 0.4]).eul()
+            >>> UQ.Ry([0.3, 0.4]).eul()
             array([[0. , 0.3, 0. ],
                 [0. , 0.4, 0. ]])
 
@@ -1732,15 +1877,19 @@ class UnitQuaternion(Quaternion):
         :param check: check that rotation matrix is valid
         :type check: bool
         :return: :math:`(\theta, {\bf v})`
-        :rtype: float, numpy.ndarray, shape=(3,)
+        :rtype: float, ndarray(3)
 
         ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation 
         angle and a rotation axis which is equivalent to the rotation of
         the unit quaternion ``q``.
 
-        Example::
+        Example:
 
-        >>> UnitQuaternion.Rz(0.3).angvec()
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+
+        >>> UQ.Rz(0.3).angvec()
             (0.3, array([0., 0., 1.]))
 
         :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
@@ -1757,9 +1906,13 @@ class UnitQuaternion(Quaternion):
         ``q.SO3()`` is an ``SO3`` instance representing the same rotation 
         as the unit quaternion ``q``.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rz(0.3).SO3()
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+
+            >>> UQ.Rz(0.3).SO3()
             SO3(array([[ 0.95533649, -0.29552021,  0.        ],
                     [ 0.29552021,  0.95533649,  0.        ],
                     [ 0.        ,  0.        ,  1.        ]]))
@@ -1776,9 +1929,13 @@ class UnitQuaternion(Quaternion):
         ``q.SE3()`` is an ``SE3`` instance representing the same rotation 
         as the unit quaternion ``q`` and with zero translation.
 
-        Examples::
+        Example:
 
-            >>> UnitQuaternion.Rz(0.3).SE3()
+        .. runblock:: pycon
+        
+            >>> from spatialmath import UnitQuaternion as UQ
+
+            >>> UQ.Rz(0.3).SE3()
             SE3(array([[ 0.95533649, -0.29552021,  0.        ,  0.        ],
                     [ 0.29552021,  0.95533649,  0.        ,  0.        ],
                     [ 0.        ,  0.        ,  1.        ,  0.        ],

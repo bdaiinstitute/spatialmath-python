@@ -12,7 +12,14 @@ except ImportError:  # pragma: no cover
     _symbolics = False
     symtype = ()
 
+"""
+This package provides a light-weight wrapper to support use of SymPy.  It
+generalizes some common functions so that they can accept numerical or
+Symbolic arguments.
 
+If SymPy is not installed then only the standard numeric operations are
+supported. 
+"""
 # ---------------------------------------------------------------------------------------#
 
 def symbol(name, real=True):
@@ -75,9 +82,9 @@ def sin(theta):
     """
     Generalized sine function
 
-    :param ϴ: argument
-    :type ϴ: float or symbolic
-    :return: sin(ϴ)
+    :param θ: argument
+    :type θ: float or symbolic
+    :return: sin(θ)
     :rtype: float or symbolic
 
     .. runblock:: pycon
@@ -98,9 +105,9 @@ def cos(theta):
     """
     Generalized cosine function
 
-    :param ϴ: argument
-    :type ϴ: float or symbolic
-    :return: cos(ϴ)
+    :param θ: argument
+    :type θ: float or symbolic
+    :return: cos(θ)
     :rtype: float or symbolic
 
     .. runblock:: pycon

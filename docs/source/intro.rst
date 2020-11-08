@@ -7,9 +7,9 @@ Introduction
 Spatial maths capability underpins all of robotics and robotic vision. 
 It provides the means to describe the relative position and orientation of objects in 2D or 3D space.  
 This package provides Python classes and functions to represent, print, plot, manipulate and covert between such representations.
-This includes relevant mathematical objects such as rotation matrices :math:`R \in SO(2), SO(3)`, 
-homogeneous transformation matrices :math:`T \in SE(2), SE(3)`, unit quaternions :math:`q \in S^3`,
-and twists :math:`t \in se(2), se(3)`.
+This includes relevant mathematical objects such as rotation matrices :math:`\mat{R} \in \SO{2}, \SO{3}`, 
+homogeneous transformation matrices :math:`\mat{T} \in \SE{2}, \SE{3}`, unit quaternions :math:`\q \in \mathrm{S}^3`,
+and twists :math:`S \in \se{2}, \se{3}`.
 
 For example, we can create a rigid-body transformation that is a rotation about the x-axis of 30 degrees:
 
@@ -19,7 +19,8 @@ For example, we can create a rigid-body transformation that is a rotation about 
       >>> rotx(30, 'deg')
 
 
-which results in a NumPy :math:`4 \times 4` array that belongs to the group SE(3).  We could also create a class instance:
+which results in a NumPy :math:`4 \times 4` array that belongs to the group
+:math:`\SE{3}`.  We could also create a class instance:
 
 .. runblock:: pycon
 
@@ -44,14 +45,12 @@ Spatial math classes
 The package provides classes to represent pose and orientation in 3D and 2D
 space:
 
-============  ==================  =============
-Represents    in 3D               in 2D
-============  ==================  =============
-pose          ``SE3``,             ``SE2``,
-              ``Twist3``          ``Twist2``
-orientation   ``SO3`` ,            ``SO2``
-              ``UnitQuaternion``  
-============  ==================  =============
+============  ===========================  ===================
+Represents    in 3D                        in 2D
+============  ===========================  ===================
+pose          ``SE3`` ``Twist3``           ``SE2``  ``Twist2``
+orientation   ``SO3`` ``UnitQuaternion``   ``SO2``
+============  ===========================  ===================
 
 Additional classes include:
 
@@ -62,24 +61,24 @@ Additional classes include:
 These classes abstract, and implement appropriate operations, for the following
 groups:
 
-======================  ============================    =======================
-Group                   Name                            Class
-======================  ============================    =======================
-:math:`\mbox{SE(3)}`    rigid-body translation in 3D    ``SE3``
-:math:`\mbox{se(3)}`    twist in 3D                     ``Twist3``
-:math:`\mbox{SO(3)}`    orientation in 3D               ``SO3``
-:math:`S^3`             unit quaternion                 ``UnitQuaternion``
-:math:`\mbox{SE(2)}`    rigid-body translation in 2D    ``SE2``
-:math:`\mbox{se(2)}`    twist in 2D                     ``Twist2``
-:math:`\mbox{SO(2)}`    orientation in 2D               ``SO2``
-:math:`\mathbb{H}`      quaternion                      ``Quaternion``
-:math:`P^5`             Plücker lines                   ``Plucker``
-:math:`M^6`             spatial velocity                ``SpatialVelocity``
-:math:`M^6`             spatial acceleration            ``SpatialAcceleration``
-:math:`F^6`             spatial force                   ``SpatialForce``
-:math:`F^6`             spatial momentum                ``SpatialMomentum``
-|                       spatial inertia                 ``SpatialInertia``
-======================  ============================    =======================
+================================  ==============================  ======================
+Group                             Name                            Class
+================================  ==============================  ======================
+:math:`\SE{3}`                    rigid-body transformaton in 3D  ``SE3``
+:math:`\se{3}`                    twist in 3D                     ``Twist3``
+:math:`\SO{3}`                    orientation in 3D               ``SO3``
+:math:`\mathrm{S}^3`              unit quaternion                 ``UnitQuaternion``
+:math:`\SE{2}`                    rigid-body transformaton in 2D  ``SE2``
+:math:`\se{2}`                    twist in 2D                     ``Twist2``
+:math:`\SO{2}`                    orientation in 2D               ``SO2``
+:math:`\mathbb{H}`                quaternion                      ``Quaternion``
+:math:`P^5`                       Plücker lines                   ``Plucker``
+:math:`M^6`                       spatial velocity                ``SpatialVelocity``
+:math:`M^6`                       spatial acceleration            ``SpatialAcceleration``
+:math:`F^6`                       spatial force                   ``SpatialForce``
+:math:`F^6`                       spatial momentum                ``SpatialMomentum``
+:math:`\mathbb{R}^{6 \times 6}`   spatial inertia                 ``SpatialInertia``
+================================  ==============================  ======================
 
 
 In addition to the merits of classes outlined above, classes ensure that the numerical value is always valid because the 
@@ -180,10 +179,22 @@ Vector transformation
 The classes ``SE3``, ``SO3``, ``SE2``, ``SO2`` and ``UnitQuaternion`` support vector transformation when 
 premultiplying a vector (or a set of vectors columnwise in a NumPy array) using the ``*`` operator.
 This is either rotation about the origin (for ``SO3``, ``SO2`` and ``UnitQuaternion``) or rotation and translation (``SE3``, ``SE2``).  
+The implementation depends on the class of the object involved:
 
-For ``UnitQuaternion`` this is performed directly using Hamilton products :math:`q \circ \mathring{v} \circ q^{-1}`.
-For ``SO3`` and ``SO2`` this is a matrix-vector product, for ``SE3`` and ``SE2`` this is a matrix-vector product with the vectors
-being first converted to homogeneous form, and the result converted back to Euclidean form.
+- for ``UnitQuaternion`` this is performed directly using Hamilton products
+  :math:`\q \circ \mathring{v} \circ \q^{-1}`.
+- for ``SO3`` and ``SO2`` this is a matrix-vector product
+- for ``SE3`` and ``SE2`` this is a matrix-vector product with the vectors
+  being first converted to homogeneous form, and the result converted back to
+  Euclidean form.
+
+.. runblock:: pycon
+
+    >>> from spatialmath import *
+    >>> v = [1, 2, 3]
+    >>> SO3.Rx(0.3) * v
+    >>> SE3.Rx(0.3) * v
+    >>> UnitQuaternion.Rx(0.3) * v
 
 Non-group operations
 ^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +209,7 @@ performed elementwise, for example:
     >>> T = SE3.Rx(0.3)
     >>> T - T
 
-or in the case of a scalar broadcast to each element:
+or, in the case of a scalar, broadcast to each element:
 
 .. runblock:: pycon
 
@@ -266,11 +277,16 @@ _indexcolor      (None, 'yellow_2')   Foreground, background color of index tag
 _format          '{:< 12g}'           Format string for each matrix element
 _suppress_small  True                 Suppress *small* values, set to zero
 _suppress_tol    100                  Threshold for *small* values in eps units
+_ansimatrix      False                Display as a matrix with brackets
 ===============  ===================  ============================================
 
 For example::
 
-    >>> SE3._rotcolor = 'green'
+    >>> SE3._rotcolor = 'green'   # rotation part in green
+
+or to supress color, perhaps for inclusion in documentation::
+
+  >>> SE3._color = False
 
 
 Graphics
@@ -375,7 +391,7 @@ a Python list
 where each item is an object of the same class as that it was extracted from.
 Slice notation is also available, eg. ``R[0:-1:3]`` is a new SO3 instance containing every third element of ``R``.
 
-In particular it includes an iterator allowing comprehensions:
+In particular it supports iteration which allows looping and comprehensions:
 
 .. runblock:: pycon
 
@@ -412,7 +428,8 @@ Vectorization
 .. image:: ../figs/broadcasting.png
 
 For most methods, if applied to an object that contains N elements, the result
-will be the appropriate return object type with N elements.
+will be the appropriate return object type with N elements.  In MATLAB this is
+referred to as *vectorization* and in NumPy as *broadcasting*.
 
 Most binary operations are vectorized: ``*``, ``*=``, ``**``, ``/``, ``/=``, ``+``, ``+=``, ``-``, ``-=``,
 ``==``, ``!=``.  For the case::

@@ -675,7 +675,7 @@ def angle(q1, q2):
     return 2.0 * math.atan2(tr.norm(q1 - q2), tr.norm(q1 + q2))
 
 
-def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
+def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
     """
     Format a quaternion
 
@@ -683,7 +683,7 @@ def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
     :type q: array_like
     :arg delim: 2-list of delimeters [default ('<', '>')]
     :type delim: list or tuple of strings
-    :arg fmt: printf-style format soecifier [default '%f']
+    :arg fmt: printf-style format soecifier [default '{: .4f}']
     :type fmt: str
     :arg file: destination for formatted string [default sys.stdout]
     :type file: file object
@@ -703,8 +703,8 @@ def qprint(q, delim=('<', '>'), fmt='%f', file=sys.stdout):
 
     """
     q = argcheck.getvector(q, 4)
-    template = "# %s #, #, # %s".replace('#', fmt)
-    s = template % (q[0], delim[0], q[1], q[2], q[3], delim[1])
+    template = "# {} #, #, # {}".replace('#', fmt)
+    s = template.format(q[0], delim[0], q[1], q[2], q[3], delim[1])
     if file:
         file.write(s + '\n')
     else:

@@ -34,7 +34,7 @@ from spatialmath.super_pose import SMPose
 
 class SO3(SMPose):  
     """
-    SO(3) subclass
+    SO(3) matrix class
 
     This subclass represents rotations in 3D space.  Internally it is a 3x3 
     orthogonal matrix belonging to the group SO(3).
@@ -100,13 +100,13 @@ class SO3(SMPose):
             ``x[i]``. This is different to the MATLAB version where the i'th
             rotation matrix is ``x(:,:,i)``.
 
-        Example::
+        Example:
 
-        >>> x = SO3.Rx(0.3)
-        >>> x.R
-        array([[ 1.        ,  0.        ,  0.        ],
-               [ 0.        ,  0.95533649, -0.29552021],
-               [ 0.        ,  0.29552021,  0.95533649]])
+        .. runblock:: pycon
+
+            >>> from spatialmath import SO3
+            >>> x = SO3.Rx(0.3)
+            >>> x.R
 
         :SymPy: supported
         """
@@ -260,10 +260,12 @@ class SO3(SMPose):
 
             - If the input is SE(3) the translation component is ignored.
 
-        Example::
+        Example:
 
-        >>> UnitQuaternion.Rz(0.3).angvec()
-            (0.3, array([0., 0., 1.]))
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion
+            >>> UnitQuaternion.Rz(0.3).angvec()
 
         :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
         """
@@ -306,15 +308,15 @@ class SO3(SMPose):
         If ``theta`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SO3
             >>> x = SO3.Rx(np.linspace(0, math.pi, 20))
             >>> len(x)
-            20
             >>> x[7]
-            SO3(array([[ 1.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.40169542, -0.91577333],
-                       [ 0.        ,  0.91577333,  0.40169542]]))
+
         """
         return cls([tr.rotx(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -336,16 +338,15 @@ class SO3(SMPose):
         If ``θ`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion
             >>> x = SO3.Ry(np.linspace(0, math.pi, 20))
             >>> len(x)
-            20
             >>> x[7]
-            >>> x[7]
-            SO3(array([[ 0.40169542,  0.        ,  0.91577333],
-                       [ 0.        ,  1.        ,  0.        ],
-                       [-0.91577333,  0.        ,  0.40169542]]))
+
         """
         return cls([tr.roty(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -367,14 +368,15 @@ class SO3(SMPose):
         If ``θ`` is an array then the result is a sequence of rotations defined by consecutive
         elements.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> x = SE3.Rz(np.linspace(0, math.pi, 20))
             >>> len(x)
-            20
-            SO3(array([[ 0.40169542, -0.91577333,  0.        ],
-                       [ 0.91577333,  0.40169542,  0.        ],
-                       [ 0.        ,  0.        ,  1.        ]]))
+            >>> x[7]
+
         """
         return cls([tr.rotz(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
 
@@ -391,13 +393,13 @@ class SO3(SMPose):
         - ``SO3.Rand()`` is a random SO(3) rotation.
         - ``SO3.Rand(N)`` is a sequence of N random rotations.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SO3
             >>> x = SO3.Rand()
             >>> x
-            SO3(array([[ 0.1805082 , -0.97959019,  0.08842995],
-                       [-0.98357187, -0.17961408,  0.01803234],
-                       [-0.00178104, -0.0902322 , -0.99591916]]))
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
@@ -408,20 +410,20 @@ class SO3(SMPose):
         r"""
         Construct a new SO(3) from Euler angles
 
-        :param angles: Euler angles
-        :type angles: array_like or numpy.ndarray with shape=(N,3)
+        :param 𝚪: Euler angles
+        :type 𝚪: array_like or numpy.ndarray with shape=(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: SO(3) rotation
         :rtype: SO3 instance
 
-        ``SO3.Eul(angles)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`(\phi, \theta, \psi)` which
+        ``SO3.Eul(𝚪)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`\Gamma = (\phi, \theta, \psi)` which
         correspond to consecutive rotations about the Z, Y, Z axes respectively.
 
-        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
+        If ``𝚪`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
         corresponding to the rows of ``angles``.
 
-        :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`spatialmath.base.transforms3d.eul2r`
+        :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         """
         if argcheck.isvector(angles, 3):
             return cls(tr.eul2r(angles, unit=unit), check=False)
@@ -445,13 +447,13 @@ class SO3(SMPose):
         ``SO3.RPY(angles)`` is an SO(3) rotation defined by a 3-vector of roll, pitch, yaw angles :math:`(r, p, y)`
           which correspond to successive rotations about the axes specified by ``order``:
 
-            - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-              and y-axis sideways.
-            - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
+             - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+               then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
+               and y-axis sideways.
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
               then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
               and y-axis between the gripper fingers.
-            - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
 
@@ -510,12 +512,43 @@ class SO3(SMPose):
         ``SO3.AngVec(theta, V)`` is an SO(3) rotation defined by
         a rotation of ``THETA`` about the vector ``V``.
 
-        If :math:`\theta \eq 0` the result in an identity matrix, otherwise
-        ``V`` must have a finite length, ie. :math:`|V| > 0`.
+        .. note:: :math:`\theta \eq 0` the result in an identity matrix, otherwise
+            ``V`` must have a finite length, ie. :math:`|V| > 0`.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
         return cls(tr.angvec2r(theta, v, unit=unit), check=False)
+
+    @classmethod
+    def EulerVec(cls, w):
+        r"""
+        Construct a new SO(3) rotation matrix from an Euler rotation vector
+
+        :param ω: rotation axis
+        :type ω: 3-element array_like
+        :return: SO(3) rotation
+        :rtype: SO3 instance
+
+        ``SO3.EulerVec(ω)`` is a unit quaternion that describes the 3D rotation
+        defined by a rotation of :math:`\theta = \lVert \omega \rVert` about the
+        unit 3-vector :math:`\omega / \lVert \omega \rVert`.
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SO3
+            >>> SO3.EulerVec([0.5,0,0])
+
+        .. note:: :math:`\theta \eq 0` the result in an identity matrix, otherwise
+            ``V`` must have a finite length, ie. :math:`|V| > 0`.
+
+        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
+        """
+        assert argcheck.isvector(w, 3), 'w must be a 3-vector'
+        w = argcheck.getvector(w)
+        theta = tr.norm(w)
+        return cls(tr.angvec2r(theta, w), check=False)
 
     @classmethod
     def Exp(cls, S, check=True, so3=True):
@@ -553,7 +586,7 @@ class SO3(SMPose):
 
 class SE3(SO3):
     """
-    SE(3) subclass
+    SE(3) matrix class
 
     This subclass represents rigid-body motion in 3D space.  Internally it is a 
     4x4 homogeneous transformation matrix belonging to the group SE(3).
@@ -633,7 +666,9 @@ class SE3(SO3):
         ``x.t`` is the translational component of ``x`` as an array with
         shape (3,). If ``len(x) > 1``, return an array with shape=(N,3).
 
-        Example::
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion
 
             >>> x = SE3(1,2,3)
             >>> x.t
@@ -1107,19 +1142,48 @@ class SE3(SO3):
         ``SE3.AngVec(θ, v)`` is an SE(3) rotation defined by
         a rotation of ``θ`` about the vector ``v``.
 
-        .. note::
+        .. math::
+        
+            \mbox{if}\,\, \theta \left\{ \begin{array}{ll}
+                = 0 & \mbox{return identity matrix}\\
+                \ne 0 & \mbox{v must have a finite length}
+                \end{array}
+                \right.
 
-            .. math::
-            
-                \mbox{if}\,\, \theta \left\{ \begin{array}{ll}
-                 = 0 & \mbox{return identity matrix}\\
-                 \ne 0 & \mbox{v must have a finite length}
-                 \end{array}
-                 \right.
-
-        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
+        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.pose3d.SE3.EulerVec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         return cls(tr.angvec2tr(theta, v, unit=unit), check=False)
+
+    @classmethod
+    def EulerVec(cls, w):
+        r"""
+        Construct a new SE(3) pure rotation matrix from an Euler rotation vector
+
+        :param ω: rotation axis
+        :type ω: 3-element array_like
+        :return: SE(3) rotation
+        :rtype: SE3 instance
+
+        ``SE3.EulerVec(ω)`` is a unit quaternion that describes the 3D rotation
+        defined by a rotation of :math:`\theta = \lVert \omega \rVert` about the
+        unit 3-vector :math:`\omega / \lVert \omega \rVert`.
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SE3
+            >>> SE3.EulerVec([0.5,0,0])
+
+        .. note:: :math:`\theta = 0` the result in an identity matrix, otherwise
+            ``V`` must have a finite length, ie. :math:`|V| > 0`.
+
+        :seealso: :func:`~spatialmath.pose3d.SE3.AngVec`, :func:`~spatialmath.base.transforms3d.angvec2tr`
+        """
+        assert argcheck.isvector(w, 3), 'w must be a 3-vector'
+        w = argcheck.getvector(w)
+        theta = tr.norm(w)
+        return cls(tr.angvec2tr(theta, w), check=False)
 
     @classmethod
     def Exp(cls, S, check=True):
