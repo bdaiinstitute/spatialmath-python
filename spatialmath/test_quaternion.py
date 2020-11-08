@@ -637,7 +637,7 @@ class TestQuaternion(unittest.TestCase):
         self.assertIsInstance(s, str)
         self.assertTrue(s.endswith(' >'))
         self.assertEqual(s.count('\n'), 0)
-        self.assertEqual(len(s), 41)
+        self.assertEqual(len(s), 37)
 
         q = Quaternion([u, u, u])
         s = str(q)

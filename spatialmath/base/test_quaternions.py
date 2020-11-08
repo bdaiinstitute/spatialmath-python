@@ -79,7 +79,7 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(isinstance(s, str), True)
         nt.assert_equal(len(s) > 2, True)
 
-        nt.assert_equal(qprint([1, 2, 3, 4], file=None), "1.000000 < 2.000000, 3.000000, 4.000000 >")
+        nt.assert_equal(qprint([1, 2, 3, 4], file=None), " 1.0000 <  2.0000,  3.0000,  4.0000 >")
 
         nt.assert_equal(isunitvec(rand()), True)
 

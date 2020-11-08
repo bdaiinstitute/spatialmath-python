@@ -143,7 +143,7 @@ class TestSO3(unittest.TestCase):
 
         s = str(R)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 3)
+        self.assertEqual(s.count('\n'), 4)
 
         s = repr(R)
         self.assertIsInstance(s, str)
