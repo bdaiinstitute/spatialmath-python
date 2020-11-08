@@ -85,17 +85,17 @@ class SMUserList(UserList, ABC):
     @classmethod
     def Empty(cls):
         """
-        Construct an empty instance (superclass method)
+        Construct an empty instance (SMUserList superclass method)
         
         :return: pose instance with zero values
 
         Example::
 
-            >>> x = SE3.Empty()
-            >>> x
-            SE3([])
+            >>> x = X.Empty()
             >>> len(x)
             0
+
+        where ``X`` is any of the SMTB classes.
         """
         x = cls()
         x.data = []
@@ -104,7 +104,7 @@ class SMUserList(UserList, ABC):
     @classmethod
     def Alloc(cls, n=1):
         """
-        Construct an instance with N default values (superclass method)
+        Construct an instance with N default values (SMUserList superclass method)
 
         :param n: Number of values, defaults to 1
         :type n: int, optional
@@ -125,20 +125,11 @@ class SMUserList(UserList, ABC):
 
         Example::
 
-            >>> x = SE3.Alloc(10)
+            >>> x = X.Alloc(10)
             >>> len(x)
             10
-            >>> x[3] = SE3.Rx(.2)
-            >>> x[2:4]
-            SE3([
-            array([[1., 0., 0., 0.],
-                [0., 1., 0., 0.],
-                [0., 0., 1., 0.],
-                [0., 0., 0., 1.]]),
-            array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                [ 0.        ,  0.98006658, -0.19866933,  0.        ],
-                [ 0.        ,  0.19866933,  0.98006658,  0.        ],
-                [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
+
+        where ``X`` is any of the SMTB classes.
         """
         x = cls()
         x.data = x.data * n
@@ -146,7 +137,7 @@ class SMUserList(UserList, ABC):
 
     def arghandler(self, arg, convertfrom=(), check=True):
         """
-        Standard constructor support (superclass method)
+        Standard constructor support (SMUserList superclass method)
 
         :param self: the instance to be initialized :type self: SMUserList
         instance :param arg: initial value :param convertfrom: list of classes
@@ -233,7 +224,12 @@ class SMUserList(UserList, ABC):
 
     @property
     def _A(self):
-        # get the underlying numpy array
+        """
+        Spatial vector as an array
+        :return: Moment vector
+        :rtype: numpy.ndarray, shape=(3,)
+        - ``X.v`` is a 3-vector
+        """
         if len(self.data) == 1:
             return self.data[0]
         else:
@@ -241,47 +237,29 @@ class SMUserList(UserList, ABC):
 
     @property
     def A(self):
-        # get the underlying numpy array
+        """
+        Array value of an instance (SMUserList superclass method)
+
+        :return: NumPy array value of this instance
+        :rtype: ndarray
+
+        - ``X.A`` is a NumPy array that represents the value of this instance, 
+          and has a shape given by ``X.shape``.
+
+        .. note:: This assumes that ``len(X)`` == 1, ie. it is a single-valued
+            instance. 
+        """
+
         if len(self.data) == 1:
             return self.data[0]
         else:
             return self.data
 
-    # @property
-    # def A(self):
-    #     """
-    #     Interal array representation (superclass property)
-        
-    #     :param self: the pose object
-    #     :type self: SO2, SE2, SO3, SE3 instance
-    #     :return: The numeric array
-    #     :rtype: numpy.ndarray
-        
-    #     Each pose subclass SO(N) or SE(N) are stored internally as a numpy array. This property returns
-    #     the array, shape depends on the particular subclass.
-        
-    #     Examples::
-            
-    #         >>> x = SE3()
-    #         >>> x.A
-    #         array([[1., 0., 0., 0.],
-    #                [0., 1., 0., 0.],
-    #                [0., 0., 1., 0.],
-    #                [0., 0., 0., 1.]])
-
-    #     :seealso: `shape`, `N`
-    #     """
-    #     # get the underlying numpy array
-    #     if len(self.data) == 1:
-    #         return self.data[0]
-    #     else:
-    #         return self.data
-
     # ------------------------------------------------------------------------ #
 
     def __getitem__(self, i):
         """
-        Access value of an instance (superclass method)
+        Access value of an instance (SMUserList superclass method)
 
         :param i: index of element to return
         :type i: int
@@ -293,11 +271,17 @@ class SMUserList(UserList, ABC):
         
         Example::
             
-            >>> q = UnitQuaternion.Rx([0, 0.3, 0.6])
-            >>> len(q)
-            3
-            >>> q[1]
-            0.988771 << 0.149438, 0.000000, 0.000000 >>
+            >>> x = X.Alloc(10)
+            >>> len(x)
+            10
+            >>> y = x[1]
+            >>> len(y)
+            1
+            >>> y = x[1:5]
+            >>> len(y)
+            4
+
+        where ``X`` is any of the SMTB classes.
         """
 
         if isinstance(i, slice):
@@ -316,7 +300,7 @@ class SMUserList(UserList, ABC):
         
     def __setitem__(self, i, value):
         """
-        Assign a value to an instance (superclass method)
+        Assign a value to an instance (SMUserList superclass method)
         
         :param i: index of element to assign to
         :type i: int
@@ -327,10 +311,13 @@ class SMUserList(UserList, ABC):
         Assign the argument to an element of the object's internal list of values.
         This supports the assignement operator, for example::
             
-            >>> q = Quaternion([Quaternion() for i in range(10)]) # sequence of ten identity values
-            >>> len(q)
+            >>> x = X.Alloc(10)
+            >>> len(x)
             10
-            >>> q[3] = Quaternion([1,2,3,4])   # assign to position 3 in the list
+            >>> x[3] = X()   # assign to position 3 in the list
+
+        where ``X`` is any of the SMTB classes.
+
         """
         if not type(self) == type(value):
             raise ValueError("can't insert different type of object")
@@ -353,14 +340,24 @@ class SMUserList(UserList, ABC):
 
     def append(self, item):
         """
-        Append a value to an instance (superclass method)
+        Append a value to an instance (SMUserList superclass method)
         
         :param x: the value to append
         :type x: Quaternion or UnitQuaternion instance
         :raises ValueError: incorrect type of appended object
 
         Appends the argument to the object's internal list of values.
-    
+
+        Example::
+
+            >>> x = X.Alloc(10)
+            >>> len(x)
+            10
+            >>> x.append(X())   # append to the list
+            >>> len(x)
+            11
+
+        where ``X`` is any of the SMTB classes.
         """
         #print('in append method')
         if not type(self) == type(item):
@@ -372,13 +369,24 @@ class SMUserList(UserList, ABC):
 
     def extend(self, iterable):
         """
-        Extend sequence of values in an instance (superclass method)
+        Extend sequence of values in an instance (SMUserList superclass method)
         
         :param x: the value to extend
         :type x: instance of same type
         :raises ValueError: incorrect type of appended object
 
         Appends the argument's values to the object's internal list of values.
+
+        Example::
+
+            >>> x = X.Alloc(10)
+            >>> len(x)
+            10
+            >>> x.append(X.Alloc(5))   # extend the list
+            >>> len(x)
+            15
+
+        where ``X`` is any of the SMTB classes.
         """
         #print('in extend method')
         if not type(self) == type(iterable):
@@ -387,7 +395,7 @@ class SMUserList(UserList, ABC):
 
     def insert(self, i, item):
         """
-        Insert a value to an instance (superclass method)
+        Insert a value to an instance (SMUserList superclass method)
 
         :param i: element to insert value before
         :type i: int
@@ -396,13 +404,23 @@ class SMUserList(UserList, ABC):
         :raises ValueError: incorrect type of inserted value
 
         Inserts the argument into the object's internal list of values.
-        
-        Examples::
-            
-            >>> q = UnitQuaternion()
-            >>> q.insert(0, UnitQuaternion.Rx(0.1)) # insert at position 0 in the list
-            >>> len(q)
-            2
+
+        Example::
+
+            >>> x = X.Alloc(10)
+            >>> len(x)
+            10
+            >>> x.insert(0, X())   # insert at start of list
+            >>> len(x)
+            11
+            >>> x.insert(10, X())   # append to the list
+            >>> len(x)
+            11
+
+        where ``X`` is any of the SMTB classes.
+
+        .. note:: If ``i`` is beyond the end of the list, the item is appended
+            to the list
         """
         if not type(self) == type(item):
             raise ValueError("can't insert different type of object")
@@ -412,7 +430,7 @@ class SMUserList(UserList, ABC):
         
     def pop(self, i=-1):
         """
-        Pop value from an instance (superclass method)
+        Pop value from an instance (SMUserList superclass method)
 
         :param i: item in the list to pop, default is last
         :type i: int
@@ -424,14 +442,18 @@ class SMUserList(UserList, ABC):
         instance is modified.
         
         Example::
-            
-            >>> q = UnitQuaternion.Rx([0, 0.3, 0.6])
-            >>> len(q)
-            3
-            >>> q.pop()
-            1.000000 << 0.000000, 0.000000, 0.000000 >>
-            >>> len(q)
-            2
+
+            >>> x = X.Alloc(10)
+            >>> len(x)
+            10
+            >>> y = x.pop()  # pop the last value x[9]
+            >>> len(x)
+            9
+            >>> y = x.pop(0)  # pop the first value x[0]
+            >>> len(x)
+            8
+
+        where ``X`` is any of the SMTB classes.
         """
         return self.__class__(super().pop(i))
 
