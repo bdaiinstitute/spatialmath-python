@@ -109,7 +109,7 @@ class SMPose(SMUserList):
     _suppress_small = True
     _suppress_tol = 100
     _color = _colored
-    _ansimatrix = _ANSIMatrix
+    _ansimatrix = False
     _ansiformatter = None
 
     def __new__(cls, *args, **kwargs):
@@ -643,7 +643,7 @@ class SMPose(SMUserList):
                 * white: constant elements
 
         """
-        if self._ansimatrix:
+        if _ANSIMatrix and self._ansimatrix:
             return self._string_matrix()
         else:
             return self._string_color(color=True)
