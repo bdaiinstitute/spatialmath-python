@@ -2,14 +2,6 @@
 """
 A set of cooperating classes to support Featherstone's spatial vector formalism
 
-References:
-
- - "Robot Dynamics Algorithms", R. Featherstone, volume 22,
-   Springer International Series in Engineering and Computer Science,
-   Springer, 1987.
- - "A beginner's guide to 6-d vectors (part 1)", R. Featherstone,
-   IEEE Robotics Automation Magazine, 17(3):83-94, Sep. 2010.
- - `Online notes <http://users.cecs.anu.edu.au/~roy/spatial>`_
 
 .. inheritance-diagram:: spatialmath.spatialvector
    :top-classes: collections.UserList
@@ -27,27 +19,39 @@ class SpatialVector(SMUserList):
     Spatial 6-vector abstract superclass
 
     This class has two abstract subclasses, which each have concrete subclasses.
+    Key characteristics:
+
+    - 6D vectors that represent velocity, acceleration, momentum and force of
+      bodies in 3D.
+    - inherit list-like properties from ``SMUserList`` class
+    - support operators:
+
+    ========   ===========================================================
+    Operator   Operation
+    ========   ===========================================================
+    ``+``      addition of spatial vectors of the same subclass
+    ``-``      subtraction of spatial vectors of the same subclass
+    ``-``      unary minus
+    ``*``      premultiplication by Twist3 is transformation to new frame
+    ``^``      cross product x or x*
+    ========   ===========================================================
+
 
     .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity spatialmath.spatialvector.SpatialAcceleration spatialmath.spatialvector.SpatialForce spatialmath.spatialvector.SpatialMomentum
        :top-classes: spatialmath.spatialvector.SpatialVector
        :parts: 1
 
-    Methods:
+    **References:**
 
-        SpatialV6     constructor invoked by subclasses
-        double        convert to a 6xN double
-        char          convert to string
-        display       display in human readable form
+    - "Robot Dynamics Algorithms", R. Featherstone, volume 22,
+      Springer International Series in Engineering and Computer Science,
+      Springer, 1987.
+    - "A beginner's guide to 6-d vectors (part 1)", R. Featherstone,
+      IEEE Robotics Automation Magazine, 17(3):83-94, Sep. 2010.
+    - `Online notes <http://users.cecs.anu.edu.au/~roy/spatial>`_
+      Methods:
 
-    Common operators:
-
-        +          add spatial vectors of the same type
-        -          subtract spatial vectors of the same type
-        -          unary minus of spatial vectors
-
-    Spatial vectors are a ``UserList`` subclass and can be placed into arrays and indexed.
-
-    :seealso: :func:`SpatialM6`, :func:`SpatialF6`, :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.
+    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`, :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.
     """
 
     def __init__(self, value):
@@ -58,11 +62,10 @@ class SpatialVector(SMUserList):
 
         - ``SpatialVector(vec)`` is a spatial vector constructed from the 6-element array-like ``vec``
         - ``SpatialVector([V1, V2, ... VN])`` is a spatial vector array with N elements, constructed from the 6-element
-           array-like values ``Vi``
+          array-like values ``Vi``
         - ``SpatialVector(A)`` is a spatial vector array with N elements, constructed from the columns of the 6xN
           array ``A``.
 
-        :seealso: :func:`SpatialVelocity`, :func:`SpatialAcceleration`, :func:`SpatialForce`, :func:`SpatialMomentum`.
         """
         # print('spatialVec6 init')
         super().__init__()
@@ -84,26 +87,30 @@ class SpatialVector(SMUserList):
         return np.zeros((6,))
     
     def isvalid(self, x, check):
-        return True
+        """
+        Test if vector is valid spatial vector
+
+        :param x: vector to test
+        :type x: numpy.ndarray
+        :arg check: ignored
+        :type check: bool
+        :return: True if the matrix has shape (6,).
+        :rtype: bool
+        """
+        return self.shape == SpatialVector.shape
 
     def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (6,)
+        :rtype: tuple
+        """
         return (6,)
 
     def __getitem__(self, i):
         return self.__class__(self.data[i])
     # ------------------------------------------------------------------------ #
-    @property
-    def V(self):
-        """
-        Spatial vector as an array
-
-        :return: Moment vector
-        :rtype: numpy.ndarray, shape=(3,)
-
-        - ``X.v`` is a 3-vector
-
-        """
-        return self.data[0]
 
     def __repr__(self):
         """
@@ -124,7 +131,7 @@ class SpatialVector(SMUserList):
 
     def __str__(self):
         """
-        Pretty string representation of spatial vector
+        Pretty string representation (superclass method)
 
         :return: readable representation of the spatial vector
         :rtype: str
@@ -140,13 +147,15 @@ class SpatialVector(SMUserList):
 
     def __neg__(self):
         """
-        Unary minus for spatial vector
+        Overloaded unary ``-`` operator (superclass method)
 
-        ``-V`` is a spatial vector of the same type as ``V`` whose value is
-        the negative of ``V``.  If V is an array V (1xN) then the result
-        is an array (1xN).
+        :return: negative of spatial vector
+        :rtype: SpatialVector subclass instance
 
-        See also SpatialVec6.minus, SpatialVec6.plus.
+        ``-v`` is a spatial vector of the same type as ``v`` whose value is
+        the element-wise negative of ``v``.
+
+        :seealso: :func:`__sub__`
         """
 
         # for i=1:numel(obj)
@@ -157,16 +166,19 @@ class SpatialVector(SMUserList):
 
     def __add__(left, right):  # pylint: disable=no-self-argument
         """
-        Addition for spatial vectors
+        Overloaded ``*`` operator (superclass method)
 
-        V1 + V2 is a spatial vector of the same type as V1 and V2 whose value is
-        the sum of V1 and V2.  If both are arrays of spatial vectors V1 (1xN) and
+        :return: sum of spatial vectors
+        :rtype: SpatialVector subclass instance
+
+        ``v1 + v2`` is a spatial vector of the same type as ``v1`` and ``v2`` whose value is
+        the element-wise sum of ``v1`` and ``v2``.  If both are arrays of spatial vectors V1 (1xN) and
         V2 (1xN) the result is an array (1xN).
 
-        See also SpatialVec6.minus.
-            :param right:
-            :return:
+        :seealso: :func:`__sub__`
         """
+
+        # TODO broadcasting with binop
         assert type(left) == type(right), 'can only add spatial vectors of same type'
         assert len(left) == len(right), 'can only add equal length arrays of spatial vectors'
 
@@ -174,91 +186,64 @@ class SpatialVector(SMUserList):
 
     def __sub__(left, right):  # pylint: disable=no-self-argument
         """
-        Subtraction Addition for spatial vectors
+        Overloaded ``-`` operator (superclass method)
 
-        :param right:
-        :return:
+        :return: difference of spatial vectors
+        :rtype: SpatialVector subclass instance
 
-        V1 - V2 is a spatial vector of the same type as V1 and V2 whose value is
-        the difference of V1 and V2.  If both are arrays of spatial vectors V1 (1xN) and
-        V2 (1xN) the result is an array (1xN).
+        ``v1 - v2`` is a spatial vector of the same type as ``v1`` and ``v2``
+        whose value is the element-wise difference of ``v1`` and ``v2``.  If
+        both are arrays of spatial vectors V1 (1xN) and V2 (1xN) the result is
+        an array (1xN).
 
-        See also SpatialVec6.__minus__, SpatialVec6.__add__
+        :seealso: :func:`__add__`, :func:`__neg__`
         """
         assert type(left) == type(right), 'can only subtract spatial vectors of same type'
         assert len(left) == len(right), 'can only subtract equal length arrays of spatial vectors'
 
         return left.__class__([x - y for x, y in zip(left.data, right.data)])
 
+# ------------------------------------------------------------------------- #
 
 class SpatialM6(SpatialVector):
     """
-    Create a new spatial motion class (abstract class)
+    Spatial 6-vector abstract motion superclass
     
-    Abstract superclass that represents spatial motion.  This class has two
-    concrete subclasses:
+    Abstract superclass that represents the vector space for spatial motion.
 
-    Methods::
-     SpatialM6     ^constructor invoked by subclasses
-     char          ^convert to string
-     cross         cross product
-     display       ^display in human readable form
-     double        ^convert to a 6xN double
-    
-    Operators::
-     +          ^add spatial vectors of the same type
-     -          ^subtract spatial vectors of the same type
-     -          ^unary minus of spatial vectors
-    
-    Notes:
-     - ^ is inherited from SpatialVec6.
-     - Subclass of the MATLAB handle class which means that pass by reference semantics
-       apply.
-     - Spatial vectors can be placed into arrays and indexed.
-    
-    See also SpatialForce, SpatialMomentum, SpatialInertia, SpatialM6.
+    :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`
     """
 
     @abstractmethod
     def __init__(self, value):
-        """
-        Create a new spatial motion vector (abstract class)
-
-        :param value:
-
-        SpatiaVecXXX(V) is a spatial vector of type SpatiaVecXXX with a value
-        from V (6x1).  If V (6xN) then an (Nx1) array of spatial vectors is
-        returned.
-
-        See also SpatialVelocity, SpatialAcceleration, SpatialForce, SpatialMomentum.
-        """
         super().__init__(value)
 
     def cross(self, other):
+        r"""
+        Spatial vector cross product
+
+        :param other: spatial motion vector
+        :type other: SpatialM6 instance
+        :return: cross product of spatial vectors
+        :rtype: SpatialF6 instance if ``other`` is SpatialF6 instance
+        :rtype: SpatialM6 instance if ``other`` is SpatialM6 instance
+
+        ``v1.cross(v2)`` is a spatial vector cross product whose result depends
+        on the subclass of ``v2``:
+
+        - if :math:`\vec{m} \in \mat{M}^6` is a spatial motion vector fixed in a
+          body with velocity :math:`\vec{v}` then 
+          :math:`\dvec{m} = \vec{v} \times \vec{m}`.
+
+        - if :math:`\vec{f} \in \mat{F}^6` is a spatial force vector fixed in a
+          body with velocity :math:`\vec{v}` then 
+          :math:`\dvec{f} = \vec{v} \times^* \vec{f}`.
         """
-
-        :param right:
-        :return:
-        SpatialM6.cross Spatial velocity cross product
-
-        - ``cross(V1, V2)`` is a SpatialAcceleration object where V1 and V2 are SpatialM6
-        subclass instances.
-
-        cross(V, F) is a SpatialForce object where V1 is a SpatialM6
-        subclass instances and F is a SpatialForce subclass instance.
-
-        Notes:
-
-         - The first form is Featherstone's "x" operator.
-         - The second form is Featherstone's "x*" operator.
-
-        """
-        pass
 
         # v = obj.vw;
         # # vcross = [ skew(w) skew(v); zeros(3,3) skew(w) ]
         
-        v = self.V
+        v = self.A
         vcross = np.array([
                             [0,    -v[5],  v[5],   0,   -v[2],   v[1]],
                             [v[5],  0,    -v[3],   v[2],  0,    -v[0]],
@@ -268,14 +253,83 @@ class SpatialM6(SpatialVector):
                             [0,     0,     0,     -v[4],  v[3],  0]
                         ])
         if isinstance(other, SpatialVelocity):
-            return SpatialAcceleration(vcross @ other.V)  # * operator
+            return SpatialM6(vcross @ other.A)  # * operator
         elif isinstance(other, SpatialF6):
-            return SpatialForce(-vcross @ other.V)  # x* operator
+            return SpatialF6(-vcross @ other.A)  # x* operator
         else:
             raise TypeError('type mismatch')
+        
+# ------------------------------------------------------------------------- #
 
-    def __mul(left, right):  # pylint: disable=no-self-argument
-        return left.cross(right)
+class SpatialF6(SpatialVector):
+    """
+    Spatial 6-vector abstract force superclass
+
+    Abstract superclass that represents the vector space for spatial force. 
+
+    :seealso: :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.
+    """
+
+    @abstractmethod
+    def __init__(self, value):
+        super().__init__(value)
+
+# ------------------------------------------------------------------------- #
+
+class SpatialVelocity(SpatialM6):
+    """
+    Spatial velocity class
+
+    Concrete subclass of SpatialM6 that represents the
+    translational and rotational velocity of a rigid-body moving in 3D space.
+
+    .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity
+       :top-classes: collections.UserList
+       :parts: 1
+
+    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialAcceleration`
+
+    """
+    def __init__(self, value=None):
+        super().__init__(value)
+
+    def cross(self, other):
+        r"""
+        Spatial vector cross product
+
+        :param other: spatial velocity vector
+        :type other: SpatialVelocity or SpatialMomentum instance
+        :return: cross product of spatial vectors
+        :rtype: SpatialAcceleration instance if ``other`` is SpatialVelocity instance
+        :rtype: SpatialMomentum instance if ``other`` is SpatialForce instance
+
+        - ``v1.cross(v2)`` is spatial acceleration given spatial velocities
+          ``v1`` and ``v2`` or :math:`\vec{v}_1 \times \vec{v}_2`
+        - ``v1.cross(m2)`` is spatial force given spatial velocity
+          ``v1`` and spatial momentum ``m2`` or :math:`\vec{v}_1 \times^* \vec{m}_2`
+
+        :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialVelocity.__xor__`
+        """
+        return SpatialAcceleration(super().cross(other))
+
+    def __xor__(self, other):
+        r"""
+        Overloaded ``^`` operator (superclass method)
+
+        :param other: spatial velocity vector
+        :type other: SpatialVelocity or SpatialMomentum instance
+        :return: cross product of spatial vectors
+        :rtype: SpatialAcceleration instance if ``other`` is SpatialVelocity instance
+        :rtype: SpatialMomentum instance if ``other`` is SpatialForce instance
+
+        - ``v1 ^ v2`` is spatial acceleration given spatial velocities
+          ``v1`` and ``v2`` or :math:`\vec{v}_1 \times \vec{v}_2`
+        - ``v1 ^ m2`` is spatial force given spatial velocity
+          ``v1`` and spatial momentum ``m2`` or :math:`\vec{v}_1 \times^* \vec{m}_2`
+
+        :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity.cross`
+        """
+        return cross(self, other)
 
     def __rmul(right, left):  # pylint: disable=no-self-argument
         if isinstance(left, SpatialInertia):
@@ -285,67 +339,11 @@ class SpatialM6(SpatialVector):
             # result is transformed SpatialVelocity or SpatialAcceleration
             # Twist * SpatialVelocity -> SpatialVelocity
             # Twist * SpatialAcceleration -> SpatialAcceleration
-            return right.__class__(left.Ad.T @ right.V)
+            return right.__class__(left.Ad.T @ right.A)
         else:
             raise ValueError('SpatialM6 with unknown premultiplication type')
 
-
-class SpatialF6(SpatialVector):
-    """
-        Abstract spatial force class
-
-        Abstract superclass that represents spatial force.  This class has two
-        concrete subclasses:
-
-        Operators:
-
-         +          ^add spatial vectors of the same type
-         -          ^subtract spatial vectors of the same type
-         -          ^unary minus of spatial vectors
-
-        Notes:
-
-        - ^ is inherited from SpatialVec6.
-        - Spatial vectors can be placed into arrays and indexed.
-
-        See also SpatialForce, SpatialMomentum, SpatialInertia, SpatialM6.
-        """
-
-    @abstractmethod
-    def __init__(self, value):
-        super().__init__(value)
-
-
-class SpatialVelocity(SpatialM6):
-    """
-    Spatial velocity class
-
-    Concrete subclass of SpatialM6 that represents the
-    translational and rotational velocity of a rigid-body moving in 3D space.
-
-    Operators:
-
-     +      ^add spatial vectors of the same type
-     -      ^subtract spatial vectors of the same type
-     -      ^unary minus of spatial vectors
-     *      ^^^premultiplication by SpatialInertia yields SpatialMomentum
-     *      ^^^^premultiplication by Twist yields transformed SpatialVelocity
-
-    Notes:
-    - ^ is inherited from SpatialVec6.
-    - ^^ is inherited from SpatialM6.
-    - ^^^ are implemented in SpatialInertia.
-    - ^^^^ are implemented in Twist.
-
-    See also SpatialVec6, SpatialM6, SpatialAcceleration, SpatialInertia, SpatialMomentum.
-
-    .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity
-       :top-classes: collections.UserList
-       :parts: 1
-
-    """
-    def __init__(self, value=None):
-        super().__init__(value)
+# ------------------------------------------------------------------------- #
 
 class SpatialAcceleration(SpatialM6):
     """
@@ -354,36 +352,17 @@ class SpatialAcceleration(SpatialM6):
     Concrete subclass of SpatialM6 that represents the
     translational and rotational acceleration of a rigid-body moving in 3D space.
 
-    Methods:
-
-     SpatialAcceleration    ^constructor invoked by subclasses
-     char                   ^convert to string
-     cross                  ^^cross product
-     display                ^display in human readable form
-     double                 ^convert to a 6xN double
-     new                    construct new concrete class of same type
-
-    Operators::
-     +     ^add spatial vectors of the same type
-     -     ^subtract spatial vectors of the same type
-     -     ^unary minus of spatial vectors
-     *     ^^^premultiplication by SpatialInertia yields SpatialForce
-     *     ^^^^premultiplication by Twist yields transformed SpatialAcceleration
-
-
-    Notes:
-     - ^ is inherited from SpatialVec6.
-     - ^^ is inherited from SpatialM6.
-     - ^^^ are implemented in SpatialInertia.
-     - ^^^^ are implemented in Twist.
-
     .. inheritance-diagram:: spatialmath.spatialvector.SpatialAcceleration
        :top-classes: collections.UserList
        :parts: 1
+
+    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialVelocity`
+
     """
     def __init__(self, value=None):
         super().__init__(value)
 
+# ------------------------------------------------------------------------- #
 
 
 class SpatialForce(SpatialF6):
@@ -393,20 +372,11 @@ class SpatialForce(SpatialF6):
     Concrete subclass of SpatialF6 and represents the
     translational and rotational forces and torques acting on a rigid-body in 3D space.
 
-    Operators::
-     +          ^add spatial vectors of the same type
-     -          ^subtract spatial vectors of the same type
-     -          ^unary minus of spatial vectors
-     *          ^^^premultiplication by SE3 yields transformed SpatialForce
-     *          ^^^^premultiplication by Twist yields transformed SpatialForce
+    .. inheritance-diagram:: spatialmath.spatialvector.SpatialForce
+       :top-classes: collections.UserList
+       :parts: 1
 
-    Notes:
-    - ^ is inherited from SpatialVec6.
-    - ^^ is inherited from SpatialM6.
-    - ^^^ are implemented in RTBPose.
-    - ^^^^ are implemented in Twist.
-
-    See also SpatialVec6, SpatialF6, SpatialMomentum.
+    :seealso: :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialMomentum`
     """
     
     def __init__(self, value=None):
@@ -415,51 +385,44 @@ class SpatialForce(SpatialF6):
 
     def __rmul(right, left):  # pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
-        return SpatialForce(left.Ad.T @ right.V)
+        return SpatialForce(left.Ad.T @ right.A)
 
+# ------------------------------------------------------------------------- #
 
 class SpatialMomentum(SpatialF6):
 
     """
     Spatial momentum class
 
-    Operators::
-     +          ^add spatial vectors of the same type
-     -          ^subtract spatial vectors of the same type
-     -          ^unary minus of spatial vectors
+    Concrete subclass of SpatialF6 and represents the
+    translational and rotational momentum of a rigid-body in 3D space.
 
-    Notes:
-     - ^ is inherited from SpatialVec6.
-     - ^^ is inherited from SpatialM6.
+    .. inheritance-diagram:: spatialmath.spatialvector.SpatialMomentum
+       :top-classes: collections.UserList
+       :parts: 1
 
-    See also SpatialVec6, SpatialF6, SpatialForce.
+    :seealso: :func:`~spatialmath.spatialvector.SpatialF6`,  :func:`~spatialmath.spatialvector.SpatialForce`
     """
     def __init__(self, value=None):
         super().__init__(value)
+
+# ------------------------------------------------------------------------- #
 
 class SpatialInertia(SMUserList):
     """
     Spatial inertia class
 
-    Concrete class representing spatial inertia.
+    Spatial inertia of a body in 3D space.
 
-    Methods:
-     SpatialInertia   constructor
-     char             convert to string
-     display          display in human readable form
-     double           convert to a 6xN double
+    ========   ===========================================================
+    Operator   Operation
+    ========   ===========================================================
+    ``+``      addition of spatial inertias of joined bodies
+    ``*``      acceleration x inertia is force
+    ========   ===========================================================
 
-    Operators:
-     +          plus: add spatial inertia of connected bodies
-     *          mtimes: compute force or momentum
-    Notes:
+    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`, :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.
 
-     - Subclass of the MATLAB handle class which means that pass by reference semantics
-       apply.
-     - Spatial inertias can be placed into arrays and indexed.
-
-    See also SpatialM6, SpatialF6, SpatialVelocity, SpatialAcceleration, SpatialForce,
-    SpatialMomentum.
     """
     def __init__(self, m=None, c=None, I=None):
         """
@@ -503,13 +466,29 @@ class SpatialInertia(SMUserList):
 
     @staticmethod
     def _identity():
-        return np.zeros((3,3))
+        return np.zeros((6,6))
     
     def isvalid(self, x, check):
-        return True
+        """
+        Test if matrix is valid spatial inertia
+
+        :param x: matrix to test
+        :type x: numpy.ndarray
+        :arg check: ignored
+        :type check: bool
+        :return: True if the matrix has shape (6,6).
+        :rtype: bool
+        """
+        return self.shape == SpatialVector.shape
 
     def shape(self):
-        return (3,3)
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (6,6)
+        :rtype: tuple
+        """
+        return (6,6)
 
     def __getitem__(self, i):
         return SpatialInertia(self.data[i])
@@ -548,38 +527,42 @@ class SpatialInertia(SMUserList):
 
     def __mul__(self, right):  # pylint: disable=no-self-argument
         """
-        Spatial inertia product
+        Overloaded ``*`` operator (superclass method)
 
-        :param left:
-        :param right:
-        :return:
+        :param other: spatial acceleration vector
+        :type other: SpatialAcceleration instance
+        :return: force
+        :rtype: SpatialForce instance if ``other`` is SpatialAcceleration instance
+        :rtype: SpatialMomentum instance if ``other`` is SpatialVelocity instance
 
-        - ``SI * A`` is the SpatialForce required for a body with SpatialInertia ``SI`` to accelerate with
-          the SpatialAcceleration ``A``.
-        - ``SI * V`` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.
+        - ``I * a`` is the SpatialForce required for a body with SpatialInertia ``I`` to accelerate with
+          the SpatialAcceleration ``a``.
+        - ``I * v`` is the SpatialMomemtum of a body with SpatialInertia ``I`` and SpatialVelocity ``v``.
         """
         left = self
 
         if isinstance(right, SpatialAcceleration):
-            return SpatialForce(left.A @ right.V)  # F = ma
+            return SpatialForce(left.A @ right.A)  # F = ma
         elif isinstance(right, SpatialVelocity):
             # crf(v(i).vw)*model.I(i).I*v(i).vw;
             # v = Wrench( a.cross() * I.I * a.vw );
-            return SpatialMomentum(left.A @ right.V)   # M = mv
+            return SpatialMomentum(left.A @ right.A)   # M = mv
         else:
             raise TypeError('bad postmultiply operands for Inertia *')
 
     def __rmul__(self, left):  # pylint: disable=no-self-argument
         """
-        Spatial inertia product
+        Overloaded ``*`` operator (superclass method)
 
-        :param left:
-        :param right:
-        :return:
+        :param other: spatial acceleration vector
+        :type other: SpatialAcceleration instance
+        :return: force
+        :rtype: SpatialForce instance if ``other`` is SpatialAcceleration instance
+        :rtype: SpatialMomentum instance if ``other`` is SpatialVelocity instance
 
-        - ``A * SI`` is the SpatialForce required for a body with SpatialInertia ``SI`` to accelerate with
-          the SpatialAcceleration ``A``.
-        - ``V * SI `` is the SpatialMomemtum of a body with SpatialInertia ``SI`` and SpatialVelocity ``V``.
+        - ``a * I`` is the SpatialForce required for a body with SpatialInertia ``I`` to accelerate with
+          the SpatialAcceleration ``a``.
+        - ``v * I`` is the SpatialMomemtum of a body with SpatialInertia ``I`` and SpatialVelocity ``v``.
         """
         return self.__mul__(left)
 
@@ -614,215 +597,3 @@ if __name__ == "__main__":
     print(I*v)
     print(I*a)
 
-    # class TestSpatialVector(unittest.TestCase):
-    #     def test_list_powers(self):
-    #         x = SpatialVelocity.Empty()
-    #         self.assertEqual(len(x), 0)
-    #         x.append(SpatialVelocity([1, 2, 3, 4, 5, 6]))
-    #         self.assertEqual(len(x), 1)
-
-    #         x.append(SpatialVelocity([7, 8, 9, 10, 11, 12]))
-    #         self.assertEqual(len(x), 2)
-
-    #         y = x[0]
-    #         self.assertIsInstance(y, SpatialVelocity)
-    #         self.assertEqual(len(y), 1)
-    #         self.assertTrue(all(y.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         y = x[1]
-    #         self.assertIsInstance(y, SpatialVelocity)
-    #         self.assertEqual(len(y), 1)
-    #         self.assertTrue(all(y.V == np.r_[7, 8, 9, 10, 11, 12]))
-
-    #         x.insert(0, SpatialVelocity([20, 21, 22, 23, 24, 25]))
-
-    #         y = x[0]
-    #         self.assertIsInstance(y, SpatialVelocity)
-    #         self.assertEqual(len(y), 1)
-    #         self.assertTrue(all(y.V == np.r_[20, 21, 22, 23, 24, 25]))
-
-    #         y = x[1]
-    #         self.assertIsInstance(y, SpatialVelocity)
-    #         self.assertEqual(len(y), 1)
-    #         self.assertTrue(all(y.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #     def test_velocity(self):
-    #         a = SpatialVelocity([1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialVelocity)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialM6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         a = SpatialVelocity(np.r_[1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialVelocity)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialM6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-    #         self.assertEqual(s.count('\n'), 0)
-    #         self.assertTrue(s.startswith('SpatialVelocity'))
-
-    #         r = np.random.rand(6, 10)
-    #         a = SpatialVelocity(r)
-    #         self.assertIsInstance(a, SpatialVelocity)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialM6)
-    #         self.assertEqual(len(a), 10)
-
-    #         b = a[3]
-    #         self.assertIsInstance(b, SpatialVelocity)
-    #         self.assertIsInstance(b, SpatialVector)
-    #         self.assertIsInstance(b, SpatialM6)
-    #         self.assertEqual(len(b), 1)
-    #         self.assertTrue(all(b.V == r[:,3]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-    #         self.assertEqual(s.count('\n'), 9)
-
-    #     def test_acceleration(self):
-    #         a = SpatialAcceleration([1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialAcceleration)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialM6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         a = SpatialAcceleration(np.r_[1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialAcceleration)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialM6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-    #         self.assertEqual(s.count('\n'), 0)
-    #         self.assertTrue(s.startswith('SpatialAcceleration'))
-
-    #         r = np.random.rand(6, 10)
-    #         a = SpatialAcceleration(r)
-    #         self.assertIsInstance(a, SpatialAcceleration)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialM6)
-    #         self.assertEqual(len(a), 10)
-
-    #         b = a[3]
-    #         self.assertIsInstance(b, SpatialAcceleration)
-    #         self.assertIsInstance(b, SpatialVector)
-    #         self.assertIsInstance(b, SpatialM6)
-    #         self.assertEqual(len(b), 1)
-    #         self.assertTrue(all(b.V == r[:,3]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-
-
-    #     def test_force(self):
-
-    #         a = SpatialForce([1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialForce)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialF6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         a = SpatialForce(np.r_[1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialForce)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialF6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-    #         self.assertEqual(s.count('\n'), 0)
-    #         self.assertTrue(s.startswith('SpatialForce'))
-
-    #         r = np.random.rand(6, 10)
-    #         a = SpatialForce(r)
-    #         self.assertIsInstance(a, SpatialForce)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialF6)
-    #         self.assertEqual(len(a), 10)
-
-    #         b = a[3]
-    #         self.assertIsInstance(b, SpatialForce)
-    #         self.assertIsInstance(b, SpatialVector)
-    #         self.assertIsInstance(b, SpatialF6)
-    #         self.assertEqual(len(b), 1)
-    #         self.assertTrue(all(b.V == r[:, 3]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-
-    #     def test_momentum(self):
-
-    #         a = SpatialMomentum([1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialMomentum)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialF6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         a = SpatialMomentum(np.r_[1, 2, 3, 4, 5, 6])
-    #         self.assertIsInstance(a, SpatialMomentum)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialF6)
-    #         self.assertEqual(len(a), 1)
-    #         self.assertTrue(all(a.V == np.r_[1, 2, 3, 4, 5, 6]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-    #         self.assertEqual(s.count('\n'), 0)
-    #         self.assertTrue(s.startswith('SpatialMomentum'))
-
-    #         r = np.random.rand(6, 10)
-    #         a = SpatialMomentum(r)
-    #         self.assertIsInstance(a, SpatialMomentum)
-    #         self.assertIsInstance(a, SpatialVector)
-    #         self.assertIsInstance(a, SpatialF6)
-    #         self.assertEqual(len(a), 10)
-
-    #         b = a[3]
-    #         self.assertIsInstance(b, SpatialMomentum)
-    #         self.assertIsInstance(b, SpatialVector)
-    #         self.assertIsInstance(b, SpatialF6)
-    #         self.assertEqual(len(b), 1)
-    #         self.assertTrue(all(b.V == r[:, 3]))
-
-    #         s = str(a)
-    #         self.assertIsInstance(s, str)
-
-
-    #     def test_arith(self):
-
-    #         # just test SpatialVelocity since all types derive from same superclass
-
-    #         r1 = np.r_[1, 2, 3, 4, 5, 6]
-    #         r2 = np.r_[7, 8, 9, 10, 11, 12]
-    #         a1 = SpatialVelocity(r1)
-    #         a2 = SpatialVelocity(r2)
-
-    #         self.assertTrue(all((a1 + a2).V == r1 + r2))
-    #         self.assertTrue(all((a1 - a2).V == r1 - r2))
-    #         self.assertTrue(all((-a1).V == -r1))
-
-    #     def test_inertia(self):
-    #         # constructor
-    #         # addition
-    #         pass
-
-    #     def test_products(self):
-    #         # v x v = a  *, v x F6 = a
-    #         # a x I, I x a
-    #         # v x I, I x v
-    #         # twist x v, twist x a, twist x F
-    #         pass
-
-
-    # unittest.main(buffer=True)
