@@ -102,6 +102,7 @@ __all__ = [
     'e2h',
     'homtrans',
 # spatialmath.base.vectors
+    'colvec',
     'unitvec',
     'norm',
     'isunitvec',

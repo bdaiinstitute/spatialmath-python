@@ -5,45 +5,14 @@ and homogeneous tranformation matrices.
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
+@author: Peter Corke
 """
-
-# This file is part of the SpatialMath toolbox for Python
-# https://github.com/petercorke/spatialmath-python
-#
-# MIT License
-#
-# Copyright (c) 1993-2020 Peter Corke
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-# Contributors:
-#
-#     1. Luis Fernando Lara Tobar and Peter Corke, 2008
-#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
-#     3. Peter Corke, 2020
 
 # pylint: disable=invalid-name
 
 import math
 import numpy as np
 from spatialmath.base import argcheck
-
 
 _eps = np.finfo(np.float64).eps
 
@@ -52,11 +21,19 @@ def colvec(v):
     """
     Create a column vector
 
-    :param v: an N-vector
-    :type v: array like
+    :param v: any vector
+    :type v: array_like(n)
     :return: a column vector
-    :rtype: NumPy ndarray, shape=(N,1)
+    :rtype: ndarray(n,1)
+
+    Convert input to a column vector.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> colvec([1, 2, 3])
     """
+    v = argcheck.getvector(v)
     return np.array(v).reshape((len(v), 1))
 
 
@@ -65,15 +42,20 @@ def unitvec(v):
     """
     Create a unit vector
 
-    :param v: n-dimensional vector
-    :type v: array_like
-    :return: a unit-vector parallel to V.
-    :rtype: numpy.ndarray
+    :param v: any vector
+    :type v: array_like(n)
+    :return: a unit-vector parallel to ``v``.
+    :rtype: ndarray(n)
     :raises ValueError: for zero length vector
 
     ``unitvec(v)`` is a vector parallel to `v` of unit length.
 
-    :seealso: norm
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unitvec([3, 4])
+
+    :seealso: :func:`~numpy.linalg.norm`
 
     """
 
@@ -90,13 +72,19 @@ def norm(v):
     """
     Norm of vector
 
-    :param v: n-vector as a list, dict, or a numpy array, row or column vector
+    :param v: any vector
+    :type v: array_like(n)
     :return: norm of vector
     :rtype: float
 
     ``norm(v)`` is the 2-norm (length or magnitude) of the vector ``v``.
 
-    :seealso: unit
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> norm([3, 4])
+
+    :seealso: :func:`~spatialmath.base.unit`
 
     """
     return np.linalg.norm(v)
@@ -107,11 +95,17 @@ def isunitvec(v, tol=10):
     Test if vector has unit length
 
     :param v: vector to test
-    :type v: numpy.ndarray
+    :type v: ndarray(n)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether vector has unit length
     :rtype: bool
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isunitvec([1, 0])
+        >>> isunitvec([1, 2])
 
     :seealso: unit, isunittwist
     """
@@ -123,11 +117,17 @@ def iszerovec(v, tol=10):
     Test if vector has zero length
 
     :param v: vector to test
-    :type v: numpy.ndarray
+    :type v: ndarray(n)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether vector has zero length
     :rtype: bool
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isunit([0, 0])
+        >>> isunit([1, 2])
 
     :seealso: unit, isunittwist
     """
@@ -138,11 +138,11 @@ def isunittwist(v, tol=10):
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
-    :param v: vector to test
-    :type v: array_like
+    :param v: twist vector to test
+    :type v: array_like(6)
     :param tol: tolerance in units of eps
     :type tol: float
-    :return: whether vector has unit length
+    :return: whether twist has unit length
     :rtype: bool
 
     Vector is is intepretted as :math:`[v, \omega]` where :math:`v \in \mathbb{R}^n` and
@@ -152,6 +152,12 @@ def isunittwist(v, tol=10):
 
     - unit rotational twist where :math:`|| \omega || = 1`, or
     - unit translational twist where :math:`|| \omega || = 0` and :math:`|| v || = 1`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isunittwist([1, 2, 3, 1, 0, 0])
+        >>> isunittwist([0, 0, 0, 2, 0, 0])
 
     :seealso: unit, isunitvec
     """
@@ -160,8 +166,6 @@ def isunittwist(v, tol=10):
     if len(v) == 6:
         # test for SE(3) twist
         return isunitvec(v[3:6], tol=tol) or (np.linalg.norm(v[3:6]) < tol * _eps and isunitvec(v[0:3], tol=tol))
-    elif len(v) == 3:
-        return isunitvec(v[2], tol=tol) or (abs(v[2]) < tol * _eps and isunitvec(v[0:2], tol=tol))
     else:
         raise ValueError
 
@@ -170,8 +174,8 @@ def isunittwist2(v, tol=10):
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
-    :param v: vector to test
-    :type v: array_like
+    :param v: twist vector to test
+    :type v: array_like(3)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether vector has unit length
@@ -184,6 +188,12 @@ def isunittwist2(v, tol=10):
 
     - unit rotational twist where :math:`|| \omega || = 1`, or
     - unit translational twist where :math:`|| \omega || = 0` and :math:`|| v || = 1`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isunittwist2([1, 2, 1])
+        >>> isunittwist2([0, 0, 2])
 
     :seealso: unit, isunitvec
     """
@@ -200,17 +210,23 @@ def unittwist(S, tol=10):
     """
     Convert twist to unit twist
 
-    :param S: twist as a 6-vector
-    :type S: array_like
+    :param S: twist vector
+    :type S: array_like(6)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: unit twist and scalar motion
-    :rtype: np.ndarray, shape=(6,)
+    :rtype: ndarray(6)
 
     A unit twist is a twist where:
 
     - the rotation part has unit magnitude
     - if the rotational part is zero, then the translational part has unit magnitude
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unittwist([2, 4, 6, 2, 0, 0])
+        >>> unittwist([2, 0, 0, 0, 0, 0])
 
     Returns None if the twist has zero magnitude
     """
@@ -235,19 +251,29 @@ def unittwist_norm(S, tol=10):
     """
     Convert twist to unit twist and norm
 
-    :param S: twist as a 6-vector
-    :type S: array_like
+    :param S: twist vector
+    :type S: array_like(6)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: unit twist and scalar motion
-    :rtype: tuple (np.ndarray shape=(6,), theta)
+    :rtype: tuple (ndarray(6), float)
 
     A unit twist is a twist where:
 
     - the rotation part has unit magnitude
     - if the rotational part is zero, then the translational part has unit magnitude
 
-    Returns (None,None) if the twist has zero magnitude
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> S, n = unittwist_norm([1, 2, 3, 1, 0, 0])
+        >>> print(S, n)
+        >>> S, n = unittwist_norm([0, 0, 0, 2, 0, 0])
+        >>> print(S, n)
+        >>> S, n = unittwist_norm([0, 0, 0, 0, 0, 0])
+        >>> print(S, n)
+
+    .. note:: Returns (None,None) if the twist has zero magnitude
     """
 
     s = argcheck.getvector(S, 6)
@@ -270,8 +296,8 @@ def unittwist2(S):
     """
     Convert twist to unit twist
 
-    :param S: twist as a 3-vector
-    :type S: array_like
+    :param S: twist vector
+    :type S: array_like(3)
     :return: unit twist and scalar motion
     :rtype: tuple (unit_twist, theta)
 
@@ -279,6 +305,13 @@ def unittwist2(S):
 
     - the rotation part has unit magnitude
     - if the rotational part is zero, then the translational part has unit magnitude
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unittwist2([2, 4, 2)
+        >>> unittwist2([2, 0, 0])
+
     """
 
     S = argcheck.getvector(S, 3)
@@ -290,7 +323,7 @@ def unittwist2(S):
     else:
         th = norm(w)
 
-    return (S / th, th)
+    return S / th
 
 
 def angdiff(a, b):
@@ -308,6 +341,14 @@ def angdiff(a, b):
     - If ``a`` is array_like, the result is a vector a[i]-b
     - If ``a`` is array_like, the result is a vector a-b[i]
     - If ``a`` and ``b`` are both vectors of the same length, the result is a vector a[i]-b[i]
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> from math import pi
+        >>> angdiff(0, 2 * pi)
+        >>> angdiff(0.9 * pi, -0.9 * pi) / pi
+
     """
 
     return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
@@ -316,14 +357,24 @@ def removesmall(v, tol=100):
     """
     Set small values to zero
 
-    :param v: Input vector
-    :type v: array-like
+    :param v: any vector
+    :type v: array_like(n) or ndarray(n,m)
     :param tol: Tolerance in units of eps, defaults to 100
     :type tol: int, optional
-    :return: Input vector with small values set to zero
-    :rtype: NumPy ndarray
+    :return: vector with small values set to zero
+    :rtype: ndarray(n) or ndarray(n,m)
 
     Values with absolute value less than ``tol`` will be set to zero.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> a = np.r_[1, 2, 3, 1e-16]
+        >>> print(a)
+        >>> a = removesmall(a)
+        >>> print(a)
+        >>> print(a[3])
+
     """
     return np.where(abs(v) < tol * _eps, 0, v)
 

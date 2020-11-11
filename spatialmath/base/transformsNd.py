@@ -5,11 +5,11 @@ and homogeneous tranformation matrices.
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
-Versions:
-
-    1. Luis Fernando Lara Tobar and Peter Corke, 2008
-    2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017
-    3. Peter Corke, 2020
+@author: Peter Corke
+@author: Luis Fernando Lara Tobar
+@author: Aditya Dua
+@author: Josh Carrigg Hodson
+@author: Chee Ho Chan
 """
 # pylint: disable=invalid-name
 
@@ -29,9 +29,11 @@ def r2t(R, check=False):
     Convert SO(n) to SE(n)
 
     :param R: rotation matrix
+    :type R: ndarray(2,2) or ndarray(3,3)
     :param check: check if rotation matrix is valid (default False, no check)
+    :type check: bool
     :return: homogeneous transformation matrix
-    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :rtype: ndarray(3,3) or ndarray(4,4)
 
     ``T = r2t(R)`` is an SE(2) or SE(3) homogeneous transform equivalent to an
     SO(2) or SO(3) orthonormal rotation matrix ``R`` with a zero translational
@@ -40,10 +42,20 @@ def r2t(R, check=False):
     - if ``R`` is 2x2 then ``T`` is 3x3: SO(2) -> SE(2)
     - if ``R`` is 3x3 then ``T`` is 4x4: SO(3) -> SE(3)
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> R = rot2(0.3)
+        >>> R
+        >>> r2t(R)
+
     :seealso: t2r, rt2tr
     """
+    if not isinstance(R, np.ndarray):
+        raise ValueError('argument must be NumPy array')
     dim = R.shape
-    assert dim[0] == dim[1], 'Matrix must be square'
+    if dim[0] != dim[1]:
+        raise ValueError('Matrix must be square')
     n = dim[0] + 1
     m = dim[0]
 
@@ -52,9 +64,10 @@ def r2t(R, check=False):
         T = np.zeros((n, n), dtype='O')
     else:
         # numeric matrix
-        assert isinstance(R, np.ndarray)
-        if check and np.abs(np.linalg.det(R) - 1) < 100 * _eps:
-            raise ValueError('Invalid rotation matrix ')
+        if not isinstance(R, np.ndarray):
+            raise ValueError('Argument must be a NumPy array')
+        if check and not isR(R):
+            raise ValueError('Invalid SO(3) matrix ')
 
         # T = np.pad(R, (0, 1), mode='constant')
         # T[-1, -1] = 1.0
@@ -64,16 +77,17 @@ def r2t(R, check=False):
 
     return T
 
-
 # ---------------------------------------------------------------------------------------#
 def t2r(T, check=False):
     """
     Convert SE(n) to SO(n)
 
     :param T: homogeneous transformation matrix
+    :type T: ndarray(3,3) or ndarray(4,4)
     :param check: check if rotation matrix is valid (default False, no check)
+    :type check: bool
     :return: rotation matrix
-    :rtype: numpy.ndarray, shape=(2,2) or (3,3)
+    :rtype: ndarray(2,2) or ndarray(3,3)
 
 
     ``R = T2R(T)`` is the orthonormal rotation matrix component of homogeneous
@@ -82,23 +96,32 @@ def t2r(T, check=False):
     - if ``T`` is 3x3 then ``R`` is 2x2: SE(2) -> SO(2)
     - if ``T`` is 4x4 then ``R`` is 3x3: SE(3) -> SO(3)
 
-    Any translational component of T is lost.
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trot2(0.3, t=[1,2])
+        >>> T
+        >>> t2r(T)
+
+    .. note:: Any translational component of T is lost.
 
     :seealso: r2t, tr2rt
     """
-    assert isinstance(T, np.ndarray)
+    if not isinstance(T, np.ndarray):
+        raise ValueError('argument must be NumPy array')
     dim = T.shape
-    assert dim[0] == dim[1], 'Matrix must be square'
+    if dim[0] != dim[1]:
+        raise ValueError('Matrix must be square')
 
     if dim[0] == 3:
         R = T[:2, :2]
     elif dim[0] == 4:
         R = T[:3, :3]
     else:
-        raise ValueError('Value must be a rotation matrix')
+        raise ValueError('Value must be an SE(3) matrix')
 
-    if check and isR(R):
-        raise ValueError('Invalid rotation matrix')
+    if check and not isR(R):
+        raise ValueError('Invalid rotation submatrix')
 
     return R
 
@@ -107,12 +130,14 @@ def t2r(T, check=False):
 
 def tr2rt(T, check=False):
     """
-    Convert SE(3) to SO(3) and translation
+    Convert SE(n) to SO(n) and translation
 
-    :param T: homogeneous transform matrix
-    :param check: check if rotation matrix is valid (default False, no check)
-    :return: Rotation matrix and translation vector
-    :rtype: tuple: numpy.ndarray, shape=(2,2) or (3,3); numpy.ndarray, shape=(2,) or (3,)
+    :param T: SE(n) matrix
+    :type T: ndarray(3,3) or ndarray(4,4)
+    :param check: check if SO(3) submatrix is valid (default False, no check)
+    :type check: bool
+    :return: SO(n) matrix and translation vector
+    :rtype: tuple: (ndarray(2,2), ndarray(2)) or (ndarray(3,3), ndarray(3))
 
     (R,t) = tr2rt(T) splits a homogeneous transformation matrix (NxN) into an orthonormal
     rotation matrix R (MxM) and a translation vector T (Mx1), where N=M+1.
@@ -120,10 +145,22 @@ def tr2rt(T, check=False):
     - if ``T`` is 3x3 - in SE(2) - then ``R`` is 2x2 and ``t`` is 2x1.
     - if ``T`` is 4x4 - in SE(3) - then ``R`` is 3x3 and ``t`` is 3x1.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trot2(0.3, t=[1,2])
+        >>> T
+        >>> R, t = tr2rt(T)
+        >>> R
+        >>> t
+
     :seealso: rt2tr, tr2r
     """
+    if not isinstance(T, np.ndarray):
+        raise ValueError('argument must be NumPy array')
     dim = T.shape
-    assert dim[0] == dim[1], 'Matrix must be square'
+    if dim[0] != dim[1]:
+        raise ValueError('Matrix must be square')
 
     if dim[0] == 3:
         R = t2r(T, check)
@@ -141,13 +178,16 @@ def tr2rt(T, check=False):
 
 def rt2tr(R, t, check=False):
     """
-    Convert SO(3) and translation to SE(3)
+    Convert SO(n) and translation to SE(n)
 
-    :param R: rotation matrix
+    :param R: SO(n) matrix
+    :type R: ndarray(2,2) or ndarray(3,3)
     :param t: translation vector
-    :param check: check if rotation matrix is valid (default False, no check)
-    :return: homogeneous transform
-    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :type R: ndarray(2) or ndarray(3)
+    :param check: check if SO(3) matrix is valid (default False, no check)
+    :type check: bool
+    :return: SE(3) matrix
+    :rtype: ndarray(4,4) or (3,3)
 
     ``T = rt2tr(R, t)`` is a homogeneous transformation matrix (N+1xN+1) formed from an
     orthonormal rotation matrix ``R`` (NxN) and a translation vector ``t``
@@ -156,12 +196,21 @@ def rt2tr(R, t, check=False):
     - If ``R`` is 2x2 and ``t`` is 2x1, then ``T`` is 3x3
     - If ``R`` is 3x3 and ``t`` is 3x1, then ``T`` is 4x4
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> R = rot2(0.3)
+        >>> t = [1, 2]
+        >>> T = rt2tr(R, t)
+ 
     :seealso: rt2m, tr2rt, r2t
     """
     t = argcheck.getvector(t, dim=None, out='array')
+    if not isinstance(R, np.ndarray):
+        raise ValueError('Rotation matrix not a NumPy array')
     if R.shape[0] != t.shape[0]:
         raise ValueError("R and t must have the same number of rows")
-    if check and np.abs(np.linalg.det(R) - 1) < 100 * _eps:
+    if check and not isR(R):
         raise ValueError('Invalid rotation matrix')
 
     if R.shape == (2, 2):
@@ -233,7 +282,7 @@ def isR(R, tol=100):
     Test if matrix belongs to SO(n)
 
     :param R: matrix to test
-    :type R: numpy.ndarray
+    :type R: ndarray(2,2) or ndarray(3,3)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether matrix is a proper orthonormal rotation matrix
@@ -241,6 +290,13 @@ def isR(R, tol=100):
 
     Checks orthogonality, ie. :math:`{\bf R} {\bf R}^T = {\bf I}` and :math:`\det({\bf R}) > 0`.
     For the first test we check that the norm of the residual is less than ``tol * eps``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isR(np.eye(3))
+        >>> isR(rot2(0.5))
+        >>> isR(np.zeros((3,3)))
 
     :seealso: isrot2, isrot
     """
@@ -253,7 +309,7 @@ def isskew(S, tol=10):
     Test if matrix belongs to so(n)
 
     :param S: matrix to test
-    :type S: numpy.ndarray
+    :type S: ndarray(2,2) or ndarray(3,3)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
@@ -261,6 +317,13 @@ def isskew(S, tol=10):
 
     Checks skew-symmetry, ie. :math:`{\bf S} + {\bf S}^T = {\bf 0}`.
     We check that the norm of the residual is less than ``tol * eps``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isskew(np.zeros((3,3)))
+        >>> isskew(np.array([0, -2], [2, 0]])
+        >>> isskew(np.eye(3))
 
     :seealso: isskewa
     """
@@ -272,7 +335,7 @@ def isskewa(S, tol=10):
     Test if matrix belongs to se(n)
 
     :param S: matrix to test
-    :type S: numpy.ndarray
+    :type S: ndarray(3,3) or ndarray(4,4)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
@@ -281,6 +344,12 @@ def isskewa(S, tol=10):
     Check if matrix is augmented skew-symmetric, ie. the top left (n-1xn-1) partition ``S`` is
     skew-symmetric :math:`{\bf S} + {\bf S}^T = {\bf 0}`, and the bottom row is zero
     We check that the norm of the residual is less than ``tol * eps``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> isskewa(np.zeros((3,3)))
+        >>> isskewa(np.array([0, -2], [2, 0]])
 
     :seealso: isskew
     """
@@ -293,7 +362,7 @@ def iseye(S, tol=10):
     Test if matrix is identity
 
     :param S: matrix to test
-    :type S: numpy.ndarray
+    :type S: ndarray(n,n)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
@@ -318,11 +387,11 @@ def skew(v):
     r"""
     Create skew-symmetric metrix from vector
 
-    :param v: 1- or 3-vector
-    :type v: array_like
+    :param v: vector
+    :type v: array_like(1) or array_like(3)
     :return: skew-symmetric matrix in so(2) or so(3)
-    :rtype: numpy.ndarray, shape=(2,2) or (3,3)
-    :raises: ValueError
+    :rtype: ndarray(2,2) or ndarray(3,3)
+    :raises ValueError:
 
     ``skew(V)`` is a skew-symmetric matrix formed from the elements of ``V``.
 
@@ -348,22 +417,24 @@ def skew(v):
             [v[2], 0, -v[0]],
             [-v[1], v[0], 0]])
     else:
-        raise AttributeError("argument must be a 1- or 3-vector")
+        raise ValueError("argument must be a 1- or 3-vector")
 
     return s
 
 # ---------------------------------------------------------------------------------------#
 
 
-def vex(s):
+def vex(s, check=False):
     r"""
     Convert skew-symmetric matrix to vector
 
     :param s: skew-symmetric matrix
-    :type s: numpy.ndarray, shape=(2,2) or (3,3)
+    :type s: ndarray(2,2) or ndarray(3,3)
+    :param check: check if matrix is skew symmetric (default False, no check)
+    :type check: bool
     :return: vector of unique values
-    :rtype: numpy.ndarray, shape=(1,) or (3,)
-    :raises: ValueError
+    :rtype: ndarray(1) or ndarray(3)
+    :raises ValueError:
 
     ``vex(S)`` is the vector which has the corresponding skew-symmetric matrix ``S``.
 
@@ -382,6 +453,8 @@ def vex(s):
     :SymPy: supported
     """
     if s.shape == (3, 3):
+        if check and not isskew(s):
+            raise ValueError("Argument is not skew symmetric")
         return np.array([s[2, 1] - s[1, 2], s[0, 2] - s[2, 0], s[1, 0] - s[0, 1]]) / 2
     elif s.shape == (2, 2):
         return np.array([s[1, 0] - s[0, 1]]) / 2
@@ -395,10 +468,10 @@ def skewa(v):
     r"""
     Create augmented skew-symmetric metrix from vector
 
-    :param v: 3- or 6-vector
-    :type v: array_like
+    :param v: vector
+    :type v: array_like(3), array_like(6)
     :return: augmented skew-symmetric matrix in se(2) or se(3)
-    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :rtype: ndarray(3,3) or ndarray(4,4)
     :raises: ValueError
 
     ``skewa(V)`` is an augmented skew-symmetric matrix formed from the elements of ``V``.
@@ -428,20 +501,22 @@ def skewa(v):
         omega[:3, 3] = v[0:3]
         return omega
     else:
-        raise AttributeError("expecting a 3- or 6-vector")
+        raise ValueError("expecting a 3- or 6-vector")
 
 
-def vexa(Omega):
+def vexa(Omega, check=False):
     r"""
     Convert skew-symmetric matrix to vector
 
     :param s: augmented skew-symmetric matrix
-    :type s: numpy.ndarray, shape=(3,3) or (4,4)
+    :type s: ndarray(3,3) or ndarray(4,4)
+    :param check: check if matrix is skew symmetric part is valid (default False, no check)
+    :type check: bool
     :return: vector of unique values
-    :rtype: numpy.ndarray, shape=(3,) or (6,)
-    :raises: ValueError
+    :rtype: ndarray(3) or ndarray(6)
+    :raises ValueError:
 
-    ``vex(S)`` is the vector which has the corresponding skew-symmetric matrix ``S``.
+    ``vexa(S)`` is the vector which has the corresponding augmented skew-symmetric matrix ``S``.
 
     - ``S`` is 3x3 - se(2) case - where ``S`` :math:`= \left[ \begin{array}{ccc} 0 & -v_3 & v_1 \\ v_3 & 0 & v_2 \\ 0 & 0 & 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3]`.
     - ``S`` is 4x4 - se(3) case -  where ``S`` :math:`= \left[ \begin{array}{cccc} 0 & -v_6 & v_5 & v_1 \\ v_6 & 0 & -v_4 & v_2 \\ -v_5 & v_4 & 0 & v_3 \\ 0 & 0 & 0 & 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3, v_4, v_5, v_6]`.
@@ -459,21 +534,23 @@ def vexa(Omega):
     :SymPy: supported
     """
     if Omega.shape == (4, 4):
-        return np.hstack((t3d.transl(Omega), vex(t2r(Omega))))
+        return np.hstack((t3d.transl(Omega), vex(t2r(Omega), check=check)))
     elif Omega.shape == (3, 3):
-        return np.hstack((t2d.transl2(Omega), vex(t2r(Omega))))
+        return np.hstack((t2d.transl2(Omega), vex(t2r(Omega), check=check)))
     else:
-        raise AttributeError("expecting a 3x3 or 4x4 matrix")
+        raise ValueError("expecting a 3x3 or 4x4 matrix")
 
 
-def rodrigues(w, theta):
+def rodrigues(w, theta=None):
     """
     Rodrigues' formula for rotation
 
     :param w: rotation vector
-    :type w: array_like
+    :type w: array_like(3)
     :param theta: rotation angle
     :type theta: float or None
+    :return: SO(n) matrix
+    :rtype: ndarray(2,2) or (3,3)
     """
     w = argcheck.getvector(w)
     if vec.iszerovec(w):
@@ -495,9 +572,9 @@ def h2e(v):
     Convert from homogeneous to Euclidean form
 
     :param v: homogeneous vector or matrix
-    :type v: array_like
+    :type v: array_like(n)
     :return: Euclidean vector
-    :rtype: numpy.ndarray
+    :rtype: ndarray(n-1)
 
     - If ``v`` is an array, shape=(N,), return an array shape=(N-1,) where the elements have
       all been scaled by the last element of ``v``.
@@ -520,9 +597,9 @@ def e2h(v):
     Convert from Euclidean to homogeneous form
 
     :param v: Euclidean vector or matrix
-    :type v: array_like
+    :type v: array_like(n)
     :return: homogeneous vector
-    :rtype: numpy.ndarray
+    :rtype: ndarray(n+1)
 
     - If ``v`` is an array, shape=(N,), return an array shape=(N+1,) where a value of 1 has
       been appended
@@ -571,6 +648,8 @@ def homtrans(T, p):
 
     :seealso: :func:`e2h`, :func:`h2e`
     """
+    if argcheck.isvector(p):
+        p = argcheck.getvector(p)
     if p.shape[0] == T.shape[0] - 1:
         # Euclidean vector
         return h2e( T @ e2h(p) )

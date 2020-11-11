@@ -48,6 +48,7 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base import *
+from spatialmath.base import sym
 
 import matplotlib.pyplot as plt
 
@@ -80,6 +81,13 @@ class TestVector(unittest.TestCase):
         self.assertIsNone(unitvec([0]))
         self.assertIsNone(unitvec(0))
 
+    def test_colvec(self):
+
+        t = np.r_[1,2,3]
+        cv = colvec(t)
+        self.assertEqual(cv.shape, (3,1))
+        nt.assert_array_almost_equal(cv.flatten(), t)
+
     def test_isunitvec(self):
         self.assertTrue(isunitvec([1, 0, 0]))
         self.assertTrue(isunitvec((1, 0, 0)))
@@ -104,6 +112,7 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(norm([1, 2, 3]), math.sqrt(14))
 
     def test_isunittwist(self):
+        # 3D
         # unit rotational twist
         self.assertTrue(isunittwist([1, 2, 3, 1, 0, 0]))
         self.assertTrue(isunittwist((1, 2, 3, 1, 0, 0)))
@@ -117,6 +126,25 @@ class TestVector(unittest.TestCase):
 
         # not a unit translation twist
         self.assertFalse(isunittwist([2, 0, 0, 0, 0, 0]))
+
+        # 2D
+        # unit rotational twist
+        self.assertTrue(isunittwist2([1, 2, 1]))
+
+        # not a unit rotational twist
+        self.assertFalse(isunittwist2([1, 2, 3]))
+
+        # unit translation twist
+        self.assertTrue(isunittwist2([1, 0, 0]))
+
+        # not a unit translation twist
+        self.assertFalse(isunittwist2([2, 0, 0]))
+
+        with self.assertRaises(ValueError):
+            isunittwist([3,4])
+
+        with self.assertRaises(ValueError):
+            isunittwist2([3,4])
 
     def test_unittwist(self):
         nt.assert_array_almost_equal(unittwist([0, 0, 0, 1, 0, 0]), np.r_[0, 0, 0, 1, 0, 0])
@@ -182,6 +210,29 @@ class TestVector(unittest.TestCase):
         self.assertFalse(iszerovec([0, 1]), False)
         self.assertFalse(iszerovec([0, 1, 0]), False)
 
+    def test_angdiff(self):
+
+        self.assertEqual(angdiff(0, 0), 0)
+        self.assertEqual(angdiff(np.pi, 0), -np.pi)
+        self.assertEqual(angdiff(-np.pi, np.pi), 0)
+
+    def test_removesmall(self):
+        
+        v = np.r_[1, 2, 3]
+        nt.assert_array_almost_equal(removesmall(v), v)
+
+        v = np.r_[1, 2, 3, 1e-6, -1e-6]
+        nt.assert_array_almost_equal(removesmall(v), v)
+
+        v = np.r_[1, 2, 3, 1e-15, -1e-15]
+        nt.assert_array_almost_equal(removesmall(v), [1,2,3,0, 0])
+
+        v = np.r_[1, 2, 3, 1e-10, -1e-10]
+        nt.assert_array_almost_equal(removesmall(v), [1,2,3,1e-10,-1e-10])
+
+        v = np.r_[1, 2, 3, 1e-10, -1e-10]
+        nt.assert_array_almost_equal(removesmall(v, tol=1e8), [1,2,3,0,0])
+
 
 class TestND(unittest.TestCase):
     def test_iseye(self):
@@ -195,15 +246,108 @@ class TestND(unittest.TestCase):
         self.assertFalse(iseye(np.array([[1, 0, 0], [0, 1, 0]])))
         self.assertFalse(iseye(np.array([1, 0, 0])))
 
-    def test_Rt(self):
-        nt.assert_array_almost_equal(rotx(0.3), t2r(trotx(0.3)))
-        nt.assert_array_almost_equal(trotx(0.3), r2t(rotx(0.3)))
+    def test_r2t(self):
+        # 3D
+        R = rotx(0.3)
+        T = r2t(R)
+        nt.assert_array_almost_equal(T[0:3,3], np.r_[0,0,0])
+        nt.assert_array_almost_equal(T[:3,:3], R)
 
+        theta = sym.symbol('theta')
+        R = rotx(theta)
+        T = r2t(R)
+        self.assertEqual(r2t(R).dtype, 'O')
+        nt.assert_array_almost_equal(T[0:3,3], np.r_[0,0,0])
+        # nt.assert_array_almost_equal(T[:3,:3], R)
+        self.assertTrue((T[:3,:3] == R).all())
+
+        # 2D
+        R = rot2(0.3)
+        T = r2t(R)
+        nt.assert_array_almost_equal(T[0:2,2], np.r_[0,0])
+        nt.assert_array_almost_equal(T[:2,:2], R)
+
+        theta = sym.symbol('theta')
+        R = rot2(theta)
+        T = r2t(R)
+        self.assertEqual(r2t(R).dtype, 'O')
+        nt.assert_array_almost_equal(T[0:2,2], np.r_[0,0])
+        nt.assert_array_almost_equal(T[:2,:2], R)
+
+        with self.assertRaises(ValueError):
+            r2t(3)
+
+        with self.assertRaises(ValueError):
+            r2t(np.eye(3,4))
+
+    def test_t2r(self):
+        # 3D
+        t=[1,2,3]
+        T = trotx(0.3, t=t)
+        R = t2r(T)
+        nt.assert_array_almost_equal(T[:3,:3], R)
+        nt.assert_array_almost_equal(transl(T), np.array(t))
+    
+        # 2D 
+        t=[1,2]
+        T = trot2(0.3, t=t)
+        R = t2r(T)
+        nt.assert_array_almost_equal(T[:2,:2], R)
+        nt.assert_array_almost_equal(transl2(T), np.array(t))
+
+        with self.assertRaises(ValueError):
+            t2r(3)
+
+        with self.assertRaises(ValueError):
+            r2t(np.eye(3,4))
+
+    def test_rt2tr(self):
+        # 3D
         R = rotx(0.2)
         t = [3, 4, 5]
         T = rt2tr(R, t)
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl(T), np.array(t))
+
+        theta = sym.symbol('theta')
+        R = rotx(theta)
+        self.assertEqual(r2t(R).dtype, 'O')
+
+        # 2D
+        R = rot2(0.2)
+        t = [3, 4]
+        T = rt2tr(R, t)
+        nt.assert_array_almost_equal(t2r(T), R)
+        nt.assert_array_almost_equal(transl2(T), np.array(t))
+
+        theta = sym.symbol('theta')
+        R = rot2(theta)
+        self.assertEqual(r2t(R).dtype, 'O')
+
+        with self.assertRaises(ValueError):
+            rt2tr(3, 4)
+
+        with self.assertRaises(ValueError):
+            rt2tr(np.eye(3,4), [1,2,3,4])
+
+    def test_tr2rt(self):
+        # 3D
+        T = trotx(0.3, t=[1,2,3])
+        R, t = tr2rt(T)
+        nt.assert_array_almost_equal(T[:3,:3], R)
+        nt.assert_array_almost_equal(T[:3,3], t)
+
+        # 2D
+        T = trot2(0.3, t=[1,2])
+        R, t = tr2rt(T)
+        nt.assert_array_almost_equal(T[:2,:2], R)
+        nt.assert_array_almost_equal(T[:2,2], t)
+
+        with self.assertRaises(ValueError):
+            R, t = tr2rt(3)
+
+        with self.assertRaises(ValueError):
+            R, t = tr2rt(np.eye(3,4))
 
     def test_checks(self):
 
@@ -284,23 +428,152 @@ class TestND(unittest.TestCase):
         S[0, 0] = 1
         nt.assert_equal(isskew(S), False)
 
-        # augmented skew matrices
-        S = np.array([
-            [0, 2, 3],
-            [-2, 0, 4],
-            [0, 0, 0]])
-        nt.assert_equal(isskewa(S), True)
-        S[0, 0] = 1
-        nt.assert_equal(isskew(S), False)
-        S[0, 0] = 0
-        S[2, 0] = 1
-        nt.assert_equal(isskew(S), False)
 
     def test_homog(self):
         nt.assert_almost_equal(e2h([1, 2, 3]), np.r_[1, 2, 3, 1])
 
         nt.assert_almost_equal(h2e([2, 4, 6, 2]), np.r_[1, 2, 3])
 
+    def test_homtrans(self):
+
+        #3D
+        T = trotx(pi/2, t=[1,2,3])
+        v = [10,12,14]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, [11, -12, 15])
+        v = np.c_[[10,12,14], [-3,-4,-5]]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, np.c_[[11, -12, 15], [-2,7,-1]])
+
+        T = trotx(pi/2, t=[1,2,3])
+        v = [10,12,14,1]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, [11, -12, 15,1])
+        v = np.c_[[10,12,14,1], [-3,-4,-5,1]]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, np.c_[[11, -12, 15,1], [-2,7,-1,1]])
+
+        #2D
+        T = trot2(pi/2, t=[1,2])
+        v = [10,12]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, [-11, 12])
+        v = np.c_[[10,12], [-3,-4]]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, np.c_[[-11, 12], [5, -1]])
+
+        T = trot2(pi/2, t=[1,2])
+        v = [10,12,1]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, [-11, 12, 1])
+        v = [20,24,2]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, [-22, 24, 2])
+        v = np.c_[[10,12, 1], [-3,-4, 1]]
+        v2 = homtrans(T, v)
+        nt.assert_almost_equal(v2, np.c_[[-11, 12, 1], [5, -1, 1]])
+
+        with self.assertRaises(ValueError):
+            T = trotx(pi/2, t=[1,2,3])
+            v = [10,12]
+            v2 = homtrans(T, v)
+
+    def test_skew(self):
+        # 3D
+        sk = skew([1, 2, 3])
+        self.assertEqual(sk.shape, (3,3))
+        nt.assert_almost_equal(sk + sk.T, np.zeros((3,3)))
+        self.assertEqual(sk[2,1], 1)
+        self.assertEqual(sk[0,2], 2)
+        self.assertEqual(sk[1,0], 3)
+        nt.assert_almost_equal(sk.diagonal(), np.r_[0,0,0])
+
+        # 2D
+        sk = skew([1])
+        self.assertEqual(sk.shape, (2,2))
+        nt.assert_almost_equal(sk + sk.T, np.zeros((2,2)))
+        self.assertEqual(sk[1,0], 1)
+        nt.assert_almost_equal(sk.diagonal(), np.r_[0,0])
+
+        with self.assertRaises(ValueError):
+            sk = skew([1,2])
+
+    def test_vex(self):
+        # 3D
+        t = [3, 4, 5]
+        sk = skew(t)
+        nt.assert_almost_equal(vex(sk), t)
+
+        # 2D
+        t = [3]
+        sk = skew(t)
+        nt.assert_almost_equal(vex(sk), t)
+
+    def test_isskew(self):
+        t = [3, 4, 5]
+        sk = skew(t)
+        self.assertTrue(isskew(sk))
+        sk[0,0] = 3
+        self.assertFalse(isskew(sk))
+
+        # 2D
+        t = [3]
+        sk = skew(t)
+        self.assertTrue(isskew(sk))
+        sk[0,0] = 3
+        self.assertFalse(isskew(sk))
+
+    def test_isskewa(self):
+        # 3D
+        t = [3, 4, 5, 6, 7, 8]
+        sk = skewa(t)
+        self.assertTrue(isskewa(sk))
+        sk[0,0] = 3
+        self.assertFalse(isskew(sk))
+        sk = skewa(t)
+        sk[3,3] = 3
+        self.assertFalse(isskew(sk))
+
+        # 2D
+        t = [3, 4, 5]
+        sk = skew(t)
+        self.assertTrue(isskew(sk))
+        sk[0,0] = 3
+        self.assertFalse(isskew(sk))
+        sk = skewa(t)
+        sk[2,2] = 3
+        self.assertFalse(isskew(sk))
+
+    def test_skewa(self):
+        # 3D
+        sk = skewa([1, 2, 3, 4, 5, 6])
+        self.assertEqual(sk.shape, (4,4))
+        nt.assert_almost_equal(sk.diagonal(), np.r_[0,0,0,0])
+        nt.assert_almost_equal(sk[-1,:], np.r_[0,0,0,0])
+        nt.assert_almost_equal(sk[:3,3], [1, 2, 3])
+        nt.assert_almost_equal(vex(sk[:3,:3]), [4,5,6])
+
+        # 2D
+        sk = skewa([1, 2, 3])
+        self.assertEqual(sk.shape, (3,3))
+        nt.assert_almost_equal(sk.diagonal(), np.r_[0,0,0])
+        nt.assert_almost_equal(sk[-1,:], np.r_[0,0,0])
+        nt.assert_almost_equal(sk[:2,2], [1, 2])
+        nt.assert_almost_equal(vex(sk[:2,:2]), [3])
+
+        with self.assertRaises(ValueError):
+            sk = skew([1,2])
+
+    def test_vexa(self):
+        # 3D
+        t = [1, 2, 3, 4, 5, 6]
+        sk = skewa(t)
+        nt.assert_almost_equal(vexa(sk), t)
+
+        # 2D
+        t = [1, 2, 3]
+        sk = skewa(t)
+        nt.assert_almost_equal(vexa(sk), t)
 
 class Test2D(unittest.TestCase):
     def test_rot2(self):
