@@ -938,7 +938,7 @@ def trlog(T, check=True, twist=False):
                 if twist:
                     return np.r_[t, 0, 0, 0]
                 else:
-                    return trn.rt2m(np.zeros((3, 3)), t)
+                    return trn.Ab2M(np.zeros((3, 3)), t)
             else:
                 S = trlog(R, check=False)  # recurse
                 w = trn.vex(S)
@@ -948,7 +948,7 @@ def trlog(T, check=True, twist=False):
                 if twist:
                     return np.r_[v, w]
                 else:
-                    return trn.rt2m(S, v)
+                    return trn.Ab2M(S, v)
 
     elif isrot(T, check=check):
         # deal with rotation matrix

@@ -89,7 +89,7 @@ __all__ = [
     'r2t',
     'tr2rt',
     'rt2tr',
-    'rt2m',
+    'Ab2M',
     'isR',
     'isskew',
     'isskewa',

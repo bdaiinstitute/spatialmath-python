@@ -180,40 +180,48 @@ def rt2tr(R, t, check=False):
 # ---------------------------------------------------------------------------------------#
 
 
-def rt2m(R, t, check=False):
+def Ab2M(A, b):
     """
-    Pack rotation and translation to matrix
+    Pack matrix and vector to matrix
 
-    :param R: rotation matrix
-    :param t: translation vector
-    :param check: check if rotation matrix is valid (default False, no check)
-    :return: homogeneous transform
-    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :param A: square matrix
+    :type A: ndarray(3,3) or ndarray(2,2)
+    :param b: translation vector
+    :type b: ndarray(3) or ndarray(2)
+    :return: matrix
+    :rtype: ndarray shape=(3,3) or (4,4)
 
-    ``T = rt2m(R, t)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``
+    ``M = Ab2M(A, b)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``
     (Nx1).  The bottom row is all zeros.
 
-    - If ``R`` is 2x2 and ``t`` is 2x1, then ``T`` is 3x3
-    - If ``R`` is 3x3 and ``t`` is 3x1, then ``T`` is 4x4
+    - If ``A`` is 2x2 and ``b`` is 2x1, then ``M`` is 3x3
+    - If ``A`` is 3x3 and ``b`` is 3x1, then ``M`` is 4x4
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> A = np.c_[[1, 2], [3, 4]].T
+        >>> b = [5, 6]
+        >>> Ab2M(A, b)
 
     :seealso: rt2tr, tr2rt, r2t
     """
-    t = argcheck.getvector(t, dim=None, out='array')
-    if R.shape[0] != t.shape[0]:
-        raise ValueError("R and t must have the same number of rows")
-    if check and np.abs(np.linalg.det(R) - 1) < 100 * _eps:
-        raise ValueError('Invalid rotation matrix')
+    b = argcheck.getvector(b, dim=None, out='array')
+    if not isinstance(A, np.ndarray):
+        raise ValueError('Rotation matrix not a NumPy array')
+    if A.shape[0] != b.shape[0]:
+        raise ValueError("A and b must have the same number of rows")
 
-    if R.shape == (2, 2):
+    if A.shape == (2, 2):
         T = np.zeros((3, 3))
-        T[:2, :2] = R
-        T[:2, 2] = t
-    elif R.shape == (3, 3):
+        T[:2, :2] = A
+        T[:2, 2] = b
+    elif A.shape == (3, 3):
         T = np.zeros((4, 4))
-        T[:3, :3] = R
-        T[:3, 3] = t
+        T[:3, :3] = A
+        T[:3, 3] = b
     else:
-        raise ValueError('R must be an SO2 or SO3 rotation matrix')
+        raise ValueError('A must be 2x2 or 3x3')
 
     return T
 
