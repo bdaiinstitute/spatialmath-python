@@ -1,3 +1,7 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
+
 from spatialmath.base.argcheck import *
 from spatialmath.base.quaternions import *
 from spatialmath.base.transforms2d import *
@@ -5,6 +9,7 @@ from spatialmath.base.transforms3d import *
 from spatialmath.base.transformsNd import *
 from spatialmath.base.vectors import *
 from spatialmath.base.symbolic import *
+from spatialmath.base.animate import *
 
 __all__ = [
 # spatialmath.base.argcheck
@@ -113,5 +118,8 @@ __all__ = [
     'unittwist_norm',
     'unittwist2',
     'angdiff',
-    'removesmall'
+    'removesmall',
+# spatialmath.base.animate
+    'Animate',
+    'Animate2',
  ]

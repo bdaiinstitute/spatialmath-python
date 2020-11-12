@@ -1,3 +1,16 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
+
+"""
+This package provides a light-weight wrapper to support use of SymPy.  It
+generalizes some common functions so that they can accept numerical or
+Symbolic arguments.
+
+If SymPy is not installed then only the standard numeric operations are
+supported. 
+"""
+
 import math
 
 try:  # pragma: no cover
@@ -12,14 +25,7 @@ except ImportError:  # pragma: no cover
     _symbolics = False
     symtype = ()
 
-"""
-This package provides a light-weight wrapper to support use of SymPy.  It
-generalizes some common functions so that they can accept numerical or
-Symbolic arguments.
 
-If SymPy is not installed then only the standard numeric operations are
-supported. 
-"""
 # ---------------------------------------------------------------------------------------#
 
 def symbol(name, real=True):

@@ -1,18 +1,19 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
+
 """
-This modules contains functions to create and transform rotation matrices
-and homogeneous tranformation matrices.
+Functions to manipulate vectors
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
-
-@author: Peter Corke
 """
 
 # pylint: disable=invalid-name
 
 import math
 import numpy as np
-from spatialmath.base import argcheck
+from spatialmath.base import getvector
 
 _eps = np.finfo(np.float64).eps
 
@@ -33,11 +34,10 @@ def colvec(v):
         >>> from spatialmath.base import *
         >>> colvec([1, 2, 3])
     """
-    v = argcheck.getvector(v)
+    v = getvector(v)
     return np.array(v).reshape((len(v), 1))
 
 
-# ---------------------------------------------------------------------------------------#
 def unitvec(v):
     """
     Create a unit vector
@@ -59,7 +59,7 @@ def unitvec(v):
 
     """
 
-    v = argcheck.getvector(v)
+    v = getvector(v)
     n = np.linalg.norm(v)
 
     if n > 100 * _eps:  # if greater than eps
@@ -144,6 +144,8 @@ def isunittwist(v, tol=10):
     :type tol: float
     :return: whether twist has unit length
     :rtype: bool
+    :raises ValueError: for incorrect vector length
+
 
     Vector is is intepretted as :math:`[v, \omega]` where :math:`v \in \mathbb{R}^n` and
     :math:`\omega \in \mathbb{R}^1` for SE(2) and :math:`\omega \in \mathbb{R}^3` for SE(3).
@@ -161,7 +163,7 @@ def isunittwist(v, tol=10):
 
     :seealso: unit, isunitvec
     """
-    v = argcheck.getvector(v)
+    v = getvector(v)
 
     if len(v) == 6:
         # test for SE(3) twist
@@ -180,6 +182,7 @@ def isunittwist2(v, tol=10):
     :type tol: float
     :return: whether vector has unit length
     :rtype: bool
+    :raises ValueError: for incorrect vector length
 
     Vector is is intepretted as :math:`[v, \omega]` where :math:`v \in \mathbb{R}^n` and
     :math:`\omega \in \mathbb{R}^1` for SE(2) and :math:`\omega \in \mathbb{R}^3` for SE(3).
@@ -197,7 +200,7 @@ def isunittwist2(v, tol=10):
 
     :seealso: unit, isunitvec
     """
-    v = argcheck.getvector(v)
+    v = getvector(v)
 
     if len(v) == 3:
         # test for SE(2) twist
@@ -214,7 +217,7 @@ def unittwist(S, tol=10):
     :type S: array_like(6)
     :param tol: tolerance in units of eps
     :type tol: float
-    :return: unit twist and scalar motion
+    :return: unit twist
     :rtype: ndarray(6)
 
     A unit twist is a twist where:
@@ -231,7 +234,7 @@ def unittwist(S, tol=10):
     Returns None if the twist has zero magnitude
     """
 
-    s = argcheck.getvector(S, 6)
+    s = getvector(S, 6)
 
     if iszerovec(s, tol=tol):
         return None
@@ -276,7 +279,7 @@ def unittwist_norm(S, tol=10):
     .. note:: Returns (None,None) if the twist has zero magnitude
     """
 
-    s = argcheck.getvector(S, 6)
+    s = getvector(S, 6)
 
     if iszerovec(s, tol=tol):
         return (None, None)
@@ -298,8 +301,8 @@ def unittwist2(S):
 
     :param S: twist vector
     :type S: array_like(3)
-    :return: unit twist and scalar motion
-    :rtype: tuple (unit_twist, theta)
+    :return: unit twist 
+    :rtype: ndarray(3)
 
     A unit twist is a twist where:
 
@@ -314,7 +317,7 @@ def unittwist2(S):
 
     """
 
-    S = argcheck.getvector(S, 3)
+    S = getvector(S, 3)
     v = S[0:2]
     w = S[2]
 
@@ -325,6 +328,38 @@ def unittwist2(S):
 
     return S / th
 
+def unittwist2_norm(S):
+    """
+    Convert twist to unit twist
+
+    :param S: twist vector
+    :type S: array_like(3)
+    :return: unit twist and scalar motion
+    :rtype: tuple (ndarray(3), float)
+
+    A unit twist is a twist where:
+
+    - the rotation part has unit magnitude
+    - if the rotational part is zero, then the translational part has unit magnitude
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unittwist2([2, 4, 2)
+        >>> unittwist2([2, 0, 0])
+
+    """
+
+    S = getvector(S, 3)
+    v = S[0:2]
+    w = S[2]
+
+    if iszerovec(w):
+        th = norm(v)
+    else:
+        th = norm(w)
+
+    return (S / th, th)
 
 def angdiff(a, b):
     """
@@ -382,4 +417,4 @@ def removesmall(v, tol=100):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_argcheck.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used

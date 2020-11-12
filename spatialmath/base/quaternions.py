@@ -1,12 +1,13 @@
-#!/usr/bin/env python3
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
 
 # pylint: disable=invalid-name
 
 import sys
 import math
 import numpy as np
-from spatialmath import base as tr
-from spatialmath.base import argcheck
+from spatialmath import base
 
 _eps = np.finfo(np.float64).eps
 
@@ -49,7 +50,7 @@ def pure(v):
         >>> q = pure([1, 2, 3])
         >>> qprint(q)
     """
-    v = argcheck.getvector(v, 3)
+    v = base.getvector(v, 3)
     return np.r_[0, v]
 
 
@@ -74,7 +75,7 @@ def qnorm(q):
     :seealso: unit
 
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     return np.linalg.norm(q)
 
 
@@ -101,7 +102,7 @@ def unit(q, tol=10):
 
     :seealso: norm
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     nm = np.linalg.norm(q)
     assert abs(nm) > tol * _eps, 'cannot normalize (near) zero length quaternion'
     return q / nm
@@ -128,7 +129,7 @@ def isunit(q, tol=100):
 
     :seealso: unit
     """
-    return tr.iszerovec(q, tol=tol)
+    return base.iszerovec(q, tol=tol)
 
 
 def isequal(q1, q2, tol=100, unitq=False):
@@ -160,8 +161,8 @@ def isequal(q1, q2, tol=100, unitq=False):
         >>> isequal(q1, q2)
         >>> isequal(q1, q2, unitq=True)
     """
-    q1 = argcheck.getvector(q1, 4)
-    q2 = argcheck.getvector(q2, 4)
+    q1 = base.getvector(q1, 4)
+    q2 = base.getvector(q2, 4)
 
     if unitq:
         return (np.sum(np.abs(q1 - q2)) < tol * _eps) or (np.sum(np.abs(q1 + q2)) < tol * _eps)
@@ -196,7 +197,7 @@ def q2v(q):
     :seealso: :func:`~v2q`
 
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     if q[0] >= 0:
         return q[1:4]
     else:
@@ -230,7 +231,7 @@ def v2q(v):
 
     :seealso: :func:`q2v`
     """
-    v = argcheck.getvector(v, 3)
+    v = base.getvector(v, 3)
     s = math.sqrt(1 - np.sum(v**2))
     return np.r_[s, v]
 
@@ -252,8 +253,8 @@ def qqmul(q1, q2):
     :seealso: qvmul, inner, vvmul
 
     """
-    q1 = argcheck.getvector(q1, 4)
-    q2 = argcheck.getvector(q2, 4)
+    q1 = base.getvector(q1, 4)
+    q2 = base.getvector(q2, 4)
     s1 = q1[0]
     v1 = q1[1:4]
     s2 = q2[0]
@@ -279,8 +280,8 @@ def inner(q1, q2):
     :seealso: qvmul
 
     """
-    q1 = argcheck.getvector(q1, 4)
-    q2 = argcheck.getvector(q2, 4)
+    q1 = base.getvector(q1, 4)
+    q2 = base.getvector(q2, 4)
 
     return np.dot(q1, q2)
 
@@ -303,8 +304,8 @@ def qvmul(q, v):
 
     :seealso: qvmul
     """
-    q = argcheck.getvector(q, 4)
-    v = argcheck.getvector(v, 3)
+    q = base.getvector(q, 4)
+    v = base.getvector(v, 3)
     qv = qqmul(q, qqmul(pure(v), conj(q)))
     return qv[1:4]
 
@@ -361,7 +362,7 @@ def qpow(q, power):
     :seealso: :func:`qqmul`
     :SymPy: supported for ``q`` but not ``power``.
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     assert isinstance(power, int), "Power must be an integer"
     qr = eye()
     for _ in range(0, abs(power)):
@@ -392,7 +393,7 @@ def conj(q):
 
     :SymPy: supported
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     return np.r_[q[0], -q[1:4]]
 
 
@@ -418,7 +419,7 @@ def q2r(q):
     :seealso: :func:`r2q`
 
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     s = q[0]
     x = q[1]
     y = q[2]
@@ -455,9 +456,9 @@ def r2q(R, check=False, tol=100):
 
     :seealso: :func:`q2r`
     """
-    assert R.shape == (3, 3) and tr.isR(R), "Argument must be 3x3 rotation matrix"
+    assert R.shape == (3, 3) and base.isR(R), "Argument must be 3x3 rotation matrix"
     if check:
-        assert tr.isR(R, tol=tol), "Argument must be a valid SO(3) matrix"
+        assert base.isR(R, tol=tol), "Argument must be a valid SO(3) matrix"
 
     qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0
     kx = R[2, 1] - R[1, 2]  # Oz - Ay
@@ -525,8 +526,8 @@ def slerp(q0, q1, s, shortest=False):
 
     """
     assert 0 <= s <= 1, 's must be in the interval [0,1]'
-    q0 = argcheck.getvector(q0, 4)
-    q1 = argcheck.getvector(q1, 4)
+    q0 = base.getvector(q0, 4)
+    q1 = base.getvector(q1, 4)
 
     if s == 0:
         return q0
@@ -588,7 +589,7 @@ def matrix(q):
     :seealso: qqmul
 
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     s = q[0]
     x = q[1]
     y = q[2]
@@ -617,9 +618,9 @@ def dot(q, w):
     .. warning:: There is no check that the passed values are unit-quaternions.
 
     """
-    q = argcheck.getvector(q, 4)
-    w = argcheck.getvector(w, 3)
-    E = q[0] * (np.eye(3, 3)) - tr.skew(q[1:4])
+    q = base.getvector(q, 4)
+    w = base.getvector(w, 3)
+    E = q[0] * (np.eye(3, 3)) - base.skew(q[1:4])
     return 0.5 * np.r_[-np.dot(q[1:4], w), E@w]
 
 
@@ -641,9 +642,9 @@ def dotb(q, w):
     .. warning:: There is no check that the passed values are unit-quaternions.
 
     """
-    q = argcheck.getvector(q, 4)
-    w = argcheck.getvector(w, 3)
-    E = q[0] * (np.eye(3, 3)) + tr.skew(q[1:4])
+    q = base.getvector(q, 4)
+    w = base.getvector(w, 3)
+    E = q[0] * (np.eye(3, 3)) + base.skew(q[1:4])
     return 0.5 * np.r_[-np.dot(q[1:4], w), E@w]
 
 
@@ -670,9 +671,9 @@ def angle(q1, q2):
     """
     # TODO different methods
 
-    q1 = argcheck.getvector(q1, 4)
-    q2 = argcheck.getvector(q2, 4)
-    return 2.0 * math.atan2(tr.norm(q1 - q2), tr.norm(q1 + q2))
+    q1 = base.getvector(q1, 4)
+    q2 = base.getvector(q2, 4)
+    return 2.0 * math.atan2(base.norm(q1 - q2), base.norm(q1 + q2))
 
 
 def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
@@ -702,7 +703,7 @@ def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
     If `file=None` then a string is returned.
 
     """
-    q = argcheck.getvector(q, 4)
+    q = base.getvector(q, 4)
     template = "# {} #, #, # {}".replace('#', fmt)
     s = template.format(q[0], delim[0], q[1], q[2], q[3], delim[1])
     if file:

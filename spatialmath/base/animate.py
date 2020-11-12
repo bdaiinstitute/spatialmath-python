@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 27 12:44:45 2020
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
 
-@author: corkep
-"""
 # matplotlib inline
 
 # line.set_data()
@@ -15,8 +12,7 @@ Created on Mon Apr 27 12:44:45 2020
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-
-from spatialmath import base as tr
+from spatialmath import base
 
 
 class Animate:
@@ -109,21 +105,21 @@ class Animate:
 
         """
         # stash the final value
-        if tr.isrot(end):
-            self.end = tr.r2t(end)
+        if base.isrot(end):
+            self.end = base.r2t(end)
         else:
             self.end = end
 
         if start is None:
             self.start = np.identity(4)
         else:
-            if tr.isrot(start):
-                self.start = tr.r2t(start)
+            if base.isrot(start):
+                self.start = base.r2t(start)
             else:
                 self.start = start
 
         # draw axes at the origin
-        tr.trplot(self.start, axes=self, block=None, **kwargs)
+        base.trplot(self.start, axes=self, block=None, **kwargs)
 
     def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, pause=0, **kwargs):
         """
@@ -151,7 +147,7 @@ class Animate:
         """
 
         def update(frame, a):
-            T = tr.trinterp(start=self.start, end=self.end, s=frame / nframes)
+            T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True
@@ -443,21 +439,21 @@ class Animate2:
 
         """
         # stash the final value
-        if tr.isrot2(end):
-            self.end = tr.r2t(end)
+        if base.isrot2(end):
+            self.end = base.r2t(end)
         else:
             self.end = end
 
         if start is None:
             self.start = np.identity(3)
         else:
-            if tr.isrot2(start):
-                self.start = tr.r2t(start)
+            if base.isrot2(start):
+                self.start = base.r2t(start)
             else:
                 self.start = start
 
         # draw axes at the origin
-        tr.trplot2(self.start, axes=self, block=False, **kwargs)
+        base.trplot2(self.start, axes=self, block=False, **kwargs)
 
     def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs):
         """
@@ -485,7 +481,7 @@ class Animate2:
         """
 
         def update(frame, a):
-            T = tr.trinterp2(start=self.start, end=self.end, s=frame / nframes)
+            T = base.trinterp2(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True
@@ -582,7 +578,7 @@ class Animate2:
             self.p = np.c_[u - x, v - y].T
 
         def draw(self, T):
-            R, t = tr.tr2rt(T)
+            R, t = base.tr2rt(T)
             p = R @ self.p
             # specific to a single Quiver
             self.h.set_offsets(t)  # shift the origin

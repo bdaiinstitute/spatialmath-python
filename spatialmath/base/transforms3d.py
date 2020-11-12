@@ -1,3 +1,7 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
+
 """
 This modules contains functions to create and transform 3D rotation matrices
 and homogeneous tranformation matrices.
@@ -5,55 +9,14 @@ and homogeneous tranformation matrices.
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
 
-TODO:
-
-    - trinterp
-    - trjac, trjac2
-    - tranimate, tranimate2
 """
-
-# This file is part of the SpatialMath toolbox for Python
-# https://github.com/petercorke/spatialmath-python
-#
-# MIT License
-#
-# Copyright (c) 1993-2020 Peter Corke
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-# Contributors:
-#
-#     1. Luis Fernando Lara Tobar and Peter Corke, 2008
-#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)
-#     3. Peter Corke, 2020
 
 # pylint: disable=invalid-name
 
 import sys
 import math
 import numpy as np
-from spatialmath.base import argcheck
-from spatialmath.base import vectors as vec
-from spatialmath.base import transformsNd as trn
-from spatialmath.base import quaternions as quat
-from spatialmath.base import animate
-from spatialmath.base import symbolic as sym
+from spatialmath import base
 
 _eps = np.finfo(np.float64).eps
 
@@ -79,9 +42,9 @@ def rotx(theta, unit="rad"):
     :SymPy: supported
     """
 
-    theta = argcheck.getunit(theta, unit)
-    ct = sym.cos(theta)
-    st = sym.sin(theta)
+    theta = base.getunit(theta, unit)
+    ct = base.sym.cos(theta)
+    st = base.sym.sin(theta)
     R = np.array([
         [1, 0, 0],
         [0, ct, -st],
@@ -109,9 +72,9 @@ def roty(theta, unit="rad"):
     :SymPy: supported
     """
 
-    theta = argcheck.getunit(theta, unit)
-    ct = sym.cos(theta)
-    st = sym.sin(theta)
+    theta = base.getunit(theta, unit)
+    ct = base.sym.cos(theta)
+    st = base.sym.sin(theta)
     R = np.array([
         [ct, 0, st],
         [0, 1, 0],
@@ -138,9 +101,9 @@ def rotz(theta, unit="rad"):
     :seealso: :func:`~yrotz`
     :SymPy: supported
     """
-    theta = argcheck.getunit(theta, unit)
-    ct = sym.cos(theta)
-    st = sym.sin(theta)
+    theta = base.getunit(theta, unit)
+    ct = base.sym.cos(theta)
+    st = base.sym.sin(theta)
     R = np.array([
         [ct, -st, 0],
         [st, ct, 0],
@@ -169,9 +132,9 @@ def trotx(theta, unit="rad", t=None):
     :seealso: :func:`~rotx`
     :SymPy: supported
     """
-    T = trn.r2t(rotx(theta, unit))
+    T = base.r2t(rotx(theta, unit))
     if t is not None:
-        T[:3, 3] = argcheck.getvector(t, 3, 'array')
+        T[:3, 3] = base.getvector(t, 3, 'array')
     return T
 
 
@@ -197,9 +160,9 @@ def troty(theta, unit="rad", t=None):
     :seealso: :func:`~roty`
     :SymPy: supported
     """
-    T = trn.r2t(roty(theta, unit))
+    T = base.r2t(roty(theta, unit))
     if t is not None:
-        T[:3, 3] = argcheck.getvector(t, 3, 'array')
+        T[:3, 3] = base.getvector(t, 3, 'array')
     return T
 
 
@@ -225,9 +188,9 @@ def trotz(theta, unit="rad", t=None):
     :seealso: :func:`~rotz`
     :SymPy: supported
     """
-    T = trn.r2t(rotz(theta, unit))
+    T = base.r2t(rotz(theta, unit))
     if t is not None:
-        T[:3, 3] = argcheck.getvector(t, 3, 'array')
+        T[:3, 3] = base.getvector(t, 3, 'array')
     return T
 
 # ---------------------------------------------------------------------------------------#
@@ -263,11 +226,11 @@ def transl(x, y=None, z=None):
     :SymPy: supported
    """
 
-    if argcheck.isscalar(x) and y is not None and z is not None:
+    if base.isscalar(x) and y is not None and z is not None:
         t = np.r_[x, y, z]
-    elif argcheck.isvector(x, 3):
-        t = argcheck.getvector(x, 3, out='array')
-    elif argcheck.ismatrix(x, (4, 4)):
+    elif base.isvector(x, 3):
+        t = base.getvector(x, 3, out='array')
+    elif base.ismatrix(x, (4, 4)):
         return x[:3, 3]
     else:
         raise ValueError('bad argument')
@@ -294,7 +257,7 @@ def ishom(T, check=False, tol=100):
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`
     """
-    return isinstance(T, np.ndarray) and T.shape == (4, 4) and (not check or (trn.isR(T[:3, :3], tol=tol) and np.all(T[3, :] == np.array([0, 0, 0, 1]))))
+    return isinstance(T, np.ndarray) and T.shape == (4, 4) and (not check or (base.isR(T[:3, :3], tol=tol) and np.all(T[3, :] == np.array([0, 0, 0, 1]))))
 
 
 def isrot(R, check=False, tol=100):
@@ -313,7 +276,7 @@ def isrot(R, check=False, tol=100):
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
     """
-    return isinstance(R, np.ndarray) and R.shape == (3, 3) and (not check or trn.isR(R, tol=tol))
+    return isinstance(R, np.ndarray) and R.shape == (3, 3) and (not check or base.isR(R, tol=tol))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -355,12 +318,12 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`
     """
 
-    if argcheck.isscalar(roll):
+    if base.isscalar(roll):
         angles = [roll, pitch, yaw]
     else:
-        angles = argcheck.getvector(roll, 3)
+        angles = base.getvector(roll, 3)
 
-    angles = argcheck.getunit(angles, unit)
+    angles = base.getunit(angles, unit)
 
     if order == 'xyz' or order == 'arm':
         R = rotx(angles[2]) @ roty(angles[1]) @ rotz(angles[0])
@@ -418,7 +381,7 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
     """
 
     R = rpy2r(roll, pitch, yaw, order=order, unit=unit)
-    return trn.r2t(R)
+    return base.r2t(R)
 
 # ---------------------------------------------------------------------------------------#
 
@@ -453,9 +416,9 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
     if np.isscalar(phi):
         angles = [phi, theta, psi]
     else:
-        angles = argcheck.getvector(phi, 3)
+        angles = base.getvector(phi, 3)
 
-    angles = argcheck.getunit(angles, unit)
+    angles = base.getunit(angles, unit)
 
     return rotz(angles[0]) @ roty(angles[1]) @ rotz(angles[2])
 
@@ -493,7 +456,7 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
     """
 
     R = eul2r(phi, theta, psi, unit=unit)
-    return trn.r2t(R)
+    return base.r2t(R)
 
 # ---------------------------------------------------------------------------------------#
 
@@ -523,16 +486,16 @@ def angvec2r(theta, v, unit='rad'):
 
     :SymPy: not supported
     """
-    assert np.isscalar(theta) and argcheck.isvector(v, 3), "Arguments must be theta and vector"
+    assert np.isscalar(theta) and base.isvector(v, 3), "Arguments must be theta and vector"
 
     if np.linalg.norm(v) < 10 * _eps:
         return np.eye(3)
 
-    theta = argcheck.getunit(theta, unit)
+    theta = base.getunit(theta, unit)
 
     # Rodrigue's equation
 
-    sk = trn.skew(vec.unitvec(v))
+    sk = base.skew(base.unitvec(v))
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
@@ -564,7 +527,7 @@ def angvec2tr(theta, v, unit='rad'):
 
     :SymPy: not supported
     """
-    return trn.r2t(angvec2r(theta, v, unit=unit))
+    return base.r2t(angvec2r(theta, v, unit=unit))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -603,11 +566,11 @@ def oa2r(o, a=None):
 
     :SymPy: not supported
     """
-    o = argcheck.getvector(o, 3, out='array')
-    a = argcheck.getvector(a, 3, out='array')
+    o = base.getvector(o, 3, out='array')
+    a = base.getvector(a, 3, out='array')
     n = np.cross(o, a)
     o = np.cross(a, n)
-    R = np.stack((vec.unitvec(n), vec.unitvec(o), vec.unitvec(a)), axis=1)
+    R = np.stack((base.unitvec(n), base.unitvec(o), base.unitvec(a)), axis=1)
     return R
 
 
@@ -648,7 +611,7 @@ def oa2tr(o, a=None):
 
     :SymPy: not supported
     """
-    return trn.r2t(oa2r(o, a))
+    return base.r2t(oa2r(o, a))
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -677,20 +640,20 @@ def tr2angvec(T, unit='rad', check=False):
     :seealso: :func:`~angvec2r`, :func:`~angvec2tr`, :func:`~tr2rpy`, :func:`~tr2eul`
     """
 
-    if argcheck.ismatrix(T, (4, 4)):
-        R = trn.t2r(T)
+    if base.ismatrix(T, (4, 4)):
+        R = base.t2r(T)
     else:
         R = T
     assert isrot(R, check=check)
 
-    v = trn.vex(trlog(R))
+    v = base.vex(trlog(R))
 
-    if vec.iszerovec(v):
+    if base.iszerovec(v):
         theta = 0
         v = np.r_[0, 0, 0]
     else:
-        theta = vec.norm(v)
-        v = vec.unitvec(v)
+        theta = base.norm(v)
+        v = base.unitvec(v)
 
     if unit == 'deg':
         theta *= 180 / math.pi
@@ -734,8 +697,8 @@ def tr2eul(T, unit='rad', flip=False, check=False):
 
     """
 
-    if argcheck.ismatrix(T, (4, 4)):
-        R = trn.t2r(T)
+    if base.ismatrix(T, (4, 4)):
+        R = base.t2r(T)
     else:
         R = T
     assert isrot(R, check=check)
@@ -804,8 +767,8 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     :SymPy: not supported
     """
 
-    if argcheck.ismatrix(T, (4, 4)):
-        R = trn.t2r(T)
+    if base.ismatrix(T, (4, 4)):
+        R = base.t2r(T)
     else:
         R = T
     assert isrot(R, check=check)
@@ -924,36 +887,36 @@ def trlog(T, check=True, twist=False):
     if ishom(T, check=check):
         # SE(3) matrix
 
-        if trn.iseye(T):
+        if base.iseye(T):
             # is identity matrix
             if twist:
                 return np.zeros((6,))
             else:
                 return np.zeros((4, 4))
         else:
-            [R, t] = trn.tr2rt(T)
+            [R, t] = base.tr2rt(T)
 
-            if trn.iseye(R):
+            if base.iseye(R):
                 # rotation matrix is identity
                 if twist:
                     return np.r_[t, 0, 0, 0]
                 else:
-                    return trn.Ab2M(np.zeros((3, 3)), t)
+                    return base.Ab2M(np.zeros((3, 3)), t)
             else:
                 S = trlog(R, check=False)  # recurse
-                w = trn.vex(S)
-                theta = vec.norm(w)
+                w = base.vex(S)
+                theta = base.norm(w)
                 Ginv = np.eye(3) - S / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) / theta * S @ S
                 v = Ginv @ t
                 if twist:
                     return np.r_[v, w]
                 else:
-                    return trn.Ab2M(S, v)
+                    return base.Ab2M(S, v)
 
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
-        if trn.iseye(R):
+        if base.iseye(R):
             # matrix is identity
             if twist:
                 return np.zeros((3,))
@@ -972,13 +935,13 @@ def trlog(T, check=True, twist=False):
             if twist:
                 return w * theta
             else:
-                return trn.skew(w * theta)
+                return base.skew(w * theta)
         else:
             # general case
             theta = np.arccos((np.trace(R) - 1) / 2)
             skw = (R - R.T) / 2 / np.sin(theta)
             if twist:
-                return trn.vex(skw * theta)
+                return base.vex(skw * theta)
             else:
                 return skw * theta
     else:
@@ -1030,54 +993,54 @@ def trexp(S, theta=None, check=True):
      :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`
     """
 
-    if argcheck.ismatrix(S, (4, 4)) or argcheck.isvector(S, 6):
+    if base.ismatrix(S, (4, 4)) or base.isvector(S, 6):
         # se(3) case
-        if argcheck.ismatrix(S, (4, 4)):
+        if base.ismatrix(S, (4, 4)):
             # augmentented skew matrix
             if check:
-                assert trn.isskewa(S), 'argument must be a valid se(3) element'
-            tw = trn.vexa(S)
+                assert base.isskewa(S), 'argument must be a valid se(3) element'
+            tw = base.vexa(S)
         else:
             # 6 vector
-            tw = argcheck.getvector(S)
+            tw = base.getvector(S)
 
-        if vec.iszerovec(tw):
+        if base.iszerovec(tw):
             return np.eye(4)
 
         if theta is None:
-            (tw, theta) = vec.unittwist_norm(tw)
+            (tw, theta) = base.unittwist_norm(tw)
         else:
             if theta == 0:
                 return np.eye(4)
             else:
-                assert vec.isunittwist(tw), 'If theta is specified S must be a unit twist'
+                assert base.isunittwist(tw), 'If theta is specified S must be a unit twist'
 
         t = tw[0:3]
         w = tw[3:6]
 
-        R = trn.rodrigues(w, theta)
+        R = base.rodrigues(w, theta)
 
-        skw = trn.skew(w)
+        skw = base.skew(w)
         V = np.eye(3) * theta + (1.0 - math.cos(theta)) * skw + (theta - math.sin(theta)) * skw @ skw
 
-        return trn.rt2tr(R, V@t)
+        return base.rt2tr(R, V@t)
 
-    elif argcheck.ismatrix(S, (3, 3)) or argcheck.isvector(S, 3):
+    elif base.ismatrix(S, (3, 3)) or base.isvector(S, 3):
         # so(3) case
-        if argcheck.ismatrix(S, (3, 3)):
+        if base.ismatrix(S, (3, 3)):
             # skew symmetric matrix
             if check:
-                assert trn.isskew(S), 'argument must be a valid so(3) element'
-            w = trn.vex(S)
+                assert base.isskew(S), 'argument must be a valid so(3) element'
+            w = base.vex(S)
         else:
             # 3 vector
-            w = argcheck.getvector(S)
+            w = base.getvector(S)
 
         if theta is not None:
-            assert vec.isunitvec(w), 'If theta is specified S must be a unit twist'
+            assert base.isunitvec(w), 'If theta is specified S must be a unit twist'
 
         # do Rodrigues' formula for rotation
-        return trn.rodrigues(w, theta)
+        return base.rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
@@ -1120,10 +1083,10 @@ def trnorm(T):
 
     n = np.cross(o, a)        # N = O x A
     o = np.cross(a, n)        # (a)];
-    R = np.stack((vec.unitvec(n), vec.unitvec(o), vec.unitvec(a)), axis=1)
+    R = np.stack((base.unitvec(n), base.unitvec(o), base.unitvec(a)), axis=1)
 
     if ishom(T):
-        return trn.rt2tr(R, T[:3, 3])
+        return base.rt2tr(R, T[:3, 3])
     else:
         return R
 
@@ -1159,42 +1122,42 @@ def trinterp(start, end, s=None):
 
     assert 0 <= s <= 1, 's outside interval [0,1]'
 
-    if argcheck.ismatrix(end, (3, 3)):
+    if base.ismatrix(end, (3, 3)):
         # SO(3) case
 
         if start is None:
             #	TRINTERP(T, s)
-            q0 = quat.r2q(trn.t2r(end))
-            qr = quat.slerp(quat.eye(), q0, s)
+            q0 = base.r2q(base.t2r(end))
+            qr = base.slerp(base.eye(), q0, s)
         else:
             #	TRINTERP(T0, T1, s)
-            q0 = quat.r2q(trn.t2r(start))
-            q1 = quat.r2q(trn.t2r(end))
-            qr = quat.slerp(q0, q1, s)
+            q0 = base.r2q(base.t2r(start))
+            q1 = base.r2q(base.t2r(end))
+            qr = base.slerp(q0, q1, s)
 
-        return quat.q2r(qr)
+        return base.q2r(qr)
 
-    elif argcheck.ismatrix(end, (4, 4)):
+    elif base.ismatrix(end, (4, 4)):
         # SE(3) case
         if start is None:
             #	TRINTERP(T, s)
-            q0 = quat.r2q(trn.t2r(end))
+            q0 = base.r2q(base.t2r(end))
             p0 = transl(end)
 
-            qr = quat.slerp(quat.eye(), q0, s)
+            qr = base.slerp(base.eye(), q0, s)
             pr = s * p0
         else:
             #	TRINTERP(T0, T1, s)
-            q0 = quat.r2q(trn.t2r(start))
-            q1 = quat.r2q(trn.t2r(end))
+            q0 = base.r2q(base.t2r(start))
+            q1 = base.r2q(base.t2r(end))
 
             p0 = transl(start)
             p1 = transl(end)
 
-            qr = quat.slerp(q0, q1, s)
+            qr = base.slerp(q0, q1, s)
             pr = p0 * (1 - s) + s * p1
 
-        return trn.rt2tr(quat.q2r(qr), pr)
+        return base.rt2tr(base.q2r(qr), pr)
     else:
         return ValueError('Argument must be SO(3) or SE(3)')
 
@@ -1217,7 +1180,7 @@ def delta2tr(d):
     :SymPy: supported
     """
 
-    return np.eye(4, 4) + trn.skewa(d)
+    return np.eye(4, 4) + base.skewa(d)
 
 
 def trinv(T):
@@ -1290,7 +1253,7 @@ def tr2delta(T0, T1=None):
         #  incremental transformation from T0 to T1 in the T0 frame
         Td = trinv(T0) @ T1
 
-    return np.r_[transl(Td), trn.vex(trn.t2r(Td) - np.eye(3))]
+    return np.r_[transl(Td), base.vex(base.t2r(Td) - np.eye(3))]
 
 
 def tr2jac(T, samebody=False):
@@ -1321,10 +1284,10 @@ def tr2jac(T, samebody=False):
 
     if samebody:
         # Adjoint case
-        (R, t) = trn.tr2rt(T)
-        return np.block([[R.T, (trn.skew(t)@R).T], [Z, R.T]])
+        (R, t) = base.tr2rt(T)
+        return np.block([[R.T, (base.skew(t)@R).T], [Z, R.T]])
     else:
-        R = trn.t2r(T)
+        R = base.t2r(T)
         return np.block([[R.T, Z], [Z, R.T]])
 
 
@@ -1511,7 +1474,7 @@ def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # py
 
     # check input types
     if isrot(T, check=True):
-        T = trn.r2t(T)
+        T = base.r2t(T)
     else:
         assert ishom(T, check=True)
 
@@ -1617,14 +1580,14 @@ def tranimate(T, **kwargs):
         print('matplotlib is not installed: pip install matplotlib')
         return
 
-    anim = animate.Animate(**kwargs)
+    anim = base.animate.Animate(**kwargs)
     anim.trplot(T, **kwargs)
     anim.run(**kwargs)
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    a,b,c = sym.symbol('a,b,c')
+    a,b,c = base.sym.symbol('a,b,c')
     T = rpy2r(a,b,c)
 
     exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used

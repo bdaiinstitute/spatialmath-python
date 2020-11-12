@@ -1,25 +1,24 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
+
 """
 This modules contains functions to create and transform rotation matrices
 and homogeneous tranformation matrices.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
-
-@author: Peter Corke
-@author: Luis Fernando Lara Tobar
-@author: Aditya Dua
-@author: Josh Carrigg Hodson
-@author: Chee Ho Chan
 """
 # pylint: disable=invalid-name
 
 import math
 import numpy as np
-from spatialmath.base import vectors as vec
-from spatialmath.base import transforms2d as t2d
-from spatialmath.base import transforms3d as t3d
-from spatialmath.base import argcheck
-from spatialmath.base import symbolic as sym
+from spatialmath import base
+# from spatialmath.base import vectors as vec
+# from spatialmath.base import transforms2d as t2d
+# from spatialmath.base import transforms3d as t3d
+# from spatialmath.base import argcheck
+# from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
@@ -205,7 +204,7 @@ def rt2tr(R, t, check=False):
  
     :seealso: rt2m, tr2rt, r2t
     """
-    t = argcheck.getvector(t, dim=None, out='array')
+    t = base.getvector(t, dim=None, out='array')
     if not isinstance(R, np.ndarray):
         raise ValueError('Rotation matrix not a NumPy array')
     if R.shape[0] != t.shape[0]:
@@ -255,7 +254,7 @@ def Ab2M(A, b):
 
     :seealso: rt2tr, tr2rt, r2t
     """
-    b = argcheck.getvector(b, dim=None, out='array')
+    b = base.getvector(b, dim=None, out='array')
     if not isinstance(A, np.ndarray):
         raise ValueError('Rotation matrix not a NumPy array')
     if A.shape[0] != b.shape[0]:
@@ -376,7 +375,7 @@ def iseye(S, tol=10):
     s = S.shape
     if len(s) != 2 or s[0] != s[1]:
         return False  # not a square matrix
-    return vec.norm(S - np.eye(s[0])) < tol * _eps
+    return base.norm(S - np.eye(s[0])) < tol * _eps
 
 
 # ========================= angle sequences
@@ -406,7 +405,7 @@ def skew(v):
     :seealso: :func:`vex`, :func:`skewa`
     :SymPy: supported
     """
-    v = argcheck.getvector(v, None, 'sequence')
+    v = base.getvector(v, None, 'sequence')
     if len(v) == 1:
         s = np.array([
             [0, -v[0]],
@@ -489,7 +488,7 @@ def skewa(v):
     :SymPy: supported
     """
 
-    v = argcheck.getvector(v, None)
+    v = base.getvector(v, None)
     if len(v) == 3:
         omega = np.zeros((3, 3), dtype=v.dtype)
         omega[:2, :2] = skew(v[2])
@@ -534,9 +533,9 @@ def vexa(Omega, check=False):
     :SymPy: supported
     """
     if Omega.shape == (4, 4):
-        return np.hstack((t3d.transl(Omega), vex(t2r(Omega), check=check)))
+        return np.hstack((base.transl(Omega), vex(t2r(Omega), check=check)))
     elif Omega.shape == (3, 3):
-        return np.hstack((t2d.transl2(Omega), vex(t2r(Omega), check=check)))
+        return np.hstack((base.transl2(Omega), vex(t2r(Omega), check=check)))
     else:
         raise ValueError("expecting a 3x3 or 4x4 matrix")
 
@@ -546,22 +545,22 @@ def rodrigues(w, theta=None):
     Rodrigues' formula for rotation
 
     :param w: rotation vector
-    :type w: array_like(3)
-    :param theta: rotation angle
-    :type theta: float or None
+    :type w: array_like(1) or array_like(3)
+    :param θ: rotation angle
+    :type θ: float or None
     :return: SO(n) matrix
-    :rtype: ndarray(2,2) or (3,3)
+    :rtype: ndarray(2,2) or ndarray(3,3)
     """
-    w = argcheck.getvector(w)
-    if vec.iszerovec(w):
+    w = base.getvector(w)
+    if base.iszerovec(w):
         # for a zero so(n) return unit matrix, theta not relevant
         if len(w) == 1:
             return np.eye(2)
         else:
             return np.eye(3)
     if theta is None:
-        theta = vec.norm(w)
-        w = vec.unitvec(w)
+        theta = base.norm(w)
+        w = base.unitvec(w)
 
     skw = skew(w)
     return np.eye(skw.shape[0]) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
@@ -572,20 +571,29 @@ def h2e(v):
     Convert from homogeneous to Euclidean form
 
     :param v: homogeneous vector or matrix
-    :type v: array_like(n)
+    :type v: array_like(n), ndarray(n,m)
     :return: Euclidean vector
-    :rtype: ndarray(n-1)
+    :rtype: ndarray(n-1), ndarray(n-1,m)
 
     - If ``v`` is an array, shape=(N,), return an array shape=(N-1,) where the elements have
       all been scaled by the last element of ``v``.
     - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N-1,N), where each column has
       been scaled by its last element.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> h2e([2, 4, 6, 1])
+        >>> h2e([2, 4, 6, 2])
+        >>> h = np.c_[[1,2,1], [3,4,2], [5,6,1]]
+        >>> h
+        >>> h2e(h)
+
     :seealso: e2h
     """
-    if argcheck.isvector(v):
+    if base.isvector(v):
         # dealing with shape (N,) array
-        v = argcheck.getvector(v)
+        v = base.getvector(v)
         return v[0:-1] / v[-1]
     elif isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
@@ -597,20 +605,28 @@ def e2h(v):
     Convert from Euclidean to homogeneous form
 
     :param v: Euclidean vector or matrix
-    :type v: array_like(n)
+    :type v: array_like(n), ndarray(n,n)
     :return: homogeneous vector
-    :rtype: ndarray(n+1)
+    :rtype: ndarray(n+1) or ndarray(n+1,m
 
     - If ``v`` is an array, shape=(N,), return an array shape=(N+1,) where a value of 1 has
       been appended
     - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N+1,N), where each column has
       been appended with a value of 1, ie. a row of ones has been appended to the matrix.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> e2h([2, 4, 6])
+        >>> e = np.c_[[1,2], [3,4], [5,6]]
+        >>> e
+        >>> e2h(e)
+
     :seealso: e2h
     """
-    if argcheck.isvector(v):
+    if base.isvector(v):
         # dealing with shape (N,) array
-        v = argcheck.getvector(v)
+        v = base.getvector(v)
         return np.r_[v, 1]
     elif isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
@@ -648,8 +664,8 @@ def homtrans(T, p):
 
     :seealso: :func:`e2h`, :func:`h2e`
     """
-    if argcheck.isvector(p):
-        p = argcheck.getvector(p)
+    if base.isvector(p):
+        p = base.getvector(p)
     if p.shape[0] == T.shape[0] - 1:
         # Euclidean vector
         return h2e( T @ e2h(p) )

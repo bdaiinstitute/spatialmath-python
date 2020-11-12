@@ -776,7 +776,7 @@ class SE3(SO3):
         :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
         :SymPy: supported
         """
-        return tr2jac(self.A, samebody=True)
+        return tr.tr2jac(self.A, samebody=True)
 
     def jacob(self):
         """
