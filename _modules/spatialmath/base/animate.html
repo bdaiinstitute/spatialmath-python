@@ -160,13 +160,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for spatialmath.base.animate</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Created on Mon Apr 27 12:44:45 2020</span>
+<span></span><span class="c1"># Part of Spatial Math Toolbox for Python</span>
+<span class="c1"># Copyright (c) 2000 Peter Corke</span>
+<span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
 
-<span class="sd">@author: corkep</span>
-<span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># matplotlib inline</span>
 
 <span class="c1"># line.set_data()</span>
@@ -177,8 +174,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
-
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
+<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
 
 
 <div class="viewcode-block" id="Animate"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.animate.Animate">[docs]</a><span class="k">class</span> <span class="nc">Animate</span><span class="p">:</span>
@@ -271,21 +267,21 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># stash the final value</span>
-        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
 
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
 
         <span class="c1"># draw axes at the origin</span>
-        <span class="n">tr</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">base</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Animate.run"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.animate.Animate.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">pause</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -313,7 +309,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-            <span class="n">T</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span> <span class="o">/</span> <span class="n">nframes</span><span class="p">)</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span> <span class="o">/</span> <span class="n">nframes</span><span class="p">)</span>
             <span class="n">a</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="n">nframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">a</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
@@ -605,21 +601,21 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># stash the final value</span>
-        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
 
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
 
         <span class="c1"># draw axes at the origin</span>
-        <span class="n">tr</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">base</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Animate2.run"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.animate.Animate2.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -647,7 +643,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-            <span class="n">T</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span> <span class="o">/</span> <span class="n">nframes</span><span class="p">)</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span> <span class="o">/</span> <span class="n">nframes</span><span class="p">)</span>
             <span class="n">a</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="n">nframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">a</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
@@ -744,7 +740,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">u</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">v</span> <span class="o">-</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-            <span class="n">R</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">R</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
             <span class="c1"># specific to a single Quiver</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># shift the origin</span>
@@ -843,7 +839,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 08-Nov-2020.
+        Last updated on 12-Nov-2020.
       </span>
 
     </p>

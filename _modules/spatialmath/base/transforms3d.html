@@ -160,62 +160,25 @@
            <div itemprop="articleBody">
             
   <h1>Source code for spatialmath.base.transforms3d</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="c1"># Part of Spatial Math Toolbox for Python</span>
+<span class="c1"># Copyright (c) 2000 Peter Corke</span>
+<span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This modules contains functions to create and transform 3D rotation matrices</span>
 <span class="sd">and homogeneous tranformation matrices.</span>
 
 <span class="sd">Vector arguments are what numpy refers to as ``array_like`` and can be a list,</span>
 <span class="sd">tuple, numpy array, numpy row vector or numpy column vector.</span>
 
-<span class="sd">TODO:</span>
-
-<span class="sd">    - trinterp</span>
-<span class="sd">    - trjac, trjac2</span>
-<span class="sd">    - tranimate, tranimate2</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="c1"># This file is part of the SpatialMath toolbox for Python</span>
-<span class="c1"># https://github.com/petercorke/spatialmath-python</span>
-<span class="c1">#</span>
-<span class="c1"># MIT License</span>
-<span class="c1">#</span>
-<span class="c1"># Copyright (c) 1993-2020 Peter Corke</span>
-<span class="c1">#</span>
-<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
-<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
-<span class="c1"># in the Software without restriction, including without limitation the rights</span>
-<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
-<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
-<span class="c1"># furnished to do so, subject to the following conditions:</span>
-<span class="c1">#</span>
-<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
-<span class="c1"># copies or substantial portions of the Software.</span>
-<span class="c1">#</span>
-<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
-<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
-<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
-<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
-<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
-<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
-<span class="c1"># SOFTWARE.</span>
-
-<span class="c1"># Contributors:</span>
-<span class="c1">#</span>
-<span class="c1">#     1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
-<span class="c1">#     2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017 (robopy)</span>
-<span class="c1">#     3. Peter Corke, 2020</span>
 
 <span class="c1"># pylint: disable=invalid-name</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">vectors</span> <span class="k">as</span> <span class="n">vec</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transformsNd</span> <span class="k">as</span> <span class="n">trn</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">quaternions</span> <span class="k">as</span> <span class="n">quat</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">animate</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">symbolic</span> <span class="k">as</span> <span class="n">sym</span>
+<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -241,9 +204,9 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-    <span class="n">ct</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-    <span class="n">st</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">ct</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
         <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="o">-</span><span class="n">st</span><span class="p">],</span>
@@ -271,9 +234,9 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-    <span class="n">ct</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-    <span class="n">st</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">ct</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
         <span class="p">[</span><span class="n">ct</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">st</span><span class="p">],</span>
         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -300,9 +263,9 @@
 <span class="sd">    :seealso: :func:`~yrotz`</span>
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
-    <span class="n">ct</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-    <span class="n">st</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">ct</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
         <span class="p">[</span><span class="n">ct</span><span class="p">,</span> <span class="o">-</span><span class="n">st</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
         <span class="p">[</span><span class="n">st</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -331,9 +294,9 @@
 <span class="sd">    :seealso: :func:`~rotx`</span>
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">rotx</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">rotx</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">T</span></div>
 
 
@@ -359,9 +322,9 @@
 <span class="sd">    :seealso: :func:`~roty`</span>
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">roty</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">roty</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">T</span></div>
 
 
@@ -387,9 +350,9 @@
 <span class="sd">    :seealso: :func:`~rotz`</span>
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">rotz</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">rotz</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">T</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
@@ -425,11 +388,11 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">   &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument&#39;</span><span class="p">)</span>
@@ -456,7 +419,7 @@
 
 <span class="sd">    :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))))</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))))</span></div>
 
 
 <div class="viewcode-block" id="isrot"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transforms3d.isrot">[docs]</a><span class="k">def</span> <span class="nf">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
@@ -475,7 +438,7 @@
 
 <span class="sd">    :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">trn</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">base</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">))</span></div>
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
@@ -517,12 +480,12 @@
 <span class="sd">    :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">roll</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">roll</span><span class="p">):</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="n">roll</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">yaw</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">roll</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">roll</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-    <span class="n">angles</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;xyz&#39;</span> <span class="ow">or</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;arm&#39;</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span> <span class="n">roty</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">@</span> <span class="n">rotz</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -580,7 +543,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">R</span> <span class="o">=</span> <span class="n">rpy2r</span><span class="p">(</span><span class="n">roll</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
@@ -615,9 +578,9 @@
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">phi</span><span class="p">):</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-    <span class="n">angles</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rotz</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">@</span> <span class="n">roty</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">@</span> <span class="n">rotz</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
 
@@ -655,7 +618,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">R</span> <span class="o">=</span> <span class="n">eul2r</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
@@ -685,16 +648,16 @@
 
 <span class="sd">    :SymPy: not supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;Arguments must be theta and vector&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;Arguments must be theta and vector&quot;</span>
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="c1"># Rodrigue&#39;s equation</span>
 
-    <span class="n">sk</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">sk</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span>
     <span class="k">return</span> <span class="n">R</span></div>
 
@@ -726,7 +689,7 @@
 
 <span class="sd">    :SymPy: not supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">angvec2r</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">angvec2r</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span></div>
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
@@ -765,11 +728,11 @@
 
 <span class="sd">    :SymPy: not supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">o</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">R</span></div>
 
 
@@ -810,7 +773,7 @@
 
 <span class="sd">    :SymPy: not supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">oa2r</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">oa2r</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span></div>
 
 
 <span class="c1"># ------------------------------------------------------------------------------------------------------------------- #</span>
@@ -839,20 +802,20 @@
 <span class="sd">    :seealso: :func:`~angvec2r`, :func:`~angvec2tr`, :func:`~tr2rpy`, :func:`~tr2eul`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span>
     <span class="k">assert</span> <span class="n">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
 
-    <span class="n">v</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">trlog</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">trlog</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;deg&#39;</span><span class="p">:</span>
         <span class="n">theta</span> <span class="o">*=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
@@ -896,8 +859,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span>
     <span class="k">assert</span> <span class="n">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
@@ -966,8 +929,8 @@
 <span class="sd">    :SymPy: not supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span>
     <span class="k">assert</span> <span class="n">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
@@ -1086,36 +1049,36 @@
     <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
         <span class="c1"># SE(3) matrix</span>
 
-        <span class="k">if</span> <span class="n">trn</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
             <span class="c1"># is identity matrix</span>
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">trn</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
                 <span class="c1"># rotation matrix is identity</span>
                 <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2m</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">t</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">Ab2M</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">t</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">S</span> <span class="o">=</span> <span class="n">trlog</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># recurse</span>
-                <span class="n">w</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-                <span class="n">theta</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
                 <span class="n">Ginv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">S</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">S</span> <span class="o">@</span> <span class="n">S</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">Ginv</span> <span class="o">@</span> <span class="n">t</span>
                 <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2m</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">Ab2M</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
         <span class="c1"># deal with rotation matrix</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span>
-        <span class="k">if</span> <span class="n">trn</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
             <span class="c1"># matrix is identity</span>
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
@@ -1134,13 +1097,13 @@
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">w</span> <span class="o">*</span> <span class="n">theta</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># general case</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">skw</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">skw</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">skw</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">skw</span> <span class="o">*</span> <span class="n">theta</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1192,54 +1155,54 @@
 <span class="sd">     :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="ow">or</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="ow">or</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
         <span class="c1"># se(3) case</span>
-        <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
             <span class="c1"># augmentented skew matrix</span>
             <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="n">trn</span><span class="o">.</span><span class="n">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="s1">&#39;argument must be a valid se(3) element&#39;</span>
-            <span class="n">tw</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">base</span><span class="o">.</span><span class="n">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="s1">&#39;argument must be a valid se(3) element&#39;</span>
+            <span class="n">tw</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 6 vector</span>
-            <span class="n">tw</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+            <span class="n">tw</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">tw</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">tw</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">unittwist_norm</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unittwist_norm</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">theta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="n">vec</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="n">tw</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
+                <span class="k">assert</span> <span class="n">base</span><span class="o">.</span><span class="n">isunittwist</span><span class="p">(</span><span class="n">tw</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
 
         <span class="n">t</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
 
-        <span class="n">skw</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">skw</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">+</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">@</span> <span class="n">skw</span>
 
-        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">V</span><span class="nd">@t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">V</span><span class="nd">@t</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="ow">or</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="ow">or</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
         <span class="c1"># so(3) case</span>
-        <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
             <span class="c1"># skew symmetric matrix</span>
             <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="n">trn</span><span class="o">.</span><span class="n">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="s1">&#39;argument must be a valid so(3) element&#39;</span>
-            <span class="n">w</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">base</span><span class="o">.</span><span class="n">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="s1">&#39;argument must be a valid so(3) element&#39;</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 3 vector</span>
-            <span class="n">w</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">vec</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
+            <span class="k">assert</span> <span class="n">base</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="s1">&#39;If theta is specified S must be a unit twist&#39;</span>
 
         <span class="c1"># do Rodrigues&#39; formula for rotation</span>
-        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; First argument must be SO(3), 3-vector, SE(3) or 6-vector&quot;</span><span class="p">)</span></div>
 
@@ -1282,10 +1245,10 @@
 
     <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>        <span class="c1"># N = O x A</span>
     <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>        <span class="c1"># (a)];</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">R</span></div>
 
@@ -1321,42 +1284,42 @@
 
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s outside interval [0,1]&#39;</span>
 
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
         <span class="c1"># SO(3) case</span>
 
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1">#	TRINTERP(T, s)</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1">#	TRINTERP(T0, T1, s)</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
-            <span class="n">q1</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">quat</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
         <span class="c1"># SE(3) case</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1">#	TRINTERP(T, s)</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
             <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
 
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
             <span class="n">pr</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1">#	TRINTERP(T0, T1, s)</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
-            <span class="n">q1</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
 
             <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="n">p1</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
 
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">quat</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
             <span class="n">pr</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p1</span>
 
-        <span class="k">return</span> <span class="n">trn</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">quat</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument must be SO(3) or SE(3)&#39;</span><span class="p">)</span></div>
 
@@ -1379,7 +1342,7 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">trn</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">base</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="trinv"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transforms3d.trinv">[docs]</a><span class="k">def</span> <span class="nf">trinv</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
@@ -1452,7 +1415,7 @@
         <span class="c1">#  incremental transformation from T0 to T1 in the T0 frame</span>
         <span class="n">Td</span> <span class="o">=</span> <span class="n">trinv</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span> <span class="o">@</span> <span class="n">T1</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">transl</span><span class="p">(</span><span class="n">Td</span><span class="p">),</span> <span class="n">trn</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">Td</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">transl</span><span class="p">(</span><span class="n">Td</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">Td</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span></div>
 
 
 <div class="viewcode-block" id="tr2jac"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transforms3d.tr2jac">[docs]</a><span class="k">def</span> <span class="nf">tr2jac</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">samebody</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1483,10 +1446,10 @@
 
     <span class="k">if</span> <span class="n">samebody</span><span class="p">:</span>
         <span class="c1"># Adjoint case</span>
-        <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">trn</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="nd">@R</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span>
+        <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="nd">@R</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span></div>
 
 
@@ -1673,7 +1636,7 @@
 
     <span class="c1"># check input types</span>
     <span class="k">if</span> <span class="n">isrot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="n">trn</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1779,14 +1742,14 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matplotlib is not installed: pip install matplotlib&#39;</span><span class="p">)</span>
         <span class="k">return</span>
 
-    <span class="n">anim</span> <span class="o">=</span> <span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">anim</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
 
-    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">symbol</span><span class="p">(</span><span class="s1">&#39;a,b,c&#39;</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">symbol</span><span class="p">(</span><span class="s1">&#39;a,b,c&#39;</span><span class="p">)</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">rpy2r</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
 
     <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;test_transforms.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
@@ -1807,7 +1770,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 08-Nov-2020.
+        Last updated on 12-Nov-2020.
       </span>
 
     </p>

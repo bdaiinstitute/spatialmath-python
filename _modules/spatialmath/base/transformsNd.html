@@ -160,28 +160,27 @@
            <div itemprop="articleBody">
             
   <h1>Source code for spatialmath.base.transformsNd</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="c1"># Part of Spatial Math Toolbox for Python</span>
+<span class="c1"># Copyright (c) 2000 Peter Corke</span>
+<span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This modules contains functions to create and transform rotation matrices</span>
 <span class="sd">and homogeneous tranformation matrices.</span>
 
 <span class="sd">Vector arguments are what numpy refers to as ``array_like`` and can be a list,</span>
 <span class="sd">tuple, numpy array, numpy row vector or numpy column vector.</span>
-
-<span class="sd">Versions:</span>
-
-<span class="sd">    1. Luis Fernando Lara Tobar and Peter Corke, 2008</span>
-<span class="sd">    2. Josh Carrigg Hodson, Aditya Dua, Chee Ho Chan, 2017</span>
-<span class="sd">    3. Peter Corke, 2020</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># pylint: disable=invalid-name</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">vectors</span> <span class="k">as</span> <span class="n">vec</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transforms2d</span> <span class="k">as</span> <span class="n">t2d</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transforms3d</span> <span class="k">as</span> <span class="n">t3d</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">symbolic</span> <span class="k">as</span> <span class="n">sym</span>
+<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="c1"># from spatialmath.base import vectors as vec</span>
+<span class="c1"># from spatialmath.base import transforms2d as t2d</span>
+<span class="c1"># from spatialmath.base import transforms3d as t3d</span>
+<span class="c1"># from spatialmath.base import argcheck</span>
+<span class="c1"># from spatialmath.base import symbolic as sym</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -191,9 +190,11 @@
 <span class="sd">    Convert SO(n) to SE(n)</span>
 
 <span class="sd">    :param R: rotation matrix</span>
+<span class="sd">    :type R: ndarray(2,2) or ndarray(3,3)</span>
 <span class="sd">    :param check: check if rotation matrix is valid (default False, no check)</span>
+<span class="sd">    :type check: bool</span>
 <span class="sd">    :return: homogeneous transformation matrix</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :rtype: ndarray(3,3) or ndarray(4,4)</span>
 
 <span class="sd">    ``T = r2t(R)`` is an SE(2) or SE(3) homogeneous transform equivalent to an</span>
 <span class="sd">    SO(2) or SO(3) orthonormal rotation matrix ``R`` with a zero translational</span>
@@ -202,10 +203,20 @@
 <span class="sd">    - if ``R`` is 2x2 then ``T`` is 3x3: SO(2) -&gt; SE(2)</span>
 <span class="sd">    - if ``R`` is 3x3 then ``T`` is 4x4: SO(3) -&gt; SE(3)</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; R = rot2(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; R</span>
+<span class="sd">        &gt;&gt;&gt; r2t(R)</span>
+
 <span class="sd">    :seealso: t2r, rt2tr</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;argument must be NumPy array&#39;</span><span class="p">)</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">assert</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;Matrix must be square&#39;</span>
+    <span class="k">if</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Matrix must be square&#39;</span><span class="p">)</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -214,9 +225,10 @@
         <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># numeric matrix</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation matrix &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Argument must be a NumPy array&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid SO(3) matrix &#39;</span><span class="p">)</span>
 
         <span class="c1"># T = np.pad(R, (0, 1), mode=&#39;constant&#39;)</span>
         <span class="c1"># T[-1, -1] = 1.0</span>
@@ -226,16 +238,17 @@
 
     <span class="k">return</span> <span class="n">T</span></div>
 
-
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 <div class="viewcode-block" id="t2r"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.t2r">[docs]</a><span class="k">def</span> <span class="nf">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert SE(n) to SO(n)</span>
 
 <span class="sd">    :param T: homogeneous transformation matrix</span>
+<span class="sd">    :type T: ndarray(3,3) or ndarray(4,4)</span>
 <span class="sd">    :param check: check if rotation matrix is valid (default False, no check)</span>
+<span class="sd">    :type check: bool</span>
 <span class="sd">    :return: rotation matrix</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(2,2) or (3,3)</span>
+<span class="sd">    :rtype: ndarray(2,2) or ndarray(3,3)</span>
 
 
 <span class="sd">    ``R = T2R(T)`` is the orthonormal rotation matrix component of homogeneous</span>
@@ -244,23 +257,32 @@
 <span class="sd">    - if ``T`` is 3x3 then ``R`` is 2x2: SE(2) -&gt; SO(2)</span>
 <span class="sd">    - if ``T`` is 4x4 then ``R`` is 3x3: SE(3) -&gt; SO(3)</span>
 
-<span class="sd">    Any translational component of T is lost.</span>
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; T = trot2(0.3, t=[1,2])</span>
+<span class="sd">        &gt;&gt;&gt; T</span>
+<span class="sd">        &gt;&gt;&gt; t2r(T)</span>
+
+<span class="sd">    .. note:: Any translational component of T is lost.</span>
 
 <span class="sd">    :seealso: r2t, tr2rt</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;argument must be NumPy array&#39;</span><span class="p">)</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">assert</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;Matrix must be square&#39;</span>
+    <span class="k">if</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Matrix must be square&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value must be a rotation matrix&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value must be an SE(3) matrix&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation matrix&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation submatrix&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">R</span></div>
 
@@ -269,12 +291,14 @@
 
 <div class="viewcode-block" id="tr2rt"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.tr2rt">[docs]</a><span class="k">def</span> <span class="nf">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert SE(3) to SO(3) and translation</span>
+<span class="sd">    Convert SE(n) to SO(n) and translation</span>
 
-<span class="sd">    :param T: homogeneous transform matrix</span>
-<span class="sd">    :param check: check if rotation matrix is valid (default False, no check)</span>
-<span class="sd">    :return: Rotation matrix and translation vector</span>
-<span class="sd">    :rtype: tuple: numpy.ndarray, shape=(2,2) or (3,3); numpy.ndarray, shape=(2,) or (3,)</span>
+<span class="sd">    :param T: SE(n) matrix</span>
+<span class="sd">    :type T: ndarray(3,3) or ndarray(4,4)</span>
+<span class="sd">    :param check: check if SO(3) submatrix is valid (default False, no check)</span>
+<span class="sd">    :type check: bool</span>
+<span class="sd">    :return: SO(n) matrix and translation vector</span>
+<span class="sd">    :rtype: tuple: (ndarray(2,2), ndarray(2)) or (ndarray(3,3), ndarray(3))</span>
 
 <span class="sd">    (R,t) = tr2rt(T) splits a homogeneous transformation matrix (NxN) into an orthonormal</span>
 <span class="sd">    rotation matrix R (MxM) and a translation vector T (Mx1), where N=M+1.</span>
@@ -282,10 +306,22 @@
 <span class="sd">    - if ``T`` is 3x3 - in SE(2) - then ``R`` is 2x2 and ``t`` is 2x1.</span>
 <span class="sd">    - if ``T`` is 4x4 - in SE(3) - then ``R`` is 3x3 and ``t`` is 3x1.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; T = trot2(0.3, t=[1,2])</span>
+<span class="sd">        &gt;&gt;&gt; T</span>
+<span class="sd">        &gt;&gt;&gt; R, t = tr2rt(T)</span>
+<span class="sd">        &gt;&gt;&gt; R</span>
+<span class="sd">        &gt;&gt;&gt; t</span>
+
 <span class="sd">    :seealso: rt2tr, tr2r</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;argument must be NumPy array&#39;</span><span class="p">)</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span>
-    <span class="k">assert</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;Matrix must be square&#39;</span>
+    <span class="k">if</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Matrix must be square&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
@@ -303,13 +339,16 @@
 
 <div class="viewcode-block" id="rt2tr"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.rt2tr">[docs]</a><span class="k">def</span> <span class="nf">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert SO(3) and translation to SE(3)</span>
+<span class="sd">    Convert SO(n) and translation to SE(n)</span>
 
-<span class="sd">    :param R: rotation matrix</span>
+<span class="sd">    :param R: SO(n) matrix</span>
+<span class="sd">    :type R: ndarray(2,2) or ndarray(3,3)</span>
 <span class="sd">    :param t: translation vector</span>
-<span class="sd">    :param check: check if rotation matrix is valid (default False, no check)</span>
-<span class="sd">    :return: homogeneous transform</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :type R: ndarray(2) or ndarray(3)</span>
+<span class="sd">    :param check: check if SO(3) matrix is valid (default False, no check)</span>
+<span class="sd">    :type check: bool</span>
+<span class="sd">    :return: SE(3) matrix</span>
+<span class="sd">    :rtype: ndarray(4,4) or (3,3)</span>
 
 <span class="sd">    ``T = rt2tr(R, t)`` is a homogeneous transformation matrix (N+1xN+1) formed from an</span>
 <span class="sd">    orthonormal rotation matrix ``R`` (NxN) and a translation vector ``t``</span>
@@ -318,12 +357,21 @@
 <span class="sd">    - If ``R`` is 2x2 and ``t`` is 2x1, then ``T`` is 3x3</span>
 <span class="sd">    - If ``R`` is 3x3 and ``t`` is 3x1, then ``T`` is 4x4</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; R = rot2(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; t = [1, 2]</span>
+<span class="sd">        &gt;&gt;&gt; T = rt2tr(R, t)</span>
+<span class="sd"> </span>
 <span class="sd">    :seealso: rt2m, tr2rt, r2t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Rotation matrix not a NumPy array&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;R and t must have the same number of rows&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation matrix&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
@@ -342,40 +390,48 @@
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="rt2m"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.rt2m">[docs]</a><span class="k">def</span> <span class="nf">rt2m</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Ab2M"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.Ab2M">[docs]</a><span class="k">def</span> <span class="nf">Ab2M</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pack rotation and translation to matrix</span>
+<span class="sd">    Pack matrix and vector to matrix</span>
 
-<span class="sd">    :param R: rotation matrix</span>
-<span class="sd">    :param t: translation vector</span>
-<span class="sd">    :param check: check if rotation matrix is valid (default False, no check)</span>
-<span class="sd">    :return: homogeneous transform</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :param A: square matrix</span>
+<span class="sd">    :type A: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :param b: translation vector</span>
+<span class="sd">    :type b: ndarray(3) or ndarray(2)</span>
+<span class="sd">    :return: matrix</span>
+<span class="sd">    :rtype: ndarray shape=(3,3) or (4,4)</span>
 
-<span class="sd">    ``T = rt2m(R, t)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``</span>
+<span class="sd">    ``M = Ab2M(A, b)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``</span>
 <span class="sd">    (Nx1).  The bottom row is all zeros.</span>
 
-<span class="sd">    - If ``R`` is 2x2 and ``t`` is 2x1, then ``T`` is 3x3</span>
-<span class="sd">    - If ``R`` is 3x3 and ``t`` is 3x1, then ``T`` is 4x4</span>
+<span class="sd">    - If ``A`` is 2x2 and ``b`` is 2x1, then ``M`` is 3x3</span>
+<span class="sd">    - If ``A`` is 3x3 and ``b`` is 3x1, then ``M`` is 4x4</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; A = np.c_[[1, 2], [3, 4]].T</span>
+<span class="sd">        &gt;&gt;&gt; b = [5, 6]</span>
+<span class="sd">        &gt;&gt;&gt; Ab2M(A, b)</span>
 
 <span class="sd">    :seealso: rt2tr, tr2rt, r2t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;R and t must have the same number of rows&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid rotation matrix&#39;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Rotation matrix not a NumPy array&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A and b must have the same number of rows&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
-    <span class="k">elif</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
+    <span class="k">elif</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
-        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;R must be an SO2 or SO3 rotation matrix&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A must be 2x2 or 3x3&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">T</span></div>
 
@@ -387,7 +443,7 @@
 <span class="sd">    Test if matrix belongs to SO(n)</span>
 
 <span class="sd">    :param R: matrix to test</span>
-<span class="sd">    :type R: numpy.ndarray</span>
+<span class="sd">    :type R: ndarray(2,2) or ndarray(3,3)</span>
 <span class="sd">    :param tol: tolerance in units of eps</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper orthonormal rotation matrix</span>
@@ -395,6 +451,13 @@
 
 <span class="sd">    Checks orthogonality, ie. :math:`{\bf R} {\bf R}^T = {\bf I}` and :math:`\det({\bf R}) &gt; 0`.</span>
 <span class="sd">    For the first test we check that the norm of the residual is less than ``tol * eps``.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; isR(np.eye(3))</span>
+<span class="sd">        &gt;&gt;&gt; isR(rot2(0.5))</span>
+<span class="sd">        &gt;&gt;&gt; isR(np.zeros((3,3)))</span>
 
 <span class="sd">    :seealso: isrot2, isrot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -407,7 +470,7 @@
 <span class="sd">    Test if matrix belongs to so(n)</span>
 
 <span class="sd">    :param S: matrix to test</span>
-<span class="sd">    :type S: numpy.ndarray</span>
+<span class="sd">    :type S: ndarray(2,2) or ndarray(3,3)</span>
 <span class="sd">    :param tol: tolerance in units of eps</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper skew-symmetric matrix</span>
@@ -415,6 +478,13 @@
 
 <span class="sd">    Checks skew-symmetry, ie. :math:`{\bf S} + {\bf S}^T = {\bf 0}`.</span>
 <span class="sd">    We check that the norm of the residual is less than ``tol * eps``.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; isskew(np.zeros((3,3)))</span>
+<span class="sd">        &gt;&gt;&gt; isskew(np.array([0, -2], [2, 0]])</span>
+<span class="sd">        &gt;&gt;&gt; isskew(np.eye(3))</span>
 
 <span class="sd">    :seealso: isskewa</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -426,7 +496,7 @@
 <span class="sd">    Test if matrix belongs to se(n)</span>
 
 <span class="sd">    :param S: matrix to test</span>
-<span class="sd">    :type S: numpy.ndarray</span>
+<span class="sd">    :type S: ndarray(3,3) or ndarray(4,4)</span>
 <span class="sd">    :param tol: tolerance in units of eps</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper skew-symmetric matrix</span>
@@ -435,6 +505,12 @@
 <span class="sd">    Check if matrix is augmented skew-symmetric, ie. the top left (n-1xn-1) partition ``S`` is</span>
 <span class="sd">    skew-symmetric :math:`{\bf S} + {\bf S}^T = {\bf 0}`, and the bottom row is zero</span>
 <span class="sd">    We check that the norm of the residual is less than ``tol * eps``.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; isskewa(np.zeros((3,3)))</span>
+<span class="sd">        &gt;&gt;&gt; isskewa(np.array([0, -2], [2, 0]])</span>
 
 <span class="sd">    :seealso: isskew</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -447,7 +523,7 @@
 <span class="sd">    Test if matrix is identity</span>
 
 <span class="sd">    :param S: matrix to test</span>
-<span class="sd">    :type S: numpy.ndarray</span>
+<span class="sd">    :type S: ndarray(n,n)</span>
 <span class="sd">    :param tol: tolerance in units of eps</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper skew-symmetric matrix</span>
@@ -461,7 +537,7 @@
     <span class="n">s</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># not a square matrix</span>
-    <span class="k">return</span> <span class="n">vec</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
 
 
 <span class="c1"># ========================= angle sequences</span>
@@ -472,11 +548,11 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create skew-symmetric metrix from vector</span>
 
-<span class="sd">    :param v: 1- or 3-vector</span>
-<span class="sd">    :type v: array_like</span>
+<span class="sd">    :param v: vector</span>
+<span class="sd">    :type v: array_like(1) or array_like(3)</span>
 <span class="sd">    :return: skew-symmetric matrix in so(2) or so(3)</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(2,2) or (3,3)</span>
-<span class="sd">    :raises: ValueError</span>
+<span class="sd">    :rtype: ndarray(2,2) or ndarray(3,3)</span>
+<span class="sd">    :raises ValueError:</span>
 
 <span class="sd">    ``skew(V)`` is a skew-symmetric matrix formed from the elements of ``V``.</span>
 
@@ -491,7 +567,7 @@
 <span class="sd">    :seealso: :func:`vex`, :func:`skewa`</span>
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;sequence&#39;</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;sequence&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
@@ -502,22 +578,24 @@
             <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
             <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">]])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;argument must be a 1- or 3-vector&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument must be a 1- or 3-vector&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">s</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="vex"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.vex">[docs]</a><span class="k">def</span> <span class="nf">vex</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="vex"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.vex">[docs]</a><span class="k">def</span> <span class="nf">vex</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert skew-symmetric matrix to vector</span>
 
 <span class="sd">    :param s: skew-symmetric matrix</span>
-<span class="sd">    :type s: numpy.ndarray, shape=(2,2) or (3,3)</span>
+<span class="sd">    :type s: ndarray(2,2) or ndarray(3,3)</span>
+<span class="sd">    :param check: check if matrix is skew symmetric (default False, no check)</span>
+<span class="sd">    :type check: bool</span>
 <span class="sd">    :return: vector of unique values</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(1,) or (3,)</span>
-<span class="sd">    :raises: ValueError</span>
+<span class="sd">    :rtype: ndarray(1) or ndarray(3)</span>
+<span class="sd">    :raises ValueError:</span>
 
 <span class="sd">    ``vex(S)`` is the vector which has the corresponding skew-symmetric matrix ``S``.</span>
 
@@ -536,6 +614,8 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isskew</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument is not skew symmetric&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="o">/</span> <span class="mi">2</span>
@@ -549,10 +629,10 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create augmented skew-symmetric metrix from vector</span>
 
-<span class="sd">    :param v: 3- or 6-vector</span>
-<span class="sd">    :type v: array_like</span>
+<span class="sd">    :param v: vector</span>
+<span class="sd">    :type v: array_like(3), array_like(6)</span>
 <span class="sd">    :return: augmented skew-symmetric matrix in se(2) or se(3)</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :rtype: ndarray(3,3) or ndarray(4,4)</span>
 <span class="sd">    :raises: ValueError</span>
 
 <span class="sd">    ``skewa(V)`` is an augmented skew-symmetric matrix formed from the elements of ``V``.</span>
@@ -570,7 +650,7 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">omega</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">omega</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">skew</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
@@ -582,20 +662,22 @@
         <span class="n">omega</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">omega</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;expecting a 3- or 6-vector&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting a 3- or 6-vector&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="vexa"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.vexa">[docs]</a><span class="k">def</span> <span class="nf">vexa</span><span class="p">(</span><span class="n">Omega</span><span class="p">):</span>
+<div class="viewcode-block" id="vexa"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.vexa">[docs]</a><span class="k">def</span> <span class="nf">vexa</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert skew-symmetric matrix to vector</span>
 
 <span class="sd">    :param s: augmented skew-symmetric matrix</span>
-<span class="sd">    :type s: numpy.ndarray, shape=(3,3) or (4,4)</span>
+<span class="sd">    :type s: ndarray(3,3) or ndarray(4,4)</span>
+<span class="sd">    :param check: check if matrix is skew symmetric part is valid (default False, no check)</span>
+<span class="sd">    :type check: bool</span>
 <span class="sd">    :return: vector of unique values</span>
-<span class="sd">    :rtype: numpy.ndarray, shape=(3,) or (6,)</span>
-<span class="sd">    :raises: ValueError</span>
+<span class="sd">    :rtype: ndarray(3) or ndarray(6)</span>
+<span class="sd">    :raises ValueError:</span>
 
-<span class="sd">    ``vex(S)`` is the vector which has the corresponding skew-symmetric matrix ``S``.</span>
+<span class="sd">    ``vexa(S)`` is the vector which has the corresponding augmented skew-symmetric matrix ``S``.</span>
 
 <span class="sd">    - ``S`` is 3x3 - se(2) case - where ``S`` :math:`= \left[ \begin{array}{ccc} 0 &amp; -v_3 &amp; v_1 \\ v_3 &amp; 0 &amp; v_2 \\ 0 &amp; 0 &amp; 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3]`.</span>
 <span class="sd">    - ``S`` is 4x4 - se(3) case -  where ``S`` :math:`= \left[ \begin{array}{cccc} 0 &amp; -v_6 &amp; v_5 &amp; v_1 \\ v_6 &amp; 0 &amp; -v_4 &amp; v_2 \\ -v_5 &amp; v_4 &amp; 0 &amp; v_3 \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3, v_4, v_5, v_6]`.</span>
@@ -613,32 +695,34 @@
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">Omega</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">t3d</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">Omega</span><span class="p">),</span> <span class="n">vex</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">Omega</span><span class="p">))))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">base</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">Omega</span><span class="p">),</span> <span class="n">vex</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">Omega</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)))</span>
     <span class="k">elif</span> <span class="n">Omega</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">t2d</span><span class="o">.</span><span class="n">transl2</span><span class="p">(</span><span class="n">Omega</span><span class="p">),</span> <span class="n">vex</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">Omega</span><span class="p">))))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">base</span><span class="o">.</span><span class="n">transl2</span><span class="p">(</span><span class="n">Omega</span><span class="p">),</span> <span class="n">vex</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">Omega</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;expecting a 3x3 or 4x4 matrix&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting a 3x3 or 4x4 matrix&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="rodrigues"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.rodrigues">[docs]</a><span class="k">def</span> <span class="nf">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<div class="viewcode-block" id="rodrigues"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.rodrigues">[docs]</a><span class="k">def</span> <span class="nf">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rodrigues&#39; formula for rotation</span>
 
 <span class="sd">    :param w: rotation vector</span>
-<span class="sd">    :type w: array_like</span>
-<span class="sd">    :param theta: rotation angle</span>
-<span class="sd">    :type theta: float or None</span>
+<span class="sd">    :type w: array_like(1) or array_like(3)</span>
+<span class="sd">    :param θ: rotation angle</span>
+<span class="sd">    :type θ: float or None</span>
+<span class="sd">    :return: SO(n) matrix</span>
+<span class="sd">    :rtype: ndarray(2,2) or ndarray(3,3)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
         <span class="c1"># for a zero so(n) return unit matrix, theta not relevant</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
     <span class="n">skw</span> <span class="o">=</span> <span class="n">skew</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">skw</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">@</span> <span class="n">skw</span></div>
@@ -649,20 +733,29 @@
 <span class="sd">    Convert from homogeneous to Euclidean form</span>
 
 <span class="sd">    :param v: homogeneous vector or matrix</span>
-<span class="sd">    :type v: array_like</span>
+<span class="sd">    :type v: array_like(n), ndarray(n,m)</span>
 <span class="sd">    :return: Euclidean vector</span>
-<span class="sd">    :rtype: numpy.ndarray</span>
+<span class="sd">    :rtype: ndarray(n-1), ndarray(n-1,m)</span>
 
 <span class="sd">    - If ``v`` is an array, shape=(N,), return an array shape=(N-1,) where the elements have</span>
 <span class="sd">      all been scaled by the last element of ``v``.</span>
 <span class="sd">    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N-1,N), where each column has</span>
 <span class="sd">      been scaled by its last element.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; h2e([2, 4, 6, 1])</span>
+<span class="sd">        &gt;&gt;&gt; h2e([2, 4, 6, 2])</span>
+<span class="sd">        &gt;&gt;&gt; h = np.c_[[1,2,1], [3,4,2], [5,6,1]]</span>
+<span class="sd">        &gt;&gt;&gt; h</span>
+<span class="sd">        &gt;&gt;&gt; h2e(h)</span>
+
 <span class="sd">    :seealso: e2h</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
         <span class="c1"># dealing with shape (N,) array</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="c1"># dealing with matrix</span>
@@ -674,20 +767,28 @@
 <span class="sd">    Convert from Euclidean to homogeneous form</span>
 
 <span class="sd">    :param v: Euclidean vector or matrix</span>
-<span class="sd">    :type v: array_like</span>
+<span class="sd">    :type v: array_like(n), ndarray(n,n)</span>
 <span class="sd">    :return: homogeneous vector</span>
-<span class="sd">    :rtype: numpy.ndarray</span>
+<span class="sd">    :rtype: ndarray(n+1) or ndarray(n+1,m</span>
 
 <span class="sd">    - If ``v`` is an array, shape=(N,), return an array shape=(N+1,) where a value of 1 has</span>
 <span class="sd">      been appended</span>
 <span class="sd">    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N+1,N), where each column has</span>
 <span class="sd">      been appended with a value of 1, ie. a row of ones has been appended to the matrix.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; e2h([2, 4, 6])</span>
+<span class="sd">        &gt;&gt;&gt; e = np.c_[[1,2], [3,4], [5,6]]</span>
+<span class="sd">        &gt;&gt;&gt; e</span>
+<span class="sd">        &gt;&gt;&gt; e2h(e)</span>
+
 <span class="sd">    :seealso: e2h</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
         <span class="c1"># dealing with shape (N,) array</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="c1"># dealing with matrix</span>
@@ -725,6 +826,8 @@
 
 <span class="sd">    :seealso: :func:`e2h`, :func:`h2e`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># Euclidean vector</span>
         <span class="k">return</span> <span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">e2h</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">)</span>
@@ -753,7 +856,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 08-Nov-2020.
+        Last updated on 12-Nov-2020.
       </span>
 
     </p>
