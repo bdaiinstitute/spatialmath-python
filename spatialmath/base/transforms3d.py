@@ -31,12 +31,12 @@ def rotx(theta, unit="rad"):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 3x3 rotation matrix
-    :rtype: numpy.ndarray, shape=(3,3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
 
-    - ``rotx(THETA)`` is an SO(3) rotation matrix (3x3) representing a rotation
-      of THETA radians about the x-axis
-    - ``rotx(THETA, "deg")`` as above but THETA is in degrees
+    - ``rotx(θ)`` is an SO(3) rotation matrix (3x3) representing a rotation
+      of θ radians about the x-axis
+    - ``rotx(θ, "deg")`` as above but θ is in degrees
 
     :seealso: :func:`~trotx`
     :SymPy: supported
@@ -61,12 +61,12 @@ def roty(theta, unit="rad"):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 3x3 rotation matrix
-    :rtype: numpy.ndarray, shape=(3,3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
 
-    - ``roty(THETA)`` is an SO(3) rotation matrix (3x3) representing a rotation
-      of THETA radians about the y-axis
-    - ``roty(THETA, "deg")`` as above but THETA is in degrees
+    - ``roty(θ)`` is an SO(3) rotation matrix (3x3) representing a rotation
+      of θ radians about the y-axis
+    - ``roty(θ, "deg")`` as above but θ is in degrees
 
     :seealso: :func:`~troty`
     :SymPy: supported
@@ -91,12 +91,12 @@ def rotz(theta, unit="rad"):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 3x3 rotation matrix
-    :rtype: numpy.ndarray, shape=(3,3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
 
-    - ``rotz(THETA)`` is an SO(3) rotation matrix (3x3) representing a rotation
-      of THETA radians about the z-axis
-    - ``rotz(THETA, "deg")`` as above but THETA is in degrees
+    - ``rotz(θ)`` is an SO(3) rotation matrix (3x3) representing a rotation
+      of θ radians about the z-axis
+    - ``rotz(θ, "deg")`` as above but θ is in degrees
 
     :seealso: :func:`~yrotz`
     :SymPy: supported
@@ -120,14 +120,15 @@ def trotx(theta, unit="rad", t=None):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param t: translation 3-vector, defaults to [0,0,0]
-    :type t: array_like    :return: 4x4 homogeneous transformation matrix
-    :rtype: numpy.ndarray, shape=(4,4)
+    :param t: 3D translation vector, defaults to [0,0,0]
+    :type t: array_like(3)    
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
-    - ``trotx(THETA)`` is a homogeneous transformation (4x4) representing a rotation
-      of THETA radians about the x-axis.
-    - ``trotx(THETA, 'deg')`` as above but THETA is in degrees
-    - ``trotx(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+    - ``trotx(θ)`` is a homogeneous transformation (4x4) representing a rotation
+      of θ radians about the x-axis.
+    - ``trotx(θ, 'deg')`` as above but θ is in degrees
+    - ``trotx(θ, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
     :seealso: :func:`~rotx`
     :SymPy: supported
@@ -147,15 +148,15 @@ def troty(theta, unit="rad", t=None):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param t: translation 3-vector, defaults to [0,0,0]
-    :type t: array_like
-    :return: 4x4 homogeneous transformation matrix as a numpy array
-    :rtype: numpy.ndarray, shape=(4,4)
+    :param t: 3D translation vector, defaults to [0,0,0]
+    :type t: array_like(3)
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
-    - ``troty(THETA)`` is a homogeneous transformation (4x4) representing a rotation
-      of THETA radians about the y-axis.
-    - ``troty(THETA, 'deg')`` as above but THETA is in degrees
-    - ``troty(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+    - ``troty(θ)`` is a homogeneous transformation (4x4) representing a rotation
+      of θ radians about the y-axis.
+    - ``troty(θ, 'deg')`` as above but θ is in degrees
+    - ``troty(θ, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
     :seealso: :func:`~roty`
     :SymPy: supported
@@ -175,15 +176,15 @@ def trotz(theta, unit="rad", t=None):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param t: translation 3-vector, defaults to [0,0,0]
-    :type t: array_like
-    :return: 4x4 homogeneous transformation matrix
-    :rtype: numpy.ndarray, shape=(4,4)
+    :param t: 3D translation vector, defaults to [0,0,0]
+    :type t: array_like(3)
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
-    - ``trotz(THETA)`` is a homogeneous transformation (4x4) representing a rotation
-      of THETA radians about the z-axis.
-    - ``trotz(THETA, 'deg')`` as above but THETA is in degrees
-    - ``trotz(THETA, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+    - ``trotz(θ)`` is a homogeneous transformation (4x4) representing a rotation
+      of θ radians about the z-axis.
+    - ``trotz(θ, 'deg')`` as above but θ is in degrees
+    - ``trotz(θ, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
     :seealso: :func:`~rotz`
     :SymPy: supported
@@ -200,17 +201,18 @@ def transl(x, y=None, z=None):
     """
     Create SE(3) pure translation, or extract translation from SE(3) matrix
 
+
+    **Create a translational SE(3) matrix**
+
     :param x: translation along X-axis
     :type x: float
     :param y: translation along Y-axis
     :type y: float
     :param z: translation along Z-axis
     :type z: float
-    :return: 4x4 homogeneous transformation matrix
-    :rtype: numpy.ndarray, shape=(4,4)
+    :return: SE(3) transformation matrix
+    :rtype: numpy(4,4)
     :raises ValueError: bad argument
-
-    Create a translational SE(3) matrix:
 
     - ``T = transl( X, Y, Z )`` is an SE(3) homogeneous transform (4x4) representing a
       pure translation of X, Y and Z.
@@ -218,10 +220,20 @@ def transl(x, y=None, z=None):
       list, dict, or a numpy array, row or column vector.
 
 
-    Extract the translational part of an SE(3) matrix:
+    **Extract the translational part of an SE(3) matrix**
 
-    - ``P = TRANSL(T)`` is the translational part of a homogeneous transform T as a
+    :param x: SE(3) transformation matrix
+    :type x: numpy(4,4)
+    :return: translation elements of SE(2) matrix
+    :rtype: ndarray(3)
+    :raises ValueError: bad argument
+
+    - ``t = transl(T)`` is the translational part of a homogeneous transform T as a
       3-element numpy array.
+
+    .. note:: This function is compatible with the MATLAB version of the Toolbox.  It
+        is unusual/weird in doing two completely different things inside the one
+        function.
 
     :seealso: :func:`~spatialmath.base.transforms2d.transl2`
     :SymPy: supported
@@ -245,8 +257,8 @@ def ishom(T, check=False, tol=100):
     """
     Test if matrix belongs to SE(3)
 
-    :param T: matrix to test
-    :type T: numpy.ndarray
+    :param T: SE(3) matrix to test
+    :type T: numpy(4,4)
     :param check: check validity of rotation submatrix
     :type check: bool
     :return: whether matrix is an SE(3) homogeneous transformation matrix
@@ -265,8 +277,8 @@ def isrot(R, check=False, tol=100):
     """
     Test if matrix belongs to SO(3)
 
-    :param R: matrix to test
-    :type R: numpy.ndarray
+    :param R: SO(3) matrix to test
+    :type R: numpy(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
     :return: whether matrix is an SO(3) rotation matrix
@@ -295,8 +307,8 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     :type unit: str
     :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
     :type unit: str
-    :return: 3x3 rotation matrix
-    :rtype: numpdy.ndarray, shape=(3,3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
     :raises ValueError: bad argument
 
 
@@ -315,7 +327,7 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
           to the optic axis and x-axis parallel to the pixel rows.
 
     - ``rpy2r(RPY)`` as above but the roll, pitch, yaw angles are taken
-      from ``RPY`` which is a 3-vector (array_like) with values
+      from ``RPY`` which is a 3-vector with values
       (ROLL, PITCH, YAW).
 
     :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`
@@ -355,8 +367,8 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
     :type unit: str
     :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
     :type unit: str
-    :return: 3x3 rotation matrix
-    :rtype: numpdy.ndarray, shape=(3,3)
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
     - ``rpy2tr(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix
       (3x3) equivalent to the specified roll, pitch, yaw angles angles.
@@ -373,7 +385,7 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
           to the optic axis and x-axis parallel to the pixel rows.
 
     - ``rpy2tr(RPY)`` as above but the roll, pitch, yaw angles are taken
-      from ``RPY`` which is a 3-vector (array_like) with values
+      from ``RPY`` which is a 3-vector with values
       (ROLL, PITCH, YAW).
 
     Notes:
@@ -401,15 +413,15 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
     :type psi: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 3x3 rotation matrix
-    :rtype: numpdy.ndarray, shape=(3,3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
 
-    - ``R = eul2r(PHI, THETA, PSI)`` is an SO(3) orthonornal rotation
+    - ``R = eul2r(PHI, θ, PSI)`` is an SO(3) orthonornal rotation
       matrix equivalent to the specified Euler angles.  These correspond
       to rotations about the Z, Y, Z axes respectively.
     - ``R = eul2r(EUL)`` as above but the Euler angles are taken from
-      ``EUL`` which is a 3-vector (array_like) with values
-      (PHI THETA PSI).
+      ``EUL`` which is a 3-vector with values
+      (PHI θ PSI).
 
     :seealso: :func:`~rpy2r`, :func:`~eul2tr`, :func:`~tr2eul`
 
@@ -439,15 +451,15 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
     :type psi: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 4x4 homogeneous transformation matrix
-    :rtype: numpdy.ndarray, shape=(4,4)
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
-    - ``R = eul2tr(PHI, THETA, PSI)`` is an SE(3) homogeneous transformation
+    - ``R = eul2tr(PHI, θ, PSI)`` is an SE(3) homogeneous transformation
       matrix equivalent to the specified Euler angles.  These correspond
       to rotations about the Z, Y, Z axes respectively.
     - ``R = eul2tr(EUL)`` as above but the Euler angles are taken from
-      ``EUL`` which is a 3-vector (array_like) with values
-      (PHI THETA PSI).
+      ``EUL`` which is a 3-vector with values
+      (PHI θ PSI).
 
     Notes:
 
@@ -472,19 +484,19 @@ def angvec2r(theta, v, unit='rad'):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param v: rotation axis, 3-vector
-    :type v: array_like
-    :return: 3x3 rotation matrix
-    :rtype: numpdy.ndarray, shape=(3,3)
+    :param v: 3D rotation axis
+    :type v: array_like(3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
     :raises ValueError: bad arguments
 
-    ``angvec2r(THETA, V)`` is an SO(3) orthonormal rotation matrix
-    equivalent to a rotation of ``THETA`` about the vector ``V``.
+    ``angvec2r(θ, V)`` is an SO(3) orthonormal rotation matrix
+    equivalent to a rotation of ``θ`` about the vector ``V``.
 
     Notes:
 
-    - If ``THETA == 0`` then return identity matrix.
-    - If ``THETA ~= 0`` then ``V`` must have a finite length.
+    - If ``θ == 0`` then return identity matrix.
+    - If ``θ ~= 0`` then ``V`` must have a finite length.
 
     :seealso: :func:`~angvec2tr`, :func:`~tr2angvec`
 
@@ -514,18 +526,18 @@ def angvec2tr(theta, v, unit='rad'):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param v: rotation axis, 3-vector
-    :type v: : array_like
-    :return: 4x4 homogeneous transformation matrix
-    :rtype: numpdy.ndarray, shape=(4,4)
+    :param v: 3D rotation axis
+    :type v: : array_like(3)
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
-    ``angvec2tr(THETA, V)`` is an SE(3) homogeneous transformation matrix
-    equivalent to a rotation of ``THETA`` about the vector ``V``.
+    ``angvec2tr(θ, V)`` is an SE(3) homogeneous transformation matrix
+    equivalent to a rotation of ``θ`` about the vector ``V``.
 
     Notes:
 
-    - If ``THETA == 0`` then return identity matrix.
-    - If ``THETA ~= 0`` then ``V`` must have a finite length.
+    - If ``θ == 0`` then return identity matrix.
+    - If ``θ ~= 0`` then ``V`` must have a finite length.
     - The translational part is zero.
 
     :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
@@ -540,12 +552,12 @@ def oa2r(o, a=None):
     """
     Create SO(3) rotation matrix from two vectors
 
-    :param o: 3-vector parallel to Y- axis
-    :type o: array_like
-    :param a: 3-vector parallel to the Z-axis
-    :type o: array_like
-    :return: 3x3 rotation matrix
-    :rtype: numpy.ndarray, shape=(3,3)
+    :param o: 3D vector parallel to Y- axis
+    :type o: array_like(3)
+    :param a: 3D vector parallel to the Z-axis
+    :type o: array_like(3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
 
     ``T = oa2tr(O, A)`` is an SO(3) orthonormal rotation matrix for a frame defined in terms of
     vectors parallel to its Y- and Z-axes with respect to a reference frame.  In robotics these axes are
@@ -584,12 +596,12 @@ def oa2tr(o, a=None):
     """
     Create SE(3) pure rotation from two vectors
 
-    :param o: 3-vector parallel to Y- axis
-    :type o: array_like
-    :param a: 3-vector parallel to the Z-axis
-    :type o: array_like
-    :return: 4x4 homogeneous transformation matrix
-    :rtype: numpy.ndarray, shape=(4,4)
+    :param o: 3D vector parallel to Y- axis
+    :type o: array_like(3)
+    :param a: 3D vector parallel to the Z-axis
+    :type o: array_like(3)
+    :return: SE(3) transformation matrix
+    :rtype: ndarray(4,4)
 
     ``T = oa2tr(O, A)`` is an SE(3) homogeneous transformation matrix for a frame defined in terms of
     vectors parallel to its Y- and Z-axes with respect to a reference frame.  In robotics these axes are
@@ -624,14 +636,14 @@ def tr2angvec(T, unit='rad', check=False):
     r"""
     Convert SO(3) or SE(3) to angle and rotation vector
 
-    :param R: SO(3) or SE(3) matrix
-    :type R: numpy.ndarray, shape=(3,3) or (4,4)
+    :param R: SE(3) or SO(3) matrix
+    :type R: ndarray(4,4) or ndarray(3,3)
     :param unit: 'rad' or 'deg'
     :type unit: str
     :param check: check that rotation matrix is valid
     :type check: bool
     :return: :math:`(\theta, {\bf v})`
-    :rtype: float, numpy.ndarray, shape=(3,)
+    :rtype: float, ndarray(3)
     :raises ValueError: bad arguments
 
     ``tr2angvec(R)`` is a rotation angle and a vector about which the rotation
@@ -673,8 +685,8 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
 
-    :param R: SO(3) or SE(3) matrix
-    :type R: numpy.ndarray, shape=(3,3) or (4,4)
+    :param R: SE(3) or SO(3) matrix
+    :type R: ndarray(4,4) or ndarray(3,3)
     :param unit: 'rad' or 'deg'
     :type unit: str
     :param flip: choose first Euler angle to be in quadrant 2 or 3
@@ -682,7 +694,7 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     :param check: check that rotation matrix is valid
     :type check: bool
     :return: ZYZ Euler angles
-    :rtype: numpy.ndarray, shape=(3,)
+    :rtype: ndarray(3)
 
     ``tr2eul(R)`` are the Euler angles corresponding to
     the rotation part of ``R``.
@@ -740,8 +752,8 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
 
-    :param R: SO(3) or SE(3) matrix
-    :type R: numpy.ndarray, shape=(3,3) or (4,4)
+    :param R: SE(3) or SO(3) matrix
+    :type R: ndarray(4,4) or ndarray(3,3)
     :param unit: 'rad' or 'deg'
     :type unit: str
     :param order: 'xyz', 'zyx' or 'yxz' [default 'zyx']
@@ -749,7 +761,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     :param check: check that rotation matrix is valid
     :type check: bool
     :return: Roll-pitch-yaw angles
-    :rtype: numpy.ndarray, shape=(3,)
+    :rtype: ndarray(3)
     :raises ValueError: bad arguments
 
     ``tr2rpy(R)`` are the roll-pitch-yaw angles corresponding to
@@ -872,14 +884,14 @@ def trlog(T, check=True, twist=False):
     """
     Logarithm of SO(3) or SE(3) matrix
 
-    :param T: SO(3) or SE(3) matrix
-    :type T: numpy.ndarray, shape=(3,3) or (4,4)
+    :param R: SE(3) or SO(3) matrix
+    :type R: ndarray(4,4) or ndarray(3,3)
     :param check: check that matrix is valid
     :type check: bool
     :param twist: return a twist vector instead of matrix [default]
     :type twist: bool
     :return: logarithm
-    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad argument
 
     An efficient closed-form solution of the matrix logarithm for arguments that are SO(3) or SE(3).
@@ -962,14 +974,14 @@ def trlog(T, check=True, twist=False):
 
 def trexp(S, theta=None, check=True):
     """
-    Exponential of so(3) or se(3) matrix
+    Exponential of se(3) or so(3) matrix
 
-    :param S: so(3), se(3) matrix or equivalent vector
-    :type T: numpy.ndarray, shape=(3,3), (3,), (4,4), or (6,)
+    :param S: se(3), so(3) matrix or equivalent twist vector
+    :type T: ndarray(4,4) or ndarray(6); or ndarray(3,3) or ndarray(3)
     :param θ: motion
     :type θ: float
-    :return: 3x3 or 4x4 matrix exponential in SO(3) or SE(3)
-    :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :return: matrix exponential in SE(3) or SO(3)
+    :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad arguments
 
     An efficient closed-form solution of the matrix exponential for arguments
@@ -983,10 +995,10 @@ def trexp(S, theta=None, check=True):
       unit-norm skew-symmetric matrix representing a rotation axis and a
       rotation magnitude given by ``θ``.
     - ``trexp(ω)`` is the matrix exponential of the so(3) element ``ω``
-      expressed as a 3-vector (array_like).
+      expressed as a 3-vector.
     - ``trexp(ω, θ)`` as above but for an so(3) motion of ωθ where ``ω`` is a
       unit-norm vector representing a rotation axis and a rotation magnitude
-      given by ``θ``. ``ω`` is expressed as a 3-vector (array_like).
+      given by ``θ``. ``ω`` is expressed as a 3-vector.
 
     For se(3) the results is an SE(3) homogeneous transformation matrix:
 
@@ -1060,11 +1072,11 @@ def trnorm(T):
     r"""
     Normalize an SO(3) or SE(3) matrix
 
-    :param T: SO(3) or SE(3) matrix
-    :type T1: np.ndarray, shape=(3,3) or (4,4)
+    :param R: SE(3) or SO(3) matrix
+    :type R: ndarray(4,4) or ndarray(3,3)
     :param T1: second SE(3) matrix
-    :return: SO(3) or SE(3) matrix
-    :rtype: np.ndarray, shape=(3,3) or (4,4)
+    :return: normalized SE(3) or SO(3) matrix
+    :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad arguments
 
     - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation
@@ -1108,14 +1120,14 @@ def trinterp(start, end, s=None):
     """
     Interpolate SE(3) matrices
 
-    :param start: initial SO(3) or SE(3) matrix value when s=0, if None then identity is used
-    :type start: np.ndarray, shape=(3,3), (4,4)
-    :param end: final SO(3) or SE(3) matrix, value when s=1
-    :type end: np.ndarray, shape=(3,3), (4,4)
+    :param start: initial SE(3) or SO(3) matrix value when s=0, if None then identity is used
+    :type start: ndarray(4,4) or ndarray(3,3)
+    :param end: final SE(3) or SO(3) matrix, value when s=1
+    :type end: ndarray(4,4) or ndarray(3,3)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
-    :return: SO(3) or SE(3) matrix
-    :rtype: np.ndarray, shape=(3,3), (4,4)
+    :return: interpolated SE(3) or SO(3) matrix value
+    :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad arguments
 
     - ``trinterp(None, T, S)`` is a homogeneous transform (4x4) interpolated
@@ -1127,9 +1139,7 @@ def trinterp(start, end, s=None):
     - ``trinterp(R0, R1, S)`` as above but interpolated
       between R0 (3x3) when S=0 and R1 (3x3) when S=1.
 
-    .. note::
-
-        - Rotation is interpolated using quaternion spherical linear interpolation (slerp).
+    .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
     :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
     """
@@ -1182,9 +1192,9 @@ def delta2tr(d):
     Convert differential motion to SE(3)
 
     :param Δ: differential motion as a 6-vector
-    :type Δ: array_like
+    :type Δ: array_like(6)
     :return: SE(3) matrix
-    :rtype: np.ndarray, shape=(4,4)
+    :rtype: ndarray(4,4)
 
     ``delta2tr(Δ)`` is an SE(3) matrix representing differential
     motion :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
@@ -1202,10 +1212,10 @@ def trinv(T):
     r"""
     Invert an SE(3) matrix
 
-    :param T: an SE(3) matrix
-    :type T: np.ndarray, shape=(4,4)
-    :return: SE(3) matrix
-    :rtype: np.ndarray, shape=(4,4)
+    :param T: SE(3) matrix
+    :type T: ndarray(4,4)
+    :return: inverse of SE(3) matrix
+    :rtype: ndarray(4,4)
     :raises ValueError: bad arguments
 
     Computes an efficient inverse of an SE(3) matrix:
@@ -1231,11 +1241,11 @@ def tr2delta(T0, T1=None):
     Difference of SE(3) matrices as differential motion
 
     :param T0: first SE(3) matrix
-    :type T0: np.ndarray, shape=(4,4)
+    :type T0: ndarray(4,4)
     :param T1: second SE(3) matrix
-    :type T1: np.ndarray, shape=(4,4)
-    :return: Sdifferential motion as a 6-vector
-    :rtype: np.ndarray, shape=(6,)
+    :type T1: ndarray(4,4)
+    :return: Differential motion as a 6-vector
+    :rtype:ndarray(6)
     :raises ValueError: bad arguments
 
 
@@ -1279,10 +1289,10 @@ def tr2jac(T, samebody=False):
     r"""
     SE(3) adjoint
 
-    :param T: an SE(3) matrix
-    :type T: np.ndarray, shape=(4,4)
+    :param T: SE(3) matrix
+    :type T: ndarray(4,4)
     :return: adjoint matrix
-    :rtype: np.ndarray, shape=(6,6)
+    :rtype: ndarray(6,6)
     :raises ValueError: bad arguments
 
     Computes an adjoint matrix that maps spatial velocity between two frames defined by
@@ -1316,8 +1326,8 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
     """
     Compact display of SO(3) or SE(3) matrices
 
-    :param T: matrix to format
-    :type T: numpy.ndarray, shape=(3,3) or (4,4)
+    :param T: SE(3) or SO(3) matrix
+    :type T: ndarray(4,4) or ndarray(3,3)
     :param label: text label to put at start of line
     :type label: str
     :param orient: 3-angle convention to use
@@ -1438,15 +1448,15 @@ def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # py
     """
     Plot a 3D coordinate frame
 
-    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-    :type: numpy.ndarray, shape=(3,3) or (4,4)
+    :param T: SE(3) or SO(3) matrix
+    :type T: ndarray(4,4) or ndarray(3,3)
     :param axes: the axes to plot into, defaults to current axes
     :type axes: Axes3D reference
     :param block: run the GUI main loop until all windows are closed, default True
     :type block: bool
     :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
                     If dims is [min, max] those limits are applied to the x-, y- and z-axes.
-    :type dims: array_like
+    :type dims: array_like(6) or array_like(2)
     :param color: color of the lines defining the frame
     :type color: str
     :param textcolor: color of text labels for the frame, default color of lines above
@@ -1576,8 +1586,8 @@ def tranimate(T, **kwargs):
     """
     Animate a 3D coordinate frame
 
-    :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-    :type: numpy.ndarray, shape=(3,3) or (4,4)
+    :param R: SE(3) or SO(3) matrix
+    :type R: ndarray(4,4) or ndarray(3,3)
     :param nframes: number of steps in the animation [defaault 100]
     :type nframes: int
     :param repeat: animate in endless loop [default False]

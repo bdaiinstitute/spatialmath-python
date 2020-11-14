@@ -31,11 +31,11 @@ def rot2(theta, unit='rad'):
     :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 2x2 rotation matrix
-    :rtype: numpy.ndarray, shape=(2,2)
+    :return: SO(2) rotation matrix
+    :rtype: ndarray(2,2)
 
-    - ``ROT2(THETA)`` is an SO(2) rotation matrix (2x2) representing a rotation of THETA radians.
-    - ``ROT2(THETA, 'deg')`` as above but THETA is in degrees.
+    - ``rot2(θ)`` is an SO(2) rotation matrix (2x2) representing a rotation of θ radians.
+    - ``rot2(θ, 'deg')`` as above but θ is in degrees.
     """
     theta = base.getunit(theta, unit)
     ct = base.sym.cos(theta)
@@ -52,16 +52,17 @@ def trot2(theta, unit='rad', t=None):
     Create SE(2) pure rotation
 
     :param theta: rotation angle about X-axis
-    :type theta: float
+    :type θ: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param t: translation 2-vector, defaults to [0,0]
-    :type t: array_like    :return: 3x3 homogeneous transformation matrix
-    :rtype: numpy.ndarray, shape=(3,3)
+    :param t: 2D translation vector, defaults to [0,0]
+    :type t: array_like(2)   
+    :return: 3x3 homogeneous transformation matrix
+    :rtype: ndarray(3,3)
 
-    - ``TROT2(THETA)`` is a homogeneous transformation (3x3) representing a rotation of
-      THETA radians.
-    - ``TROT2(THETA, 'deg')`` as above but THETA is in degrees.
+    - ``trot2(θ)`` is a homogeneous transformation (3x3) representing a rotation of
+      θ radians.
+    - ``trot2(θ, 'deg')`` as above but θ is in degrees.
 
     Notes:
     - Translational component is zero.
@@ -78,25 +79,34 @@ def transl2(x, y=None):
     """
     Create SE(2) pure translation, or extract translation from SE(2) matrix
 
+
+    **Create a translational SE(2) matrix**
+
     :param x: translation along X-axis
     :type x: float
     :param y: translation along Y-axis
     :type y: float
-    :return: homogeneous transform matrix or the translation elements of a homogeneous transform
-    :rtype: numpy.ndarray, shape=(3,3)
-
-    Create a translational SE(2) matrix:
+    :return: SE(2) transform matrix or the translation elements of a homogeneous transform
+    :rtype: ndarray(3,3)
 
     - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3) representing a
       pure translation.
     - ``T = transl2( V )`` as above but the translation is given by a 2-element
       list, dict, or a numpy array, row or column vector.
 
+    **Extract the translational part of an SE(2) matrix**
 
-    Extract the translational part of an SE(2) matrix:
+    :param x: SE(2) transform matrix
+    :type x: ndarray(3,3)
+    :return: translation elements of SE(2) matrix
+    :rtype: ndarray(2)
 
-    P = TRANSL2(T) is the translational part of a homogeneous transform as a
-    2-element numpy array.
+    - ``t = transl2(T)`` is the translational part of the SE(3) matrix ``T`` as a
+      2-element NumPy array.
+
+    .. note:: This function is compatible with the MATLAB version of the Toolbox.  It
+        is unusual/weird in doing two completely different things inside the one
+        function.
     """
 
     if np.isscalar(x):
@@ -117,8 +127,8 @@ def ishom2(T, check=False):
     """
     Test if matrix belongs to SE(2)
 
-    :param T: matrix to test
-    :type T: numpy.ndarray
+    :param T: SE(2) matrix to test
+    :type T: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
     :return: whether matrix is an SE(2) homogeneous transformation matrix
@@ -139,8 +149,8 @@ def isrot2(R, check=False):
     """
     Test if matrix belongs to SO(2)
 
-    :param R: matrix to test
-    :type R: numpy.ndarray
+    :param R: SO(2) matrix to test
+    :type R: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
     :return: whether matrix is an SO(2) rotation matrix
@@ -161,14 +171,14 @@ def trlog2(T, check=True, twist=False):
     """
     Logarithm of SO(2) or SE(2) matrix
 
-    :param T: SO(2) or SE(2) matrix
-    :type T: numpy.ndarray, shape=(2,2) or (3,3)
+    :param T: SE(2) or SO(2) matrix
+    :type T: ndarray(3,3) or ndarray(2,2)
     :param check: check that matrix is valid
     :type check: bool
     :param twist: return a twist vector instead of matrix [default]
     :type twist: bool
     :return: logarithm
-    :rtype: numpy.ndarray, shape=(2,2) or (3,3)
+    :rtype: ndarray(3,3) or ndarray(3); or ndarray(2,2) or ndarray(1)
     :raises ValueError: bad argument
 
     An efficient closed-form solution of the matrix logarithm for arguments that
@@ -217,43 +227,42 @@ def trexp2(S, theta=None, check=True):
     """
     Exponential of so(2) or se(2) matrix
 
-    :param S: so(2), se(2) matrix or equivalent velctor
-    :type T: numpy.ndarray, shape=(2,2) or (3,3); array_like
+    :param S: se(2), so(2) matrix or equivalent velctor
+    :type T: ndarray(3,3) or ndarray(2,2)
     :param theta: motion
     :type theta: float
-    :return: 2x2 or 3x3 matrix exponential in SO(2) or SE(2)
-    :rtype: numpy.ndarray, shape=(2,2) or (3,3)
+    :return: matrix exponential in SE(2) or SO(2)
+    :rtype: ndarray(3,3) or ndarray(2,2)
     :raises ValueError: bad argument
 
     An efficient closed-form solution of the matrix exponential for arguments
-    that are so(2) or se(2).
-
-    For so(2) the results is an SO(2) rotation matrix:
-
-    - ``trexp2(S)`` is the matrix exponential of the so(3) element ``S`` which is a 2x2
-      skew-symmetric matrix.
-    - ``trexp2(S, THETA)`` as above but for an so(3) motion of S*THETA, where ``S`` is
-      unit-norm skew-symmetric matrix representing a rotation axis and a rotation magnitude
-      given by ``THETA``.
-    - ``trexp2(W)`` is the matrix exponential of the so(2) element ``W`` expressed as
-      a 1-vector (array_like).
-    - ``trexp2(W, THETA)`` as above but for an so(3) motion of W*THETA where ``W`` is a
-      unit-norm vector representing a rotation axis and a rotation magnitude
-      given by ``THETA``. ``W`` is expressed as a 1-vector (array_like).
-
+    that are se(2) or so(2).
 
     For se(2) the results is an SE(2) homogeneous transformation matrix:
 
     - ``trexp2(SIGMA)`` is the matrix exponential of the se(2) element ``SIGMA`` which is
       a 3x3 augmented skew-symmetric matrix.
-    - ``trexp2(SIGMA, THETA)`` as above but for an se(3) motion of SIGMA*THETA, where ``SIGMA``
+    - ``trexp2(SIGMA, θ)`` as above but for an se(3) motion of SIGMA*θ, where ``SIGMA``
       must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
       matrix.
     - ``trexp2(TW)`` is the matrix exponential of the se(3) element ``TW`` represented as
       a 3-vector which can be considered a screw motion.
-    - ``trexp2(TW, THETA)`` as above but for an se(2) motion of TW*THETA, where ``TW``
+    - ``trexp2(TW, θ)`` as above but for an se(2) motion of TW*θ, where ``TW``
       must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
       matrix.
+
+    For so(2) the results is an SO(2) rotation matrix:
+
+    - ``trexp2(S)`` is the matrix exponential of the so(3) element ``S`` which is a 2x2
+      skew-symmetric matrix.
+    - ``trexp2(S, θ)`` as above but for an so(3) motion of S*θ, where ``S`` is
+      unit-norm skew-symmetric matrix representing a rotation axis and a rotation magnitude
+      given by ``θ``.
+    - ``trexp2(W)`` is the matrix exponential of the so(2) element ``W`` expressed as
+      a 1-vector.
+    - ``trexp2(W, θ)`` as above but for an so(3) motion of W*θ where ``W`` is a
+      unit-norm vector representing a rotation axis and a rotation magnitude
+      given by ``θ``. ``W`` is expressed as a 1-vector.
 
      :seealso: trlog, trexp2
     """
@@ -309,16 +318,16 @@ def trexp2(S, theta=None, check=True):
 
 def trinterp2(start, end, s=None):
     """
-    Interpolate SE(2) matrices
+    Interpolate SE(2) or SO(2) matrices
 
-    :param start: initial SO(2) or SE(2) matrix value when s=0, if None then identity is used
-    :type T1: np.ndarray, shape=(2,2), (3,3) or None
-    :param end: final SO(2) or SE(2) matrix, value when s=1
-    :type T0: np.ndarray, shape=(2,2), (3,3)
+    :param start: initial SE(2) or SO(2) matrix value when s=0, if None then identity is used
+    :type start: ndarray(3,3) or ndarray(2,2) or None
+    :param end: final SE(2) or SO(2) matrix, value when s=1
+    :type end: ndarray(3,3) or ndarray(2,2)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
-    :return: SO(2) or SE(2) matrix
-    :rtype: np.ndarray, shape=(2,2), (3,3)
+    :return: interpolated SE(2) or SO(2) matrix value
+    :rtype: ndarray(3,3) or ndarray(2,2)
     :raises ValueError: bad arguments
 
     - ``trinterp2(None, T, S)`` is a homogeneous transform (3x3) interpolated
@@ -330,9 +339,7 @@ def trinterp2(start, end, s=None):
     - ``trinterp2(R0, R1, S)`` as above but interpolated
       between R0 (2x2) when S=0 and R1 (2x2) when S=1.
 
-    Notes:
-
-    - Rotation angle is linearly interpolated.
+    .. note:: Rotation angle is linearly interpolated.
 
     :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
 
@@ -387,10 +394,10 @@ def trinterp2(start, end, s=None):
 
 def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     """
-    Compact display of SO(2) or SE(2) matrices
+    Compact display of SE(2) or SO(2) matrices
 
     :param T: matrix to format
-    :type T: numpy.ndarray, shape=(2,2) or (3,3)
+    :type T: ndarray(3,3) or ndarray(2,2)
     :param label: text label to put at start of line
     :type label: str
     :param file: file to write formatted string to
@@ -408,12 +415,12 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     - ``trprint2(R)`` displays the SO(2) rotation matrix in a compact
       single-line format and returns the string::
 
-        [LABEL:] THETA UNIT
+        [LABEL:] θ UNIT
 
     - ``trprint2(T)`` displays the SE(2) homogoneous transform in a compact
       single-line format and returns the string::
 
-        [LABEL:] [t=X, Y;] THETA UNIT
+        [LABEL:] [t=X, Y;] θ UNIT
 
     Example::
 
@@ -465,14 +472,14 @@ if _matplotlib_exists:
         """
         Plot a 2D coordinate frame
 
-        :param T: an SO(3) or SE(3) pose to be displayed as coordinate frame
-        :type: numpy.ndarray, shape=(2,2) or (3,3)
+        :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame
+        :type: ndarray(3,3) or ndarray(2,2)
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
         :param block: run the GUI main loop until all windows are closed, default True
         :type block: bool
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]
-        :type dims: array_like
+        :type dims: array_like(4)
         :param color: color of the lines defining the frame
         :type color: str
         :param textcolor: color of text labels for the frame, default color of lines above
@@ -589,8 +596,8 @@ if _matplotlib_exists:
         """
         Animate a 2D coordinate frame
 
-        :param T: an SO(2) or SE(2) pose to be displayed as coordinate frame
-        :type: numpy.ndarray, shape=(2,2) or (3,3)
+        :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame
+        :type: ndarray(3,3) or ndarray(2,2)
         :param nframes: number of steps in the animation [defaault 100]
         :type nframes: int
         :param repeat: animate in endless loop [default False]

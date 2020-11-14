@@ -402,11 +402,11 @@ def getunit(v, unit):
     Convert value according to angular units
 
     :param v: the value in radians or degrees
-    :type v: array_like
+    :type v: array_like(m) or ndarray(m)
     :param unit: the angular unit, "rad" or "deg"
     :type unit: str
     :return: the converted value in radians
-    :rtype: array_like
+    :rtype: list(m) or ndarray(m)
     :raises ValueError: argument is not a valid angular unit
 
     .. runblock:: pycon
@@ -419,7 +419,6 @@ def getunit(v, unit):
         >>> getunit(np.r_[0.5, 1], 'rad')
         >>> getunit(np.r_[90, 180], 'deg')
     """
-
     if unit == "rad":
         return v
     elif unit == "deg":

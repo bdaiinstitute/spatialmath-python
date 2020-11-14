@@ -17,7 +17,7 @@ def eye():
     Create an identity quaternion
 
     :return: an identity quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     Creates an identity quaternion, with the scalar part equal to one, and
     a zero vector value.
@@ -36,10 +36,10 @@ def pure(v):
     """
     Create a pure quaternion
 
-    :arg v: vector from a 3-vector
-    :type v: array_like
+    :arg v: 3D vector
+    :type v: array_like(3)
     :return: pure quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     Creates a pure quaternion, with a zero scalar value and the vector part
     equal to the passed vector value.
@@ -58,8 +58,8 @@ def qnorm(q):
     r"""
     Norm of a quaternion
 
-    :arg q: input quaternion as a 4-vector
-    :type v: : array_like
+    :arg q: quaternion
+    :type v: : array_like(4)
     :return: norm of the quaternion
     :rtype: float
 
@@ -83,10 +83,10 @@ def unit(q, tol=10):
     """
     Create a unit quaternion
 
-    :arg v: quaterion as a 4-vector
-    :type v: array_like
+    :arg v: quaterion
+    :type v: array_like(4)
     :return: a pure quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
     :raises ValueError: quaternion has (near) zero norm
 
     Creates a unit quaternion, with unit norm, by scaling the input quaternion.
@@ -113,8 +113,8 @@ def isunit(q, tol=100):
     """
     Test if quaternion has unit length
 
-    :param v: quaternion as a 4-vector
-    :type v: array_like
+    :param v: quaternion
+    :type v: array_like(4)
     :param tol: tolerance in units of eps
     :type tol: float
     :return: whether quaternion has unit length
@@ -137,15 +137,15 @@ def isequal(q1, q2, tol=100, unitq=False):
     """
     Test if quaternions are equal
 
-    :param q1: quaternion as a 4-vector
-    :type q1: array_like
-    :param q2: quaternion as a 4-vector
-    :type q2: array_like
+    :param q1: quaternion
+    :type q1: array_like(4)
+    :param q2: quaternion
+    :type q2: array_like(4)
     :param unitq: quaternions are unit quaternions
     :type unitq: bool
     :param tol: tolerance in units of eps
     :type tol: float
-    :return: whether quaternion has unit length
+    :return: whether quaternions are equal
     :rtype: bool
 
     Tests if two quaternions are equal.
@@ -175,10 +175,10 @@ def q2v(q):
     """
     Convert unit-quaternion to 3-vector
 
-    :arg q: unit-quaternion as a 4-vector
-    :type v: array_like
+    :arg q: unit-quaternion
+    :type v: array_like(4)
     :return: a unique 3-vector
-    :rtype: numpy.ndarray, shape=(3,)
+    :rtype: ndarray(3)
 
     Returns a unique 3-vector representing the input unit-quaternion. The sign
     of the scalar part is made positive, if necessary by multiplying the
@@ -209,10 +209,10 @@ def v2q(v):
     r"""
     Convert 3-vector to unit-quaternion
 
-    :arg v: vector part of unit quaternion, a 3-vector
-    :type v: array_like
+    :arg v: vector part of unit quaternion
+    :type v: array_like(3)
     :return: a unit quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     Returns a unit-quaternion reconsituted from just its vector part.  Assumes
     that the scalar part was positive, so :math:`s = \sqrt{1-||v||}`.
@@ -240,12 +240,12 @@ def qqmul(q1, q2):
     """
     Quaternion multiplication
 
-    :arg q0: left-hand quaternion as a 4-vector
-    :type q0: : array_like
-    :arg q1: right-hand quaternion as a 4-vector
-    :type q1: array_like
+    :arg q0: left-hand quaternion
+    :type q0: : array_like(4)
+    :arg q1: right-hand quaternion
+    :type q1: array_like(4)
     :return: quaternion product
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     This is the quaternion or Hamilton product.  If both operands are unit-quaternions then
     the product will be a unit-quaternion.
@@ -267,12 +267,12 @@ def inner(q1, q2):
     """
     Quaternion innert product
 
-    :arg q0: quaternion as a 4-vector
-    :type q0: : array_like
-    :arg q1: uaternion as a 4-vector
-    :type q1: array_like
+    :arg q0: quaternion 
+    :type q0: : array_like(4)
+    :arg q1: uaternion
+    :type q1: array_like(4)
     :return: inner product
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     This is the inner or dot product of two quaternions, it is the sum of the element-wise
     product.
@@ -290,12 +290,12 @@ def qvmul(q, v):
     """
     Vector rotation
 
-    :arg q: unit-quaternion as a 4-vector
-    :type q: array_like
+    :arg q: unit-quaternion
+    :type q: array_like(4)
     :arg v: 3-vector to be rotated
-    :type v: list, tuple, numpy.ndarray
+    :type v: array_like(3)
     :return: rotated 3-vector
-    :rtype: numpy.ndarray, shape=(3,)
+    :rtype: ndarray(3)
 
     The vector `v` is rotated about the origin by the SO(3) equivalent of the unit
     quaternion.
@@ -315,12 +315,12 @@ def vvmul(qa, qb):
     Quaternion multiplication
 
 
-    :arg qa: left-hand quaternion as a 3-vector
-    :type qa: : array_like
-    :arg qb: right-hand quaternion as a 3-vector
-    :type qb: array_like
+    :arg qa: left-hand quaternion
+    :type qa: : array_like(3)
+    :arg qb: right-hand quaternion
+    :type qb: array_like(3)
     :return: quaternion product
-    :rtype: numpy.ndarray, shape=(3,)
+    :rtype: ndarray(3)
 
     This is the quaternion or Hamilton product of unit-quaternions defined only
     by their vector components.  The product will be a unit-quaternion, defined only
@@ -337,12 +337,12 @@ def qpow(q, power):
     """
     Raise quaternion to a power
 
-    :arg q: quaternion as a 4-vector
-    :type v: array_like
+    :arg q: quaternion
+    :type v: array_like(4)
     :arg power: exponent
     :type power: int
     :return: input quaternion raised to the specified power
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
     :raises ValueError: if exponent is non integer
 
     Raises a quaternion to the specified power using repeated multiplication.
@@ -380,10 +380,10 @@ def conj(q):
     """
     Quaternion conjugate
 
-    :arg q: quaternion as a 4-vector
-    :type v: array_like
+    :arg q: quaternion
+    :type v: array_like(4)
     :return: conjugate of input quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     Conjugate of quaternion, the vector part is negated.
 
@@ -403,10 +403,10 @@ def q2r(q):
     """
     Convert unit-quaternion to SO(3) rotation matrix
 
-    :arg q: unit-quaternion as a 4-vector
-    :type v: array_like
+    :arg q: unit-quaternion
+    :type v: array_like(4)
     :return: corresponding SO(3) rotation matrix
-    :rtype: numpy.ndarray, shape=(3,3)
+    :rtype: ndarray(3,3)
 
     Returns an SO(3) rotation matrix corresponding to this unit-quaternion.
 
@@ -435,14 +435,14 @@ def r2q(R, check=False, tol=100):
     """
     Convert SO(3) rotation matrix to unit-quaternion
 
-    :arg R: rotation matrix
-    :type R: numpy.ndarray, shape=(3,3)
+    :arg R: SO(3) rotation matrix
+    :type R: ndarray(3,3)
     :param check: check validity of rotation matrix, default False
     :type check: bool
     :param tol: tolerance in units of eps
     :type tol: float
     :return: unit-quaternion
-    :rtype: numpy.ndarray, shape=(3,)
+    :rtype: ndarray(4)
     :raises ValueError: for non SO(3) argument
 
     Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.
@@ -503,16 +503,16 @@ def slerp(q0, q1, s, shortest=False):
     """
     Quaternion conjugate
 
-    :arg q0: initial unit quaternion as a 4-vector
-    :type q0: array_like
-    :arg q1: final unit quaternion as a 4-vector
-    :type q1: array_like
+    :arg q0: initial unit quaternion
+    :type q0: array_like(4)
+    :arg q1: final unit quaternion
+    :type q1: array_like(4)
     :arg s: interpolation coefficient in the range [0,1]
     :type s: float
     :arg shortest: choose shortest distance [default False]
     :type shortest: bool
     :return: interpolated unit-quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
     :raises ValueError: s is outside interval [0, 1]
 
     An interpolated quaternion between ``q0`` when ``s`` = 0 to ``q1`` when ``s`` = 1.
@@ -563,7 +563,7 @@ def rand():
     Random unit-quaternion
 
     :return: random unit-quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     Computes a uniformly distributed random unit-quaternion which can be
     considered equivalent to a random SO(3) rotation.
@@ -580,10 +580,10 @@ def matrix(q):
     """
     Convert to 4x4 matrix equivalent
 
-    :arg q: quaternion as a 4-vector
-    :type v: array_like
+    :arg q: quaternion
+    :type v: array_like(4)
     :return: equivalent matrix
-    :rtype: numpy.ndarray, shape=(4,4)
+    :rtype: ndarray(4)
 
     Hamilton multiplication between two quaternions can be considered as a
     matrix-vector product, the left-hand quaternion is represented by an
@@ -607,12 +607,12 @@ def dot(q, w):
     """
     Rate of change of unit-quaternion
 
-    :arg q0: unit-quaternion as a 4-vector
-    :type q0: array_like
-    :arg w: angular velocity in world frame as a 3-vector
-    :type w: array_like
+    :arg q0: unit-quaternion
+    :type q0: array_like(4)
+    :arg w: 3D angular velocity in world frame
+    :type w: array_like(3)
     :return: rate of change of unit quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     ``dot(q, w)`` is the rate of change of the elements of the unit quaternion ``q``
     which represents the orientation of a body frame with angular velocity ``w`` in
@@ -631,12 +631,12 @@ def dotb(q, w):
     """
     Rate of change of unit-quaternion
 
-    :arg q0: unit-quaternion as a 4-vector
-    :type q0: array_like
-    :arg w: angular velocity in body frame as a 3-vector
-    :type w: array_like
+    :arg q0: unit-quaternion
+    :type q0: array_like(4)
+    :arg w: 3D angular velocity in body frame
+    :type w: array_like(3)
     :return: rate of change of unit quaternion
-    :rtype: numpy.ndarray, shape=(4,)
+    :rtype: ndarray(4)
 
     ``dotb(q, w)`` is the rate of change of the elements of the unit quaternion ``q``
     which represents the orientation of a body frame with angular velocity ``w`` in
@@ -655,10 +655,10 @@ def angle(q1, q2):
     """
     Angle between two unit-quaternions
 
-    :arg q0: unit-quaternion as a 4-vector
-    :type q0: array_like
-    :arg q1: unit-quaternion as a 4-vector
-    :type q1: array_like
+    :arg q0: unit-quaternion
+    :type q0: array_like(4)
+    :arg q1: unit-quaternion
+    :type q1: array_like(4)
     :return: angle between the rotations [radians]
     :rtype: float
 
@@ -683,8 +683,8 @@ def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
     """
     Format a quaternion
 
-    :arg q: unit-quaternion as a 4-vector
-    :type q: array_like
+    :arg q: unit-quaternion
+    :type q: array_like(4)
     :arg delim: 2-list of delimeters [default ('<', '>')]
     :type delim: list or tuple of strings
     :arg fmt: printf-style format soecifier [default '{: .4f}']

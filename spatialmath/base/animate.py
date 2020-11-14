@@ -48,7 +48,7 @@ class Animate:
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,
             zmin, zmax]. If dims is [min, max] those limits are applied
             to the x-, y- and z-axes.
-        :type dims: array_like
+        :type dims: array_like(6) or array_like(2)
         :param projection: 3D projection: ortho [default] or persp
         :type projection: str
         :param labels: labels for the axes, defaults to X, Y and Z
@@ -92,10 +92,10 @@ class Animate:
         """
         Define the transform to animate
 
-        :param end: the final pose SO(3) or SE(3) to display as a coordinate frame
-        :type end: numpy.ndarray, shape=(3,3) or (4,4)
-        :param start: the initial pose SO(3) or SE(3) to display as a coordinate frame, defaults to null
-        :type start: numpy.ndarray, shape=(3,3) or (4,4)
+        :param end: the final pose SE(3) or SO(3) to display as a coordinate frame
+        :type end: ndarray(4,4) or ndarray(3,3)
+        :param start: the initial pose SE(3) or SO(3) to display as a coordinate frame, defaults to null
+        :type start: ndarray(4,4) or ndarray(3,3)
         :param start: an 
 
         Is polymorphic with ``base.trplot`` and accepts the same parameters.
@@ -318,13 +318,15 @@ class Animate:
         :param x: x-coordinate
         :type x: float
         :param y: float
-        :type y: array_like
+        :type y: float
         :param z: z-coordinate
         :type z: float
+        :param kwargs: Other arguments as accepted by the matplotlib method.
 
-        Other arguments as accepted by the matplotlib method.
+        ``.text(x, y, z, s)`` display the string ``s`` at coordinate 
+        (``x``, ``y``, ``z``).
 
-        :seealso: :func:`matplotlib.pyplot.text`
+        :seealso: :func:`~matplotlib.pyplot.text`
         """
         h = self.ax.text3D(x, y, z, *args, **kwargs)
         self.displaylist.append(Animate._Text(self, h, x, y, z))
@@ -385,10 +387,9 @@ class Animate2:
 
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,
-            zmin, zmax]. If dims is [min, max] those limits are applied
-            to the x-, y- and z-axes.
-        :type dims: array_like
+        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]. If 
+            dims is [min, max] those limits are applied to the x- and y-axes.
+        :type dims: array_like(4) or array_like(2)
         :param projection: 3D projection: ortho [default] or persp
         :type projection: str
         :param labels: labels for the axes, defaults to X, Y and Z
@@ -427,10 +428,10 @@ class Animate2:
         """
         Define the transform to animate
 
-        :param end: the final pose SO(2) or SE(2) to display as a coordinate frame
-        :type end: numpy.ndarray, shape=(2,2) or (3,3)
-        :param start: the initial pose SO(2) or SE(2) to display as a coordinate frame, defaults to null
-        :type start: numpy.ndarray, shape=(2,2) or (3,3)
+        :param end: the final pose SE(2) or SO(2) to display as a coordinate frame
+        :type end: ndarray(3,3) or ndarray(2,2)
+        :param start: the initial pose SE(2) or SO(2) to display as a coordinate frame, defaults to null
+        :type start: ndarray(3,3) or ndarray(2,2)
 
         Is polymorphic with ``base.trplot`` and accepts the same parameters.
         This sets up the animation but doesn't execute it.
@@ -633,11 +634,13 @@ class Animate2:
         :param x: x-coordinate
         :type x: float
         :param y: float
-        :type y: array_like
+        :type y: float
         :param z: z-coordinate
         :type z: float
+        :param kwargs: Other arguments as accepted by the matplotlib method.
 
-        Other arguments as accepted by the matplotlib method.
+        ``.text(x, y, s)`` display the string ``s`` at coordinate 
+        (``x``, ``y``).
 
         :seealso: :func:`matplotlib.pyplot.text`
         """

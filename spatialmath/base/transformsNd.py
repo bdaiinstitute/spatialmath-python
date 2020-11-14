@@ -240,7 +240,7 @@ def Ab2M(A, b):
     :param b: translation vector
     :type b: ndarray(3) or ndarray(2)
     :return: matrix
-    :rtype: ndarray shape=(3,3) or (4,4)
+    :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad arguments
 
     ``M = Ab2M(A, b)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``
@@ -576,9 +576,9 @@ def h2e(v):
     :return: Euclidean vector
     :rtype: ndarray(n-1), ndarray(n-1,m)
 
-    - If ``v`` is an array, shape=(N,), return an array shape=(N-1,) where the elements have
+    - If ``v`` is an N-vector, return an (N-1)-vetor where the elements have
       all been scaled by the last element of ``v``.
-    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N-1,N), where each column has
+    - If ``v`` is a matrix (NxM), return a matrix (N-1xM), where each column has
       been scaled by its last element.
 
     .. runblock:: pycon
@@ -610,9 +610,9 @@ def e2h(v):
     :return: homogeneous vector
     :rtype: ndarray(n+1) or ndarray(n+1,m
 
-    - If ``v`` is an array, shape=(N,), return an array shape=(N+1,) where a value of 1 has
-      been appended
-    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N+1,N), where each column has
+    - If ``v`` is an N-vector, return an (N+1)-vector where a value of 1 has
+      been appended as the last element.
+    - If ``v`` is a matrix (NxM), return a matrix (N+1xM), where each column has
       been appended with a value of 1, ie. a row of ones has been appended to the matrix.
 
     .. runblock:: pycon
