@@ -1590,6 +1590,6 @@ if __name__ == '__main__':  # pragma: no cover
     a,b,c = base.sym.symbol('a,b,c')
     T = rpy2r(a,b,c)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms3d.py").read())  # pylint: disable=exec-used
     
 

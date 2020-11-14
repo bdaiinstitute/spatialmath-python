@@ -678,4 +678,4 @@ def homtrans(T, p):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transformsNd.py").read())  # pylint: disable=exec-used

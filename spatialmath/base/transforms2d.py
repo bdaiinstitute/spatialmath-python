@@ -619,4 +619,4 @@ if __name__ == '__main__':  # pragma: no cover
     # trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
     # plt.grid(True)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms2d.py").read())  # pylint: disable=exec-used
