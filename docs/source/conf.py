@@ -86,6 +86,7 @@ html_theme_options = {
 
     }
 html_logo = '../figs/CartesianSnakes_LogoW.png'
+html_favicon = 'favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -145,6 +146,7 @@ mathjax_config = {
         }
    }
 }
+
 
 autorun_languages = {}
 autorun_languages['pycon_output_encoding'] = 'UTF-8'
