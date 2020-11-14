@@ -47,7 +47,7 @@ def assertmatrix(m, shape=None):
     :param shape: required shape
     :type shape: 2-tuple
     :raises TypeError: if value is not a real Numpy array
-    :raise ValueError: if value is not of the specified shape
+    :raises ValueError: if value is not of the specified shape
 
     Tests if the argument is a real 2D matrix with a specified shape ``shape``
     but the value ``None`` indicate an unspecified (wildcard, don't care)
@@ -124,6 +124,8 @@ def getmatrix(m, shape):
     :raises TypeError: if ``m`` is not required type
     :return: a 2D array
     :rtype: NumPy ndarray
+    :raises TypeError: if value is not a scalar or Numpy array
+    :raises ValueError: if value is not of the specified shape
 
     ``getmatrix(m, shape)`` is a 2D matrix with shape ``shape`` formed from
     ``m`` which can be a 2D array, 1D array-like or a scalar.
@@ -220,8 +222,8 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
     :param dtype: datatype for numPy array return (default np.float64)
     :type dtype: numPy type
     :return: vector value in specified format
-    :raise TypeError: value is not a list or NumPy array
-    :raise ValueError: incorrect number of elements
+    :raises TypeError: value is not a list or NumPy array
+    :raises ValueError: incorrect number of elements
 
     - ``getvector(vec)`` is ``vec`` converted to the output format ``out`` 
       where ``vec`` is any of:
@@ -405,6 +407,7 @@ def getunit(v, unit):
     :type unit: str
     :return: the converted value in radians
     :rtype: array_like
+    :raises ValueError: argument is not a valid angular unit
 
     .. runblock:: pycon
 

@@ -169,7 +169,7 @@ def trlog2(T, check=True, twist=False):
     :type twist: bool
     :return: logarithm
     :rtype: numpy.ndarray, shape=(2,2) or (3,3)
-    :raises: ValueError
+    :raises ValueError: bad argument
 
     An efficient closed-form solution of the matrix logarithm for arguments that
     are SO(2) or SE(2).
@@ -223,6 +223,7 @@ def trexp2(S, theta=None, check=True):
     :type theta: float
     :return: 2x2 or 3x3 matrix exponential in SO(2) or SE(2)
     :rtype: numpy.ndarray, shape=(2,2) or (3,3)
+    :raises ValueError: bad argument
 
     An efficient closed-form solution of the matrix exponential for arguments
     that are so(2) or se(2).
@@ -261,8 +262,8 @@ def trexp2(S, theta=None, check=True):
         # se(2) case
         if base.ismatrix(S, (3, 3)):
             # augmentented skew matrix
-            if check:
-                assert base.isskewa(S), 'argument must be a valid se(2) element'
+            if check and not base.isskewa(S):
+                raise ValueError("argument must be a valid se(2) element")
             tw = base.vexa(S)
         else:
             # 3 vector
@@ -273,8 +274,8 @@ def trexp2(S, theta=None, check=True):
 
         if theta is None:
             (tw, theta) = base.unittwist2_norm(tw)
-        else:
-            assert base.isunittwist2(tw), 'If theta is specified S must be a unit twist'
+        elif not base.isunittwist2(tw):
+            raise ValueError("If theta is specified S must be a unit twist")
 
         t = tw[0:2]
         w = tw[2]
@@ -290,15 +291,15 @@ def trexp2(S, theta=None, check=True):
         # so(2) case
         if base.ismatrix(S, (2, 2)):
             # skew symmetric matrix
-            if check:
-                assert base.isskew(S), 'argument must be a valid so(2) element'
+            if check and not base.isskew(S):
+                raise ValueError("argument must be a valid so(2) element")
             w = base.vex(S)
         else:
             # 1 vector
             w = base.getvector(S)
 
-        if theta is not None:
-            assert base.isunitvec(w), 'If theta is specified S must be a unit twist'
+        if theta is not None and not base.isunitvec(w):
+            raise ValueError("If theta is specified S must be a unit twist")
 
         # do Rodrigues' formula for rotation
         return base.rodrigues(w, theta)
@@ -318,6 +319,7 @@ def trinterp2(start, end, s=None):
     :type s: float
     :return: SO(2) or SE(2) matrix
     :rtype: np.ndarray, shape=(2,2), (3,3)
+    :raises ValueError: bad arguments
 
     - ``trinterp2(None, T, S)`` is a homogeneous transform (3x3) interpolated
       between identity when S=0 and T (3x3) when S=1.
@@ -346,7 +348,8 @@ def trinterp2(start, end, s=None):
             th = s * th0
         else:
             #	TRINTERP2(T1, start= s)
-            assert start.shape == end.shape, 'start and end matrices must be same shape'
+            if start.shape != end.shape:
+                raise ValueError("start and end matrices must be same shape")
 
             th0 = math.atan2(start[1, 0], start[0, 0])
             th1 = math.atan2(end[1, 0], end[0, 0])
@@ -365,7 +368,8 @@ def trinterp2(start, end, s=None):
             pr = s * p0
         else:
             #	TRINTERP2(T0, T1, s)
-            assert start.shape == end.shape, 'both matrices must be same shape'
+            if start.shape != end.shape:
+                raise ValueError("both matrices must be same shape")
 
             th0 = math.atan2(start[1, 0], start[0, 0])
             th1 = math.atan2(end[1, 0], end[0, 0])
@@ -493,6 +497,7 @@ if _matplotlib_exists:
         :type d2: distance of frame label text from origin, default 0.05
         :return: axes containing the frame
         :rtype: AxesSubplot
+        :raises ValueError: bad argument
 
         Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.
 
@@ -514,8 +519,8 @@ if _matplotlib_exists:
         # check input types
         if isrot2(T, check=True):
             T = base.r2t(T)
-        else:
-            assert ishom2(T, check=True)
+        elif not ishom2(T, check=True):
+            raise ValueError("argument is not valid SE(2) matrix")
 
         if axes is None:
             # create an axes

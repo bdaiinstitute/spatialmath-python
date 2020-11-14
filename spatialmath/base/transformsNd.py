@@ -33,6 +33,7 @@ def r2t(R, check=False):
     :type check: bool
     :return: homogeneous transformation matrix
     :rtype: ndarray(3,3) or ndarray(4,4)
+    :raises ValueError: bad argument
 
     ``T = r2t(R)`` is an SE(2) or SE(3) homogeneous transform equivalent to an
     SO(2) or SO(3) orthonormal rotation matrix ``R`` with a zero translational
@@ -87,7 +88,7 @@ def t2r(T, check=False):
     :type check: bool
     :return: rotation matrix
     :rtype: ndarray(2,2) or ndarray(3,3)
-
+    :raises ValueError: bad argument
 
     ``R = T2R(T)`` is the orthonormal rotation matrix component of homogeneous
     transformation matrix ``T``
@@ -137,6 +138,7 @@ def tr2rt(T, check=False):
     :type check: bool
     :return: SO(n) matrix and translation vector
     :rtype: tuple: (ndarray(2,2), ndarray(2)) or (ndarray(3,3), ndarray(3))
+    :raises ValueError: bad argument
 
     (R,t) = tr2rt(T) splits a homogeneous transformation matrix (NxN) into an orthonormal
     rotation matrix R (MxM) and a translation vector T (Mx1), where N=M+1.
@@ -187,6 +189,7 @@ def rt2tr(R, t, check=False):
     :type check: bool
     :return: SE(3) matrix
     :rtype: ndarray(4,4) or (3,3)
+    :raises ValueError: bad argument
 
     ``T = rt2tr(R, t)`` is a homogeneous transformation matrix (N+1xN+1) formed from an
     orthonormal rotation matrix ``R`` (NxN) and a translation vector ``t``
@@ -238,6 +241,7 @@ def Ab2M(A, b):
     :type b: ndarray(3) or ndarray(2)
     :return: matrix
     :rtype: ndarray shape=(3,3) or (4,4)
+    :raises ValueError: bad arguments
 
     ``M = Ab2M(A, b)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``
     (Nx1).  The bottom row is all zeros.
@@ -378,9 +382,6 @@ def iseye(S, tol=10):
     return base.norm(S - np.eye(s[0])) < tol * _eps
 
 
-# ========================= angle sequences
-
-
 # ---------------------------------------------------------------------------------------#
 def skew(v):
     r"""
@@ -390,7 +391,7 @@ def skew(v):
     :type v: array_like(1) or array_like(3)
     :return: skew-symmetric matrix in so(2) or so(3)
     :rtype: ndarray(2,2) or ndarray(3,3)
-    :raises ValueError:
+    :raises ValueError: bad argument
 
     ``skew(V)`` is a skew-symmetric matrix formed from the elements of ``V``.
 
@@ -433,7 +434,7 @@ def vex(s, check=False):
     :type check: bool
     :return: vector of unique values
     :rtype: ndarray(1) or ndarray(3)
-    :raises ValueError:
+    :raises ValueError: bad argument
 
     ``vex(S)`` is the vector which has the corresponding skew-symmetric matrix ``S``.
 
@@ -471,7 +472,7 @@ def skewa(v):
     :type v: array_like(3), array_like(6)
     :return: augmented skew-symmetric matrix in se(2) or se(3)
     :rtype: ndarray(3,3) or ndarray(4,4)
-    :raises: ValueError
+    :raises ValueError: bad argument
 
     ``skewa(V)`` is an augmented skew-symmetric matrix formed from the elements of ``V``.
 
@@ -513,7 +514,7 @@ def vexa(Omega, check=False):
     :type check: bool
     :return: vector of unique values
     :rtype: ndarray(3) or ndarray(6)
-    :raises ValueError:
+    :raises ValueError: bad argument
 
     ``vexa(S)`` is the vector which has the corresponding augmented skew-symmetric matrix ``S``.
 
@@ -642,6 +643,7 @@ def homtrans(T, p):
     :type p: Numpy array (2,), (2,N), (3,) or (3,N)
     :return: transformed Euclidean vector(s)
     :rtype: Numpy array (2,), (2,N), (3,) or (3,N)
+    :raises ValueError: bad argument
 
     ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the points 
     stored columnwise in ``p``.

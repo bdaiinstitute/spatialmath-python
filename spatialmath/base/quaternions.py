@@ -87,7 +87,7 @@ def unit(q, tol=10):
     :type v: array_like
     :return: a pure quaternion
     :rtype: numpy.ndarray, shape=(4,)
-    :raises ValueError: if the quaternion has zero norm
+    :raises ValueError: quaternion has (near) zero norm
 
     Creates a unit quaternion, with unit norm, by scaling the input quaternion.
 
@@ -104,7 +104,8 @@ def unit(q, tol=10):
     """
     q = base.getvector(q, 4)
     nm = np.linalg.norm(q)
-    assert abs(nm) > tol * _eps, 'cannot normalize (near) zero length quaternion'
+    if abs(nm) < tol * _eps:
+        raise ValueError("cannot normalize (near) zero length quaternion")
     return q / nm
 
 
@@ -212,7 +213,6 @@ def v2q(v):
     :type v: array_like
     :return: a unit quaternion
     :rtype: numpy.ndarray, shape=(4,)
-    :raises ValueError:
 
     Returns a unit-quaternion reconsituted from just its vector part.  Assumes
     that the scalar part was positive, so :math:`s = \sqrt{1-||v||}`.
@@ -343,6 +343,7 @@ def qpow(q, power):
     :type power: int
     :return: input quaternion raised to the specified power
     :rtype: numpy.ndarray, shape=(4,)
+    :raises ValueError: if exponent is non integer
 
     Raises a quaternion to the specified power using repeated multiplication.
 
@@ -363,7 +364,8 @@ def qpow(q, power):
     :SymPy: supported for ``q`` but not ``power``.
     """
     q = base.getvector(q, 4)
-    assert isinstance(power, int), "Power must be an integer"
+    if not isinstance(power, int):
+        raise ValueError("Power must be an integer")
     qr = eye()
     for _ in range(0, abs(power)):
         qr = qqmul(qr, q)
@@ -456,9 +458,8 @@ def r2q(R, check=False, tol=100):
 
     :seealso: :func:`q2r`
     """
-    assert R.shape == (3, 3) and base.isR(R), "Argument must be 3x3 rotation matrix"
-    if check:
-        assert base.isR(R, tol=tol), "Argument must be a valid SO(3) matrix"
+    if not base.isrot(R, check=check, tol=tol):
+        raise ValueError("Argument must be a valid SO(3) matrix")
 
     qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0
     kx = R[2, 1] - R[1, 2]  # Oz - Ay
@@ -512,6 +513,7 @@ def slerp(q0, q1, s, shortest=False):
     :type shortest: bool
     :return: interpolated unit-quaternion
     :rtype: numpy.ndarray, shape=(4,)
+    :raises ValueError: s is outside interval [0, 1]
 
     An interpolated quaternion between ``q0`` when ``s`` = 0 to ``q1`` when ``s`` = 1.
 
@@ -525,7 +527,8 @@ def slerp(q0, q1, s, shortest=False):
     .. warning:: There is no check that the passed values are unit-quaternions.
 
     """
-    assert 0 <= s <= 1, 's must be in the interval [0,1]'
+    if not 0 <= s <= 1:
+        raise ValueError("s must be in the interval [0,1]")
     q0 = base.getvector(q0, 4)
     q1 = base.getvector(q1, 4)
 

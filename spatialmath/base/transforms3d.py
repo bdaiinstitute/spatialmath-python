@@ -208,6 +208,7 @@ def transl(x, y=None, z=None):
     :type z: float
     :return: 4x4 homogeneous transformation matrix
     :rtype: numpy.ndarray, shape=(4,4)
+    :raises ValueError: bad argument
 
     Create a translational SE(3) matrix:
 
@@ -296,6 +297,8 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     :type unit: str
     :return: 3x3 rotation matrix
     :rtype: numpdy.ndarray, shape=(3,3)
+    :raises ValueError: bad argument
+
 
     - ``rpy2r(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix
       (3x3) equivalent to the specified roll, pitch, yaw angles angles.
@@ -473,6 +476,7 @@ def angvec2r(theta, v, unit='rad'):
     :type v: array_like
     :return: 3x3 rotation matrix
     :rtype: numpdy.ndarray, shape=(3,3)
+    :raises ValueError: bad arguments
 
     ``angvec2r(THETA, V)`` is an SO(3) orthonormal rotation matrix
     equivalent to a rotation of ``THETA`` about the vector ``V``.
@@ -486,7 +490,8 @@ def angvec2r(theta, v, unit='rad'):
 
     :SymPy: not supported
     """
-    assert np.isscalar(theta) and base.isvector(v, 3), "Arguments must be theta and vector"
+    if not np.isscalar(theta) or not base.isvector(v, 3):
+        raise ValueError("Arguments must be theta and vector")
 
     if np.linalg.norm(v) < 10 * _eps:
         return np.eye(3)
@@ -627,6 +632,7 @@ def tr2angvec(T, unit='rad', check=False):
     :type check: bool
     :return: :math:`(\theta, {\bf v})`
     :rtype: float, numpy.ndarray, shape=(3,)
+    :raises ValueError: bad arguments
 
     ``tr2angvec(R)`` is a rotation angle and a vector about which the rotation
     acts that corresponds to the rotation part of ``R``.
@@ -644,7 +650,8 @@ def tr2angvec(T, unit='rad', check=False):
         R = base.t2r(T)
     else:
         R = T
-    assert isrot(R, check=check)
+    if not isrot(R, check=check):
+        raise ValueError("argument is not SO(3)")
 
     v = base.vex(trlog(R))
 
@@ -701,7 +708,8 @@ def tr2eul(T, unit='rad', flip=False, check=False):
         R = base.t2r(T)
     else:
         R = T
-    assert isrot(R, check=check)
+    if not isrot(R, check=check):
+        raise ValueError("argument is not SO(3)")
 
     eul = np.zeros((3,))
     if abs(R[0, 2]) < 10 * _eps and abs(R[1, 2]) < 10 * _eps:
@@ -742,6 +750,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     :type check: bool
     :return: Roll-pitch-yaw angles
     :rtype: numpy.ndarray, shape=(3,)
+    :raises ValueError: bad arguments
 
     ``tr2rpy(R)`` are the roll-pitch-yaw angles corresponding to
     the rotation part of ``R``.
@@ -771,7 +780,8 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
         R = base.t2r(T)
     else:
         R = T
-    assert isrot(R, check=check)
+    if not isrot(R, check=check):
+        raise ValueError("not a valid SO(3) matrix")
 
     rpy = np.zeros((3,))
     if order == 'xyz' or order == 'arm':
@@ -870,7 +880,7 @@ def trlog(T, check=True, twist=False):
     :type twist: bool
     :return: logarithm
     :rtype: numpy.ndarray, shape=(3,3) or (4,4)
-    :raises: ValueError
+    :raises ValueError: bad argument
 
     An efficient closed-form solution of the matrix logarithm for arguments that are SO(3) or SE(3).
 
@@ -960,6 +970,7 @@ def trexp(S, theta=None, check=True):
     :type θ: float
     :return: 3x3 or 4x4 matrix exponential in SO(3) or SE(3)
     :rtype: numpy.ndarray, shape=(3,3) or (4,4)
+    :raises ValueError: bad arguments
 
     An efficient closed-form solution of the matrix exponential for arguments
     that are so(3) or se(3).
@@ -997,8 +1008,8 @@ def trexp(S, theta=None, check=True):
         # se(3) case
         if base.ismatrix(S, (4, 4)):
             # augmentented skew matrix
-            if check:
-                assert base.isskewa(S), 'argument must be a valid se(3) element'
+            if check and not base.isskewa(S):
+                raise ValueError("argument must be a valid se(3) element")
             tw = base.vexa(S)
         else:
             # 6 vector
@@ -1012,8 +1023,8 @@ def trexp(S, theta=None, check=True):
         else:
             if theta == 0:
                 return np.eye(4)
-            else:
-                assert base.isunittwist(tw), 'If theta is specified S must be a unit twist'
+            elif not base.isunittwist(tw):
+                raise ValueError("If theta is specified S must be a unit twist")
 
         t = tw[0:3]
         w = tw[3:6]
@@ -1029,15 +1040,15 @@ def trexp(S, theta=None, check=True):
         # so(3) case
         if base.ismatrix(S, (3, 3)):
             # skew symmetric matrix
-            if check:
-                assert base.isskew(S), 'argument must be a valid so(3) element'
+            if check and not base.isskew(S):
+                raise ValueError("argument must be a valid so(3) element")
             w = base.vex(S)
         else:
             # 3 vector
             w = base.getvector(S)
 
-        if theta is not None:
-            assert base.isunitvec(w), 'If theta is specified S must be a unit twist'
+        if theta is not None and not base.isunitvec(w):
+            raise ValueError("If theta is specified S must be a unit twist")
 
         # do Rodrigues' formula for rotation
         return base.rodrigues(w, theta)
@@ -1054,6 +1065,7 @@ def trnorm(T):
     :param T1: second SE(3) matrix
     :return: SO(3) or SE(3) matrix
     :rtype: np.ndarray, shape=(3,3) or (4,4)
+    :raises ValueError: bad arguments
 
     - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation
       matrix (3x3) which is *close* to the input matrix R (3x3).
@@ -1076,7 +1088,8 @@ def trnorm(T):
           become 'unnormalized', ie. determinant :math:`\ne 1`.
     """
 
-    assert ishom(T) or isrot(T), 'expecting 3x3 or 4x4 hom xform'
+    if not ishom(T) and not isrot(T):
+        raise ValueError("expecting SO(3) or SE(3)")
 
     o = T[:3, 1]
     a = T[:3, 2]
@@ -1103,6 +1116,7 @@ def trinterp(start, end, s=None):
     :type s: float
     :return: SO(3) or SE(3) matrix
     :rtype: np.ndarray, shape=(3,3), (4,4)
+    :raises ValueError: bad arguments
 
     - ``trinterp(None, T, S)`` is a homogeneous transform (4x4) interpolated
       between identity when S=0 and T (4x4) when S=1.
@@ -1120,7 +1134,8 @@ def trinterp(start, end, s=None):
     :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
     """
 
-    assert 0 <= s <= 1, 's outside interval [0,1]'
+    if not 0 <= s <= 1: 
+        raise ValueError("s outside interval [0,1]")
 
     if base.ismatrix(end, (3, 3)):
         # SO(3) case
@@ -1191,6 +1206,7 @@ def trinv(T):
     :type T: np.ndarray, shape=(4,4)
     :return: SE(3) matrix
     :rtype: np.ndarray, shape=(4,4)
+    :raises ValueError: bad arguments
 
     Computes an efficient inverse of an SE(3) matrix:
 
@@ -1198,7 +1214,8 @@ def trinv(T):
 
     :SymPy: supported
     """
-    assert ishom(T), 'expecting SE(3) matrix'
+    if not ishom(T):
+        raise ValueError("expecting SE(3) matrix")
     # inline this code for speed, don't use tr2rt and rt2tr
     R = T[:3, :3]
     t = T[:3, 3]
@@ -1219,6 +1236,7 @@ def tr2delta(T0, T1=None):
     :type T1: np.ndarray, shape=(4,4)
     :return: Sdifferential motion as a 6-vector
     :rtype: np.ndarray, shape=(6,)
+    :raises ValueError: bad arguments
 
 
     - ``tr2delta(T0, T1)`` is the differential motion Δ (6x1) corresponding to
@@ -1246,7 +1264,8 @@ def tr2delta(T0, T1=None):
     if T1 is None:
         # tr2delta(T)
 
-        assert ishom(T0), 'expecting SE(3) matrix'
+        if not ishom(T0):
+            raise ValueError("expecting SE(3) matrix")
         Td = T0
 
     else:
@@ -1264,6 +1283,7 @@ def tr2jac(T, samebody=False):
     :type T: np.ndarray, shape=(4,4)
     :return: adjoint matrix
     :rtype: np.ndarray, shape=(6,6)
+    :raises ValueError: bad arguments
 
     Computes an adjoint matrix that maps spatial velocity between two frames defined by
     an SE(3) matrix.  It is a Jacobian matrix.
@@ -1279,7 +1299,8 @@ def tr2jac(T, samebody=False):
     :SymPy: supported
     """
 
-    assert ishom(T), 'expecting an SE(3) matrix'
+    if not ishom(T):
+        raise ValueError("expecting an SE(3) matrix")
     Z = np.zeros((3, 3), dtype=T.dtype)
 
     if samebody:
@@ -1309,6 +1330,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
     :type unit: str
     :return: formatted string
     :rtype: str
+    :raises ValueError: bad argument
 
     The matrix is formatted and written to ``file`` and the
     string is returned.  To suppress writing to a file, set ``file=None``.
@@ -1449,6 +1471,7 @@ def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # py
     :type d2: distance of frame label text from origin, default 0.05
     :return: axes containing the frame
     :rtype: Axes3DSubplot
+    :raises ValueError: bad arguments
 
     Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.
 
@@ -1475,8 +1498,8 @@ def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # py
     # check input types
     if isrot(T, check=True):
         T = base.r2t(T)
-    else:
-        assert ishom(T, check=True)
+    elif not ishom(T, check=True):
+        raise ValueError("not a valid SE(3) matrix")
 
     if axes is None:
         # create an axes
