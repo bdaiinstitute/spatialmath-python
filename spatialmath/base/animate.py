@@ -139,11 +139,11 @@ class Animate:
         Animates a 3D coordinate frame moving from the world frame to a frame
         represented by the SO(3) or SE(3) matrix to the current axes.
 
-        Notes:
+        .. note::
 
-        - the ``movie`` option requires the ffmpeg package to be installed:
-            ``conda install -c conda-forge ffmpeg``
-        - invokes the draw() method of every object in the display list
+            - the ``movie`` option requires the ffmpeg package to be installed:
+              ``conda install -c conda-forge ffmpeg``
+            - invokes the draw() method of every object in the display list
         """
 
         def update(frame, a):
@@ -474,11 +474,11 @@ class Animate2:
         Animates a 3D coordinate frame moving from the world frame to a frame
         represented by the SO(3) or SE(3) matrix to the current axes.
 
-        Notes:
+        .. note::
 
-        - the ``movie`` option requires the ffmpeg package to be installed:
-            ``conda install -c conda-forge ffmpeg``
-        - invokes the draw() method of every object in the display list
+            - the ``movie`` option requires the ffmpeg package to be installed:
+              ``conda install -c conda-forge ffmpeg``
+            - invokes the draw() method of every object in the display list
         """
 
         def update(frame, a):

@@ -3,8 +3,8 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 """
-This modules contains functions to create and transform rotation matrices
-and homogeneous tranformation matrices.
+This modules contains functions to operate on special matrices in 2D or 3D, for
+example SE(n), SO(n), se(n) and so(n) where n is 2 or 3.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
@@ -39,8 +39,8 @@ def r2t(R, check=False):
     SO(2) or SO(3) orthonormal rotation matrix ``R`` with a zero translational
     component
 
-    - if ``R`` is 2x2 then ``T`` is 3x3: SO(2) -> SE(2)
-    - if ``R`` is 3x3 then ``T`` is 4x4: SO(3) -> SE(3)
+    - if ``R`` is 2x2 then ``T`` is 3x3: SO(2) → SE(2)
+    - if ``R`` is 3x3 then ``T`` is 4x4: SO(3) → SE(3)
 
     .. runblock:: pycon
 
@@ -93,8 +93,8 @@ def t2r(T, check=False):
     ``R = T2R(T)`` is the orthonormal rotation matrix component of homogeneous
     transformation matrix ``T``
 
-    - if ``T`` is 3x3 then ``R`` is 2x2: SE(2) -> SO(2)
-    - if ``T`` is 4x4 then ``R`` is 3x3: SE(3) -> SO(3)
+    - if ``T`` is 3x3 then ``R`` is 2x2: SE(2) → SO(2)
+    - if ``T`` is 4x4 then ``R`` is 3x3: SE(3) → SO(3)
 
     .. runblock:: pycon
 
@@ -203,7 +203,7 @@ def rt2tr(R, t, check=False):
         >>> from spatialmath.base import *
         >>> R = rot2(0.3)
         >>> t = [1, 2]
-        >>> T = rt2tr(R, t)
+        >>> rt2tr(R, t)
  
     :seealso: rt2m, tr2rt, r2t
     """
@@ -324,8 +324,9 @@ def isskew(S, tol=10):
     .. runblock:: pycon
 
         >>> from spatialmath.base import *
+        >>> import numpy as np
         >>> isskew(np.zeros((3,3)))
-        >>> isskew(np.array([0, -2], [2, 0]])
+        >>> isskew(np.array([[0, -2], [2, 0]]))
         >>> isskew(np.eye(3))
 
     :seealso: isskewa
@@ -351,8 +352,10 @@ def isskewa(S, tol=10):
     .. runblock:: pycon
 
         >>> from spatialmath.base import *
+        >>> import numpy as np
         >>> isskewa(np.zeros((3,3)))
-        >>> isskewa(np.array([0, -2], [2, 0]])
+        >>> isskewa(np.array([[0, -2], [2, 0]])) # this matrix is skew but not skewa
+        >>> isskewa(np.array([[0, -2, 5], [2, 0, 6], [0, 0, 0]]))
 
     :seealso: isskew
     """
@@ -373,6 +376,13 @@ def iseye(S, tol=10):
 
     Check if matrix is an identity matrix. We test that the trace tom row is zero
     We check that the norm of the residual is less than ``tol * eps``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> iseye(np.array([[1,0], [0,1]]))
+        >>> iseye(np.array([[1,2], [0,1]]))
 
     :seealso: isskew, isskewa
     """
@@ -398,10 +408,16 @@ def skew(v):
     - ``len(V)``  is 1 then ``S`` = :math:`\left[ \begin{array}{cc} 0 & -v \\ v & 0 \end{array} \right]`
     - ``len(V)`` is 3 then ``S`` = :math:`\left[ \begin{array}{ccc} 0 & -v_z & v_y \\ v_z & 0 & -v_x \\ -v_y & v_x & 0\end{array} \right]`
 
-    Notes:
+    .. runblock:: pycon
 
-    - This is the inverse of the function ``vex()``.
-    - These are the generator matrices for the Lie algebras so(2) and so(3).
+        >>> from spatialmath.base import *
+        >>> skew(2)
+        >>> skew([1, 2, 3])
+
+    .. note::
+
+        - This is the inverse of the function ``vex()``.
+        - These are the generator matrices for the Lie algebras so(2) and so(3).
 
     :seealso: :func:`vex`, :func:`skewa`
     :SymPy: supported
@@ -441,6 +457,16 @@ def vex(s, check=False):
     - ``S`` is 2x2 - so(2) case - where ``S`` :math:`= \left[ \begin{array}{cc} 0 & -v \\ v & 0 \end{array} \right]` then return :math:`[v]`
     - ``S`` is 3x3 - so(3) case -  where ``S`` :math:`= \left[ \begin{array}{ccc} 0 & -v_z & v_y \\ v_z & 0 & -v_x \\ -v_y & v_x & 0\end{array} \right]` then return :math:`[v_x, v_y, v_z]`.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> S = skew(2)
+        >>> print(S)
+        >>> vex(S)
+        >>> S = skew([1, 2, 3])
+        >>> print(S)
+        >>> vex(S)
+
     .. note::
 
         - This is the inverse of the function ``skew()``.
@@ -478,6 +504,12 @@ def skewa(v):
 
     - ``len(V)`` is 3 then S = :math:`\left[ \begin{array}{ccc} 0 & -v_3 & v_1 \\ v_3 & 0 & v_2 \\ 0 & 0 & 0 \end{array} \right]`
     - ``len(V)`` is 6 then S = :math:`\left[ \begin{array}{cccc} 0 & -v_6 & v_5 & v_1 \\ v_6 & 0 & -v_4 & v_2 \\ -v_5 & v_4 & 0 & v_3 \\ 0 & 0 & 0 & 0 \end{array} \right]`
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> skewa([1, 2, 3])
+        >>> skewa([1, 2, 3, 4, 5, 6])
 
     .. note::
 
@@ -521,6 +553,15 @@ def vexa(Omega, check=False):
     - ``S`` is 3x3 - se(2) case - where ``S`` :math:`= \left[ \begin{array}{ccc} 0 & -v_3 & v_1 \\ v_3 & 0 & v_2 \\ 0 & 0 & 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3]`.
     - ``S`` is 4x4 - se(3) case -  where ``S`` :math:`= \left[ \begin{array}{cccc} 0 & -v_6 & v_5 & v_1 \\ v_6 & 0 & -v_4 & v_2 \\ -v_5 & v_4 & 0 & v_3 \\ 0 & 0 & 0 & 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3, v_4, v_5, v_6]`.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> S = skewa([1, 2, 3])
+        >>> print(S)
+        >>> vexa(S)
+        >>> S = skewa([1, 2, 3, 4, 5, 6])
+        >>> print(S)
+        >>> vexa(S)
 
     .. note::
 
@@ -542,15 +583,30 @@ def vexa(Omega, check=False):
 
 
 def rodrigues(w, theta=None):
-    """
+    r"""
     Rodrigues' formula for rotation
 
     :param w: rotation vector
-    :type w: array_like(1) or array_like(3)
+    :type w: array_like(3) or array_like(1)
     :param θ: rotation angle
     :type θ: float or None
     :return: SO(n) matrix
     :rtype: ndarray(2,2) or ndarray(3,3)
+
+    Compute Rodrigues' formula for a rotation matrix given a rotation axis
+    and angle.
+
+    .. math::
+
+        \mat{R} = \mat{I}_{3 \times 3} + \sin \theta \skx{\hat{\vec{v}}} + (1 - \cos \theta) \skx{\hat{\vec{v}}}^2
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rodrigues([1, 0, 0], 0.3)
+        >>> rodrigues([0.3, 0, 0])
+        >>> rodrigues(0.3)   # 2D version
+
     """
     w = base.getvector(w)
     if base.iszerovec(w):
@@ -659,10 +715,19 @@ def homtrans(T, p):
     then Euclidean points are returned, if projective points are given then
     projective points are returned.
 
-    Notes:
-    - If T is a homogeneous transformation defining the pose of {B} with respect to {A},
-    then the points are defined with respect to frame {B} and are transformed to be
-    with respect to frame {A}.
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trotx(0.3)
+        >>> v = [1, 2, 3]
+        >>> h2e( T @ e2h(v))
+        >>> homtrans(T, v)
+
+    .. note::
+
+        - If T is a homogeneous transformation defining the pose of {B} with respect to {A},
+          then the points are defined with respect to frame {B} and are transformed to be
+          with respect to frame {A}.
 
     :seealso: :func:`e2h`, :func:`h2e`
     """

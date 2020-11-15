@@ -3,8 +3,8 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 """
-This modules contains functions to create and transform 3D rotation matrices
-and homogeneous tranformation matrices.
+This modules contains functions to create and transform SO(3) and SE(3) matrices,
+respectively 3D rotation matrices and homogeneous tranformation matrices.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
@@ -38,6 +38,12 @@ def rotx(theta, unit="rad"):
       of θ radians about the x-axis
     - ``rotx(θ, "deg")`` as above but θ is in degrees
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rotx(0.3)
+        >>> rotx(45, 'deg')
+
     :seealso: :func:`~trotx`
     :SymPy: supported
     """
@@ -68,6 +74,12 @@ def roty(theta, unit="rad"):
       of θ radians about the y-axis
     - ``roty(θ, "deg")`` as above but θ is in degrees
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> roty(0.3)
+        >>> roty(45, 'deg')
+
     :seealso: :func:`~troty`
     :SymPy: supported
     """
@@ -97,6 +109,12 @@ def rotz(theta, unit="rad"):
     - ``rotz(θ)`` is an SO(3) rotation matrix (3x3) representing a rotation
       of θ radians about the z-axis
     - ``rotz(θ, "deg")`` as above but θ is in degrees
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rotz(0.3)
+        >>> rotz(45, 'deg')
 
     :seealso: :func:`~yrotz`
     :SymPy: supported
@@ -130,6 +148,12 @@ def trotx(theta, unit="rad", t=None):
     - ``trotx(θ, 'deg')`` as above but θ is in degrees
     - ``trotx(θ, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trotx(0.3)
+        >>> trotx(45, 'deg', t=[1,2,3])
+
     :seealso: :func:`~rotx`
     :SymPy: supported
     """
@@ -158,6 +182,12 @@ def troty(theta, unit="rad", t=None):
     - ``troty(θ, 'deg')`` as above but θ is in degrees
     - ``troty(θ, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> troty(0.3)
+        >>> troty(45, 'deg', t=[1,2,3])
+
     :seealso: :func:`~roty`
     :SymPy: supported
     """
@@ -185,6 +215,12 @@ def trotz(theta, unit="rad", t=None):
       of θ radians about the z-axis.
     - ``trotz(θ, 'deg')`` as above but θ is in degrees
     - ``trotz(θ, 'rad', t=[x,y,z])`` as above with translation of [x,y,z]
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trotz(0.3)
+        >>> trotz(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~rotz`
     :SymPy: supported
@@ -219,6 +255,13 @@ def transl(x, y=None, z=None):
     - ``T = transl( V )`` as above but the translation is given by a 3-element
       list, dict, or a numpy array, row or column vector.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> transl(3, 4, 5)
+        >>> transl([3, 4, 5])
+        >>> transl(np.array([3, 4, 5]))
 
     **Extract the translational part of an SE(3) matrix**
 
@@ -231,10 +274,16 @@ def transl(x, y=None, z=None):
     - ``t = transl(T)`` is the translational part of a homogeneous transform T as a
       3-element numpy array.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
+        >>> transl(T)
+
     .. note:: This function is compatible with the MATLAB version of the Toolbox.  It
         is unusual/weird in doing two completely different things inside the one
         function.
-
     :seealso: :func:`~spatialmath.base.transforms2d.transl2`
     :SymPy: supported
    """
@@ -264,9 +313,21 @@ def ishom(T, check=False, tol=100):
     :return: whether matrix is an SE(3) homogeneous transformation matrix
     :rtype: bool
 
-    - ``ISHOM(T)`` is True if the argument ``T`` is of dimension 4x4
-    - ``ISHOM(T, check=True)`` as above, but also checks orthogonality of the rotation sub-matrix and
+    - ``ishom(T)`` is True if the argument ``T`` is of dimension 4x4
+    - ``ishom(T, check=True)`` as above, but also checks orthogonality of the rotation sub-matrix and
       validitity of the bottom row.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
+        >>> ishom(T)
+        >>> T = np.array([[1, 1, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]]) # invalid SE(3)
+        >>> ishom(T)  # a quick check says it is an SE(3)
+        >>> ishom(T, check=True) # but if we check more carefully...
+        >>> R = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
+        >>> ishom(R)
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`
     """
@@ -284,8 +345,21 @@ def isrot(R, check=False, tol=100):
     :return: whether matrix is an SO(3) rotation matrix
     :rtype: bool
 
-    - ``ISROT(R)`` is True if the argument ``R`` is of dimension 3x3
-    - ``ISROT(R, check=True)`` as above, but also checks orthogonality of the rotation matrix.
+    - ``isrot(R)`` is True if the argument ``R`` is of dimension 3x3
+    - ``isrot(R, check=True)`` as above, but also checks orthogonality of the rotation matrix.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
+        >>> isrot(T)
+        >>> R = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        >>> isrot(R)
+        >>> R = R = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]]) # invalid SO(3)
+        >>> isrot(R)  # a quick check says it is an SO(3)
+        >>> isrot(R, check=True) # but if we check more carefully...
+
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
     """
@@ -311,7 +385,6 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     :rtype: ndarray(3,3)
     :raises ValueError: bad argument
 
-
     - ``rpy2r(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix
       (3x3) equivalent to the specified roll, pitch, yaw angles angles.
       These correspond to successive rotations about the axes specified by ``order``:
@@ -329,6 +402,13 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     - ``rpy2r(RPY)`` as above but the roll, pitch, yaw angles are taken
       from ``RPY`` which is a 3-vector with values
       (ROLL, PITCH, YAW).
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rpy2r(0.1, 0.2, 0.3)
+        >>> rpy2r([0.1, 0.2, 0.3])
+        >>> rpy2r([10, 20, 30], unit='deg')
 
     :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`
     """
@@ -388,9 +468,15 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
       from ``RPY`` which is a 3-vector with values
       (ROLL, PITCH, YAW).
 
-    Notes:
+    .. runblock:: pycon
 
-    - The translational part is zero.
+        >>> from spatialmath.base import *
+        >>> rpy2tr(0.1, 0.2, 0.3)
+        >>> rpy2tr([0.1, 0.2, 0.3])
+        >>> rpy2tr([10, 20, 30], unit='deg')
+
+    .. note:: By default, the translational component is zero but it can be 
+        set to a non-zero value.
 
     :seealso: :func:`~eul2tr`, :func:`~rpy2r`, :func:`~tr2rpy`
     """
@@ -422,6 +508,13 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
     - ``R = eul2r(EUL)`` as above but the Euler angles are taken from
       ``EUL`` which is a 3-vector with values
       (PHI θ PSI).
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> eul2r(0.1, 0.2, 0.3)
+        >>> eul2r([0.1, 0.2, 0.3])
+        >>> eul2r([10, 20, 30], unit='deg')
 
     :seealso: :func:`~rpy2r`, :func:`~eul2tr`, :func:`~tr2eul`
 
@@ -461,9 +554,16 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
       ``EUL`` which is a 3-vector with values
       (PHI θ PSI).
 
-    Notes:
 
-    - The translational part is zero.
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> eul2tr(0.1, 0.2, 0.3)
+        >>> eul2tr([0.1, 0.2, 0.3])
+        >>> eul2tr([10, 20, 30], unit='deg')
+
+    .. note:: By default, the translational component is zero but it can be 
+        set to a non-zero value.
 
     :seealso: :func:`~rpy2tr`, :func:`~eul2r`, :func:`~tr2eul`
 
@@ -493,10 +593,16 @@ def angvec2r(theta, v, unit='rad'):
     ``angvec2r(θ, V)`` is an SO(3) orthonormal rotation matrix
     equivalent to a rotation of ``θ`` about the vector ``V``.
 
-    Notes:
+    .. runblock:: pycon
 
-    - If ``θ == 0`` then return identity matrix.
-    - If ``θ ~= 0`` then ``V`` must have a finite length.
+        >>> from spatialmath.base import *
+        >>> angvec2r(0.3, [1, 0, 0])  # rotx(0.3)
+        >>> angvec2r(0, [1, 0, 0])    # rotx(0)
+
+    .. note::
+
+        - If ``θ == 0`` then return identity matrix.
+        - If ``θ ~= 0`` then ``V`` must have a finite length.
 
     :seealso: :func:`~angvec2tr`, :func:`~tr2angvec`
 
@@ -534,11 +640,16 @@ def angvec2tr(theta, v, unit='rad'):
     ``angvec2tr(θ, V)`` is an SE(3) homogeneous transformation matrix
     equivalent to a rotation of ``θ`` about the vector ``V``.
 
-    Notes:
+    .. runblock:: pycon
 
-    - If ``θ == 0`` then return identity matrix.
-    - If ``θ ~= 0`` then ``V`` must have a finite length.
-    - The translational part is zero.
+        >>> from spatialmath.base import *
+        >>> angvec2tr(0.3, [1, 0, 0])  # rtotx(0.3)
+
+    .. note::
+
+        - If ``θ == 0`` then return identity matrix.
+        - If ``θ ~= 0`` then ``V`` must have a finite length.
+        - The translational part is zero.
 
     :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
 
@@ -571,13 +682,18 @@ def oa2r(o, a=None):
         3. normalize N', O', A
         4. stack horizontally into rotation matrix
 
-    Notes:
+    .. runblock:: pycon
 
-    - The A vector is the only guaranteed to have the same direction in the resulting
-      rotation matrix
-    - O and A do not have to be unit-length, they are normalized
-    - O and A do not have to be orthogonal, so long as they are not parallel
-    - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+        >>> from spatialmath.base import *
+        >>> oa2r([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
+
+    .. note::
+
+        - The A vector is the only guaranteed to have the same direction in the resulting
+          rotation matrix
+        - O and A do not have to be unit-length, they are normalized
+        - O and A do not have to be orthogonal, so long as they are not parallel
+        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
 
     :seealso: :func:`~oa2tr`
 
@@ -615,10 +731,15 @@ def oa2tr(o, a=None):
         3. normalize N', O', A
         4. stack horizontally into rotation matrix
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> oa2tr([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
+
     .. note:
 
         - The A vector is the only guaranteed to have the same direction in the resulting
-        rotation matrix
+          rotation matrix
         - O and A do not have to be unit-length, they are normalized
         - O and A do not have to be orthogonal, so long as they are not parallel
         - The translational part is zero.
@@ -646,10 +767,17 @@ def tr2angvec(T, unit='rad', check=False):
     :rtype: float, ndarray(3)
     :raises ValueError: bad arguments
 
-    ``tr2angvec(R)`` is a rotation angle and a vector about which the rotation
+    ``(v, θ) = tr2angvec(R)`` is a rotation angle and a vector about which the rotation
     acts that corresponds to the rotation part of ``R``.
 
     By default the angle is in radians but can be changed setting `unit='deg'`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = troty(45, 'deg')
+        >>> v, theta = tr2angvec(T)
+        >>> print(v, theta)
 
     .. note::
 
@@ -703,6 +831,13 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     Z, Y and Z axes respectively.
 
     By default the angles are in radians but can be changed setting `unit='deg'`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = eul2tr(0.2, 0.3, 0.5)
+        >>> print(T)
+        >>> tr2eul(T)
 
     .. note::
 
@@ -775,6 +910,13 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     - ``order='yxz'``  for sequential rotations about Y, X, Z axes
 
     By default the angles are in radians but can be changed setting ``unit='deg'``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = rpy2tr(0.2, 0.3, 0.5)
+        >>> print(T)
+        >>> tr2rpy(T)
 
     .. note::
 
@@ -903,6 +1045,14 @@ def trlog(T, check=True, twist=False):
       4x4 augumented skew-symmetric matrix. The equivalent vector from ``vexa()`` is the twist
       vector (6x1) comprising [v w].
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trlog(trotx(0.3))
+        >>> trlog(trotx(0.3), twist=True)
+        >>> trlog(rotx(0.3))
+        >>> trlog(rotx(0.3), twist=True)
+
     :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`, :func:`~spatialmath.base.transformsNd.vexa`
     """
 
@@ -1000,6 +1150,14 @@ def trexp(S, theta=None, check=True):
       unit-norm vector representing a rotation axis and a rotation magnitude
       given by ``θ``. ``ω`` is expressed as a 3-vector.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trexp(skew([1, 2, 3]))
+        >>> trexp(skew([1, 0, 0]), 2)  # revolute unit twist
+        >>> trexp([1, 2, 3])
+        >>> trexp([1, 0, 0], 2)  # revolute unit twist
+
     For se(3) the results is an SE(3) homogeneous transformation matrix:
 
     - ``trexp(Σ)`` is the matrix exponential of the se(3) element ``Σ`` which is
@@ -1013,7 +1171,15 @@ def trexp(S, theta=None, check=True):
       represent a unit-twist, ie. the rotational component is a unit-norm
       skew-symmetric matrix.
 
-     :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trexp(skewa([1, 2, 3, 4, 5, 6]))
+        >>> trexp(skewa([1, 0, 0, 0, 0, 0]), 2)  # prismatic unit twist
+        >>> trexp([1, 2, 3, 4, 5, 6])
+        >>> trexp([1, 0, 0, 0, 0, 0], 2)
+
+    :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`
     """
 
     if base.ismatrix(S, (4, 4)) or base.isvector(S, 6):
@@ -1093,6 +1259,17 @@ def trnorm(T):
     #. Recompute :math:`\hat{o} = \hat{a} \times \hat{n}` to ensure that :math:`\hat{o}, \hat{a}` are orthogonal
     #. Form the normalized SO(3) matrix :math:`\mathbf{R} = [\hat{n}, \hat{o}, \hat{a}]`
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> from numpy import linalg
+        >>> T = troty(45, 'deg', t=[3, 4, 5])
+        >>> linalg.det(T[:3,:3]) - 1 # is a valid SO(3)
+        >>> T = T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T
+        >>> linalg.det(T[:3,:3]) - 1  # not quite a valid SO(3) anymore
+        >>> T = trnorm(T)
+        >>> linalg.det(T[:3,:3]) - 1  # once more a valid SO(3)
+
     .. note::
 
         - Only the direction of a-vector (the z-axis) is unchanged.
@@ -1138,6 +1315,18 @@ def trinterp(start, end, s=None):
       between identity when S=0 and R (3x3) when S=1.
     - ``trinterp(R0, R1, S)`` as above but interpolated
       between R0 (3x3) when S=0 and R1 (3x3) when S=1.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T1 = transl(1, 2, 3)
+        >>> T2 = transl(4, 5, 6)
+        >>> trinterp(T1, T2, 0)
+        >>> trinterp(T1, T2, 1)
+        >>> trinterp(T1, T2, 0.5)
+        >>> trinterp(None, T2, 0)
+        >>> trinterp(None, T2, 1)
+        >>> trinterp(None, T2, 0.5)
 
     .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
@@ -1199,6 +1388,11 @@ def delta2tr(d):
     ``delta2tr(Δ)`` is an SE(3) matrix representing differential
     motion :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> delta2tr([0.001, 0, 0, 0, 0.002, 0])
+
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 
     :seealso: :func:`~tr2delta`
@@ -1221,6 +1415,13 @@ def trinv(T):
     Computes an efficient inverse of an SE(3) matrix:
 
     :math:`\begin{pmatrix} {\bf R} & t \\ 0\,0\,0 & 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T & -{\bf R}^T t \\ 0\,0\, 0 & 1 \end{pmatrix}`
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trotx(0.3, t=[4,5,6])
+        >>> trinv(T)
+        >>> T @ trinv(T)
 
     :SymPy: supported
     """
@@ -1248,7 +1449,6 @@ def tr2delta(T0, T1=None):
     :rtype:ndarray(6)
     :raises ValueError: bad arguments
 
-
     - ``tr2delta(T0, T1)`` is the differential motion Δ (6x1) corresponding to
       infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
 
@@ -1257,6 +1457,13 @@ def tr2delta(T0, T1=None):
     The vector :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
     represents infinitessimal translation and rotation, and is an approximation to the
     instantaneous spatial velocity multiplied by time step.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T1 = trotx(0.3, t=[4,5,6])
+        >>> T2 = trotx(0.31, t=[4,5.02,6])
+        >>> tr2delta(T1, T2)
 
     .. note::
 
@@ -1305,6 +1512,12 @@ def tr2jac(T, samebody=False):
     - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both
       attached to the same moving body.  This is the adjoint matrix
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trotx(0.3, t=[4,5,6])
+        >>> tr2jac(T)
+    
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
     :SymPy: supported
     """
@@ -1372,12 +1585,12 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
         >>> trprint(T, file=None, label='T', orient='angvec')
         >>> trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')
 
-    Notes:
+    .. notes::
 
-     - If the 'rpy' option is selected, then the particular angle sequence can be
-       specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
-       'zyx' is the default.
-     - Default formatting is for readable columns of data
+        - If the 'rpy' option is selected, then the particular angle sequence can be
+          specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
+          'zyx' is the default.
+        - Default formatting is for readable columns of data
 
     :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
     :SymPy: not supported
@@ -1605,8 +1818,9 @@ def tranimate(T, **kwargs):
 
     Examples:
 
-            tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
-            tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+            >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
+            >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+    
     :SymPy: not supported
     """
     if not _matplotlib_exists:

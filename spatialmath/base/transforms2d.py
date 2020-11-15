@@ -3,8 +3,8 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 """
-This modules contains functions to create and transform rotation matrices
-and homogeneous tranformation matrices.
+This modules contains functions to create and transform SO(2) and SE(2) matrices,
+respectively 2D rotation matrices and homogeneous tranformation matrices.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.
@@ -36,6 +36,12 @@ def rot2(theta, unit='rad'):
 
     - ``rot2(θ)`` is an SO(2) rotation matrix (2x2) representing a rotation of θ radians.
     - ``rot2(θ, 'deg')`` as above but θ is in degrees.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rot2(0.3)
+        >>> rot2(45, 'deg')
     """
     theta = base.getunit(theta, unit)
     ct = base.sym.cos(theta)
@@ -64,8 +70,14 @@ def trot2(theta, unit='rad', t=None):
       θ radians.
     - ``trot2(θ, 'deg')`` as above but θ is in degrees.
 
-    Notes:
-    - Translational component is zero.
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trot2(0.3)
+        >>> trot2(45, 'deg', t=[1,2])
+
+    .. note:: By default, the translational component is zero but it can be 
+        set to a non-zero value.
     """
     T = np.pad(rot2(theta, unit), (0, 1), mode='constant')
     if t is not None:
@@ -94,6 +106,15 @@ def transl2(x, y=None):
     - ``T = transl2( V )`` as above but the translation is given by a 2-element
       list, dict, or a numpy array, row or column vector.
 
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> transl2(3, 4)
+        >>> transl2([3, 4])
+        >>> transl2(np.array([3, 4]))
+
     **Extract the translational part of an SE(2) matrix**
 
     :param x: SE(2) transform matrix
@@ -104,6 +125,14 @@ def transl2(x, y=None):
     - ``t = transl2(T)`` is the translational part of the SE(3) matrix ``T`` as a
       2-element NumPy array.
 
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> T = np.array([[1, 0, 3], [0, 1, 4], [0, 0, 1]])
+        >>> transl2(T)
+        
     .. note:: This function is compatible with the MATLAB version of the Toolbox.  It
         is unusual/weird in doing two completely different things inside the one
         function.
@@ -134,9 +163,21 @@ def ishom2(T, check=False):
     :return: whether matrix is an SE(2) homogeneous transformation matrix
     :rtype: bool
 
-    - ``ISHOM2(T)`` is True if the argument ``T`` is of dimension 3x3
-    - ``ISHOM2(T, check=True)`` as above, but also checks orthogonality of the
+    - ``ishom2(T)`` is True if the argument ``T`` is of dimension 3x3
+    - ``ishom2(T, check=True)`` as above, but also checks orthogonality of the
       rotation sub-matrix and validitity of the bottom row.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> T = np.array([[1, 0, 3], [0, 1, 4], [0, 0, 1]])
+        >>> ishom2(T)
+        >>> T = np.array([[1, 1, 3], [0, 1, 4], [0, 0, 1]]) # invalid SE(2)
+        >>> ishom2(T)  # a quick check says it is an SE(2)
+        >>> ishom2(T, check=True) # but if we check more carefully...
+        >>> R = np.array([[1, 0], [0, 1]])
+        >>> ishom2(R)
 
     :seealso: isR, isrot2, ishom, isvec
     """
@@ -156,8 +197,20 @@ def isrot2(R, check=False):
     :return: whether matrix is an SO(2) rotation matrix
     :rtype: bool
 
-    - ``ISROT(R)`` is True if the argument ``R`` is of dimension 2x2
-    - ``ISROT(R, check=True)`` as above, but also checks orthogonality of the rotation matrix.
+    - ``isrot2(R)`` is True if the argument ``R`` is of dimension 2x2
+    - ``isrot2(R, check=True)`` as above, but also checks orthogonality of the rotation matrix.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> import numpy as np
+        >>> T = np.array([[1, 0, 3], [0, 1, 4], [0, 0, 1]])
+        >>> isrot2(T)
+        >>> R = np.array([[1, 0], [0, 1]])
+        >>> isrot2(R)
+        >>> R = np.array([[1, 1], [0, 1]])  # invalid SO(2)
+        >>> isrot2(R)  # a quick check says it is an SO(2)
+        >>> isrot2(R, check=True)  # but if we check more carefully...
 
     :seealso: isR, ishom2, isrot
     """
@@ -192,6 +245,14 @@ def trlog2(T, check=True, twist=False):
       matrix ``T`` which will be 3x3 augumented skew-symmetric matrix. The
       equivalent vector from ``vexa()`` is the twist vector (6x1) comprising [v
       w].
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trlog2(trot2(0.3))
+        >>> trlog2(trot2(0.3), twist=True)
+        >>> trlog2(rot2(0.3))
+        >>> trlog2(rot2(0.3), twist=True)
 
     :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`,
               :func:`~spatialmath.base.transformsNd.vexa`
@@ -240,31 +301,47 @@ def trexp2(S, theta=None, check=True):
 
     For se(2) the results is an SE(2) homogeneous transformation matrix:
 
-    - ``trexp2(SIGMA)`` is the matrix exponential of the se(2) element ``SIGMA`` which is
+    - ``trexp2(Σ)`` is the matrix exponential of the se(2) element ``Σ`` which is
       a 3x3 augmented skew-symmetric matrix.
-    - ``trexp2(SIGMA, θ)`` as above but for an se(3) motion of SIGMA*θ, where ``SIGMA``
+    - ``trexp2(Σ, θ)`` as above but for an se(3) motion of Σθ, where ``Σ``
       must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
       matrix.
-    - ``trexp2(TW)`` is the matrix exponential of the se(3) element ``TW`` represented as
+    - ``trexp2(S)`` is the matrix exponential of the se(3) element ``S`` represented as
       a 3-vector which can be considered a screw motion.
-    - ``trexp2(TW, θ)`` as above but for an se(2) motion of TW*θ, where ``TW``
+    - ``trexp2(S, θ)`` as above but for an se(2) motion of Sθ, where ``S``
       must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
       matrix.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trexp2(skew(1))
+        >>> trexp2(skew(1), 2)  # revolute unit twist
+        >>> trexp2(1)
+        >>> trexp2(1, 2)  # revolute unit twist
 
     For so(2) the results is an SO(2) rotation matrix:
 
-    - ``trexp2(S)`` is the matrix exponential of the so(3) element ``S`` which is a 2x2
+    - ``trexp2(Ω)`` is the matrix exponential of the so(3) element ``Ω`` which is a 2x2
       skew-symmetric matrix.
-    - ``trexp2(S, θ)`` as above but for an so(3) motion of S*θ, where ``S`` is
+    - ``trexp2(Ω, θ)`` as above but for an so(3) motion of Ωθ, where ``Ω`` is
       unit-norm skew-symmetric matrix representing a rotation axis and a rotation magnitude
       given by ``θ``.
-    - ``trexp2(W)`` is the matrix exponential of the so(2) element ``W`` expressed as
+    - ``trexp2(ω)`` is the matrix exponential of the so(2) element ``ω`` expressed as
       a 1-vector.
-    - ``trexp2(W, θ)`` as above but for an so(3) motion of W*θ where ``W`` is a
+    - ``trexp2(ω, θ)`` as above but for an so(3) motion of ωθ where ``ω`` is a
       unit-norm vector representing a rotation axis and a rotation magnitude
-      given by ``θ``. ``W`` is expressed as a 1-vector.
+      given by ``θ``. ``ω`` is expressed as a 1-vector.
 
-     :seealso: trlog, trexp2
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> trexp2(skewa([1, 2, 3]))
+        >>> trexp2(skewa([1, 0, 0]), 2)  # prismatic unit twist
+        >>> trexp2([1, 2, 3])
+        >>> trexp2([1, 0, 0], 2)
+
+    :seealso: trlog, trexp2
     """
 
     if base.ismatrix(S, (3, 3)) or base.isvector(S, 3):
@@ -341,9 +418,20 @@ def trinterp2(start, end, s=None):
 
     .. note:: Rotation angle is linearly interpolated.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T1 = transl2(1, 2)
+        >>> T2 = transl2(3, 4)
+        >>> trinterp2(T1, T2, 0)
+        >>> trinterp2(T1, T2, 1)
+        >>> trinterp2(T1, T2, 0.5)
+        >>> trinterp2(None, T2, 0)
+        >>> trinterp2(None, T2, 1)
+        >>> trinterp2(None, T2, 0.5)
+
     :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
 
-    %## 2d homogeneous trajectory
     """
     if base.ismatrix(end, (2, 2)):
         # SO(2) case
@@ -422,11 +510,11 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
 
         [LABEL:] [t=X, Y;] θ UNIT
 
-    Example::
+    .. runblock:: pycon
 
+        >>> from spatialmath.base import *
         >>> T = transl2(1,2) @ trot2(0.3)
-        >>> trprint2(a, file=None, label='T')
-        'T: t =        1,        2;       17 deg'
+        >>> trprint2(T, file=None, label='T')
 
     :seealso: trprint
     """

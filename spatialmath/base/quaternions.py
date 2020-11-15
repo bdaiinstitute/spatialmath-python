@@ -64,7 +64,7 @@ def qnorm(q):
     :rtype: float
 
     Returns the norm, length or magnitude of the input quaternion which is
-    :math:`\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}`
+    :math:`(s^2 + v_x^2 + v_y^2 + v_z^2}^{1/2}`
 
     .. runblock:: pycon
 
@@ -250,6 +250,13 @@ def qqmul(q1, q2):
     This is the quaternion or Hamilton product.  If both operands are unit-quaternions then
     the product will be a unit-quaternion.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import qqmul
+        >>> q1 = [1, 2, 3, 4]
+        >>> q2 = [5, 6, 7, 8]
+        >>> qqmul(q1, q2)    # conventional Hamilton product
+
     :seealso: qvmul, inner, vvmul
 
     """
@@ -265,7 +272,7 @@ def qqmul(q1, q2):
 
 def inner(q1, q2):
     """
-    Quaternion innert product
+    Quaternion inner product
 
     :arg q0: quaternion 
     :type q0: : array_like(4)
@@ -276,6 +283,20 @@ def inner(q1, q2):
 
     This is the inner or dot product of two quaternions, it is the sum of the element-wise
     product.
+
+    - The inner product ``inner(q, q)`` is the square of the norm of ``q``.
+    - If ``q0`` and ``q1`` are unit quaternions then the inner product is the
+      cosine of the angle between the two orientations.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import inner
+        >>> from math import sqrt, acos, pi
+        >>> q1 = [1, 2, 3, 4]
+        >>> inner(q1, q1)                      # square of the norm
+        >>> q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis
+        >>> q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis
+        >>> acos(inner(q1, q2)) * 180 / pi     # angle between q1 and q2
 
     :seealso: qvmul
 
@@ -299,6 +320,13 @@ def qvmul(q, v):
 
     The vector `v` is rotated about the origin by the SO(3) equivalent of the unit
     quaternion.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import qvmul
+        >>> from math import sqrt
+        >>> q = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis
+        >>> qvmul(q, [1, 2, 3])              # rotated vector
 
     .. warning:: There is no check that the passed value is a unit-quaternions.
 
@@ -326,7 +354,18 @@ def vvmul(qa, qb):
     by their vector components.  The product will be a unit-quaternion, defined only
     by its vector component.
 
-    :seealso: qvmul, inner
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import vvmul, v2q, q2v, qqmul, qprint
+        >>> from math import sqrt
+        >>> q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis
+        >>> q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis
+        >>> qprint(qqmul(q1, q2))              # normal Hamilton product
+        >>> v1 = q2v(q1); v2 = q2v(q2)
+        >>> vp = vvmul(v1, v2)                 # product using 3-vectors
+        >>> qprint(v2q(vp))                    # same answer as Hamilton product
+
+    :seealso: :func:`q2v`, :func:`v2q`, :func:`qvmul`
     """
     t6 = math.sqrt(1.0 - np.sum(qa**2))
     t11 = math.sqrt(1.0 - np.sum(qb**2))
@@ -524,6 +563,16 @@ def slerp(q0, q1, s, shortest=False):
     For large rotations the path may be the *long way around* the circle,
     the option ``'shortest'`` ensures always the shortest path.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import slerp, qprint
+        >>> from math import sqrt
+        >>> q0 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis
+        >>> q1 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis
+        >>> qprint(slerp(q0, q1, 0))           # this is q0
+        >>> qprint(slerp(q0, q1, 1))           # this is q1
+        >>> qprint(slerp(q0, q1, 0.5))         # this is in "half way" between
+
     .. warning:: There is no check that the passed values are unit-quaternions.
 
     """
@@ -567,6 +616,11 @@ def rand():
 
     Computes a uniformly distributed random unit-quaternion which can be
     considered equivalent to a random SO(3) rotation.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import rand, qprint
+        >>> qprint(rand())
     """
     u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
     return np.r_[
@@ -588,6 +642,17 @@ def matrix(q):
     Hamilton multiplication between two quaternions can be considered as a
     matrix-vector product, the left-hand quaternion is represented by an
     equivalent 4x4 matrix and the right-hand quaternion as 4x1 column vector.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import matrix, qqmul, qprint
+        >>> q1 = [1, 2, 3, 4]
+        >>> q2 = [5, 6, 7, 8]
+        >>> qqmul(q1, q2)    # conventional Hamilton product
+        >>> m = matrix(q1)
+        >>> print(m)
+        >>> v = m @ np.array(q2)
+        >>> print(v)
 
     :seealso: qqmul
 
@@ -618,6 +683,13 @@ def dot(q, w):
     which represents the orientation of a body frame with angular velocity ``w`` in
     the world frame.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import dot, qprint
+        >>> from math import sqrt
+        >>> q = [1/sqrt(2), 1/sqrt(2), 0, 0]   # 90deg rotation about x-axis
+        >>> dot(q, [1, 2, 3])
+
     .. warning:: There is no check that the passed values are unit-quaternions.
 
     """
@@ -641,6 +713,13 @@ def dotb(q, w):
     ``dotb(q, w)`` is the rate of change of the elements of the unit quaternion ``q``
     which represents the orientation of a body frame with angular velocity ``w`` in
     the body frame.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import dotb, qprint
+        >>> from math import sqrt
+        >>> q = [1/sqrt(2), 1/sqrt(2), 0, 0]   # 90deg rotation about x-axis
+        >>> dotb(q, [1, 2, 3])
 
     .. warning:: There is no check that the passed values are unit-quaternions.
 
@@ -666,8 +745,18 @@ def angle(q1, q2):
     frame, then the angle is the smallest rotation required about a fixed
     axis, to rotate the first frame into the second.
 
-    References:  Metrics for 3D rotations: comparison and analysis,
-    Du Q. Huynh, % J.Math Imaging Vis. DOFI 10.1007/s10851-009-0161-2.
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import angle
+        >>> from math import sqrt
+        >>> q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]    # 90deg rotation about x-axis
+        >>> q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]    # 90deg rotation about y-axis
+        >>> angle(q1, q2)
+
+    :References:  
+    
+    - Metrics for 3D rotations: comparison and analysis,
+      Du Q. Huynh, % J.Math Imaging Vis. DOFI 10.1007/s10851-009-0161-2.
 
     .. warning:: There is no check that the passed values are unit-quaternions.
 
@@ -705,6 +794,13 @@ def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
 
     If `file=None` then a string is returned.
 
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import qprint, rand
+        >>> q = [1, 2, 3, 4]
+        >>> qprint(q)
+        >>> q = rand()   # a unit quaternion
+        >>> qprint(q, delim=('<<', '>>'))
     """
     q = base.getvector(q, 4)
     template = "# {} #, #, # {}".replace('#', fmt)
