@@ -1,14 +1,12 @@
-#!/usr/bin/env python3
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
 import math
 from collections import namedtuple
-from collections import UserList
-
-from  spatialmath.base import argcheck as arg
-import spatialmath.base as base
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import spatialmath.base as base
 from spatialmath import SE3
 from spatialmath.smuserlist import SMUserList
 
@@ -30,7 +28,7 @@ class Plane:
     """
     def __init__(self, c):
 
-        self.plane = arg.getvector(c, 4)
+        self.plane = base.getvector(c, 4)
     
     # point and normal
     @classmethod
@@ -46,8 +44,8 @@ class Plane:
         :rtype: Plane
 
         """
-        n = arg.getvector(n, 3)  # normal to the plane
-        p = arg.getvector(p, 3)  # point on the plane
+        n = base.getvector(n, 3)  # normal to the plane
+        p = base.getvector(p, 3)  # point on the plane
         return cls(np.r_[n, -np.dot(n, p)])
     
     # point and normal
@@ -62,7 +60,7 @@ class Plane:
         :rtype: Plane
         """
         
-        p = arg.ismatrix((3,3))
+        p = base.ismatrix(p, (3,3))
         v1 = p[:,0]
         v2 = p[:,1]
         v3 = p[:,2]
@@ -235,7 +233,7 @@ class Plucker(SMUserList):
 
         else:
             # additional arguments
-            assert arg.isvector(v, 3) and arg.isvector(w, 3), 'expecting two 3-vectors'
+            assert base.isvector(v, 3) and base.isvector(w, 3), 'expecting two 3-vectors'
             self.data = [np.r_[v, w]]
             
         # needed to allow __rmul__ to work if left multiplied by ndarray
@@ -271,8 +269,8 @@ class Plucker(SMUserList):
 
         :seealso: Plucker, Plucker.Planes, Plucker.PointDir
         """
-        P = arg.getvector(P, 3)
-        Q = arg.getvector(Q, 3)
+        P = base.getvector(P, 3)
+        Q = base.getvector(Q, 3)
         # compute direction and moment
         w = P - Q
         v = np.cross(P - Q, P)
@@ -300,9 +298,9 @@ class Plucker(SMUserList):
         """
 
         if not isinstance(pi1, Plane):
-            pi1 = Plane(arg.getvector(pi1, 4))
+            pi1 = Plane(base.getvector(pi1, 4))
         if not isinstance(pi2, Plane):
-            pi2 = Plane(arg.getvector(pi2, 4))
+            pi2 = Plane(base.getvector(pi2, 4))
         
         w = np.cross(pi1.n, pi2.n)
         v = pi2.d * pi1.n - pi1.d * pi2.n
@@ -326,8 +324,8 @@ class Plucker(SMUserList):
         :seealso: Plucker, Plucker.Planes, Plucker.PQ
         """
 
-        point = arg.getvector(point, 3)
-        dir = arg.getvector(dir, 3)
+        point = base.getvector(point, 3)
+        dir = base.getvector(dir, 3)
         
         return Plucker(np.r_[np.cross(dir, point), dir])
     
@@ -486,7 +484,7 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.pp, Plucker.closest, Plucker.uw
         """
-        lam = arg.getvector(lam, out='row')
+        lam = base.getvector(lam, out='row')
         return self.pp.reshape((3,1)) + self.uw.reshape((3,1)) * lam
 
     # ------------------------------------------------------------------------- #
@@ -511,15 +509,15 @@ class Plucker(SMUserList):
         If ``X`` is an array with 3 rows, the test is performed on every column and
         an array of booleans is returned.
         """
-        if arg.isvector(x, 3):
-            x = arg.getvector(x)
+        if base.isvector(x, 3):
+            x = base.getvector(x)
             return np.linalg.norm( np.cross(x - self.pp, self.w) ) < tol
-        elif arg.ismatrix(x, (3,None)):
+        elif base.ismatrix(x, (3,None)):
             return [np.linalg.norm(np.cross(_ - self.pp, self.w)) < tol for _ in x.T]
         else:
             raise ValueError('bad argument')
 
-    def __eq__(l1, l2):  # pylint: disable=no-self-argument
+    def __eq__(self, l2):  # pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
         
@@ -535,9 +533,10 @@ class Plucker(SMUserList):
         space.  Note that because of the over parameterization, lines can be
         equivalent even if their coordinate vectors are different.
         """
+        l1 = self
         return abs( 1 - np.dot(base.unitvec(l1.vec), base.unitvec(l2.vec))) < 10*_eps
     
-    def __ne__(l1, l2):  # pylint: disable=no-self-argument
+    def __ne__(self, l2):  # pylint: disable=no-self-argument
         """
         Test if two lines are not equivalent
         
@@ -552,10 +551,10 @@ class Plucker(SMUserList):
         space.  Note that because of the over parameterization, lines can be
         equivalent even if their coordinate vectors are different.
         """
-        
+        l1 = self
         return not l1.__eq__(l2)
     
-    def isparallel(l1, l2, tol=10*_eps):  # pylint: disable=no-self-argument
+    def isparallel(self, l2, tol=10*_eps):  # pylint: disable=no-self-argument
         """
         Test if lines are parallel
         
@@ -572,11 +571,11 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.or, Plucker.intersects
         """
-        
+        l1 = self
         return np.linalg.norm(np.cross(l1.w, l2.w) ) < tol
 
     
-    def __or__(l1, l2):  # pylint: disable=no-self-argument
+    def __or__(self, l2):  # pylint: disable=no-self-argument
         """
         Test if lines are parallel as a binary operator
         
@@ -591,10 +590,11 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.isparallel, Plucker.__xor__
         """
+        l1 = self
         return l1.isparallel(l2)
 
     
-    def __xor__(l1, l2):  # pylint: disable=no-self-argument
+    def __xor__(self, l2):  # pylint: disable=no-self-argument
         
         """
         Test if lines intersect as a binary operator
@@ -615,6 +615,7 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.intersects, Plucker.parallel
         """
+        l1 = self
         return not l1.isparallel(l2) and (abs(l1 * l2) < 10*_eps )
     
     # ------------------------------------------------------------------------- #
@@ -622,7 +623,7 @@ class Plucker(SMUserList):
     # ------------------------------------------------------------------------- #       
    
             
-    def intersects(l1, l2):  # pylint: disable=no-self-argument
+    def intersects(self, l2):  # pylint: disable=no-self-argument
         """
         Intersection point of two lines
         
@@ -639,6 +640,7 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.commonperp, Plucker.eq, Plucker.__xor__
         """
+        l1 = self
         if l1^l2:
             # lines do intersect
             return -(np.dot(l1.v, l2.w) * np.eye(3, 3) + \
@@ -648,7 +650,7 @@ class Plucker(SMUserList):
             # lines don't intersect
             return None
     
-    def distance(l1, l2):  # pylint: disable=no-self-argument
+    def distance(self, l2):  # pylint: disable=no-self-argument
         """
         Minimum distance between lines
         
@@ -664,7 +666,8 @@ class Plucker(SMUserList):
         Notes:
             
          - Works for parallel, skew and intersecting lines.
-         """
+        """
+        l1 = self
         if l1 | l2:
             # lines are parallel
             l = np.cross(l1.w, l1.v - l2.v * np.dot(l1.w, l2.w) / dot(l2.w, l2.w)) / np.linalg.norm(l1.w)
@@ -706,7 +709,7 @@ class Plucker(SMUserList):
         # http://www.ahinson.com/algorithms_general/Sections/Geometry/PluckerLine.pdf
         # has different equation for moment, the negative
 
-        x = arg.getvector(x, 3)
+        x = base.getvector(x, 3)
 
         lam = np.dot(x - self.pp, self.uw)
         p = self.point(lam).flatten()  # is the closest point on the line
@@ -715,7 +718,7 @@ class Plucker(SMUserList):
         return namedtuple('closest', 'p d lam')(p, d, lam)
     
     
-    def commonperp(l1, l2):  # pylint: disable=no-self-argument
+    def commonperp(self, l2):  # pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
         
@@ -731,7 +734,7 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.intersect
         """
-        
+        l1 = self
         if l1 | l2:
             # no common perpendicular if lines are parallel
             return None
@@ -744,7 +747,7 @@ class Plucker(SMUserList):
         return Plucker(v, w)
 
 
-    def __mul__(left, right):  # pylint: disable=no-self-argument
+    def __mul__(self, right):  # pylint: disable=no-self-argument
         r"""
         Reciprocal product
         
@@ -764,13 +767,14 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.__rmul__
         """
+        left = self
         if isinstance(right, Plucker):
             # reciprocal product
             return np.dot(left.uw, right.v) + np.dot(right.uw, left.v)
         else:
             raise ValueError('bad arguments')
         
-    def __rmul__(right, left):  # pylint: disable=no-self-argument
+    def __rmul__(self, left):  # pylint: disable=no-self-argument
         """
         Line transformation
 
@@ -786,6 +790,7 @@ class Plucker(SMUserList):
 
         :seealso: Plucker.__mul__
         """
+        right = self
         if isinstance(left, SE3):
             A = np.r_[ np.c_[left.R,          base.skew(-left.t) @ left.R],
                        np.c_[np.zeros((3,3)), left.R]
@@ -799,7 +804,7 @@ class Plucker(SMUserList):
     # ------------------------------------------------------------------------- #       
 
 
-    def intersect_plane(line, plane):  # pylint: disable=no-self-argument
+    def intersect_plane(self, plane):  # pylint: disable=no-self-argument
         r"""
         Line intersection with a plane
         
@@ -835,17 +840,16 @@ class Plucker(SMUserList):
         # Note that this is in homogeneous coordinates.
         #    intersection of plane (n,p) with the line (v,p)
         #    returns point and line parameter
-        
         if not isinstance(plane, Plane):
-            plane = Plane(arg.getvector(plane, 4))
+            plane = Plane(base.getvector(plane, 4))
             
-        den = np.dot(line.w, plane.n)
+        den = np.dot(self.w, plane.n)
         
         if abs(den) > (100*_eps):
             # P = -(np.cross(line.v, plane.n) + plane.d * line.w) / den
-            p = (np.cross(line.v, plane.n) - plane.d * line.w) / den
+            p = (np.cross(self.v, plane.n) - plane.d * self.w) / den
             
-            t = np.dot( line.pp - p, plane.n)
+            t = np.dot( self.pp - p, plane.n)
             return namedtuple('intersect_plane', 'p lam')(p, t)
         else:
             return None

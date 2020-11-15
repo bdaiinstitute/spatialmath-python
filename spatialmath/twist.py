@@ -1,8 +1,11 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
+
 import numpy as np
-import math
 
 from spatialmath.pose3d import SO3, SE3
-from spatialmath.pose2d import SO2, SE2
+from spatialmath.pose2d import SE2
 from spatialmath.geom3d import Plucker
 import spatialmath.base as base
 from spatialmath.smuserlist import SMUserList

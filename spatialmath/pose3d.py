@@ -1,5 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
 
 """
 Classes to abstract 3D pose and orientation using matrices in SE(3) and SO(3)
@@ -25,7 +26,7 @@ To use::
 import numpy as np
 
 from spatialmath.base import argcheck
-import spatialmath.base as tr
+import spatialmath.base as base
 from spatialmath.super_pose import SMPose
 
 
@@ -197,9 +198,9 @@ class SO3(SMPose):
         :SymPy: not supported
         """
         if len(self) == 1:
-            return tr.tr2eul(self.A, unit=unit)
+            return base.tr2eul(self.A, unit=unit)
         else:
-            return np.array([tr.tr2eul(x, unit=unit) for x in self.A]).T
+            return np.array([base.tr2eul(x, unit=unit) for x in self.A]).T
 
     def rpy(self, unit='rad', order='zyx'):
         """
@@ -235,9 +236,9 @@ class SO3(SMPose):
         :SymPy: not supported
         """
         if len(self) == 1:
-            return tr.tr2rpy(self.A, unit=unit, order=order)
+            return base.tr2rpy(self.A, unit=unit, order=order)
         else:
-            return np.array([tr.tr2rpy(x, unit=unit, order=order) for x in self.A]).T
+            return np.array([base.tr2rpy(x, unit=unit, order=order) for x in self.A]).T
 
     def angvec(self, unit='rad'):
         r"""
@@ -269,7 +270,7 @@ class SO3(SMPose):
 
         :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
         """
-        return tr.tr2angvec(self.R, unit=unit)
+        return base.tr2angvec(self.R, unit=unit)
 
     # ------------------------------------------------------------------------ #
 
@@ -286,7 +287,7 @@ class SO3(SMPose):
 
         :seealso: :func:`~spatialmath.base.transform3d.isrot`
         """
-        return tr.isrot(x, check=True)
+        return base.isrot(x, check=True)
 
     # ---------------- variant constructors ---------------------------------- #
 
@@ -318,7 +319,7 @@ class SO3(SMPose):
             >>> x[7]
 
         """
-        return cls([tr.rotx(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
+        return cls([base.rotx(x, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
     def Ry(cls, theta, unit='rad'):
@@ -348,7 +349,7 @@ class SO3(SMPose):
             >>> x[7]
 
         """
-        return cls([tr.roty(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
+        return cls([base.roty(x, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
     def Rz(cls, theta, unit='rad'):
@@ -378,7 +379,7 @@ class SO3(SMPose):
             >>> x[7]
 
         """
-        return cls([tr.rotz(x, unit=unit) for x in argcheck.getvector(theta)], check=False)
+        return cls([base.rotz(x, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
     def Rand(cls, N=1):
@@ -403,7 +404,7 @@ class SO3(SMPose):
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
-        return cls([tr.q2r(tr.rand()) for _ in range(0, N)], check=False)
+        return cls([base.q2r(base.rand()) for _ in range(0, N)], check=False)
 
     @classmethod
     def Eul(cls, angles, *, unit='rad'):
@@ -425,10 +426,10 @@ class SO3(SMPose):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         """
-        if argcheck.isvector(angles, 3):
-            return cls(tr.eul2r(angles, unit=unit), check=False)
+        if base.isvector(angles, 3):
+            return cls(base.eul2r(angles, unit=unit), check=False)
         else:
-            return cls([tr.eul2r(a, unit=unit) for a in angles], check=False)
+            return cls([base.eul2r(a, unit=unit) for a in angles], check=False)
 
     @classmethod
     def RPY(cls, angles, *, order='zyx', unit='rad'):
@@ -462,10 +463,10 @@ class SO3(SMPose):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
-        if argcheck.isvector(angles, 3):
-            return cls(tr.rpy2r(angles, order=order, unit=unit), check=False)
+        if base.isvector(angles, 3):
+            return cls(base.rpy2r(angles, order=order, unit=unit), check=False)
         else:
-            return cls([tr.rpy2r(a, order=order, unit=unit) for a in angles], check=False)
+            return cls([base.rpy2r(a, order=order, unit=unit) for a in angles], check=False)
 
     @classmethod
     def OA(cls, o, a):
@@ -493,7 +494,7 @@ class SO3(SMPose):
 
         :seealso: :func:`spatialmath.base.transforms3d.oa2r`
         """
-        return cls(tr.oa2r(o, a), check=False)
+        return cls(base.oa2r(o, a), check=False)
 
     @classmethod
     def AngVec(cls, theta, v, *, unit='rad'):
@@ -517,7 +518,7 @@ class SO3(SMPose):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
-        return cls(tr.angvec2r(theta, v, unit=unit), check=False)
+        return cls(base.angvec2r(theta, v, unit=unit), check=False)
 
     @classmethod
     def EulerVec(cls, w):
@@ -545,10 +546,10 @@ class SO3(SMPose):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
-        assert argcheck.isvector(w, 3), 'w must be a 3-vector'
-        w = argcheck.getvector(w)
-        theta = tr.norm(w)
-        return cls(tr.angvec2r(theta, w), check=False)
+        assert base.isvector(w, 3), 'w must be a 3-vector'
+        w = base.getvector(w)
+        theta = base.norm(w)
+        return cls(base.angvec2r(theta, w), check=False)
 
     @classmethod
     def Exp(cls, S, check=True, so3=True):
@@ -576,10 +577,10 @@ class SO3(SMPose):
 
         :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
-        if argcheck.ismatrix(S, (-1, 3)) and not so3:
-            return cls([tr.trexp(s, check=check) for s in S], check=False)
+        if base.ismatrix(S, (-1, 3)) and not so3:
+            return cls([base.trexp(s, check=check) for s in S], check=False)
         else:
-            return cls(tr.trexp(S, check=check), check=False)
+            return cls(base.trexp(S, check=check), check=False)
 
 # ============================== SE3 =====================================#
 
@@ -624,19 +625,19 @@ class SE3(SO3):
 
             if super().arghandler(x, check=check):
                 return
-            elif argcheck.isvector(x, 3):
+            elif base.isvector(x, 3):
                 # SE3( [x, y, z] )
-                self.data = [tr.transl(x)]
+                self.data = [base.transl(x)]
             elif isinstance(x, np.ndarray) and x.shape[1] == 3:
                 # SE3( Nx3 )
-                self.data = [tr.transl(T) for T in x]
+                self.data = [base.transl(T) for T in x]
 
             else:
                 raise ValueError('bad argument to constructor')
 
         elif y is not None and z is not None:
             # SE3(x, y, z)
-            self.data = [tr.transl(x, y, z)]
+            self.data = [base.transl(x, y, z)]
 
     @staticmethod
     def _identity():
@@ -714,9 +715,9 @@ class SE3(SO3):
         :SymPy: supported
         """
         if len(self) == 1:
-            return SE3(tr.trinv(self.A), check=False)
+            return SE3(base.trinv(self.A), check=False)
         else:
-            return SE3([tr.trinv(x) for x in self.A], check=False)
+            return SE3([base.trinv(x) for x in self.A], check=False)
 
     def delta(self, X2):
         r"""
@@ -750,7 +751,7 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transforms3d.tr2delta`
         """
-        return tr.tr2delta(self.A, X2.A)
+        return base.tr2delta(self.A, X2.A)
 
     def Ad(self):
         """
@@ -776,7 +777,7 @@ class SE3(SO3):
         :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
         :SymPy: supported
         """
-        return tr.tr2jac(self.A, samebody=True)
+        return base.tr2jac(self.A, samebody=True)
 
     def jacob(self):
         """
@@ -835,7 +836,7 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transforms3d.ishom`
         """
-        return tr.ishom(x, check=check)
+        return base.ishom(x, check=check)
 
     # ---------------- variant constructors ---------------------------------- #
 
@@ -883,7 +884,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.trotx`
         :SymPy: supported
         """
-        return cls([tr.trotx(x, t=t, unit=unit) for x in argcheck.getvector(theta)], check=False)
+        return cls([base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
     def Ry(cls, theta, unit='rad', t=None):
@@ -929,7 +930,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.troty`
         :SymPy: supported
         """
-        return cls([tr.troty(x, t=t, unit=unit) for x in argcheck.getvector(theta)], check=False)
+        return cls([base.troty(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
     def Rz(cls, theta, unit='rad', t=None):
@@ -975,7 +976,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.trotz`
         :SymPy: supported
         """
-        return cls([tr.trotz(x, t=t, unit=unit) for x in argcheck.getvector(theta)], check=False)
+        return cls([base.trotz(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
     def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
@@ -1018,7 +1019,7 @@ class SE3(SO3):
         Y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
         Z = np.random.uniform(low=yrange[0], high=zrange[1], size=N)  # random values in the range
         R = SO3.Rand(N=N)
-        return cls([tr.transl(x, y, z) @ tr.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
+        return cls([base.transl(x, y, z) @ base.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
 
     @classmethod
     def Eul(cls, angles, *, unit='rad'):
@@ -1043,10 +1044,10 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         :SymPy: supported
         """
-        if argcheck.isvector(angles, 3):
-            return cls(tr.eul2tr(angles, unit=unit), check=False)
+        if base.isvector(angles, 3):
+            return cls(base.eul2tr(angles, unit=unit), check=False)
         else:
-            return cls([tr.eul2tr(a, unit=unit) for a in angles], check=False)
+            return cls([base.eul2tr(a, unit=unit) for a in angles], check=False)
 
     @classmethod
     def RPY(cls, angles, *, order='zyx', unit='rad'):
@@ -1082,10 +1083,10 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.base.transforms3d.rpy2r`
         :SymPy: supported
         """
-        if argcheck.isvector(angles, 3):
-            return cls(tr.rpy2tr(angles, order=order, unit=unit), check=False)
+        if base.isvector(angles, 3):
+            return cls(base.rpy2tr(angles, order=order, unit=unit), check=False)
         else:
-            return cls([tr.rpy2tr(a, order=order, unit=unit) for a in angles], check=False)
+            return cls([base.rpy2tr(a, order=order, unit=unit) for a in angles], check=False)
 
     @classmethod
     def OA(cls, o, a):
@@ -1123,7 +1124,7 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transforms3d.oa2r`
         """
-        return cls(tr.oa2tr(o, a), check=False)
+        return cls(base.oa2tr(o, a), check=False)
 
     @classmethod
     def AngVec(cls, theta, v, *, unit='rad'):
@@ -1152,7 +1153,7 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.pose3d.SE3.EulerVec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
-        return cls(tr.angvec2tr(theta, v, unit=unit), check=False)
+        return cls(base.angvec2tr(theta, v, unit=unit), check=False)
 
     @classmethod
     def EulerVec(cls, w):
@@ -1180,10 +1181,10 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.AngVec`, :func:`~spatialmath.base.transforms3d.angvec2tr`
         """
-        assert argcheck.isvector(w, 3), 'w must be a 3-vector'
-        w = argcheck.getvector(w)
-        theta = tr.norm(w)
-        return cls(tr.angvec2tr(theta, w), check=False)
+        assert base.isvector(w, 3), 'w must be a 3-vector'
+        w = base.getvector(w)
+        theta = base.norm(w)
+        return cls(base.angvec2tr(theta, w), check=False)
 
     @classmethod
     def Exp(cls, S, check=True):
@@ -1202,10 +1203,11 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transforms3d.trexp`, :func:`~spatialmath.base.transformsNd.skew`
         """
-        if isinstance(S, list):
-            return cls([tr.exp(s) for s in S], check=False)
+        if base.isvector(S, 6):
+            return cls(base.trexp(base.getvector(S)), check=False)
         else:
-            return cls(tr.trexp(S), check=False)
+            return cls([base.trexp(s) for s in S], check=False)
+            
 
     @classmethod
     def Delta(cls, d):
@@ -1226,7 +1228,7 @@ class SE3(SO3):
         :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
         :SymPy: supported
         """
-        return cls(tr.delta2tr(d))
+        return cls(base.delta2tr(d))
 
     @classmethod
     def Tx(cls, x):
@@ -1261,7 +1263,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([tr.transl(_x, 0, 0) for _x in argcheck.getvector(x)], check=False)
+        return cls([base.transl(_x, 0, 0) for _x in base.getvector(x)], check=False)
 
 
     @classmethod
@@ -1296,7 +1298,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([tr.transl(0, _y, 0) for _y in argcheck.getvector(y)], check=False)
+        return cls([base.transl(0, _y, 0) for _y in base.getvector(y)], check=False)
 
     @classmethod
     def Tz(cls, z):
@@ -1330,7 +1332,7 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([tr.transl(0, 0, _z) for _z in argcheck.getvector(z)], check=False)
+        return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
 
 

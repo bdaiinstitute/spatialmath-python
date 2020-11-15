@@ -1,12 +1,9 @@
-# Created by: Aditya Dua, 2017
-# Peter Corke, 2020
-# 13 June, 2017
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
-from collections import UserList
-import copy
-from spatialmath.base import argcheck
-from spatialmath import base as tr
+from spatialmath.base import base
 from spatialmath.smuserlist import SMUserList
 from spatialmath.base import symbolic as sym
 
@@ -356,9 +353,9 @@ class SMPose(SMUserList):
         :SymPy: not supported
         """
         if self.N == 2:
-            log = [tr.trlog2(x, twist=twist) for x in self.data]
+            log = [base.trlog2(x, twist=twist) for x in self.data]
         else:
-            log = [tr.trlog(x, twist=twist) for x in self.data]
+            log = [base.trlog(x, twist=twist) for x in self.data]
         if len(log) == 1:
             return log[0]
         else:
@@ -416,7 +413,7 @@ class SMPose(SMUserList):
 
         :SymPy: not supported
         """
-        s = argcheck.getvector(s)
+        s = base.getvector(s)
         if start is not None:
             assert len(start) == 1, 'len(start) must == 1'
             start = start.A
@@ -425,16 +422,16 @@ class SMPose(SMUserList):
             # SO(2) or SE(2)
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([tr.trinterp2(start, self.A, s=_s) for _s in s])
+                return self.__class__([base.trinterp2(start, self.A, s=_s) for _s in s])
             else:
-                return self.__class__([tr.trinterp2(start, x, s=s[0]) for x in self.data])
+                return self.__class__([base.trinterp2(start, x, s=s[0]) for x in self.data])
         elif self.N == 3:
             # SO(3) or SE(3)
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([tr.trinterp(start, self.A, s=_s) for _s in s])
+                return self.__class__([base.trinterp(start, self.A, s=_s) for _s in s])
             else:
-                return self.__class__([tr.trinterp(start, x, s=s[0]) for x in self.data])
+                return self.__class__([base.trinterp(start, x, s=s[0]) for x in self.data])
 
     def norm(self):
         """
@@ -466,9 +463,9 @@ class SMPose(SMUserList):
         :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`
         """
         if self.N == 2:
-            return self.__class__([tr.trnorm2(x) for x in self.data])
+            return self.__class__([base.trnorm2(x) for x in self.data])
         else:
-            return self.__class__([tr.trnorm(x) for x in self.data])
+            return self.__class__([base.trnorm(x) for x in self.data])
 
     def simplify(self):
         """
@@ -548,10 +545,10 @@ class SMPose(SMUserList):
         s = []
         if self.N == 2:
             for x in self.data:
-                s.append(tr.trprint2(x, **kwargs))
+                s.append(base.trprint2(x, **kwargs))
         else:
             for x in self.data:
-                s.append(tr.trprint(x, **kwargs))
+                s.append(base.trprint(x, **kwargs))
 
         return '\n'.join(s)
 
@@ -579,7 +576,7 @@ class SMPose(SMUserList):
             if x.dtype == 'O':
                 return x
             else:
-                return tr.removesmall(x)
+                return base.removesmall(x)
 
         name = type(self).__name__
         if len(self) == 0:
@@ -770,9 +767,9 @@ class SMPose(SMUserList):
         :seealso: :func:`~spatialmath.base.transforms3d.trplot`, :func:`~spatialmath.base.transforms2d.trplot2`
         """
         if self.N == 2:
-            tr.trplot2(self.A, *args, **kwargs)
+            base.trplot2(self.A, *args, **kwargs)
         else:
-            tr.trplot(self.A, *args, **kwargs)
+            base.trplot(self.A, *args, **kwargs)
 
     def animate(self, *args, start=None, **kwargs):
         """
@@ -800,9 +797,9 @@ class SMPose(SMUserList):
         if start is not None:
             start = start.A
         if self.N == 2:
-            tr.tranimate2(self.A, start=start, *args, **kwargs)
+            base.tranimate2(self.A, start=start, *args, **kwargs)
         else:
-            tr.tranimate(self.A, start=start, *args, **kwargs)
+            base.tranimate(self.A, start=start, *args, **kwargs)
 
 
 # ------------------------------------------------------------------------ #
@@ -867,7 +864,7 @@ class SMPose(SMUserList):
     #----------------------- arithmetic
 
 
-    def __mul__(left, right):  # pylint: disable=no-self-argument
+    def __mul__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -952,31 +949,32 @@ class SMPose(SMUserList):
             >>> SE3.Rx(pi/2) * np.r_[0, 0, 1]
             array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
+        left = self
         if isinstance(left, right.__class__):
             #print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
 
         elif isinstance(right, (list, tuple, np.ndarray)):
             #print('*: pose x array')
-            if len(left) == 1 and argcheck.isvector(right, left.N):
+            if len(left) == 1 and base.isvector(right, left.N):
                 # pose x vector
                 #print('*: pose x vector')
-                v = argcheck.getvector(right, out='col')
+                v = base.getvector(right, out='col')
                 if left.isSE:
                     # SE(n) x vector
-                    return tr.h2e(left.A @ tr.e2h(v))
+                    return base.h2e(left.A @ base.e2h(v))
                 else:
                     # SO(n) x vector
                     return left.A @ v
 
-            elif len(left) > 1 and argcheck.isvector(right, left.N):
+            elif len(left) > 1 and base.isvector(right, left.N):
                 # pose array x vector
                 #print('*: pose array x vector')
-                v = argcheck.getvector(right)
+                v = base.getvector(right)
                 if left.isSE:
                     # SE(n) x vector
-                    v = tr.e2h(v)
-                    return np.array([tr.h2e(x @ v).flatten() for x in left.A]).T
+                    v = base.e2h(v)
+                    return np.array([base.h2e(x @ v).flatten() for x in left.A]).T
                 else:
                     # SO(n) x vector
                     return np.array([(x @ v).flatten() for x in left.A]).T
@@ -986,21 +984,21 @@ class SMPose(SMUserList):
                 return left.A @ right
             elif len(left) == 1 and isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N:
                 # SE(n) x matrix
-                return tr.h2e(left.A @ tr.e2h(right))
+                return base.h2e(left.A @ base.e2h(right))
             elif isinstance(right, np.ndarray) and left.isSO and right.shape[0] == left.N and len(left) == right.shape[1]:
                 # SO(n) x matrix
                 return np.c_[[x.A @ y for x, y in zip(right, left.T)]].T
             elif isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N and len(left) == right.shape[1]:
                 # SE(n) x matrix
-                return np.c_[[tr.h2e(x.A @ tr.e2h(y)) for x, y in zip(right, left.T)]].T
+                return np.c_[[base.h2e(x.A @ base.e2h(y)) for x, y in zip(right, left.T)]].T
             else:
                 raise ValueError('bad operands')
-        elif argcheck.isscalar(right):
+        elif base.isscalar(right):
             return left._op2(right, lambda x, y: x * y)
         else:
             return NotImplemented
 
-    def __rmul__(right, left):  # pylint: disable=no-self-argument
+    def __rmul__(self, left):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1020,12 +1018,13 @@ class SMPose(SMUserList):
 
         :seealso: :func:`__mul__`
         """
-        if argcheck.isscalar(left):
+        right = self
+        if base.isscalar(left):
             return right.__mul__(left)
         else:
             return NotImplemented
 
-    def __imul__(left, right):  # pylint: disable=no-self-argument
+    def __imul__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -1039,9 +1038,10 @@ class SMPose(SMUserList):
 
         :seealso: ``__mul__``
         """
+        left = self
         return left.__mul__(right)
 
-    def __truediv__(left, right):  # pylint: disable=no-self-argument
+    def __truediv__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -1085,14 +1085,15 @@ class SMPose(SMUserList):
         =========   ==========   ====  =====================================
 
         """
+        left = self
         if isinstance(left, right.__class__):
             return left.__class__(left._op2(right.inv(), lambda x, y: x @ y), check=False)
-        elif argcheck.isscalar(right):
+        elif base.isscalar(right):
             return left._op2(right, lambda x, y: x / y)
         else:
             raise ValueError('bad operands')
 
-    def __itruediv__(left, right):  # pylint: disable=no-self-argument
+    def __itruediv__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/=`` operator (superclass method)
 
@@ -1106,9 +1107,10 @@ class SMPose(SMUserList):
 
         :seealso: ``__truediv__``
         """
+        left = self
         return left.__truediv__(right)
 
-    def __add__(left, right):  # pylint: disable=no-self-argument
+    def __add__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1156,9 +1158,10 @@ class SMPose(SMUserList):
 
         """
         # results is not in the group, return an array, not a class
+        left = self
         return left._op2(right, lambda x, y: x + y)
 
-    def __radd__(left, right):  # pylint: disable=no-self-argument
+    def __radd__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1172,10 +1175,11 @@ class SMPose(SMUserList):
 
         :seealso: :meth:`__add__`
         """
+        left = self
         return left.__add__(right)
 
 
-    def __iadd__(left, right):  # pylint: disable=no-self-argument
+    def __iadd__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+=`` operator (superclass method)
 
@@ -1189,9 +1193,10 @@ class SMPose(SMUserList):
 
         :seealso: ``__add__``
         """
+        left = self
         return left.__add__(right)
 
-    def __sub__(left, right):  # pylint: disable=no-self-argument
+    def __sub__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1239,9 +1244,10 @@ class SMPose(SMUserList):
 
         # results is not in the group, return an array, not a class
         # TODO allow class +/- a conformant array
+        left = self
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(left, right):  # pylint: disable=no-self-argument
+    def __rsub__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1255,9 +1261,10 @@ class SMPose(SMUserList):
 
         :seealso: :meth:`__sub__`
         """
+        left = self
         return -left.__sub__(right)
 
-    def __isub__(left, right):  # pylint: disable=no-self-argument
+    def __isub__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1272,9 +1279,10 @@ class SMPose(SMUserList):
 
         :seealso: ``__sub__``
         """
+        left = self
         return left.__sub__(right)
 
-    def __eq__(left, right):  # pylint: disable=no-self-argument
+    def __eq__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
@@ -1299,10 +1307,11 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
+        left = self
         assert type(left) == type(right), 'operands to == are of different types'
         return left._op2(right, lambda x, y: np.allclose(x, y))
 
-    def __ne__(left, right):  # pylint: disable=no-self-argument
+    def __ne__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``!=`` operator (superclass method)
 
@@ -1327,9 +1336,10 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
+        left = self
         return [not x for x in left == right]
 
-    def _op2(left, right, op):  # pylint: disable=no-self-argument
+    def _op2(self, right, op):  # pylint: disable=no-self-argument
         """
         Perform binary operation
 
@@ -1357,7 +1367,7 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
-
+        left = self
         if isinstance(right, left.__class__):
             # class by class
             if len(left) == 1:
@@ -1376,7 +1386,7 @@ class SMPose(SMUserList):
                     return [op(x, y) for (x, y) in zip(left.A, right.A)]
                 else:
                     raise ValueError('length of lists to == must be same length')
-        elif argcheck.isscalar(right) or (isinstance(right, np.ndarray) and right.shape == left.shape):
+        elif base.isscalar(right) or (isinstance(right, np.ndarray) and right.shape == left.shape):
             # class by matrix
             if len(left) == 1:
                 return op(left.A, right)

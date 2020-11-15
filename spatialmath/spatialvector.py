@@ -1,3 +1,6 @@
+# Part of Spatial Math Toolbox for Python
+# Copyright (c) 2000 Peter Corke
+# MIT Licence, see details in top-level file: LICENCE
 
 """
 A set of cooperating classes to support Featherstone's spatial vector formalism
@@ -8,7 +11,7 @@ A set of cooperating classes to support Featherstone's spatial vector formalism
    :parts: 1
 """
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import spatialmath.base.argcheck as arg
 import spatialmath.base as tr
 import numpy as np
@@ -164,7 +167,7 @@ class SpatialVector(SMUserList):
         return  self.__class__([-x for x in self.data])
 
 
-    def __add__(left, right):  # pylint: disable=no-self-argument
+    def __add__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -179,12 +182,13 @@ class SpatialVector(SMUserList):
         """
 
         # TODO broadcasting with binop
+        left = self
         assert type(left) == type(right), 'can only add spatial vectors of same type'
         assert len(left) == len(right), 'can only add equal length arrays of spatial vectors'
 
         return left.__class__([x + y for x, y in zip(left.data, right.data)])
 
-    def __sub__(left, right):  # pylint: disable=no-self-argument
+    def __sub__(self, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -198,6 +202,7 @@ class SpatialVector(SMUserList):
 
         :seealso: :func:`__add__`, :func:`__neg__`
         """
+        left = self
         assert type(left) == type(right), 'can only subtract spatial vectors of same type'
         assert len(left) == len(right), 'can only subtract equal length arrays of spatial vectors'
 
@@ -383,8 +388,9 @@ class SpatialForce(SpatialF6):
         super().__init__(value)
 # n = SpatialForce(val);
 
-    def __rmul(right, left):  # pylint: disable=no-self-argument
+    def __rmul(self, left):  # pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
+        right = self
         return SpatialForce(left.Ad.T @ right.A)
 
 # ------------------------------------------------------------------------- #
@@ -511,7 +517,7 @@ class SpatialInertia(SMUserList):
         return str(self.A)
 
 
-    def __add__(left, right):  # pylint: disable=no-self-argument
+    def __add__(self, right):  # pylint: disable=no-self-argument
         """
         Spatial inertia addition
         :param left:
@@ -521,7 +527,7 @@ class SpatialInertia(SMUserList):
         - ``SI1 + SI2`` is the SpatialInertia of a composite body when bodies with
            SpatialInertia ``SI1`` and ``SI2`` are connected.
         """
-
+        left = self
         assert type(left) == type(right), 'spatial inertia can only be added to spatial inertia'
         return SpatialInertia(a.I + b.I)
 
@@ -569,8 +575,7 @@ class SpatialInertia(SMUserList):
 if __name__ == "__main__":
 
     import numpy.testing as nt
-    import matplotlib.pyplot as plt
-    import unittest
+    import pathlib
 
     v = SpatialVelocity()
     print(v)
@@ -597,3 +602,4 @@ if __name__ == "__main__":
     print(I*v)
     print(I*a)
 
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test_spatialvector.py").read())  # pylint: disable=exec-used
