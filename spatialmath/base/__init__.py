@@ -106,6 +106,7 @@ __all__ = [
     'h2e',
     'e2h',
     'homtrans',
+    'rodrigues',
 # spatialmath.base.vectors
     'colvec',
     'unitvec',
