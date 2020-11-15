@@ -75,7 +75,7 @@ html_theme = 'sphinx_rtd_theme'
 #html_theme = 'sphinxdoc'
 
 html_theme_options = {
-    'github_user': 'petercorke',
+    #'github_user': 'petercorke',
     #'github_repo': 'spatialmath-python',
     #'logo_name': False,
     'logo_only': False,
