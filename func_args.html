@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Argument checking &mdash; Spatial Maths package 0.8.3
+ documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graphics and animation" href="func_graphics.html" />
+    <link rel="prev" title="Vectors" href="func_vector.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Spatial Maths package
+          
+
+          
+            
+            <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatialmath.html">Class reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="functions.html">Function reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="func_2d.html">Transforms in 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_3d.html">Transforms in 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_nd.html">Transforms in ND</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_quat.html">Quaternions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_symbolic.html">Symbolic computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_vector.html">Vectors</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Argument checking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_graphics.html">Graphics and animation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spatial Maths package</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="functions.html">Function reference</a> &raquo;</li>
+        
+      <li>Argument checking</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/func_args.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="func_graphics.html" class="btn btn-neutral float-right" title="Graphics and animation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="func_vector.html" class="btn btn-neutral float-left" title="Vectors" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-spatialmath.base.argcheck">
+<span id="argument-checking"></span><h1>Argument checking<a class="headerlink" href="#module-spatialmath.base.argcheck" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions for testing and converting passed arguments.  Used in all
+spatialmath functions and classes to provides for flexibility in argument types 
+that can be passed.</p>
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.isscalar">
+<code class="sig-name descname">isscalar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#isscalar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.isscalar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if argument is a real scalar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – value to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether value is a scalar</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">isscalar(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a Python or numPy int or real float.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isscalar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalar</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalar</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isscalar</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.assertmatrix">
+<code class="sig-name descname">assertmatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#assertmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.assertmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that argument is a 2D matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> – value to test</p></li>
+<li><p><strong>shape</strong> (<em>2-tuple</em>) – required shape</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if value is not a real Numpy array</p></li>
+<li><p><strong>ValueError</strong> – if value is not of the specified shape</p></li>
+</ul>
+</dd>
+</dl>
+<p>Tests if the argument is a real 2D matrix with a specified shape <code class="docutils literal notranslate"><span class="pre">shape</span></code>
+but the value <code class="docutils literal notranslate"><span class="pre">None</span></code> indicate an unspecified (wildcard, don’t care)
+dimension.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A)</span></code> raises an exception if <code class="docutils literal notranslate"><span class="pre">m</span></code> is not convertible to
+a 2D array</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A,</span> <span class="pre">(N,M))</span></code> as above but <code class="docutils literal notranslate"><span class="pre">m</span></code> must have shape
+(<code class="docutils literal notranslate"><span class="pre">N</span></code>,``M``)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A,</span> <span class="pre">(N,None))</span></code> as above but <code class="docutils literal notranslate"><span class="pre">m</span></code> must have <code class="docutils literal notranslate"><span class="pre">N</span></code> rows</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertsmatrix(A,</span> <span class="pre">(None,M))</span></code> as above but <code class="docutils literal notranslate"><span class="pre">m</span></code> must have <code class="docutils literal notranslate"><span class="pre">M</span></code> columns</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.ismatrix" title="spatialmath.base.argcheck.ismatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">ismatrix()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.ismatrix">
+<code class="sig-name descname">ismatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#ismatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.ismatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if argument is a real 2D matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> – value to test :param shape: required shape :type shape: 2-tuple</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if value is of specified shape :rtype: bool</p>
+</dd>
+</dl>
+<p>Tests if the argument is a real 2D matrix with a specified shape <code class="docutils literal notranslate"><span class="pre">shape</span></code>
+but the value <code class="docutils literal notranslate"><span class="pre">None</span></code> indicate an unspecified (wildcard, don’t care)
+dimension, for example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">ismatrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismatrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">verifymatrix</span></code> this function: - checks the argument is
+real valued - allows the shape to have an unspecified dimension</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.getmatrix" title="spatialmath.base.argcheck.getmatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">getmatrix()</span></code></a>, <a class="reference internal" href="#spatialmath.base.argcheck.verifymatrix" title="spatialmath.base.argcheck.verifymatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">verifymatrix()</span></code></a>, <a class="reference internal" href="#spatialmath.base.argcheck.assertmatrix" title="spatialmath.base.argcheck.assertmatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">assertmatrix()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.getmatrix">
+<code class="sig-name descname">getmatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#getmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.getmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert argument to 2D array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> – input value</p></li>
+<li><p><strong>shape</strong> (<em>2-tuple</em>) – shape of returned matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if <code class="docutils literal notranslate"><span class="pre">m</span></code> is inconsistent with <code class="docutils literal notranslate"><span class="pre">shape</span></code></p></li>
+<li><p><strong>TypeError</strong> – if <code class="docutils literal notranslate"><span class="pre">m</span></code> is not required type</p></li>
+<li><p><strong>TypeError</strong> – if value is not a scalar or Numpy array</p></li>
+<li><p><strong>ValueError</strong> – if value is not of the specified shape</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a 2D array</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>NumPy ndarray</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">getmatrix(m,</span> <span class="pre">shape)</span></code> is a 2D matrix with shape <code class="docutils literal notranslate"><span class="pre">shape</span></code> formed from
+<code class="docutils literal notranslate"><span class="pre">m</span></code> which can be a 2D array, 1D array-like or a scalar.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getmatrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">array([[3.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">array([[3., 4.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">array([[3.],</span>
+<span class="go">       [4.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">array([[3., 4.],</span>
+<span class="go">       [5., 6.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getmatrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">array([[3., 4.],</span>
+<span class="go">       [5., 6.]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">m</span></code> is a 2D array its shape is compared to <code class="docutils literal notranslate"><span class="pre">shape</span></code> - a 2-tuple
+where <code class="docutils literal notranslate"><span class="pre">None</span></code> stands for unspecified, ie. <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">2)</span></code> will match
+any array where the second dimension is 2.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">m</span></code> is a 1D array its shape is checked to see if it can be
+reshaped to <code class="docutils literal notranslate"><span class="pre">shape</span></code>.  A n-array could be reshaped as (n,1) or (1,n)
+or any other shape with the correct number of elements.  A value of
+<code class="docutils literal notranslate"><span class="pre">None</span></code> in the shape stands for unspecified, ie. <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">2)</span></code> will 
+attempt to reshape <code class="docutils literal notranslate"><span class="pre">m</span></code> as an array with shape (k,2) where <span class="math notranslate nohighlight">\(k \times 2 \eq n\)</span>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">m</span></code> is a scalar, return an array of shape (1,1)</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.ismatrix" title="spatialmath.base.argcheck.ismatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">ismatrix()</span></code></a>, <a class="reference internal" href="#spatialmath.base.argcheck.verifymatrix" title="spatialmath.base.argcheck.verifymatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">verifymatrix()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.verifymatrix">
+<code class="sig-name descname">verifymatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#verifymatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.verifymatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that argument is array of specified size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m</strong> – value to be tested</p></li>
+<li><p><strong>shape</strong> (<em>2-tuple</em>) – desired shape of value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – argument is not a NumPy array</p></li>
+<li><p><strong>ValueError</strong> – argument has incorrect shape</p></li>
+</ul>
+</dd>
+</dl>
+<p>Raises an exception if the argument <code class="docutils literal notranslate"><span class="pre">m</span></code> is not a NumPy array of the 
+specified shape.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">assertmatrix</span></code> the specified shape cannot have wildcard
+dimensions.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.assertmatrix" title="spatialmath.base.argcheck.assertmatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">assertmatrix()</span></code></a>,:func:<cite>getmatrix</cite>, <a class="reference internal" href="#spatialmath.base.argcheck.ismatrix" title="spatialmath.base.argcheck.ismatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">ismatrix()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.getvector">
+<code class="sig-name descname">getvector</code><span class="sig-paren">(</span><em class="sig-param">v</em>, <em class="sig-param">dim=None</em>, <em class="sig-param">out='array'</em>, <em class="sig-param">dtype=&lt;class 'numpy.float64'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#getvector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.getvector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a vector value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> – passed vector</p></li>
+<li><p><strong>dim</strong> (<em>int</em><em> or </em><em>None</em>) – required dimension, or None if any length is ok</p></li>
+<li><p><strong>out</strong> (<em>str</em>) – output format, default is ‘array’</p></li>
+<li><p><strong>dtype</strong> (<em>numPy type</em>) – datatype for numPy array return (default np.float64)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>vector value in specified format</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – value is not a list or NumPy array</p></li>
+<li><p><strong>ValueError</strong> – incorrect number of elements</p></li>
+</ul>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">getvector(vec)</span></code> is <code class="docutils literal notranslate"><span class="pre">vec</span></code> converted to the output format <code class="docutils literal notranslate"><span class="pre">out</span></code> 
+where <code class="docutils literal notranslate"><span class="pre">vec</span></code> is any of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a Python native int or float, a 1-vector</p></li>
+<li><p>Python native list or tuple</p></li>
+<li><p>numPy real 1D array, ie. shape=(N,)</p></li>
+<li><p>numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+or (N,1)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getvector(vec,</span> <span class="pre">N)</span></code> as above but must be an <code class="docutils literal notranslate"><span class="pre">N</span></code>-element vector.</p></li>
+</ul>
+<p>The returned vector will be in the format specified by <code class="docutils literal notranslate"><span class="pre">out</span></code>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 82%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>format</p></th>
+<th class="head"><p>return type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>‘sequence’</p></td>
+<td><p>Python list, or tuple if a tuple was passed in</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘list’</p></td>
+<td><p>Python list</p></td>
+</tr>
+<tr class="row-even"><td><p>‘array’</p></td>
+<td><p>1D numPy array, shape=(N,)  [default]</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘row’</p></td>
+<td><p>row vector, a 2D numPy array, shape=(1,N)</p></td>
+</tr>
+<tr class="row-even"><td><p>‘col’</p></td>
+<td><p>column vector, 2D numPy array, shape=(N,1)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getvector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># list</span>
+<span class="go">array([1., 2.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">)</span>  <span class="c1"># list</span>
+<span class="go">array([[1., 2.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>  <span class="c1"># list</span>
+<span class="go">array([[1.],</span>
+<span class="go">       [2.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># tuple</span>
+<span class="go">array([1., 2.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;sequence&#39;</span><span class="p">)</span>  <span class="c1"># numpy array</span>
+<span class="go">[1, 2, 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># scalar</span>
+<span class="go">array([1.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">array([1.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="go">array([[1.]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For ‘array’, ‘row’ or ‘col’ output the NumPy dtype defaults to the
+<code class="docutils literal notranslate"><span class="pre">dtype</span></code> of <code class="docutils literal notranslate"><span class="pre">v</span></code> if it is a NumPy array, otherwise it is
+set to the value specified by the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> keyword which defaults
+to <code class="docutils literal notranslate"><span class="pre">np.float64</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is symbolic the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is retained as <code class="docutils literal notranslate"><span class="pre">'O'</span></code></p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.isvector" title="spatialmath.base.argcheck.isvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">isvector()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.assertvector">
+<code class="sig-name descname">assertvector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">msg</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#assertvector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.assertvector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that argument is a real vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> – passed vector</p></li>
+<li><p><strong>dim</strong> (<em>int</em><em> or </em><em>None</em>) – required dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if not a vector of specified length</p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertvector(vec)</span></code> raise an exception if <code class="docutils literal notranslate"><span class="pre">vec</span></code> is not a vector, ie. 
+it is not any of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a Python native int or float, a 1-vector</p></li>
+<li><p>Python native list or tuple</p></li>
+<li><p>numPy real 1D array, ie. shape=(N,)</p></li>
+<li><p>numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+or (N,1)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assertvector(vec,</span> <span class="pre">N)</span></code> as above but must also check the length is <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.getvector" title="spatialmath.base.argcheck.getvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">getvector()</span></code></a>, <a class="reference internal" href="#spatialmath.base.argcheck.isvector" title="spatialmath.base.argcheck.isvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">isvector()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.isvector">
+<code class="sig-name descname">isvector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#isvector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.isvector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if argument is a real vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> – value to test</p></li>
+<li><p><strong>dim</strong> (<em>int</em><em> or </em><em>None</em>) – required dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether value is a valid vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">isvector(vec)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">vec</span></code> is a vector, ie. any of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a Python native int or float, a 1-vector</p></li>
+<li><p>Python native list or tuple</p></li>
+<li><p>numPy real 1D array, ie. shape=(N,)</p></li>
+<li><p>numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+or (N,1)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isvector(vec,</span> <span class="pre">N)</span></code> as above but must also be an <code class="docutils literal notranslate"><span class="pre">N</span></code>-element vector.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isvector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># list</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># tuple</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># numpy array</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># scalar</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># list</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.argcheck.getvector" title="spatialmath.base.argcheck.getvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">getvector()</span></code></a>, <a class="reference internal" href="#spatialmath.base.argcheck.assertvector" title="spatialmath.base.argcheck.assertvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">assertvector()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.getunit">
+<code class="sig-name descname">getunit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">unit</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#getunit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.getunit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert value according to angular units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em><em>(</em><em>m</em><em>) or </em><em>ndarray</em><em>(</em><em>m</em><em>)</em>) – the value in radians or degrees</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – the angular unit, “rad” or “deg”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the converted value in radians</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list(m) or ndarray(m)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – argument is not a valid angular unit</p>
+</dd>
+</dl>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getunit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+<span class="go">1.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">1.5707963267948966</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">[1.5707963267948966, 3.141592653589793]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+<span class="go">array([0.5, 1. ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">array([1.5708, 3.1416])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.isnumberlist">
+<code class="sig-name descname">isnumberlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#isnumberlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.isnumberlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if argument is a list of scalars</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – the value to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the argument is a list of real scalars</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">isscalarlist(x)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x``</span></code> is a list of scalars.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isnumberlist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">([</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnumberlist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.isvectorlist">
+<code class="sig-name descname">isvectorlist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#isvectorlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.isvectorlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if argument is a list of vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – the value to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the argument is a list of n-vectors</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">isvectorlist(x,</span> <span class="pre">n)</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a list or tuple of
+1D numPy arrays of shape=(n,).</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">isvectorlist</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">)],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isvectorlist</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.argcheck.islistof">
+<code class="sig-name descname">islistof</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">what</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#islistof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.argcheck.islistof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if argument is a list of specified type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>list</em><em> or </em><em>tuple</em>) – the value to test</p></li>
+<li><p><strong>what</strong> (<em>type</em><em> or </em><em>callable</em>) – type, tuple of types or function</p></li>
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – length of list, defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether <code class="docutils literal notranslate"><span class="pre">value</span></code> is a specified list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Tests that every element of <code class="docutils literal notranslate"><span class="pre">value</span></code> is of the desired type.  The type
+is specified by <code class="docutils literal notranslate"><span class="pre">what</span></code> and can be:</p>
+<ul class="simple">
+<li><p>a single type, eg. <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p>a tuple of types, eg. <code class="docutils literal notranslate"><span class="pre">(int,</span> <span class="pre">float)</span></code></p></li>
+<li><p>a reference to a function which is passed each elemnent of the list and
+returns True if it is a valid member of the list.</p></li>
+</ul>
+<p>The length of the list can also be tested by specifying the argument <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">islistof</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">islistof</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">islistof</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">5.6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">islistof</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">islistof</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">islistof</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">islistof</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="func_graphics.html" class="btn btn-neutral float-right" title="Graphics and animation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="func_vector.html" class="btn btn-neutral float-left" title="Vectors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Peter Corke
+      <span class="lastupdated">
+        Last updated on 15-Nov-2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'G-11Q6WJM565', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

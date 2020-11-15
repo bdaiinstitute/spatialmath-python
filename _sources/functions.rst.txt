@@ -1,89 +1,21 @@
 ******************
 Function reference
 ******************
-
-blah blah blah
-
-Transforms in 2D
-================
-
-.. automodule:: spatialmath.base.transforms2d
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
    
-Transforms in 3D
-================
 
-.. automodule:: spatialmath.base.transforms3d
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
+.. toctree::
+   :maxdepth: 2
+
+   func_2d
+   func_3d
+   func_nd
+   func_quat
+   func_symbolic
+   func_vector
+   func_args
+   func_graphics
 
 
-Transforms in ND
-================
 
-.. automodule:: spatialmath.base.transformsNd
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
 
-Quaternions
-===========
 
-.. automodule:: spatialmath.base.quaternions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
-
-Utility
-=======
-
-Vectors
--------
-
-.. automodule:: spatialmath.base.vectors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
-
-Graphic animation
------------------
-
-.. automodule:: spatialmath.base.animate
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
-
-Argument checking
------------------
-
-.. automodule:: spatialmath.base.argcheck
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:
-
-Symbolics
----------
-
-.. automodule:: spatialmath.base.symbolic
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members:

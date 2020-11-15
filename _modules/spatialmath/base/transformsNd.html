@@ -18,6 +18,8 @@
 
   
   
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
   
   
 
@@ -165,8 +167,8 @@
 <span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This modules contains functions to create and transform rotation matrices</span>
-<span class="sd">and homogeneous tranformation matrices.</span>
+<span class="sd">This modules contains functions to operate on special matrices in 2D or 3D, for</span>
+<span class="sd">example SE(n), SO(n), se(n) and so(n) where n is 2 or 3.</span>
 
 <span class="sd">Vector arguments are what numpy refers to as ``array_like`` and can be a list,</span>
 <span class="sd">tuple, numpy array, numpy row vector or numpy column vector.</span>
@@ -185,7 +187,7 @@
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="r2t"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.r2t">[docs]</a><span class="k">def</span> <span class="nf">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="r2t"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.r2t">[docs]</a><span class="k">def</span> <span class="nf">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert SO(n) to SE(n)</span>
 
@@ -195,13 +197,14 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: homogeneous transformation matrix</span>
 <span class="sd">    :rtype: ndarray(3,3) or ndarray(4,4)</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``T = r2t(R)`` is an SE(2) or SE(3) homogeneous transform equivalent to an</span>
 <span class="sd">    SO(2) or SO(3) orthonormal rotation matrix ``R`` with a zero translational</span>
 <span class="sd">    component</span>
 
-<span class="sd">    - if ``R`` is 2x2 then ``T`` is 3x3: SO(2) -&gt; SE(2)</span>
-<span class="sd">    - if ``R`` is 3x3 then ``T`` is 4x4: SO(3) -&gt; SE(3)</span>
+<span class="sd">    - if ``R`` is 2x2 then ``T`` is 3x3: SO(2) → SE(2)</span>
+<span class="sd">    - if ``R`` is 3x3 then ``T`` is 4x4: SO(3) → SE(3)</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -239,7 +242,7 @@
     <span class="k">return</span> <span class="n">T</span></div>
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="t2r"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.t2r">[docs]</a><span class="k">def</span> <span class="nf">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="t2r"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.t2r">[docs]</a><span class="k">def</span> <span class="nf">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert SE(n) to SO(n)</span>
 
@@ -249,13 +252,13 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: rotation matrix</span>
 <span class="sd">    :rtype: ndarray(2,2) or ndarray(3,3)</span>
-
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``R = T2R(T)`` is the orthonormal rotation matrix component of homogeneous</span>
 <span class="sd">    transformation matrix ``T``</span>
 
-<span class="sd">    - if ``T`` is 3x3 then ``R`` is 2x2: SE(2) -&gt; SO(2)</span>
-<span class="sd">    - if ``T`` is 4x4 then ``R`` is 3x3: SE(3) -&gt; SO(3)</span>
+<span class="sd">    - if ``T`` is 3x3 then ``R`` is 2x2: SE(2) → SO(2)</span>
+<span class="sd">    - if ``T`` is 4x4 then ``R`` is 3x3: SE(3) → SO(3)</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -289,7 +292,7 @@
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="tr2rt"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.tr2rt">[docs]</a><span class="k">def</span> <span class="nf">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tr2rt"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.tr2rt">[docs]</a><span class="k">def</span> <span class="nf">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert SE(n) to SO(n) and translation</span>
 
@@ -299,6 +302,7 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: SO(n) matrix and translation vector</span>
 <span class="sd">    :rtype: tuple: (ndarray(2,2), ndarray(2)) or (ndarray(3,3), ndarray(3))</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    (R,t) = tr2rt(T) splits a homogeneous transformation matrix (NxN) into an orthonormal</span>
 <span class="sd">    rotation matrix R (MxM) and a translation vector T (Mx1), where N=M+1.</span>
@@ -337,7 +341,7 @@
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="rt2tr"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.rt2tr">[docs]</a><span class="k">def</span> <span class="nf">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="rt2tr"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.rt2tr">[docs]</a><span class="k">def</span> <span class="nf">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert SO(n) and translation to SE(n)</span>
 
@@ -349,6 +353,7 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: SE(3) matrix</span>
 <span class="sd">    :rtype: ndarray(4,4) or (3,3)</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``T = rt2tr(R, t)`` is a homogeneous transformation matrix (N+1xN+1) formed from an</span>
 <span class="sd">    orthonormal rotation matrix ``R`` (NxN) and a translation vector ``t``</span>
@@ -362,7 +367,7 @@
 <span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
 <span class="sd">        &gt;&gt;&gt; R = rot2(0.3)</span>
 <span class="sd">        &gt;&gt;&gt; t = [1, 2]</span>
-<span class="sd">        &gt;&gt;&gt; T = rt2tr(R, t)</span>
+<span class="sd">        &gt;&gt;&gt; rt2tr(R, t)</span>
 <span class="sd"> </span>
 <span class="sd">    :seealso: rt2m, tr2rt, r2t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -390,7 +395,7 @@
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="Ab2M"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.Ab2M">[docs]</a><span class="k">def</span> <span class="nf">Ab2M</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="Ab2M"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.Ab2M">[docs]</a><span class="k">def</span> <span class="nf">Ab2M</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pack matrix and vector to matrix</span>
 
@@ -399,7 +404,8 @@
 <span class="sd">    :param b: translation vector</span>
 <span class="sd">    :type b: ndarray(3) or ndarray(2)</span>
 <span class="sd">    :return: matrix</span>
-<span class="sd">    :rtype: ndarray shape=(3,3) or (4,4)</span>
+<span class="sd">    :rtype: ndarray(4,4) or ndarray(3,3)</span>
+<span class="sd">    :raises ValueError: bad arguments</span>
 
 <span class="sd">    ``M = Ab2M(A, b)`` is a matrix (N+1xN+1) formed from a matrix ``R`` (NxN) and a vector ``t``</span>
 <span class="sd">    (Nx1).  The bottom row is all zeros.</span>
@@ -438,7 +444,7 @@
 <span class="c1"># ======================= predicates</span>
 
 
-<div class="viewcode-block" id="isR"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.isR">[docs]</a><span class="k">def</span> <span class="nf">isR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="isR"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isR">[docs]</a><span class="k">def</span> <span class="nf">isR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to SO(n)</span>
 
@@ -465,7 +471,7 @@
         <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">R</span><span class="nd">@R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
 
-<div class="viewcode-block" id="isskew"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.isskew">[docs]</a><span class="k">def</span> <span class="nf">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="isskew"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isskew">[docs]</a><span class="k">def</span> <span class="nf">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to so(n)</span>
 
@@ -482,8 +488,9 @@
 <span class="sd">    .. runblock:: pycon</span>
 
 <span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; isskew(np.zeros((3,3)))</span>
-<span class="sd">        &gt;&gt;&gt; isskew(np.array([0, -2], [2, 0]])</span>
+<span class="sd">        &gt;&gt;&gt; isskew(np.array([[0, -2], [2, 0]]))</span>
 <span class="sd">        &gt;&gt;&gt; isskew(np.eye(3))</span>
 
 <span class="sd">    :seealso: isskewa</span>
@@ -491,7 +498,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">S</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
 
 
-<div class="viewcode-block" id="isskewa"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.isskewa">[docs]</a><span class="k">def</span> <span class="nf">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="isskewa"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isskewa">[docs]</a><span class="k">def</span> <span class="nf">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to se(n)</span>
 
@@ -509,8 +516,10 @@
 <span class="sd">    .. runblock:: pycon</span>
 
 <span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">        &gt;&gt;&gt; isskewa(np.zeros((3,3)))</span>
-<span class="sd">        &gt;&gt;&gt; isskewa(np.array([0, -2], [2, 0]])</span>
+<span class="sd">        &gt;&gt;&gt; isskewa(np.array([[0, -2], [2, 0]])) # this matrix is skew but not skewa</span>
+<span class="sd">        &gt;&gt;&gt; isskewa(np.array([[0, -2, 5], [2, 0, 6], [0, 0, 0]]))</span>
 
 <span class="sd">    :seealso: isskew</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -518,7 +527,7 @@
         <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="iseye"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.iseye">[docs]</a><span class="k">def</span> <span class="nf">iseye</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="iseye"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.iseye">[docs]</a><span class="k">def</span> <span class="nf">iseye</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix is identity</span>
 
@@ -532,6 +541,13 @@
 <span class="sd">    Check if matrix is an identity matrix. We test that the trace tom row is zero</span>
 <span class="sd">    We check that the norm of the residual is less than ``tol * eps``.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; iseye(np.array([[1,0], [0,1]]))</span>
+<span class="sd">        &gt;&gt;&gt; iseye(np.array([[1,2], [0,1]]))</span>
+
 <span class="sd">    :seealso: isskew, isskewa</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span>
@@ -540,11 +556,8 @@
     <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
 
 
-<span class="c1"># ========================= angle sequences</span>
-
-
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="skew"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.skew">[docs]</a><span class="k">def</span> <span class="nf">skew</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="skew"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.skew">[docs]</a><span class="k">def</span> <span class="nf">skew</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create skew-symmetric metrix from vector</span>
 
@@ -552,17 +565,23 @@
 <span class="sd">    :type v: array_like(1) or array_like(3)</span>
 <span class="sd">    :return: skew-symmetric matrix in so(2) or so(3)</span>
 <span class="sd">    :rtype: ndarray(2,2) or ndarray(3,3)</span>
-<span class="sd">    :raises ValueError:</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``skew(V)`` is a skew-symmetric matrix formed from the elements of ``V``.</span>
 
 <span class="sd">    - ``len(V)``  is 1 then ``S`` = :math:`\left[ \begin{array}{cc} 0 &amp; -v \\ v &amp; 0 \end{array} \right]`</span>
 <span class="sd">    - ``len(V)`` is 3 then ``S`` = :math:`\left[ \begin{array}{ccc} 0 &amp; -v_z &amp; v_y \\ v_z &amp; 0 &amp; -v_x \\ -v_y &amp; v_x &amp; 0\end{array} \right]`</span>
 
-<span class="sd">    Notes:</span>
+<span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">    - This is the inverse of the function ``vex()``.</span>
-<span class="sd">    - These are the generator matrices for the Lie algebras so(2) and so(3).</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; skew(2)</span>
+<span class="sd">        &gt;&gt;&gt; skew([1, 2, 3])</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        - This is the inverse of the function ``vex()``.</span>
+<span class="sd">        - These are the generator matrices for the Lie algebras so(2) and so(3).</span>
 
 <span class="sd">    :seealso: :func:`vex`, :func:`skewa`</span>
 <span class="sd">    :SymPy: supported</span>
@@ -585,7 +604,7 @@
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="vex"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.vex">[docs]</a><span class="k">def</span> <span class="nf">vex</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="vex"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.vex">[docs]</a><span class="k">def</span> <span class="nf">vex</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert skew-symmetric matrix to vector</span>
 
@@ -595,12 +614,22 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: vector of unique values</span>
 <span class="sd">    :rtype: ndarray(1) or ndarray(3)</span>
-<span class="sd">    :raises ValueError:</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``vex(S)`` is the vector which has the corresponding skew-symmetric matrix ``S``.</span>
 
 <span class="sd">    - ``S`` is 2x2 - so(2) case - where ``S`` :math:`= \left[ \begin{array}{cc} 0 &amp; -v \\ v &amp; 0 \end{array} \right]` then return :math:`[v]`</span>
 <span class="sd">    - ``S`` is 3x3 - so(3) case -  where ``S`` :math:`= \left[ \begin{array}{ccc} 0 &amp; -v_z &amp; v_y \\ v_z &amp; 0 &amp; -v_x \\ -v_y &amp; v_x &amp; 0\end{array} \right]` then return :math:`[v_x, v_y, v_z]`.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; S = skew(2)</span>
+<span class="sd">        &gt;&gt;&gt; print(S)</span>
+<span class="sd">        &gt;&gt;&gt; vex(S)</span>
+<span class="sd">        &gt;&gt;&gt; S = skew([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; print(S)</span>
+<span class="sd">        &gt;&gt;&gt; vex(S)</span>
 
 <span class="sd">    .. note::</span>
 
@@ -625,7 +654,7 @@
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="skewa"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.skewa">[docs]</a><span class="k">def</span> <span class="nf">skewa</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="skewa"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.skewa">[docs]</a><span class="k">def</span> <span class="nf">skewa</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create augmented skew-symmetric metrix from vector</span>
 
@@ -633,12 +662,18 @@
 <span class="sd">    :type v: array_like(3), array_like(6)</span>
 <span class="sd">    :return: augmented skew-symmetric matrix in se(2) or se(3)</span>
 <span class="sd">    :rtype: ndarray(3,3) or ndarray(4,4)</span>
-<span class="sd">    :raises: ValueError</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``skewa(V)`` is an augmented skew-symmetric matrix formed from the elements of ``V``.</span>
 
 <span class="sd">    - ``len(V)`` is 3 then S = :math:`\left[ \begin{array}{ccc} 0 &amp; -v_3 &amp; v_1 \\ v_3 &amp; 0 &amp; v_2 \\ 0 &amp; 0 &amp; 0 \end{array} \right]`</span>
 <span class="sd">    - ``len(V)`` is 6 then S = :math:`\left[ \begin{array}{cccc} 0 &amp; -v_6 &amp; v_5 &amp; v_1 \\ v_6 &amp; 0 &amp; -v_4 &amp; v_2 \\ -v_5 &amp; v_4 &amp; 0 &amp; v_3 \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{array} \right]`</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; skewa([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; skewa([1, 2, 3, 4, 5, 6])</span>
 
 <span class="sd">    .. note::</span>
 
@@ -665,7 +700,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting a 3- or 6-vector&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="vexa"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.vexa">[docs]</a><span class="k">def</span> <span class="nf">vexa</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="vexa"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.vexa">[docs]</a><span class="k">def</span> <span class="nf">vexa</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert skew-symmetric matrix to vector</span>
 
@@ -675,13 +710,22 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: vector of unique values</span>
 <span class="sd">    :rtype: ndarray(3) or ndarray(6)</span>
-<span class="sd">    :raises ValueError:</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``vexa(S)`` is the vector which has the corresponding augmented skew-symmetric matrix ``S``.</span>
 
 <span class="sd">    - ``S`` is 3x3 - se(2) case - where ``S`` :math:`= \left[ \begin{array}{ccc} 0 &amp; -v_3 &amp; v_1 \\ v_3 &amp; 0 &amp; v_2 \\ 0 &amp; 0 &amp; 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3]`.</span>
 <span class="sd">    - ``S`` is 4x4 - se(3) case -  where ``S`` :math:`= \left[ \begin{array}{cccc} 0 &amp; -v_6 &amp; v_5 &amp; v_1 \\ v_6 &amp; 0 &amp; -v_4 &amp; v_2 \\ -v_5 &amp; v_4 &amp; 0 &amp; v_3 \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{array} \right]` then return :math:`[v_1, v_2, v_3, v_4, v_5, v_6]`.</span>
 
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; S = skewa([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; print(S)</span>
+<span class="sd">        &gt;&gt;&gt; vexa(S)</span>
+<span class="sd">        &gt;&gt;&gt; S = skewa([1, 2, 3, 4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; print(S)</span>
+<span class="sd">        &gt;&gt;&gt; vexa(S)</span>
 
 <span class="sd">    .. note::</span>
 
@@ -702,16 +746,31 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting a 3x3 or 4x4 matrix&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="rodrigues"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.rodrigues">[docs]</a><span class="k">def</span> <span class="nf">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="rodrigues"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.rodrigues">[docs]</a><span class="k">def</span> <span class="nf">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rodrigues&#39; formula for rotation</span>
 
 <span class="sd">    :param w: rotation vector</span>
-<span class="sd">    :type w: array_like(1) or array_like(3)</span>
+<span class="sd">    :type w: array_like(3) or array_like(1)</span>
 <span class="sd">    :param θ: rotation angle</span>
 <span class="sd">    :type θ: float or None</span>
 <span class="sd">    :return: SO(n) matrix</span>
 <span class="sd">    :rtype: ndarray(2,2) or ndarray(3,3)</span>
+
+<span class="sd">    Compute Rodrigues&#39; formula for a rotation matrix given a rotation axis</span>
+<span class="sd">    and angle.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \mat{R} = \mat{I}_{3 \times 3} + \sin \theta \skx{\hat{\vec{v}}} + (1 - \cos \theta) \skx{\hat{\vec{v}}}^2</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; rodrigues([1, 0, 0], 0.3)</span>
+<span class="sd">        &gt;&gt;&gt; rodrigues([0.3, 0, 0])</span>
+<span class="sd">        &gt;&gt;&gt; rodrigues(0.3)   # 2D version</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
@@ -728,7 +787,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">skw</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">skw</span> <span class="o">@</span> <span class="n">skw</span></div>
 
 
-<div class="viewcode-block" id="h2e"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.h2e">[docs]</a><span class="k">def</span> <span class="nf">h2e</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="h2e"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.h2e">[docs]</a><span class="k">def</span> <span class="nf">h2e</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert from homogeneous to Euclidean form</span>
 
@@ -737,9 +796,9 @@
 <span class="sd">    :return: Euclidean vector</span>
 <span class="sd">    :rtype: ndarray(n-1), ndarray(n-1,m)</span>
 
-<span class="sd">    - If ``v`` is an array, shape=(N,), return an array shape=(N-1,) where the elements have</span>
+<span class="sd">    - If ``v`` is an N-vector, return an (N-1)-vetor where the elements have</span>
 <span class="sd">      all been scaled by the last element of ``v``.</span>
-<span class="sd">    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N-1,N), where each column has</span>
+<span class="sd">    - If ``v`` is a matrix (NxM), return a matrix (N-1xM), where each column has</span>
 <span class="sd">      been scaled by its last element.</span>
 
 <span class="sd">    .. runblock:: pycon</span>
@@ -762,7 +821,7 @@
         <span class="k">return</span> <span class="n">v</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="e2h"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.e2h">[docs]</a><span class="k">def</span> <span class="nf">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="e2h"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.e2h">[docs]</a><span class="k">def</span> <span class="nf">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert from Euclidean to homogeneous form</span>
 
@@ -771,9 +830,9 @@
 <span class="sd">    :return: homogeneous vector</span>
 <span class="sd">    :rtype: ndarray(n+1) or ndarray(n+1,m</span>
 
-<span class="sd">    - If ``v`` is an array, shape=(N,), return an array shape=(N+1,) where a value of 1 has</span>
-<span class="sd">      been appended</span>
-<span class="sd">    - If ``v`` is a matrix, shape=(N,M), return a matrix shape=(N+1,N), where each column has</span>
+<span class="sd">    - If ``v`` is an N-vector, return an (N+1)-vector where a value of 1 has</span>
+<span class="sd">      been appended as the last element.</span>
+<span class="sd">    - If ``v`` is a matrix (NxM), return a matrix (N+1xM), where each column has</span>
 <span class="sd">      been appended with a value of 1, ie. a row of ones has been appended to the matrix.</span>
 
 <span class="sd">    .. runblock:: pycon</span>
@@ -794,7 +853,7 @@
         <span class="c1"># dealing with matrix</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))])</span></div>
 
-<div class="viewcode-block" id="homtrans"><a class="viewcode-back" href="../../../functions.html#spatialmath.base.transformsNd.homtrans">[docs]</a><span class="k">def</span> <span class="nf">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="homtrans"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.homtrans">[docs]</a><span class="k">def</span> <span class="nf">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply a homogeneous transformation to a Euclidean vector</span>
 
@@ -804,6 +863,7 @@
 <span class="sd">    :type p: Numpy array (2,), (2,N), (3,) or (3,N)</span>
 <span class="sd">    :return: transformed Euclidean vector(s)</span>
 <span class="sd">    :rtype: Numpy array (2,), (2,N), (3,) or (3,N)</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
 <span class="sd">    ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the points </span>
 <span class="sd">    stored columnwise in ``p``.</span>
@@ -819,10 +879,19 @@
 <span class="sd">    then Euclidean points are returned, if projective points are given then</span>
 <span class="sd">    projective points are returned.</span>
 
-<span class="sd">    Notes:</span>
-<span class="sd">    - If T is a homogeneous transformation defining the pose of {B} with respect to {A},</span>
-<span class="sd">    then the points are defined with respect to frame {B} and are transformed to be</span>
-<span class="sd">    with respect to frame {A}.</span>
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; T = trotx(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; v = [1, 2, 3]</span>
+<span class="sd">        &gt;&gt;&gt; h2e( T @ e2h(v))</span>
+<span class="sd">        &gt;&gt;&gt; homtrans(T, v)</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        - If T is a homogeneous transformation defining the pose of {B} with respect to {A},</span>
+<span class="sd">          then the points are defined with respect to frame {B} and are transformed to be</span>
+<span class="sd">          with respect to frame {A}.</span>
 
 <span class="sd">    :seealso: :func:`e2h`, :func:`h2e`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -840,7 +909,7 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
 
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;test_transforms.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
+    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;test_transformsNd.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -856,7 +925,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 12-Nov-2020.
+        Last updated on 15-Nov-2020.
       </span>
 
     </p>
