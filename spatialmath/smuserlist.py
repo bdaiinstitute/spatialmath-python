@@ -132,7 +132,7 @@ class SMUserList(UserList, ABC):
         where ``X`` is any of the SMTB classes.
         """
         x = cls()
-        x.data = x.data * n
+        x.data = [cls._identity() for i in range(n)]  # make n copies of the data
         return x
 
     def arghandler(self, arg, convertfrom=(), check=True):

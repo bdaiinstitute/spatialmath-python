@@ -12,10 +12,9 @@ A set of cooperating classes to support Featherstone's spatial vector formalism
 """
 
 from abc import abstractmethod
-import spatialmath.base.argcheck as arg
-import spatialmath.base as tr
 import numpy as np
 from spatialmath.smuserlist import SMUserList
+import spatialmath.base as base
 
 class SpatialVector(SMUserList):
     """
@@ -75,12 +74,14 @@ class SpatialVector(SMUserList):
 
         if value is None:
             self.data = [np.zeros((6,))]
-        elif arg.isvector(value, 6):
+        elif base.isvector(value, 6):
             self.data = [np.array(value)]
+        elif isinstance(value, SpatialVector):
+            self.data = [value.A]
         elif isinstance(value, list):
-            assert all(map(lambda x: arg.isvector(x, 6), value)), 'all elements of list must have valid shape and value for the class'
+            assert all(map(lambda x: base.isvector(x, 6), value)), 'all elements of list must have valid shape and value for the class'
             self.data = [np.array(x) for x in value]
-        elif arg.ismatrix(value, (6, None)):
+        elif base.ismatrix(value, (6, None)):
             self.data = [x for x in value.T]
         else:
             raise ValueError('bad arguments to constructor')
@@ -258,9 +259,9 @@ class SpatialM6(SpatialVector):
                             [0,     0,     0,     -v[4],  v[3],  0]
                         ])
         if isinstance(other, SpatialVelocity):
-            return SpatialM6(vcross @ other.A)  # * operator
+            return SpatialAcceleration(vcross @ other.A)  # * operator
         elif isinstance(other, SpatialF6):
-            return SpatialF6(-vcross @ other.A)  # x* operator
+            return SpatialForce(-vcross @ other.A)  # x* operator
         else:
             raise TypeError('type mismatch')
         
@@ -278,6 +279,9 @@ class SpatialF6(SpatialVector):
     @abstractmethod
     def __init__(self, value):
         super().__init__(value)
+
+    def dot(self, value):
+        return np.dot(self.A, base.getvector(value, 6))
 
 # ------------------------------------------------------------------------- #
 
@@ -298,28 +302,30 @@ class SpatialVelocity(SpatialM6):
     def __init__(self, value=None):
         super().__init__(value)
 
-    def cross(self, other):
+    # def cross(self, other):
+    #     r"""
+    #     Spatial vector cross product
+
+    #     :param other: spatial velocity vector
+    #     :type other: SpatialVelocity or SpatialMomentum instance
+    #     :return: cross product of spatial vectors
+    #     :rtype: SpatialAcceleration instance if ``other`` is SpatialVelocity instance
+    #     :rtype: SpatialMomentum instance if ``other`` is SpatialForce instance
+
+    #     - ``v1.cross(v2)`` is spatial acceleration given spatial velocities
+    #       ``v1`` and ``v2`` or :math:`\vec{v}_1 \times \vec{v}_2`
+    #     - ``v1.cross(m2)`` is spatial force given spatial velocity
+    #       ``v1`` and spatial momentum ``m2`` or :math:`\vec{v}_1 \times^* \vec{m}_2`
+
+    #     :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialVelocity.__xor__`
+    #     """
+    #     if not len(self) == 1 or not len(other) == 1:
+    #         raise ValueError("can only perform cross product on single-valued spatial vectors")
+    #     return SpatialAcceleration(super().cross(other))
+
+    def __matmul__(self, other):
         r"""
-        Spatial vector cross product
-
-        :param other: spatial velocity vector
-        :type other: SpatialVelocity or SpatialMomentum instance
-        :return: cross product of spatial vectors
-        :rtype: SpatialAcceleration instance if ``other`` is SpatialVelocity instance
-        :rtype: SpatialMomentum instance if ``other`` is SpatialForce instance
-
-        - ``v1.cross(v2)`` is spatial acceleration given spatial velocities
-          ``v1`` and ``v2`` or :math:`\vec{v}_1 \times \vec{v}_2`
-        - ``v1.cross(m2)`` is spatial force given spatial velocity
-          ``v1`` and spatial momentum ``m2`` or :math:`\vec{v}_1 \times^* \vec{m}_2`
-
-        :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialVelocity.__xor__`
-        """
-        return SpatialAcceleration(super().cross(other))
-
-    def __xor__(self, other):
-        r"""
-        Overloaded ``^`` operator (superclass method)
+        Overloaded ``@`` operator (superclass method)
 
         :param other: spatial velocity vector
         :type other: SpatialVelocity or SpatialMomentum instance
@@ -334,7 +340,7 @@ class SpatialVelocity(SpatialM6):
 
         :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity.cross`
         """
-        return cross(self, other)
+        return self.cross(other)
 
     def __rmul(right, left):  # pylint: disable=no-self-argument
         if isinstance(left, SpatialInertia):
@@ -451,16 +457,17 @@ class SpatialInertia(SMUserList):
         super().__init__()
 
         if m is None and c is None and I is None:
-            I = np.zeros((6,6))
-        elif m is None and c is None and I is not None:
-            I = arg.getmatrix(I, (6,6))
+            # no arguments
+            I = SpatialInertia._identity()
+        elif m is not None and c is None and I is None and base.ismatrix(m, (6,6)):
+            I = base.getmatrix(m, (6,6))
         elif m is not None and c is not None:
-            c = arg.getvector(c, 3)
+            c = base.getvector(c, 3)
             if I is None:
                 I = np.zeros((3,3))
             else:
-                I = arg.getmatrix(I, (3,3))
-            C = tr.skew(c)
+                I = base.getmatrix(I, (3,3))
+            C = base.skew(c)
             I = np.block([
                     [m * np.eye(3), m * C.T],
                     [m * C,         I + m * C @ C.T]
@@ -577,28 +584,33 @@ if __name__ == "__main__":
     import numpy.testing as nt
     import pathlib
 
-    v = SpatialVelocity()
-    print(v)
-    print(len(v))
-    v.append(v)
-    print(v)
-    print(len(v))
+    # v = SpatialVelocity()
+    # print(v)
+    # print(len(v))
+    # v.append(v)
+    # print(v)
+    # print(len(v))
 
-    I = SpatialInertia()
-    print(I)
-    print(len(I))
-    I.append(I)
-    print(I)
-    print(len(I))
+    vj = SpatialVelocity()
+    x = vj ^ vj
+    print(x)
 
-    z = SpatialForce([1,2,3,4,5,6])
-    print(z)
-    z = SpatialMomentum([1,2,3,4,5,6])
-    print(z)
+    # I = SpatialInertia()
+    # print(I)
+    # print(len(I))
+    # I.append(I)
+    # print(I)
+    # print(len(I))
+
+    # z = SpatialForce([1,2,3,4,5,6])
+    # print(z)
+    # z = SpatialMomentum([1,2,3,4,5,6])
+    # print(z)
 
     v = SpatialVelocity()
     a = SpatialAcceleration()
     I = SpatialInertia()
+    x = I * v
     print(I*v)
     print(I*a)
 

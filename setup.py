@@ -64,6 +64,6 @@ setup(
 
     packages=find_packages(exclude=["test_*", "TODO*"]),
 
-    install_requires=['numpy', 'scipy', 'matplotlib']
+    install_requires=['numpy', 'scipy', 'matplotlib', 'colored', 'ansitable']
 
 )
