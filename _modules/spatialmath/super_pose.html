@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.8.3
+  <title>spatialmath.super_pose &mdash; Spatial Maths package 0.8.4
  documentation</title>
   
 
@@ -162,15 +162,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for spatialmath.super_pose</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Created by: Aditya Dua, 2017</span>
-<span class="c1"># Peter Corke, 2020</span>
-<span class="c1"># 13 June, 2017</span>
+<span></span><span class="c1"># Part of Spatial Math Toolbox for Python</span>
+<span class="c1"># Copyright (c) 2000 Peter Corke</span>
+<span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserList</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">argcheck</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">tr</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">symbolic</span> <span class="k">as</span> <span class="n">sym</span>
 
@@ -520,9 +517,9 @@
 <span class="sd">        :SymPy: not supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="n">twist</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">log</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">log</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -580,7 +577,7 @@
 
 <span class="sd">        :SymPy: not supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;len(start) must == 1&#39;</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">A</span>
@@ -589,16 +586,16 @@
             <span class="c1"># SO(2) or SE(2)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(s) &gt; 1, len(X) must == 1&#39;</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="c1"># SO(3) or SE(3)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;if len(s) &gt; 1, len(X) must == 1&#39;</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">_s</span><span class="p">)</span> <span class="k">for</span> <span class="n">_s</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -630,9 +627,9 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trnorm2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trnorm2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">trnorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trnorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -712,10 +709,10 @@
         <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trprint2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trprint2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">trprint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trprint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
@@ -743,7 +740,7 @@
             <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">x</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">removesmall</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">removesmall</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -934,9 +931,9 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trplot`, :func:`~spatialmath.base.transforms2d.trplot2`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">tr</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">tr</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -964,9 +961,9 @@
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">A</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">tr</span><span class="o">.</span><span class="n">tranimate2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">tranimate2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">tr</span><span class="o">.</span><span class="n">tranimate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">tranimate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="c1"># ------------------------------------------------------------------------ #</span>
@@ -1031,7 +1028,7 @@
     <span class="c1">#----------------------- arithmetic</span>
 
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -1116,31 +1113,32 @@
 <span class="sd">            &gt;&gt;&gt; SE3.Rx(pi/2) * np.r_[0, 0, 1]</span>
 <span class="sd">            array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="c1">#print(&#39;*: pose x pose&#39;)</span>
             <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">@</span> <span class="n">y</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="c1">#print(&#39;*: pose x array&#39;)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
                 <span class="c1"># pose x vector</span>
                 <span class="c1">#print(&#39;*: pose x vector&#39;)</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span><span class="p">:</span>
                     <span class="c1"># SE(n) x vector</span>
-                    <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># SO(n) x vector</span>
                     <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">v</span>
 
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
                 <span class="c1"># pose array x vector</span>
                 <span class="c1">#print(&#39;*: pose array x vector&#39;)</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span><span class="p">:</span>
                     <span class="c1"># SE(n) x vector</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># SO(n) x vector</span>
                     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">x</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
@@ -1150,21 +1148,21 @@
                 <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">right</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span><span class="p">:</span>
                 <span class="c1"># SE(n) x matrix</span>
-                <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSO</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="c1"># SO(n) x matrix</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">T</span><span class="p">)]]</span><span class="o">.</span><span class="n">T</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">left</span><span class="o">.</span><span class="n">isSE</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">N</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="c1"># SE(n) x matrix</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="n">tr</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">tr</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">T</span><span class="p">)]]</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="n">base</span><span class="o">.</span><span class="n">h2e</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">e2h</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">T</span><span class="p">)]]</span><span class="o">.</span><span class="n">T</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -1184,12 +1182,13 @@
 
 <span class="sd">        :seealso: :func:`__mul__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*=`` operator (superclass method)</span>
 
@@ -1203,9 +1202,10 @@
 
 <span class="sd">        :seealso: ``__mul__``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``/`` operator (superclass method)</span>
 
@@ -1249,14 +1249,15 @@
 <span class="sd">        =========   ==========   ====  =====================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="o">.</span><span class="n">inv</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">@</span> <span class="n">y</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad operands&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__itruediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__itruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``/=`` operator (superclass method)</span>
 
@@ -1270,9 +1271,10 @@
 
 <span class="sd">        :seealso: ``__truediv__``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__truediv__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``+`` operator (superclass method)</span>
 
@@ -1320,9 +1322,10 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># results is not in the group, return an array, not a class</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``+`` operator (superclass method)</span>
 
@@ -1336,10 +1339,11 @@
 
 <span class="sd">        :seealso: :meth:`__add__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
 
-    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``+=`` operator (superclass method)</span>
 
@@ -1353,9 +1357,10 @@
 
 <span class="sd">        :seealso: ``__add__``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``-`` operator (superclass method)</span>
 
@@ -1403,9 +1408,10 @@
 
         <span class="c1"># results is not in the group, return an array, not a class</span>
         <span class="c1"># TODO allow class +/- a conformant array</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``-`` operator (superclass method)</span>
 
@@ -1419,9 +1425,10 @@
 
 <span class="sd">        :seealso: :meth:`__sub__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">left</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``-=`` operator (superclass method)</span>
 
@@ -1436,9 +1443,10 @@
 
 <span class="sd">        :seealso: ``__sub__``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``==`` operator (superclass method)</span>
 
@@ -1463,10 +1471,11 @@
 <span class="sd">        =========   ==========   ====  ================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">),</span> <span class="s1">&#39;operands to == are of different types&#39;</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">_op2</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``!=`` operator (superclass method)</span>
 
@@ -1491,9 +1500,10 @@
 <span class="sd">        =========   ==========   ====  ================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="p">[</span><span class="ow">not</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_op2</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="nf">_op2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform binary operation</span>
 
@@ -1521,7 +1531,7 @@
 <span class="sd">        =========   ==========   ====  ================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="c1"># class by class</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1540,7 +1550,7 @@
                     <span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length of lists to == must be same length&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">argcheck</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">left</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
             <span class="c1"># class by matrix</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
@@ -1567,7 +1577,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 15-Nov-2020.
+        Last updated on 16-Nov-2020.
       </span>
 
     </p>
