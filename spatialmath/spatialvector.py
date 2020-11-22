@@ -9,12 +9,17 @@ A set of cooperating classes to support Featherstone's spatial vector formalism
 .. inheritance-diagram:: spatialmath.spatialvector
    :top-classes: collections.UserList
    :parts: 1
+
+.. note:: Compared to Featherstone's papers these spatial vectors have the 
+    translational components first, followed by rotational components.
 """
 
 from abc import abstractmethod
 import numpy as np
 from spatialmath.smuserlist import SMUserList
-import spatialmath.base as base
+from spatialmath import base
+from spatialmath.pose3d import SE3
+from spatialmath.twist import Twist3
 
 class SpatialVector(SMUserList):
     """
@@ -72,19 +77,22 @@ class SpatialVector(SMUserList):
         # print('spatialVec6 init')
         super().__init__()
 
-        if value is None:
-            self.data = [np.zeros((6,))]
-        elif base.isvector(value, 6):
+        if base.isvector(value, 6):
             self.data = [np.array(value)]
+        elif base.isvector(value, 3):
+            self.data = [np.r_[value, 0, 0, 0]]
         elif isinstance(value, SpatialVector):
             self.data = [value.A]
-        elif isinstance(value, list):
-            assert all(map(lambda x: base.isvector(x, 6), value)), 'all elements of list must have valid shape and value for the class'
-            self.data = [np.array(x) for x in value]
         elif base.ismatrix(value, (6, None)):
             self.data = [x for x in value.T]
-        else:
-            raise ValueError('bad arguments to constructor')
+        elif not super().arghandler(value):
+            raise ValueError('bad argument to constructor')
+
+        # elif isinstance(value, list):
+        #     assert all(map(lambda x: base.isvector(x, 6), value)), 'all elements of list must have valid shape and value for the class'
+        #     self.data = [np.array(x) for x in value]
+        # else:
+        #     raise ValueError('bad arguments to constructor')
 
     @staticmethod
     def _identity():
@@ -101,8 +109,14 @@ class SpatialVector(SMUserList):
         :return: True if the matrix has shape (6,).
         :rtype: bool
         """
-        return self.shape == SpatialVector.shape
+        return x.shape == self.shape
 
+    def _import(self, value, check=True):
+        if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
+            return value
+        raise TypeError('bad type passed')
+
+    @property
     def shape(self):
         """
         Shape of the object's interal matrix representation
@@ -168,12 +182,14 @@ class SpatialVector(SMUserList):
         return  self.__class__([-x for x in self.data])
 
 
-    def __add__(self, right):  # pylint: disable=no-self-argument
+    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
         :return: sum of spatial vectors
         :rtype: SpatialVector subclass instance
+        :raises TypeError: attempting to add SpatialVectors of different subclass
+        :raises ValueErrror: attempting to add SpatialVectors with different numbers of values
 
         ``v1 + v2`` is a spatial vector of the same type as ``v1`` and ``v2`` whose value is
         the element-wise sum of ``v1`` and ``v2``.  If both are arrays of spatial vectors V1 (1xN) and
@@ -183,18 +199,21 @@ class SpatialVector(SMUserList):
         """
 
         # TODO broadcasting with binop
-        left = self
-        assert type(left) == type(right), 'can only add spatial vectors of same type'
-        assert len(left) == len(right), 'can only add equal length arrays of spatial vectors'
+        if type(left) != type(right):
+            raise TypeError('can only add spatial vectors of same type')
+        if len(left) != len(right):
+            raise ValueError('can only add equal length arrays of spatial vectors')
 
         return left.__class__([x + y for x, y in zip(left.data, right.data)])
 
-    def __sub__(self, right):  # pylint: disable=no-self-argument
+    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
         :return: difference of spatial vectors
         :rtype: SpatialVector subclass instance
+        :raises TypeError: attempting to subtract SpatialVectors of different subclass
+        :raises ValueErrror: attempting to subtract SpatialVectors with different numbers of values
 
         ``v1 - v2`` is a spatial vector of the same type as ``v1`` and ``v2``
         whose value is the element-wise difference of ``v1`` and ``v2``.  If
@@ -203,11 +222,46 @@ class SpatialVector(SMUserList):
 
         :seealso: :func:`__add__`, :func:`__neg__`
         """
-        left = self
-        assert type(left) == type(right), 'can only subtract spatial vectors of same type'
-        assert len(left) == len(right), 'can only subtract equal length arrays of spatial vectors'
+        if type(left) != type(right):
+            raise TypeError('can only add spatial vectors of same type')
+        if len(left) != len(right):
+            raise ValueError('can only add equal length arrays of spatial vectors')
 
         return left.__class__([x - y for x, y in zip(left.data, right.data)])
+
+
+    def __rmul__(right, left): # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        """
+        Overloaded ``*`` operator (superclass method)
+
+        :return: transformed spatial vectors
+        :rtype: SpatialVector subclass instance
+        :raises TypeError: for incompatible left operand
+
+        ``X * S`` transforms the spatial vector ``S`` by the relative pose ``X``
+        which may be either an ``SE3`` or ``Twist3`` instance.  The spatial 
+        vector is premultiplied by the adjoint of ``X`` or adjoint transpose
+        of ``X`` depending on the SpatialVector subclass of ``S``.
+
+        ===========  ====================  ===================  =========================
+                   Multiplicands                   Product
+        -------------------------------   -----------------------------------
+        left         right                type                 operation
+        ===========  ====================  ===================  =========================
+        SE3, Twist3  SpatialVelocity       SpatialVelocity      adjoint product
+        SE3, Twist3  SpatialAcceleration   SpatialAcceleration  adjoint product
+        SE3, Twist3  SpatialMomentum       SpatialMomentum      adjoint transpose product
+        SE3, Twist3  SpatialForce          SpatialForce         adjoint transpose product
+        ===========  ====================  ===================  =========================
+        """
+        if isinstance(left, (SE3, Twist3)):
+            X = left.Ad()
+            if isinstance(right, SpatialM6):
+                return right.__class__(X @ right.A)
+            else:
+                return right.__class__(X.T @ right.A)
+        else:
+            raise TypeError('left operand of * must be SE3 or Twist3')
 
 # ------------------------------------------------------------------------- #
 
@@ -235,15 +289,15 @@ class SpatialM6(SpatialVector):
         :rtype: SpatialM6 instance if ``other`` is SpatialM6 instance
 
         ``v1.cross(v2)`` is a spatial vector cross product whose result depends
-        on the subclass of ``v2``:
+        on the SpatialVector subclass of ``v2``:
 
         - if :math:`\vec{m} \in \mat{M}^6` is a spatial motion vector fixed in a
           body with velocity :math:`\vec{v}` then 
-          :math:`\dvec{m} = \vec{v} \times \vec{m}`.
+          :math:`\dvec{m} = \vec{v} \times \vec{m}` or the ``crm()`` function.
 
         - if :math:`\vec{f} \in \mat{F}^6` is a spatial force vector fixed in a
           body with velocity :math:`\vec{v}` then 
-          :math:`\dvec{f} = \vec{v} \times^* \vec{f}`.
+          :math:`\dvec{f} = \vec{v} \times^* \vec{f}` or the ``crm()`` function.
         """
 
         # v = obj.vw;
@@ -251,17 +305,17 @@ class SpatialM6(SpatialVector):
         
         v = self.A
         vcross = np.array([
-                            [0,    -v[5],  v[5],   0,   -v[2],   v[1]],
-                            [v[5],  0,    -v[3],   v[2],  0,    -v[0]],
-                            [-v[4], v[3],  0,     -v[1],  v[0],  0],
-                            [0,     0,     0,      0,    -v[5],  v[4]],
-                            [0,     0,     0,      v[5],  0,    -v[3]],
-                            [0,     0,     0,     -v[4],  v[3],  0]
+                            [ 0,    -v[5],  v[4],   0,     -v[2],   v[1]  ],
+                            [ v[5],  0,    -v[3],   v[2],   0,     -v[0]  ],
+                            [-v[4],  v[3],  0,     -v[1],   v[0],   0     ],
+                            [ 0,     0,     0,      0,     -v[5],   v[4]  ],
+                            [ 0,     0,     0,      v[5],   0,    -v[3]   ],
+                            [ 0,     0,     0,     -v[4],   v[3],   0     ]
                         ])
         if isinstance(other, SpatialVelocity):
-            return SpatialAcceleration(vcross @ other.A)  # * operator
+            return SpatialAcceleration(vcross @ other.A)  # x operator (crm)
         elif isinstance(other, SpatialF6):
-            return SpatialForce(-vcross @ other.A)  # x* operator
+            return SpatialForce(-vcross.T @ other.A)      # x* operator (crf)
         else:
             raise TypeError('type mismatch')
         
@@ -333,26 +387,19 @@ class SpatialVelocity(SpatialM6):
         :rtype: SpatialAcceleration instance if ``other`` is SpatialVelocity instance
         :rtype: SpatialMomentum instance if ``other`` is SpatialForce instance
 
-        - ``v1 ^ v2`` is spatial acceleration given spatial velocities
+        This operator implements the spatial vector cross product.
+
+        - ``v1 @v2`` is spatial acceleration given spatial velocities
           ``v1`` and ``v2`` or :math:`\vec{v}_1 \times \vec{v}_2`
-        - ``v1 ^ m2`` is spatial force given spatial velocity
+        - ``v1 @ m2`` is spatial force given spatial velocity
           ``v1`` and spatial momentum ``m2`` or :math:`\vec{v}_1 \times^* \vec{m}_2`
 
+        .. note:: The ``@`` operator was chosen because it has high precendence
+            and is somewhat invocative of multiplication.
+            
         :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity.cross`
         """
         return self.cross(other)
-
-    def __rmul(right, left):  # pylint: disable=no-self-argument
-        if isinstance(left, SpatialInertia):
-            # result is SpatialMomentum
-            pass  # TODO
-        elif isinstance(left, Twist3):
-            # result is transformed SpatialVelocity or SpatialAcceleration
-            # Twist * SpatialVelocity -> SpatialVelocity
-            # Twist * SpatialAcceleration -> SpatialAcceleration
-            return right.__class__(left.Ad.T @ right.A)
-        else:
-            raise ValueError('SpatialM6 with unknown premultiplication type')
 
 # ------------------------------------------------------------------------- #
 
@@ -372,6 +419,7 @@ class SpatialAcceleration(SpatialM6):
     """
     def __init__(self, value=None):
         super().__init__(value)
+
 
 # ------------------------------------------------------------------------- #
 
@@ -394,9 +442,8 @@ class SpatialForce(SpatialF6):
         super().__init__(value)
 # n = SpatialForce(val);
 
-    def __rmul(self, left):  # pylint: disable=no-self-argument
+    def __rmul(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
-        right = self
         return SpatialForce(left.Ad.T @ right.A)
 
 # ------------------------------------------------------------------------- #
@@ -436,19 +483,19 @@ class SpatialInertia(SMUserList):
     :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`, :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.
 
     """
-    def __init__(self, m=None, c=None, I=None):
+    def __init__(self, m=None, r=None, I=None):
         """
         Create a new spatial inertia
 
         :param m: mass
         :type m: float
-        :param c: centre of mass relative to link frame
-        :type c: 3-element array_like
+        :param r: centre of mass relative to link frame
+        :type r: 3-element array_like
         :param I: inertia about the centre of mass, axes aligned with link frame
         :type I: numpy.array, shape=(6,6)
 
-        - ``SpatialInertia(M, C, I)`` is a spatial inertia object for a rigid-body
-          with mass ``M``, centre of mass at ``C`` relative to the link frame, and an
+        - ``SpatialInertia(m, r I)`` is a spatial inertia object for a rigid-body
+          with mass ``m``, centre of mass at ``r`` relative to the link frame, and an
           inertia matrix ``I`` (3x3) about the centre of mass.
 
         - ``SpatialInertia(I)`` is a spatial inertia object with a value equal
@@ -456,18 +503,18 @@ class SpatialInertia(SMUserList):
         """
         super().__init__()
 
-        if m is None and c is None and I is None:
+        if m is None and r is None and I is None:
             # no arguments
             I = SpatialInertia._identity()
-        elif m is not None and c is None and I is None and base.ismatrix(m, (6,6)):
+        elif m is not None and r is None and I is None and base.ismatrix(m, (6,6)):
             I = base.getmatrix(m, (6,6))
-        elif m is not None and c is not None:
-            c = base.getvector(c, 3)
+        elif m is not None and r is not None:
+            c = base.getvector(r, 3)
             if I is None:
                 I = np.zeros((3,3))
             else:
                 I = base.getmatrix(I, (3,3))
-            C = base.skew(c)
+            C = base.skew(r)
             I = np.block([
                     [m * np.eye(3), m * C.T],
                     [m * C,         I + m * C @ C.T]
@@ -524,21 +571,22 @@ class SpatialInertia(SMUserList):
         return str(self.A)
 
 
-    def __add__(self, right):  # pylint: disable=no-self-argument
+    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Spatial inertia addition
         :param left:
         :param right:
         :return:
+        :raises TypeError: attempting to add invalid type to SpatialInertia
 
         - ``SI1 + SI2`` is the SpatialInertia of a composite body when bodies with
            SpatialInertia ``SI1`` and ``SI2`` are connected.
         """
-        left = self
-        assert type(left) == type(right), 'spatial inertia can only be added to spatial inertia'
-        return SpatialInertia(a.I + b.I)
+        if not isinstance(right, SpatialInertia):
+            raise TypeError('can only add spatial inertia to spatial inertia')
+        return SpatialInertia(left.I + left.I)
 
-    def __mul__(self, right):  # pylint: disable=no-self-argument
+    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -552,7 +600,6 @@ class SpatialInertia(SMUserList):
           the SpatialAcceleration ``a``.
         - ``I * v`` is the SpatialMomemtum of a body with SpatialInertia ``I`` and SpatialVelocity ``v``.
         """
-        left = self
 
         if isinstance(right, SpatialAcceleration):
             return SpatialForce(left.A @ right.A)  # F = ma
@@ -563,7 +610,7 @@ class SpatialInertia(SMUserList):
         else:
             raise TypeError('bad postmultiply operands for Inertia *')
 
-    def __rmul__(self, left):  # pylint: disable=no-self-argument
+    def __rmul__(self, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -584,15 +631,27 @@ if __name__ == "__main__":
     import numpy.testing as nt
     import pathlib
 
-    # v = SpatialVelocity()
-    # print(v)
-    # print(len(v))
-    # v.append(v)
-    # print(v)
-    # print(len(v))
+    v = SpatialVelocity()
+    print(v)
+    print(len(v))
+    v.append(v)
+    print(v)
+    print(len(v))
+
+
+
+    v = SpatialVelocity(np.r_[1,2,3,4,5,6])
+    print(v)
+    v = SpatialVelocity(np.r_[1,2,3])
+    print(v)
+
+    a = v + v
+    print(a)
+
 
     vj = SpatialVelocity()
-    x = vj ^ vj
+
+    x = vj @ vj
     print(x)
 
     # I = SpatialInertia()
@@ -614,4 +673,4 @@ if __name__ == "__main__":
     print(I*v)
     print(I*a)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_spatialvector.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_spatialvector.py").read())  # pylint: disable=exec-used

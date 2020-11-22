@@ -281,7 +281,7 @@ class SO3(SMPose):
 
         :param x: matrix to test
         :type x: numpy.ndarray
-        :return: true if the matrix is a valid element of SO(3), ie. it is a 3x3
+        :return: ``True`` if the matrix is a valid element of SO(3), ie. it is a 3x3
             orthonormal matrix with determinant of +1.
         :rtype: bool
 
@@ -611,6 +611,8 @@ class SE3(SO3):
         - ``SE3(T)`` is an ``SE3`` instance with the value ``T`` which is a 4x4
           numpy array representing an SE(3) matrix.  If ``check`` is ``True``
           check the matrix belongs to SE(3).
+        - ``SE3(X)`` is an ``SE3`` instance with the same value as ``X``, ie.
+          a copy.
         - ``SE3([T1, T2, ... TN])`` is an ``SE3`` instance with ``N`` values
           given by the elements ``Ti`` each of which is a 4x4 NumPy array
           representing an SE(3) matrix. If ``check`` is ``True`` check the
@@ -699,7 +701,10 @@ class SE3(SO3):
         Efficiently compute the inverse of each of the SE(3) values taking into
         account the matrix structure.
 
-        :math:`T = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
+        .. math::
+        
+            T = \left[ \begin{array}{cc} \mat{R} & \vec{t} \\ 0 & 1 \end{array} \right],
+            \mat{T}^{-1} = \left[ \begin{array}{cc} \mat{R}^T & -\mat{R}^T \vec{t} \\ 0 & 1 \end{array} \right]`
 
         Example::
 
@@ -777,7 +782,7 @@ class SE3(SO3):
         :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
         :SymPy: supported
         """
-        return base.tr2jac(self.A, samebody=True)
+        return base.adjoint(self.A)
 
     def jacob(self):
         """
@@ -809,7 +814,7 @@ class SE3(SO3):
         """
         SE(3) as twist
 
-        :return: equivalent rigid-body motion
+        :return: equivalent rigid-body motion as a twist vector
         :rtype: Twist3 instance
 
         Example::
@@ -817,6 +822,8 @@ class SE3(SO3):
             >>> x = SE3(1,2,3)
             >>> x.Twist3()
             Twist3([1, 2, 3, 0, 0, 0])
+
+        :seealso: :func:`spatialmath.twist.Twist3`
         """
         from spatialmath.twist import Twist3
 
@@ -830,7 +837,7 @@ class SE3(SO3):
 
         :param x: matrix to test
         :type x: numpy.ndarray
-        :return: true if the matrix is 4x4 and a valid element of SE(3), ie. it
+        :return: ``True`` if the matrix is 4x4 and a valid element of SE(3), ie. it
                  is a valid homogeneous transformation matrix.
         :rtype: bool
 
@@ -863,23 +870,12 @@ class SE3(SO3):
 
         .. note:: The translation option only works for the scalar θ case.
 
-        Example::
+        Example:
+
+        .. runblock:: pycon
 
             >>> SE3.Rx(0.3)
-            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.95533649, -0.29552021,  0.        ],
-                       [ 0.        ,  0.29552021,  0.95533649,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
             >>> SE3.Rx([0.3, 0.4])
-            SE3([
-            array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                   [ 0.        ,  0.95533649, -0.29552021,  0.        ],
-                   [ 0.        ,  0.29552021,  0.95533649,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]),
-            array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                   [ 0.        ,  0.92106099, -0.38941834,  0.        ],
-                   [ 0.        ,  0.38941834,  0.92106099,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
 
         :seealso: :func:`~spatialmath.base.transforms3d.trotx`
         :SymPy: supported
@@ -909,23 +905,12 @@ class SE3(SO3):
 
         .. note:: The translation option only works for the scalar θ case.
 
-        Example::
+        Example:
+
+        .. runblock:: pycon
 
             >>> SE3.Ry(0.3)
-            SE3(array([[ 0.95533649,  0.        ,  0.29552021,  0.        ],
-                       [ 0.        ,  1.        ,  0.        ,  0.        ],
-                       [-0.29552021,  0.        ,  0.95533649,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
             >>> SE3.Ry([0.3, 0.4])
-            SE3([
-            array([[ 0.95533649,  0.        ,  0.29552021,  0.        ],
-                   [ 0.        ,  1.        ,  0.        ,  0.        ],
-                   [-0.29552021,  0.        ,  0.95533649,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]),
-            array([[ 0.92106099,  0.        ,  0.38941834,  0.        ],
-                   [ 0.        ,  1.        ,  0.        ,  0.        ],
-                   [-0.38941834,  0.        ,  0.92106099,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
 
         :seealso: :func:`~spatialmath.base.transforms3d.troty`
         :SymPy: supported
@@ -955,23 +940,12 @@ class SE3(SO3):
 
         .. note:: The translation option only works for the scalar θ case.
 
-        Example::
+        Example:
 
-            >> SE3.Rz(0.3)
-            SE3(array([[ 0.95533649, -0.29552021,  0.        ,  0.        ],
-                       [ 0.29552021,  0.95533649,  0.        ,  0.        ],
-                       [ 0.        ,  0.        ,  1.        ,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+        .. runblock:: pycon
+
+            >>> SE3.Rz(0.3)
             >>> SE3.Rz([0.3, 0.4])
-            SE3([
-            array([[ 0.95533649, -0.29552021,  0.        ,  0.        ],
-                   [ 0.29552021,  0.95533649,  0.        ,  0.        ],
-                   [ 0.        ,  0.        ,  1.        ,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]),
-            array([[ 0.92106099, -0.38941834,  0.        ,  0.        ],
-                   [ 0.38941834,  0.92106099,  0.        ,  0.        ],
-                   [ 0.        ,  0.        ,  1.        ,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
 
         :seealso: :func:`~spatialmath.base.transforms3d.trotz`
         :SymPy: supported
@@ -1346,4 +1320,4 @@ if __name__ == '__main__':   # pragma: no cover
     a = SE3.Rx(np.pi/2)
     print(a)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_pose3d.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_pose3d.py").read())  # pylint: disable=exec-used

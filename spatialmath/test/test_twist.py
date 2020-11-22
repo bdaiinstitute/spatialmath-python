@@ -102,11 +102,11 @@ class Twist3dTest(unittest.TestCase):
         self.assertEqual(len(a), 4)
         
     def test_predicate(self):
-        x = Twist3.R([1, 2, 3], [0, 0, 0])
+        x = Twist3.Revolute([1, 2, 3], [0, 0, 0])
         self.assertFalse(x.isprismatic)
         
         # check prismatic twist
-        x = Twist3.P([1, 2, 3])
+        x = Twist3.Prismatic([1, 2, 3])
         self.assertTrue(x.isprismatic)
         
         self.assertTrue(Twist3.isvalid(x.se3()))
@@ -131,11 +131,11 @@ class Twist3dTest(unittest.TestCase):
     def test_variant_constructors(self):
         
         # check rotational twist
-        x = Twist3.R([1, 2, 3], [0, 0, 0])
+        x = Twist3.Revolute([1, 2, 3], [0, 0, 0])
         array_compare(x, np.r_[0, 0, 0, unitvec([1, 2, 3])])
         
         # check prismatic twist
-        x = Twist3.P([1, 2, 3])
+        x = Twist3.Prismatic([1, 2, 3])
         array_compare(x, np.r_[unitvec([1, 2, 3]), 0, 0, 0, ])
     
     def test_SE3_twists(self):
@@ -158,13 +158,13 @@ class Twist3dTest(unittest.TestCase):
         array_compare(tw, np.r_[-pi / 2, 2, pi,  0, pi / 2, 0])
         
     def test_exp(self):
-        tw = Twist3.R([1, 0, 0], [0, 0, 0])
+        tw = Twist3.Revolute([1, 0, 0], [0, 0, 0])
         array_compare(tw.exp(pi/2), SE3.Rx(pi/2))
         
-        tw = Twist3.R([0, 1, 0], [0, 0, 0])
+        tw = Twist3.Revolute([0, 1, 0], [0, 0, 0])
         array_compare(tw.exp(pi/2), SE3.Ry(pi/2))
         
-        tw = Twist3.R([0, 0, 1], [0, 0, 0])
+        tw = Twist3.Revolute([0, 0, 1], [0, 0, 0])
         array_compare(tw.exp(pi/2), SE3.Rz(pi / 2))
     
     def test_arith(self):
@@ -239,11 +239,11 @@ class Twist2dTest(unittest.TestCase):
     def test_variant_constructors(self):
         
         # check rotational twist
-        x = Twist2.R([1, 2])
+        x = Twist2.Revolute([1, 2])
         array_compare(x, np.r_[2, -1, 1])
         
         # check prismatic twist
-        x = Twist2.P([1, 2])
+        x = Twist2.Prismatic([1, 2])
         array_compare(x, np.r_[unitvec([1, 2]), 0])
         
     def test_conversion_SE2(self):
@@ -282,11 +282,11 @@ class Twist2dTest(unittest.TestCase):
         self.assertEqual(len(a), 4)
         
     def test_predicate(self):
-        x = Twist2.R([1, 2])
+        x = Twist2.Revolute([1, 2])
         self.assertFalse(x.isprismatic)
         
         # check prismatic twist
-        x = Twist2.P([1, 2])
+        x = Twist2.Prismatic([1, 2])
         self.assertTrue(x.isprismatic)
         
         self.assertTrue(Twist2.isvalid(x.se2()))
@@ -324,13 +324,13 @@ class Twist2dTest(unittest.TestCase):
         array_compare(tw, np.r_[ 3 * pi / 4, pi / 4, pi / 2])
         
     def test_exp(self):
-        x = Twist2.R([0, 0])
+        x = Twist2.Revolute([0, 0])
         array_compare(x.exp(pi/2), SE2(0, 0, pi/2))
         
-        x = Twist2.R([1, 0])
+        x = Twist2.Revolute([1, 0])
         array_compare(x.exp(pi/2), SE2(1, -1, pi/2))
         
-        x = Twist2.R([1, 2])
+        x = Twist2.Revolute([1, 2])
         array_compare(x.exp(pi/2), SE2(3, 1, pi/2))
 
     

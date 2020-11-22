@@ -479,7 +479,7 @@ class SMPose(SMUserList):
 
         Example::
 
-            >>> a = SE3.Rx(sympy.symbols('theta')
+            >>> a = SE3.Rx(sympy.symbols('theta'))
             >>> b = a * a
             >>> b
             SE3(array([[1, 0, 0, 0.0],
@@ -864,7 +864,7 @@ class SMPose(SMUserList):
     #----------------------- arithmetic
 
 
-    def __mul__(self, right):  # pylint: disable=no-self-argument
+    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -949,7 +949,6 @@ class SMPose(SMUserList):
             >>> SE3.Rx(pi/2) * np.r_[0, 0, 1]
             array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
-        left = self
         if isinstance(left, right.__class__):
             #print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
@@ -998,7 +997,7 @@ class SMPose(SMUserList):
         else:
             return NotImplemented
 
-    def __rmul__(self, left):  # pylint: disable=no-self-argument
+    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1018,13 +1017,12 @@ class SMPose(SMUserList):
 
         :seealso: :func:`__mul__`
         """
-        right = self
         if base.isscalar(left):
             return right.__mul__(left)
         else:
             return NotImplemented
 
-    def __imul__(self, right):  # pylint: disable=no-self-argument
+    def __imul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -1038,10 +1036,9 @@ class SMPose(SMUserList):
 
         :seealso: ``__mul__``
         """
-        left = self
         return left.__mul__(right)
 
-    def __truediv__(self, right):  # pylint: disable=no-self-argument
+    def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -1085,7 +1082,6 @@ class SMPose(SMUserList):
         =========   ==========   ====  =====================================
 
         """
-        left = self
         if isinstance(left, right.__class__):
             return left.__class__(left._op2(right.inv(), lambda x, y: x @ y), check=False)
         elif base.isscalar(right):
@@ -1093,7 +1089,7 @@ class SMPose(SMUserList):
         else:
             raise ValueError('bad operands')
 
-    def __itruediv__(self, right):  # pylint: disable=no-self-argument
+    def __itruediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/=`` operator (superclass method)
 
@@ -1107,10 +1103,9 @@ class SMPose(SMUserList):
 
         :seealso: ``__truediv__``
         """
-        left = self
         return left.__truediv__(right)
 
-    def __add__(self, right):  # pylint: disable=no-self-argument
+    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1158,10 +1153,9 @@ class SMPose(SMUserList):
 
         """
         # results is not in the group, return an array, not a class
-        left = self
         return left._op2(right, lambda x, y: x + y)
 
-    def __radd__(self, right):  # pylint: disable=no-self-argument
+    def __radd__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1175,11 +1169,10 @@ class SMPose(SMUserList):
 
         :seealso: :meth:`__add__`
         """
-        left = self
         return left.__add__(right)
 
 
-    def __iadd__(self, right):  # pylint: disable=no-self-argument
+    def __iadd__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+=`` operator (superclass method)
 
@@ -1193,10 +1186,9 @@ class SMPose(SMUserList):
 
         :seealso: ``__add__``
         """
-        left = self
         return left.__add__(right)
 
-    def __sub__(self, right):  # pylint: disable=no-self-argument
+    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1244,10 +1236,9 @@ class SMPose(SMUserList):
 
         # results is not in the group, return an array, not a class
         # TODO allow class +/- a conformant array
-        left = self
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(self, right):  # pylint: disable=no-self-argument
+    def __rsub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1261,10 +1252,9 @@ class SMPose(SMUserList):
 
         :seealso: :meth:`__sub__`
         """
-        left = self
         return -left.__sub__(right)
 
-    def __isub__(self, right):  # pylint: disable=no-self-argument
+    def __isub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1279,10 +1269,9 @@ class SMPose(SMUserList):
 
         :seealso: ``__sub__``
         """
-        left = self
         return left.__sub__(right)
 
-    def __eq__(self, right):  # pylint: disable=no-self-argument
+    def __eq__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
@@ -1307,11 +1296,10 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
-        left = self
         assert type(left) == type(right), 'operands to == are of different types'
         return left._op2(right, lambda x, y: np.allclose(x, y))
 
-    def __ne__(self, right):  # pylint: disable=no-self-argument
+    def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``!=`` operator (superclass method)
 
@@ -1336,10 +1324,9 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
-        left = self
         return [not x for x in left == right]
 
-    def _op2(self, right, op):  # pylint: disable=no-self-argument
+    def _op2(left, right, op):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Perform binary operation
 
@@ -1367,7 +1354,6 @@ class SMPose(SMUserList):
         =========   ==========   ====  ================================
 
         """
-        left = self
         if isinstance(right, left.__class__):
             # class by class
             if len(left) == 1:

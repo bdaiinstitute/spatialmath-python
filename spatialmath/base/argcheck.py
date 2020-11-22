@@ -397,7 +397,7 @@ def isvector(v, dim=None):
     return False
 
 
-def getunit(v, unit):
+def getunit(v, unit='rad'):
     """
     Convert value according to angular units
 
@@ -528,4 +528,4 @@ def islistof(value, what, n=None):
 if __name__ == '__main__':
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_argcheck.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_argcheck.py").read())  # pylint: disable=exec-used

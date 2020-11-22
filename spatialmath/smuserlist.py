@@ -147,12 +147,13 @@ class SMUserList(UserList, ABC):
 
         The value ``arg`` can be any of:
 
+        #. None, an identity value is created
         #. a numpy.ndarray of the appropriate shape and value which is valid for the subclass
         #. a list whose elements all meet the criteria above
         #. an instance of the subclass
         #. a list whose elements are all singelton instances of the subclass
 
-        For cases 1 and 2, a NumPy array or a list of NumPy array is passed.
+        For cases 2 and 3, a NumPy array or a list of NumPy array is passed.
         Each NumPyarray is tested for validity (if ``check`` is False a cursory
         check of shape is made, if ``check`` is True the numerical value is
         inspected) and converted to the required internal format by the
@@ -166,6 +167,7 @@ class SMUserList(UserList, ABC):
 
         Examples::
 
+            SE3()
             SE3(np.identity(4))
             SE3([np.identity(4), np.identity(4)])
             SE3(SE3())

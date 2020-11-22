@@ -392,6 +392,21 @@ def trexp2(S, theta=None, check=True):
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
 
+def adjoint2(T):
+    # http://ethaneade.com/lie.pdf
+    Z = np.zeros((2,2), dtype=T.dtype)
+    if T.shape == (3,3):
+        # SO(2) adjoint
+        return np.identity(2)
+    elif T.shape == (3,3):
+        # SE(2) adjoint
+        (R, t) = base.tr2rt(T)
+        return np.block([
+                [R, np.c_[t[1], -t[0]].T], 
+                [0, 0, 1]
+                ])
+    else:
+        raise ValueError('bad argument')
 
 def trinterp2(start, end, s=None):
     """
@@ -719,4 +734,4 @@ if __name__ == '__main__':  # pragma: no cover
     # trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
     # plt.grid(True)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms2d.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_transforms2d.py").read())  # pylint: disable=exec-used

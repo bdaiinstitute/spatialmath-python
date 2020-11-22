@@ -424,18 +424,19 @@ def skew(v):
     """
     v = base.getvector(v, None, 'sequence')
     if len(v) == 1:
-        s = np.array([
-            [0, -v[0]],
-            [v[0], 0]])
+        return np.array([
+                [ 0,   -v[0] ],
+                [ v[0], 0]   ]
+            )
     elif len(v) == 3:
-        s = np.array([
-            [0, -v[2], v[1]],
-            [v[2], 0, -v[0]],
-            [-v[1], v[0], 0]])
+        return np.array([
+                [ 0,    -v[2],  v[1] ],
+                [ v[2],  0,    -v[0] ],
+                [-v[1],  v[0],  0]   ]
+            )
     else:
         raise ValueError("argument must be a 1- or 3-vector")
 
-    return s
 
 # ---------------------------------------------------------------------------------------#
 
@@ -745,4 +746,4 @@ def homtrans(T, p):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transformsNd.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_transformsNd.py").read())  # pylint: disable=exec-used

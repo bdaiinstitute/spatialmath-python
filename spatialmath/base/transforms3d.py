@@ -1534,6 +1534,25 @@ def tr2jac(T, samebody=False):
         R = base.t2r(T)
         return np.block([[R.T, Z], [Z, R.T]])
 
+def adjoint(T):
+    # http://ethaneade.com/lie.pdf
+    Z = np.zeros((3, 3), dtype=T.dtype)
+    if T.shape == (3,3):
+        # SO(3) adjoint
+        return np.block([
+                [R, Z],
+                [Z, R]
+                ])
+    elif T.shape == (4,4):
+        # SE(3) adjoint
+        (R, t) = base.tr2rt(T)
+        return np.block([
+                [R, base.skew(t) @ R], 
+                [Z, R]
+                ])
+    else:
+        raise ValueError('bad argument')
+        
 
 def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', degsym=True, unit='deg'):
     """
@@ -1837,6 +1856,6 @@ if __name__ == '__main__':  # pragma: no cover
     a,b,c = base.sym.symbol('a,b,c')
     T = rpy2r(a,b,c)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_transforms3d.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_transforms3d.py").read())  # pylint: disable=exec-used
     
 

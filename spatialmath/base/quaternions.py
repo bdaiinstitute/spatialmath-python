@@ -814,4 +814,4 @@ def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_quaternions.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_quaternions.py").read())  # pylint: disable=exec-used
