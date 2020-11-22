@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>2D-space &mdash; Spatial Maths package 0.8.4
+  <title>Geometry &mdash; Spatial Maths package 0.8.4
  documentation</title>
   
 
@@ -144,7 +144,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>2D-space</li>
+      <li>Geometry</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -163,227 +163,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="d-space">
-<h1>2D-space<a class="headerlink" href="#d-space" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="pose-in-2d">
-<h2>Pose in 2D<a class="headerlink" href="#pose-in-2d" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="se-2-matrix">
-<h3>SE(2) matrix<a class="headerlink" href="#se-2-matrix" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="module-spatialmath.Twist2">
-<span id="se-2-twist"></span><h3>se(2) twist<a class="headerlink" href="#module-spatialmath.Twist2" title="Permalink to this headline">¶</a></h3>
-<p>Superclass for 3D and 2D twist objects</p>
-<p>Subclasses are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3</span></code> representing rigid-body motion in 3D as a 6-vector</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist2</span></code> representing rigid-body motion in 2D as a 3-vector</p></li>
-</ul>
-<p>A twist is the unique elements of the logarithm of the corresponding SE(N)
-matrix.</p>
-<p>Arithmetic operators are overloaded but the operation they perform depend
-on the types of the operands.  For example:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">*</span></code> will compose two instances of the same subclass, and the result will be
-an instance of the same subclass, since this is a group operator.</p></li>
-</ul>
-<p>These classes all inherit from <code class="docutils literal notranslate"><span class="pre">UserList</span></code> which enables them to 
-represent a sequence of values, ie. a <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> instance can contain
-a sequence of twists.  Most of the Python <code class="docutils literal notranslate"><span class="pre">list</span></code> operators
-are applicable:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">()</span>  <span class="c1"># new instance with zero value</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>     <span class="c1"># it is a sequence of one value</span>
-<span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># append to itself</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>       <span class="c1"># it is a sequence of two values</span>
-<span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>         <span class="c1"># the element has a 4x4 matrix value</span>
-<span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span><span class="o">.</span><span class="n">Twist3</span><span class="p">()</span>  <span class="c1"># set an elements of the sequence</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>         <span class="c1"># reverse the elements in the sequence</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>            <span class="c1"># delete an element</span>
-</pre></div>
-</div>
-<p>References:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>“Mechanics, planning and control”
-Park &amp; Lynch, Cambridge, 2016.</p></li>
-</ul>
-</div></blockquote>
-<p>This class is subclassed for the 3D and 2D cases</p>
-<div class="graphviz"><img src="_images/inheritance-dc5abacab73c5a30be67d49db3e10df343bb0276.png" alt="Inheritance diagram of spatialmath.twist.Twist3, spatialmath.twist.Twist2" class="inheritance graphviz" /></div>
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.A">
-<code class="sig-name descname">A</code><a class="headerlink" href="#spatialmath.Twist2.A" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array value of an instance (SMUserList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>NumPy array value of this instance</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance, 
-and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
-instance.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.N">
-<code class="sig-name descname">N</code><a class="headerlink" href="#spatialmath.Twist2.N" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dimension of the object’s vector representation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>dimension</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-<p>Length of the Twist vector</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist2</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">N</span>
-<span class="go">3</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.S">
-<code class="sig-name descname">S</code><a class="headerlink" href="#spatialmath.Twist2.S" title="Permalink to this definition">¶</a></dt>
-<dd><p>Twist as a vector (superclass property)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Twist vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(N,)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.S</span></code> is a 3-vector if X is a <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> instance, and a 6-vector if
-X is a <code class="docutils literal notranslate"><span class="pre">Twist</span></code> instance.</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.ad">
-<code class="sig-name descname">ad</code><a class="headerlink" href="#spatialmath.Twist2.ad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Twist3.ad Logarithm of adjoint</p>
-<p>TW.ad is the logarithm of the adjoint matrix of the corresponding
-homogeneous transformation.</p>
-<p>See also SE3.Ad.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.isprismatic">
-<code class="sig-name descname">isprismatic</code><a class="headerlink" href="#spatialmath.Twist2.isprismatic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test for prismatic twist (superclass property)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Whether twist is purely prismatic</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist3</span><span class="o">.</span><span class="n">R</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">isprismatic</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.isunit">
-<code class="sig-name descname">isunit</code><a class="headerlink" href="#spatialmath.Twist2.isunit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test for unit twist (superclass property)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>If twist is a unit-twist</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.shape">
-<code class="sig-name descname">shape</code><a class="headerlink" href="#spatialmath.Twist2.shape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shape of the object’s interal matrix representation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(3,)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.unit">
-<code class="sig-name descname">unit</code><a class="headerlink" href="#spatialmath.Twist2.unit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unit twist</p>
-<p>TW.unit() is a Twist object representing a unit aligned with the Twist
-TW.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.v">
-<code class="sig-name descname">v</code><a class="headerlink" href="#spatialmath.Twist2.v" title="Permalink to this definition">¶</a></dt>
-<dd><p>Twist as a moment vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Moment vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(2,)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.v</span></code> is a 2-vector</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="spatialmath.Twist2.w">
-<code class="sig-name descname">w</code><a class="headerlink" href="#spatialmath.Twist2.w" title="Permalink to this definition">¶</a></dt>
-<dd><p>Twist as a direction vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Direction vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.v</span></code> is a 2-vector</p></li>
-</ul>
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="orientation-in-2d">
-<h2>Orientation in 2D<a class="headerlink" href="#orientation-in-2d" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="so-2-matrix">
-<h3>SO(2) matrix<a class="headerlink" href="#so-2-matrix" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
-<div class="section" id="geometry">
-<h2>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h2>
-</div>
+  <div class="section" id="geometry">
+<h1>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -400,7 +181,7 @@ TW.</p>
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 16-Nov-2020.
+        Last updated on 22-Nov-2020.
       </span>
 
     </p>

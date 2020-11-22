@@ -195,16 +195,16 @@
 <dl class="py class">
 <dt id="spatialmath.pose3d.SE3">
 <em class="property">class </em><code class="sig-name descname">SE3</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.pose3d.SE3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.pose3d.SO3</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.pose3d.SO3</span></code></a></p>
 <blockquote>
 <div><p>SE(3) matrix class</p>
 <p>This subclass represents rigid-body motion in 3D space.  Internally it is a 
 4x4 homogeneous transformation matrix belonging to the group SE(3).</p>
 </div></blockquote>
-<div class="graphviz"><img src="_images/inheritance-624b8221281df454d62b8e9c57352c86b6898588.png" alt="Inheritance diagram of spatialmath.pose3d.SE3" usemap="#inheritance7d797e0ff4" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-3cee4373f45461e517d622ef8aba995f7e641ef3.png" alt="Inheritance diagram of spatialmath.pose3d.SE3" usemap="#inheritance7d797e0ff4" class="inheritance graphviz" /></div>
 <map id="inheritance7d797e0ff4" name="inheritance7d797e0ff4">
-<area shape="rect" id="node2" href="classes-3d.html#spatialmath.pose3d.SE3" target="_top" title="SE(3) matrix class" alt="" coords="511,31,583,56"/>
-<area shape="rect" id="node3" href="classes-3d.html#spatialmath.pose3d.SO3" target="_top" title="SO(3) matrix class" alt="" coords="391,31,463,56"/>
+<area shape="rect" id="node2" href="#spatialmath.pose3d.SE3" target="_top" title="SE(3) matrix class" alt="" coords="511,31,583,56"/>
+<area shape="rect" id="node3" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" target="_top" title="SO(3) matrix class" alt="" coords="391,31,463,56"/>
 </map><dl class="py method">
 <dt id="spatialmath.pose3d.SE3.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">check</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.__init__" title="Permalink to this definition">¶</a></dt>
@@ -222,6 +222,8 @@ matrix which corresponds to a null motion.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SE3(T)</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with the value <code class="docutils literal notranslate"><span class="pre">T</span></code> which is a 4x4
 numpy array representing an SE(3) matrix.  If <code class="docutils literal notranslate"><span class="pre">check</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>
 check the matrix belongs to SE(3).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3(X)</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with the same value as <code class="docutils literal notranslate"><span class="pre">X</span></code>, ie.
+a copy.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SE3([T1,</span> <span class="pre">T2,</span> <span class="pre">...</span> <span class="pre">TN])</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with <code class="docutils literal notranslate"><span class="pre">N</span></code> values
 given by the elements <code class="docutils literal notranslate"><span class="pre">Ti</span></code> each of which is a 4x4 NumPy array
 representing an SE(3) matrix. If <code class="docutils literal notranslate"><span class="pre">check</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> check the
@@ -290,7 +292,9 @@ shape (3,). If <code class="docutils literal notranslate"><span class="pre">len(
 </dl>
 <p>Efficiently compute the inverse of each of the SE(3) values taking into
 account the matrix structure.</p>
-<p><span class="math notranslate nohighlight">\(T = \left[ \begin{array}{cc} R &amp; t \\ 0 &amp; 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T &amp; -R^T t \\ 0 &amp; 1 \end{array} \right]\)</span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}T = \left[ \begin{array}{cc} \mat{R} &amp; \vec{t} \\ 0 &amp; 1 \end{array} \right],
+\mat{T}^{-1} = \left[ \begin{array}{cc} \mat{R}^T &amp; -\mat{R}^T \vec{t} \\ 0 &amp; 1 \end{array} \right]`\end{split}\]</div>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
@@ -457,7 +461,7 @@ end-effector frames, rather than <code class="docutils literal notranslate"><spa
 <dd><p>SE(3) as twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>equivalent rigid-body motion</p>
+<dd class="field-odd"><p>equivalent rigid-body motion as a twist vector</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Twist3 instance</p>
@@ -469,6 +473,11 @@ end-effector frames, rather than <code class="docutils literal notranslate"><spa
 <span class="go">Twist3([1, 2, 3, 0, 0, 0])</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.twist.Twist3()</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -480,7 +489,7 @@ end-effector frames, rather than <code class="docutils literal notranslate"><spa
 <dd class="field-odd"><p><strong>x</strong> (<em>numpy.ndarray</em>) – matrix to test</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>true if the matrix is 4x4 and a valid element of SE(3), ie. it
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the matrix is 4x4 and a valid element of SE(3), ie. it
 is a valid homogeneous transformation matrix.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -523,21 +532,21 @@ by consecutive elements.</p>
 <p>The translation option only works for the scalar θ case.</p>
 </div>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="go">SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
-<span class="go">           [ 0.        ,  0.95533649, -0.29552021,  0.        ],</span>
-<span class="go">           [ 0.        ,  0.29552021,  0.95533649,  0.        ],</span>
-<span class="go">           [ 0.        ,  0.        ,  0.        ,  1.        ]]))</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">SE3(array([[ 1.    ,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.9553, -0.2955,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.2955,  0.9553,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
 <span class="go">SE3([</span>
-<span class="go">array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.95533649, -0.29552021,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.29552021,  0.95533649,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]]),</span>
-<span class="go">array([[ 1.        ,  0.        ,  0.        ,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.92106099, -0.38941834,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.38941834,  0.92106099,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])</span>
+<span class="go">array([[ 1.    ,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9553, -0.2955,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.2955,  0.9553,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]),</span>
+<span class="go">array([[ 1.    ,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9211, -0.3894,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.3894,  0.9211,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]) ])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -581,21 +590,21 @@ by consecutive elements.</p>
 <p>The translation option only works for the scalar θ case.</p>
 </div>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="go">SE3(array([[ 0.95533649,  0.        ,  0.29552021,  0.        ],</span>
-<span class="go">           [ 0.        ,  1.        ,  0.        ,  0.        ],</span>
-<span class="go">           [-0.29552021,  0.        ,  0.95533649,  0.        ],</span>
-<span class="go">           [ 0.        ,  0.        ,  0.        ,  1.        ]]))</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.9553,  0.    ,  0.2955,  0.    ],</span>
+<span class="go">           [ 0.    ,  1.    ,  0.    ,  0.    ],</span>
+<span class="go">           [-0.2955,  0.    ,  0.9553,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Ry</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
 <span class="go">SE3([</span>
-<span class="go">array([[ 0.95533649,  0.        ,  0.29552021,  0.        ],</span>
-<span class="go">       [ 0.        ,  1.        ,  0.        ,  0.        ],</span>
-<span class="go">       [-0.29552021,  0.        ,  0.95533649,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]]),</span>
-<span class="go">array([[ 0.92106099,  0.        ,  0.38941834,  0.        ],</span>
-<span class="go">       [ 0.        ,  1.        ,  0.        ,  0.        ],</span>
-<span class="go">       [-0.38941834,  0.        ,  0.92106099,  0.        ],</span>
-<span class="go">       [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])</span>
+<span class="go">array([[ 0.9553,  0.    ,  0.2955,  0.    ],</span>
+<span class="go">       [ 0.    ,  1.    ,  0.    ,  0.    ],</span>
+<span class="go">       [-0.2955,  0.    ,  0.9553,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]),</span>
+<span class="go">array([[ 0.9211,  0.    ,  0.3894,  0.    ],</span>
+<span class="go">       [ 0.    ,  1.    ,  0.    ,  0.    ],</span>
+<span class="go">       [-0.3894,  0.    ,  0.9211,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]) ])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -639,21 +648,21 @@ by consecutive elements.</p>
 <p>The translation option only works for the scalar θ case.</p>
 </div>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">SE3</span><span class="p">(</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.95533649</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.29552021</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-           <span class="p">[</span> <span class="mf">0.29552021</span><span class="p">,</span>  <span class="mf">0.95533649</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-           <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-           <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.</span>        <span class="p">]]))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rz</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
-<span class="n">SE3</span><span class="p">([</span>
-<span class="n">array</span><span class="p">([[</span> <span class="mf">0.95533649</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.29552021</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-       <span class="p">[</span> <span class="mf">0.29552021</span><span class="p">,</span>  <span class="mf">0.95533649</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-       <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-       <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.</span>        <span class="p">]]),</span>
-<span class="n">array</span><span class="p">([[</span> <span class="mf">0.92106099</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.38941834</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-       <span class="p">[</span> <span class="mf">0.38941834</span><span class="p">,</span>  <span class="mf">0.92106099</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-       <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
-       <span class="p">[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">1.</span>        <span class="p">]])</span> <span class="p">])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.9553, -0.2955,  0.    ,  0.    ],</span>
+<span class="go">           [ 0.2955,  0.9553,  0.    ,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  1.    ,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rz</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="go">SE3([</span>
+<span class="go">array([[ 0.9553, -0.2955,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]),</span>
+<span class="go">array([[ 0.9211, -0.3894,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.3894,  0.9211,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]) ])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -738,7 +747,7 @@ rotations each defined by Euler angles corresponding to the rows of
 <code class="docutils literal notranslate"><span class="pre">𝚪</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.eul" title="spatialmath.pose3d.SE3.eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.eul2r" title="spatialmath.base.transforms3d.eul2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2r()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.eul" title="spatialmath.pose3d.SE3.eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.eul2r" title="spatialmath.base.transforms3d.eul2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2r()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>supported</p>
@@ -785,7 +794,7 @@ to the optical axis and x-axis parallel to the pixel rows.</p></li>
 corresponding to the rows of <code class="docutils literal notranslate"><span class="pre">𝚪</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.rpy" title="spatialmath.pose3d.SE3.rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.rpy" title="spatialmath.pose3d.SE3.rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>supported</p>
@@ -870,7 +879,7 @@ a rotation of <code class="docutils literal notranslate"><span class="pre">θ</s
     \right.\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.angvec" title="spatialmath.pose3d.SE3.angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec()</span></code></a>, <a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.EulerVec" title="spatialmath.pose3d.SE3.EulerVec"><code class="xref py py-func docutils literal notranslate"><span class="pre">EulerVec()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.angvec2r" title="spatialmath.base.transforms3d.angvec2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec2r()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.angvec" title="spatialmath.pose3d.SE3.angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec()</span></code></a>, <a class="reference internal" href="#spatialmath.pose3d.SE3.EulerVec" title="spatialmath.pose3d.SE3.EulerVec"><code class="xref py py-func docutils literal notranslate"><span class="pre">EulerVec()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.angvec2r" title="spatialmath.base.transforms3d.angvec2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec2r()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -909,7 +918,7 @@ unit 3-vector <span class="math notranslate nohighlight">\(\omega / \lVert \omeg
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.AngVec" title="spatialmath.pose3d.SE3.AngVec"><code class="xref py py-func docutils literal notranslate"><span class="pre">AngVec()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.angvec2tr" title="spatialmath.base.transforms3d.angvec2tr"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec2tr()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.AngVec" title="spatialmath.pose3d.SE3.AngVec"><code class="xref py py-func docutils literal notranslate"><span class="pre">AngVec()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.angvec2tr" title="spatialmath.base.transforms3d.angvec2tr"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec2tr()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -964,7 +973,7 @@ motion <span class="math notranslate nohighlight">\(d = [\delta_x, \delta_y, \de
 <dd class="field-odd"><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</p>
 </dd>
 <dt class="field-even">Seealso</dt>
-<dd class="field-even"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.delta" title="spatialmath.pose3d.SE3.delta"><code class="xref py py-func docutils literal notranslate"><span class="pre">delta()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">delta2tr()</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.delta" title="spatialmath.pose3d.SE3.delta"><code class="xref py py-func docutils literal notranslate"><span class="pre">delta()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">delta2tr()</span></code></p>
 </dd>
 <dt class="field-odd">SymPy</dt>
 <dd class="field-odd"><p>supported</p>
@@ -1979,7 +1988,7 @@ many options, see the links below.</p></li>
 <dd><p>Append a value to an instance (SMUserList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.quaternion.Quaternion" title="spatialmath.quaternion.Quaternion"><em>Quaternion</em></a><em> or </em><em>UnitQuaternion instance</em>) – the value to append</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="3d_quaternion.html#spatialmath.quaternion.Quaternion" title="spatialmath.quaternion.Quaternion"><em>Quaternion</em></a><em> or </em><em>UnitQuaternion instance</em>) – the value to append</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – incorrect type of appended object</p>
@@ -2058,7 +2067,7 @@ rotations about the Z, Y, Z axes respectively.</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.Eul" title="spatialmath.pose3d.SE3.Eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">Eul()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tr2eul" title="spatialmath.base.transforms3d.tr2eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2eul()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.Eul" title="spatialmath.pose3d.SE3.Eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">Eul()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tr2eul" title="spatialmath.base.transforms3d.tr2eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2eul()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>not supported</p>
@@ -2142,7 +2151,7 @@ to the list</p>
 <dd class="field-even"><p>interpolated pose</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
+<dd class="field-odd"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
 </dd>
 </dl>
 <ul class="simple">
@@ -2225,7 +2234,7 @@ and X when s=1.</p></li>
 <dd><p>Test if object belongs to SE(n) group (superclass property)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2"><em>SO2</em></a><em>, </em><a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a><em>, </em><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><em>SO3</em></a><em>, </em><em>SE3 instance</em>) – object to test</p>
+<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2"><em>SO2</em></a><em>, </em><a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a><em>, </em><a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><em>SO3</em></a><em>, </em><em>SE3 instance</em>) – object to test</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if object is instance of SE2 or SE3</p>
@@ -2242,7 +2251,7 @@ and X when s=1.</p></li>
 <dd><p>Test if object belongs to SO(n) group (superclass property)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2"><em>SO2</em></a><em>, </em><a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a><em>, </em><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><em>SO3</em></a><em>, </em><em>SE3 instance</em>) – object to test</p>
+<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2"><em>SO2</em></a><em>, </em><a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a><em>, </em><a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><em>SO3</em></a><em>, </em><em>SE3 instance</em>) – object to test</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if object is instance of SO2 or SO3</p>
@@ -2438,7 +2447,7 @@ this pose.</p>
 <dd class="field-odd"><p>pose</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
+<dd class="field-even"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
 </dd>
 </dl>
 <ul class="simple">
@@ -2669,7 +2678,7 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.pose3d.SE3.RPY" title="spatialmath.pose3d.SE3.RPY"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPY()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.RPY" title="spatialmath.pose3d.SE3.RPY"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPY()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2rpy()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>not supported</p>
@@ -2692,7 +2701,7 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 <p>Apply symbolic simplification to every element of every value in the
 pose instane.</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
 <span class="go">SE3(array([[1, 0, 0, 0.0],</span>
@@ -2740,7 +2749,7 @@ pose instane.</p>
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 16-Nov-2020.
+        Last updated on 22-Nov-2020.
       </span>
 
     </p>
