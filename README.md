@@ -72,7 +72,7 @@ The class, method and functions names largely mirror those of the MATLAB toolbox
 
 ![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/fig1.png)
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/animate.gif)
+![animation video](./docs/figs/animate.gif)
 
 # Installation
 
@@ -345,7 +345,7 @@ and it can be saved to a file by
 tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
 ```
 
-![animation video](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/animate.gif)
+![animation video](./docs/figs/animate.gif)
 
 At the moment we can only save as an MP4, but the following incantation will covert that to an animated GIF for embedding in web pages
 
