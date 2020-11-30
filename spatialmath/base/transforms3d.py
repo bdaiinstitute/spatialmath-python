@@ -1078,7 +1078,7 @@ def trlog(T, check=True, twist=False):
                 S = trlog(R, check=False)  # recurse
                 w = base.vex(S)
                 theta = base.norm(w)
-                Ginv = np.eye(3) - S / 2 + (1 / theta - 1 / np.tan(theta / 2) / 2) / theta * S @ S
+                Ginv = np.eye(3) - S / 2 + (1 / theta - 1 / math.tan(theta / 2) / 2) / theta * S @ S
                 v = Ginv @ t
                 if twist:
                     return np.r_[v, w]
@@ -1110,8 +1110,8 @@ def trlog(T, check=True, twist=False):
                 return base.skew(w * theta)
         else:
             # general case
-            theta = np.arccos((np.trace(R) - 1) / 2)
-            skw = (R - R.T) / 2 / np.sin(theta)
+            theta = math.acos((np.trace(R) - 1) / 2)
+            skw = (R - R.T) / 2 / math.sin(theta)
             if twist:
                 return base.vex(skw * theta)
             else:

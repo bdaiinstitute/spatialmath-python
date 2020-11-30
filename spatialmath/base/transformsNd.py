@@ -617,12 +617,10 @@ def rodrigues(w, theta=None):
         else:
             return np.eye(3)
     if theta is None:
-        theta = base.norm(w)
-        w = base.unitvec(w)
+        w, theta = base.unitvec_norm(w)
 
     skw = skew(w)
     return np.eye(skw.shape[0]) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
-
 
 def h2e(v):
     """

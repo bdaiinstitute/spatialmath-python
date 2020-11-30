@@ -68,6 +68,35 @@ def unitvec(v):
         return None
 
 
+def unitvec_norm(v):
+    """
+    Create a unit vector
+
+    :param v: any vector
+    :type v: array_like(n)
+    :return: a unit-vector parallel to ``v`` and the norm
+    :rtype: (ndarray(n), float)
+    :raises ValueError: for zero length vector
+
+    ``unitvec(v)`` is a vector parallel to `v` of unit length.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unitvec([3, 4])
+
+    :seealso: :func:`~numpy.linalg.norm`
+
+    """
+
+    v = getvector(v)
+    n = np.linalg.norm(v)
+
+    if n > 100 * _eps:  # if greater than eps
+        return (v / n, n)
+    else:
+        return None
+
 def norm(v):
     """
     Norm of vector
