@@ -974,7 +974,7 @@ class Twist3(SMTwist):
             raise ValueError('twist *, incorrect right operand')
 
 
-    def __rmul__(right, left):  # pylint: disable=no-self-argument
+    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator
 

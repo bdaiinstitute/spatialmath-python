@@ -509,7 +509,7 @@ class SpatialInertia(SMUserList):
         elif m is not None and r is None and I is None and base.ismatrix(m, (6,6)):
             I = base.getmatrix(m, (6,6))
         elif m is not None and r is not None:
-            c = base.getvector(r, 3)
+            r = base.getvector(r, 3)
             if I is None:
                 I = np.zeros((3,3))
             else:

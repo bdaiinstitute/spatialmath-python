@@ -72,6 +72,8 @@ class SO2(SMPose):
         - ``SO2([X1, X2, ... XN])`` is an SO2 instance containing a sequence of N rotations, where each Xi is an SO2 instance.
 
         """
+        super().__init__()
+        
         if  super().arghandler(arg, check=check):
             return
 

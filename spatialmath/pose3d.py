@@ -25,8 +25,7 @@ To use::
 
 import numpy as np
 
-from spatialmath.base import argcheck
-import spatialmath.base as base
+from spatialmath import base
 from spatialmath.super_pose import SMPose
 
 
@@ -67,6 +66,8 @@ class SO3(SMPose):
 
         :SymPy: supported
         """
+        super().__init__()
+        
         if not super().arghandler(arg, check=check):
             raise ValueError('bad argument to constructor')
 

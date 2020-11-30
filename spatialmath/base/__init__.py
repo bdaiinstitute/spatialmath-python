@@ -2,14 +2,14 @@
 # Copyright (c) 2000 Peter Corke
 # MIT Licence, see details in top-level file: LICENCE
 
-from spatialmath.base.argcheck import *
-from spatialmath.base.quaternions import *
-from spatialmath.base.transforms2d import *
-from spatialmath.base.transforms3d import *
-from spatialmath.base.transformsNd import *
-from spatialmath.base.vectors import *
-from spatialmath.base.symbolic import *
-from spatialmath.base.animate import *
+from spatialmath.base.argcheck import *      # lgtm [py/polluting-import]
+from spatialmath.base.quaternions import *   # lgtm [py/polluting-import]
+from spatialmath.base.transforms2d import *  # lgtm [py/polluting-import]
+from spatialmath.base.transforms3d import *  # lgtm [py/polluting-import]
+from spatialmath.base.transformsNd import *  # lgtm [py/polluting-import]
+from spatialmath.base.vectors import *       # lgtm [py/polluting-import]
+from spatialmath.base.symbolic import *      # lgtm [py/polluting-import]
+from spatialmath.base.animate import *       # lgtm [py/polluting-import]
 
 __all__ = [
 # spatialmath.base.argcheck

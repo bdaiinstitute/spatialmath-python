@@ -394,7 +394,6 @@ def trexp2(S, theta=None, check=True):
 
 def adjoint2(T):
     # http://ethaneade.com/lie.pdf
-    Z = np.zeros((2,2), dtype=T.dtype)
     if T.shape == (3,3):
         # SO(2) adjoint
         return np.identity(2)
