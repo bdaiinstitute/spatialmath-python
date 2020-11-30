@@ -577,7 +577,7 @@ class Plucker(SMUserList):
     
     def __or__(self, l2):  # pylint: disable=no-self-argument
         """
-        Test if lines are parallel as a binary operator
+        Overloaded ``|`` operator tests for parallelism
         
         :param l1: First line
         :type l1: Plucker
@@ -588,6 +588,9 @@ class Plucker(SMUserList):
 
         ``l1 | l2`` is an operator which is true if the two lines are parallel.
 
+
+        .. note:: The ``|`` operator has low precendence.
+
         :seealso: Plucker.isparallel, Plucker.__xor__
         """
         l1 = self
@@ -597,7 +600,7 @@ class Plucker(SMUserList):
     def __xor__(self, l2):  # pylint: disable=no-self-argument
         
         """
-        Test if lines intersect as a binary operator
+        Overloaded ``^`` operator tests for intersection
         
         :param l1: First line
         :type l1: Plucker
@@ -608,10 +611,11 @@ class Plucker(SMUserList):
 
         ``l1 ^ l2`` is an operator which is true if the two lines intersect at a point.
 
-        Notes:
-            
-         - Is false if the lines are equivalent since they would intersect at
-           an infinite number of points.
+        .. note:: 
+        
+            - The ``^`` operator has low precendence.
+            - Is ``False`` if the lines are equivalent since they would intersect at
+              an infinite number of points.
 
         :seealso: Plucker.intersects, Plucker.parallel
         """
