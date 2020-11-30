@@ -232,6 +232,35 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
+<div class="viewcode-block" id="unitvec_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unitvec_norm">[docs]</a><span class="k">def</span> <span class="nf">unitvec_norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a unit vector</span>
+
+<span class="sd">    :param v: any vector</span>
+<span class="sd">    :type v: array_like(n)</span>
+<span class="sd">    :return: a unit-vector parallel to ``v`` and the norm</span>
+<span class="sd">    :rtype: (ndarray(n), float)</span>
+<span class="sd">    :raises ValueError: for zero length vector</span>
+
+<span class="sd">    ``unitvec(v)`` is a vector parallel to `v` of unit length.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; unitvec([3, 4])</span>
+
+<span class="sd">    :seealso: :func:`~numpy.linalg.norm`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>  <span class="c1"># if greater than eps</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Norm of vector</span>
@@ -597,7 +626,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 22-Nov-2020.
+        Last updated on 30-Nov-2020.
       </span>
 
     </p>
