@@ -1,15 +1,16 @@
 # Spatial Maths for Python
 
+[![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/roboticstoolbox-python.svg)
-[![pypi downloads](https://img.shields.io/pypi/dw/spatialmath-python)
-![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/petercorke/spatialmath-python.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/petercorke/spatialmath-python/context:python)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
+
 [![Build Status](https://github.com/petercorke/spatialmath-python/workflows/build/badge.svg?branch=master)](https://github.com/petercorke/spatialmath-python/actions?query=workflow%3Abuild)
 [![Coverage](https://codecov.io/gh/petercorke/spatialmath-python/branch/master/graph/badge.svg)](https://codecov.io/gh/petercorke/spatialmath-python)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/petercorke/spatialmath-python/graphs/commit-activity)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/petercorke/spatialmath-python.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/petercorke/spatialmath-python/context:python)
+![pypi downloads](https://img.shields.io/pypi/dw/spatialmath-python)
 [![GitHub stars](https://img.shields.io/github/stars/petercorke/spatialmath-python.svg?style=social&label=Star)](https://GitHub.com/petercorke/spatialmath-python/stargazers/)
-[![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
+
 
 
 <table style="border:0px">
