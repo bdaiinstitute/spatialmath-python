@@ -362,6 +362,14 @@ class TestND(unittest.TestCase):
         nt.assert_almost_equal(vexa(sk), t)
 
 
+    def test_det(self):
+
+        a = np.array([[1, 2], [3, 4]])
+        self.assertAlmostEqual(np.linalg.det(a), det(a))
+
+        x, y = sym.symbol('x y')
+        a = np.array([[x, y], [y, x]])
+        self.assertEqual(det(a), x**2 - y**2)
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
 

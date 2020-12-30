@@ -20,6 +20,15 @@ from spatialmath import base
 # from spatialmath.base import argcheck
 # from spatialmath.base import symbolic as sym
 
+try:  # pragma: no cover
+    # print('Using SymPy')
+    from sympy import Matrix
+
+    _symbolics = True
+
+except ImportError:  # pragma: no cover
+    _symbolics = False
+
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
@@ -740,6 +749,31 @@ def homtrans(T, p):
         return T @ p
     else:
         raise ValueError('matrices and point data do not conform')
+
+def det(m):
+    """
+    Determinant of matrix
+
+    :param m: any square matrix
+    :type v: array_like(n,n)
+    :return: determinant
+    :rtype: float
+
+    ``det(v)`` is the determinant of the matrix ``m``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> norm([3, 4])
+
+    :seealso: :func:`~numpy.linalg.det`
+
+    :SymPy: supported
+    """
+    if m.dtype.kind == 'O':
+        return Matrix(m).det()
+    else:
+        return np.linalg.det(m)
 
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
