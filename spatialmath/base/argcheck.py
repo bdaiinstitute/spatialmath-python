@@ -113,7 +113,7 @@ def ismatrix(m, shape):
         return False
     return True
 
-def getmatrix(m, shape):
+def getmatrix(m, shape, dtype=np.float64):
     r"""
     Convert argument to 2D array
 
@@ -159,13 +159,13 @@ def getmatrix(m, shape):
         mshape = m.shape
 
         if (shape[0] is None or shape[0] == mshape[0]) and (shape[1] is None or shape[1] == mshape[1]):
-                return m
+                return np.array(m, dtype=dtype)
         else:
             raise ValueError(f"expecting {shape} but got {mshape}")
 
     elif isvector(m):
             # passed a 1D array
-            m = getvector(m)
+            m = getvector(m, dtype=dtype)
             if shape[0] is not None and shape[1] is not None:
                 if len(m) == np.prod(shape):
                     return m.reshape(shape)
