@@ -15,6 +15,15 @@ import math
 import numpy as np
 from spatialmath.base import getvector
 
+try:  # pragma: no cover
+    # print('Using SymPy')
+    from sympy import Matrix
+
+    _symbolics = True
+
+except ImportError:  # pragma: no cover
+    _symbolics = False
+
 _eps = np.finfo(np.float64).eps
 
 
@@ -60,7 +69,7 @@ def unitvec(v):
     """
 
     v = getvector(v)
-    n = np.linalg.norm(v)
+    n = norm(v)
 
     if n > 100 * _eps:  # if greater than eps
         return v / n
@@ -115,8 +124,13 @@ def norm(v):
 
     :seealso: :func:`~spatialmath.base.unit`
 
+    :SymPy: supported
     """
-    return np.linalg.norm(v)
+    v = getvector(v)
+    if v.dtype.kind == 'O':
+        return Matrix(v).norm()
+    else:
+        return np.linalg.norm(v)
 
 
 def isunitvec(v, tol=10):
