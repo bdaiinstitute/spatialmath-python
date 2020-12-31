@@ -24,6 +24,7 @@ Pose in 3D
 
    3d_pose_SE3
    3d_pose_twist
+   3d_pose_dualquaternion
 
 
 Orientation in 3D
@@ -57,7 +58,8 @@ Geometry
 .. toctree::
    :maxdepth: 2
 
-   3d_quaternion 
+   3d_quaternion
+   3d_dualquaternion
    3d_plucker
    3d_plane
 
