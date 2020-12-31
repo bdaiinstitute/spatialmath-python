@@ -40,7 +40,7 @@ space:
 
 | Represents   | in 3D            |   in 2D  |
 | ------------ | ---------------- | -------- |
-| pose         | ``SE3`` ``Twist3``          |   ``SE2`` ``Twist2`` |
+| pose         | ``SE3`` ``Twist3`` ``UnitDualQuaternion``   |   ``SE2`` ``Twist2`` |
 | orientation  | ``SO3`` ``UnitQuaternion`` |            ``SO2``  |
                 
                 
@@ -50,6 +50,7 @@ More specifically:
  * `SO3` matrices belonging to the group SO(3) for orientation in 3-dimensions
  *  `UnitQuaternion` belonging to the group S3 for orientation in 3-dimensions
  * `Twist3` vectors belonging to the group se(3) for pose in 3-dimensions
+ * `UnitDualQuaternion` maps to the group SE(3) for position and orientation (pose) in 3-dimensions
  * `SE2` matrices belonging to the group SE(2) for position and orientation (pose) in 2-dimensions
  * `SO2` matrices belonging to the group SO(2) for orientation in 2-dimensions
  * `Twist2` vectors belonging to the group se(2) for pose in 2-dimensions

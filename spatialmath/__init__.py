@@ -5,4 +5,5 @@ from spatialmath.twist import Twist3, Twist2
 from spatialmath.spatialvector import SpatialVelocity, SpatialAcceleration, \
      SpatialForce, SpatialMomentum, SpatialInertia
 from spatialmath.quaternion import Quaternion, UnitQuaternion
+from spatialmath.DualQuaternion import DualQuaternion, UnitDualQuaternion
 #from spatialmath.Plucker import *
