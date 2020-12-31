@@ -310,6 +310,7 @@ if __name__ == "__main__":
     T = SE3.Rand()
     print(T)
 
-    print(aa := UnitDualQuaternion(T))
+    aa = UnitDualQuaternion(T)
+    print(aa)
     print(aa.norm())
     print(aa.T())
