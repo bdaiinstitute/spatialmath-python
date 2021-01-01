@@ -22,6 +22,8 @@ from spatialmath import base
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.smuserlist import SMUserList
 
+_eps = np.finfo(np.float64).eps
+
 class Quaternion(SMUserList):
     r"""
     Quaternion class
@@ -106,7 +108,7 @@ class Quaternion(SMUserList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-            >>> print(Quaternion.pure([1,2,3]))
+            >>> print(Quaternion.Pure([1,2,3]))
         """
         return cls(s=0, v=base.getvector(v, 3))
 
@@ -267,7 +269,7 @@ class Quaternion(SMUserList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-            >>> print(Quaternion.pure([1,2,3]).conj())
+            >>> print(Quaternion.Pure([1,2,3]).conj())
 
         :seealso: :func:`~spatialmath.base.quaternions.conj`
         """
@@ -335,19 +337,26 @@ class Quaternion(SMUserList):
         
         .. math::
         
-             \ln \| q \|  \langle \frac{\mathb{v}}{\| \mathbf{v} \|} \acos \frac{s}{\| q \|} \rangle
+             \ln \| q \|,  \langle \frac{\vec{v}}{\| \vec{v} \|} \cos^{-1} \frac{s}{\| q \|} \rangle
+
+        For a ``UnitQuaternion`` the logarithm is a pure quaternion whose vector
+        part :math:`\vec{v}` and :math:`\vec{v}/2` is a Euler vector: parallel
+        to the axis of rotation and whose norm is the magnitude of rotation.
 
         Example:
 
         .. runblock:: pycon
 
-            >>> from spatialmath import Quaternion
+            >>> from spatialmath import Quaternion, UnitQuaternion
+            >>> from math import pi
             >>> q = Quaternion([1, 2, 3, 4])
+            >>> print(q.log())
+            >>> q = UnitQuaternion.Rx(pi / 2)
             >>> print(q.log())
 
         :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.log`, `~spatialmath.quaternion.Quaternion.exp`
+        :seealso: :func:`~spatialmath.quaternion.Quaternion.exp`, :func:`~spatialmath.quaternion.Quaternion.log`, :func:`~spatialmath.quaternion.UnitQuaternion.angvec`, 
         """
         norm = self.norm()
         s = math.log(norm)
@@ -364,24 +373,38 @@ class Quaternion(SMUserList):
         
         .. math::
         
-             e^s \cos \| v \|  \langle e^s \frac{\mathb{v}}{\| \mathbf{v} \|} \sin \| \mathbf{v} \| \rangle
+             e^s \cos \| v \|,  \langle e^s \frac{\vec{v}}{\| \vec{v} \|} \sin \| \vec{v} \| \rangle
+
+        For a pure quaternion with vector value :math:`\vec{v}` the the result
+        is a unit quaternion equivalent to a rotation defined by
+        :math:`2\vec{v}` intepretted as an Euler vector, that is, parallel to
+        the axis of rotation and whose norm is the magnitude of rotation.
 
         Example:
 
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
+            >>> from math import pi
             >>> q = Quaternion([1, 2, 3, 4])
             >>> print(q.exp())
+            >>> q = Quaternion.Pure([pi / 4, 0, 0])
+            >>> print(q.exp())  # result is a UnitQuaternion
+            >>> print(q.exp().angvec())
 
         :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.log`, `~spatialmath.quaternion.Quaternion.log`
+        :seealso: :func:`~spatialmath.quaternion.Quaternion.log`, :func:`~spatialmath.quaternion.UnitQuaternion.log`, :func:`~spatialmath.quaternion.UnitQuaternion.AngVec`, :func:`~spatialmath.quaternion.UnitQuaternion.EulerVec`
         """
-        es = math.exp(self.s)
-        s = es * math.cos(base.norm(self.v))
-        v = es * base.unitvec(self.v) * math.sin(base.norm(self.v))
-        return Quaternion(s=s, v=v)
+        exp_s = math.exp(self.s)
+        norm_v = base.norm(self.v)
+        s = exp_s * math.cos(norm_v)
+        v = exp_s * self.v / norm_v * math.sin(norm_v)
+        if abs(self.s) < 100 * _eps:
+            # result will be a unit quaternion
+            return UnitQuaternion(s=s, v=v)
+        else:
+            return Quaternion(s=s, v=v)
 
 
     def inner(self, other):
@@ -936,7 +959,7 @@ class UnitQuaternion(Quaternion):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion as UQ as UQ
+            >>> from spatialmath import UnitQuaternion as UQ
             >>> q = UQ()
             >>> q         # repr()
             >>> print(q)  # str()
@@ -1315,7 +1338,7 @@ class UnitQuaternion(Quaternion):
         .. note:: :math:`\theta = 0` the result in an identity quaternion, otherwise
             ``V`` must have a finite length, ie. :math:`|V| > 0`.
 
-        :seealso: :func:`~spatialmath.UnitQuaternion.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
+        :seealso: :func:`~spatialmath.UnitQuaternion.angvec`, :func:`~spatialmath.quaternion.UnitQuaternion.exp`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         v = base.getvector(v, 3)
         base.isscalar(theta)
@@ -1932,35 +1955,35 @@ class UnitQuaternion(Quaternion):
         >>> UQ.Rz(0.3).angvec()
             (0.3, array([0., 0., 1.]))
 
-        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
+        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~spatialmath.quaternion.UnitQuaternion.log`, :func:`~angvec2r`
         """
         return base.tr2angvec(self.R, unit=unit)
 
-    def log(self):
-        r"""
-        Logarithm of unit quaternion
+    # def log(self):
+    #     r"""
+    #     Logarithm of unit quaternion
 
-        :rtype: Quaternion instance
+    #     :rtype: Quaternion instance
 
-        ``q.log()`` is the logarithm of the unit quaternion ``q``, ie.
+    #     ``q.log()`` is the logarithm of the unit quaternion ``q``, ie.
         
-        .. math::
+    #     .. math::
         
-             0  \langle \frac{\mathb{v}}{\| \mathbf{v} \|} \acos s \rangle
+    #          0  \langle \frac{\mathb{v}}{\| \mathbf{v} \|} \acos s \rangle
 
-        Example:
+    #     Example:
 
-        .. runblock:: pycon
+    #     .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion
-            >>> q = UnitQuaternion.Rx(0.3)
-            >>> print(q.log())
+    #         >>> from spatialmath import UnitQuaternion
+    #         >>> q = UnitQuaternion.Rx(0.3)
+    #         >>> print(q.log())
 
-        :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
+    #     :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
 
-        :seealso: :func:`~spatialmath.quaternion.Quaternion.log`, `~spatialmath.quaternion.Quaternion.exp`
-        """
-        return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))
+    #     :seealso: :func:`~spatialmath.quaternion.Quaternion.log`, `~spatialmath.quaternion.Quaternion.exp`
+    #     """
+    #     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))
 
     def angle(self, other):
         """
