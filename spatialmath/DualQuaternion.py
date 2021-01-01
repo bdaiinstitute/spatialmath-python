@@ -7,7 +7,7 @@ from spatialmath import base
 class DualQuaternion:
     r"""
     A dual number is an ordered pair :math:`\hat{a} = (a, b)` or written as
-    :math:`a + \epsilon b` where :math:`\epsilon^2 = 0`.
+    :math:`a + \epsilon b` where :math:`\epsilon^2 = 0`.  
 
     A dual quaternion can be considered as either:
 
@@ -20,6 +20,11 @@ class DualQuaternion:
 
     - http://web.cs.iastate.edu/~cs577/handouts/dual-quaternion.pdf
     - https://en.wikipedia.org/wiki/Dual_quaternion
+
+    .. warning:: Unlike the other spatial math classes, this class does not
+      (yet) support multiple values per object.
+
+    :seealso: :func:`UnitDualQuaternion`
     """
 
     def __init__(self, real=None, dual=None):
@@ -42,6 +47,9 @@ class DualQuaternion:
             >>> d = DualQuaternion([1, 2, 3, 4,  5, 6, 7, 8])
             >>> print(d)
 
+        The dual number is stored internally as two quaternion, respectively
+        called ``real`` and ``dual``.
+
         """
 
         if real is None and dual is None:
@@ -60,6 +68,11 @@ class DualQuaternion:
             self.dual = dual  # quaternion, dual part
         else:
             raise ValueError('expecting zero or two parameters')
+
+    @classmethod
+    def Pure(cls, x):
+        x = base.getvector(x, 3)
+        return cls(UnitQuaternion(), Quaternion.Pure(x))
 
     def __repr__(self):
         return str(self)
@@ -87,6 +100,9 @@ class DualQuaternion:
 
         :return: Norm as a dual number
         :rtype: 2-tuple
+
+        The norm of a ``UnitDualQuaternion`` is unity, represented by the dual
+        number (1,0).
 
         Example:
 
@@ -157,10 +173,13 @@ class DualQuaternion:
 
     def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
-        Product of two dual quaternions
+        Product of dual quaternion
 
-        :return: Product
-        :rtype: DualQuaternion
+        - ``dq1 * dq2`` is a dual quaternion representing the product of
+          ``dq1`` and ``dq2``.  If both are unit dual quaternions, the product
+          will be a unit dual quaternion.
+        - ``dq * p`` transforms the point ``p`` (3) by the unit dual quaternion
+          ``dq``.
 
         Example:
 
@@ -170,13 +189,18 @@ class DualQuaternion:
             >>> d = DualQuaternion(Quaternion([1,2,3,4]), Quaternion([5,6,7,8]))
             >>> d * d
         """
-        real = left.real * right.real
-        dual = left.real * right.dual + left.dual * right.real
+        if isinstance(right, DualQuaternion):
+            real = left.real * right.real
+            dual = left.real * right.dual + left.dual * right.real
 
-        if isinstance(left, UnitDualQuaternion) and isinstance(left, UnitDualQuaternion):
-            return UnitDualQuaternion(real, dual)
-        else:
-            return DualQuaternion(real, dual)
+            if isinstance(left, UnitDualQuaternion) and isinstance(left, UnitDualQuaternion):
+                return UnitDualQuaternion(real, dual)
+            else:
+                return DualQuaternion(real, dual)
+        elif isinstance(left, UnitDualQuaternion) and base.isvector(right, 3):
+            v = base.getvector(right, 3)
+            vp = left * DualQuaternion.Pure(v) * left.conj()
+            return vp.dual.v
 
     def matrix(self):
         """
@@ -226,9 +250,20 @@ class DualQuaternion:
     #     pass
         
 class UnitDualQuaternion(DualQuaternion):
+    """[summary]
+
+    :param DualQuaternion: [description]
+    :type DualQuaternion: [type]
+
+
+    .. warning:: Unlike the other spatial math classes, this class does not
+      (yet) support multiple values per object.
+
+    :seealso: :func:`UnitDualQuaternion`
+    """
 
     def __init__(self, real=None, dual=None):
-        """
+        r"""
         Create new unit dual quaternion
 
         :param real: real quaternion or SE(3) matrix
@@ -245,13 +280,27 @@ class UnitDualQuaternion(DualQuaternion):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import DualQuaternion
+            >>> from spatialmath import UnitDualQuaternion, SE3
             >>> T = SE3.Rand()
             >>> print(T)
-            >>> d = UnitDualQuaternion(T))
+            >>> d = UnitDualQuaternion(T)
             >>> print(d)
             >>> type(d)
             >>> print(d.norm())  # norm is (1, 0)
+
+        The dual number is stored internally as two quaternion, respectively
+        called ``real`` and ``dual``.  For a unit dual quaternion they are
+        respectively:
+
+        .. math::
+
+            \q_r &\sim \mat{R}
+
+            q_d &= \frac{1}{2} q_t \q_r
+
+        where :math:`\mat{R}` is the rotational part of the rigid-body motion
+        and :math:`q_t` is a pure quaternion formed from the translational part
+        :math:`t`.
         """
         if real is None and dual is None:
             self.real = None
@@ -268,7 +317,7 @@ class UnitDualQuaternion(DualQuaternion):
             self.real = S
             self.dual = 0.5 * D * S
 
-    def T(self):
+    def SE3(self):
         """
         Convert unit dual quaternion to SE(3) matrix
 
@@ -279,10 +328,10 @@ class UnitDualQuaternion(DualQuaternion):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import DualQuaternion
+            >>> from spatialmath import DualQuaternion, SE3
             >>> T = SE3.Rand()
             >>> print(T)
-            >>> d = UnitDualQuaternion(T))
+            >>> d = UnitDualQuaternion(T)
             >>> print(d)
             >>> print(d.T)
         """
