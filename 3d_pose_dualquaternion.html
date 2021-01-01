@@ -196,6 +196,22 @@
 <dt id="spatialmath.DualQuaternion.UnitDualQuaternion">
 <em class="property">class </em><code class="sig-name descname">UnitDualQuaternion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">real</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dual</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/DualQuaternion.html#UnitDualQuaternion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.DualQuaternion.UnitDualQuaternion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion" title="spatialmath.DualQuaternion.DualQuaternion"><code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.DualQuaternion.DualQuaternion</span></code></a></p>
+<p>[summary]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>DualQuaternion</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unlike the other spatial math classes, this class does not
+(yet) support multiple values per object.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.DualQuaternion.UnitDualQuaternion" title="spatialmath.DualQuaternion.UnitDualQuaternion"><code class="xref py py-func docutils literal notranslate"><span class="pre">UnitDualQuaternion()</span></code></a></p>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="spatialmath.DualQuaternion.UnitDualQuaternion.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">real</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dual</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/DualQuaternion.html#UnitDualQuaternion.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.DualQuaternion.UnitDualQuaternion.__init__" title="Permalink to this definition">¶</a></dt>
@@ -215,18 +231,37 @@ real and dual parts as specified.</p></li>
 the rigid-body motion described by the SE3 value <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;d&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;d&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;d&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitDualQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">  -0.867574   -0.372685   -0.329274   -0.626879     </span>
+<span class="go">   0.0487171   0.595237   -0.802072   -0.86566      </span>
+<span class="go">   0.494917   -0.711898   -0.498256   -0.910651     </span>
+<span class="go">   0           0           0           1            </span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go"> 0.2395 &lt;&lt;  0.0941, -0.8604,  0.4399 &gt;&gt; + ε -0.1426 &lt; -0.6572, -0.0086,  0.2014 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&lt;class &#39;spatialmath.DualQuaternion.UnitDualQuaternion&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">norm</span><span class="p">())</span>  <span class="c1"># norm is (1, 0)</span>
+<span class="go">(1.0, 2.7755575615628914e-17)</span>
 </pre></div>
 </div>
+<p>The dual number is stored internally as two quaternion, respectively
+called <code class="docutils literal notranslate"><span class="pre">real</span></code> and <code class="docutils literal notranslate"><span class="pre">dual</span></code>.  For a unit dual quaternion they are
+respectively:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\q_r &amp;\sim \mat{R}\\q_d &amp;= \frac{1}{2} q_t \q_r\end{aligned}\end{align} \]</div>
+<p>where <span class="math notranslate nohighlight">\(\mat{R}\)</span> is the rotational part of the rigid-body motion
+and <span class="math notranslate nohighlight">\(q_t\)</span> is a pure quaternion formed from the translational part
+<span class="math notranslate nohighlight">\(t\)</span>.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt id="spatialmath.DualQuaternion.UnitDualQuaternion.Pure">
+<em class="property">classmethod </em><code class="sig-name descname">Pure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.DualQuaternion.UnitDualQuaternion.Pure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="spatialmath.DualQuaternion.UnitDualQuaternion.__add__">
@@ -252,15 +287,14 @@ the rigid-body motion described by the SE3 value <code class="docutils literal n
 <dl class="py method">
 <dt id="spatialmath.DualQuaternion.UnitDualQuaternion.__mul__">
 <code class="sig-name descname">__mul__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">right</span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.DualQuaternion.UnitDualQuaternion.__mul__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Product of two dual quaternions</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Product</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion" title="spatialmath.DualQuaternion.DualQuaternion">DualQuaternion</a></p>
-</dd>
-</dl>
+<dd><p>Product of dual quaternion</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dq1</span> <span class="pre">*</span> <span class="pre">dq2</span></code> is a dual quaternion representing the product of
+<code class="docutils literal notranslate"><span class="pre">dq1</span></code> and <code class="docutils literal notranslate"><span class="pre">dq2</span></code>.  If both are unit dual quaternions, the product
+will be a unit dual quaternion.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dq</span> <span class="pre">*</span> <span class="pre">p</span></code> transforms the point <code class="docutils literal notranslate"><span class="pre">p</span></code> (3) by the unit dual quaternion
+<code class="docutils literal notranslate"><span class="pre">dq</span></code>.</p></li>
+</ul>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">DualQuaternion</span><span class="p">,</span> <span class="n">Quaternion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">DualQuaternion</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]),</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]))</span>
@@ -361,6 +395,8 @@ product.</p>
 <dd class="field-even"><p>2-tuple</p>
 </dd>
 </dl>
+<p>The norm of a <code class="docutils literal notranslate"><span class="pre">UnitDualQuaternion</span></code> is unity, represented by the dual
+number (1,0).</p>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">DualQuaternion</span><span class="p">,</span> <span class="n">Quaternion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">DualQuaternion</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]),</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]))</span>
@@ -392,8 +428,8 @@ product.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spatialmath.DualQuaternion.UnitDualQuaternion.T">
-<code class="sig-name descname">T</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/DualQuaternion.html#UnitDualQuaternion.T"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.DualQuaternion.UnitDualQuaternion.T" title="Permalink to this definition">¶</a></dt>
+<dt id="spatialmath.DualQuaternion.UnitDualQuaternion.SE3">
+<code class="sig-name descname">SE3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/DualQuaternion.html#UnitDualQuaternion.SE3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.DualQuaternion.UnitDualQuaternion.SE3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert unit dual quaternion to SE(3) matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -404,9 +440,8 @@ product.</p>
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;d&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;d&#39; is not defined</span>
 <span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
 <span class="gr">NameError</span>: <span class="n">name &#39;d&#39; is not defined</span>
@@ -441,7 +476,7 @@ product.</p>
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 31-Dec-2020.
+        Last updated on 01-Jan-2021.
       </span>
 
     </p>
