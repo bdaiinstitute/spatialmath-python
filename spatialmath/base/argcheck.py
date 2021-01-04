@@ -16,7 +16,7 @@ import numpy as np
 from spatialmath.base import symbolic as sym
 
 # valid scalar types
-_scalartypes = (int, np.int64, float, np.float64) + sym.symtype
+_scalartypes = (int, np.integer, float, np.floating) + sym.symtype
 
 def isscalar(x):
     """
@@ -38,6 +38,24 @@ def isscalar(x):
     """
     return isinstance(x, _scalartypes)
 
+def isinteger(x):
+    """
+    Test if argument is a scalar integer
+
+    :param x: value to test
+    :return: whether value is a scalar
+    :rtype: bool
+
+    ``isinteger(x)`` is ``True`` if ``x`` is a Python or numPy int or real float.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import isscalar
+        >>> isinteger(1)
+        >>> isinteger(1.2)
+
+    """
+    return isinstance(x, (int, np.integer))
 
 def assertmatrix(m, shape=None):
     """
