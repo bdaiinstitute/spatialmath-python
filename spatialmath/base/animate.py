@@ -665,3 +665,99 @@ class Animate2:
 
     def set_ylabel(self, *args, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
+
+def plotvol2(dim, ax=None):
+    """
+    Create 2D plot area
+
+    :param ax: axes of initializer, defaults to new subplot
+    :type ax: AxesSubplot, optional
+    :return: initialized axes
+    :rtype: AxesSubplot
+
+    Initialize axes with dimensions given by ``dim`` which can be:
+
+        * A (scalar), -A:A x -A:A
+        * [A,B], A:B x A:B
+        * [A,B,C,D], A:B x C:D
+
+    :seealso: :func:`plotvol3`, :func:`expand_dims`
+    """
+    dims = expand_dims(dim, 2)
+    if ax is None:
+        ax = plt.subplot()
+    ax.axis(dims)
+    return ax
+
+def plotvol3(dim, ax=None):
+    """
+    Create 3D plot volume
+
+    :param ax: axes of initializer, defaults to new subplot
+    :type ax: Axes3DSubplot, optional
+    :return: initialized axes
+    :rtype: Axes3DSubplot
+
+    Initialize axes with dimensions given by ``dim`` which can be:
+
+        * A (scalar), -A:A x -A:A x -A:A
+        * [A,B], A:B x A:B x A:B
+        * [A,B,C,D,E,F], A:B x C:D x E:F
+
+    :seealso: :func:`plotvol2`, :func:`expand_dims`
+    """
+    dims = expand_dims(dim, 3)
+    print(dims)
+    if ax is None:
+        ax = plt.subplot(projection='3d')
+    ax.set_xlim3d(dims[0], dims[1])
+    ax.set_ylim3d(dims[2], dims[3])
+    ax.set_zlim3d(dims[4], dims[5])
+    return ax
+
+def expand_dims(dim=None, nd=2):
+    """[summary]
+
+
+    :param dim: [description], defaults to None
+    :type dim: [type], optional
+    :param nd: [description], defaults to 2
+    :type nd: int, optional
+    :raises ValueError: bad arguments
+    :return: 2d or 3d dimensions vector
+    :rtype: ndarray(4) or ndarray(6)
+
+    Compute bounding dimensions for plots from shorthand notation.
+
+    If ``nd==2``, [xmin, xmax, ymin, ymax]:
+        * A -> [-A, A, -A, A]
+        * [A,B] -> [A, B, A, B]
+        * [A,B,C,D] -> [A, B, C, D]
+
+    If ``nd==3``, [xmin, xmax, ymin, ymax, zmin, zmax]:
+        * A -> [-A, A, -A, A, -A, A]
+        * [A,B] -> [A, B, A, B, A, B]
+        * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
+    """
+    dim = base.getvector(dim)
+
+    if nd == 2:
+        if len(dim) == 1:
+            return np.r_[-dim, dim, -dim, dim]
+        elif len(dim) == 2:
+                return np.r_[-dim[0], dim[0], -dim[1], dim[1]]
+        elif len(dim) == 4:
+                return dim
+        else:
+            raise ValueError('bad dimension specified')
+    elif nd == 3:
+        if len(dim) == 1:
+                return np.r_[-dim, dim, -dim, dim, -dim, dim]
+        elif len(dim) == 3:
+                return np.r_[-dim[0], dim[0], -dim[1], dim[1], -dim[2], dim[2]]
+        elif len(dim) == 6:
+                return dim
+        else:
+            raise ValueError('bad dimension specified')
+    else:
+        raise ValueError('nd is 2 or 3')
