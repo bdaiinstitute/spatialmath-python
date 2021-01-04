@@ -828,6 +828,102 @@
 
 <div class="viewcode-block" id="Animate2.set_ylabel"><a class="viewcode-back" href="../../../func_graphics.html#spatialmath.base.animate.Animate2.set_ylabel">[docs]</a>    <span class="k">def</span> <span class="nf">set_ylabel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="plotvol2"><a class="viewcode-back" href="../../../func_graphics.html#spatialmath.base.animate.plotvol2">[docs]</a><span class="k">def</span> <span class="nf">plotvol2</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create 2D plot area</span>
+
+<span class="sd">    :param ax: axes of initializer, defaults to new subplot</span>
+<span class="sd">    :type ax: AxesSubplot, optional</span>
+<span class="sd">    :return: initialized axes</span>
+<span class="sd">    :rtype: AxesSubplot</span>
+
+<span class="sd">    Initialize axes with dimensions given by ``dim`` which can be:</span>
+
+<span class="sd">        * A (scalar), -A:A x -A:A</span>
+<span class="sd">        * [A,B], A:B x A:B</span>
+<span class="sd">        * [A,B,C,D], A:B x C:D</span>
+
+<span class="sd">    :seealso: :func:`plotvol3`, :func:`expand_dims`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="n">expand_dims</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="plotvol3"><a class="viewcode-back" href="../../../func_graphics.html#spatialmath.base.animate.plotvol3">[docs]</a><span class="k">def</span> <span class="nf">plotvol3</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create 3D plot volume</span>
+
+<span class="sd">    :param ax: axes of initializer, defaults to new subplot</span>
+<span class="sd">    :type ax: Axes3DSubplot, optional</span>
+<span class="sd">    :return: initialized axes</span>
+<span class="sd">    :rtype: Axes3DSubplot</span>
+
+<span class="sd">    Initialize axes with dimensions given by ``dim`` which can be:</span>
+
+<span class="sd">        * A (scalar), -A:A x -A:A x -A:A</span>
+<span class="sd">        * [A,B], A:B x A:B x A:B</span>
+<span class="sd">        * [A,B,C,D,E,F], A:B x C:D x E:F</span>
+
+<span class="sd">    :seealso: :func:`plotvol2`, :func:`expand_dims`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="n">expand_dims</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim3d</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim3d</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../func_graphics.html#spatialmath.base.animate.expand_dims">[docs]</a><span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nd</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+
+
+<span class="sd">    :param dim: [description], defaults to None</span>
+<span class="sd">    :type dim: [type], optional</span>
+<span class="sd">    :param nd: [description], defaults to 2</span>
+<span class="sd">    :type nd: int, optional</span>
+<span class="sd">    :raises ValueError: bad arguments</span>
+<span class="sd">    :return: 2d or 3d dimensions vector</span>
+<span class="sd">    :rtype: ndarray(4) or ndarray(6)</span>
+
+<span class="sd">    Compute bounding dimensions for plots from shorthand notation.</span>
+
+<span class="sd">    If ``nd==2``, [xmin, xmax, ymin, ymax]:</span>
+<span class="sd">        * A -&gt; [-A, A, -A, A]</span>
+<span class="sd">        * [A,B] -&gt; [A, B, A, B]</span>
+<span class="sd">        * [A,B,C,D] -&gt; [A, B, C, D]</span>
+
+<span class="sd">    If ``nd==3``, [xmin, xmax, ymin, ymax, zmin, zmax]:</span>
+<span class="sd">        * A -&gt; [-A, A, -A, A, -A, A]</span>
+<span class="sd">        * [A,B] -&gt; [A, B, A, B, A, B]</span>
+<span class="sd">        * [A,B,C,D,E,F] -&gt; [A, B, C, D, E, F]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nd</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="o">-</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dim</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad dimension specified&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">nd</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="o">-</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="o">-</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">dim</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dim</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dim</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad dimension specified&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;nd is 2 or 3&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -843,7 +939,7 @@
         
         &copy; Copyright 2020, Peter Corke
       <span class="lastupdated">
-        Last updated on 01-Jan-2021.
+        Last updated on 04-Jan-2021.
       </span>
 
     </p>
