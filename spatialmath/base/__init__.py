@@ -123,4 +123,6 @@ __all__ = [
 # spatialmath.base.animate
     'Animate',
     'Animate2',
+    'plotvol2',
+    'plotvol3',
  ]
