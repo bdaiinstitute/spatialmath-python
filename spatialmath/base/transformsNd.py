@@ -398,7 +398,7 @@ def iseye(S, tol=10):
     s = S.shape
     if len(s) != 2 or s[0] != s[1]:
         return False  # not a square matrix
-    return base.norm(S - np.eye(s[0])) < tol * _eps
+    return np.linalg.norm(S - np.eye(s[0])) < tol * _eps
 
 
 # ---------------------------------------------------------------------------------------#

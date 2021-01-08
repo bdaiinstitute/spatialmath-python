@@ -216,7 +216,7 @@ def isunitvec(v, tol=10):
         >>> isunitvec([1, 0])
         >>> isunitvec([1, 2])
 
-    :seealso: unit, isunittwist
+    :seealso: unit, iszerovec, isunittwist
     """
     return abs(np.linalg.norm(v) - 1) < tol * _eps
 
@@ -235,13 +235,33 @@ def iszerovec(v, tol=10):
     .. runblock:: pycon
 
         >>> from spatialmath.base import *
-        >>> isunit([0, 0])
-        >>> isunit([1, 2])
+        >>> iszerovec([0, 0])
+        >>> iszerovec([1, 2])
 
-    :seealso: unit, isunittwist
+    :seealso: unit, isunitvec, isunittwist
     """
     return np.linalg.norm(v) < tol * _eps
 
+def iszero(v, tol=10):
+    """
+    Test if scalar is zero
+
+    :param v: value to test
+    :type v: float
+    :param tol: tolerance in units of eps
+    :type tol: float
+    :return: whether value is zero
+    :rtype: bool
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> iszero(0)
+        >>> iszero(1)
+
+    :seealso: unit, iszerovec, isunittwist
+    """
+    return abs(v) < tol * _eps
 
 def isunittwist(v, tol=10):
     r"""
@@ -430,10 +450,10 @@ def unittwist2(S):
     v = S[0:2]
     w = S[2]
 
-    if iszerovec(w):
+    if iszero(w):
         th = norm(v)
     else:
-        th = norm(w)
+        th = abs(w)
 
     return S / th
 
@@ -463,10 +483,10 @@ def unittwist2_norm(S):
     v = S[0:2]
     w = S[2]
 
-    if iszerovec(w):
+    if iszero(w):
         th = norm(v)
     else:
-        th = norm(w)
+        th = abs(w)
 
     return (S / th, th)
 
