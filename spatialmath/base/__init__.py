@@ -122,6 +122,7 @@ __all__ = [
     'angdiff',
     'removesmall',
     'cross',
+    'iszero',
 # spatialmath.base.animate
     'Animate',
     'Animate2',

@@ -201,6 +201,10 @@ class TestVector(unittest.TestCase):
         self.assertFalse(iszerovec([0, 1]), False)
         self.assertFalse(iszerovec([0, 1, 0]), False)
 
+    def test_iszero(self):
+        self.assertTrue(iszero(0))
+        self.assertFalse(iszero(1))
+
     def test_angdiff(self):
 
         self.assertEqual(angdiff(0, 0), 0)
