@@ -216,15 +216,27 @@ def result(op, t):
 misc_setup = '''
 from spatialmath import base
 import numpy as np
-s = np.r_[1,2,3,4,5,6]
+s = np.r_[1.0,2,3,4,5,6]
+a = np.r_[1.0, 2.0, 3.0]
+b = np.r_[-5.0, 4.0, 3.0]
+
 '''
 table.rule()
+
+t = timeit.timeit(stmt='c = np.cross(a,b)', setup=misc_setup, number=N)
+result("np.cross()", t)
+
+t = timeit.timeit(stmt='c = base.cross(a,b)', setup=misc_setup, number=N)
+result("cross()", t)
 
 t = timeit.timeit(stmt='a = np.inner(s,s).sum()', setup=misc_setup, number=N)
 result("inner()", t)
 
 t = timeit.timeit(stmt='a = np.linalg.norm(s) ** 2', setup=misc_setup, number=N)
-result("norm**2", t)
+result("np.norm**2", t)
+
+t = timeit.timeit(stmt='a = base.normsq(s)', setup=misc_setup, number=N)
+result("base.normsq", t)
 
 t = timeit.timeit(stmt='a = (s ** 2).sum()', setup=misc_setup, number=N)
 result("s**2.sum()", t)

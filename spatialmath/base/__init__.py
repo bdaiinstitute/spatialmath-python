@@ -111,6 +111,7 @@ __all__ = [
     'colvec',
     'unitvec',
     'norm',
+    'normsq',
     'isunitvec',
     'iszerovec',
     'isunittwist',
@@ -120,6 +121,7 @@ __all__ = [
     'unittwist2',
     'angdiff',
     'removesmall',
+    'cross',
 # spatialmath.base.animate
     'Animate',
     'Animate2',

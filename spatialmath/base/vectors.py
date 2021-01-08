@@ -17,7 +17,7 @@ from spatialmath.base import getvector
 
 try:  # pragma: no cover
     # print('Using SymPy')
-    from sympy import Matrix
+    import sympy
 
     _symbolics = True
 
@@ -122,16 +122,82 @@ def norm(v):
         >>> from spatialmath.base import *
         >>> norm([3, 4])
 
+    .. note:: This function does not use NumPy, it is ~2x faster than 
+        `numpy.linalg.norm()` for a 3-vector
+
     :seealso: :func:`~spatialmath.base.unit`
 
     :SymPy: supported
     """
-    v = getvector(v)
-    if v.dtype.kind == 'O':
-        return Matrix(v).norm()
-    else:
-        return np.linalg.norm(v)
+    sum = 0
+    for x in v:
+        sum += x * x
 
+    if isinstance(sum, sympy.Expr):
+        return sympy.sqrt(sum)
+    else:
+        return math.sqrt(sum)
+
+def normsq(v):
+    """
+    Squared norm of vector
+
+    :param v: any vector
+    :type v: array_like(n)
+    :return: norm of vector
+    :rtype: float
+
+    ``norm(sq)`` is the sum of squared elements of the vector ``v`` 
+    or :math:`|v|^2`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> normsq([2, 3])
+
+    .. note:: This function does not use NumPy, it is ~2x faster than 
+        `numpy.linalg.norm() ** 2` for a 3-vector
+
+    :seealso: :func:`~spatialmath.base.unit`
+
+    :SymPy: supported
+    """
+    sum = 0
+    for x in v:
+        sum += x * x
+
+    return sum
+
+def cross(u, v):
+    """
+    Cross product of vectors
+
+    :param u: any vector
+    :type u: array_like(3)
+    :param v: any vector
+    :type v: array_like(3)
+    :return: cross product
+    :rtype: nd.array(3)
+
+    ``cross(u, v)`` is the cross product of the vectors ``u`` and ``v``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> cross([1, 0, 0], [0, 1, 0])
+
+    .. note:: This function does not use NumPy, it is ~1.5x faster than 
+        `numpy.cross()`
+
+    :seealso: :func:`~spatialmath.base.unit`
+
+    :SymPy: supported
+    """
+    return np.r_[
+        u[1] * v[2] - u[2] * v[1],
+        u[2] * v[0] - u[0] * v[2],
+        u[0] * v[1] - u[1] * v[0]
+                ]
 
 def isunitvec(v, tol=10):
     """
@@ -277,9 +343,9 @@ def unittwist(S, tol=10):
     Returns None if the twist has zero magnitude
     """
 
-    s = getvector(S, 6)
+    S = getvector(S, 6)
 
-    if iszerovec(s, tol=tol):
+    if iszerovec(S, tol=tol):
         return None
 
     v = S[0:3]
@@ -322,9 +388,9 @@ def unittwist_norm(S, tol=10):
     .. note:: Returns (None,None) if the twist has zero magnitude
     """
 
-    s = getvector(S, 6)
+    S = getvector(S, 6)
 
-    if iszerovec(s, tol=tol):
+    if iszerovec(S, tol=tol):
         return (None, None)
 
     v = S[0:3]
@@ -460,4 +526,4 @@ def removesmall(v, tol=100):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test_vectors.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_vectors.py").read())  # pylint: disable=exec-used

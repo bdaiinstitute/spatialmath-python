@@ -76,11 +76,31 @@ class TestVector(unittest.TestCase):
     def test_norm(self):
         self.assertAlmostEqual(norm([0, 0, 0]), 0)
         self.assertAlmostEqual(norm([1, 2, 3]), math.sqrt(14))
-
+        self.assertAlmostEqual(norm(np.r_[1, 2, 3]), math.sqrt(14))
+        
         x, y = sym.symbol('x y')
         v = [x, y]
         self.assertEqual(norm(v), sym.sqrt(x**2 + y**2))
         self.assertEqual(norm(np.r_[v]), sym.sqrt(x**2 + y**2))
+
+    def test_norm(self):
+        self.assertAlmostEqual(norm([0, 0, 0]), 0)
+        self.assertAlmostEqual(normsq([1, 2, 3]), 14)
+        self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
+
+        x, y = sym.symbol('x y')
+        v = [x, y]
+        self.assertEqual(normsq(v), x**2 + y**2)
+        self.assertEqual(normsq(np.r_[v]), x**2 + y**2)
+
+    def test_cross(self):
+
+        A = np.eye(3)
+
+        for i in range(0, 3):
+            j = (i + 1) % 3
+            k = (i + 2) % 3
+            self.assertTrue(all(cross(A[:,i], A[:,j]) == A[:,k]))
 
     def test_isunittwist(self):
         # 3D
