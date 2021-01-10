@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Transforms in 2D &mdash; Spatial Maths package 0.8.5
+  <title>Transforms in 2D &mdash; Spatial Maths package 0.8.7
  documentation</title>
   
 
@@ -20,7 +20,10 @@
   
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   
+
   
+  
+
   
 
   
@@ -56,7 +59,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Spatial Maths package
+            <a href="index.html" class="icon icon-home"> Spatial Maths package
           
 
           
@@ -149,6 +152,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -162,7 +167,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/func_2d.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -173,10 +178,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="func_3d.html" class="btn btn-neutral float-right" title="Transforms in 3D" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="func_3d.html" class="btn btn-neutral float-right" title="Transforms in 3D" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="functions.html" class="btn btn-neutral float-left" title="Function reference" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="functions.html" class="btn btn-neutral float-left" title="Function reference" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -263,6 +268,75 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 <p class="admonition-title">Note</p>
 <p>By default, the translational component is zero but it can be 
 set to a non-zero value.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms2d.xyt2tr">
+<code class="sig-name descname">xyt2tr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xyt</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'rad'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#xyt2tr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms2d.xyt2tr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create SE(2) pure rotation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyt</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – 2d translation and rotation</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3x3 homogeneous transformation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xyt2tr([x,y,θ])</span></code> is a homogeneous transformation (3x3) representing a rotation of
+θ radians and a translation of (x,y).</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">])</span>
+<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">45</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">array([[ 0.7071, -0.7071,  1.    ],</span>
+<span class="go">       [ 0.7071,  0.7071,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms2d.tr2xyt">
+<code class="sig-name descname">tr2xyt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'rad'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2xyt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2xyt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert SE(2) to x, y, theta</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[x, y, θ]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2xyt(T)</span></code> is a vector giving the equivalent 2D translation and
+rotation for this SO(2) matrix.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span>
+<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2xyt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([1. , 2. , 0.3])</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -423,6 +497,45 @@ rotation sub-matrix and validitity of the bottom row.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p>isR, ishom2, isrot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms2d.trinv2">
+<code class="sig-name descname">trinv2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinv2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinv2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert an SE(2) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>inverse of SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+</dl>
+<p>Computes an efficient inverse of an SE(2) matrix:</p>
+<p><span class="math notranslate nohighlight">\(\begin{pmatrix} {\bf R} &amp; t \\ 0\,0 &amp; 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T &amp; -{\bf R}^T t \\ 0\, 0 &amp; 1 \end{pmatrix}\)</span></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinv2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([[ 0.9553,  0.2955, -5.2989],</span>
+<span class="go">       [-0.2955,  0.9553, -3.5946],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">@</span> <span class="n">trinv2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([[ 1., -0.,  0.],</span>
+<span class="go">       [-0.,  1.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">SymPy</dt>
+<dd class="field-odd"><p>supported</p>
 </dd>
 </dl>
 </dd></dl>
@@ -787,25 +900,18 @@ tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], mo
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="func_3d.html" class="btn btn-neutral float-right" title="Transforms in 3D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="functions.html" class="btn btn-neutral float-left" title="Function reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="func_3d.html" class="btn btn-neutral float-right" title="Transforms in 3D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="functions.html" class="btn btn-neutral float-left" title="Function reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Peter Corke
+        &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 04-Jan-2021.
+        Last updated on 10-Jan-2021.
       </span>
 
     </p>
@@ -813,14 +919,13 @@ tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], mo
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -846,6 +951,7 @@ tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], mo
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'G-11Q6WJM565', 'auto');
+    
     ga('send', 'pageview');
     </script>
 
