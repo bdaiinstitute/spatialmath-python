@@ -85,6 +85,57 @@ def trot2(theta, unit='rad', t=None):
     T[2, 2] = 1.0
     return T
 
+def xyt2tr(xyt, unit='rad'):
+    """
+    Create SE(2) pure rotation
+
+    :param xyt: 2d translation and rotation
+    :type xyt: array_like(3)
+    :param unit: angular units: 'rad' [default], or 'deg'
+    :type unit: str 
+    :return: 3x3 homogeneous transformation matrix
+    :rtype: ndarray(3,3)
+
+    - ``xyt2tr([x,y,θ])`` is a homogeneous transformation (3x3) representing a rotation of
+      θ radians and a translation of (x,y).
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> xyt2tr([1,2,0.3])
+        >>> xyt2tr([1,2,45], 'deg')
+
+    """
+    xyt = base.getvector(xyt, 3)
+    T = np.pad(rot2(xyt[2], unit), (0, 1), mode='constant')
+    T[:2, 2] = xyt[0:2]
+    T[2, 2] = 1.0
+    return T
+
+def tr2xyt(T, unit='rad'):
+    """
+    Convert SE(2) to x, y, theta
+
+    :param T: SE(2) matrix
+    :type T: ndarray(3,3)
+    :param unit: angular units: 'rad' [default], or 'deg'
+    :type unit: str
+    :return: [x, y, θ]
+    :rtype: ndarray(3)
+
+    - ``tr2xyt(T)`` is a vector giving the equivalent 2D translation and
+      rotation for this SO(2) matrix.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = xyt2tr([1, 2, 0.3])
+        >>> T
+        >>> tr2xyt(T)
+
+    """
+    angle = math.atan2(T[1, 0], T[0, 0])
+    return np.r_[T[0,2], T[1,2], angle]
 
 # ---------------------------------------------------------------------------------------#
 def transl2(x, y=None):
@@ -219,6 +270,39 @@ def isrot2(R, check=False):
 
 # ---------------------------------------------------------------------------------------#
 
+def trinv2(T):
+    r"""
+    Invert an SE(2) matrix
+
+    :param T: SE(2) matrix
+    :type T: ndarray(3,3)
+    :return: inverse of SE(2) matrix
+    :rtype: ndarray(3,3)
+    :raises ValueError: bad arguments
+
+    Computes an efficient inverse of an SE(2) matrix:
+
+    :math:`\begin{pmatrix} {\bf R} & t \\ 0\,0 & 1 \end{pmatrix}^{-1} =  \begin{pmatrix} {\bf R}^T & -{\bf R}^T t \\ 0\, 0 & 1 \end{pmatrix}`
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trot2(0.3, t=[4,5])
+        >>> trinv2(T)
+        >>> T @ trinv2(T)
+
+    :SymPy: supported
+    """
+    if not ishom2(T):
+        raise ValueError("expecting SE(2) matrix")
+    # inline this code for speed, don't use tr2rt and rt2tr
+    R = T[:2, :2]
+    t = T[:2, 2]
+    Ti = np.zeros((3,3), dtype=T.dtype)
+    Ti[:2, :2] = R.T
+    Ti[:2, 2] = -R.T @ t
+    Ti[2,2] = 1
+    return Ti
 
 def trlog2(T, check=True, twist=False):
     """

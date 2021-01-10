@@ -57,6 +57,9 @@ __all__ = [
     'trprint2',
     'trplot2',
     'tranimate2',
+    'xyt2tr',
+    'tr2xyt',
+    'trinv2',
 # spatialmath.base.transforms3d
     'rotx',
     'roty',
