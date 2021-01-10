@@ -490,7 +490,7 @@ def unittwist2_norm(S):
 
     return (S / th, th)
 
-def angdiff(a, b):
+def angdiff(a, b=None):
     """
     Angular difference
 
@@ -501,10 +501,19 @@ def angdiff(a, b):
     :return: angular difference a-b
     :rtype: scalar or array_like
 
-    - If ``a`` and ``b`` are both scalars, the result is scalar
-    - If ``a`` is array_like, the result is a vector a[i]-b
-    - If ``a`` is array_like, the result is a vector a-b[i]
-    - If ``a`` and ``b`` are both vectors of the same length, the result is a vector a[i]-b[i]
+    - ``angdiff(a, b)`` is the difference ``a - b`` wrapped to the range
+      :math:`[-\pi, \pi)`.  This is the operator :math:`a \circleddash b` used
+      in the RVC book
+        - If ``a`` and ``b`` are both scalars, the result is scalar
+        - If ``a`` is array_like, the result is a NumPy array ``a[i]-b``
+        - If ``a`` is array_like, the result is a NumPy array ``a-b[i]``
+        - If ``a`` and ``b`` are both vectors of the same length, the result is
+          a NumPy array ``a[i]-b[i]``
+
+    - ``angdiff(a)`` is the angle or vector of angles ``a`` wrapped to the range
+      :math:`[-\pi, \pi)`.
+        - If ``a`` is a scalar, the result is scalar
+        - If ``a`` is array_like, the result is a NumPy array
 
     .. runblock:: pycon
 
@@ -512,10 +521,13 @@ def angdiff(a, b):
         >>> from math import pi
         >>> angdiff(0, 2 * pi)
         >>> angdiff(0.9 * pi, -0.9 * pi) / pi
+        >>> angdiff(3 * pi)
 
     """
-
-    return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
+    if b is None:
+        return np.mod(a + math.pi, 2 * math.pi) - math.pi
+    else:
+        return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
 
 def removesmall(v, tol=100):
     """
