@@ -113,8 +113,8 @@ class DualQuaternion:
             >>> d.norm()  # norm is a dual number
         """
         a = self.real * self.real.conj()
-        b= self.real * self.dual.conj() + self.dual * self.real.conj()
-        return (a.s, b.s)
+        b = self.real * self.dual.conj() + self.dual * self.real.conj()
+        return (base.sqrt(a.s), base.sqrt(b.s))
 
     def conj(self):
         r"""
@@ -345,21 +345,8 @@ class UnitDualQuaternion(DualQuaternion):
     #     v = self.dual.v
     #     theta = base.norm(w)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
 
-    a = DualQuaternion(Quaternion([1,2,3,4]), Quaternion([5,6,7,8]))
-    print(a)
-    print(a.vec)
-    print(a.conj())
-    print(a.norm())
-    print(a+a)
-    print(a*a)
-    print(a.matrix())
+    import pathlib
 
-    T = SE3.Rand()
-    print(T)
-
-    aa = UnitDualQuaternion(T)
-    print(aa)
-    print(aa.norm())
-    print(aa.T())
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_dualquaternion.py").read())  # pylint: disable=exec-used
