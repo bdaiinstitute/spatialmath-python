@@ -2072,4 +2072,4 @@ if __name__ == '__main__':  # pragma: no cover
     a = q.exp()
     print(a, a.norm())
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_quaternion.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_quaternion.py").read())  # pylint: disable=exec-used

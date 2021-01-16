@@ -1106,4 +1106,4 @@ if __name__ == '__main__':   # pragma: no cover
     
     a = SE3.Exp([2,0,0,0,0,0])
 
-    exec(open(os.path.join(pathlib.Path(__file__).parent.absolute(), "test_geom3d.py")).read())
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_geom3d.py").read())  # pylint: disable=exec-used

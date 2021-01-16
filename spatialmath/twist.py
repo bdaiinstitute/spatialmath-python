@@ -1525,4 +1525,4 @@ if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_twist.py").read())
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_twist.py").read())  # pylint: disable=exec-used

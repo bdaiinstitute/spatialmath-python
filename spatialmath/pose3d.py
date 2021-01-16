@@ -1321,4 +1321,4 @@ if __name__ == '__main__':   # pragma: no cover
     a = SE3.Rx(np.pi/2)
     print(a)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_pose3d.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose3d.py").read())  # pylint: disable=exec-used

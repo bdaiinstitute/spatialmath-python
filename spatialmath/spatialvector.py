@@ -673,4 +673,4 @@ if __name__ == "__main__":
     print(I*v)
     print(I*a)
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_spatialvector.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_spatialvector.py").read())  # pylint: disable=exec-used
