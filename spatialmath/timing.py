@@ -217,6 +217,7 @@ misc_setup = '''
 from spatialmath import base
 import numpy as np
 s = np.r_[1.0,2,3,4,5,6]
+s3 = np.r_[1.0,2,3]
 a = np.r_[1.0, 2.0, 3.0]
 b = np.r_[-5.0, 4.0, 3.0]
 
@@ -243,5 +244,16 @@ result("s**2.sum()", t)
 
 t = timeit.timeit(stmt='a = np.sum(s ** 2)', setup=misc_setup, number=N)
 result("np.sum(s ** 2)", t)
+
+t = timeit.timeit(stmt='a = np.linalg.norm(s)', setup=misc_setup, number=N)
+result("np.norm(R6)", t)
+t = timeit.timeit(stmt='a = base.norm(s)', setup=misc_setup, number=N)
+result("base.norm(R6)", t)
+
+t = timeit.timeit(stmt='a = np.linalg.norm(s3)', setup=misc_setup, number=N)
+result("np.norm(R3)", t)
+t = timeit.timeit(stmt='a = base.norm(s3)', setup=misc_setup, number=N)
+result("base.norm(R3)", t)
+
 
 table.print()
