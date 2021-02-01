@@ -314,6 +314,9 @@ class TestSO3(unittest.TestCase):
             return np.c_[v]
 
         nt.assert_equal(isinstance(SO3.Rx(pi / 2) * vx, np.ndarray), True)
+        print(vx)
+        print(SO3.Rx(pi / 2) * vx)
+        print(cv(vx))
         array_compare(SO3.Rx(pi / 2) * vx, cv(vx))
         array_compare(SO3.Rx(pi / 2) * vy, cv(vz))
         array_compare(SO3.Rx(pi / 2) * vz, cv(-vy))
@@ -828,7 +831,7 @@ class TestSE3(unittest.TestCase):
 
         array_compare(SE3.Rx(pi / 2) * SE3.Ry(pi / 2) * SE3.Rx(-pi / 2), SE3.Rz(pi / 2))
 
-        array_compare(SE3.Ry(pi / 2) * [1, 0, 0], np.r_[0, 0, -1])
+        array_compare(SE3.Ry(pi / 2) * [1, 0, 0], np.c_[0, 0, -1].T)
 
         # SE3 x vector
         vx = np.r_[1, 0, 0]
@@ -839,17 +842,17 @@ class TestSE3(unittest.TestCase):
             return np.c_[v]
 
         nt.assert_equal(isinstance(SE3.Tx(pi / 2) * vx, np.ndarray), True)
-        array_compare(SE3.Rx(pi / 2) * vx, vx)
-        array_compare(SE3.Rx(pi / 2) * vy, vz)
-        array_compare(SE3.Rx(pi / 2) * vz, -vy)
+        array_compare(SE3.Rx(pi / 2) * vx, cv(vx))
+        array_compare(SE3.Rx(pi / 2) * vy, cv(vz))
+        array_compare(SE3.Rx(pi / 2) * vz, cv(-vy))
 
-        array_compare(SE3.Ry(pi / 2) * vx, -vz)
-        array_compare(SE3.Ry(pi / 2) * vy, vy)
-        array_compare(SE3.Ry(pi / 2) * vz, vx)
+        array_compare(SE3.Ry(pi / 2) * vx, cv(-vz))
+        array_compare(SE3.Ry(pi / 2) * vy, cv(vy))
+        array_compare(SE3.Ry(pi / 2) * vz, cv(vx))
 
-        array_compare(SE3.Rz(pi / 2) * vx, vy)
-        array_compare(SE3.Rz(pi / 2) * vy, -vx)
-        array_compare(SE3.Rz(pi / 2) * vz, vz)
+        array_compare(SE3.Rz(pi / 2) * vx, cv(vy))
+        array_compare(SE3.Rz(pi / 2) * vy, cv(-vx))
+        array_compare(SE3.Rz(pi / 2) * vz, cv(vz))
 
         # divide
         T = SE3.Ry(0.3)

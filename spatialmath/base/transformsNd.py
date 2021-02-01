@@ -640,7 +640,7 @@ def h2e(v):
     :return: Euclidean vector
     :rtype: ndarray(n-1), ndarray(n-1,m)
 
-    - If ``v`` is an N-vector, return an (N-1)-vetor where the elements have
+    - If ``v`` is an N-vector, return an (N-1)-column vector where the elements have
       all been scaled by the last element of ``v``.
     - If ``v`` is a matrix (NxM), return a matrix (N-1xM), where each column has
       been scaled by its last element.
@@ -654,27 +654,29 @@ def h2e(v):
         >>> h
         >>> h2e(h)
 
+    .. note:: The result is always a 2D array, a 1D input results in a column vector.
+
     :seealso: e2h
     """
-    if base.isvector(v):
-        # dealing with shape (N,) array
-        v = base.getvector(v)
-        return v[0:-1] / v[-1]
-    elif isinstance(v, np.ndarray) and len(v.shape) == 2:
+    if isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
         return v[:-1, :] / np.tile(v[-1, :], (v.shape[0] - 1, 1))
-
+    
+    elif base.isvector(v):
+        # dealing with shape (N,) array
+        v = base.getvector(v, out='col')
+        return v[0:-1] / v[-1]
 
 def e2h(v):
     """
     Convert from Euclidean to homogeneous form
 
     :param v: Euclidean vector or matrix
-    :type v: array_like(n), ndarray(n,n)
+    :type v: array_like(n), ndarray(n,m)
     :return: homogeneous vector
-    :rtype: ndarray(n+1) or ndarray(n+1,m
+    :rtype: ndarray(n+1,m)
 
-    - If ``v`` is an N-vector, return an (N+1)-vector where a value of 1 has
+    - If ``v`` is an N-vector, return an (N+1)-column vector where a value of 1 has
       been appended as the last element.
     - If ``v`` is a matrix (NxM), return a matrix (N+1xM), where each column has
       been appended with a value of 1, ie. a row of ones has been appended to the matrix.
@@ -687,41 +689,37 @@ def e2h(v):
         >>> e
         >>> e2h(e)
 
+    .. note:: The result is always a 2D array, a 1D input results in a column vector.
+
     :seealso: e2h
     """
-    if base.isvector(v):
-        # dealing with shape (N,) array
-        v = base.getvector(v)
-        return np.r_[v, 1]
-    elif isinstance(v, np.ndarray) and len(v.shape) == 2:
+    if isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
         return np.vstack([v, np.ones((1, v.shape[1]))])
+
+    elif base.isvector(v):
+        # dealing with shape (N,) array
+        v = base.getvector(v, out='col')
+        return np.vstack((v, 1))
 
 def homtrans(T, p):
     r"""
     Apply a homogeneous transformation to a Euclidean vector
 
     :param T: homogeneous transformation
-    :type T: Numpy array (3,3) or (4,4)
+    :type T: Numpy array (n,n)
     :param p: Vector(s) to be transformed
-    :type p: Numpy array (2,), (2,N), (3,) or (3,N)
+    :type p: array_like(n-1), ndarray(n-1,m)
     :return: transformed Euclidean vector(s)
-    :rtype: Numpy array (2,), (2,N), (3,) or (3,N)
+    :rtype: ndarray(n-1,m)
     :raises ValueError: bad argument
 
-    ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the points 
-    stored columnwise in ``p``.
+    - ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the Euclidean points 
+      stored columnwise in the array ``p``. 
 
-    - If ``T`` is in SE(2) (3x3) and
-        - ``p`` is 2xN (2D points) they are considered Euclidean (:math:`\mathbb{R}^2`)
-        - ``p`` is 3xN (2D points) they are considered projective (:math:`\mathbb{P}^2`)
-    - If ``T`` is in SE(3) (4x4) and
-        - ``p`` is 3xN (3D points) they are considered Euclidean (:math:`\mathbb{R}^3`)
-        - ``p`` is 4xN (3D points) they are considered projective (:math:`\mathbb{P}^3`)
+    - ``homtrans(T, v)`` as above but ``v`` is a 1D array considered to be a column vector, and the
+      retured value will be a column vector.
 
-    The return value and ``p`` have the same number of rows, ie. if Euclidean points are given
-    then Euclidean points are returned, if projective points are given then
-    projective points are returned.
 
     .. runblock:: pycon
 
@@ -739,16 +737,11 @@ def homtrans(T, p):
 
     :seealso: :func:`e2h`, :func:`h2e`
     """
-    if base.isvector(p):
-        p = base.getvector(p)
-    if p.shape[0] == T.shape[0] - 1:
-        # Euclidean vector
-        return h2e( T @ e2h(p) )
-    elif p.shape[0] == T.shape[0]:
-        # homogeneous vector
-        return T @ p
-    else:
+    p = e2h(p)
+    if p.shape[0] != T.shape[0]:
         raise ValueError('matrices and point data do not conform')
+    
+    return h2e( T @ p )
 
 def det(m):
     """
@@ -778,4 +771,6 @@ def det(m):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
+    print(e2h((1,2,3)))
+    print(h2e((1,2,3)))
     exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_transformsNd.py").read())  # pylint: disable=exec-used

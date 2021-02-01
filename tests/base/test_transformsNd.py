@@ -216,9 +216,9 @@ class TestND(unittest.TestCase):
 
 
     def test_homog(self):
-        nt.assert_almost_equal(e2h([1, 2, 3]), np.r_[1, 2, 3, 1])
+        nt.assert_almost_equal(e2h([1, 2, 3]), np.c_[1, 2, 3, 1].T)
 
-        nt.assert_almost_equal(h2e([2, 4, 6, 2]), np.r_[1, 2, 3])
+        nt.assert_almost_equal(h2e([2, 4, 6, 2]), np.c_[1, 2, 3].T)
 
     def test_homtrans(self):
 
@@ -226,38 +226,23 @@ class TestND(unittest.TestCase):
         T = trotx(pi/2, t=[1,2,3])
         v = [10,12,14]
         v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, [11, -12, 15])
+        nt.assert_almost_equal(v2, np.c_[11, -12, 15].T)
         v = np.c_[[10,12,14], [-3,-4,-5]]
         v2 = homtrans(T, v)
         nt.assert_almost_equal(v2, np.c_[[11, -12, 15], [-2,7,-1]])
 
-        T = trotx(pi/2, t=[1,2,3])
-        v = [10,12,14,1]
-        v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, [11, -12, 15,1])
-        v = np.c_[[10,12,14,1], [-3,-4,-5,1]]
-        v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, np.c_[[11, -12, 15,1], [-2,7,-1,1]])
+
 
         #2D
         T = trot2(pi/2, t=[1,2])
         v = [10,12]
         v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, [-11, 12])
+        nt.assert_almost_equal(v2, np.c_[-11, 12].T)
         v = np.c_[[10,12], [-3,-4]]
         v2 = homtrans(T, v)
         nt.assert_almost_equal(v2, np.c_[[-11, 12], [5, -1]])
 
-        T = trot2(pi/2, t=[1,2])
-        v = [10,12,1]
-        v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, [-11, 12, 1])
-        v = [20,24,2]
-        v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, [-22, 24, 2])
-        v = np.c_[[10,12, 1], [-3,-4, 1]]
-        v2 = homtrans(T, v)
-        nt.assert_almost_equal(v2, np.c_[[-11, 12, 1], [5, -1, 1]])
+
 
         with self.assertRaises(ValueError):
             T = trotx(pi/2, t=[1,2,3])
