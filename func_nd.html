@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Transforms in ND &mdash; Spatial Maths package 0.8.7
+  <title>Transforms in ND &mdash; Spatial Maths package 0.8.9
  documentation</title>
   
 
@@ -856,16 +856,20 @@ and angle.</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N-1)-vetor where the elements have
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N-1)-column vector where the elements have
 all been scaled by the last element of <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is a matrix (NxM), return a matrix (N-1xM), where each column has
 been scaled by its last element.</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="go">array([2., 4., 6.])</span>
+<span class="go">array([[2.],</span>
+<span class="go">       [4.],</span>
+<span class="go">       [6.]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="go">array([1., 2., 3.])</span>
+<span class="go">array([[1.],</span>
+<span class="go">       [2.],</span>
+<span class="go">       [3.]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h</span>
 <span class="go">array([[1, 3, 5],</span>
@@ -875,6 +879,10 @@ been scaled by its last element.</p></li>
 <span class="go">array([[1. , 1.5, 5. ],</span>
 <span class="go">       [2. , 2. , 6. ]])</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The result is always a 2D array, a 1D input results in a column vector.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -889,24 +897,27 @@ been scaled by its last element.</p></li>
 <dd><p>Convert from Euclidean to homogeneous form</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n</em><em>,</em><em>n</em><em>)</em>) – Euclidean vector or matrix</p>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – Euclidean vector or matrix</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>homogeneous vector</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(n+1) or ndarray(n+1,m</p>
+<dd class="field-odd"><p>ndarray(n+1,m)</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N+1)-vector where a value of 1 has
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N+1)-column vector where a value of 1 has
 been appended as the last element.</p></li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is a matrix (NxM), return a matrix (N+1xM), where each column has
 been appended with a value of 1, ie. a row of ones has been appended to the matrix.</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e2h</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="go">array([2., 4., 6., 1.])</span>
+<span class="go">array([[2.],</span>
+<span class="go">       [4.],</span>
+<span class="go">       [6.],</span>
+<span class="go">       [1.]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span>
 <span class="go">array([[1, 3, 5],</span>
@@ -916,6 +927,10 @@ been appended with a value of 1, ie. a row of ones has been appended to the matr
 <span class="go">       [2., 4., 6.],</span>
 <span class="go">       [1., 1., 1.]])</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The result is always a 2D array, a 1D input results in a column vector.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -931,50 +946,37 @@ been appended with a value of 1, ie. a row of ones has been appended to the matr
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> (<em>Numpy array</em><em> (</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – homogeneous transformation</p></li>
-<li><p><strong>p</strong> (<em>Numpy array</em><em> (</em><em>2</em><em>,</em><em>)</em><em>, </em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em><em>, </em><em>(</em><em>3</em><em>,</em><em>) or </em><em>(</em><em>3</em><em>,</em><em>N</em><em>)</em>) – Vector(s) to be transformed</p></li>
+<li><p><strong>T</strong> (<em>Numpy array</em><em> (</em><em>n</em><em>,</em><em>n</em><em>)</em>) – homogeneous transformation</p></li>
+<li><p><strong>p</strong> (<em>array_like</em><em>(</em><em>n-1</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n-1</em><em>,</em><em>m</em><em>)</em>) – Vector(s) to be transformed</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>transformed Euclidean vector(s)</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Numpy array (2,), (2,N), (3,) or (3,N)</p>
+<dd class="field-odd"><p>ndarray(n-1,m)</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">p)</span></code> applies the homogeneous transformation <code class="docutils literal notranslate"><span class="pre">T</span></code> to the points 
-stored columnwise in <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
 <ul class="simple">
-<li><dl class="simple">
-<dt>If <code class="docutils literal notranslate"><span class="pre">T</span></code> is in SE(2) (3x3) and</dt><dd><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> is 2xN (2D points) they are considered Euclidean (<span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> is 3xN (2D points) they are considered projective (<span class="math notranslate nohighlight">\(\mathbb{P}^2\)</span>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">p)</span></code> applies the homogeneous transformation <code class="docutils literal notranslate"><span class="pre">T</span></code> to the Euclidean points 
+stored columnwise in the array <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">v)</span></code> as above but <code class="docutils literal notranslate"><span class="pre">v</span></code> is a 1D array considered to be a column vector, and the
+retured value will be a column vector.</p></li>
 </ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>If <code class="docutils literal notranslate"><span class="pre">T</span></code> is in SE(3) (4x4) and</dt><dd><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> is 3xN (3D points) they are considered Euclidean (<span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">p</span></code> is 4xN (3D points) they are considered projective (<span class="math notranslate nohighlight">\(\mathbb{P}^3\)</span>)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p>The return value and <code class="docutils literal notranslate"><span class="pre">p</span></code> have the same number of rows, ie. if Euclidean points are given
-then Euclidean points are returned, if projective points are given then
-projective points are returned.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-<span class="go">array([1.    , 1.0241, 3.457 ])</span>
+<span class="go">array([[1.    ],</span>
+<span class="go">       [1.0241],</span>
+<span class="go">       [3.457 ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="go">array([1.    , 1.0241, 3.457 ])</span>
+<span class="go">array([[1.    ],</span>
+<span class="go">       [1.0241],</span>
+<span class="go">       [3.457 ]])</span>
 </pre></div>
 </div>
 <div class="admonition note">

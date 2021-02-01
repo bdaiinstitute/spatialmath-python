@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.base.transformsNd &mdash; Spatial Maths package 0.8.7
+  <title>spatialmath.base.transformsNd &mdash; Spatial Maths package 0.8.9
  documentation</title>
   
 
@@ -808,7 +808,7 @@
 <span class="sd">    :return: Euclidean vector</span>
 <span class="sd">    :rtype: ndarray(n-1), ndarray(n-1,m)</span>
 
-<span class="sd">    - If ``v`` is an N-vector, return an (N-1)-vetor where the elements have</span>
+<span class="sd">    - If ``v`` is an N-vector, return an (N-1)-column vector where the elements have</span>
 <span class="sd">      all been scaled by the last element of ``v``.</span>
 <span class="sd">    - If ``v`` is a matrix (NxM), return a matrix (N-1xM), where each column has</span>
 <span class="sd">      been scaled by its last element.</span>
@@ -822,27 +822,29 @@
 <span class="sd">        &gt;&gt;&gt; h</span>
 <span class="sd">        &gt;&gt;&gt; h2e(h)</span>
 
+<span class="sd">    .. note:: The result is always a 2D array, a 1D input results in a column vector.</span>
+
 <span class="sd">    :seealso: e2h</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-        <span class="c1"># dealing with shape (N,) array</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="c1"># dealing with matrix</span>
-        <span class="k">return</span> <span class="n">v</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
-
+        <span class="k">return</span> <span class="n">v</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    
+    <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="c1"># dealing with shape (N,) array</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="e2h"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.e2h">[docs]</a><span class="k">def</span> <span class="nf">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert from Euclidean to homogeneous form</span>
 
 <span class="sd">    :param v: Euclidean vector or matrix</span>
-<span class="sd">    :type v: array_like(n), ndarray(n,n)</span>
+<span class="sd">    :type v: array_like(n), ndarray(n,m)</span>
 <span class="sd">    :return: homogeneous vector</span>
-<span class="sd">    :rtype: ndarray(n+1) or ndarray(n+1,m</span>
+<span class="sd">    :rtype: ndarray(n+1,m)</span>
 
-<span class="sd">    - If ``v`` is an N-vector, return an (N+1)-vector where a value of 1 has</span>
+<span class="sd">    - If ``v`` is an N-vector, return an (N+1)-column vector where a value of 1 has</span>
 <span class="sd">      been appended as the last element.</span>
 <span class="sd">    - If ``v`` is a matrix (NxM), return a matrix (N+1xM), where each column has</span>
 <span class="sd">      been appended with a value of 1, ie. a row of ones has been appended to the matrix.</span>
@@ -855,41 +857,37 @@
 <span class="sd">        &gt;&gt;&gt; e</span>
 <span class="sd">        &gt;&gt;&gt; e2h(e)</span>
 
+<span class="sd">    .. note:: The result is always a 2D array, a 1D input results in a column vector.</span>
+
 <span class="sd">    :seealso: e2h</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-        <span class="c1"># dealing with shape (N,) array</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="c1"># dealing with matrix</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))])</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))])</span>
+
+    <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="c1"># dealing with shape (N,) array</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;col&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="homtrans"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.homtrans">[docs]</a><span class="k">def</span> <span class="nf">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply a homogeneous transformation to a Euclidean vector</span>
 
 <span class="sd">    :param T: homogeneous transformation</span>
-<span class="sd">    :type T: Numpy array (3,3) or (4,4)</span>
+<span class="sd">    :type T: Numpy array (n,n)</span>
 <span class="sd">    :param p: Vector(s) to be transformed</span>
-<span class="sd">    :type p: Numpy array (2,), (2,N), (3,) or (3,N)</span>
+<span class="sd">    :type p: array_like(n-1), ndarray(n-1,m)</span>
 <span class="sd">    :return: transformed Euclidean vector(s)</span>
-<span class="sd">    :rtype: Numpy array (2,), (2,N), (3,) or (3,N)</span>
+<span class="sd">    :rtype: ndarray(n-1,m)</span>
 <span class="sd">    :raises ValueError: bad argument</span>
 
-<span class="sd">    ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the points </span>
-<span class="sd">    stored columnwise in ``p``.</span>
+<span class="sd">    - ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the Euclidean points </span>
+<span class="sd">      stored columnwise in the array ``p``. </span>
 
-<span class="sd">    - If ``T`` is in SE(2) (3x3) and</span>
-<span class="sd">        - ``p`` is 2xN (2D points) they are considered Euclidean (:math:`\mathbb{R}^2`)</span>
-<span class="sd">        - ``p`` is 3xN (2D points) they are considered projective (:math:`\mathbb{P}^2`)</span>
-<span class="sd">    - If ``T`` is in SE(3) (4x4) and</span>
-<span class="sd">        - ``p`` is 3xN (3D points) they are considered Euclidean (:math:`\mathbb{R}^3`)</span>
-<span class="sd">        - ``p`` is 4xN (3D points) they are considered projective (:math:`\mathbb{P}^3`)</span>
+<span class="sd">    - ``homtrans(T, v)`` as above but ``v`` is a 1D array considered to be a column vector, and the</span>
+<span class="sd">      retured value will be a column vector.</span>
 
-<span class="sd">    The return value and ``p`` have the same number of rows, ie. if Euclidean points are given</span>
-<span class="sd">    then Euclidean points are returned, if projective points are given then</span>
-<span class="sd">    projective points are returned.</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -907,16 +905,11 @@
 
 <span class="sd">    :seealso: :func:`e2h`, :func:`h2e`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># Euclidean vector</span>
-        <span class="k">return</span> <span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">e2h</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="c1"># homogeneous vector</span>
-        <span class="k">return</span> <span class="n">T</span> <span class="o">@</span> <span class="n">p</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;matrices and point data do not conform&#39;</span><span class="p">)</span></div>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">e2h</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;matrices and point data do not conform&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">p</span> <span class="p">)</span></div>
 
 <div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.det">[docs]</a><span class="k">def</span> <span class="nf">det</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -946,6 +939,8 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
 
+    <span class="nb">print</span><span class="p">(</span><span class="n">e2h</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">h2e</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
     <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;test&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_transformsNd.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
 </pre></div>
 
