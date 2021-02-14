@@ -1681,7 +1681,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     Plot a 3D coordinate frame
 
     :param T: SE(3) or SO(3) matrix
-    :type T: ndarray(4,4) or ndarray(3,3)
+    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning
     :param axes: the axes to plot into, defaults to current axes
     :type axes: Axes3D reference
     :param block: run the GUI main loop until all windows are closed, default True
@@ -1738,11 +1738,6 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         print('matplotlib is not installed: pip install matplotlib')
         return
 
-    # check input types
-    if isrot(T, check=True):
-        T = base.r2t(T)
-    elif not ishom(T, check=True):
-        raise ValueError("not a valid SE(3) matrix")
 
     if axes is None:
         # create an axes
@@ -1761,6 +1756,20 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
             ax = plt.gca()
     else:
         ax = axes
+
+    # check input types
+    if isrot(T, check=True):
+        T = base.r2t(T)
+    elif ishom(T, check=True):
+        pass
+    else:
+        # assume it is an interable
+        for Tk in T:
+            trplot(Tk, axes=ax, block=block, dims=dims, color=color, frame=frame,
+                textcolor=textcolor, labels=labels, length=length, style=style,
+                projection=projection, wtl=wtl, width=width, d1=d1,
+                d2=d2, anaglyph=anaglyph, **kwargs)
+        return
 
     if dims is not None:
         if len(dims) == 2:
