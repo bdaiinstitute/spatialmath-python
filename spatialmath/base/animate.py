@@ -680,12 +680,14 @@ class Animate2:
     def set_ylabel(self, *args, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
 
-def plotvol2(dim, ax=None):
+def plotvol2(dim, ax=None, equal=False):
     """
     Create 2D plot area
 
     :param ax: axes of initializer, defaults to new subplot
     :type ax: AxesSubplot, optional
+    :param equal: set aspect ratio to 1:1, default False
+    :type equal: bool
     :return: initialized axes
     :rtype: AxesSubplot
 
@@ -701,14 +703,18 @@ def plotvol2(dim, ax=None):
     if ax is None:
         ax = plt.subplot()
     ax.axis(dims)
+    if equal:
+        ax.set_aspect('equal')
     return ax
 
-def plotvol3(dim, ax=None):
+def plotvol3(dim, ax=None, equal=False):
     """
     Create 3D plot volume
 
     :param ax: axes of initializer, defaults to new subplot
     :type ax: Axes3DSubplot, optional
+    :param equal: set aspect ratio to 1:1:1, default False
+    :type equal: bool
     :return: initialized axes
     :rtype: Axes3DSubplot
 
@@ -727,6 +733,9 @@ def plotvol3(dim, ax=None):
     ax.set_xlim3d(dims[0], dims[1])
     ax.set_ylim3d(dims[2], dims[3])
     ax.set_zlim3d(dims[4], dims[5])
+
+    if equal:
+        ax.set_aspect('equal')
     return ax
 
 def plot_point(pos, marker='bs', text=None, ax=None, color=None, **kwargs):
