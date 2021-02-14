@@ -408,7 +408,7 @@ class SO3(SMPose):
         return cls([base.q2r(base.rand()) for _ in range(0, N)], check=False)
 
     @classmethod
-    def Eul(cls, angles, *, unit='rad'):
+    def Eul(cls, angles, unit='rad'):
         r"""
         Construct a new SO(3) from Euler angles
 
@@ -419,26 +419,41 @@ class SO3(SMPose):
         :return: SO(3) rotation
         :rtype: SO3 instance
 
-        ``SO3.Eul(𝚪)`` is an SO(3) rotation defined by a 3-vector of Euler angles :math:`\Gamma = (\phi, \theta, \psi)` which
-        correspond to consecutive rotations about the Z, Y, Z axes respectively.
+        ``SO3.Eul(𝚪)`` is an SO(3) rotation defined by a 3-vector of Euler
+          angles :math:`\Gamma = (\phi, \theta, \psi)` which correspond to
+          consecutive rotations about the Z, Y, Z axes respectively. If ``𝚪``
+          is an Nx3 matrix then the result is a sequence of rotations each
+          defined by Euler angles corresponding to the rows of ``angles``.
 
-        If ``𝚪`` is an Nx3 matrix then the result is a sequence of rotations each defined by Euler angles
-        corresponding to the rows of ``angles``.
+        ``SO3.Eul(φ, θ, ψ)`` as above but the angles are provided as three
+          scalars.
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SO3
+            >>> SO3.Eul(0.1, 0.2, 0.3)
+            >>> SO3.Eul([0.1, 0.2, 0.3])
+            >>> SO3.Eul(10, 20, 30, 'deg')
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         """
+        if len(angles) == 1:
+            angles = angles[0]
+
         if base.isvector(angles, 3):
             return cls(base.eul2r(angles, unit=unit), check=False)
         else:
             return cls([base.eul2r(a, unit=unit) for a in angles], check=False)
 
     @classmethod
-    def RPY(cls, angles, *, order='zyx', unit='rad'):
+    def RPY(cls, *angles, unit='rad', order='zyx', ):
         r"""
         Construct a new SO(3) from roll-pitch-yaw angles
 
         :param angles: roll-pitch-yaw angles
-        :type angles: array_like or numpy.ndarray with shape=(N,3)
+        :type angles: array_like(3), array_like(n,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
@@ -446,8 +461,12 @@ class SO3(SMPose):
         :return: SO(3) rotation
         :rtype: SO3 instance
 
-        ``SO3.RPY(angles)`` is an SO(3) rotation defined by a 3-vector of roll, pitch, yaw angles :math:`(r, p, y)`
-          which correspond to successive rotations about the axes specified by ``order``:
+        - ``SO3.RPY(angles)`` is an SO(3) rotation defined by a 3-vector of
+          roll, pitch, yaw angles :math:`(\alpha, \beta, \gamma)`. If ``angles``
+          is an Nx3 matrix then the result is a sequence of rotations each
+          defined by RPY angles corresponding to the rows of angles. The angles
+          correspond to successive rotations about the axes specified by
+          ``order``:
 
              - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
                then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
@@ -459,15 +478,28 @@ class SO3(SMPose):
               then by roll about the new z-axis. Convention for a camera with z-axis parallel
               to the optic axis and x-axis parallel to the pixel rows.
 
-        If ``angles`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
-        corresponding to the rows of angles.
+        - ``SO3.RPY(⍺, β, 𝛾)`` as above but the angles are provided as three
+          scalars.
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SO3
+            >>> SO3.RPY(0.1, 0.2, 0.3)
+            >>> SO3.RPY([0.1, 0.2, 0.3])
+            >>> SO3.RPY(0.1, 0.2, 0.3, order='xyz')
+            >>> SO3.RPY(10, 20, 30, 'deg')
+
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
         """
-        if base.isvector(angles, 3):
-            return cls(base.rpy2r(angles, order=order, unit=unit), check=False)
-        else:
-            return cls([base.rpy2r(a, order=order, unit=unit) for a in angles], check=False)
+        if len(angles) == 1:
+            angles = angles[0]
+
+        angles = base.getmatrix(angles, (None, 3))
+        return cls(base.rpy2r(angles, order=order, unit=unit), check=False)
+
 
     @classmethod
     def OA(cls, o, a):
@@ -1322,6 +1354,11 @@ class SE3(SO3):
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
+
+    a = SO3.RPY([.1, .2, .3])
+    print(a)
+    a = SO3.RPY(.1, .2, .3)
+    print(a)
 
     SE3._bgcolor = 'yellow'
     # SE3._format = '{:< 6.2f}'
