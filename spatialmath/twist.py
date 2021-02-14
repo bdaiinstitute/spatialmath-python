@@ -353,6 +353,8 @@ class Twist3(SMTwist):
             elif value.shape == (6,):
                 # it's a twist vector
                 return value
+        elif base.ishom(value, check=check):
+                return base.trlog(value, twist=True, check=False)
         raise TypeError('bad type passed')
 
     @staticmethod
@@ -471,7 +473,7 @@ class Twist3(SMTwist):
     # -------------------- variant constructors ----------------------------#
 
     @classmethod
-    def Revolute(cls, a, q, p=None):
+    def Revolute(cls, a, q, pitch=None):
         """
         Construct a new unit rotational 3D twist
 
@@ -495,8 +497,7 @@ class Twist3(SMTwist):
         """
         w = base.unitvec(base.getvector(a, 3))
         v = -np.cross(w, base.getvector(q, 3))
-        if p is not None:
-            pitch = base.getvector(p, 3)
+        if pitch is not None:
             v = v + pitch * w
         return cls(v, w)
 
@@ -1122,6 +1123,8 @@ class Twist2(SMTwist):
             elif value.shape == (3,):
                 # it's a twist vector
                 return value
+        elif base.ishom2(value, check=check):
+                return base.trlog2(value, twist=True, check=False)
         raise TypeError('bad type passed')
 
     @staticmethod
@@ -1372,6 +1375,28 @@ class Twist2(SMTwist):
             return SE2(base.trexp2(self.S * theta))
         else:
             return SE2([base.trexp2(self.S * t) for t in theta])
+
+    def pole(self):
+        """
+        Pole of a 2D twist
+
+        :return: the pole of the twist
+        :rtype: ndarray(2)
+
+        ``X.pole()`` is a point on the twist axis. For a pure translation 
+        this point is at infinity.
+
+        Example:
+        
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3, Twist3
+            >>> T = SE3(1, 2, 3) * SE3.Rx(0.3)
+            >>> S = Twist3(T)
+            >>> S.pole()
+        """
+        p = np.cross(np.r_[0, 0, self.w], np.r_[self.v, 0]) / self.theta()
+        return p[:2]
 
     @property
     def unit(self):
