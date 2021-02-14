@@ -78,6 +78,8 @@ def trot2(theta, unit='rad', t=None):
 
     .. note:: By default, the translational component is zero but it can be 
         set to a non-zero value.
+
+    :seealso: xyt2tr
     """
     T = np.pad(rot2(theta, unit), (0, 1), mode='constant')
     if t is not None:
@@ -105,6 +107,7 @@ def xyt2tr(xyt, unit='rad'):
         >>> xyt2tr([1,2,0.3])
         >>> xyt2tr([1,2,45], 'deg')
 
+    :seealso: tr2xyt
     """
     xyt = base.getvector(xyt, 3)
     T = np.pad(rot2(xyt[2], unit), (0, 1), mode='constant')
@@ -133,6 +136,7 @@ def tr2xyt(T, unit='rad'):
         >>> T
         >>> tr2xyt(T)
 
+    :seealso: trot2
     """
     angle = math.atan2(T[1, 0], T[0, 0])
     return np.r_[T[0,2], T[1,2], angle]
@@ -652,7 +656,7 @@ except ImportError:  # pragma: no cover
 
 if _matplotlib_exists:
 
-    def trplot2(T, axes=None, block=True, dims=None, color='blue', frame=None, # pylint: disable=unused-argument,function-redefined
+    def trplot2(T, axes=None, block=False, dims=None, color='blue', frame=None, # pylint: disable=unused-argument,function-redefined
                 textcolor=None, labels=('X', 'Y'), length=1, arrow=True,
                 rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  
         """

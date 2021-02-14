@@ -1673,10 +1673,10 @@ try:
 except ImportError:  # pragma: no cover      
     _matplotlib_exists = False
 
-def trplot(T, axes=None, block=True, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
-           textcolor=None, labels=('X', 'Y', 'Z'), length=1, arrow=True,
-           projection='ortho', rviz=False, wtl=0.2, width=1, d1=0.05,
-           d2=1.15, **kwargs):
+def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
+           textcolor=None, labels=('X', 'Y', 'Z'), length=1, style='arrow',
+           projection='ortho', wtl=0.2, width=1, d1=0.05,
+           d2=1.15, anaglyph=None, **kwargs):
     """
     Plot a 3D coordinate frame
 
