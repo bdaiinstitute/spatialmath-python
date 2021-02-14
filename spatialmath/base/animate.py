@@ -412,6 +412,7 @@ class Animate2:
         Will setup to plot into an existing or a new Axes3D instance.
 
         """
+        self.trajectory = None
         self.displaylist = []
 
         if axes is None:
@@ -453,6 +454,12 @@ class Animate2:
         :seealso: :func:`run`
 
         """
+        if not isinstance(end, (np.ndarray, np.generic) ) and isinstance(end, Iterable):
+            if len(end) == 1:
+                end = end[0]
+            elif len(end) >= 2:
+                self.trajectory = end
+
         # stash the final value
         if base.isrot2(end):
             self.end = base.r2t(end)
@@ -496,7 +503,11 @@ class Animate2:
         """
 
         def update(frame, a):
-            T = base.trinterp2(start=self.start, end=self.end, s=frame / nframes)
+            # if contains trajectory:
+            if self.trajectory is not None:
+                T = self.trajectory[frame]
+            else:
+                T = base.trinterp2(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True
@@ -507,6 +518,8 @@ class Animate2:
             repeat = False
 
         self.done = False
+        if self.trajectory is not None:
+            nframes = len(self.trajectory)
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
 
         if movie is None:
