@@ -558,4 +558,4 @@ def removesmall(v, tol=100):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_vectors.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_vectors.py").read())  # pylint: disable=exec-used

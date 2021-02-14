@@ -546,4 +546,4 @@ def islistof(value, what, n=None):
 if __name__ == '__main__':
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_argcheck.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_argcheck.py").read())  # pylint: disable=exec-used
