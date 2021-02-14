@@ -1699,18 +1699,19 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     :type labels: 3-tuple of strings
     :param length: length of coordinate frame axes, default 1
     :type length: float
-    :param arrow: show arrow heads, default True
-    :type arrow: bool
+    :param style: axis style: 'arrow' [default], 'line', 'rgb' (Rviz style)
+    :type style: str
     :param wtl: width-to-length ratio for arrows, default 0.2
     :type wtl: float
-    :param rviz: show Rviz style arrows, default False
-    :type rviz: bool
     :param projection: 3D projection: ortho [default] or persp
     :type projection: str
     :param width: width of lines, default 1
     :type width: float
     :param d1: distance of frame axis label text from origin, default 1.15
     :type d2: distance of frame label text from origin, default 0.05
+    :param anaglyph: 3D anaglyph display, a pair of single letter color codes
+        for left then right lens.
+    :type anaglyph: True (for red-cyan glasses) or str
     :return: axes containing the frame
     :rtype: Axes3DSubplot
     :raises ValueError: bad arguments
@@ -1776,17 +1777,17 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
     # draw the axes
 
-    if rviz:
-        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color='red', linewidth=5 * width)
-        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=5 * width)
-        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=5 * width)
-    elif arrow:
+    if style == 'rgb':
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color='red', linewidth=width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=width)
+    elif style == 'arrow':
         ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
         ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
         ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
         # plot an invisible point at the end of each arrow to allow auto-scaling to work
         ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], s=[20, 0, 0, 0])
-    else:
+    elif style == 'line':
         ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color, linewidth=width)
         ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color, linewidth=width)
         ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color, linewidth=width)
