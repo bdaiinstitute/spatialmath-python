@@ -368,7 +368,7 @@ class SMPose(SMUserList):
         :param start: initial pose
         :type start: same as ``self``
         :param s: interpolation coefficient, range 0 to 1
-        :type s: float or array_like
+        :type s: array_like
         :return: interpolated pose
         :rtype: SO2, SE2, SO3, SE3 instance
 
@@ -414,6 +414,8 @@ class SMPose(SMUserList):
         :SymPy: not supported
         """
         s = base.getvector(s)
+        s = np.clip(s, 0, 1)
+
         if start is not None:
             assert len(start) == 1, 'len(start) must == 1'
             start = start.A
