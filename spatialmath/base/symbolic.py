@@ -229,7 +229,7 @@ def simplify(x):
     """
     Symbolic simplification
 
-    :param x: expression to simplofy
+    :param x: expression to simplify
     :type x: symbolic
     :return: -1
     :rtype: symbolic
@@ -249,3 +249,26 @@ def simplify(x):
     else:
         return x
 
+def det(x):
+    """
+    Symbolic determinant
+
+    :param m: matrix
+    :type x: ndarray with symbolic elements
+    :return: determinant
+    :rtype: ndarray with symbolic elements
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> from spatialmath.base import rot2
+        >>> theta = symbol('theta')
+        >>> R = rot2(theta)
+        >>> print(R)
+        >>> print(det(R))
+        >>> simplify(print(det(R)))
+
+    .. note:: Converts to a SymPy ``Matrix`` and then back again.    
+    """
+
+    return sympy.Matrix(x).det()
