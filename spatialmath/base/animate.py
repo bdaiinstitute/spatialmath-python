@@ -699,7 +699,7 @@ def plotvol3(dim, ax=None, equal=False):
 
     :param ax: axes of initializer, defaults to new subplot
     :type ax: Axes3DSubplot, optional
-    :param equal: set aspect ratio to 1:1, default False
+    :param equal: set aspect ratio to 1:1:1, default False
     :type equal: bool
     :return: initialized axes
     :rtype: Axes3DSubplot
