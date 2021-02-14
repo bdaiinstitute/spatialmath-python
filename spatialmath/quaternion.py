@@ -17,7 +17,7 @@ To use::
 
 import math
 import numpy as np
-from typing import Any
+from typing import Any, Type
 from spatialmath import base
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.smuserlist import SMUserList
@@ -1724,23 +1724,23 @@ class UnitQuaternion(Quaternion):
         """
         return left.binop(right, lambda x, y: not base.isequal(x, y, unitq=True), list1=False)
 
-    def interp(self, s=0, dest=None, shortest=False):
+    def interp(self, s=0, start=None, shortest=False):
         """
         Interpolate between two unit quaternions
 
-        :param dest: destination unit quaternion
-        :type dest: UnitQuaternion
+        :param start: initial unit quaternion
+        :type start: UnitQuaternion
         :param shortest: Take the shortest path along the great circle
         :param s: interpolation in range [0,1]
-        :type s: float
+        :type s: array_like
         :return: interpolated unit quaternion
         :rtype: UnitQuaternion instance
 
         - ``q.interp(s)`` is a unit quaternion that is interpolated between
           the identity quaternion and ``q``.  Spherical linear interpolation (slerp) is used.
 
-        - ``q1.interp(s, dest=q2)`` as above but interpolated between
-          ``q1`` and ``q2``.
+        - ``q1.interp(s, start=q0)`` as above but interpolated between
+          ``q0`` and ``q1``.
 
         Example:
 
@@ -1750,55 +1750,57 @@ class UnitQuaternion(Quaternion):
             >>> q1 = UQ.Rx(0.3); q2 = UQ.Rz(-0.4)
             >>> print(q1)
             >>> print(q2)
-            >>> print(q1.interp(0, q2))    # this is q1
-            >>> print(q1.interp(1, q2))    # this is q2
-            >>> print(q1.interp(0.5, q2))  # this is in between
+            >>> print(q2.interp(0, start=q1))    # this is q1
+            >>> print(q2.interp(1, start=q1))    # this is q2
+            >>> print(q2.interp(0.5, start=q1))  # this is in between
+
+        .. note:: values of ``s`` are clipped to the range [0, 1]
 
         :seealso: :func:`~spatialmath.base.quaternions.slerp`
         """
-        # TODO vectorize
+        # TODO allow self to have len() > 1
 
-        if dest is not None:
+        s = base.getvector(s)
+        s = np.clip(s, 0, 1)  # enforce valid values
+
+        if start is not None:
             # 2 quaternion form
-            assert isinstance(dest, UnitQuaternion)
-            if s == 0:
-                return self
-            elif s == 1:
-                return dest
-            q1 = self.vec
-            q2 = dest.vec
+            if not isinstance(start, UnitQuaternion):
+                raise TypeError('start argument must be a UnitQuaternion')
+            q1 = start.vec
+            q2 = self.vec
+            dot = base.inner(q1, q2)
+
+            # If the dot product is negative, the quaternions
+            # have opposite handed-ness and slerp won't take
+            # the shorter path. Fix by reversing one quaternion.
+            if shortest:
+                if dot < 0:
+                    q1 = - q1
+                    dot = -dot
+
         else:
             # 1 quaternion form
-            if s == 0:
-                return UnitQuaternion()
-            elif s == 1:
-                return self
-
+            # s will always be positive
             q1 = base.eye()
             q2 = self.vec
+            dot = q2[0]  # if q1 = (1, 0,0,0)
 
-        assert 0 <= s <= 1, 's must be in interval [0,1]'
-
-        dot = base.inner(q1, q2)
-
-        # If the dot product is negative, the quaternions
-        # have opposite handed-ness and slerp won't take
-        # the shorter path. Fix by reversing one quaternion.
-        if shortest:
-            if dot < 0:
-                q1 = - q1
-                dot = -dot
-
+        # shouldn't be needed by handle numerical errors: -eps, 1+eps cases
         dot = np.clip(dot, -1, 1)  # Clip within domain of acos()
-        theta_0 = math.acos(dot)  # theta_0 = angle between input vectors
-        theta = theta_0 * s  # theta = angle between v0 and result
-        if theta_0 == 0:
-            return UnitQuaternion(q1)
 
-        s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
-        s2 = math.sin(theta) / math.sin(theta_0)
-        out = (q1 * s1) + (q2 * s2)
-        return UnitQuaternion(out)
+        theta_0 = math.acos(dot)  # theta_0 = angle between input vectors
+
+        qi = []
+        for sk in s:
+            theta = theta_0 * sk  # theta = angle between v0 and result
+
+            s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
+            s2 = math.sin(theta) / math.sin(theta_0)
+            out = (q1 * s1) + (q2 * s2)
+            qi.append(out)
+
+        return UnitQuaternion(qi)
 
     def plot(self, *args, **kwargs):
         """
@@ -2012,7 +2014,7 @@ class UnitQuaternion(Quaternion):
         if not isinstance(other, UnitQuaternion):
             raise TypeError('bad operand')
 
-        return math.acos(2 * self.inner(other) ** 2 - 1)
+        return self.binop(other, lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1))
 
     def SO3(self):
         """

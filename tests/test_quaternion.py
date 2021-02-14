@@ -503,8 +503,14 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(q0_5 * q0_5, q)
 
         # between two quaternions
-        qcompare(q.interp(0, dest=rx), q)
-        qcompare(q.interp(1, dest=rx), rx)
+        qcompare(rx.interp(0, start=q), q)
+        qcompare(rx.interp(1, start=q), rx)
+
+        # test vectorised results
+        qq = rx.interp([0, 1], start=q)
+        self.assertEqual(len(qq), 2)
+        qcompare(qq[0], q)
+        qcompare(qq[1], rx)
 
         #self.assertTrue(all( q.interp([0, 1], dest=rx, ) == [q, rx]))
 
