@@ -131,4 +131,5 @@ __all__ = [
     'Animate2',
     'plotvol2',
     'plotvol3',
+    'plot_point',
  ]

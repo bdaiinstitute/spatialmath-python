@@ -715,6 +715,74 @@ def plotvol3(dim, ax=None):
     ax.set_zlim3d(dims[4], dims[5])
     return ax
 
+def plot_point(pos, marker='bs', text=None, ax=None, color=None, **kwargs):
+    """
+    Plot a point using matplotlib
+
+    :param pos: position of marker
+    :type pos: array_like(2), ndarray(2,n), list of 2-tuples
+    :param marker: matplotlub marker style, defaults to 'bs'
+    :type marker: str or list of str, optional
+    :param text: text label, defaults to None
+    :type text: str, optional
+    :param ax: axes to plot in, defaults to ``gca()````
+    :type ax: Axis, optional
+    :param color: text color, defaults to None
+    :type color: str or array_like(3), optional
+
+    The color of the marker can be different to the color of the text,
+    the marker color is specified by a single letter in the marker string.
+
+    A point can multiple markers which will be overlaid, for instance ``["rx",
+    "ro"]`` will give a ⨂ symbol.
+
+    The optional text label is placed to the right of the marker, and vertically
+    aligned. 
+    
+    Multiple points can be marked if ``pos`` is a 2xn array or a list of
+    coordinate pairs.  If a label is provided every point will have the same
+    label. However, the text is processed with ``format`` and is provided with a
+    single argument, the point index (starting at zero).
+
+
+    """
+    
+    if isinstance(pos, np.ndarray):
+        if pos.ndim == 1:
+            x = pos[0]
+            y = pos[1]
+        elif pos.ndim == 2 and pos.shape[0] == 2:
+            x = pos[0,:]
+            y = pos[1,:]
+    elif isinstance(pos, (tuple, list)):
+        # [x, y]
+        # [(x,y), (x,y), ...]
+        # [xlist, ylist]
+        # [xarray, yarray]
+        if base.islistof(pos, (tuple, list)):
+            x = [z[0] for z in pos]
+            y = [z[1] for z in pos]
+        elif base.islistof(pos, np.ndarray):
+            x = pos[0]
+            y = pos[1]
+        else:
+            x = pos[0]
+            y = pos[1]
+
+    if ax is None:
+        ax = plt.gca()
+    if isinstance(marker, (list, tuple)):
+        for m in marker:
+            plt.plot(x, y, m, **kwargs)
+    else:
+        plt.plot(x, y, marker)
+    if text:
+        try:
+            for i, xy in enumerate(zip(x, y)):
+                plt.text(xy[0], xy[1], ' ' + text.format(i), horizontalalignment='left', verticalalignment='center', color=color, **kwargs)
+        except:
+            plt.text(x, y, ' ' + text, horizontalalignment='left', verticalalignment='center', color=color, **kwargs)
+
 def expand_dims(dim=None, nd=2):
     """[summary]
 
