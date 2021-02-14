@@ -521,6 +521,8 @@
             <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">6</span><span class="p">,):</span>
                 <span class="c1"># it&#39;s a twist vector</span>
                 <span class="k">return</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ishom</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad type passed&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Twist3.isvalid"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -639,7 +641,7 @@
     <span class="c1"># -------------------- variant constructors ----------------------------#</span>
 
 <div class="viewcode-block" id="Twist3.Revolute"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Revolute">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Revolute</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Revolute</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">pitch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new unit rotational 3D twist</span>
 
@@ -663,8 +665,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="n">v</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pitch</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pitch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">pitch</span> <span class="o">*</span> <span class="n">w</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span></div>
 
@@ -1290,6 +1291,8 @@
             <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
                 <span class="c1"># it&#39;s a twist vector</span>
                 <span class="k">return</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ishom2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad type passed&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Twist2.isvalid"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1541,6 +1544,28 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE2</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span><span class="p">])</span></div>
 
+<div class="viewcode-block" id="Twist2.pole"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.pole">[docs]</a>    <span class="k">def</span> <span class="nf">pole</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pole of a 2D twist</span>
+
+<span class="sd">        :return: the pole of the twist</span>
+<span class="sd">        :rtype: ndarray(2)</span>
+
+<span class="sd">        ``X.pole()`` is a point on the twist axis. For a pure translation </span>
+<span class="sd">        this point is at infinity.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">        </span>
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
+<span class="sd">            &gt;&gt;&gt; T = SE3(1, 2, 3) * SE3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; S = Twist3(T)</span>
+<span class="sd">            &gt;&gt;&gt; S.pole()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">p</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1707,7 +1732,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 01-Feb-2021.
+        Last updated on 14-Feb-2021.
       </span>
 
     </p>

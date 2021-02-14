@@ -515,6 +515,30 @@ skew-symmetric 3x3 matrix.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spatialmath.Twist2.pole">
+<code class="sig-name descname">pole</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.pole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spatialmath.Twist2.pole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pole of a 2D twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the pole of the twist</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(2)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.pole()</span></code> is a point on the twist axis. For a pure translation 
+this point is at infinity.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">pole</span><span class="p">()</span>
+<span class="go">array([ 0.    , -2.6775,  2.435 ])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spatialmath.Twist2.unit">
 <em class="property">property </em><code class="sig-name descname">unit</code><a class="headerlink" href="#spatialmath.Twist2.unit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unit twist</p>
@@ -926,9 +950,9 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([0.68022, 0.82523, -0.18571, 1.4171, -0.884, -1.8306])</span>
+<span class="go">Twist3([1.0168, 0.23784, 0.59098, -1.9055, -0.77634, -0.80872])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([-0.68022, -0.82523, 0.18571, -1.4171, 0.884, 1.8306])</span>
+<span class="go">Twist3([-1.0168, -0.23784, -0.59098, 1.9055, 0.77634, 0.80872])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
 <span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
 </pre></div>
@@ -1086,7 +1110,7 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 01-Feb-2021.
+        Last updated on 14-Feb-2021.
       </span>
 
     </p>
