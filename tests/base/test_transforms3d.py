@@ -394,15 +394,24 @@ class Test3D(unittest.TestCase):
 
     def test_plot(self):
         plt.figure()
-        trplot(transl(1, 2, 3), block=False, frame='A', rviz=True, width=1, dims=[0, 10, 0, 10, 0, 10])
+        # test options
+        trplot(transl(1, 2, 3), block=False, frame='A', style='line', width=1, dims=[0, 10, 0, 10, 0, 10])
+        trplot(transl(1, 2, 3), block=False, frame='A', style='arrow', width=1, dims=[0, 10, 0, 10, 0, 10])
+        trplot(transl(1, 2, 3), block=False, frame='A', style='rgb', width=1, dims=[0, 10, 0, 10, 0, 10])
         trplot(transl(3, 1, 2), block=False, color='red', width=3, frame='B')
         trplot(transl(4, 3, 1)@trotx(math.pi / 3), block=False, color='green', frame='c', dims=[0, 4, 0, 4, 0, 4])
+
+        # test for iterable
+        plt.clf()
+        T = [transl(1,2,3), transl(2,3,4), transl(3,4,5)]
+        trplot(T)
 
         plt.clf()
         tranimate(transl(1, 2, 3), repeat=False)
         tranimate(transl(1, 2, 3), repeat=False, pause=2)
         # run again, with axes already created
         tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
+
         plt.close('all')
         # test animate with line not arrow, text, test with SO(3)
 
