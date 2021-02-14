@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from spatialmath import base
+from collections.abc import Iterable
 
 
 class Animate:
@@ -57,6 +58,7 @@ class Animate:
         Will setup to plot into an existing or a new Axes3D instance.
 
         """
+        self.trajectory = None
         self.displaylist = []
 
         if axes is None:
@@ -104,6 +106,14 @@ class Animate:
         :seealso: :func:`run`
 
         """
+        if isinstance(end, Iterable):
+            if len(end) == 1:
+                end = end[0]
+            elif len(end) >= 2:
+                self.trajectory = end
+                start = self.trajectory[0]
+                end = self.trajectory[-1]
+
         # stash the final value
         if base.isrot(end):
             self.end = base.r2t(end)
@@ -129,7 +139,7 @@ class Animate:
         :type axes: Axes3D reference
         :param repeat: animate in endless loop [default False]
         :type repeat: bool
-        :param nframes: number of steps in the animation [defaault 100]
+        :param nframes: number of steps in the animation [default 100]
         :type nframes: int
         :param interval: number of milliseconds between frames [default 50]
         :type interval: int
@@ -147,7 +157,11 @@ class Animate:
         """
 
         def update(frame, a):
-            T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
+            # if contains trajectory:
+            if self.trajectory is not None:
+                T = self.trajectory[frame]
+            else:
+                T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
             if frame == nframes - 1:
                 a.done = True
@@ -158,6 +172,8 @@ class Animate:
             repeat = False
 
         self.done = False
+        if self.trajectory is not None:
+            nframes = len(self.trajectory)
         ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
         if movie is None:
             while repeat or not self.done:
