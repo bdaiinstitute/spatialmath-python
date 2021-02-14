@@ -1342,14 +1342,17 @@ class SE3(SO3):
         return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
     @classmethod
-    def SO3(cls, R, check=True):
+    def SO3(cls, R, t=None, check=True):
         if isinstance(R, SO3):
             R = R.A
         elif base.isrot(R, check=check):
             pass
         else:
             raise ValueError('expecting SO3 or rotation matrix')
-        return cls(base.r2t(R))
+        if t is None:
+            return cls(base.r2t(R))
+        else:
+            return cls(base.rt2tr(R, t))
 
 if __name__ == '__main__':   # pragma: no cover
 
