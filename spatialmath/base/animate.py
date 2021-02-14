@@ -106,13 +106,11 @@ class Animate:
         :seealso: :func:`run`
 
         """
-        if isinstance(end, Iterable):
+        if not isinstance(end, (np.ndarray, np.generic) ) and isinstance(end, Iterable):
             if len(end) == 1:
                 end = end[0]
             elif len(end) >= 2:
                 self.trajectory = end
-                start = self.trajectory[0]
-                end = self.trajectory[-1]
 
         # stash the final value
         if base.isrot(end):
