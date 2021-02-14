@@ -841,7 +841,7 @@ class SE3(SO3):
         :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
         :SymPy: supported
         """
-        return tr2jac(self.A, samebody=False)
+        return base.tr2jac(self.A, samebody=False)
 
     def Twist3(self):
         """
