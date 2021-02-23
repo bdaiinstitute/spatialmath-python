@@ -1724,6 +1724,10 @@ class UnitQuaternion(Quaternion):
         """
         return left.binop(right, lambda x, y: not base.isequal(x, y, unitq=True), list1=False)
 
+    def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        print('normalizing product')
+        return left.__mul__(right)
+
     def interp(self, s=0, start=None, shortest=False):
         """
         Interpolate between two unit quaternions

@@ -999,6 +999,30 @@ class SMPose(SMUserList):
         else:
             return NotImplemented
 
+    def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        """
+        Overloaded ``@`` operator (superclass method)
+
+        :return: Product of two operands with normalization
+        :rtype: Pose instance or NumPy array
+        :raises ValueError: for incompatible arguments
+
+        - ``X @ Y`` compounds the poses ``X`` and ``Y`` and normalizes the result
+        - ``X @= Y`` compounds the poses ``X`` and ``Y``, normalizes the result,
+          and places the result in ``X``
+
+        .. note:: This operator is functionally equivalent to ``*`` but is more
+            costly.  It is useful for cases where a pose is incrementally 
+            update over many cycle.s
+
+        :seealso: :func:`__mul__`, :func:`~spatialmath.base.trnorm`
+        """
+        if isinstance(left, right.__class__):
+            #print('*: pose x pose')
+            return left.__class__(left._op2(right, lambda x, y: base.trnorm(x @ y)), check=False)
+        else:
+            raise TypeError('@ only applies to pose composition')
+
     def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
