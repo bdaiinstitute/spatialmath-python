@@ -1492,25 +1492,21 @@ def tr2delta(T0, T1=None):
     return np.r_[transl(Td), base.vex(base.t2r(Td) - np.eye(3))]
 
 
-def tr2jac(T, samebody=False):
+def tr2jac(T):
     r"""
-    SE(3) adjoint
+    SE(3) Jacobian matrix
 
     :param T: SE(3) matrix
     :type T: ndarray(4,4)
-    :return: adjoint matrix
+    :return: Jacobian matrix
     :rtype: ndarray(6,6)
-    :raises ValueError: bad arguments
 
-    Computes an adjoint matrix that maps spatial velocity between two frames defined by
-    an SE(3) matrix.  It is a Jacobian matrix.
+    Computes an Jacobian matrix that maps spatial velocity between two frames defined by
+    an SE(3) matrix.
 
-    - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or
-      differential motion from frame {A} to frame {B} where the pose of {B}
-      relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
-
-    - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both
-      attached to the same moving body.  This is the adjoint matrix
+    ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or
+    differential motion from frame {B} to frame {A} where the pose of {B}
+    elative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
 
     .. runblock:: pycon
 
@@ -1524,31 +1520,54 @@ def tr2jac(T, samebody=False):
 
     if not ishom(T):
         raise ValueError("expecting an SE(3) matrix")
+
     Z = np.zeros((3, 3), dtype=T.dtype)
+    R = base.t2r(T)
+    return np.block([[R, Z], [Z, R]])
 
-    if samebody:
-        # Adjoint case
-        (R, t) = base.tr2rt(T)
-        return np.block([[R.T, (base.skew(t)@R).T], [Z, R.T]])
-    else:
-        R = base.t2r(T)
-        return np.block([[R.T, Z], [Z, R.T]])
+def tr2adjoint(T):
+    r"""
+    SE(3) adjoint matrix
 
-def adjoint(T):
-    # http://ethaneade.com/lie.pdf
+    :param T: SE(3) matrix
+    :type T: ndarray(4,4)
+    :return: adjoint matrix
+    :rtype: ndarray(6,6)
+
+    Computes an adjoint matrix that maps spatial velocity between two frames defined by
+    an SE(3) matrix.
+
+    ``tr2jac(T)`` is an adjoint matrix (6x6) that maps spatial velocity or
+    differential motion between frame {B} to frame {A} which are attached to the
+    same moving body.  The pose of {B} relative to {A} is represented by the
+    homogeneous transform T = :math:`{}^A {\bf T}_B`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trotx(0.3, t=[4,5,6])
+        >>> tr2adjoint(T)
+    
+    :Reference: 
+        - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+        - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>_
+
+    :SymPy: supported
+    """
+    
     Z = np.zeros((3, 3), dtype=T.dtype)
     if T.shape == (3,3):
         # SO(3) adjoint
         return np.block([
-                [R, Z],
-                [Z, R]
+                    [R, Z],
+                    [Z, R]
                 ])
     elif T.shape == (4,4):
         # SE(3) adjoint
         (R, t) = base.tr2rt(T)
         return np.block([
-                [R, base.skew(t) @ R], 
-                [Z, R]
+                    [R, base.skew(t) @ R], 
+                    [Z, R]
                 ])
     else:
         raise ValueError('bad argument')
