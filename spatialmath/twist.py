@@ -183,6 +183,18 @@ class SMTwist(SMUserList):
         """
         return Twist3(base.unitvec(self.S))
 
+    def theta(self):
+        """
+        Twist angle (superclass method)
+
+        :return: magnitude of rotation (1x1) about the twist axis in radians
+        :rtype: float
+        """
+        if self.N == 2:
+            return abs(self.w)
+        else:
+            return base.norm(np.array(self.w))
+
     def inv(self):
         """
         Inverse of Twist (superclass method)
