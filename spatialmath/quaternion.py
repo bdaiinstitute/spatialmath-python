@@ -1806,6 +1806,33 @@ class UnitQuaternion(Quaternion):
 
         return UnitQuaternion(qi)
 
+    def increment(self, w, normalize=False):
+        """
+        Quaternion incremental update
+
+        :param w: angular displacement, Euler vector
+        :type w: array_like(3)
+        :param normalize: normalize the result, defaults to False
+        :type normalize: bool, optional
+
+        .. note:: The object state is updated
+        """
+
+        # is (v, theta) or None
+        vt = base.unitvec_norm(w)
+
+        if vt is None:
+            # zero update
+            return
+    
+        ds = math.cos(vt[1] / 2)
+        dv = math.sin(vt[1] / 2) * vt[0]
+
+        updated = base.qqmul(self.A, np.r_[ds, dv])
+        if normalize:
+            updated = base.unit(updated)
+        self.data = [updated]
+
     def plot(self, *args, **kwargs):
         """
         Plot unit quaternion as a coordinate frame

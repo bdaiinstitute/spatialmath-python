@@ -523,6 +523,25 @@ class TestUnitQuaternion(unittest.TestCase):
         # qcompare( qq(6), UnitQuaternion.Rx(pi) )
         # TODO interp
 
+    def test_increment(self):
+        q = UnitQuaternion()
+
+        q.increment([0, 0, 0])
+        qcompare(q, UnitQuaternion())
+
+        q.increment([0, 0, 0], normalize=True)
+        qcompare(q, UnitQuaternion())
+
+        for i in range(10):
+            q.increment([0.1, 0, 0])
+        qcompare(q, UnitQuaternion.Rx(1))
+
+        q = UnitQuaternion()
+        for i in range(10):
+            q.increment([0.1, 0, 0], normalize=True)
+        qcompare(q, UnitQuaternion.Rx(1))
+
+
     def test_eq(self):
         q1 = UnitQuaternion([0, 1, 0, 0])
         q2 = UnitQuaternion([0, -1, 0, 0])
