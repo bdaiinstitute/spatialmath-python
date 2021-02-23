@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from spatialmath import base
-from collections.abc import Iterable
+from collections.abc import Iterable, Generator
 
 
 class Animate:
@@ -107,9 +107,13 @@ class Animate:
 
         """
         if not isinstance(end, (np.ndarray, np.generic) ) and isinstance(end, Iterable):
-            if len(end) == 1:
-                end = end[0]
-            elif len(end) >= 2:
+            try:
+                if len(end) == 1:
+                    end = end[0]
+                elif len(end) >= 2:
+                    self.trajectory = end
+            except TypeError:
+                # a generator has no len()
                 self.trajectory = end
 
         # stash the final value
@@ -157,7 +161,7 @@ class Animate:
         def update(frame, a):
             # if contains trajectory:
             if self.trajectory is not None:
-                T = self.trajectory[frame]
+                T = next(self.trajectory)
             else:
                 T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
             a._draw(T)
@@ -171,8 +175,11 @@ class Animate:
 
         self.done = False
         if self.trajectory is not None:
-            nframes = len(self.trajectory)
-        ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
+            if not isinstance(self.trajectory, Iterable):
+                self.trajectory = iter(self.trajectory)
+
+        # ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
+        ani = animation.FuncAnimation(fig=plt.gcf(), func=update, fargs=(self,), blit=False, interval=interval, repeat=repeat)
         if movie is None:
             while repeat or not self.done:
                 plt.pause(0.1)

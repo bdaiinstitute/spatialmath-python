@@ -1828,8 +1828,8 @@ def tranimate(T, **kwargs):
     """
     Animate a 3D coordinate frame
 
-    :param R: SE(3) or SO(3) matrix
-    :type R: ndarray(4,4) or ndarray(3,3)
+    :param T: SE(3) or SO(3) matrix
+    :type T: ndarray(4,4) or ndarray(3,3)
     :param nframes: number of steps in the animation [defaault 100]
     :type nframes: int
     :param repeat: animate in endless loop [default False]
@@ -1850,6 +1850,10 @@ def tranimate(T, **kwargs):
             >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
             >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
     
+    .. note:: 
+        - If ``T`` is a list, the poses are taken from that list
+        - If ``T`` is a generator, the poses are taken from its ``next()`` values
+        
     :SymPy: not supported
     """
     if not _matplotlib_exists:
