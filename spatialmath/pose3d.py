@@ -815,33 +815,33 @@ class SE3(SO3):
         :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
         :SymPy: supported
         """
-        return base.adjoint(self.A)
+        return base.tr2adjoint(self.A)
 
     def jacob(self):
         """
-        Velocity transform for Se(3)
+        Velocity transform for SE(3)
 
         :return: Jacobian matrix
         :rtype: numpy.ndarray, shape=(6,6)
 
-        ``SEO.jacob`` is the 6x6 adjoint matrix
-
-        If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`
-        and the SE(3) represents the pose of {B} relative to {A}, 
-        ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then
-        :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.
+        ``SE3.jacob()`` is the 6x6 Jacobian that maps spatial velocity or
+        differential motion from frame {B} to frame {A} where the pose of {B}
+        relative to {A} is represented by the homogeneous transform T =
+        :math:`{}^A {\bf T}_B`.  
+        
+        .. note::
+            - To map from frame {A} to frame {B} use the transpose of this matrix.
+            - Use this method to map velocities between the robot end-effector frame
+              and the base frames.
 
         .. warning:: Do not use this method to map velocities between two frames
             on the same rigid-body.
-            
-        .. note:: Use this method to map velocities between robot base and
-            end-effector frames, rather than ``Ad()``.
 
         :seealso: SE3.Ad, Twist.ad, :func:`~spatialmath.base.tr2jac`
         :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
         :SymPy: supported
         """
-        return base.tr2jac(self.A, samebody=False)
+        return base.tr2jac(self.A)
 
     def Twist3(self):
         """
