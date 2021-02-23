@@ -2018,12 +2018,14 @@ class UnitQuaternion(Quaternion):
     #     """
     #     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))
 
-    def angle(self, other):
+    def angdist(self, other, metric=0):
         """
-        Angle between unit quaternions
+        Angular distance metric between unit quaternions
 
         :param other: second unit quaternion
         :type other: UnitQuaternion instance
+        :param metric: metric, default is 0
+        :type metric: int
         :raises TypeError: if other is not a UnitQuaternion
         :return: angle in radians
         :rtype: float
@@ -2031,21 +2033,48 @@ class UnitQuaternion(Quaternion):
         ``q1.angle(q2)`` is the geodesic norm, or geodesic distance between two
         unit quaternions and has units of angle.  We can consider it as the angle between two quaternions.
 
+        Several metrics are supported:
+
+        ======   ===============================================================
+        Metric   Details
+        ======   ===============================================================
+        0        :math:`1 - | \q_1 \sbullet \q_2 | \in [0, 1]`
+        1        :math:`\cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi/2]`
+        2        :math:`2 \cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi]`
+        3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`
+        4        :math:`\cos^{-1} \left( 2 (\q_1 \sbullet \q_2)^2 - 1\right) \in [0, 1]`
+        ======   ===============================================================
+
         Example:
 
         .. runblock:: pycon
 
             >>> from spatialmath import UnitQuaternion
             >>> q1 = UnitQuaternion.Rx(0.3)
-            >>> q2 = UnitQuaternion.Rx(0.3)
-            >>> print(q1.angle(q1))
-            >>> print(q1.angle(q2))
+            >>> q2 = UnitQuaternion.Ry(0.3)
+            >>> print(q1.angdist(q1))
+            >>> print(q1.angdist(q2))
 
+        .. note::
+            - metrics 2 and 3 are equivalent
+            - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()
+            - MATLAB's quaternion.dist() uses metric 2
         """
         if not isinstance(other, UnitQuaternion):
             raise TypeError('bad operand')
 
-        return self.binop(other, lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1))
+        if metric == 0:
+            measure = lambda p, q: 1 - np.dot(p, q)
+        elif metric == 1:
+            measure =  lambda p, q: math.acos(np.dot(p, q))
+        elif metric == 2:
+            measure =  lambda p, q: 2 * math.acos(np.dot(p, q))
+        elif metric == 3:
+            measure =  lambda p, q: 2 * math.atan2(base.norm(p - q), base.norm(p + q))
+        elif metric == 4:
+            measure = lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1)
+
+        return self.binop(other, measure)
 
     def SO3(self):
         """
