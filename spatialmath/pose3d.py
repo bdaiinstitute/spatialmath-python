@@ -408,7 +408,7 @@ class SO3(SMPose):
         return cls([base.q2r(base.rand()) for _ in range(0, N)], check=False)
 
     @classmethod
-    def Eul(cls, angles, unit='rad'):
+    def Eul(cls, *angles, unit='rad'):
         r"""
         Construct a new SO(3) from Euler angles
 
@@ -1029,7 +1029,7 @@ class SE3(SO3):
         return cls([base.transl(x, y, z) @ base.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
 
     @classmethod
-    def Eul(cls, angles, *, unit='rad'):
+    def Eul(cls, *angles, unit='rad'):
         r"""
         Create an SE(3) pure rotation from Euler angles
 
@@ -1040,24 +1040,38 @@ class SE3(SO3):
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-        ``SE3.Eul(𝚪)`` is an SE(3) rotation defined by a 3-vector of Euler
-        angles :math:`\Gamma=(\phi, \theta, \psi)` which correspond to consecutive
-        rotations about the Z, Y, Z axes respectively.
+        - ``SE3.Eul(𝚪)`` is an SE(3) rotation defined by a 3-vector of Euler
+          angles :math:`\Gamma=(\phi, \theta, \psi)` which correspond to
+          consecutive rotations about the Z, Y, Z axes respectively.
 
         If ``𝚪`` is an Nx3 matrix then the result is a sequence of
         rotations each defined by Euler angles corresponding to the rows of
         ``𝚪``.
 
+        - ``SE3.Eul(φ, θ, ψ)`` as above but the angles are provided as three
+          scalars.
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SE3
+            >>> SE3.Eul(0.1, 0.2, 0.3)
+            >>> SE3.Eul([0.1, 0.2, 0.3])
+            >>> SE3.Eul(10, 20, 30, unit='deg')
+
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         :SymPy: supported
         """
+        if len(angles) == 1:
+            angles = angles[0]
         if base.isvector(angles, 3):
             return cls(base.eul2tr(angles, unit=unit), check=False)
         else:
             return cls([base.eul2tr(a, unit=unit) for a in angles], check=False)
 
     @classmethod
-    def RPY(cls, angles, *, order='zyx', unit='rad'):
+    def RPY(cls, *angles, unit='rad', order='zyx'):
         r"""
         Create an SE(3) pure rotation from roll-pitch-yaw angles
 
@@ -1070,9 +1084,9 @@ class SE3(SO3):
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-        ``SE3.RPY(𝚪)`` is an SE(3) rotation defined by a 3-vector of roll,
-        pitch, yaw angles :math:`\Gamma=(r, p, y)` which correspond to
-        successive rotations about the axes specified by ``order``:
+        - ``SE3.RPY(𝚪)`` is an SE(3) rotation defined by a 3-vector of roll,
+          pitch, yaw angles :math:`\Gamma=(r, p, y)` which correspond to
+          successive rotations about the axes specified by ``order``:
 
             - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
               then by roll about the new x-axis.  This is the **convention** for a mobile robot with x-axis forward
@@ -1087,9 +1101,25 @@ class SE3(SO3):
         If ``𝚪`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
         corresponding to the rows of ``𝚪``.
 
+        - ``SE3.RPY(⍺, β, 𝛾)`` as above but the angles are provided as three
+          scalars.
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SE3
+            >>> SE3.RPY(0.1, 0.2, 0.3)
+            >>> SE3.RPY([0.1, 0.2, 0.3])
+            >>> SE3.RPY(0.1, 0.2, 0.3, order='xyz')
+            >>> SE3.RPY(10, 20, 30, unit='deg')
+
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.base.transforms3d.rpy2r`
         :SymPy: supported
         """
+        if len(angles) == 1:
+            angles = angles[0]
+
         if base.isvector(angles, 3):
             return cls(base.rpy2tr(angles, order=order, unit=unit), check=False)
         else:
