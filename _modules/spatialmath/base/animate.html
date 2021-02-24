@@ -327,7 +327,11 @@
         <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">animation</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># passed a trajectory as an iterator or generator, get next</span>
-                <span class="n">T</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">T</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="n">animation</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">return</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># passed a single transform, interpolate it</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span> <span class="o">/</span> <span class="n">nframes</span><span class="p">)</span>
@@ -901,6 +905,9 @@
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">()</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">equal</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
@@ -931,6 +938,9 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim3d</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim3d</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim3d</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">dims</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">equal</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
