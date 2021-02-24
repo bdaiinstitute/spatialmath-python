@@ -497,9 +497,13 @@ class SO3(SMPose):
         if len(angles) == 1:
             angles = angles[0]
 
-        angles = base.getmatrix(angles, (None, 3))
-        return cls(base.rpy2r(angles, order=order, unit=unit), check=False)
+        # angles = base.getmatrix(angles, (None, 3))
+        # return cls(base.rpy2r(angles, order=order, unit=unit), check=False)
 
+        if base.isvector(angles, 3):
+            return cls(base.rpy2r(angles, unit=unit, order=order), check=False)
+        else:
+            return cls([base.rpy2r(a, unit=unit, order=order) for a in angles], check=False)
 
     @classmethod
     def OA(cls, o, a):

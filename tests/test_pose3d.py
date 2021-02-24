@@ -66,53 +66,6 @@ class TestSO3(unittest.TestCase):
         array_compare(R, rotz(0.2))
         self.assertIsInstance(R, SO3)
 
-        # triple angle
-        R = SO3.Eul([0.1, 0.2, 0.3])
-        nt.assert_equal(len(R), 1)
-        array_compare(R, eul2r([0.1, 0.2, 0.3]))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.Eul(np.r_[0.1, 0.2, 0.3])
-        nt.assert_equal(len(R), 1)
-        array_compare(R, eul2r([0.1, 0.2, 0.3]))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.Eul([10, 20, 30], unit='deg')
-        nt.assert_equal(len(R), 1)
-        array_compare(R, eul2r([10, 20, 30], unit='deg'))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.RPY([0.1, 0.2, 0.3])
-        nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3]))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.RPY(np.r_[0.1, 0.2, 0.3])
-        nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3]))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.RPY([10, 20, 30], unit='deg')
-        nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([10, 20, 30], unit='deg'))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.RPY([0.1, 0.2, 0.3], order='xyz')
-        nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
-        self.assertIsInstance(R, SO3)
-
-        # angvec
-        R = SO3.AngVec(0.2, [1, 0, 0])
-        nt.assert_equal(len(R), 1)
-        array_compare(R, rotx(0.2))
-        self.assertIsInstance(R, SO3)
-
-        R = SO3.AngVec(0.3, [0, 1, 0])
-        nt.assert_equal(len(R), 1)
-        array_compare(R, roty(0.3))
-        self.assertIsInstance(R, SO3)
-
         # OA
         R = SO3.OA([0, 1, 0], [0, 0, 1])
         nt.assert_equal(len(R), 1)
@@ -129,6 +82,140 @@ class TestSO3(unittest.TestCase):
         R2 = SO3(R)
         R = SO3.Ry(pi / 2)
         array_compare(R2, rotx(pi / 2))
+
+    def test_constructor_Eul(self):
+
+        R = SO3.Eul([0.1, 0.2, 0.3])
+        nt.assert_equal(len(R), 1)
+        array_compare(R, eul2r([0.1, 0.2, 0.3]))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.Eul(0.1, 0.2, 0.3)
+        nt.assert_equal(len(R), 1)
+        array_compare(R, eul2r([0.1, 0.2, 0.3]))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.Eul(np.r_[0.1, 0.2, 0.3])
+        nt.assert_equal(len(R), 1)
+        array_compare(R, eul2r([0.1, 0.2, 0.3]))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.Eul([10, 20, 30], unit='deg')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, eul2r([10, 20, 30], unit='deg'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.Eul(10, 20, 30, unit='deg')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, eul2r([10, 20, 30], unit='deg'))
+        self.assertIsInstance(R, SO3)
+
+        # matrix input
+
+        angles = np.array([
+            [0.1, 0.2, 0.3],
+            [0.2, 0.3, 0.4],
+            [0.3, 0.4, 0.5],
+            [0.4, 0.5, 0.6]
+        ])
+        R = SO3.Eul(angles)
+        self.assertIsInstance(R, SO3)
+        nt.assert_equal(len(R), 4)
+        for i in range(4):
+            array_compare(R[i], eul2r(angles[i,:]))
+
+        angles *= 10
+        R = SO3.Eul(angles, unit='deg')
+        self.assertIsInstance(R, SO3)
+        nt.assert_equal(len(R), 4)
+        for i in range(4):
+            array_compare(R[i], eul2r(angles[i,:], unit='deg'))
+
+
+    def test_constructor_RPY(self):
+
+        R = SO3.RPY(0.1, 0.2, 0.3, order='zyx')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.RPY(10, 20, 30, unit='deg', order='zyx')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([10, 20, 30], order='zyx', unit='deg'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.RPY([0.1, 0.2, 0.3], order='zyx')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.RPY(np.r_[0.1, 0.2, 0.3], order='zyx')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        self.assertIsInstance(R, SO3)
+
+        # check default
+        R = SO3.RPY([0.1, 0.2, 0.3])
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        self.assertIsInstance(R, SO3)
+
+        # XYZ order
+
+        R = SO3.RPY(0.1, 0.2, 0.3, order='xyz')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.RPY(10, 20, 30, unit='deg', order='xyz')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([10, 20, 30], order='xyz', unit='deg'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.RPY([0.1, 0.2, 0.3], order='xyz')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.RPY(np.r_[0.1, 0.2, 0.3], order='xyz')
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
+        self.assertIsInstance(R, SO3)
+
+        # matrix input
+
+        angles = np.array([
+            [0.1, 0.2, 0.3],
+            [0.2, 0.3, 0.4],
+            [0.3, 0.4, 0.5],
+            [0.4, 0.5, 0.6]
+        ])
+        R = SO3.RPY(angles, order='zyx')
+        self.assertIsInstance(R, SO3)
+        nt.assert_equal(len(R), 4)
+        for i in range(4):
+            array_compare(R[i], rpy2r(angles[i,:], order='zyx'))
+
+        angles *= 10
+        R = SO3.RPY(angles, unit='deg', order='zyx')
+        self.assertIsInstance(R, SO3)
+        nt.assert_equal(len(R), 4)
+        for i in range(4):
+            array_compare(R[i], rpy2r(angles[i,:], unit='deg', order='zyx'))
+
+    def test_constructor_AngVec(self):
+        # angvec
+        R = SO3.AngVec(0.2, [1, 0, 0])
+        nt.assert_equal(len(R), 1)
+        array_compare(R, rotx(0.2))
+        self.assertIsInstance(R, SO3)
+
+        R = SO3.AngVec(0.3, [0, 1, 0])
+        nt.assert_equal(len(R), 1)
+        array_compare(R, roty(0.3))
+        self.assertIsInstance(R, SO3)
+
+
 
     def test_shape(self):
         a = SO3()
