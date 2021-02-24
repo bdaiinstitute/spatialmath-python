@@ -992,7 +992,7 @@ class Plucker(SMUserList):
             P, lam = line.intersect_volume(bounds)
             
             if len(lam) > 0:
-                l = ax.plot3D(P[0,:], P[1,:], P[2,:], *pos, **kwargs)
+                l = ax.plot(tuple(P[0,:]), tuple(P[1,:]), tuple(P[2,:]), *pos, **kwargs)
                 lines.append(l)
         return lines
 
