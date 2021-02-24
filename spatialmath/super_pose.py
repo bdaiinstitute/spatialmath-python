@@ -361,27 +361,81 @@ class SMPose(SMUserList):
         else:
             return log
 
-    def interp(self, s=None, start=None):
+    def interp(self, end=None, s=None):
         """
-        Interpolate pose (superclass method)
+        Interpolate between poses (superclass method)
 
-        :param start: initial pose
-        :type start: same as ``self``
+        :param end: final pose
+        :type end: same as ``self``
         :param s: interpolation coefficient, range 0 to 1
         :type s: array_like
         :return: interpolated pose
         :rtype: SO2, SE2, SO3, SE3 instance
 
-        - ``X.interp(s)`` interpolates the pose X between identity when s=0
-          and X when s=1.
+        - ``X.interp(Y, s)`` interpolates pose between X between when s=0
+          and Y when s=1.
 
-         ======  ======  ===========  ===============================
-         len(X)  len(s)  len(result)  Result
-         ======  ======  ===========  ===============================
-         1       1       1            Y = interp(identity, X, s)
-         M       1       M            Y[i] = interp(T0, X[i], s)
-         1       M       M            Y[i] = interp(T0, X, s[i])
-         ======  ======  ===========  ===============================
+        Example:
+
+        .. runblock:: pycon
+
+            >>> x = SE3(-1, -2, 0) * SE3.Rx(-0.3)
+            >>> y = SE3(1, 2, 0) * SE3.Rx(0.3)
+            >>> x.interp(y, 0)
+            >>> x.interp(y, 1)
+            >>> x.interp(y, 0.5)
+            >>> z = x.interp(y, np.linspace(0, 1, 11))
+            >>> len(z)
+            >>> y[0]
+            >>> y[5]
+
+        .. note::
+
+            - For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
+
+        :seealso: :func:`interp1`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
+
+        :SymPy: not supported
+        """
+        s = base.getvector(s)
+        s = np.clip(s, 0, 1)
+
+        if len(self) > 1: 
+            raise ValueError('start pose must be a singleton')
+
+        if end is not None:
+            if len(end) > 1: 
+                raise ValueError('end pose must be a singleton')
+            end = end.A
+
+        if self.N == 2:
+            # SO(2) or SE(2)
+            return self.__class__([base.trinterp2(start=self.A, end=end, s=_s) for _s in s])
+
+        elif self.N == 3:
+            # SO(3) or SE(3)
+            return self.__class__([base.trinterp(start=self.A, end=end, s=_s) for _s in s])
+
+    def interp1(self, s=None):
+        """
+        Interpolate pose (superclass method)
+
+        :param end: final pose
+        :type end: same as ``self``
+        :param s: interpolation coefficient, range 0 to 1
+        :type s: array_like
+        :return: interpolated pose
+        :rtype: SO2, SE2, SO3, SE3 instance
+
+        - ``X.interp(s)`` interpolates pose between identity when s=0, and X when s=1.
+
+            ======  ======  ===========  ===============================
+            len(X)  len(s)  len(result)  Result
+            ======  ======  ===========  ===============================
+            1       1       1            Y = interp(X, s)
+            M       1       M            Y[i] = interp(X[i], s)
+            1       M       M            Y[i] = interp(X, s[i])
+            ======  ======  ===========  ===============================
 
         Example::
 
@@ -409,7 +463,7 @@ class SMPose(SMUserList):
 
         #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-        :seealso: :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
+        :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
 
         :SymPy: not supported
         """
@@ -434,7 +488,6 @@ class SMPose(SMUserList):
                 return self.__class__([base.trinterp(start, self.A, s=_s) for _s in s])
             else:
                 return self.__class__([base.trinterp(start, x, s=s[0]) for x in self.data])
-
     def norm(self):
         """
         Normalize pose (superclass method)
@@ -651,7 +704,7 @@ class SMPose(SMUserList):
         if self._ansiformatter is None:
             self._ansiformatter = ANSIMatrix(style='thick')
 
-        return self._ansiformatter.str(self.A)
+        return "\n".join([self._ansiformatter.str(A) for A in self.data])
 
     def _string_color(self, color=False):
         """

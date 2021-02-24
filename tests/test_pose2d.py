@@ -468,13 +468,12 @@ class TestSE2(unittest.TestCase):
         TT = SE2(2, -4, 0.6)
         I = SE2()
         
-        z = I.interp(s=0)
+        z = I.interp(TT, s=0)
         self.assertIsInstance(z, SE2)
         
-        array_compare(TT.interp(s=0), I)
-        array_compare(TT.interp(s=1), TT)
-        array_compare(TT.interp(s=0.5), SE2(1, -2, 0.3))
-        array_compare(TT.interp(s=0.5,start=SE2(-2, 4, -0.6)), I)
+        array_compare(I.interp(TT, s=0), I)
+        array_compare(I.interp(TT, s=1), TT)
+        array_compare(I.interp(TT, s=0.5), SE2(1, -2, 0.3))
     
     def test_miscellany(self):
         
