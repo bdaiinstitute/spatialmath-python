@@ -574,7 +574,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Eul"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new SO(3) from Euler angles</span>
 
@@ -663,9 +663,13 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="c1"># angles = base.getmatrix(angles, (None, 3))</span>
+        <span class="c1"># return cls(base.rpy2r(angles, order=order, unit=unit), check=False)</span>
 
+        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.OA"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.OA">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">OA</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
@@ -981,33 +985,33 @@
 <span class="sd">        :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">adjoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2adjoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.jacob"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.jacob">[docs]</a>    <span class="k">def</span> <span class="nf">jacob</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Velocity transform for Se(3)</span>
+<span class="sd">        Velocity transform for SE(3)</span>
 
 <span class="sd">        :return: Jacobian matrix</span>
 <span class="sd">        :rtype: numpy.ndarray, shape=(6,6)</span>
 
-<span class="sd">        ``SEO.jacob`` is the 6x6 adjoint matrix</span>
-
-<span class="sd">        If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`</span>
-<span class="sd">        and the SE(3) represents the pose of {B} relative to {A}, </span>
-<span class="sd">        ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then</span>
-<span class="sd">        :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.</span>
+<span class="sd">        ``SE3.jacob()`` is the 6x6 Jacobian that maps spatial velocity or</span>
+<span class="sd">        differential motion from frame {B} to frame {A} where the pose of {B}</span>
+<span class="sd">        relative to {A} is represented by the homogeneous transform T =</span>
+<span class="sd">        :math:`{}^A {\bf T}_B`.  </span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">            - To map from frame {A} to frame {B} use the transpose of this matrix.</span>
+<span class="sd">            - Use this method to map velocities between the robot end-effector frame</span>
+<span class="sd">              and the base frames.</span>
 
 <span class="sd">        .. warning:: Do not use this method to map velocities between two frames</span>
 <span class="sd">            on the same rigid-body.</span>
-<span class="sd">            </span>
-<span class="sd">        .. note:: Use this method to map velocities between robot base and</span>
-<span class="sd">            end-effector frames, rather than ``Ad()``.</span>
 
 <span class="sd">        :seealso: SE3.Ad, Twist.ad, :func:`~spatialmath.base.tr2jac`</span>
 <span class="sd">        :Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2jac</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">samebody</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2jac</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Twist3"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Twist3">[docs]</a>    <span class="k">def</span> <span class="nf">Twist3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1195,7 +1199,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Eul"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an SE(3) pure rotation from Euler angles</span>
 
@@ -1206,24 +1210,38 @@
 <span class="sd">        :return: SE(3) matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
-<span class="sd">        ``SE3.Eul(𝚪)`` is an SE(3) rotation defined by a 3-vector of Euler</span>
-<span class="sd">        angles :math:`\Gamma=(\phi, \theta, \psi)` which correspond to consecutive</span>
-<span class="sd">        rotations about the Z, Y, Z axes respectively.</span>
+<span class="sd">        - ``SE3.Eul(𝚪)`` is an SE(3) rotation defined by a 3-vector of Euler</span>
+<span class="sd">          angles :math:`\Gamma=(\phi, \theta, \psi)` which correspond to</span>
+<span class="sd">          consecutive rotations about the Z, Y, Z axes respectively.</span>
 
 <span class="sd">        If ``𝚪`` is an Nx3 matrix then the result is a sequence of</span>
 <span class="sd">        rotations each defined by Euler angles corresponding to the rows of</span>
 <span class="sd">        ``𝚪``.</span>
 
+<span class="sd">        - ``SE3.Eul(φ, θ, ψ)`` as above but the angles are provided as three</span>
+<span class="sd">          scalars.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+<span class="sd">        </span>
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
+<span class="sd">            &gt;&gt;&gt; SE3.Eul(0.1, 0.2, 0.3)</span>
+<span class="sd">            &gt;&gt;&gt; SE3.Eul([0.1, 0.2, 0.3])</span>
+<span class="sd">            &gt;&gt;&gt; SE3.Eul(10, 20, 30, unit=&#39;deg&#39;)</span>
+
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.base.transforms3d.eul2r`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.RPY"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.RPY">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an SE(3) pure rotation from roll-pitch-yaw angles</span>
 
@@ -1236,9 +1254,9 @@
 <span class="sd">        :return: SE(3) matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
-<span class="sd">        ``SE3.RPY(𝚪)`` is an SE(3) rotation defined by a 3-vector of roll,</span>
-<span class="sd">        pitch, yaw angles :math:`\Gamma=(r, p, y)` which correspond to</span>
-<span class="sd">        successive rotations about the axes specified by ``order``:</span>
+<span class="sd">        - ``SE3.RPY(𝚪)`` is an SE(3) rotation defined by a 3-vector of roll,</span>
+<span class="sd">          pitch, yaw angles :math:`\Gamma=(r, p, y)` which correspond to</span>
+<span class="sd">          successive rotations about the axes specified by ``order``:</span>
 
 <span class="sd">            - ``&#39;zyx&#39;`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,</span>
 <span class="sd">              then by roll about the new x-axis.  This is the **convention** for a mobile robot with x-axis forward</span>
@@ -1253,9 +1271,25 @@
 <span class="sd">        If ``𝚪`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles</span>
 <span class="sd">        corresponding to the rows of ``𝚪``.</span>
 
+<span class="sd">        - ``SE3.RPY(⍺, β, 𝛾)`` as above but the angles are provided as three</span>
+<span class="sd">          scalars.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+<span class="sd">        </span>
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
+<span class="sd">            &gt;&gt;&gt; SE3.RPY(0.1, 0.2, 0.3)</span>
+<span class="sd">            &gt;&gt;&gt; SE3.RPY([0.1, 0.2, 0.3])</span>
+<span class="sd">            &gt;&gt;&gt; SE3.RPY(0.1, 0.2, 0.3, order=&#39;xyz&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; SE3.RPY(10, 20, 30, unit=&#39;deg&#39;)</span>
+
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.base.transforms3d.rpy2r`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rpy2tr</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1549,7 +1583,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>

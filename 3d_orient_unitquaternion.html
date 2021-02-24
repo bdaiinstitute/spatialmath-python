@@ -516,11 +516,11 @@ values.</p></li>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
-<span class="go"> 0.1591 &lt;&lt;  0.3981,  0.4601,  0.7775 &gt;&gt;</span>
+<span class="go">-0.0838 &lt;&lt;  0.4276, -0.0748,  0.8970 &gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go">-0.1931 &lt;&lt; -0.5207,  0.5821, -0.5939 &gt;&gt;</span>
-<span class="go">-0.3644 &lt;&lt;  0.6837,  0.3634,  0.5174 &gt;&gt;</span>
-<span class="go">-0.9383 &lt;&lt; -0.0400,  0.3039,  0.1602 &gt;&gt;</span>
+<span class="go"> 0.3200 &lt;&lt; -0.8221,  0.4266,  0.1993 &gt;&gt;</span>
+<span class="go"> 0.5018 &lt;&lt; -0.1105,  0.8374, -0.1863 &gt;&gt;</span>
+<span class="go"> 0.5674 &lt;&lt; -0.2316, -0.6605,  0.4337 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -1225,6 +1225,24 @@ the identity quaternion and <code class="docutils literal notranslate"><span cla
 <dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spatialmath.quaternion.UnitQuaternion.increment">
+<code class="sig-name descname"><span class="pre">increment</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.increment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.increment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quaternion incremental update</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – angular displacement, Euler vector</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>optional</em>) – normalize the result, defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The object state is updated</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2247,35 +2265,45 @@ the unit quaternion <code class="docutils literal notranslate"><span class="pre"
 </dd></dl>
 
 <dl class="py method">
-<dt id="spatialmath.quaternion.UnitQuaternion.angle">
-<code class="sig-name descname"><span class="pre">angle</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Angle between unit quaternions</p>
+<dt id="spatialmath.quaternion.UnitQuaternion.angdist">
+<code class="sig-name descname"><span class="pre">angdist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.angdist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.angdist" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Angular distance metric between unit quaternions</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>other</strong> (<em>UnitQuaternion instance</em>) – second unit quaternion</p>
+<dt class="field-odd">param other</dt>
+<dd class="field-odd"><p>second unit quaternion</p>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – if other is not a UnitQuaternion</p>
+<dt class="field-even">type other</dt>
+<dd class="field-even"><p>UnitQuaternion instance</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>angle in radians</p>
+<dt class="field-odd">param metric</dt>
+<dd class="field-odd"><p>metric, default is 0</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
+<dt class="field-even">type metric</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">raises TypeError</dt>
+<dd class="field-odd"><p>if other is not a UnitQuaternion</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>angle in radians</p>
+</dd>
+<dt class="field-odd">rtype</dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">q1.angle(q2)</span></code> is the geodesic norm, or geodesic distance between two
 unit quaternions and has units of angle.  We can consider it as the angle between two quaternions.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q1</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">q1</span><span class="p">))</span>
-<span class="go">[0.0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q1</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">q2</span><span class="p">))</span>
-<span class="go">[0.0]</span>
-</pre></div>
-</div>
+<p>Several metrics are supported:</p>
+<p>0        <span class="math notranslate nohighlight">\(1 - | \q_1 \sbullet \q_2 | \in [0, 1]\)</span>
+1        <span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi/2]\)</span>
+2        <span class="math notranslate nohighlight">\(2 \cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi]\)</span>
+3        <span class="math notranslate nohighlight">\(2       an^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]\)</span>
+4        :math:<a href="#id4"><span class="problematic" id="id5">`</span></a>cos^{-1} left( 2 (q_1 sbullet q_2)^2 - 1</p>
+</div></blockquote>
+<dl class="simple">
+<dt>ight) in [0, 1]`</dt><dd></dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2338,7 +2366,7 @@ as the unit quaternion <code class="docutils literal notranslate"><span class="p
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>

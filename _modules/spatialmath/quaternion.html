@@ -1890,6 +1890,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">isequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="fm">__matmul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;normalizing product&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+
 <div class="viewcode-block" id="UnitQuaternion.interp"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.interp">[docs]</a>    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interpolate between two unit quaternions</span>
@@ -1967,6 +1971,33 @@
             <span class="n">qi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">UnitQuaternion</span><span class="p">(</span><span class="n">qi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UnitQuaternion.increment"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.increment">[docs]</a>    <span class="k">def</span> <span class="nf">increment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Quaternion incremental update</span>
+
+<span class="sd">        :param w: angular displacement, Euler vector</span>
+<span class="sd">        :type w: array_like(3)</span>
+<span class="sd">        :param normalize: normalize the result, defaults to False</span>
+<span class="sd">        :type normalize: bool, optional</span>
+
+<span class="sd">        .. note:: The object state is updated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># is (v, theta) or None</span>
+        <span class="n">vt</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">vt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># zero update</span>
+            <span class="k">return</span>
+    
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">vt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">vt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">vt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">updated</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ds</span><span class="p">,</span> <span class="n">dv</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+            <span class="n">updated</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unit</span><span class="p">(</span><span class="n">updated</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">updated</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.plot"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2153,12 +2184,14 @@
     <span class="c1">#     &quot;&quot;&quot;</span>
     <span class="c1">#     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))</span>
 
-<div class="viewcode-block" id="UnitQuaternion.angle"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="UnitQuaternion.angdist"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.angdist">[docs]</a>    <span class="k">def</span> <span class="nf">angdist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Angle between unit quaternions</span>
+<span class="sd">        Angular distance metric between unit quaternions</span>
 
 <span class="sd">        :param other: second unit quaternion</span>
 <span class="sd">        :type other: UnitQuaternion instance</span>
+<span class="sd">        :param metric: metric, default is 0</span>
+<span class="sd">        :type metric: int</span>
 <span class="sd">        :raises TypeError: if other is not a UnitQuaternion</span>
 <span class="sd">        :return: angle in radians</span>
 <span class="sd">        :rtype: float</span>
@@ -2166,21 +2199,48 @@
 <span class="sd">        ``q1.angle(q2)`` is the geodesic norm, or geodesic distance between two</span>
 <span class="sd">        unit quaternions and has units of angle.  We can consider it as the angle between two quaternions.</span>
 
+<span class="sd">        Several metrics are supported:</span>
+
+<span class="sd">        ======   ===============================================================</span>
+<span class="sd">        Metric   Details</span>
+<span class="sd">        ======   ===============================================================</span>
+<span class="sd">        0        :math:`1 - | \q_1 \sbullet \q_2 | \in [0, 1]`</span>
+<span class="sd">        1        :math:`\cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi/2]`</span>
+<span class="sd">        2        :math:`2 \cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi]`</span>
+<span class="sd">        3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`</span>
+<span class="sd">        4        :math:`\cos^{-1} \left( 2 (\q_1 \sbullet \q_2)^2 - 1\right) \in [0, 1]`</span>
+<span class="sd">        ======   ===============================================================</span>
+
 <span class="sd">        Example:</span>
 
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import UnitQuaternion</span>
 <span class="sd">            &gt;&gt;&gt; q1 = UnitQuaternion.Rx(0.3)</span>
-<span class="sd">            &gt;&gt;&gt; q2 = UnitQuaternion.Rx(0.3)</span>
-<span class="sd">            &gt;&gt;&gt; print(q1.angle(q1))</span>
-<span class="sd">            &gt;&gt;&gt; print(q1.angle(q2))</span>
+<span class="sd">            &gt;&gt;&gt; q2 = UnitQuaternion.Ry(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; print(q1.angdist(q1))</span>
+<span class="sd">            &gt;&gt;&gt; print(q1.angdist(q2))</span>
 
+<span class="sd">        .. note::</span>
+<span class="sd">            - metrics 2 and 3 are equivalent</span>
+<span class="sd">            - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()</span>
+<span class="sd">            - MATLAB&#39;s quaternion.dist() uses metric 2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">UnitQuaternion</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad operand&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span>  <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span>  <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span>  <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">q</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">q</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">measure</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">measure</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.SO3"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.SO3">[docs]</a>    <span class="k">def</span> <span class="nf">SO3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2254,7 +2314,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>

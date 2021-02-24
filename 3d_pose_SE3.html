@@ -414,40 +414,34 @@ the same rigid-body.</p>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.jacob">
 <code class="sig-name descname"><span class="pre">jacob</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.jacob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.jacob" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Velocity transform for Se(3)</p>
+<dd><p>Velocity transform for SE(3)</p>
 <dl class="field-list simple">
-<dt class="field-odd">return</dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Jacobian matrix</p>
 </dd>
-<dt class="field-even">rtype</dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>numpy.ndarray, shape=(6,6)</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">SEO.jacob</span></code> is the 6x6 adjoint matrix</p>
-<p>If spatial velocity :math:<a href="#id5"><span class="problematic" id="id6">`</span></a></p>
-</div></blockquote>
-<dl class="simple">
-<dt>u = (v_x, v_y, v_z, omega_x, omega_y, omega_z)^T`</dt><dd><p>and the SE(3) represents the pose of {B} relative to {A}, 
-ie. <span class="math notranslate nohighlight">\({}^A {f T}_B, and the adjoint is :math:\)</span>mathbf{A}` then
-:math:<a href="#id7"><span class="problematic" id="id8">`</span></a>{}^{A}!</p>
-</dd>
-</dl>
-<p>u = mathbf{A} {}^{B}!
-u`.</p>
-<blockquote>
-<div><div class="admonition warning">
+<p><code class="docutils literal notranslate"><span class="pre">SE3.jacob()</span></code> is the 6x6 Jacobian that maps spatial velocity or
+differential motion from frame {B} to frame {A} where the pose of {B}
+relative to {A} is represented by the homogeneous transform T =
+<span class="math notranslate nohighlight">\({}^A {f T}_B\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>To map from frame {A} to frame {B} use the transpose of this matrix.</p></li>
+<li><p>Use this method to map velocities between the robot end-effector frame
+and the base frames.</p></li>
+</ul>
+</div>
+<div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Do not use this method to map velocities between two frames
 on the same rigid-body.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Use this method to map velocities between robot base and
-end-effector frames, rather than <code class="docutils literal notranslate"><span class="pre">Ad()</span></code>.</p>
-</div>
 <dl class="field-list simple">
-<dt class="field-odd">seealso</dt>
+<dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p>SE3.Ad, Twist.ad, <code class="xref py py-func docutils literal notranslate"><span class="pre">tr2jac()</span></code></p>
 </dd>
 <dt class="field-even">Reference</dt>
@@ -457,7 +451,6 @@ end-effector frames, rather than <code class="docutils literal notranslate"><spa
 <dd class="field-odd"><p>supported</p>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
@@ -728,7 +721,7 @@ poses.</p></li>
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.Eul">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Eul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Eul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Eul" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Eul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Eul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Eul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an SE(3) pure rotation from Euler angles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -744,12 +737,37 @@ poses.</p></li>
 <dd class="field-odd"><p>SE3 instance</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">SE3.Eul(𝚪)</span></code> is an SE(3) rotation defined by a 3-vector of Euler
-angles <span class="math notranslate nohighlight">\(\Gamma=(\phi, \theta, \psi)\)</span> which correspond to consecutive
-rotations about the Z, Y, Z axes respectively.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3.Eul(𝚪)</span></code> is an SE(3) rotation defined by a 3-vector of Euler
+angles <span class="math notranslate nohighlight">\(\Gamma=(\phi, \theta, \psi)\)</span> which correspond to
+consecutive rotations about the Z, Y, Z axes respectively.</p></li>
+</ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">𝚪</span></code> is an Nx3 matrix then the result is a sequence of
 rotations each defined by Euler angles corresponding to the rows of
 <code class="docutils literal notranslate"><span class="pre">𝚪</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3.Eul(φ,</span> <span class="pre">θ,</span> <span class="pre">ψ)</span></code> as above but the angles are provided as three
+scalars.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Eul</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.9021, -0.3836,  0.1977,  0.    ],</span>
+<span class="go">           [ 0.3875,  0.9216,  0.0198,  0.    ],</span>
+<span class="go">           [-0.1898,  0.0587,  0.9801,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Eul</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="go">SE3(array([[ 0.9021, -0.3836,  0.1977,  0.    ],</span>
+<span class="go">           [ 0.3875,  0.9216,  0.0198,  0.    ],</span>
+<span class="go">           [-0.1898,  0.0587,  0.9801,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Eul</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.7146, -0.6131,  0.3368,  0.    ],</span>
+<span class="go">           [ 0.6337,  0.7713,  0.0594,  0.    ],</span>
+<span class="go">           [-0.2962,  0.171 ,  0.9397,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.eul" title="spatialmath.pose3d.SE3.eul"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.eul2r" title="spatialmath.base.transforms3d.eul2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2r()</span></code></a></p>
@@ -762,7 +780,7 @@ rotations each defined by Euler angles corresponding to the rows of
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.RPY">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">RPY</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.RPY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.RPY" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">RPY</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.RPY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.RPY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an SE(3) pure rotation from roll-pitch-yaw angles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -779,7 +797,8 @@ rotations each defined by Euler angles corresponding to the rows of
 <dd class="field-odd"><p>SE3 instance</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">SE3.RPY(𝚪)</span></code> is an SE(3) rotation defined by a 3-vector of roll,
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3.RPY(𝚪)</span></code> is an SE(3) rotation defined by a 3-vector of roll,
 pitch, yaw angles <span class="math notranslate nohighlight">\(\Gamma=(r, p, y)\)</span> which correspond to
 successive rotations about the axes specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
 <blockquote>
@@ -795,8 +814,38 @@ then by roll about the new z-axis. This is the <strong>convention</strong> for a
 to the optical axis and x-axis parallel to the pixel rows.</p></li>
 </ul>
 </div></blockquote>
+</li>
+</ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">𝚪</span></code> is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
 corresponding to the rows of <code class="docutils literal notranslate"><span class="pre">𝚪</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3.RPY(⍺,</span> <span class="pre">β,</span> <span class="pre">𝛾)</span></code> as above but the angles are provided as three
+scalars.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">RPY</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.9363, -0.2751,  0.2184,  0.    ],</span>
+<span class="go">           [ 0.2896,  0.9564, -0.037 ,  0.    ],</span>
+<span class="go">           [-0.1987,  0.0978,  0.9752,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">RPY</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="go">SE3(array([[ 0.9363, -0.2751,  0.2184,  0.    ],</span>
+<span class="go">           [ 0.2896,  0.9564, -0.037 ,  0.    ],</span>
+<span class="go">           [-0.1987,  0.0978,  0.9752,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">RPY</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.9752, -0.0978,  0.1987,  0.    ],</span>
+<span class="go">           [ 0.1538,  0.9447, -0.2896,  0.    ],</span>
+<span class="go">           [-0.1593,  0.313 ,  0.9363,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">RPY</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">SE3(array([[ 0.8138, -0.441 ,  0.3785,  0.    ],</span>
+<span class="go">           [ 0.4698,  0.8826,  0.018 ,  0.    ],</span>
+<span class="go">           [-0.342 ,  0.1632,  0.9254,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.rpy" title="spatialmath.pose3d.SE3.rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a></p>
@@ -2148,12 +2197,12 @@ to the list</p>
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.interp">
-<code class="sig-name descname"><span class="pre">interp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.interp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolate pose (superclass method)</p>
+<code class="sig-name descname"><span class="pre">interp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.interp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate between poses (superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – initial pose</p></li>
+<li><p><strong>end</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – final pose</p></li>
 <li><p><strong>s</strong> (<em>array_like</em>) – interpolation coefficient, range 0 to 1</p></li>
 </ul>
 </dd>
@@ -2165,9 +2214,49 @@ to the list</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(s)</span></code> interpolates the pose X between identity when s=0
-and X when s=1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(Y,</span> <span class="pre">s)</span></code> interpolates pose between X between when s=0
+and Y when s=1.</p></li>
 </ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">IndexError: list index out of range</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.interp1" title="spatialmath.pose3d.SE3.interp1"><code class="xref py py-func docutils literal notranslate"><span class="pre">interp1()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trinterp2" title="spatialmath.base.transforms2d.trinterp2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spatialmath.pose3d.SE3.interp1">
+<code class="sig-name descname"><span class="pre">interp1</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.interp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate pose (superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>end</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – final pose</p></li>
+<li><p><strong>s</strong> (<em>array_like</em>) – interpolation coefficient, range 0 to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>interpolated pose</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(s)</span></code> interpolates pose between identity when s=0, and X when s=1.</p>
 <blockquote>
 <div><table class="docutils align-default">
 <colgroup>
@@ -2187,21 +2276,23 @@ and X when s=1.</p></li>
 <tr class="row-even"><td><p>1</p></td>
 <td><p>1</p></td>
 <td><p>1</p></td>
-<td><p>Y = interp(identity, X, s)</p></td>
+<td><p>Y = interp(X, s)</p></td>
 </tr>
 <tr class="row-odd"><td><p>M</p></td>
 <td><p>1</p></td>
 <td><p>M</p></td>
-<td><p>Y[i] = interp(T0, X[i], s)</p></td>
+<td><p>Y[i] = interp(X[i], s)</p></td>
 </tr>
 <tr class="row-even"><td><p>1</p></td>
 <td><p>M</p></td>
 <td><p>M</p></td>
-<td><p>Y[i] = interp(T0, X, s[i])</p></td>
+<td><p>Y[i] = interp(X, s[i])</p></td>
 </tr>
 </tbody>
 </table>
 </div></blockquote>
+</li>
+</ul>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
@@ -2230,7 +2321,7 @@ and X when s=1.</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trinterp2" title="spatialmath.base.transforms2d.trinterp2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.interp" title="spatialmath.pose3d.SE3.interp"><code class="xref py py-func docutils literal notranslate"><span class="pre">interp()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trinterp2" title="spatialmath.base.transforms2d.trinterp2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>not supported</p>
@@ -2752,7 +2843,7 @@ pose instane.</p>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>

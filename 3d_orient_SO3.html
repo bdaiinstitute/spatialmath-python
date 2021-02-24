@@ -620,9 +620,9 @@ elements.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SO3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
-<span class="go">SO3(array([[-0.5622,  0.1617, -0.811 ],</span>
-<span class="go">           [ 0.8155,  0.2713, -0.5112],</span>
-<span class="go">           [ 0.1373, -0.9488, -0.2844]]))</span>
+<span class="go">SO3(array([[ 0.2091, -0.3956,  0.8943],</span>
+<span class="go">           [-0.5031, -0.8277, -0.2485],</span>
+<span class="go">           [ 0.8385, -0.3979, -0.3721]]))</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -634,7 +634,7 @@ elements.</p>
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SO3.Eul">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Eul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SO3.Eul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SO3.Eul" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Eul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SO3.Eul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SO3.Eul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a new SO(3) from Euler angles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -660,8 +660,15 @@ defined by Euler angles corresponding to the rows of <code class="docutils liter
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
-<span class="go">TypeError: Eul() takes from 2 to 3 positional arguments but 5 were given</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 448, in &lt;listcomp&gt;</span>
+<span class="go">    return cls([base.eul2r(a, unit=unit) for a in angles], check=False)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 531, in eul2r</span>
+<span class="go">    return rotz(angles[0]) @ roty(angles[1]) @ rotz(angles[2])</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 88, in roty</span>
+<span class="go">    ct = base.sym.cos(theta)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 131, in cos</span>
+<span class="go">    return math.cos(theta)</span>
+<span class="go">TypeError: must be real number, not NoneType</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -719,9 +726,15 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 scalars.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 200, in getmatrix</span>
-<span class="go">    raise TypeError(&#39;argument must be scalar or ndarray&#39;)</span>
-<span class="go">TypeError: argument must be scalar or ndarray</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 506, in &lt;listcomp&gt;</span>
+<span class="go">    return cls([base.rpy2r(a, unit=unit, order=order) for a in angles], check=False)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 426, in rpy2r</span>
+<span class="go">    R = rotz(angles[2]) @ roty(angles[1]) @ rotx(angles[0])</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 123, in rotz</span>
+<span class="go">    ct = base.sym.cos(theta)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 131, in cos</span>
+<span class="go">    return math.cos(theta)</span>
+<span class="go">TypeError: must be real number, not NoneType</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -1923,12 +1936,12 @@ to the list</p>
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SO3.interp">
-<code class="sig-name descname"><span class="pre">interp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SO3.interp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolate pose (superclass method)</p>
+<code class="sig-name descname"><span class="pre">interp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SO3.interp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate between poses (superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – initial pose</p></li>
+<li><p><strong>end</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – final pose</p></li>
 <li><p><strong>s</strong> (<em>array_like</em>) – interpolation coefficient, range 0 to 1</p></li>
 </ul>
 </dd>
@@ -1940,9 +1953,49 @@ to the list</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(s)</span></code> interpolates the pose X between identity when s=0
-and X when s=1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(Y,</span> <span class="pre">s)</span></code> interpolates pose between X between when s=0
+and Y when s=1.</p></li>
 </ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">IndexError: list index out of range</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SO3.interp1" title="spatialmath.pose3d.SO3.interp1"><code class="xref py py-func docutils literal notranslate"><span class="pre">interp1()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trinterp2" title="spatialmath.base.transforms2d.trinterp2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spatialmath.pose3d.SO3.interp1">
+<code class="sig-name descname"><span class="pre">interp1</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SO3.interp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate pose (superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>end</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – final pose</p></li>
+<li><p><strong>s</strong> (<em>array_like</em>) – interpolation coefficient, range 0 to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>interpolated pose</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(s)</span></code> interpolates pose between identity when s=0, and X when s=1.</p>
 <blockquote>
 <div><table class="docutils align-default">
 <colgroup>
@@ -1962,21 +2015,23 @@ and X when s=1.</p></li>
 <tr class="row-even"><td><p>1</p></td>
 <td><p>1</p></td>
 <td><p>1</p></td>
-<td><p>Y = interp(identity, X, s)</p></td>
+<td><p>Y = interp(X, s)</p></td>
 </tr>
 <tr class="row-odd"><td><p>M</p></td>
 <td><p>1</p></td>
 <td><p>M</p></td>
-<td><p>Y[i] = interp(T0, X[i], s)</p></td>
+<td><p>Y[i] = interp(X[i], s)</p></td>
 </tr>
 <tr class="row-even"><td><p>1</p></td>
 <td><p>M</p></td>
 <td><p>M</p></td>
-<td><p>Y[i] = interp(T0, X, s[i])</p></td>
+<td><p>Y[i] = interp(X, s[i])</p></td>
 </tr>
 </tbody>
 </table>
 </div></blockquote>
+</li>
+</ul>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
@@ -2005,7 +2060,7 @@ and X when s=1.</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trinterp2" title="spatialmath.base.transforms2d.trinterp2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.pose3d.SO3.interp" title="spatialmath.pose3d.SO3.interp"><code class="xref py py-func docutils literal notranslate"><span class="pre">interp()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.slerp" title="spatialmath.base.quaternions.slerp"><code class="xref py py-func docutils literal notranslate"><span class="pre">slerp()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trinterp2" title="spatialmath.base.transforms2d.trinterp2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp2()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>not supported</p>
@@ -2505,7 +2560,7 @@ that the value is a 1D array.</p></li>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>

@@ -1658,25 +1658,21 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">transl</span><span class="p">(</span><span class="n">Td</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">Td</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))]</span></div>
 
 
-<div class="viewcode-block" id="tr2jac"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2jac">[docs]</a><span class="k">def</span> <span class="nf">tr2jac</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">samebody</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tr2jac"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2jac">[docs]</a><span class="k">def</span> <span class="nf">tr2jac</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    SE(3) adjoint</span>
+<span class="sd">    SE(3) Jacobian matrix</span>
 
 <span class="sd">    :param T: SE(3) matrix</span>
 <span class="sd">    :type T: ndarray(4,4)</span>
-<span class="sd">    :return: adjoint matrix</span>
+<span class="sd">    :return: Jacobian matrix</span>
 <span class="sd">    :rtype: ndarray(6,6)</span>
-<span class="sd">    :raises ValueError: bad arguments</span>
 
-<span class="sd">    Computes an adjoint matrix that maps spatial velocity between two frames defined by</span>
-<span class="sd">    an SE(3) matrix.  It is a Jacobian matrix.</span>
+<span class="sd">    Computes an Jacobian matrix that maps spatial velocity between two frames defined by</span>
+<span class="sd">    an SE(3) matrix.</span>
 
-<span class="sd">    - ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or</span>
-<span class="sd">      differential motion from frame {A} to frame {B} where the pose of {B}</span>
-<span class="sd">      relative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.</span>
-
-<span class="sd">    - ``tr2jac(T, True)`` as above but for the case when frame {A} to frame {B} are both</span>
-<span class="sd">      attached to the same moving body.  This is the adjoint matrix</span>
+<span class="sd">    ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or</span>
+<span class="sd">    differential motion from frame {B} to frame {A} where the pose of {B}</span>
+<span class="sd">    elative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -1690,31 +1686,54 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting an SE(3) matrix&quot;</span><span class="p">)</span>
+
     <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">]])</span></div>
 
-    <span class="k">if</span> <span class="n">samebody</span><span class="p">:</span>
-        <span class="c1"># Adjoint case</span>
-        <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="nd">@R</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span></div>
+<div class="viewcode-block" id="tr2adjoint"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2adjoint">[docs]</a><span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SE(3) adjoint matrix</span>
 
-<div class="viewcode-block" id="adjoint"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.adjoint">[docs]</a><span class="k">def</span> <span class="nf">adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-    <span class="c1"># http://ethaneade.com/lie.pdf</span>
+<span class="sd">    :param T: SE(3) matrix</span>
+<span class="sd">    :type T: ndarray(4,4)</span>
+<span class="sd">    :return: adjoint matrix</span>
+<span class="sd">    :rtype: ndarray(6,6)</span>
+
+<span class="sd">    Computes an adjoint matrix that maps spatial velocity between two frames defined by</span>
+<span class="sd">    an SE(3) matrix.</span>
+
+<span class="sd">    ``tr2jac(T)`` is an adjoint matrix (6x6) that maps spatial velocity or</span>
+<span class="sd">    differential motion between frame {B} to frame {A} which are attached to the</span>
+<span class="sd">    same moving body.  The pose of {B} relative to {A} is represented by the</span>
+<span class="sd">    homogeneous transform T = :math:`{}^A {\bf T}_B`.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; T = trotx(0.3, t=[4,5,6])</span>
+<span class="sd">        &gt;&gt;&gt; tr2adjoint(T)</span>
+<span class="sd">    </span>
+<span class="sd">    :Reference: </span>
+<span class="sd">        - Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</span>
+<span class="sd">        - `Lie groups for 2D and 3D Transformations &lt;http://ethaneade.com/lie.pdf&gt;_</span>
+
+<span class="sd">    :SymPy: supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
         <span class="c1"># SO(3) adjoint</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
-                <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">]</span>
+                    <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">]</span>
                 <span class="p">])</span>
     <span class="k">elif</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span>
         <span class="c1"># SE(3) adjoint</span>
         <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
-                <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">@</span> <span class="n">R</span><span class="p">],</span> 
-                <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">]</span>
+                    <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">@</span> <span class="n">R</span><span class="p">],</span> 
+                    <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">]</span>
                 <span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument&#39;</span><span class="p">)</span></div>
@@ -1994,8 +2013,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Animate a 3D coordinate frame</span>
 
-<span class="sd">    :param R: SE(3) or SO(3) matrix</span>
-<span class="sd">    :type R: ndarray(4,4) or ndarray(3,3)</span>
+<span class="sd">    :param T: SE(3) or SO(3) matrix</span>
+<span class="sd">    :type T: ndarray(4,4) or ndarray(3,3)</span>
 <span class="sd">    :param nframes: number of steps in the animation [defaault 100]</span>
 <span class="sd">    :type nframes: int</span>
 <span class="sd">    :param repeat: animate in endless loop [default False]</span>
@@ -2016,6 +2035,10 @@
 <span class="sd">            &gt;&gt;&gt; tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
 <span class="sd">            &gt;&gt;&gt; tranimate(transl(1,2,3)@trotx(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
 <span class="sd">    </span>
+<span class="sd">    .. note:: </span>
+<span class="sd">        - If ``T`` is a list, the poses are taken from that list</span>
+<span class="sd">        - If ``T`` is a generator, the poses are taken from its ``next()`` values</span>
+<span class="sd">        </span>
 <span class="sd">    :SymPy: not supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
@@ -2048,7 +2071,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>

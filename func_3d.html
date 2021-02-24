@@ -1700,40 +1700,33 @@ a time interval, average spatial velocity multiplied by time.</p></li>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.tr2jac">
-<code class="sig-name descname"><span class="pre">tr2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samebody</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2jac" title="Permalink to this definition">¶</a></dt>
-<dd><p>SE(3) adjoint</p>
+<code class="sig-name descname"><span class="pre">tr2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2jac" title="Permalink to this definition">¶</a></dt>
+<dd><p>SE(3) Jacobian matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – SE(3) matrix</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>adjoint matrix</p>
+<dd class="field-even"><p>Jacobian matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray(6,6)</p>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
-</dd>
 </dl>
-<p>Computes an adjoint matrix that maps spatial velocity between two frames defined by
-an SE(3) matrix.  It is a Jacobian matrix.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">tr2jac(T)</span></code> is a Jacobian matrix (6x6) that maps spatial velocity or
-differential motion from frame {A} to frame {B} where the pose of {B}
-relative to {A} is represented by the homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tr2jac(T,</span> <span class="pre">True)</span></code> as above but for the case when frame {A} to frame {B} are both
-attached to the same moving body.  This is the adjoint matrix</p></li>
-</ul>
+<p>Computes an Jacobian matrix that maps spatial velocity between two frames defined by
+an SE(3) matrix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tr2jac(T)</span></code> is a Jacobian matrix (6x6) that maps spatial velocity or
+differential motion from frame {B} to frame {A} where the pose of {B}
+elative to {A} is represented by the homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tr2jac</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 <span class="go">array([[ 1.    ,  0.    ,  0.    ,  0.    ,  0.    ,  0.    ],</span>
-<span class="go">       [ 0.    ,  0.9553,  0.2955,  0.    ,  0.    ,  0.    ],</span>
-<span class="go">       [ 0.    , -0.2955,  0.9553,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9553, -0.2955,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.2955,  0.9553,  0.    ,  0.    ,  0.    ],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ,  0.    ,  0.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  0.    ,  0.    ,  0.9553,  0.2955],</span>
-<span class="go">       [ 0.    ,  0.    ,  0.    ,  0.    , -0.2955,  0.9553]])</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  0.    ,  0.9553, -0.2955],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  0.    ,  0.2955,  0.9553]])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -1747,9 +1740,41 @@ attached to the same moving body.  This is the adjoint matrix</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="spatialmath.base.transforms3d.adjoint">
-<code class="sig-name descname"><span class="pre">adjoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#adjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.adjoint" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="spatialmath.base.transforms3d.tr2adjoint">
+<code class="sig-name descname"><span class="pre">tr2adjoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2adjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2adjoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>SE(3) adjoint matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – SE(3) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>adjoint matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(6,6)</p>
+</dd>
+</dl>
+<p>Computes an adjoint matrix that maps spatial velocity between two frames defined by
+an SE(3) matrix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tr2jac(T)</span></code> is an adjoint matrix (6x6) that maps spatial velocity or
+differential motion between frame {B} to frame {A} which are attached to the
+same moving body.  The pose of {B} relative to {A} is represented by the
+homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">`</span></a>Lie groups for 2D and 3D Transformations &lt;<a class="reference external" href="http://ethaneade.com/lie.pdf">http://ethaneade.com/lie.pdf</a>&gt;_</p></li>
+</ul>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.trprint">
@@ -1915,7 +1940,7 @@ trplot(T1, ‘labels’, ‘NOA’);</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(3) or SO(3) matrix</p></li>
+<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(3) or SO(3) matrix</p></li>
 <li><p><strong>nframes</strong> (<em>int</em>) – number of steps in the animation [defaault 100]</p></li>
 <li><p><strong>repeat</strong> (<em>bool</em>) – animate in endless loop [default False]</p></li>
 <li><p><strong>interval</strong> (<em>int</em>) – number of milliseconds between frames [default 50]</p></li>
@@ -1932,6 +1957,13 @@ trplot(T1, ‘labels’, ‘NOA’);</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tranimate</span><span class="p">(</span><span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="nd">@trotx</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tranimate</span><span class="p">(</span><span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="nd">@trotx</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">arrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">movie</span><span class="o">=</span><span class="s1">&#39;spin.mp4&#39;</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list, the poses are taken from that list</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">T</span></code> is a generator, the poses are taken from its <code class="docutils literal notranslate"><span class="pre">next()</span></code> values</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">SymPy</dt>
@@ -1958,7 +1990,7 @@ trplot(T1, ‘labels’, ‘NOA’);</p>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Feb-2021.
+        Last updated on 24-Feb-2021.
       </span>
 
     </p>
