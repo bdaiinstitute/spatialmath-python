@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from spatialmath import base
-from collections.abc import Iterable, Generator
+from collections.abc import Iterable, Generator, Iterator
 
 
 class Animate:
@@ -158,16 +158,24 @@ class Animate:
             - invokes the draw() method of every object in the display list
         """
 
-        def update(frame, a):
-            # if contains trajectory:
+        def update(frame, animation):
             if self.trajectory is not None:
+                # passed a trajectory as an iterator or generator, get next
                 T = next(self.trajectory)
             else:
+                # passed a single transform, interpolate it
                 T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
-            a._draw(T)
+            # ensure result is SE(3)
+            if T.shape == (3,3):
+                T = base.r2t(T)
+
+            # update the scene
+            animation._draw(T)
+
+            # are we done yet
             if frame == nframes - 1:
-                a.done = True
-            return a.artists()
+                animation.done = True
+            return animation.artists()
 
         # blit leaves a trail and first frame
         if movie is not None:
@@ -175,7 +183,7 @@ class Animate:
 
         self.done = False
         if self.trajectory is not None:
-            if not isinstance(self.trajectory, Iterable):
+            if not isinstance(self.trajectory, Iterator):
                 # make it iterable, eg. if a list or tuple
                 self.trajectory = iter(self.trajectory)
             frames = None

@@ -851,10 +851,19 @@ class SMPose(SMUserList):
         """
         if start is not None:
             start = start.A
-        if self.N == 2:
-            base.tranimate2(self.A, start=start, *args, **kwargs)
+        
+        if len(self) > 1:
+            # trajectory case
+            if self.N == 2:
+                base.tranimate2(self.data, *args, **kwargs)
+            else:
+                base.tranimate(self.data, *args, **kwargs)
         else:
-            base.tranimate(self.A, start=start, *args, **kwargs)
+            # singleton case
+            if self.N == 2:
+                base.tranimate2(self.A, start=start, *args, **kwargs)
+            else:
+                base.tranimate(self.A, start=start, *args, **kwargs)
 
 
 # ------------------------------------------------------------------------ #
