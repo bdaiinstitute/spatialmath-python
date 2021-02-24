@@ -472,7 +472,8 @@ class Test3D(unittest.TestCase):
     def test_tr2jac(self):
 
         # NOTE, create these matrices using pyprint() in MATLAB
-        nt.assert_array_almost_equal(tr2jac(trotx(pi / 2)),
+        # TODO change to forming it from block R matrices directly
+        nt.assert_array_almost_equal(tr2jac(trotx(pi / 2)).T,
                                      np.array([[1, 0, 0, 0, 0, 0],
                                                [0, 0, 1, 0, 0, 0],
                                                [0, -1, 0, 0, 0, 0],
@@ -480,26 +481,10 @@ class Test3D(unittest.TestCase):
                                                [0, 0, 0, 0, 0, 1],
                                                [0, 0, 0, 0, -1, 0]]))
 
-        nt.assert_array_almost_equal(tr2jac(trotx(pi / 2), True),
-                                     np.array([[1, 0, 0, 0, 0, 0],
-                                               [0, 0, 1, 0, 0, 0],
-                                               [0, -1, 0, 0, 0, 0],
-                                               [0, 0, 0, 1, 0, 0],
-                                               [0, 0, 0, 0, 0, 1],
-                                               [0, 0, 0, 0, -1, 0]]))
-
-        nt.assert_array_almost_equal(tr2jac(transl(1, 2, 3)),
+        nt.assert_array_almost_equal(tr2jac(transl(1, 2, 3)).T,
                                      np.array([[1, 0, 0, 0, 0, 0],
                                                [0, 1, 0, 0, 0, 0],
                                                [0, 0, 1, 0, 0, 0],
-                                               [0, 0, 0, 1, 0, 0],
-                                               [0, 0, 0, 0, 1, 0],
-                                               [0, 0, 0, 0, 0, 1]]))
-
-        nt.assert_array_almost_equal(tr2jac(transl(1, 2, 3), True),
-                                     np.array([[1, 0, 0, 0, 3, -2],
-                                               [0, 1, 0, -3, 0, 1],
-                                               [0, 0, 1, 2, -1, 0],
                                                [0, 0, 0, 1, 0, 0],
                                                [0, 0, 0, 0, 1, 0],
                                                [0, 0, 0, 0, 0, 1]]))
