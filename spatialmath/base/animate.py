@@ -176,10 +176,14 @@ class Animate:
         self.done = False
         if self.trajectory is not None:
             if not isinstance(self.trajectory, Iterable):
+                # make it iterable, eg. if a list or tuple
                 self.trajectory = iter(self.trajectory)
+            frames = None
+        else:
+            frames = range(0, nframes)
 
         # ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
-        ani = animation.FuncAnimation(fig=plt.gcf(), func=update, fargs=(self,), blit=False, interval=interval, repeat=repeat)
+        ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=frames, fargs=(self,), blit=False, interval=interval, repeat=repeat)
         if movie is None:
             while repeat or not self.done:
                 plt.pause(0.1)
