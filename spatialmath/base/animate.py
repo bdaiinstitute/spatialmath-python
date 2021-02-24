@@ -161,7 +161,11 @@ class Animate:
         def update(frame, animation):
             if self.trajectory is not None:
                 # passed a trajectory as an iterator or generator, get next
-                T = next(self.trajectory)
+                try:
+                    T = next(self.trajectory)
+                except StopIteration:
+                    animation.done = True
+                    return
             else:
                 # passed a single transform, interpolate it
                 T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
@@ -735,6 +739,9 @@ def plotvol2(dim, ax=None, equal=False):
     if ax is None:
         ax = plt.subplot()
     ax.axis(dims)
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+
     if equal:
         ax.set_aspect('equal')
     return ax
@@ -765,6 +772,9 @@ def plotvol3(dim, ax=None, equal=False):
     ax.set_xlim3d(dims[0], dims[1])
     ax.set_ylim3d(dims[2], dims[3])
     ax.set_zlim3d(dims[4], dims[5])
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
 
     if equal:
         ax.set_aspect('equal')
