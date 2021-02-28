@@ -7,4 +7,4 @@ from spatialmath.spatialvector import SpatialVelocity, SpatialAcceleration, \
 from spatialmath.quaternion import Quaternion, UnitQuaternion
 from spatialmath.DualQuaternion import DualQuaternion, UnitDualQuaternion
 #from spatialmath.Plucker import *
-from spatialmath.geom2d import plot_line, plot_box, plot_text, plot_point
+from spatialmath.base import plot_box, plot_text, plot_point

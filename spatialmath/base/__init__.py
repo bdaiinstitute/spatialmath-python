@@ -10,6 +10,7 @@ from spatialmath.base.transformsNd import *  # lgtm [py/polluting-import]
 from spatialmath.base.vectors import *       # lgtm [py/polluting-import]
 from spatialmath.base.symbolic import *      # lgtm [py/polluting-import]
 from spatialmath.base.animate import *       # lgtm [py/polluting-import]
+from spatialmath.base.graphics import *       # lgtm [py/polluting-import]
 
 __all__ = [
 # spatialmath.base.argcheck
@@ -129,7 +130,12 @@ __all__ = [
 # spatialmath.base.animate
     'Animate',
     'Animate2',
+#spatial.base.graphics
     'plotvol2',
     'plotvol3',
     'plot_point',
+    'plot_text',
+    'plot_box',
+    'isnotebook',
+
  ]

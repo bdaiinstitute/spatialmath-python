@@ -716,181 +716,28 @@ class Animate2:
     def set_ylabel(self, *args, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
 
-def plotvol2(dim, ax=None, equal=False):
-    """
-    Create 2D plot area
-
-    :param ax: axes of initializer, defaults to new subplot
-    :type ax: AxesSubplot, optional
-    :param equal: set aspect ratio to 1:1, default False
-    :type equal: bool
-    :return: initialized axes
-    :rtype: AxesSubplot
-
-    Initialize axes with dimensions given by ``dim`` which can be:
-
-        * A (scalar), -A:A x -A:A
-        * [A,B], A:B x A:B
-        * [A,B,C,D], A:B x C:D
-
-    :seealso: :func:`plotvol3`, :func:`expand_dims`
-    """
-    dims = expand_dims(dim, 2)
-    if ax is None:
-        ax = plt.subplot()
-    ax.axis(dims)
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-
-    if equal:
-        ax.set_aspect('equal')
-    return ax
-
-def plotvol3(dim, ax=None, equal=False):
-    """
-    Create 3D plot volume
-
-    :param ax: axes of initializer, defaults to new subplot
-    :type ax: Axes3DSubplot, optional
-    :param equal: set aspect ratio to 1:1:1, default False
-    :type equal: bool
-    :return: initialized axes
-    :rtype: Axes3DSubplot
-
-    Initialize axes with dimensions given by ``dim`` which can be:
-
-        * A (scalar), -A:A x -A:A x -A:A
-        * [A,B], A:B x A:B x A:B
-        * [A,B,C,D,E,F], A:B x C:D x E:F
-
-    :seealso: :func:`plotvol2`, :func:`expand_dims`
-    """
-    dims = expand_dims(dim, 3)
-    print(dims)
-    if ax is None:
-        ax = plt.subplot(projection='3d')
-    ax.set_xlim3d(dims[0], dims[1])
-    ax.set_ylim3d(dims[2], dims[3])
-    ax.set_zlim3d(dims[4], dims[5])
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-
-    if equal:
-        ax.set_aspect('equal')
-    return ax
-
-def plot_point(pos, marker='bs', text=None, ax=None, color=None, **kwargs):
-    """
-    Plot a point using matplotlib
-
-    :param pos: position of marker
-    :type pos: array_like(2), ndarray(2,n), list of 2-tuples
-    :param marker: matplotlub marker style, defaults to 'bs'
-    :type marker: str or list of str, optional
-    :param text: text label, defaults to None
-    :type text: str, optional
-    :param ax: axes to plot in, defaults to ``gca()````
-    :type ax: Axis, optional
-    :param color: text color, defaults to None
-    :type color: str or array_like(3), optional
-
-    The color of the marker can be different to the color of the text,
-    the marker color is specified by a single letter in the marker string.
-
-    A point can multiple markers which will be overlaid, for instance ``["rx",
-    "ro"]`` will give a ⨂ symbol.
-
-    The optional text label is placed to the right of the marker, and vertically
-    aligned. 
-    
-    Multiple points can be marked if ``pos`` is a 2xn array or a list of
-    coordinate pairs.  If a label is provided every point will have the same
-    label. However, the text is processed with ``format`` and is provided with a
-    single argument, the point index (starting at zero).
 
 
-    """
-    
-    if isinstance(pos, np.ndarray):
-        if pos.ndim == 1:
-            x = pos[0]
-            y = pos[1]
-        elif pos.ndim == 2 and pos.shape[0] == 2:
-            x = pos[0,:]
-            y = pos[1,:]
-    elif isinstance(pos, (tuple, list)):
-        # [x, y]
-        # [(x,y), (x,y), ...]
-        # [xlist, ylist]
-        # [xarray, yarray]
-        if base.islistof(pos, (tuple, list)):
-            x = [z[0] for z in pos]
-            y = [z[1] for z in pos]
-        elif base.islistof(pos, np.ndarray):
-            x = pos[0]
-            y = pos[1]
-        else:
-            x = pos[0]
-            y = pos[1]
+if __name__ == "__main__":
+    # from spatialmath import UnitQuaternion
+    # from spatialmath.base import tranimate, r2t
 
-    if ax is None:
-        ax = plt.gca()
-    if isinstance(marker, (list, tuple)):
-        for m in marker:
-            plt.plot(x, y, m, **kwargs)
-    else:
-        plt.plot(x, y, marker)
-    if text:
-        try:
-            for i, xy in enumerate(zip(x, y)):
-                plt.text(xy[0], xy[1], ' ' + text.format(i), horizontalalignment='left', verticalalignment='center', color=color, **kwargs)
-        except:
-            plt.text(x, y, ' ' + text, horizontalalignment='left', verticalalignment='center', color=color, **kwargs)
+    # J = np.array([[2, -1, 0], [-1, 4, 0], [0, 0, 3]])
+    # dt = 0.05
+    # def attitude():
+    #     attitude = UnitQuaternion()
+    #     w = 0.2 * np.r_[1, 2, 2].T
+    #     for t in np.arange(0, 3, dt):
+    #         wd =  -np.linalg.inv(J) @ (np.cross(w, J @ w))
+    #         w += wd * dt
+    #         attitude.increment(w * dt)
+    #         yield attitude.R
+    # plt.figure()
+    # plotvol3(2)
+    # tranimate(attitude())
 
-def expand_dims(dim=None, nd=2):
-    """[summary]
+    # from spatialmath import base
 
-
-    :param dim: [description], defaults to None
-    :type dim: [type], optional
-    :param nd: [description], defaults to 2
-    :type nd: int, optional
-    :raises ValueError: bad arguments
-    :return: 2d or 3d dimensions vector
-    :rtype: ndarray(4) or ndarray(6)
-
-    Compute bounding dimensions for plots from shorthand notation.
-
-    If ``nd==2``, [xmin, xmax, ymin, ymax]:
-        * A -> [-A, A, -A, A]
-        * [A,B] -> [A, B, A, B]
-        * [A,B,C,D] -> [A, B, C, D]
-
-    If ``nd==3``, [xmin, xmax, ymin, ymax, zmin, zmax]:
-        * A -> [-A, A, -A, A, -A, A]
-        * [A,B] -> [A, B, A, B, A, B]
-        * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
-    """
-    dim = base.getvector(dim)
-
-    if nd == 2:
-        if len(dim) == 1:
-            return np.r_[-dim, dim, -dim, dim]
-        elif len(dim) == 2:
-                return np.r_[-dim[0], dim[0], -dim[1], dim[1]]
-        elif len(dim) == 4:
-                return dim
-        else:
-            raise ValueError('bad dimension specified')
-    elif nd == 3:
-        if len(dim) == 1:
-                return np.r_[-dim, dim, -dim, dim, -dim, dim]
-        elif len(dim) == 3:
-                return np.r_[-dim[0], dim[0], -dim[1], dim[1], -dim[2], dim[2]]
-        elif len(dim) == 6:
-                return dim
-        else:
-            raise ValueError('bad dimension specified')
-    else:
-        raise ValueError('nd is 2 or 3')
+    # T = base.rpy2r(0.3, 0.4, 0.5)
+    # base.tranimate(T, wait=True)
+    pass
