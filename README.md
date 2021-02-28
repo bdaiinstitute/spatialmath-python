@@ -31,7 +31,21 @@ A Python implementation of the <a href="https://github.com/petercorke/spatial-ma
 
 Spatial mathematics capability underpins all of robotics and robotic vision where we need to describe the position, orientation or pose of objects in 2D or 3D spaces.
 
+# Recent changes
 
+- `@` operator for pose objects, like `*` but does an explicit normalization
+- `interp` has changed quite a bit:
+  - now `X1.interp(X2, s)` rather than `X2.interp(s, start=X1)`
+  - new `interp1` method interpolates between null and `X`, eg. `X.interp1(s)`
+  - integer value of `s` is interpretted as `s` even steps between 0 and 1
+- `UnitQuaternions` now always have a positive scalar part
+- `base` functions `plot_point`, `plot_text`, `plot_box` like their MATLAB cousins
+- `tranimate` works in Jupyter with `notebook` backend, lots of internal improvements 
+  with animation
+- `trplot` now has an implemented `anaglyph` mode.  Have a play and give feedback.
+- `SE3` and `SO3` constructors `Eul` and `RPY` can now accept the angles as 
+  3 positional arguments rather than just a vector, eg. `SO3.RPY(1,2,3)`
+- There is a prototype `UnitDualQuaternion` class
 
 # What it does
 
