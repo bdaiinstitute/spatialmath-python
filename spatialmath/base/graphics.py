@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from spatialmath.base.vectors import getvector
 import numpy as np
 
 def plot_box(ax=None, 
@@ -294,7 +295,7 @@ def expand_dims(dim=None, nd=2):
         * [A,B] -> [A, B, A, B, A, B]
         * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
     """
-    dim = base.getvector(dim)
+    dim = getvector(dim)
 
     if nd == 2:
         if len(dim) == 1:
