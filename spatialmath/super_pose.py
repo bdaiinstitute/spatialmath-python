@@ -367,13 +367,14 @@ class SMPose(SMUserList):
 
         :param end: final pose
         :type end: same as ``self``
-        :param s: interpolation coefficient, range 0 to 1
-        :type s: array_like
+        :param s: interpolation coefficient, range 0 to 1, or number of steps
+        :type s: array_like or int
         :return: interpolated pose
-        :rtype: SO2, SE2, SO3, SE3 instance
+        :rtype: same as ``self``
 
         - ``X.interp(Y, s)`` interpolates pose between X between when s=0
           and Y when s=1.
+        - ``X.interp(Y, N)`` interpolates pose between X and Y in ``N`` steps.
 
         Example:
 
@@ -381,24 +382,28 @@ class SMPose(SMUserList):
 
             >>> x = SE3(-1, -2, 0) * SE3.Rx(-0.3)
             >>> y = SE3(1, 2, 0) * SE3.Rx(0.3)
-            >>> x.interp(y, 0)
-            >>> x.interp(y, 1)
-            >>> x.interp(y, 0.5)
-            >>> z = x.interp(y, np.linspace(0, 1, 11))
+            >>> x.interp(y, 0)    # this is x
+            >>> x.interp(y, 1)    # this is y
+            >>> x.interp(y, 0.5)  # this is in between
+            >>> z = x.interp(y, 11)  # in 11 steps
             >>> len(z)
-            >>> y[0]
-            >>> y[5]
+            >>> z[0]              # this is x
+            >>> z[5]              # this is in between
 
         .. note::
 
             - For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
-
+            - Values of ``s`` outside the range [0,1] are silently clipped
         :seealso: :func:`interp1`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
 
         :SymPy: not supported
         """
-        s = base.getvector(s)
-        s = np.clip(s, 0, 1)
+
+        if isinstance(s, int) and s > 1:
+            s = np.linspace(0, 1, s)
+        else:
+            s = base.getvector(s)
+            s = np.clip(s, 0, 1)
 
         if len(self) > 1: 
             raise ValueError('start pose must be a singleton')
@@ -1075,7 +1080,7 @@ class SMPose(SMUserList):
 
         .. note:: This operator is functionally equivalent to ``*`` but is more
             costly.  It is useful for cases where a pose is incrementally 
-            update over many cycle.s
+            update over many cycles.
 
         :seealso: :func:`__mul__`, :func:`~spatialmath.base.trnorm`
         """

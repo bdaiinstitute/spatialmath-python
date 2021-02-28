@@ -356,6 +356,16 @@ class TestUnitQuaternion(unittest.TestCase):
         # vector x scalar
         nt.assert_array_almost_equal(UnitQuaternion([ry, rz, rx]) * vy, np.c_[vy, -vx, vz])
 
+    def test_matmul(self):
+
+        rx = UnitQuaternion.Rx(pi / 2)
+        ry = UnitQuaternion.Ry(pi / 2)
+        rz = UnitQuaternion.Rz(pi / 2)
+
+        qcompare(rx @ ry, rx * ry)
+
+        qcompare(UnitQuaternion([ry, rz, rx]) @ UnitQuaternion([rx, ry, rz]), UnitQuaternion([ry * rx, rz * ry, rx * rz]))
+
     # def multiply_test_normalized(self):
 
     #     vx = [1, 0, 0]; vy = [0, 1, 0]; vz = [0, 0, 1]
@@ -495,25 +505,31 @@ class TestUnitQuaternion(unittest.TestCase):
         q = rx * ry * rz
 
         # from null
-        qcompare(q.interp(0), u)
-        qcompare(q.interp(1), q)
+        qcompare(q.interp1(0), u)
+        qcompare(q.interp1(1), q)
 
         #self.assertEqual(length(q.interp(linspace(0,1, 10))), 10)
         #self.assertTrue(all( q.interp([0, 1]) == [u, q]))
         # TODO vectorizing
 
-        q0_5 = q.interp(0.5)
+        q0_5 = q.interp1(0.5)
         qcompare(q0_5 * q0_5, q)
 
+        qq = rx.interp1(11)
+        self.assertEqual(len(qq), 11)
+
         # between two quaternions
-        qcompare(rx.interp(0, start=q), q)
-        qcompare(rx.interp(1, start=q), rx)
+        qcompare(q.interp(rx, 0), q)
+        qcompare(q.interp(rx, 1), rx)
 
         # test vectorised results
-        qq = rx.interp([0, 1], start=q)
+        qq = q.interp(rx, [0, 1])
         self.assertEqual(len(qq), 2)
         qcompare(qq[0], q)
         qcompare(qq[1], rx)
+
+        qq = rx.interp(q, 11)
+        self.assertEqual(len(qq), 11)
 
         #self.assertTrue(all( q.interp([0, 1], dest=rx, ) == [q, rx]))
 
