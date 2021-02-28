@@ -1211,7 +1211,7 @@ class UnitQuaternion(Quaternion):
         return cls([base.rand() for i in range(0, N)], check=False)
 
     @classmethod
-    def Eul(cls, angles, *, unit='rad'):
+    def Eul(cls, *angles, unit='rad'):
         r"""
         Construct a new unit quaternion from Euler angles
 
@@ -1245,7 +1245,7 @@ class UnitQuaternion(Quaternion):
         return cls(base.r2q(base.eul2r(angles, unit=unit)), check=False)
 
     @classmethod
-    def RPY(cls, angles, *, order='zyx', unit='rad'):
+    def RPY(cls, *angles, order='zyx', unit='rad'):
         """
         Construct a new unit quaternion from roll-pitch-yaw angles
 
