@@ -414,8 +414,11 @@ class TestUnitQuaternion(unittest.TestCase):
 
         # , 3 angle
         qcompare(UnitQuaternion.RPY([0.1, 0.2, 0.3]).rpy(), [0.1, 0.2, 0.3])
+        qcompare(UnitQuaternion.RPY(0.1, 0.2, 0.3).rpy(), [0.1, 0.2, 0.3])
 
         qcompare(UnitQuaternion.Eul([0.1, 0.2, 0.3]).eul(), [0.1, 0.2, 0.3])
+        qcompare(UnitQuaternion.Eul(0.1, 0.2, 0.3).eul(), [0.1, 0.2, 0.3])
+
 
         qcompare(UnitQuaternion.RPY([10, 20, 30], unit='deg').R, rpy2r(10, 20, 30, unit='deg'))
 

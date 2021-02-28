@@ -184,7 +184,7 @@ class SO3(SMPose):
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 3-vector of Euler angles
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3,), ndarray(n,3)
 
         ``x.eul`` is the Euler angle representation of the rotation.  Euler angles are
         a 3-vector :math:`(\phi, \theta, \psi)` which correspond to consecutive
@@ -193,7 +193,7 @@ class SO3(SMPose):
         If ``len(x)`` is:
 
         - 1, return an ndarray with shape=(3,)
-        - N>1, return ndarray with shape=(N,3)
+        - N>1, return ndarray with shape=(3,N)
 
         :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.tr2eul`
         :SymPy: not supported
@@ -201,7 +201,7 @@ class SO3(SMPose):
         if len(self) == 1:
             return base.tr2eul(self.A, unit=unit)
         else:
-            return np.array([base.tr2eul(x, unit=unit) for x in self.A]).T
+            return np.array([base.tr2eul(x, unit=unit) for x in self.A])
 
     def rpy(self, unit='rad', order='zyx'):
         """
@@ -212,7 +212,7 @@ class SO3(SMPose):
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: 3-vector of roll-pitch-yaw angles
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3,), ndarray(n,3)
 
         ``x.rpy`` is the roll-pitch-yaw angle representation of the rotation.  The angles are
         a 3-vector :math:`(r, p, y)` which correspond to successive rotations about the axes
@@ -231,7 +231,7 @@ class SO3(SMPose):
         If `len(x)` is:
 
         - 1, return an ndarray with shape=(3,)
-        - N>1, return ndarray with shape=(N,3)
+        - N>1, return ndarray with shape=(3,N)
 
         :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.tr2rpy`
         :SymPy: not supported
@@ -239,7 +239,7 @@ class SO3(SMPose):
         if len(self) == 1:
             return base.tr2rpy(self.A, unit=unit, order=order)
         else:
-            return np.array([base.tr2rpy(x, unit=unit, order=order) for x in self.A]).T
+            return np.array([base.tr2rpy(x, unit=unit, order=order) for x in self.A])
 
     def angvec(self, unit='rad'):
         r"""

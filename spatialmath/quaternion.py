@@ -1222,9 +1222,13 @@ class UnitQuaternion(Quaternion):
         :return: unit-quaternion
         :rtype: UnitQuaternion instance
 
-        ``UnitQuaternion.Eul(𝚪)`` is a unit quaternion that describes the 3D
-        rotation defined by a 3-vector of Euler angles :math:`\Gamma = (\phi, \theta, \psi)` which correspond to consecutive rotations about the Z, Y, Z axes
-        respectively.
+        - ``UnitQuaternion.Eul(𝚪)`` is a unit quaternion that describes the 3D
+          rotation defined by a 3-vector of Euler angles :math:`\Gamma = (\phi,
+          \theta, \psi)` which correspond to consecutive rotations about the Z,
+          Y, Z axes respectively.
+
+        - ``UnitQuaternion.Eul(φ, θ, ψ)`` as above but the angles are provided
+          as three scalars.
 
         Example:
 
@@ -1235,6 +1239,9 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.RPY`, :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         """
+        if len(angles) == 1:
+            angles = angles[0]
+
         return cls(base.r2q(base.eul2r(angles, unit=unit)), check=False)
 
     @classmethod
@@ -1251,18 +1258,27 @@ class UnitQuaternion(Quaternion):
         :return: unit-quaternion
         :rtype: UnitQuaternion instance
 
-        ``UnitQuaternion.RPY(𝚪)`` is a unit quaternion that describes the 3D rotation defined by a  3-vector of roll, pitch, yaw angles :math:`\Gamma = (r, p, y)`
-        which correspond to successive rotations about the axes specified by ``order``:
+        - ``UnitQuaternion.RPY(𝚪)`` is a unit quaternion that describes the 3D
+          rotation defined by a  3-vector of roll, pitch, yaw angles
+          :math:`\Gamma = (r, p, y)` which correspond to successive rotations
+          about the axes specified by ``order``:
 
-            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-              and y-axis sideways.
-            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
-              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
-              and y-axis between the gripper fingers.
-            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
-              then by roll about the new z-axis. Convention for a camera with z-axis parallel
-              to the optic axis and x-axis parallel to the pixel rows.
+            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch
+              about the new y-axis, then by roll about the new x-axis.
+              Convention for a mobile robot with x-axis forward and y-axis
+              sideways.
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the
+              new y-axis, then by roll about the new z-axis. Convention for a
+              robot gripper with z-axis forward and y-axis between the gripper
+              fingers.
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the
+              new x-axis, then by roll about the new z-axis. Convention for a
+              camera with z-axis parallel to the optic axis and x-axis parallel
+              to the pixel rows.
+
+
+        - ``UnitQuaternion.RPY(⍺, β, 𝛾)`` as above but the angles are provided
+          as three scalars.
 
         Example:
 
@@ -1273,6 +1289,9 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Eul`, :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.rpy2r`
         """
+        if len(angles) == 1:
+            angles = angles[0]
+
         return cls(base.r2q(base.rpy2r(angles, unit=unit, order=order)), check=False)
 
     @classmethod
@@ -1725,26 +1744,41 @@ class UnitQuaternion(Quaternion):
         return left.binop(right, lambda x, y: not base.isequal(x, y, unitq=True), list1=False)
 
     def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-        print('normalizing product')
-        return left.__mul__(right)
+        """
+        Overloaded @ operator
 
-    def interp(self, s=0, start=None, shortest=False):
+        :return: product :rtype: UnitQuaternion
+
+        - ``q1 @ q2`` is the Hamilton product of ``q1`` and ``q2``, both unit
+          quaternions, followed by explicit normalization.
+
+        - `` q1 @= q2`` as above.
+
+        .. note:: This operator is functionally equivalent to ``*`` but is more
+            costly.  It is useful for cases where a pose is incrementally update
+            over many cycles.
+        """
+        return left.__class__(left.binop(right, lambda x, y: base.unit(base.qqmul(x, y))))
+
+    def interp(self, end, s=0, shortest=False):
         """
         Interpolate between two unit quaternions
 
-        :param start: initial unit quaternion
-        :type start: UnitQuaternion
+        :param end: final unit quaternion
+        :type end: UnitQuaternion
         :param shortest: Take the shortest path along the great circle
-        :param s: interpolation in range [0,1]
-        :type s: array_like
+        :param s: interpolation coefficient, range 0 to 1, or number of steps
+        :type s: array_like or int
         :return: interpolated unit quaternion
         :rtype: UnitQuaternion instance
 
-        - ``q.interp(s)`` is a unit quaternion that is interpolated between
-          the identity quaternion and ``q``.  Spherical linear interpolation (slerp) is used.
+        - ``q0.interp(q1, s)`` is a unit quaternion that is interpolated between
+          ``q0`` when s=0 and ``q1`` when s=1. Spherical linear interpolation
+          (slerp) is used.  If ``s`` is an ndarray(n) then the result will be
+          a UnitQuaternion with n values.
 
-        - ``q1.interp(s, start=q0)`` as above but interpolated between
-          ``q0`` and ``q1``.
+        - ``q0.interp(q1, N)`` interpolate between ``q0`` and ``q1`` in ``N``
+          steps.
 
         Example:
 
@@ -1754,41 +1788,40 @@ class UnitQuaternion(Quaternion):
             >>> q1 = UQ.Rx(0.3); q2 = UQ.Rz(-0.4)
             >>> print(q1)
             >>> print(q2)
-            >>> print(q2.interp(0, start=q1))    # this is q1
-            >>> print(q2.interp(1, start=q1))    # this is q2
-            >>> print(q2.interp(0.5, start=q1))  # this is in between
+            >>> q1.interp(q2, 0)    # this is q1
+            >>> q1.interp(q2, 1,)   # this is q2
+            >>> q1.interp(q2, 0.5)  # this is in between
+            >>> q = q1.interp(q2, 11)  # in 11 steps
+            >>> len(q)
+            >>> q[0]                # this is q1
+            >>> q[5]                # this is in between
 
-        .. note:: values of ``s`` are clipped to the range [0, 1]
+        .. note:: values of ``s`` are silently clipped to the range [0, 1]
 
         :seealso: :func:`~spatialmath.base.quaternions.slerp`
         """
         # TODO allow self to have len() > 1
 
-        s = base.getvector(s)
-        s = np.clip(s, 0, 1)  # enforce valid values
-
-        if start is not None:
-            # 2 quaternion form
-            if not isinstance(start, UnitQuaternion):
-                raise TypeError('start argument must be a UnitQuaternion')
-            q1 = start.vec
-            q2 = self.vec
-            dot = base.inner(q1, q2)
-
-            # If the dot product is negative, the quaternions
-            # have opposite handed-ness and slerp won't take
-            # the shorter path. Fix by reversing one quaternion.
-            if shortest:
-                if dot < 0:
-                    q1 = - q1
-                    dot = -dot
-
+        if isinstance(s, int) and s > 1:
+            s = np.linspace(0, 1, s)
         else:
-            # 1 quaternion form
-            # s will always be positive
-            q1 = base.eye()
-            q2 = self.vec
-            dot = q2[0]  # if q1 = (1, 0,0,0)
+            s = base.getvector(s)
+            s = np.clip(s, 0, 1)  # enforce valid values
+
+        # 2 quaternion form
+        if not isinstance(end, UnitQuaternion):
+            raise TypeError('end argument must be a UnitQuaternion')
+        q1 = self.vec
+        q2 = end.vec
+        dot = base.inner(q1, q2)
+
+        # If the dot product is negative, the quaternions
+        # have opposite handed-ness and slerp won't take
+        # the shorter path. Fix by reversing one quaternion.
+        if shortest:
+            if dot < 0:
+                q1 = - q1
+                dot = -dot
 
         # shouldn't be needed by handle numerical errors: -eps, 1+eps cases
         dot = np.clip(dot, -1, 1)  # Clip within domain of acos()
@@ -1802,6 +1835,78 @@ class UnitQuaternion(Quaternion):
             s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
             s2 = math.sin(theta) / math.sin(theta_0)
             out = (q1 * s1) + (q2 * s2)
+            qi.append(out)
+
+        return UnitQuaternion(qi)
+
+    def interp1(self, s=0, shortest=False):
+        """
+        Interpolate a unit quaternions
+
+        :param shortest: Take the shortest path along the great circle
+        :param s: interpolation coefficient, range 0 to 1, or number of steps
+        :type s: array_like or int
+        :return: interpolated unit quaternion
+        :rtype: UnitQuaternion instance
+
+        - ``q.interp1(s)`` is a unit quaternion that is interpolated between
+          identity when s=0 and ``q`` when s=1. Spherical linear interpolation
+          (slerp) is used.  If ``s`` is an ndarray(n) then the result will be
+          a UnitQuaternion with n values.
+
+        - ``q.interp1(N)`` interpolate between identity and ``q1`` in ``N``
+          steps.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion as UQ
+            >>> q = UQ.Rx(0.3)
+            >>> print(q)
+            >>> q.interp1(0)    # this is identity
+            >>> q.interp1(1)    # this is q
+            >>> q.interp1(0.5)  # this is in between
+            >>> qi = q.interp1(q2, 11)  # in 11 steps
+            >>> len(qi)
+            >>> qi[0]                # this is q1
+            >>> qi[5]                # this is in between
+
+        .. note:: values of ``s`` are silently clipped to the range [0, 1]
+
+        :seealso: :func:`~spatialmath.base.quaternions.slerp`
+        """
+        # TODO allow self to have len() > 1
+
+        if isinstance(s, int) and s > 1:
+            s = np.linspace(0, 1, s)
+        else:
+            s = base.getvector(s)
+            s = np.clip(s, 0, 1)  # enforce valid values
+
+        q = self.vec
+        dot = q[0]   # s
+
+        # If the dot product is negative, the quaternions
+        # have opposite handed-ness and slerp won't take
+        # the shorter path. Fix by reversing one quaternion.
+        if shortest:
+            if dot < 0:
+                q = - q
+                dot = -dot
+
+        # shouldn't be needed by handle numerical errors: -eps, 1+eps cases
+        dot = np.clip(dot, -1, 1)  # Clip within domain of acos()
+
+        theta_0 = math.acos(dot)  # theta_0 = angle between input vectors
+
+        qi = []
+        for sk in s:
+            theta = theta_0 * sk  # theta = angle between v0 and result
+
+            s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
+            s2 = math.sin(theta) / math.sin(theta_0)
+            out = np.r_[s1, 0, 0, 0] + (q * s2)
             qi.append(out)
 
         return UnitQuaternion(qi)
@@ -1874,6 +1979,10 @@ class UnitQuaternion(Quaternion):
 
         :see :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms3d.trplot`
         """
+        if len(self) > 1:
+            base.tranimate([base.q2r(q) for q in self.data], *args, **kwargs)
+        else:
+            base.tranimate(base.q2r(self._A), *args, **kwargs)
 
     def rpy(self, unit='rad', order='zyx'):
         """
@@ -2128,10 +2237,6 @@ if __name__ == '__main__':  # pragma: no cover
 
     import pathlib
 
-    q=UnitQuaternion.Rand()
-    a = q.log()
-    print(a, a.norm())
-    a = q.exp()
-    print(a, a.norm())
+    a = UnitQuaternion([0, 1, 0, 0])
 
     exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_quaternion.py").read())  # pylint: disable=exec-used
