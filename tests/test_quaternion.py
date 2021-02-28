@@ -48,7 +48,7 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion([0, 0, 0, 1]), np.r_[0, 0, 0, 1])
 
         qcompare(UnitQuaternion([2, 0, 0, 0]), np.r_[1, 0, 0, 0])
-        qcompare(UnitQuaternion([-2, 0, 0, 0]), np.r_[-1, 0, 0, 0])
+        qcompare(UnitQuaternion([-2, 0, 0, 0]), np.r_[1, 0, 0, 0])
 
         # from [S,V]
         qcompare(UnitQuaternion(1, [0, 0, 0]), np.r_[1, 0, 0, 0])
@@ -57,7 +57,7 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(0, [0, 0, 1]), np.r_[0, 0, 0, 1])
 
         qcompare(UnitQuaternion(2, [0, 0, 0]), np.r_[1, 0, 0, 0])
-        qcompare(UnitQuaternion(-2, [0, 0, 0]), np.r_[-1, 0, 0, 0])
+        qcompare(UnitQuaternion(-2, [0, 0, 0]), np.r_[1, 0, 0, 0])
 
         # from R
 

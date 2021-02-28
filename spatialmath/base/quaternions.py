@@ -53,6 +53,21 @@ def pure(v):
     v = base.getvector(v, 3)
     return np.r_[0, v]
 
+def qpositive(q):
+    """
+    Quaternion with positive scalar part
+
+    :arg q: quaternion
+    :type v: : ndarray(4)
+    :return: pure quaternion
+    :rtype: ndarray(4)
+
+    If the scalar part is negative return -q.
+    """
+    if q[0] < 0:
+        return -q
+    else:
+        return q
 
 def qnorm(q):
     r"""
@@ -97,6 +112,8 @@ def unit(q, tol=10):
         >>> q = unit([1, 2, 3, 4])
         >>> qprint(q)
 
+    .. note:: Scalar part is always positive.
+
     .. note:: If the quaternion norm is less than ``tol * eps`` an exception is
               raised.
 
@@ -106,7 +123,13 @@ def unit(q, tol=10):
     nm = np.linalg.norm(q)
     if abs(nm) < tol * _eps:
         raise ValueError("cannot normalize (near) zero length quaternion")
-    return q / nm
+    else:
+        q /= nm
+    
+    if q[0] >= 0:
+        return q
+    else:
+        return -q
 
 
 def isunit(q, tol=100):
@@ -495,12 +518,14 @@ def r2q(R, check=False, tol=100):
 
     .. warning:: There is no check that the passed matrix is a valid rotation matrix.
 
+    .. note:: Scalar part is always positive.
+
     :seealso: :func:`q2r`
     """
     if not base.isrot(R, check=check, tol=tol):
         raise ValueError("Argument must be a valid SO(3) matrix")
 
-    qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0
+    qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0  # scalar part
     kx = R[2, 1] - R[1, 2]  # Oz - Ay
     ky = R[0, 2] - R[2, 0]  # Ax - Nz
     kz = R[1, 0] - R[0, 1]  # Ny - Ox

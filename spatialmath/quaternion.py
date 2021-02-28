@@ -983,9 +983,9 @@ class UnitQuaternion(Quaternion):
 
             elif isinstance(s, np.ndarray) and s.shape[1] == 4:
                 if norm:
-                    self.data = [base.qnorm(x) for x in s]
+                    self.data = [base.unit(x) for x in s]
                 else:
-                    self.data = [x for x in s]
+                    self.data = [base.qpositive(x) for x in s]
 
             elif isinstance(s, SO3):
                 # UnitQuaternion(x) x is SO3 or SE3
