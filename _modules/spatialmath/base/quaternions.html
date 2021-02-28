@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.base.quaternions &mdash; Spatial Maths package 0.8.9
+  <title>spatialmath.base.quaternions &mdash; Spatial Maths package 0.9.0
  documentation</title>
   
 
@@ -219,6 +219,21 @@
     <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="qpositive"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qpositive">[docs]</a><span class="k">def</span> <span class="nf">qpositive</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quaternion with positive scalar part</span>
+
+<span class="sd">    :arg q: quaternion</span>
+<span class="sd">    :type v: : ndarray(4)</span>
+<span class="sd">    :return: pure quaternion</span>
+<span class="sd">    :rtype: ndarray(4)</span>
+
+<span class="sd">    If the scalar part is negative return -q.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">q</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">q</span></div>
 
 <div class="viewcode-block" id="qnorm"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qnorm">[docs]</a><span class="k">def</span> <span class="nf">qnorm</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -263,6 +278,8 @@
 <span class="sd">        &gt;&gt;&gt; q = unit([1, 2, 3, 4])</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q)</span>
 
+<span class="sd">    .. note:: Scalar part is always positive.</span>
+
 <span class="sd">    .. note:: If the quaternion norm is less than ``tol * eps`` an exception is</span>
 <span class="sd">              raised.</span>
 
@@ -272,7 +289,13 @@
     <span class="n">nm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nm</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot normalize (near) zero length quaternion&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">q</span> <span class="o">/</span> <span class="n">nm</span></div>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">/=</span> <span class="n">nm</span>
+    
+    <span class="k">if</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">q</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">q</span></div>
 
 
 <div class="viewcode-block" id="isunit"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.isunit">[docs]</a><span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
@@ -661,12 +684,14 @@
 
 <span class="sd">    .. warning:: There is no check that the passed matrix is a valid rotation matrix.</span>
 
+<span class="sd">    .. note:: Scalar part is always positive.</span>
+
 <span class="sd">    :seealso: :func:`q2r`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument must be a valid SO(3) matrix&quot;</span><span class="p">)</span>
 
-    <span class="n">qs</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>  <span class="c1"># scalar part</span>
     <span class="n">kx</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz - Ay</span>
     <span class="n">ky</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Ax - Nz</span>
     <span class="n">kz</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny - Ox</span>
@@ -994,7 +1019,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 24-Feb-2021.
+        Last updated on 28-Feb-2021.
       </span>
 
     </p>

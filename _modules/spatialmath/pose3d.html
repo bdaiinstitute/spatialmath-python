@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.8.9
+  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.9.0
  documentation</title>
   
 
@@ -350,7 +350,7 @@
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
 <span class="sd">        :return: 3-vector of Euler angles</span>
-<span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
+<span class="sd">        :rtype: ndarray(3,), ndarray(n,3)</span>
 
 <span class="sd">        ``x.eul`` is the Euler angle representation of the rotation.  Euler angles are</span>
 <span class="sd">        a 3-vector :math:`(\phi, \theta, \psi)` which correspond to consecutive</span>
@@ -359,7 +359,7 @@
 <span class="sd">        If ``len(x)`` is:</span>
 
 <span class="sd">        - 1, return an ndarray with shape=(3,)</span>
-<span class="sd">        - N&gt;1, return ndarray with shape=(N,3)</span>
+<span class="sd">        - N&gt;1, return ndarray with shape=(3,N)</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.tr2eul`</span>
 <span class="sd">        :SymPy: not supported</span>
@@ -367,7 +367,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span></div>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="SO3.rpy"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.rpy">[docs]</a>    <span class="k">def</span> <span class="nf">rpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -378,7 +378,7 @@
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
 <span class="sd">        :return: 3-vector of roll-pitch-yaw angles</span>
-<span class="sd">        :rtype: numpy.ndarray, shape=(3,)</span>
+<span class="sd">        :rtype: ndarray(3,), ndarray(n,3)</span>
 
 <span class="sd">        ``x.rpy`` is the roll-pitch-yaw angle representation of the rotation.  The angles are</span>
 <span class="sd">        a 3-vector :math:`(r, p, y)` which correspond to successive rotations about the axes</span>
@@ -397,7 +397,7 @@
 <span class="sd">        If `len(x)` is:</span>
 
 <span class="sd">        - 1, return an ndarray with shape=(3,)</span>
-<span class="sd">        - N&gt;1, return ndarray with shape=(N,3)</span>
+<span class="sd">        - N&gt;1, return ndarray with shape=(3,N)</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.tr2rpy`</span>
 <span class="sd">        :SymPy: not supported</span>
@@ -405,7 +405,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span></div>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="SO3.angvec"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.angvec">[docs]</a>    <span class="k">def</span> <span class="nf">angvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1583,7 +1583,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 24-Feb-2021.
+        Last updated on 28-Feb-2021.
       </span>
 
     </p>

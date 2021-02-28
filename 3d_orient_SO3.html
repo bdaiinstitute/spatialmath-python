@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>SO(3) matrix &mdash; Spatial Maths package 0.8.9
+  <title>SO(3) matrix &mdash; Spatial Maths package 0.9.0
  documentation</title>
   
 
@@ -369,7 +369,7 @@ transpose.</p>
 <dd class="field-even"><p>3-vector of Euler angles</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray, shape=(3,)</p>
+<dd class="field-odd"><p>ndarray(3,), ndarray(n,3)</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">x.eul</span></code> is the Euler angle representation of the rotation.  Euler angles are
@@ -378,7 +378,7 @@ rotations about the Z, Y, Z axes respectively.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">len(x)</span></code> is:</p>
 <ul class="simple">
 <li><p>1, return an ndarray with shape=(3,)</p></li>
-<li><p>N&gt;1, return ndarray with shape=(N,3)</p></li>
+<li><p>N&gt;1, return ndarray with shape=(3,N)</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -405,7 +405,7 @@ rotations about the Z, Y, Z axes respectively.</p>
 <dd class="field-even"><p>3-vector of roll-pitch-yaw angles</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray, shape=(3,)</p>
+<dd class="field-odd"><p>ndarray(3,), ndarray(n,3)</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">x.rpy</span></code> is the roll-pitch-yaw angle representation of the rotation.  The angles are
@@ -427,7 +427,7 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 <p>If <cite>len(x)</cite> is:</p>
 <ul class="simple">
 <li><p>1, return an ndarray with shape=(3,)</p></li>
-<li><p>N&gt;1, return ndarray with shape=(N,3)</p></li>
+<li><p>N&gt;1, return ndarray with shape=(3,N)</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -620,9 +620,9 @@ elements.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SO3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
-<span class="go">SO3(array([[-0.5186,  0.844 ,  0.1371],</span>
-<span class="go">           [-0.7333, -0.5214,  0.4363],</span>
-<span class="go">           [ 0.4397,  0.1257,  0.8893]]))</span>
+<span class="go">SO3(array([[ 0.8022, -0.1738, -0.5713],</span>
+<span class="go">           [-0.044 , -0.9713,  0.2337],</span>
+<span class="go">           [-0.5955, -0.1623, -0.7868]]))</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -660,13 +660,13 @@ defined by Euler angles corresponding to the rows of <code class="docutils liter
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 448, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 448, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.eul2r(a, unit=unit) for a in angles], check=False)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 531, in eul2r</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 531, in eul2r</span>
 <span class="go">    return rotz(angles[0]) @ roty(angles[1]) @ rotz(angles[2])</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 88, in roty</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 88, in roty</span>
 <span class="go">    ct = base.sym.cos(theta)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 131, in cos</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 131, in cos</span>
 <span class="go">    return math.cos(theta)</span>
 <span class="go">TypeError: must be real number, not NoneType</span>
 </pre></div>
@@ -726,13 +726,13 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 scalars.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 506, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 506, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.rpy2r(a, unit=unit, order=order) for a in angles], check=False)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 426, in rpy2r</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 426, in rpy2r</span>
 <span class="go">    R = rotz(angles[2]) @ roty(angles[1]) @ rotx(angles[0])</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 123, in rotz</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 123, in rotz</span>
 <span class="go">    ct = base.sym.cos(theta)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.9/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 131, in cos</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 131, in cos</span>
 <span class="go">    return math.cos(theta)</span>
 <span class="go">TypeError: must be real number, not NoneType</span>
 </pre></div>
@@ -1942,28 +1942,59 @@ to the list</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>end</strong> (same as <code class="docutils literal notranslate"><span class="pre">self</span></code>) – final pose</p></li>
-<li><p><strong>s</strong> (<em>array_like</em>) – interpolation coefficient, range 0 to 1</p></li>
+<li><p><strong>s</strong> (<em>array_like</em><em> or </em><em>int</em>) – interpolation coefficient, range 0 to 1, or number of steps</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>interpolated pose</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="2d_orient_SO2.html#spatialmath.pose2d.SO2" title="spatialmath.pose2d.SO2">SO2</a>, <a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2">SE2</a>, <a class="reference internal" href="#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3">SO3</a>, SE3 instance</p>
+<dd class="field-odd"><p>same as <code class="docutils literal notranslate"><span class="pre">self</span></code></p>
 </dd>
 </dl>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">X.interp(Y,</span> <span class="pre">s)</span></code> interpolates pose between X between when s=0
 and Y when s=1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X.interp(Y,</span> <span class="pre">N)</span></code> interpolates pose between X and Y in <code class="docutils literal notranslate"><span class="pre">N</span></code> steps.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">IndexError: list index out of range</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>    <span class="c1"># this is x</span>
+<span class="go">SE3(array([[ 1.    ,  0.    ,  0.    , -1.    ],</span>
+<span class="go">           [ 0.    ,  0.9553,  0.2955, -2.    ],</span>
+<span class="go">           [ 0.    , -0.2955,  0.9553,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>    <span class="c1"># this is y</span>
+<span class="go">SE3(array([[ 1.    ,  0.    ,  0.    ,  1.    ],</span>
+<span class="go">           [ 0.    ,  0.9553, -0.2955,  2.    ],</span>
+<span class="go">           [ 0.    ,  0.2955,  0.9553,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># this is in between</span>
+<span class="go">SE3(array([[1., 0., 0., 0.],</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>  <span class="c1"># in 11 steps</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>              <span class="c1"># this is x</span>
+<span class="go">SE3(array([[ 1.    ,  0.    ,  0.    , -1.    ],</span>
+<span class="go">           [ 0.    ,  0.9553,  0.2955, -2.    ],</span>
+<span class="go">           [ 0.    , -0.2955,  0.9553,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>              <span class="c1"># this is in between</span>
+<span class="go">SE3(array([[1., 0., 0., 0.],</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
 <li><p>For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).</p></li>
+<li><p>Values of <code class="docutils literal notranslate"><span class="pre">s</span></code> outside the range [0,1] are silently clipped</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
@@ -2560,7 +2591,7 @@ that the value is a 1D array.</p></li>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 24-Feb-2021.
+        Last updated on 28-Feb-2021.
       </span>
 
     </p>
