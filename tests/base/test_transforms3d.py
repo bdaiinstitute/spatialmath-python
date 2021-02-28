@@ -407,10 +407,11 @@ class Test3D(unittest.TestCase):
         trplot(T)
 
         plt.clf()
-        tranimate(transl(1, 2, 3), repeat=False)
-        tranimate(transl(1, 2, 3), repeat=False, pause=2)
+        tranimate(transl(1, 2, 3), repeat=False, wait=True)
+
+        tranimate(transl(1, 2, 3), repeat=False, wait=True)
         # run again, with axes already created
-        tranimate(transl(1, 2, 3), repeat=False, pause=2, dims=[0, 10, 0, 10, 0, 10])
+        tranimate(transl(1, 2, 3), repeat=False, wait=True, dims=[0, 10, 0, 10, 0, 10])
 
         plt.close('all')
         # test animate with line not arrow, text, test with SO(3)

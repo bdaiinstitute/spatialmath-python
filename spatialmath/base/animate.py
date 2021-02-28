@@ -8,13 +8,18 @@
 # text.set_position()
 # quiver.set_offsets(), quiver.set_UVC()
 # FancyArrow.set_xy()
-
+import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
+from numpy.lib.arraysetops import isin
 from spatialmath import base
 from collections.abc import Iterable, Generator, Iterator
+import time
 
+# global variable holds reference to FuncAnimation object, this is essential
+# for animatiion to work
+_ani = None
 
 class Animate:
     """
@@ -131,9 +136,9 @@ class Animate:
                 self.start = start
 
         # draw axes at the origin
-        base.trplot(self.start, axes=self, block=None, **kwargs)
+        base.trplot(self.start, axes=self, **kwargs)
 
-    def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, pause=0, **kwargs):
+    def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, wait=False, **kwargs):
         """
         Run the animation
 
@@ -147,6 +152,8 @@ class Animate:
         :type interval: int
         :param movie: name of file to write MP4 movie into
         :type movie: str
+        :param wait: wait until animation is complete, default False
+        :type wait: bool
 
         Animates a 3D coordinate frame moving from the world frame to a frame
         represented by the SO(3) or SE(3) matrix to the current axes.
@@ -159,16 +166,19 @@ class Animate:
         """
 
         def update(frame, animation):
-            if self.trajectory is not None:
-                # passed a trajectory as an iterator or generator, get next
-                try:
-                    T = next(self.trajectory)
-                except StopIteration:
-                    animation.done = True
-                    return
-            else:
+
+            # frame is the result of calling next() on a iterator or generator
+            # seemingly the animation framework isn't checking StopException
+            # so there is no way to know when this is no longer called.
+            # we implement a rather hacky heartbeat style timeout
+
+            if isinstance(frame, float):
                 # passed a single transform, interpolate it
-                T = base.trinterp(start=self.start, end=self.end, s=frame / nframes)
+                T = base.trinterp(start=self.start, end=self.end, s=frame)
+            else:
+                # assume it is an SO(3) or SE(3)
+                T = frame
+                
             # ensure result is SE(3)
             if T.shape == (3,3):
                 T = base.r2t(T)
@@ -176,34 +186,43 @@ class Animate:
             # update the scene
             animation._draw(T)
 
-            # are we done yet
-            if frame == nframes - 1:
-                animation.done = True
+            self.count += 1  # say we're still running
+
             return animation.artists()
+
+        global _ani
 
         # blit leaves a trail and first frame
         if movie is not None:
             repeat = False
 
-        self.done = False
+        self.count = 1
         if self.trajectory is not None:
             if not isinstance(self.trajectory, Iterator):
                 # make it iterable, eg. if a list or tuple
                 self.trajectory = iter(self.trajectory)
-            frames = None
+            frames = self.trajectory
         else:
-            frames = range(0, nframes)
+            frames = iter(np.linspace(0, 1, nframes))
 
-        # ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
-        ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=frames, fargs=(self,), blit=False, interval=interval, repeat=repeat)
-        if movie is None:
-            while repeat or not self.done:
-                plt.pause(0.1)
-        else:
+        _ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=frames, fargs=(self,), blit=False, interval=interval, repeat=repeat)
+
+        if movie is not None:
             # Set up formatting for the movie files
-            print('creating movie', movie)
-            FFwriter = animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
-            ani.save(movie, writer=FFwriter)
+            if os.path.exists(movie):
+                print('overwriting movie', movie)
+            else:
+                print('creating movie', movie)
+            FFwriter = animation.FFMpegWriter(fps=1000 / interval, extra_args=['-vcodec', 'libx264'])
+            _ani.save(movie, writer=FFwriter)
+
+        if wait:
+            # wait for the animation to finish.  Dig into the timer for this
+            # animation and wait for its callback to be deregistered.
+            while True:
+                plt.pause(0.25)
+                if len(_ani.event_source.callbacks) == 0:
+                    break
 
     def __repr__(self):
         """
@@ -550,7 +569,10 @@ class Animate2:
                 plt.pause(1)
         else:
             # Set up formatting for the movie files
-            print('creating movie', movie)
+            if os.path.exists(movie):
+                print('overwriting movie', movie)
+            else:
+                print('creating movie', movie)
             FFwriter = animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
             ani.save(movie, writer=FFwriter)
 

@@ -1694,13 +1694,13 @@ except ImportError:  # pragma: no cover
 
 def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
            textcolor=None, labels=('X', 'Y', 'Z'), length=1, style='arrow',
-           projection='ortho', wtl=0.2, width=1, d1=0.05,
+           origindot=None, projection='ortho', wtl=0.2, width=None, d1=0.05,
            d2=1.15, anaglyph=None, **kwargs):
     """
     Plot a 3D coordinate frame
 
     :param T: SE(3) or SO(3) matrix
-    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning
+    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
     :param axes: the axes to plot into, defaults to current axes
     :type axes: Axes3D reference
     :param block: run the GUI main loop until all windows are closed, default True
@@ -1720,6 +1720,13 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     :type length: float
     :param style: axis style: 'arrow' [default], 'line', 'rgb' (Rviz style)
     :type style: str
+    :param origindot: size of dot to draw at the origin (default 20)
+    :type origindot: int
+    :param anaglyph: 3D anaglyph display, left-right lens colors eg. ``'rc'``
+    for red-cyan glasses.  To set the disparity (default 0.1) provide second
+    argument in a tuple, eg. ``('rc', 0.2)``.  Bigger disparity exagerates the
+    3D "pop out" effect.
+    :type anaglyph: str or (str, float)
     :param wtl: width-to-length ratio for arrows, default 0.2
     :type wtl: float
     :param projection: 3D projection: ortho [default] or persp
@@ -1728,25 +1735,42 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     :type width: float
     :param d1: distance of frame axis label text from origin, default 1.15
     :type d2: distance of frame label text from origin, default 0.05
-    :param anaglyph: 3D anaglyph display, a pair of single letter color codes
-        for left then right lens.
-    :type anaglyph: True (for red-cyan glasses) or str
     :return: axes containing the frame
     :rtype: Axes3DSubplot
     :raises ValueError: bad arguments
 
-    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the current axes.
-
-    - If no current figure, one is created
-    - If current figure, but no axes, a 3d Axes is created
+    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the
+    current axes. If ``T`` is iterable then multiple frames will be drawn.
 
     Examples:
 
             trplot(T, frame='A')
             trplot(T, frame='A', color='green')
-            trplot(T1, 'labels', 'NOA');
+            trplot(T1, 'labels', 'UVW');
+
+    .. note:: If ``axes`` is specified the plot is drawn there, otherwise:
+        - it will draw in the current figure (as given by ``gca()``)
+        - if no axes in the current figure, it will create a 3D axes
+        - if no current figure, it will create one, and a 3D axes
+
+    .. note:: The ``'rgb'`` style is a variant of the ``'line'`` style and
+        is somewhat RViz like.  The axes are colored red, green, blue; are
+        drawn thick (width=8) and have no arrows.
+
+    .. note:: The ``anaglyph`` effect is induced by drawing two versions of the
+        frame in different colors: one that corresponds to lens over the left
+        eye and one to the lens over the right eye. The view for the right eye
+        is from a view point shifted in the positive x-direction.
+
+    .. note:: The origin is normally indicated with a marker of the same color
+        as the frame.  The default size is 20. This can be disabled by setting
+        its size to zero by ``origindot=0``.  For ``'rgb'`` style the default is 0
+        but it can be set explicitly, and the color is as per the ``color``
+        option.
 
     :SymPy: not supported
+
+    :seealso: `tranimate`, `plotvol3`
     """
 
     # TODO
@@ -1756,8 +1780,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     if not _matplotlib_exists:
         print('matplotlib is not installed: pip install matplotlib')
         return
-
-
+        
     if axes is None:
         # create an axes
         fig = plt.gcf()
@@ -1776,13 +1799,58 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     else:
         ax = axes
 
+    if anaglyph is not None:
+        # enforce perspective projection
+        ax.set_proj_type('persp')
+        
+        # collect all the arguments to use for left and right views
+        args = {
+            'axes': ax,
+            'frame': frame,
+            'length': length,
+            'style': style,
+            'wtl': wtl,
+            'd1': d1,
+            'd2': d2
+        }
+        args = {**args, **kwargs}
+
+        # unpack the anaglyph parameters
+        if isinstance(anaglyph, tuple):
+            colors = anaglyph[0]
+            shift = anaglyph[1]
+        else:
+            colors = anaglyph
+            shift = 0.1
+
+        # the left eye sees the normal trplot
+        trplot(T, color=colors[0], **args)
+
+        # the right eye sees a from a viewpoint in shifted in the X direction
+        trplot(transl(shift, 0, 0) @ T, color=colors[1], **args)
+
+        return
+
+    if style == 'rgb':
+        if origindot is None:
+            origindot = 0
+        colors = ('red', 'green', 'blue')
+        color = 'k'
+        width = 8
+        style = 'line'
+    else:
+        colors = (color,) * 3
+        width = 1
+        if origindot is None:
+            origindot = 20
+
     # check input types
     if isrot(T, check=True):
         T = base.r2t(T)
     elif ishom(T, check=True):
         pass
     else:
-        # assume it is an interable
+        # assume it is an iterable
         for Tk in T:
             trplot(Tk, axes=ax, block=block, dims=dims, color=color, frame=frame,
                 textcolor=textcolor, labels=labels, length=length, style=style,
@@ -1805,20 +1873,22 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
     # draw the axes
 
-    if style == 'rgb':
-        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color='red', linewidth=width)
-        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color='lime', linewidth=width)
-        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color='blue', linewidth=width)
-    elif style == 'arrow':
+    if style == 'arrow':
         ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
         ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
         ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-        # plot an invisible point at the end of each arrow to allow auto-scaling to work
-        ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], s=[20, 0, 0, 0])
+        
+        # plot some points
+        #  invisible point at the end of each arrow to allow auto-scaling to work
+        ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], 
+            s=[0, 0, 0, 0])
     elif style == 'line':
-        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color, linewidth=width)
-        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color, linewidth=width)
-        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color, linewidth=width)
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=colors[0], linewidth=width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=colors[1], linewidth=width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=colors[2], linewidth=width)
+
+    if origindot > 0:
+        ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=color, s=origindot)
 
     # label the frame
     if frame:
@@ -1848,46 +1918,61 @@ def tranimate(T, **kwargs):
     Animate a 3D coordinate frame
 
     :param T: SE(3) or SO(3) matrix
-    :type T: ndarray(4,4) or ndarray(3,3)
-    :param nframes: number of steps in the animation [defaault 100]
+    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
+    :param nframes: number of steps in the animation [default 100]
     :type nframes: int
     :param repeat: animate in endless loop [default False]
     :type repeat: bool
     :param interval: number of milliseconds between frames [default 50]
     :type interval: int
+    :param wait: wait until animation is complete, default False
+    :type wait: bool
     :param movie: name of file to write MP4 movie into
     :type movie: str
+    :param **kwargs: arguments passed to ``trplot``
+    
+    - ``tranimate(T)`` where ``T`` is an SO(3) or SE(3) matrix, animates a 3D
+      coordinate frame moving from the world frame to the frame ``T`` in
+      ``nsteps``.
 
-    Animates a 3D coordinate frame moving from the world frame to a frame represented by the SO(3) or SE(3) matrix to the current axes.
-
-    - If no current figure, one is created
-    - If current figure, but no axes, a 3d Axes is created
-
+    - ``tranimate(I)`` where ``I`` is an iterable or generator, animates a 3D
+      coordinate frame representing the pose of each element in the sequence of
+      SO(3) or SE(3) matrices.
 
     Examples:
 
             >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
             >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
     
-    .. note:: 
-        - If ``T`` is a list, the poses are taken from that list
-        - If ``T`` is a generator, the poses are taken from its ``next()`` values
+    .. note:: For Jupyter this works with the ``notebook`` and ``TkAgg``
+        backends.
+
+    .. note:: The animation occurs in the background after ``tranimate`` has
+        returned. If ``block=True`` this blocks after the animation has completed.
+
+    .. note:: When saving animation to a file the animation does not appear
+        on screen.  A ``StopIteration`` exception may occur, this seems to 
+        be a matplotlib bug #19599
         
     :SymPy: not supported
+
+    :seealso: `trplot`, `plotvol3`
     """
     if not _matplotlib_exists:
         print('matplotlib is not installed: pip install matplotlib')
         return
 
+    block = kwargs.get('block', False)
+    kwargs['block'] = False
+
     anim = base.animate.Animate(**kwargs)
     anim.trplot(T, **kwargs)
     anim.run(**kwargs)
 
+    plt.show(block=block)
+
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
-
-    a,b,c = base.sym.symbol('a,b,c')
-    T = rpy2r(a,b,c)
 
     exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_transforms3d.py").read())  # pylint: disable=exec-used
     
