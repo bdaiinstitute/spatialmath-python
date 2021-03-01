@@ -2128,7 +2128,7 @@ class UnitQuaternion(Quaternion):
     #     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))
 
     def angdist(self, other, metric=0):
-        """
+        r"""
         Angular distance metric between unit quaternions
 
         :param other: second unit quaternion
@@ -2147,11 +2147,11 @@ class UnitQuaternion(Quaternion):
         ======   ===============================================================
         Metric   Details
         ======   ===============================================================
-        0        :math:`1 - | \q_1 \sbullet \q_2 | \in [0, 1]`
-        1        :math:`\cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi/2]`
-        2        :math:`2 \cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi]`
+        0        :math:`1 - | \q_1 \bullet \q_2 | \in [0, 1]`
+        1        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
+        2        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
         3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`
-        4        :math:`\cos^{-1} \left( 2 (\q_1 \sbullet \q_2)^2 - 1\right) \in [0, 1]`
+        4        :math:`\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]`
         ======   ===============================================================
 
         Example:
@@ -2165,7 +2165,10 @@ class UnitQuaternion(Quaternion):
             >>> print(q1.angdist(q2))
 
         .. note::
-            - metrics 2 and 3 are equivalent
+            - metrics 1, 2, 4 can throw ValueError "math domain error" due to
+              numeric errors which push the argument of ``acos()`` marginally
+              outside its domain [0, 1].
+            - metrics 2 and 3 are equivalent, but 3 is more robust
             - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()
             - MATLAB's quaternion.dist() uses metric 2
         """
@@ -2177,13 +2180,17 @@ class UnitQuaternion(Quaternion):
         elif metric == 1:
             measure =  lambda p, q: math.acos(np.dot(p, q))
         elif metric == 2:
-            measure =  lambda p, q: 2 * math.acos(np.dot(p, q))
+            measure =  lambda p, q: math.acos(np.dot(p, q))
         elif metric == 3:
             measure =  lambda p, q: 2 * math.atan2(base.norm(p - q), base.norm(p + q))
         elif metric == 4:
             measure = lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1)
 
-        return self.binop(other, measure)
+        ad = self.binop(other, measure)
+        if len(ad) == 1:
+            return ad[0]
+        else:
+            return ad
 
     def SO3(self):
         """
