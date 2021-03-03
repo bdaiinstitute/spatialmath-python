@@ -1525,6 +1525,148 @@ def tr2jac(T):
     R = base.t2r(T)
     return np.block([[R, Z], [Z, R]])
 
+def eul2jac(*angles):
+    """
+    Euler angle rate Jacobian
+
+    :param phi: Z-axis rotation
+    :type phi: float
+    :param theta: Y-axis rotation
+    :type theta: float
+    :param psi: Z-axis rotation
+    :type psi: float
+    :return: Jacobian matrix
+    :rtype: ndarray(3,3)
+
+    - ``eul2jac(φ, θ, ψ)`` is a Jacobian matrix (3x3) that maps ZYZ Euler angle
+      rates to angular velocity at the operating point specified by the Euler
+      angles φ, ϴ, ψ.
+    - ``eul2jac(𝚪)`` as above but the Euler angles are taken from ``𝚪`` which
+      is a 3-vector with values (φ θ ψ).
+
+    Example:
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> eul2jac(0.1, 0.2, 0.3)
+
+    .. note::
+        - Used in the creation of an analytical Jacobian.
+        - Angles in radians, rates in radians/sec.
+
+    Reference::
+    - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p232-3.
+
+    :SymPy: supported
+
+    :seealso: :func:`rpy2jac`, :func:`eul2r`
+    """
+
+    if len(angles) == 1:
+        angles = angles[0]
+    
+    phi = angles[0]
+    theta = angles[1]
+
+    ctheta = base.sym.cos(theta)
+    stheta = base.sym.sin(theta)
+    cphi = base.sym.cos(phi)
+    sphi = base.sym.sin(phi)
+
+    return np.array([
+            [ 0, -sphi, cphi * stheta],
+            [ 0,  cphi, sphi * stheta],
+            [ 1,     0, ctheta ]
+        ])
+
+
+def rpy2jac(*angles, order='zyx'):
+    """
+    Jacobian from RPY angle rates to angular velocity
+
+    :param order: [description], defaults to 'zyx'
+    :type order: str, optional
+
+    :param roll: roll angle
+    :type roll: float
+    :param pitch: pitch angle
+    :type pitch: float
+    :param yaw: yaw angle
+    :type yaw: float
+    :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+    :type order: str
+    :return: Jacobian matrix
+    :rtype: ndarray(3,3)
+
+    - ``rpy2r(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
+      rates to angular velocity at the operating point (⍺, β, γ).
+      These correspond to successive rotations about the axes specified by
+      ``order``:
+
+        - 'zyx' [default], rotate by γ about the z-axis, then by β about the new
+          y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
+          with x-axis forward and y-axis sideways.
+        - 'xyz', rotate by γ about the x-axis, then by β about the new y-axis,
+          then by ⍺ about the new z-axis. Convention for a robot gripper with
+          z-axis forward and y-axis between the gripper fingers.
+        - 'yxz', rotate by γ about the y-axis, then by β about the new x-axis,
+          then by ⍺ about the new z-axis. Convention for a camera with z-axis
+          parallel to the optic axis and x-axis parallel to the pixel rows.
+
+    - ``rpy2r(𝚪)`` as above but the roll, pitch, yaw angles are taken
+      from ``𝚪`` which is a 3-vector with values (⍺, β, γ).
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rpy2jac(0.1, 0.2, 0.3)
+
+    .. note::
+        - Used in the creation of an analytical Jacobian.
+        - Angles in radians, rates in radians/sec.
+
+    Reference::
+    - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p232-3.
+
+    :SymPy: supported
+
+    :seealso: :func:`eul2jac`, :func:`rpy2r`
+    """
+    
+    if len(angles) == 1:
+        angles = angles[0]
+    
+    pitch = angles[1]
+    yaw = angles[2]
+    
+    cp = base.sym.cos(pitch)
+    sp = base.sym.sin(pitch)
+    cy = base.sym.cos(yaw)
+    sy = base.sym.sin(yaw)
+    
+    if order == 'xyz':
+        J = np.array([	
+            [ sp,       0,   1], 
+            [-cp * sy,  cy,  0],
+            [ cp * cy,  sy,  0]
+        ])
+    
+    elif order == 'zyx':
+        J = np.array([	 
+                [ cp * cy, -sy, 0],
+                [ cp * sy,  cy, 0],
+                [-sp,       0,  1],
+            ])
+    
+    elif order == 'yxz':
+        J = np.array([	
+                [ cp * sy,  cy, 0],
+                [-sp,       0,  1],
+                [ cp * cy, -sy, 0]
+            ])
+    return J
+    
 def tr2adjoint(T):
     r"""
     SE(3) adjoint matrix
