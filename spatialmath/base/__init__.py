@@ -90,6 +90,8 @@ __all__ = [
     'trinv',
     'tr2delta',
     'tr2jac',
+    'rpy2jac',
+    'eul2jac',
     'trprint',
     'trplot',
     'tranimate',
@@ -136,6 +138,14 @@ __all__ = [
     'plot_point',
     'plot_text',
     'plot_box',
+    'circle',
+    'ellipse',
+    'sphere',
+    'ellipsoid',
+    'plot_circle',
+    'plot_ellipse',
+    'plot_sphere',
+    'plot_ellipsoid',
     'isnotebook',
 
  ]

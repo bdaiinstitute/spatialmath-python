@@ -1,10 +1,23 @@
 import matplotlib.pyplot as plt
+from numpy.core.defchararray import center
 from spatialmath.base.vectors import getvector
 import numpy as np
+import scipy as sp
+
+# TODO
+# axes_logic everywhere
+# dont do draw
+# return reference to the graphics object
+# don't have own color/style options, go for MPL ones
+# unit tests
+# seealso
+# example code
+# return a redrawer object, that can be used for animation
+
 
 def plot_box(ax=None, 
         bbox=None, bl=None, tl=None, br=None, tr=None, wh=None, centre=None,
-        color=None, fillcolor=None, alpha=None, thickness=None, **kwargs):
+        color=None, filled=True, alpha=None, thickness=None, **kwargs):
     """
     Plot a box using matplotlib
 
@@ -73,16 +86,20 @@ def plot_box(ax=None,
         w, h = wh
         xy = (tl[0], tl[1] - h)
 
-    if ax is None:
-        ax = plt.gca()
+    ax = _axes_logic(ax, 2)
 
-    fill = fillcolor is not None
-    rect = plt.Rectangle(xy, w, h, edgecolor=color, facecolor=fillcolor, fill=fill,
-    alpha=alpha, linewidth=thickness, clip_on=True)
-    ax.add_patch(rect)
-    plt.draw()
+    if filled:
+        r = plt.Rectangle(xy, w, h, edgecolor=color, facecolor=fillcolor, fill=fill,
+            alpha=alpha, linewidth=thickness, clip_on=True, **kwargs)
+        ax.add_patch(rect)
+    else:
+        x1 = xy[0]
+        x2 = x1 + w
+        y1 = xy[1]
+        y2 = y1 + h
+        r = plt.plot([x1, x1, x2, x2, x1], [y1, y2, y2, y1, y1], **kwargs)
 
-    return rect
+    return r
 
 
 def plot_text(pos, text=None, ax=None, color=None, **kwargs):
@@ -184,6 +201,159 @@ def plot_point(pos, marker='bs', text=None, ax=None, color=None, textargs=None, 
         except:
             plt.text(x, y, ' ' + text, horizontalalignment='left', verticalalignment='center', color=color, **textopts)
 
+
+
+
+def _axes_dimensions(ax):
+    if hasattr(ax, 'get_zlim'):
+        return 3
+    else:
+        return 2
+
+def circle(centre=(0, 0), radius=1, npoints=50):
+    u = np.linspace(0.0, 2.0 * np.pi, npoints)
+    x = radius * np.cos(u) + centre[0]
+    y = radius * np.sin(u) + centre[1]
+
+    return (x, y)
+
+def plot_circle(centre=(0, 0), radius=1, npoints=50, ax=None, filled=False):
+
+    x, y = circle(centre, radius, npoints)
+    ax = _axes_logic(ax, 2)
+    if filled:
+        patch = plt.Polygon(x, y, **kwargs)
+        ax.add_patch(patch)
+    else:
+        plt.plot(x, y, **kwargs)
+
+def sphere(centre=(0,0,0), radius=1, npoints=50):
+    u = np.linspace(0.0, 2.0 * np.pi, npoints)
+    v = np.linspace(0.0, np.pi, npoints)
+
+    x = radius * np.outer(np.cos(u), np.sin(v)) + centre[0]
+    y = radius * np.outer(np.sin(u), np.sin(v)) + centre[1]
+    z = radius * np.outer(np.ones_like(u), np.cos(v)) + centre[2]
+
+    return (x, y, z)
+
+def plot_sphere(centre=(0,0,0), radius=1, npoints=50, ax=None, wireframe=False, **kwargs):
+    (x, y, z) = _sphere(centre=centre, radius=radius, npoints=npoints)
+
+    ax = _axes_logic(ax, 3)
+
+    if wireframe:
+        ax.plot_wireframe(x, y, z, **kwargs)
+    else:
+        ax.plot_surface(x, y, z, **kwargs)
+
+
+def ellipse(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False):
+    if E.shape != (2,2):
+        raise ValueError('ellipse is defined by a 2x2 matrix')
+
+    if inverse:
+        E = np.linalg.inv(E)
+
+    if confidence:
+        # process the probability
+        s = sqrt(chi2inv(confidence, 2))
+    else:
+        s = 1
+
+    x, y = circle()  # unit circle
+    e = sp.linalg.sqrtm(E) @ np.array([x, y])
+    return e[0,:], e[1,:]
+
+def plot_ellipse(E, centre=(0,0), confidence=None, npoints=40, inverse=False, filled=None, **kwargs):
+    
+    # allow for centre[2] to plot ellipse in a plane in a 3D plot
+
+    x, y = ellipse(E, centre, confidence, npoints, inverse)
+    ax = _axes_logic(ax, 2)
+    if filled:
+        patch = plt.Polygon(x, y, **kwargs)
+        ax.add_patch(patch)
+    else:
+        plt.plot(x, y, **kwargs)
+
+def ellipsoid(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False):
+
+    if E.shape != (3,3):
+        raise ValueError('ellipsoid is defined by a 3x3 matrix')
+
+    if inverse:
+        E = np.linalg.inv(E)
+
+    if confidence:
+        # process the probability
+        from scipy.stats.distributions import chi2
+        s = math.sqrt(chi2.ppf(s, df=2))
+    else:
+        s = 1
+
+    x, y, z = sphere()  # unit sphere
+    e = sp.linalg.sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
+    return e[0,:].reshape(x.shape), e[1,:].reshape(x.shape), e[2,:].reshape(x.shape)
+
+def plot_ellipsoid(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False, ax=None, wireframe=False, stride=1, **kwargs):
+    """
+    Draw an ellipsoid
+
+    :param E: ellipsoid
+    :type E: ndarray(3,3)
+    :param centre: [description], defaults to (0,0,0)
+    :type centre: tuple, optional
+    :param confidence: confidence interval, range 0 to 1
+    :type confidence: float
+    :param npoints: [description], defaults to 40
+    :type npoints: int, optional
+    :param inverse: [description], defaults to False
+    :type inverse: bool, optional
+    :param ax: [description], defaults to None
+    :type ax: [type], optional
+    :param wireframe: [description], defaults to False
+    :type wireframe: bool, optional
+    :param stride: [description], defaults to 1
+    :type stride: int, optional
+
+
+    ``plot_ellipse(E)`` draws the ellipsoid defined by :math:`x^T \mat{E} x = 0`
+    on the current plot.
+
+    Example:
+
+          H = plot_ellipse(diag([1 2]), [3 4]', 'r'); % draw red ellipse
+          plot_ellipse(diag([1 2]), [5 6]', 'alter', H); % move the ellipse
+          plot_ellipse(diag([1 2]), [5 6]', 'alter', H, 'LineColor', 'k'); % change color
+
+          plot_ellipse(COVAR, 'confidence', 0.95); % draw 95% confidence ellipse
+
+    .. note::
+
+        - If a confidence interval is given then ``E`` is interpretted as a covariance
+          matrix and the ellipse size is computed using an inverse chi-squared function.
+    """
+    x, y, z = ellipsoid(E, centre, confidence, npoints, inverse)
+    ax = _axes_logic(ax, 3)
+    if wireframe:
+        return ax.plot_wireframe(x, y, z, rstride=stride, cstride=stride, **kwargs)
+    else:
+        return ax.plot_surface(x, y, z, **kwargs)
+
+def _axes_logic(ax, dimensions, projection='ortho'):
+    if ax is not None:
+        # axis was given
+        if _axes_dimensions == dimensions:
+            return ax
+        # mismatch, create new axes
+    
+    # no axis specified
+    if dimensions == 2:
+        ax = plt.axes()
+    else:
+        ax = plt.axes(projection='3d', proj_type=projection)
+    return ax
 
 def isnotebook():
     """
