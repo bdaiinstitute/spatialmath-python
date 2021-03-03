@@ -15,6 +15,7 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 import sys
 import math
+from math import sin, cos
 import numpy as np
 from spatialmath import base
 
@@ -379,29 +380,29 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
     :type yaw: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
-    :type unit: str
+    :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+    :type order: str
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
     :raises ValueError: bad argument
 
-    - ``rpy2r(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix
-      (3x3) equivalent to the specified roll, pitch, yaw angles angles.
-      These correspond to successive rotations about the axes specified by ``order``:
+    - ``rpy2r(⍺, β, γ)`` is an SO(3) orthonormal rotation matrix (3x3)
+      equivalent to the specified roll (⍺), pitch (β), yaw (γ) angles angles.
+      These correspond to successive rotations about the axes specified by
+      ``order``:
 
-        - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-          then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-          and y-axis sideways.
-        - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
-          then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
-          and y-axis between the gripper fingers.
-        - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
-          then by roll about the new z-axis. Convention for a camera with z-axis parallel
-          to the optic axis and x-axis parallel to the pixel rows.
+        - 'zyx' [default], rotate by γ about the z-axis, then by β about the new
+          y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
+          with x-axis forward and y-axis sideways.
+        - 'xyz', rotate by γ about the x-axis, then by β about the new y-axis,
+          then by ⍺ about the new z-axis. Convention for a robot gripper with
+          z-axis forward and y-axis between the gripper fingers.
+        - 'yxz', rotate by γ about the y-axis, then by β about the new x-axis,
+          then by ⍺ about the new z-axis. Convention for a camera with z-axis
+          parallel to the optic axis and x-axis parallel to the pixel rows.
 
     - ``rpy2r(RPY)`` as above but the roll, pitch, yaw angles are taken
-      from ``RPY`` which is a 3-vector with values
-      (ROLL, PITCH, YAW).
+      from ``RPY`` which is a 3-vector with values (⍺, β, γ).
 
     .. runblock:: pycon
 
@@ -445,28 +446,27 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
     :type yaw: float
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
-    :type unit: str
+    :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+    :type order: str
     :return: SE(3) transformation matrix
     :rtype: ndarray(4,4)
 
-    - ``rpy2tr(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix
-      (3x3) equivalent to the specified roll, pitch, yaw angles angles.
-      These correspond to successive rotations about the axes specified by ``order``:
+    - ``rpy2tr(⍺, β, γ)`` is an SE(3) matrix (4x4) equivalent to the specified
+      roll (⍺), pitch (β), yaw (γ) angles angles. These correspond to successive
+      rotations about the axes specified by ``order``:
 
-        - 'zyx' [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-          then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-          and y-axis sideways.
-        - 'xyz', rotate by yaw about the x-axis, then by pitch about the new y-axis,
-          then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
-          and y-axis between the gripper fingers.
-        - 'yxz', rotate by yaw about the y-axis, then by pitch about the new x-axis,
-          then by roll about the new z-axis. Convention for a camera with z-axis parallel
-          to the optic axis and x-axis parallel to the pixel rows.
+        - 'zyx' [default], rotate by γ about the z-axis, then by β about the new
+          y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
+          with x-axis forward and y-axis sideways.
+        - 'xyz', rotate by γ about the x-axis, then by β about the new y-axis,
+          then by ⍺ about the new z-axis. Convention for a robot gripper with
+          z-axis forward and y-axis between the gripper fingers.
+        - 'yxz', rotate by γ about the y-axis, then by β about the new x-axis,
+          then by ⍺ about the new z-axis. Convention for a camera with z-axis
+          parallel to the optic axis and x-axis parallel to the pixel rows.
 
     - ``rpy2tr(RPY)`` as above but the roll, pitch, yaw angles are taken
-      from ``RPY`` which is a 3-vector with values
-      (ROLL, PITCH, YAW).
+      from ``RPY`` which is a 3-vector with values (⍺, β, γ).
 
     .. runblock:: pycon
 
@@ -502,12 +502,11 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
 
-    - ``R = eul2r(PHI, θ, PSI)`` is an SO(3) orthonornal rotation
+    - ``R = eul2r(φ, θ, ψ)`` is an SO(3) orthonornal rotation
       matrix equivalent to the specified Euler angles.  These correspond
       to rotations about the Z, Y, Z axes respectively.
     - ``R = eul2r(EUL)`` as above but the Euler angles are taken from
-      ``EUL`` which is a 3-vector with values
-      (PHI θ PSI).
+      ``EUL`` which is a 3-vector with values (φ θ ψ).
 
     .. runblock:: pycon
 
@@ -892,7 +891,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     :param unit: 'rad' or 'deg'
     :type unit: str
     :param order: 'xyz', 'zyx' or 'yxz' [default 'zyx']
-    :type unit: str
+    :type order: str
     :param check: check that rotation matrix is valid
     :type check: bool
     :return: Roll-pitch-yaw angles
