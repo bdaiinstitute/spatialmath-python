@@ -516,11 +516,11 @@ values.</p></li>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
-<span class="go"> 0.1355 &lt;&lt;  0.2444,  0.3770,  0.8831 &gt;&gt;</span>
+<span class="go"> 0.2546 &lt;&lt;  0.2246, -0.8585, -0.3844 &gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go"> 0.1678 &lt;&lt; -0.9722,  0.1426, -0.0797 &gt;&gt;</span>
-<span class="go"> 0.0143 &lt;&lt;  0.0216,  0.7608,  0.6485 &gt;&gt;</span>
-<span class="go"> 0.6900 &lt;&lt;  0.4282,  0.3393, -0.4748 &gt;&gt;</span>
+<span class="go"> 0.5989 &lt;&lt; -0.1796,  0.3022, -0.7195 &gt;&gt;</span>
+<span class="go"> 0.9356 &lt;&lt;  0.1022,  0.2433,  0.2346 &gt;&gt;</span>
+<span class="go"> 0.3274 &lt;&lt;  0.3847,  0.7717, -0.3865 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2339,43 +2339,76 @@ the unit quaternion <code class="docutils literal notranslate"><span class="pre"
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.angdist">
 <code class="sig-name descname"><span class="pre">angdist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.angdist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.angdist" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Angular distance metric between unit quaternions</p>
+<dd><p>Angular distance metric between unit quaternions</p>
 <dl class="field-list simple">
-<dt class="field-odd">param other</dt>
-<dd class="field-odd"><p>second unit quaternion</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<em>UnitQuaternion instance</em>) – second unit quaternion</p></li>
+<li><p><strong>metric</strong> (<em>int</em>) – metric, default is 0</p></li>
+</ul>
 </dd>
-<dt class="field-even">type other</dt>
-<dd class="field-even"><p>UnitQuaternion instance</p>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if other is not a UnitQuaternion</p>
 </dd>
-<dt class="field-odd">param metric</dt>
-<dd class="field-odd"><p>metric, default is 0</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>angle in radians</p>
 </dd>
-<dt class="field-even">type metric</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-<dt class="field-odd">raises TypeError</dt>
-<dd class="field-odd"><p>if other is not a UnitQuaternion</p>
-</dd>
-<dt class="field-even">return</dt>
-<dd class="field-even"><p>angle in radians</p>
-</dd>
-<dt class="field-odd">rtype</dt>
-<dd class="field-odd"><p>float</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">q1.angle(q2)</span></code> is the geodesic norm, or geodesic distance between two
 unit quaternions and has units of angle.  We can consider it as the angle between two quaternions.</p>
 <p>Several metrics are supported:</p>
-<p>0        <span class="math notranslate nohighlight">\(1 - | \q_1 \sbullet \q_2 | \in [0, 1]\)</span>
-1        <span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi/2]\)</span>
-2        <span class="math notranslate nohighlight">\(2 \cos^{-1} | \q_1 \sbullet \q_2 | \in [0, \pi]\)</span>
-3        <span class="math notranslate nohighlight">\(2       an^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]\)</span>
-4        :math:<a href="#id4"><span class="problematic" id="id5">`</span></a>cos^{-1} left( 2 (q_1 sbullet q_2)^2 - 1</p>
-</div></blockquote>
-<dl class="simple">
-<dt>ight) in [0, 1]`</dt><dd></dd>
-</dl>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 92%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><span class="math notranslate nohighlight">\(1 - | \q_1 \bullet \q_2 | \in [0, 1]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><span class="math notranslate nohighlight">\(2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q1</span><span class="o">.</span><span class="n">angdist</span><span class="p">(</span><span class="n">q1</span><span class="p">))</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q1</span><span class="o">.</span><span class="n">angdist</span><span class="p">(</span><span class="n">q2</span><span class="p">))</span>
+<span class="go">0.0223317554371969</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>metrics 1, 2, 4 can throw ValueError “math domain error” due to
+numeric errors which push the argument of <code class="docutils literal notranslate"><span class="pre">acos()</span></code> marginally
+outside its domain [0, 1].</p></li>
+<li><p>metrics 2 and 3 are equivalent, but 3 is more robust</p></li>
+<li><p>SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()</p></li>
+<li><p>MATLAB’s quaternion.dist() uses metric 2</p></li>
+</ul>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2438,7 +2471,7 @@ as the unit quaternion <code class="docutils literal notranslate"><span class="p
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 28-Feb-2021.
+        Last updated on 04-Mar-2021.
       </span>
 
     </p>

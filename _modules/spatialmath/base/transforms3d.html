@@ -181,6 +181,7 @@
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
 
@@ -545,29 +546,29 @@
 <span class="sd">    :type yaw: float</span>
 <span class="sd">    :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">    :type unit: str</span>
-<span class="sd">    :param unit: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
-<span class="sd">    :type unit: str</span>
+<span class="sd">    :param order: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
+<span class="sd">    :type order: str</span>
 <span class="sd">    :return: SO(3) rotation matrix</span>
 <span class="sd">    :rtype: ndarray(3,3)</span>
 <span class="sd">    :raises ValueError: bad argument</span>
 
-<span class="sd">    - ``rpy2r(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix</span>
-<span class="sd">      (3x3) equivalent to the specified roll, pitch, yaw angles angles.</span>
-<span class="sd">      These correspond to successive rotations about the axes specified by ``order``:</span>
+<span class="sd">    - ``rpy2r(⍺, β, γ)`` is an SO(3) orthonormal rotation matrix (3x3)</span>
+<span class="sd">      equivalent to the specified roll (⍺), pitch (β), yaw (γ) angles angles.</span>
+<span class="sd">      These correspond to successive rotations about the axes specified by</span>
+<span class="sd">      ``order``:</span>
 
-<span class="sd">        - &#39;zyx&#39; [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,</span>
-<span class="sd">          then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward</span>
-<span class="sd">          and y-axis sideways.</span>
-<span class="sd">        - &#39;xyz&#39;, rotate by yaw about the x-axis, then by pitch about the new y-axis,</span>
-<span class="sd">          then by roll about the new z-axis. Covention for a robot gripper with z-axis forward</span>
-<span class="sd">          and y-axis between the gripper fingers.</span>
-<span class="sd">        - &#39;yxz&#39;, rotate by yaw about the y-axis, then by pitch about the new x-axis,</span>
-<span class="sd">          then by roll about the new z-axis. Convention for a camera with z-axis parallel</span>
-<span class="sd">          to the optic axis and x-axis parallel to the pixel rows.</span>
+<span class="sd">        - &#39;zyx&#39; [default], rotate by γ about the z-axis, then by β about the new</span>
+<span class="sd">          y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot</span>
+<span class="sd">          with x-axis forward and y-axis sideways.</span>
+<span class="sd">        - &#39;xyz&#39;, rotate by γ about the x-axis, then by β about the new y-axis,</span>
+<span class="sd">          then by ⍺ about the new z-axis. Convention for a robot gripper with</span>
+<span class="sd">          z-axis forward and y-axis between the gripper fingers.</span>
+<span class="sd">        - &#39;yxz&#39;, rotate by γ about the y-axis, then by β about the new x-axis,</span>
+<span class="sd">          then by ⍺ about the new z-axis. Convention for a camera with z-axis</span>
+<span class="sd">          parallel to the optic axis and x-axis parallel to the pixel rows.</span>
 
 <span class="sd">    - ``rpy2r(RPY)`` as above but the roll, pitch, yaw angles are taken</span>
-<span class="sd">      from ``RPY`` which is a 3-vector with values</span>
-<span class="sd">      (ROLL, PITCH, YAW).</span>
+<span class="sd">      from ``RPY`` which is a 3-vector with values (⍺, β, γ).</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -611,28 +612,27 @@
 <span class="sd">    :type yaw: float</span>
 <span class="sd">    :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">    :type unit: str</span>
-<span class="sd">    :param unit: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
-<span class="sd">    :type unit: str</span>
+<span class="sd">    :param order: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
+<span class="sd">    :type order: str</span>
 <span class="sd">    :return: SE(3) transformation matrix</span>
 <span class="sd">    :rtype: ndarray(4,4)</span>
 
-<span class="sd">    - ``rpy2tr(ROLL, PITCH, YAW)`` is an SO(3) orthonormal rotation matrix</span>
-<span class="sd">      (3x3) equivalent to the specified roll, pitch, yaw angles angles.</span>
-<span class="sd">      These correspond to successive rotations about the axes specified by ``order``:</span>
+<span class="sd">    - ``rpy2tr(⍺, β, γ)`` is an SE(3) matrix (4x4) equivalent to the specified</span>
+<span class="sd">      roll (⍺), pitch (β), yaw (γ) angles angles. These correspond to successive</span>
+<span class="sd">      rotations about the axes specified by ``order``:</span>
 
-<span class="sd">        - &#39;zyx&#39; [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,</span>
-<span class="sd">          then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward</span>
-<span class="sd">          and y-axis sideways.</span>
-<span class="sd">        - &#39;xyz&#39;, rotate by yaw about the x-axis, then by pitch about the new y-axis,</span>
-<span class="sd">          then by roll about the new z-axis. Convention for a robot gripper with z-axis forward</span>
-<span class="sd">          and y-axis between the gripper fingers.</span>
-<span class="sd">        - &#39;yxz&#39;, rotate by yaw about the y-axis, then by pitch about the new x-axis,</span>
-<span class="sd">          then by roll about the new z-axis. Convention for a camera with z-axis parallel</span>
-<span class="sd">          to the optic axis and x-axis parallel to the pixel rows.</span>
+<span class="sd">        - &#39;zyx&#39; [default], rotate by γ about the z-axis, then by β about the new</span>
+<span class="sd">          y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot</span>
+<span class="sd">          with x-axis forward and y-axis sideways.</span>
+<span class="sd">        - &#39;xyz&#39;, rotate by γ about the x-axis, then by β about the new y-axis,</span>
+<span class="sd">          then by ⍺ about the new z-axis. Convention for a robot gripper with</span>
+<span class="sd">          z-axis forward and y-axis between the gripper fingers.</span>
+<span class="sd">        - &#39;yxz&#39;, rotate by γ about the y-axis, then by β about the new x-axis,</span>
+<span class="sd">          then by ⍺ about the new z-axis. Convention for a camera with z-axis</span>
+<span class="sd">          parallel to the optic axis and x-axis parallel to the pixel rows.</span>
 
 <span class="sd">    - ``rpy2tr(RPY)`` as above but the roll, pitch, yaw angles are taken</span>
-<span class="sd">      from ``RPY`` which is a 3-vector with values</span>
-<span class="sd">      (ROLL, PITCH, YAW).</span>
+<span class="sd">      from ``RPY`` which is a 3-vector with values (⍺, β, γ).</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -668,12 +668,11 @@
 <span class="sd">    :return: SO(3) rotation matrix</span>
 <span class="sd">    :rtype: ndarray(3,3)</span>
 
-<span class="sd">    - ``R = eul2r(PHI, θ, PSI)`` is an SO(3) orthonornal rotation</span>
+<span class="sd">    - ``R = eul2r(φ, θ, ψ)`` is an SO(3) orthonornal rotation</span>
 <span class="sd">      matrix equivalent to the specified Euler angles.  These correspond</span>
 <span class="sd">      to rotations about the Z, Y, Z axes respectively.</span>
 <span class="sd">    - ``R = eul2r(EUL)`` as above but the Euler angles are taken from</span>
-<span class="sd">      ``EUL`` which is a 3-vector with values</span>
-<span class="sd">      (PHI θ PSI).</span>
+<span class="sd">      ``EUL`` which is a 3-vector with values (φ θ ψ).</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -1058,7 +1057,7 @@
 <span class="sd">    :param unit: &#39;rad&#39; or &#39;deg&#39;</span>
 <span class="sd">    :type unit: str</span>
 <span class="sd">    :param order: &#39;xyz&#39;, &#39;zyx&#39; or &#39;yxz&#39; [default &#39;zyx&#39;]</span>
-<span class="sd">    :type unit: str</span>
+<span class="sd">    :type order: str</span>
 <span class="sd">    :param check: check that rotation matrix is valid</span>
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :return: Roll-pitch-yaw angles</span>
@@ -1691,6 +1690,148 @@
     <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">R</span><span class="p">,</span> <span class="n">Z</span><span class="p">],</span> <span class="p">[</span><span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">]])</span></div>
 
+<div class="viewcode-block" id="eul2jac"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.eul2jac">[docs]</a><span class="k">def</span> <span class="nf">eul2jac</span><span class="p">(</span><span class="o">*</span><span class="n">angles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Euler angle rate Jacobian</span>
+
+<span class="sd">    :param phi: Z-axis rotation</span>
+<span class="sd">    :type phi: float</span>
+<span class="sd">    :param theta: Y-axis rotation</span>
+<span class="sd">    :type theta: float</span>
+<span class="sd">    :param psi: Z-axis rotation</span>
+<span class="sd">    :type psi: float</span>
+<span class="sd">    :return: Jacobian matrix</span>
+<span class="sd">    :rtype: ndarray(3,3)</span>
+
+<span class="sd">    - ``eul2jac(φ, θ, ψ)`` is a Jacobian matrix (3x3) that maps ZYZ Euler angle</span>
+<span class="sd">      rates to angular velocity at the operating point specified by the Euler</span>
+<span class="sd">      angles φ, ϴ, ψ.</span>
+<span class="sd">    - ``eul2jac(𝚪)`` as above but the Euler angles are taken from ``𝚪`` which</span>
+<span class="sd">      is a 3-vector with values (φ θ ψ).</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; eul2jac(0.1, 0.2, 0.3)</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        - Used in the creation of an analytical Jacobian.</span>
+<span class="sd">        - Angles in radians, rates in radians/sec.</span>
+
+<span class="sd">    Reference::</span>
+<span class="sd">    - Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p232-3.</span>
+
+<span class="sd">    :SymPy: supported</span>
+
+<span class="sd">    :seealso: :func:`rpy2jac`, :func:`eul2r`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">ctheta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">stheta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">cphi</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">sphi</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">sphi</span><span class="p">,</span> <span class="n">cphi</span> <span class="o">*</span> <span class="n">stheta</span><span class="p">],</span>
+            <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">cphi</span><span class="p">,</span> <span class="n">sphi</span> <span class="o">*</span> <span class="n">stheta</span><span class="p">],</span>
+            <span class="p">[</span> <span class="mi">1</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span> <span class="n">ctheta</span> <span class="p">]</span>
+        <span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="rpy2jac"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rpy2jac">[docs]</a><span class="k">def</span> <span class="nf">rpy2jac</span><span class="p">(</span><span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Jacobian from RPY angle rates to angular velocity</span>
+
+<span class="sd">    :param order: [description], defaults to &#39;zyx&#39;</span>
+<span class="sd">    :type order: str, optional</span>
+
+<span class="sd">    :param roll: roll angle</span>
+<span class="sd">    :type roll: float</span>
+<span class="sd">    :param pitch: pitch angle</span>
+<span class="sd">    :type pitch: float</span>
+<span class="sd">    :param yaw: yaw angle</span>
+<span class="sd">    :type yaw: float</span>
+<span class="sd">    :param order: rotation order: &#39;zyx&#39; [default], &#39;xyz&#39;, or &#39;yxz&#39;</span>
+<span class="sd">    :type order: str</span>
+<span class="sd">    :return: Jacobian matrix</span>
+<span class="sd">    :rtype: ndarray(3,3)</span>
+
+<span class="sd">    - ``rpy2r(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle </span>
+<span class="sd">      rates to angular velocity at the operating point (⍺, β, γ).</span>
+<span class="sd">      These correspond to successive rotations about the axes specified by</span>
+<span class="sd">      ``order``:</span>
+
+<span class="sd">        - &#39;zyx&#39; [default], rotate by γ about the z-axis, then by β about the new</span>
+<span class="sd">          y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot</span>
+<span class="sd">          with x-axis forward and y-axis sideways.</span>
+<span class="sd">        - &#39;xyz&#39;, rotate by γ about the x-axis, then by β about the new y-axis,</span>
+<span class="sd">          then by ⍺ about the new z-axis. Convention for a robot gripper with</span>
+<span class="sd">          z-axis forward and y-axis between the gripper fingers.</span>
+<span class="sd">        - &#39;yxz&#39;, rotate by γ about the y-axis, then by β about the new x-axis,</span>
+<span class="sd">          then by ⍺ about the new z-axis. Convention for a camera with z-axis</span>
+<span class="sd">          parallel to the optic axis and x-axis parallel to the pixel rows.</span>
+
+<span class="sd">    - ``rpy2r(𝚪)`` as above but the roll, pitch, yaw angles are taken</span>
+<span class="sd">      from ``𝚪`` which is a 3-vector with values (⍺, β, γ).</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; rpy2jac(0.1, 0.2, 0.3)</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        - Used in the creation of an analytical Jacobian.</span>
+<span class="sd">        - Angles in radians, rates in radians/sec.</span>
+
+<span class="sd">    Reference::</span>
+<span class="sd">    - Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p232-3.</span>
+
+<span class="sd">    :SymPy: supported</span>
+
+<span class="sd">    :seealso: :func:`eul2jac`, :func:`rpy2r`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">pitch</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">yaw</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    
+    <span class="n">cp</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">pitch</span><span class="p">)</span>
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">pitch</span><span class="p">)</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">yaw</span><span class="p">)</span>
+    <span class="n">sy</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">sym</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">yaw</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;xyz&#39;</span><span class="p">:</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>	
+            <span class="p">[</span> <span class="n">sp</span><span class="p">,</span>       <span class="mi">0</span><span class="p">,</span>   <span class="mi">1</span><span class="p">],</span> 
+            <span class="p">[</span><span class="o">-</span><span class="n">cp</span> <span class="o">*</span> <span class="n">sy</span><span class="p">,</span>  <span class="n">cy</span><span class="p">,</span>  <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">cy</span><span class="p">,</span>  <span class="n">sy</span><span class="p">,</span>  <span class="mi">0</span><span class="p">]</span>
+        <span class="p">])</span>
+    
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;zyx&#39;</span><span class="p">:</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>	 
+                <span class="p">[</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">cy</span><span class="p">,</span> <span class="o">-</span><span class="n">sy</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">sy</span><span class="p">,</span>  <span class="n">cy</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="n">sp</span><span class="p">,</span>       <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">],</span>
+            <span class="p">])</span>
+    
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;yxz&#39;</span><span class="p">:</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>	
+                <span class="p">[</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">sy</span><span class="p">,</span>  <span class="n">cy</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="n">sp</span><span class="p">,</span>       <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">],</span>
+                <span class="p">[</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">cy</span><span class="p">,</span> <span class="o">-</span><span class="n">sy</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="p">])</span>
+    <span class="k">return</span> <span class="n">J</span></div>
+    
 <div class="viewcode-block" id="tr2adjoint"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2adjoint">[docs]</a><span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SE(3) adjoint matrix</span>
@@ -2156,7 +2297,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 28-Feb-2021.
+        Last updated on 04-Mar-2021.
       </span>
 
     </p>

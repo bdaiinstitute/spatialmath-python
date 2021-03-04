@@ -662,7 +662,7 @@ validitity of the bottom row.</p></li>
 <li><p><strong>pitch</strong> (<em>float</em>) – pitch angle</p></li>
 <li><p><strong>yaw</strong> (<em>float</em>) – yaw angle</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-<li><p><strong>unit</strong> – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
+<li><p><strong>order</strong> (<em>str</em>) – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -676,26 +676,26 @@ validitity of the bottom row.</p></li>
 </dd>
 </dl>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(ROLL,</span> <span class="pre">PITCH,</span> <span class="pre">YAW)</span></code> is an SO(3) orthonormal rotation matrix
-(3x3) equivalent to the specified roll, pitch, yaw angles angles.
-These correspond to successive rotations about the axes specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(⍺,</span> <span class="pre">β,</span> <span class="pre">γ)</span></code> is an SO(3) orthonormal rotation matrix (3x3)
+equivalent to the specified roll (⍺), pitch (β), yaw (γ) angles angles.
+These correspond to successive rotations about the axes specified by
+<code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>‘zyx’ [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-and y-axis sideways.</p></li>
-<li><p>‘xyz’, rotate by yaw about the x-axis, then by pitch about the new y-axis,
-then by roll about the new z-axis. Covention for a robot gripper with z-axis forward
-and y-axis between the gripper fingers.</p></li>
-<li><p>‘yxz’, rotate by yaw about the y-axis, then by pitch about the new x-axis,
-then by roll about the new z-axis. Convention for a camera with z-axis parallel
-to the optic axis and x-axis parallel to the pixel rows.</p></li>
+<li><p>‘zyx’ [default], rotate by γ about the z-axis, then by β about the new
+y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
+with x-axis forward and y-axis sideways.</p></li>
+<li><p>‘xyz’, rotate by γ about the x-axis, then by β about the new y-axis,
+then by ⍺ about the new z-axis. Convention for a robot gripper with
+z-axis forward and y-axis between the gripper fingers.</p></li>
+<li><p>‘yxz’, rotate by γ about the y-axis, then by β about the new x-axis,
+then by ⍺ about the new z-axis. Convention for a camera with z-axis
+parallel to the optic axis and x-axis parallel to the pixel rows.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(RPY)</span></code> as above but the roll, pitch, yaw angles are taken
-from <code class="docutils literal notranslate"><span class="pre">RPY</span></code> which is a 3-vector with values
-(ROLL, PITCH, YAW).</p></li>
+from <code class="docutils literal notranslate"><span class="pre">RPY</span></code> which is a 3-vector with values (⍺, β, γ).</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rpy2r</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
@@ -730,7 +730,7 @@ from <code class="docutils literal notranslate"><span class="pre">RPY</span></co
 <li><p><strong>pitch</strong> (<em>float</em>) – pitch angle</p></li>
 <li><p><strong>yaw</strong> (<em>float</em>) – yaw angle</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-<li><p><strong>unit</strong> – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
+<li><p><strong>order</strong> (<em>str</em>) – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -741,26 +741,25 @@ from <code class="docutils literal notranslate"><span class="pre">RPY</span></co
 </dd>
 </dl>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">rpy2tr(ROLL,</span> <span class="pre">PITCH,</span> <span class="pre">YAW)</span></code> is an SO(3) orthonormal rotation matrix
-(3x3) equivalent to the specified roll, pitch, yaw angles angles.
-These correspond to successive rotations about the axes specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">rpy2tr(⍺,</span> <span class="pre">β,</span> <span class="pre">γ)</span></code> is an SE(3) matrix (4x4) equivalent to the specified
+roll (⍺), pitch (β), yaw (γ) angles angles. These correspond to successive
+rotations about the axes specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>‘zyx’ [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-and y-axis sideways.</p></li>
-<li><p>‘xyz’, rotate by yaw about the x-axis, then by pitch about the new y-axis,
-then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
-and y-axis between the gripper fingers.</p></li>
-<li><p>‘yxz’, rotate by yaw about the y-axis, then by pitch about the new x-axis,
-then by roll about the new z-axis. Convention for a camera with z-axis parallel
-to the optic axis and x-axis parallel to the pixel rows.</p></li>
+<li><p>‘zyx’ [default], rotate by γ about the z-axis, then by β about the new
+y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
+with x-axis forward and y-axis sideways.</p></li>
+<li><p>‘xyz’, rotate by γ about the x-axis, then by β about the new y-axis,
+then by ⍺ about the new z-axis. Convention for a robot gripper with
+z-axis forward and y-axis between the gripper fingers.</p></li>
+<li><p>‘yxz’, rotate by γ about the y-axis, then by β about the new x-axis,
+then by ⍺ about the new z-axis. Convention for a camera with z-axis
+parallel to the optic axis and x-axis parallel to the pixel rows.</p></li>
 </ul>
 </div></blockquote>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rpy2tr(RPY)</span></code> as above but the roll, pitch, yaw angles are taken
-from <code class="docutils literal notranslate"><span class="pre">RPY</span></code> which is a 3-vector with values
-(ROLL, PITCH, YAW).</p></li>
+from <code class="docutils literal notranslate"><span class="pre">RPY</span></code> which is a 3-vector with values (⍺, β, γ).</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rpy2tr</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
@@ -813,12 +812,11 @@ set to a non-zero value.</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">=</span> <span class="pre">eul2r(PHI,</span> <span class="pre">θ,</span> <span class="pre">PSI)</span></code> is an SO(3) orthonornal rotation
+<li><p><code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">=</span> <span class="pre">eul2r(φ,</span> <span class="pre">θ,</span> <span class="pre">ψ)</span></code> is an SO(3) orthonornal rotation
 matrix equivalent to the specified Euler angles.  These correspond
 to rotations about the Z, Y, Z axes respectively.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">=</span> <span class="pre">eul2r(EUL)</span></code> as above but the Euler angles are taken from
-<code class="docutils literal notranslate"><span class="pre">EUL</span></code> which is a 3-vector with values
-(PHI θ PSI).</p></li>
+<code class="docutils literal notranslate"><span class="pre">EUL</span></code> which is a 3-vector with values (φ θ ψ).</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eul2r</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
@@ -1221,7 +1219,7 @@ case we arbitrarily set <span class="math notranslate nohighlight">\(\phi = 0\)<
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(3) or SO(3) matrix</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – ‘rad’ or ‘deg’</p></li>
-<li><p><strong>order</strong> – ‘xyz’, ‘zyx’ or ‘yxz’ [default ‘zyx’]</p></li>
+<li><p><strong>order</strong> (<em>str</em>) – ‘xyz’, ‘zyx’ or ‘yxz’ [default ‘zyx’]</p></li>
 <li><p><strong>check</strong> (<em>bool</em>) – check that rotation matrix is valid</p></li>
 </ul>
 </dd>
@@ -1740,6 +1738,128 @@ elative to {A} is represented by the homogeneous transform T = <span class="math
 </dd></dl>
 
 <dl class="py function">
+<dt id="spatialmath.base.transforms3d.eul2jac">
+<code class="sig-name descname"><span class="pre">eul2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#eul2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.eul2jac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Euler angle rate Jacobian</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phi</strong> (<em>float</em>) – Z-axis rotation</p></li>
+<li><p><strong>theta</strong> (<em>float</em>) – Y-axis rotation</p></li>
+<li><p><strong>psi</strong> (<em>float</em>) – Z-axis rotation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">eul2jac(φ,</span> <span class="pre">θ,</span> <span class="pre">ψ)</span></code> is a Jacobian matrix (3x3) that maps ZYZ Euler angle
+rates to angular velocity at the operating point specified by the Euler
+angles φ, ϴ, ψ.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eul2jac(𝚪)</span></code> as above but the Euler angles are taken from <code class="docutils literal notranslate"><span class="pre">𝚪</span></code> which
+is a 3-vector with values (φ θ ψ).</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eul2jac</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="go">array([[ 0.    , -0.0998,  0.1977],</span>
+<span class="go">       [ 0.    ,  0.995 ,  0.0198],</span>
+<span class="go">       [ 1.    ,  0.    ,  0.9801]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Used in the creation of an analytical Jacobian.</p></li>
+<li><p>Angles in radians, rates in radians/sec.</p></li>
+</ul>
+</div>
+<p>Reference::
+- Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p232-3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">SymPy</dt>
+<dd class="field-odd"><p>supported</p>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.eul2r" title="spatialmath.base.transforms3d.eul2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2r()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.rpy2jac">
+<code class="sig-name descname"><span class="pre">rpy2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#rpy2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.rpy2jac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jacobian from RPY angle rates to angular velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>str</em>) – [description], defaults to ‘zyx’</p></li>
+<li><p><strong>roll</strong> (<em>float</em>) – roll angle</p></li>
+<li><p><strong>pitch</strong> (<em>float</em>) – pitch angle</p></li>
+<li><p><strong>yaw</strong> (<em>float</em>) – yaw angle</p></li>
+<li><p><strong>order</strong> – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(⍺,</span> <span class="pre">β,</span> <span class="pre">γ)</span></code> is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
+rates to angular velocity at the operating point (⍺, β, γ).
+These correspond to successive rotations about the axes specified by
+<code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘zyx’ [default], rotate by γ about the z-axis, then by β about the new
+y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
+with x-axis forward and y-axis sideways.</p></li>
+<li><p>‘xyz’, rotate by γ about the x-axis, then by β about the new y-axis,
+then by ⍺ about the new z-axis. Convention for a robot gripper with
+z-axis forward and y-axis between the gripper fingers.</p></li>
+<li><p>‘yxz’, rotate by γ about the y-axis, then by β about the new x-axis,
+then by ⍺ about the new z-axis. Convention for a camera with z-axis
+parallel to the optic axis and x-axis parallel to the pixel rows.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(𝚪)</span></code> as above but the roll, pitch, yaw angles are taken
+from <code class="docutils literal notranslate"><span class="pre">𝚪</span></code> which is a 3-vector with values (⍺, β, γ).</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rpy2jac</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="go">array([[ 0.9363, -0.2955,  0.    ],</span>
+<span class="go">       [ 0.2896,  0.9553,  0.    ],</span>
+<span class="go">       [-0.1987,  0.    ,  1.    ]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Used in the creation of an analytical Jacobian.</p></li>
+<li><p>Angles in radians, rates in radians/sec.</p></li>
+</ul>
+</div>
+<p>Reference::
+- Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p232-3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">SymPy</dt>
+<dd class="field-odd"><p>supported</p>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="spatialmath.base.transforms3d.tr2adjoint">
 <code class="sig-name descname"><span class="pre">tr2adjoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#tr2adjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.tr2adjoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>SE(3) adjoint matrix</p>
@@ -2038,7 +2158,7 @@ be a matplotlib bug #19599</p>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 28-Feb-2021.
+        Last updated on 04-Mar-2021.
       </span>
 
     </p>
