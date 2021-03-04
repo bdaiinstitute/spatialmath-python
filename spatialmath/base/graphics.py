@@ -248,28 +248,57 @@ def plot_sphere(centre=(0,0,0), radius=1, npoints=50, ax=None, wireframe=False, 
         ax.plot_surface(x, y, z, **kwargs)
 
 
-def ellipse(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False):
+def ellipse(E, centre=(0,0), scale=1, confidence=None, npoints=40, inverted=False):
+    """[summary]
+
+    :param E: ellipse defined by :math:`x^T \mat{E} x = 1`
+    :type E: ndarray(2,2)
+    :param centre: ellipse centre, defaults to (0,0,0)
+    :type centre: tuple, optional
+    :param scale:
+    :type scale:
+    :param confidence: if E is an inverse covariance matrix plot an ellipse
+        for this confidence interval in the range [0,1], defaults to None
+    :type confidence: float, optional
+    :param npoints: number of points on circumferance, defaults to 40
+    :type npoints: int, optional
+    :param inverted: if :math:`\mat{E}^{-1}` is provided, defaults to False
+    :type inverted: bool, optional
+    :raises ValueError: [description]
+    :return: x and y coordinates
+    :rtype: tuple of ndarray(1)
+
+    .. note:: In some problems we compute :math:`\mat{E}^{-1}` so to avoid
+        inverting ``E`` twice to compute the ellipse, we flag that the inverse
+        is provided using ``inverted``.  For example: 
+        
+        - for robot manipulability
+        :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i 
+        - a covariance matrix
+        :math:`(x - \mu)^T \mat{P}^{-1} (x - \mu)`
+    """
     if E.shape != (2,2):
         raise ValueError('ellipse is defined by a 2x2 matrix')
 
-    if inverse:
-        E = np.linalg.inv(E)
-
     if confidence:
         # process the probability
-        s = sqrt(chi2inv(confidence, 2))
+        s = sqrt(chi2inv(confidence, 2)) * scale
     else:
-        s = 1
+        s = scale
 
     x, y = circle()  # unit circle
-    e = sp.linalg.sqrtm(E) @ np.array([x, y])
+
+    if not inverted:
+        E = np.linalg.inv(E)
+
+    e = s * sp.linalg.sqrtm(E) @ np.array([x, y]) + np.c_[centre]
     return e[0,:], e[1,:]
 
-def plot_ellipse(E, centre=(0,0), confidence=None, npoints=40, inverse=False, filled=None, **kwargs):
+def plot_ellipse(E, centre=(0,0), scale=1, confidence=None, npoints=40, inverted=False, ax=None, filled=None, **kwargs):
     
     # allow for centre[2] to plot ellipse in a plane in a 3D plot
 
-    x, y = ellipse(E, centre, confidence, npoints, inverse)
+    x, y = ellipse(E, centre, scale, confidence, npoints, inverted)
     ax = _axes_logic(ax, 2)
     if filled:
         patch = plt.Polygon(x, y, **kwargs)
@@ -277,26 +306,26 @@ def plot_ellipse(E, centre=(0,0), confidence=None, npoints=40, inverse=False, fi
     else:
         plt.plot(x, y, **kwargs)
 
-def ellipsoid(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False):
+def ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, npoints=40, inverted=False):
 
     if E.shape != (3,3):
         raise ValueError('ellipsoid is defined by a 3x3 matrix')
 
-    if inverse:
-        E = np.linalg.inv(E)
-
     if confidence:
         # process the probability
         from scipy.stats.distributions import chi2
-        s = math.sqrt(chi2.ppf(s, df=2))
+        s = math.sqrt(chi2.ppf(s, df=2)) * scale
     else:
-        s = 1
+        s = scale
+
+    if not inverted:
+        E = np.linalg.inv(E)
 
     x, y, z = sphere()  # unit sphere
-    e = sp.linalg.sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
+    e = s * sp.linalg.sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()]) + np.c_[centre].T
     return e[0,:].reshape(x.shape), e[1,:].reshape(x.shape), e[2,:].reshape(x.shape)
 
-def plot_ellipsoid(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False, ax=None, wireframe=False, stride=1, **kwargs):
+def plot_ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, npoints=40, inverted=False, ax=None, wireframe=False, stride=1, **kwargs):
     """
     Draw an ellipsoid
 
@@ -304,12 +333,14 @@ def plot_ellipsoid(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False
     :type E: ndarray(3,3)
     :param centre: [description], defaults to (0,0,0)
     :type centre: tuple, optional
+        :param scale:
+    :type scale:
     :param confidence: confidence interval, range 0 to 1
     :type confidence: float
     :param npoints: [description], defaults to 40
     :type npoints: int, optional
-    :param inverse: [description], defaults to False
-    :type inverse: bool, optional
+    :param inverted: [description], defaults to False
+    :type inverted: bool, optional
     :param ax: [description], defaults to None
     :type ax: [type], optional
     :param wireframe: [description], defaults to False
@@ -334,7 +365,7 @@ def plot_ellipsoid(E, centre=(0,0,0), confidence=None, npoints=40, inverse=False
         - If a confidence interval is given then ``E`` is interpretted as a covariance
           matrix and the ellipse size is computed using an inverse chi-squared function.
     """
-    x, y, z = ellipsoid(E, centre, confidence, npoints, inverse)
+    x, y, z = ellipsoid(E, centre, scale, confidence, npoints, inverted)
     ax = _axes_logic(ax, 3)
     if wireframe:
         return ax.plot_wireframe(x, y, z, rstride=stride, cstride=stride, **kwargs)
