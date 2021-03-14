@@ -1269,7 +1269,7 @@ class SE3(SO3):
         :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
         :SymPy: supported
         """
-        return cls(base.delta2tr(d))
+        return cls(base.trnorm(base.delta2tr(d)))
 
     @classmethod
     def Tx(cls, x):
