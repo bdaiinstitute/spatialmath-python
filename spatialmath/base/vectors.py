@@ -133,7 +133,7 @@ def norm(v):
     for x in v:
         sum += x * x
 
-    if isinstance(sum, sympy.Expr):
+    if _symbolics and isinstance(sum, sympy.Expr):
         return sympy.sqrt(sum)
     else:
         return math.sqrt(sum)
