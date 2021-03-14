@@ -1053,15 +1053,12 @@ See also Twist.char.
 
         """
         if len(self) == 1:
-            p.begin_group(8, 'Plücker ')
             p.text(str(self))
-            p.end_group(8, '')
         else:
-            p.begin_group(8, 'Plücker(')
             for i, x in enumerate(self):
-                p.break_()
-                p.text(str(x))
-            p.end_group(8, ')')
+                if i > 0:
+                    p.break_()
+                p.text(f"{i:3d}: {str(x)}")
 
 #         function z = side(self1, pl2)
 #             Plucker.side Plucker side operator

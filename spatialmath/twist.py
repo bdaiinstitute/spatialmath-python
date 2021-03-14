@@ -1062,11 +1062,13 @@ class Twist3(SMTwist):
         itself.
 
         """
-        p.begin_group(8, 'Twist3(')
-        for i, x in enumerate(self):
-            p.break_()
-            p.text(str(x))
-        p.end_group(8, ')')
+        if len(self) == 1:
+            p.text(str(self))
+        else:
+            for i, x in enumerate(self):
+                if i > 0:
+                    p.break_()
+                p.text(f"{i:3d}: {str(x)}")
 
 # ======================================================================== #
 
@@ -1552,13 +1554,17 @@ class Twist2(SMTwist):
         itself.
 
         """
-        p.begin_group(8, 'Twist2(')
-        for i, x in enumerate(self):
-            p.break_()
-            p.text(str(x))
-        p.end_group(8, ')')
+        if len(self) == 1:
+            p.text(str(self))
+        else:
+            for i, x in enumerate(self):
+                if i > 0:
+                    p.break_()
+                p.text(f"{i:3d}: {str(x)}")
 
 if __name__ == '__main__':   # pragma: no cover
+
+
 
     import pathlib
 
