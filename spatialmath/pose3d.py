@@ -990,7 +990,7 @@ class SE3(SO3):
         return cls([base.trotz(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
 
     @classmethod
-    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
+    def Rand(cls, N=1, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1)):  # pylint: disable=arguments-differ
         """
         Create a random SE(3)
 
@@ -1008,12 +1008,12 @@ class SE3(SO3):
         Return an SE3 instance with random rotation and translation.
 
         - ``SE3.Rand()`` is a random SE(3) translation.
-        - ``SE3.Rand(N=N)`` is an SE3 object containing a sequence of N random
+        - ``SE3.Rand(N)`` is an SE3 object containing a sequence of N random
           poses.
 
         Example::
 
-            >>> SE3.Rand(N=2)
+            >>> SE3.Rand(2)
             SE3([
             array([[ 0.58076657,  0.64578702, -0.49565041, -0.78585825],
                 [-0.57373134, -0.10724881, -0.8119914 ,  0.72069253],

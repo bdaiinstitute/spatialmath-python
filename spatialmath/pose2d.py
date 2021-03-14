@@ -101,7 +101,7 @@ class SO2(SMPose):
         return (2, 2)
 
     @classmethod
-    def Rand(cls, *, arange=(0, 2 * math.pi), unit='rad', N=1):
+    def Rand(cls, N=1, arange=(0, 2 * math.pi), unit='rad'):
         r"""
         Construct new SO(2) with random rotation
 
@@ -328,7 +328,7 @@ class SE2(SO2):
         return (3, 3)
 
     @classmethod
-    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), arange=(0, 2 * math.pi), unit='rad', N=1):  # pylint: disable=arguments-differ
+    def Rand(cls, N=1, xrange=(-1, 1), yrange=(-1, 1), arange=(0, 2 * math.pi), unit='rad'):  # pylint: disable=arguments-differ
         r"""
         Construct a new random SE(2)
 
