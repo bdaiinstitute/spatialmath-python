@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.9.1
+  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.9.3
  documentation</title>
   
 
@@ -1156,7 +1156,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trotz</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Rand"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Rand">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">yrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">zrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+    <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">yrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">zrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>  <span class="c1"># pylint: disable=arguments-differ</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a random SE(3)</span>
 
@@ -1174,12 +1174,12 @@
 <span class="sd">        Return an SE3 instance with random rotation and translation.</span>
 
 <span class="sd">        - ``SE3.Rand()`` is a random SE(3) translation.</span>
-<span class="sd">        - ``SE3.Rand(N=N)`` is an SE3 object containing a sequence of N random</span>
+<span class="sd">        - ``SE3.Rand(N)`` is an SE3 object containing a sequence of N random</span>
 <span class="sd">          poses.</span>
 
 <span class="sd">        Example::</span>
 
-<span class="sd">            &gt;&gt;&gt; SE3.Rand(N=2)</span>
+<span class="sd">            &gt;&gt;&gt; SE3.Rand(2)</span>
 <span class="sd">            SE3([</span>
 <span class="sd">            array([[ 0.58076657,  0.64578702, -0.49565041, -0.78585825],</span>
 <span class="sd">                [-0.57373134, -0.10724881, -0.8119914 ,  0.72069253],</span>
@@ -1435,7 +1435,7 @@
 <span class="sd">        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">delta2tr</span><span class="p">(</span><span class="n">d</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trnorm</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">delta2tr</span><span class="p">(</span><span class="n">d</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="SE3.Tx"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Tx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -1583,7 +1583,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 04-Mar-2021.
+        Last updated on 14-Mar-2021.
       </span>
 
     </p>
