@@ -84,7 +84,7 @@ def trot2(theta, unit='rad', t=None):
     T = np.pad(rot2(theta, unit), (0, 1), mode='constant')
     if t is not None:
         T[:2, 2] = base.getvector(t, 2, 'array')
-    T[2, 2] = 1.0
+    T[2, 2] = 1  # integer to be symbolic friendly
     return T
 
 def xyt2tr(xyt, unit='rad'):
@@ -193,9 +193,10 @@ def transl2(x, y=None):
         function.
     """
 
-    if np.isscalar(x):
-        T = np.identity(3)
-        T[:2, 2] = [x, y]
+    if base.isscalar(x):
+        t = np.r_[x, y]
+        T = np.identity(3, dtype=t.dtype)
+        T[:2, 2] = t
         return T
     elif base.isvector(x, 2):
         T = np.identity(3)
@@ -204,7 +205,7 @@ def transl2(x, y=None):
     elif base.ismatrix(x, (3, 3)):
         return x[:2, 2]
     else:
-        ValueError('bad argument')
+        raise ValueError('bad argument')
 
 
 def ishom2(T, check=False):
