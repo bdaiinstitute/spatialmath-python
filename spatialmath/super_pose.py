@@ -556,6 +556,7 @@ class SMPose(SMUserList):
 
         :SymPy: supported
         """
+
         vf = np.vectorize(sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
 

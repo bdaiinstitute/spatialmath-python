@@ -1,7 +1,8 @@
 # Spatial Maths for Python
 
 [![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/roboticstoolbox-python.svg)
+[![Anaconda version](https://anaconda.org/conda-forge/spatialmath-python/badges/version.svg)](https://anaconda.org/conda-forge/spatialmath-python)
+![Python Version](https://img.shields.io/pypi/pyversions/roboticstoolbox-python.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
 
@@ -22,7 +23,7 @@ A Python implementation of the <a href="https://github.com/petercorke/spatial-ma
 <ul>
 <li><a href="https://github.com/petercorke/spatialmath-python">GitHub repository </a></li>
 <li><a href="https://petercorke.github.io/spatialmath-python">Documentation</a></li>
-<li><a href="https://github.com/petercorke/spatialmath-python/wiki">Examples and details</a></li>
+<li><a href="https://github.com/petercorke/spatialmath-python/wiki">Wiki (examples and details)</a></li>
 <li><a href="installation#">Installation</a></li>
 </ul>
 </td>

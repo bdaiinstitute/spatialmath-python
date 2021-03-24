@@ -1203,6 +1203,7 @@ def trexp(S, theta=None, check=True):
             elif not base.isunittwist(tw):
                 raise ValueError("If theta is specified S must be a unit twist")
 
+        # tw is a unit twist, th is its magnitude
         t = tw[0:3]
         w = tw[3:6]
 
