@@ -1,5 +1,6 @@
 from spatialmath.pose2d import SO2, SE2
 from spatialmath.pose3d import SO3, SE3
+from spatialmath.super_pose import SMPose
 from spatialmath.geom3d import Plucker, Plane
 from spatialmath.twist import Twist3, Twist2
 from spatialmath.spatialvector import SpatialVelocity, SpatialAcceleration, \
