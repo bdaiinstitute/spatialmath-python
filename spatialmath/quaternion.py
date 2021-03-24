@@ -2127,20 +2127,20 @@ class UnitQuaternion(Quaternion):
     #     """
     #     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))
 
-    def angdist(self, other, metric=0):
+    def angdist(self, other, metric=3):
         r"""
         Angular distance metric between unit quaternions
 
         :param other: second unit quaternion
         :type other: UnitQuaternion instance
-        :param metric: metric, default is 0
+        :param metric: metric, default is 3
         :type metric: int
         :raises TypeError: if other is not a UnitQuaternion
         :return: angle in radians
         :rtype: float
 
-        ``q1.angle(q2)`` is the geodesic norm, or geodesic distance between two
-        unit quaternions and has units of angle.  We can consider it as the angle between two quaternions.
+        ``q1.angdist(q2)`` is the geodesic norm, or geodesic distance between two
+        unit quaternions.  We can consider it as the angle between two quaternions.
 
         Several metrics are supported:
 
@@ -2150,9 +2150,12 @@ class UnitQuaternion(Quaternion):
         0        :math:`1 - | \q_1 \bullet \q_2 | \in [0, 1]`
         1        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
         2        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
-        3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`
+        3        :math:`2 \tan^{-1} \| \q_1 \pm \q_2\| / \|\q_1 \mp \q_2\| \in [0, \pi/2]`
         4        :math:`\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]`
         ======   ===============================================================
+
+        Metric 3 computes the sum and difference of the quaternions and uses
+        the largest value in the denominator.
 
         Example:
 
@@ -2170,19 +2173,27 @@ class UnitQuaternion(Quaternion):
               outside its domain [0, 1].
             - metrics 2 and 3 are equivalent, but 3 is more robust
             - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()
-            - MATLAB's quaternion.dist() uses metric 2
+            - MATLAB's quaternion.dist() uses metric 4
         """
         if not isinstance(other, UnitQuaternion):
             raise TypeError('bad operand')
 
+        def metric3(p, q):
+            x =  base.norm(p - q)
+            y =  base.norm(p + q)
+            if x >= y:
+                return 2 * math.atan(y / x)
+            else:
+                return 2 * math.atan(x / y)
+
         if metric == 0:
-            measure = lambda p, q: 1 - np.dot(p, q)
+            measure = lambda p, q: 1 - abs(np.dot(p, q))
         elif metric == 1:
-            measure =  lambda p, q: math.acos(np.dot(p, q))
+            measure =  lambda p, q: math.acos(abs(np.dot(p, q)))
         elif metric == 2:
-            measure =  lambda p, q: math.acos(np.dot(p, q))
+            measure =  lambda p, q: math.acos(abs(np.dot(p, q)))
         elif metric == 3:
-            measure =  lambda p, q: 2 * math.atan2(base.norm(p - q), base.norm(p + q))
+            measure =  metric3
         elif metric == 4:
             measure = lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1)
 

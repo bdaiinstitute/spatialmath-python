@@ -619,6 +619,55 @@ class SO3(SMPose):
         else:
             return cls(base.trexp(S, check=check), check=False)
 
+    def angdist(self, other, metric=3):
+        r"""
+        Angular distance metric between unit quaternions
+
+        :param other: second unit quaternion
+        :type other: UnitQuaternion instance
+        :param metric: metric, default is 3
+        :type metric: int
+        :raises TypeError: if other is not a UnitQuaternion
+        :return: angle in radians
+        :rtype: float
+
+        ``q1.angdist(q2)`` is the geodesic norm, or geodesic distance between two
+        unit quaternions.  We can consider it as the angle between two quaternions.
+
+        Several metrics are supported:
+
+        ======   ===============================================================
+        Metric   Details
+        ======   ===============================================================
+        0        :math:`1 - | \q_1 \bullet \q_2 | \in [0, 1]`
+        1        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
+        2        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
+        3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`
+        4        :math:`\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]`
+        ======   ===============================================================
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion
+            >>> q1 = UnitQuaternion.Rx(0.3)
+            >>> q2 = UnitQuaternion.Ry(0.3)
+            >>> print(q1.angdist(q1))
+            >>> print(q1.angdist(q2))
+
+        .. note::
+            - metrics 1, 2, 4 can throw ValueError "math domain error" due to
+              numeric errors which push the argument of ``acos()`` marginally
+              outside its domain [0, 1].
+            - metrics 2 and 3 are equivalent, but 3 is more robust
+            - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()
+            - MATLAB's quaternion.dist() uses metric 4
+        """
+        from spatialmath.quaternion import UnitQuaternion
+
+        return UnitQuaternion(self).angdist(UnitQuaternion(other), metric=metric)
+
 # ============================== SE3 =====================================#
 
 
