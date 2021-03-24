@@ -92,20 +92,26 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(SO3.Rz(pi)), np.r_[0, 0, 0, 1])
 
         # vector of SO3
-        qcompare(UnitQuaternion([SO3.Rx(pi / 2), SO3.Ry(pi / 2), SO3.Rz(pi / 2)]), np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
+        qcompare(UnitQuaternion([SO3.Rx(pi / 2), SO3.Ry(pi / 2), SE3.Rz(pi / 2)]), np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
 
-        # from T
-        qcompare(UnitQuaternion(trotx(pi / 2)), np.r_[1, 1, 0, 0] / math.sqrt(2))
-        qcompare(UnitQuaternion(troty(pi / 2)), np.r_[1, 0, 1, 0] / math.sqrt(2))
-        qcompare(UnitQuaternion(trotz(pi / 2)), np.r_[1, 0, 0, 1] / math.sqrt(2))
+        # from SE3
 
-        qcompare(UnitQuaternion(trotx(-pi / 2)), np.r_[1, -1, 0, 0] / math.sqrt(2))
-        qcompare(UnitQuaternion(troty(-pi / 2)), np.r_[1, 0, -1, 0] / math.sqrt(2))
-        qcompare(UnitQuaternion(trotz(-pi / 2)), np.r_[1, 0, 0, -1] / math.sqrt(2))
+        qcompare(UnitQuaternion(SE3()), np.r_[1, 0, 0, 0])
 
-        qcompare(UnitQuaternion(trotx(pi)), np.r_[0, 1, 0, 0])
-        qcompare(UnitQuaternion(troty(pi)), np.r_[0, 0, 1, 0])
-        qcompare(UnitQuaternion(trotz(pi)).vec, np.r_[0, 0, 0, 1])
+        qcompare(UnitQuaternion(SE3.Rx(pi / 2)), np.r_[1, 1, 0, 0] / math.sqrt(2))
+        qcompare(UnitQuaternion(SE3.Ry(pi / 2)), np.r_[1, 0, 1, 0] / math.sqrt(2))
+        qcompare(UnitQuaternion(SE3.Rz(pi / 2)), np.r_[1, 0, 0, 1] / math.sqrt(2))
+
+        qcompare(UnitQuaternion(SE3.Rx(-pi / 2)), np.r_[1, -1, 0, 0] / math.sqrt(2))
+        qcompare(UnitQuaternion(SE3.Ry(-pi / 2)), np.r_[1, 0, -1, 0] / math.sqrt(2))
+        qcompare(UnitQuaternion(SE3.Rz(-pi / 2)), np.r_[1, 0, 0, -1] / math.sqrt(2))
+
+        qcompare(UnitQuaternion(SE3.Rx(pi)), np.r_[0, 1, 0, 0])
+        qcompare(UnitQuaternion(SE3.Ry(pi)), np.r_[0, 0, 1, 0])
+        qcompare(UnitQuaternion(SE3.Rz(pi)), np.r_[0, 0, 0, 1])
+
+        # vector of SE3
+        qcompare(UnitQuaternion([SE3.Rx(pi / 2), SE3.Ry(pi / 2), SE3.Rz(pi / 2)]), np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
 
         # # vectorised forms of R, T
         # R = []; T = []

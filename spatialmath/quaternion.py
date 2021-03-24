@@ -977,22 +977,34 @@ class UnitQuaternion(Quaternion):
                 # UnitQuaternion(R) R is 3x3 rotation matrix
                 self.data = [base.r2q(s)]
 
-            elif isinstance(s, np.ndarray) and base.ishom(s, check=check):
-                # UnitQuaternion(T) T is 4x4 homogeneous transformation matrix
-                self.data = [base.r2q(base.t2r(s))]
+            elif isinstance(s, np.ndarray):
+                # passed a NumPy array, it could be:
+                #  an SO(3) or SE(3) matrix
+                #  a quaternion as a 1D array
+                #  an array of quaternions as an nx4 array
 
-            elif isinstance(s, np.ndarray) and s.shape[1] == 4:
-                if norm:
-                    self.data = [base.unit(x) for x in s]
-                else:
-                    self.data = [base.qpositive(x) for x in s]
+                if base.isrot(s, check=check):
+                    # UnitQuaternion(R) R is 3x3 rotation matrix
+                    self.data = [base.r2q(s)]
+                elif s.shape == (4,):
+                    # passed a 4-vector
+                    if norm:
+                        self.data = [base.unit(s)]
+                    else:
+                        self.data = [s]
+                elif s.ndim == 2 and s.shape[1] == 4:
+                    if norm:
+                        self.data = [base.unit(x) for x in s]
+                    else:
+                        # self.data = [base.qpositive(x) for x in s]
+                        self.data = [x for x in s]
 
             elif isinstance(s, SO3):
-                # UnitQuaternion(x) x is SO3 or SE3
+                # UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)
                 self.data = [base.r2q(x.R) for x in s]
 
             elif isinstance(s[0], SO3):
-                # list of SO3/SE3
+                # list of SO3 or SE3
                 self.data = [base.r2q(x.R) for x in s]
 
             else:
@@ -2258,3 +2270,10 @@ if __name__ == '__main__':  # pragma: no cover
     a = UnitQuaternion([0, 1, 0, 0])
 
     exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_quaternion.py").read())  # pylint: disable=exec-used
+
+
+
+
+
+
+

@@ -130,6 +130,7 @@ def unit(q, tol=10):
         return q
     else:
         return -q
+    # return q
 
 
 def isunit(q, tol=100):
