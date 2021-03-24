@@ -495,6 +495,39 @@ def adjoint2(T):
     else:
         raise ValueError('bad argument')
 
+def tr2jac2(T):
+    r"""
+    SE(2) Jacobian matrix
+
+    :param T: SE(2) matrix
+    :type T: ndarray(3,3)
+    :return: Jacobian matrix
+    :rtype: ndarray(3,3)
+
+    Computes an Jacobian matrix that maps spatial velocity between two frames defined by
+    an SE(2) matrix.
+
+    ``tr2jac2(T)`` is a Jacobian matrix (3x3) that maps spatial velocity or
+    differential motion from frame {B} to frame {A} where the pose of {B}
+    elative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> T = trot2(0.3, t=[4,5])
+        >>> tr2jac2(T)
+    
+    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+    :SymPy: supported
+    """
+
+    if not ishom2(T):
+        raise ValueError("expecting an SE(2) matrix")
+
+    J = np.eye(3, dtype=T.dtype)
+    J[:2,:2] = base.t2r(T)
+    return J
+
 def trinterp2(start, end, s=None):
     """
     Interpolate SE(2) or SO(2) matrices
