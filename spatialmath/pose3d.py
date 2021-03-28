@@ -622,22 +622,23 @@ class SO3(BasePoseMatrix):
         else:
             return cls(base.trexp(S, check=check), check=False)
 
-    def angdist(self, other, metric=3):
+    def angdist(self, other, metric=6):
         r"""
-        Angular distance metric between unit quaternions
+        Angular distance metric between rotations
 
-        :param other: second unit quaternion
-        :type other: UnitQuaternion instance
-        :param metric: metric, default is 3
+        :param other: second rotation
+        :type other: SO3 instance
+        :param metric: metric, default is 6
         :type metric: int
-        :raises TypeError: if other is not a UnitQuaternion
+        :raises TypeError: if other is not an SO3
         :return: angle in radians
-        :rtype: float
+        :rtype: float or ndarray
 
-        ``q1.angdist(q2)`` is the geodesic norm, or geodesic distance between two
-        unit quaternions.  We can consider it as the angle between two quaternions.
+        ``R1.angdist(R2)`` is the geodesic norm, or geodesic distance between two
+        rotations.
 
-        Several metrics are supported:
+        Several metrics are supported, the first 5 are computed after conversion
+        to unit quaternions.
 
         ======   ===============================================================
         Metric   Details
@@ -647,6 +648,8 @@ class SO3(BasePoseMatrix):
         2        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
         3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`
         4        :math:`\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]`
+        5        :math:`\|I - \mat{R}_1 \mat{R}_2^T\| \in [0, 2]`
+        6        :math:`\|\log \mat{R}_1 \mat{R}_2^T\| \in [0, \pi]`
         ======   ===============================================================
 
         Example:
@@ -654,22 +657,37 @@ class SO3(BasePoseMatrix):
         .. runblock:: pycon
 
             >>> from spatialmath import UnitQuaternion
-            >>> q1 = UnitQuaternion.Rx(0.3)
-            >>> q2 = UnitQuaternion.Ry(0.3)
-            >>> print(q1.angdist(q1))
-            >>> print(q1.angdist(q2))
+            >>> R1 = SO3.Rx(0.3)
+            >>> R2 = SO3.Ry(0.3)
+            >>> print(R1.angdist(R1))
+            >>> print(R1.angdist(R2))
 
         .. note::
             - metrics 1, 2, 4 can throw ValueError "math domain error" due to
               numeric errors which push the argument of ``acos()`` marginally
               outside its domain [0, 1].
             - metrics 2 and 3 are equivalent, but 3 is more robust
-            - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()
-            - MATLAB's quaternion.dist() uses metric 4
-        """
-        from spatialmath.quaternion import UnitQuaternion
 
-        return UnitQuaternion(self).angdist(UnitQuaternion(other), metric=metric)
+        :seealso: :func:`UnitQuaternion.angdist`
+        """
+
+        if metric < 5:
+            from spatialmath.quaternion import UnitQuaternion
+
+            return UnitQuaternion(self).angdist(UnitQuaternion(other), metric=metric)
+
+        elif metric == 5:
+            op = lambda R1, R2: np.linalg.norm(np.eye(3) - R1 @ R2.T)
+        elif metric == 6:
+            op = lambda R1, R2: base.norm(base.trlog(R1 @ R2.T, twist=True))
+        else:
+            raise ValueError('unknown metric')
+        
+        ad = self._op2(other, op)
+        if isinstance(ad, list):
+            return np.array(ad)
+        else:
+            return ad
 
 # ============================== SE3 =====================================#
 
