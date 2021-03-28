@@ -6,7 +6,8 @@ import unittest
 we will assume that the primitives rotx,trotx, etc. all work
 """
 from math import pi
-from spatialmath.pose3d import *
+from spatialmath import SE3, SO3, SE2
+import numpy as np
 # from spatialmath import super_pose as sp
 from spatialmath.base import *
 from spatialmath.base import argcheck
@@ -777,11 +778,36 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SE3)
 
+        # random
+        T = SE3.Rand()
+        R = T.R
+        t = T.t
+        T = SE3.Rt(R, t)
+        self.assertIsInstance(T, SE3)
+        self.assertEqual(T.A.shape, (4,4))
+
+        nt.assert_equal(T.R, R)
+        nt.assert_equal(T.t, t)
+
+
         # copy constructor
         R = SE3.Rx(pi / 2)
         R2 = SE3(R)
         R = SE3.Ry(pi / 2)
         array_compare(R2, trotx(pi / 2))
+
+        # SO3
+        T = SE3(SO3())
+        nt.assert_equal(len(T), 1)
+        self.assertIsInstance(T, SE3)
+        nt.assert_equal(T.A, np.eye(4))
+
+        # SE2
+        T = SE3(SE2(1, 2, 0.4))
+        nt.assert_equal(len(T), 1)
+        self.assertIsInstance(T, SE3)
+        self.assertEqual(T.A.shape, (4,4))
+        nt.assert_equal(T.t, [1, 2, 0])
 
     def test_shape(self):
         a = SE3()

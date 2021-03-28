@@ -738,7 +738,7 @@ class SE3(SO3):
                 return
             elif isinstance(x, SO3):
                 self.data = [base.r2t(_x) for _x in x.data]
-            elif isinstance(x, SE2):
+            elif type(x).__name__ == 'SE2':
                 def convert(x):
                     # convert SE(2) to SE(3)
                     out = np.identity(4, dtype=x.dtype)

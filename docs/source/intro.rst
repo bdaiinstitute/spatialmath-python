@@ -263,7 +263,7 @@ The classes ``SE3``, ``SO3``, ``SE2`` and ``SO2`` can provide colorized text out
 with rotational elements in red, translational elements in blue and constants in grey.
 
 The foreground and background colors can be controlled using the following
-class variables for the ``SMPose`` subclasses
+class variables for the ``BasePoseMatrix`` subclasses
 
 ===============  ===================  ============================================
 Variable         Default              Description
