@@ -171,10 +171,14 @@ def getmatrix(m, shape, dtype=np.float64):
        - If ``m`` is a scalar, return an array of shape (1,1)
 
     :seealso: :func:`ismatrix`, :func:`verifymatrix`
+    :SymPy: supported
     """
     if isinstance(m, np.ndarray) and len(m.shape) == 2:
         # passed a 2D array
         mshape = m.shape
+
+        if m.dtype == 'O':
+            dtype = 'O'
 
         if (shape[0] is None or shape[0] == mshape[0]) and (shape[1] is None or shape[1] == mshape[1]):
                 return np.array(m, dtype=dtype)
