@@ -500,6 +500,8 @@ class SpatialInertia(BasePoseList):
 
         - ``SpatialInertia(I)`` is a spatial inertia object with a value equal
           to ``I`` (6x6).
+
+        :SymPy: supported
         """
         super().__init__()
 
@@ -515,9 +517,10 @@ class SpatialInertia(BasePoseList):
             else:
                 I = base.getmatrix(I, (3,3))
             C = base.skew(r)
+            M = np.diag((m,) * 3)  # sym friendly
             I = np.block([
-                    [m * np.eye(3), m * C.T],
-                    [m * C,         I + m * C @ C.T]
+                    [M,      m * C.T],
+                    [m * C,  I + m * C @ C.T]
                     ])
         else:
             raise ValueError('bad values')
