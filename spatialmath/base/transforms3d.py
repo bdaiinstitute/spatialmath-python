@@ -18,6 +18,7 @@ import math
 from math import sin, cos
 import numpy as np
 from spatialmath import base
+from collections.abc import Iterable
 
 _eps = np.finfo(np.float64).eps
 
@@ -1836,7 +1837,7 @@ except ImportError:  # pragma: no cover
 
 def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
            textcolor=None, labels=('X', 'Y', 'Z'), length=1, style='arrow',
-           origindot=None, projection='ortho', wtl=0.2, width=None, d1=0.05,
+           originsize=20, origincolor=None, projection='ortho', wtl=0.2, width=None, d1=0.05,
            d2=1.15, anaglyph=None, **kwargs):
     """
     Plot a 3D coordinate frame
@@ -1851,19 +1852,21 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
                     If dims is [min, max] those limits are applied to the x-, y- and z-axes.
     :type dims: array_like(6) or array_like(2)
     :param color: color of the lines defining the frame
-    :type color: str
-    :param textcolor: color of text labels for the frame, default color of lines above
+    :type color: str or list(3) of str
+    :param textcolor: color of text labels for the frame, default ``color``
     :type textcolor: str
     :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
     :type frame: str
     :param labels: labels for the axes, defaults to X, Y and Z
     :type labels: 3-tuple of strings
     :param length: length of coordinate frame axes, default 1
-    :type length: float
-    :param style: axis style: 'arrow' [default], 'line', 'rgb' (Rviz style)
+    :type length: float or array_like(3)
+    :param style: axis style: 'arrow' [default], 'line', 'rviz' (Rviz style)
     :type style: str
-    :param origindot: size of dot to draw at the origin (default 20)
-    :type origindot: int
+    :param originsize: size of dot to draw at the origin, 0 for no dot (default 20)
+    :type originsize: int
+    :param origincolor: color of dot to draw at the origin, default is ``color``
+    :type origincolor: str
     :param anaglyph: 3D anaglyph display, left-right lens colors eg. ``'rc'``
     for red-cyan glasses.  To set the disparity (default 0.1) provide second
     argument in a tuple, eg. ``('rc', 0.2)``.  Bigger disparity exagerates the
@@ -1906,7 +1909,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
     .. note:: The origin is normally indicated with a marker of the same color
         as the frame.  The default size is 20. This can be disabled by setting
-        its size to zero by ``origindot=0``.  For ``'rgb'`` style the default is 0
+        its size to zero by ``originsize=0``.  For ``'rgb'`` style the default is 0
         but it can be set explicitly, and the color is as per the ``color``
         option.
 
@@ -1973,18 +1976,19 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
         return
 
-    if style == 'rgb':
-        if origindot is None:
-            origindot = 0
-        colors = ('red', 'green', 'blue')
-        color = 'k'
-        width = 8
+    if style == 'rviz':
+        if originsize is None:
+            originsize = 0
+        color = 'rgb'
+        if width is None:
+            width = 8
         style = 'line'
-    else:
-        colors = (color,) * 3
-        width = 1
-        if origindot is None:
-            origindot = 20
+    
+    if isinstance(color, str):
+        if color == 'rgb':
+            color = ('red', 'green', 'blue')
+        else:
+            color = (color,) * 3
 
     # check input types
     if isrot(T, check=True):
@@ -1996,7 +2000,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         for Tk in T:
             trplot(Tk, axes=ax, block=block, dims=dims, color=color, frame=frame,
                 textcolor=textcolor, labels=labels, length=length, style=style,
-                projection=projection, wtl=wtl, width=width, d1=d1,
+                projection=projection, originsize=originsize, origincolor=origincolor, wtl=wtl, width=width, d1=d1,
                 d2=d2, anaglyph=anaglyph, **kwargs)
         return
 
@@ -2008,37 +2012,43 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         ax.set_zlim(dims[4:6])
 
     # create unit vectors in homogeneous form
+    if not isinstance(length, Iterable):
+        length = (length,) * 3
+
     o = T @ np.array([0, 0, 0, 1])
-    x = T @ np.array([length, 0, 0, 1])
-    y = T @ np.array([0, length, 0, 1])
-    z = T @ np.array([0, 0, length, 1])
+    x = T @ np.array([length[0], 0, 0, 1])
+    y = T @ np.array([0, length[1], 0, 1])
+    z = T @ np.array([0, 0, length[2], 1])
 
     # draw the axes
 
     if style == 'arrow':
-        ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-        ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
-        ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color, edgecolor=color)
+        ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color[0], edgecolor=color[1])
+        ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color[1], edgecolor=color[1])
+        ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color[2], edgecolor=color[2])
         
         # plot some points
         #  invisible point at the end of each arrow to allow auto-scaling to work
         ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], 
             s=[0, 0, 0, 0])
     elif style == 'line':
-        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=colors[0], linewidth=width)
-        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=colors[1], linewidth=width)
-        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=colors[2], linewidth=width)
-
-    if origindot > 0:
-        ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=color, s=origindot)
+        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color[0], linewidth=width)
+        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color[1], linewidth=width)
+        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color[2], linewidth=width)
 
     # label the frame
     if frame:
-        if textcolor is not None:
-            color = textcolor
+        if textcolor is None:
+            textcolor = color[0]
+        else:
+            textcolor = 'blue'
+        if origincolor is None:
+            origincolor = color[0]
+        else:
+            origincolor = 'black'
 
         o1 = T @ np.array([-d1, -d1, -d1, 1])
-        ax.text(o1[0], o1[1], o1[2], r'$\{' + frame + r'\}$', color=color, verticalalignment='top', horizontalalignment='center')
+        ax.text(o1[0], o1[1], o1[2], r'$\{' + frame + r'\}$', color=textcolor, verticalalignment='top', horizontalalignment='center')
 
         # add the labels to each axis
 
@@ -2046,9 +2056,12 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         y = (y - o) * d2 + o
         z = (z - o) * d2 + o
 
-        ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
-        ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
-        ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=color, horizontalalignment='center', verticalalignment='center')
+        ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=textcolor, horizontalalignment='center', verticalalignment='center')
+        ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=textcolor, horizontalalignment='center', verticalalignment='center')
+        ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=textcolor, horizontalalignment='center', verticalalignment='center')
+
+    if originsize > 0:
+        ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=origincolor, s=originsize)
 
     if block:
         # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
@@ -2114,6 +2127,7 @@ def tranimate(T, **kwargs):
     plt.show(block=block)
 
 if __name__ == '__main__':  # pragma: no cover
+
     import pathlib
 
     exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_transforms3d.py").read())  # pylint: disable=exec-used

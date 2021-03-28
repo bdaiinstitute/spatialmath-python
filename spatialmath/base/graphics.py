@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from numpy.core.defchararray import center
-from spatialmath.base.vectors import getvector
+from spatialmath import base
 import numpy as np
 import scipy as sp
 
@@ -161,9 +161,13 @@ def plot_point(pos, marker='bs', text=None, ax=None, color=None, textargs=None, 
 
     """
     
-    if isinstance(pos, np.ndarray) and pos.shape[0] == 2:
-        x = pos[0,:]
-        y = pos[1,:]
+    if isinstance(pos, np.ndarray):
+        if pos.ndim == 1:
+            x = pos[0]
+            y = pos[1]
+        elif pos.ndim == 2 and pos.shape[0] == 2:
+            x = pos[0,:]
+            y = pos[1,:]
     elif isinstance(pos, (tuple, list)):
         # [x, y]
         # [(x,y), (x,y), ...]
@@ -199,7 +203,7 @@ def plot_point(pos, marker='bs', text=None, ax=None, color=None, textargs=None, 
             for i, xy in enumerate(zip(x, y)):
                 plt.text(xy[0], xy[1], ' ' + text.format(i), color=color, **textopts)
         except:
-            plt.text(x, y, ' ' + text, horizontalalignment='left', verticalalignment='center', color=color, **textopts)
+            plt.text(x, y, ' ' + text, ha='left', va='center', color=color, **textopts)
 
 
 
@@ -408,7 +412,7 @@ def isnotebook():
     except NameError:
         return False      # Probably standard Python interpreter
 
-def plotvol2(dim, ax=None, equal=False):
+def plotvol2(dim, ax=None, equal=True, grid=False):
     """
     Create 2D plot area
 
@@ -436,9 +440,11 @@ def plotvol2(dim, ax=None, equal=False):
 
     if equal:
         ax.set_aspect('equal')
+    if grid:
+        ax.grid(True)
     return ax
 
-def plotvol3(dim, ax=None, equal=False, projection='ortho'):
+def plotvol3(dim, ax=None, equal=True, grid=False, projection='ortho'):
     """
     Create 3D plot volume
 
@@ -468,7 +474,9 @@ def plotvol3(dim, ax=None, equal=False, projection='ortho'):
     ax.set_zlabel('Z')
 
     if equal:
-        ax.set_aspect('equal')
+        ax.set_box_aspect((1,) * 3)
+    if grid:
+        ax.grid(True)
     return ax
 
 
@@ -496,7 +504,7 @@ def expand_dims(dim=None, nd=2):
         * [A,B] -> [A, B, A, B, A, B]
         * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
     """
-    dim = getvector(dim)
+    dim = base.getvector(dim)
 
     if nd == 2:
         if len(dim) == 1:
