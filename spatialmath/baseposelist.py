@@ -12,7 +12,7 @@ import copy
 
 _numtypes = (int, np.int64, float, np.float64)
 
-class SMUserList(UserList, ABC):
+class BasePoseList(UserList, ABC):
     """
     List properties for spatial math classes
 
@@ -85,7 +85,7 @@ class SMUserList(UserList, ABC):
     @classmethod
     def Empty(cls):
         """
-        Construct an empty instance (SMUserList superclass method)
+        Construct an empty instance (BasePoseList superclass method)
         
         :return: pose instance with zero values
 
@@ -104,7 +104,7 @@ class SMUserList(UserList, ABC):
     @classmethod
     def Alloc(cls, n=1):
         """
-        Construct an instance with N default values (SMUserList superclass method)
+        Construct an instance with N default values (BasePoseList superclass method)
 
         :param n: Number of values, defaults to 1
         :type n: int, optional
@@ -137,9 +137,9 @@ class SMUserList(UserList, ABC):
 
     def arghandler(self, arg, convertfrom=(), check=True):
         """
-        Standard constructor support (SMUserList superclass method)
+        Standard constructor support (BasePoseList superclass method)
 
-        :param self: the instance to be initialized :type self: SMUserList
+        :param self: the instance to be initialized :type self: BasePoseList
         instance :param arg: initial value :param convertfrom: list of classes
         to accept and convert from :type: tuple of typles :param check: check
         value is valid, defaults to True :type check: bool :raises ValueError:
@@ -240,7 +240,7 @@ class SMUserList(UserList, ABC):
     @property
     def A(self):
         """
-        Array value of an instance (SMUserList superclass method)
+        Array value of an instance (BasePoseList superclass method)
 
         :return: NumPy array value of this instance
         :rtype: ndarray
@@ -261,7 +261,7 @@ class SMUserList(UserList, ABC):
 
     def __getitem__(self, i):
         """
-        Access value of an instance (SMUserList superclass method)
+        Access value of an instance (BasePoseList superclass method)
 
         :param i: index of element to return
         :type i: int
@@ -298,11 +298,11 @@ class SMUserList(UserList, ABC):
                 end = i.stop
             return self.__class__([self.data[k] for k in range(i.start or 0, end, i.step or 1)])
         else:
-            return self.__class__(self.data[i])
+            return self.__class__(self.data[i], check=False)
         
     def __setitem__(self, i, value):
         """
-        Assign a value to an instance (SMUserList superclass method)
+        Assign a value to an instance (BasePoseList superclass method)
         
         :param i: index of element to assign to
         :type i: int
@@ -342,7 +342,7 @@ class SMUserList(UserList, ABC):
 
     def append(self, item):
         """
-        Append a value to an instance (SMUserList superclass method)
+        Append a value to an instance (BasePoseList superclass method)
         
         :param x: the value to append
         :type x: Quaternion or UnitQuaternion instance
@@ -371,7 +371,7 @@ class SMUserList(UserList, ABC):
 
     def extend(self, iterable):
         """
-        Extend sequence of values in an instance (SMUserList superclass method)
+        Extend sequence of values in an instance (BasePoseList superclass method)
         
         :param x: the value to extend
         :type x: instance of same type
@@ -397,7 +397,7 @@ class SMUserList(UserList, ABC):
 
     def insert(self, i, item):
         """
-        Insert a value to an instance (SMUserList superclass method)
+        Insert a value to an instance (BasePoseList superclass method)
 
         :param i: element to insert value before
         :type i: int
@@ -432,7 +432,7 @@ class SMUserList(UserList, ABC):
         
     def pop(self, i=-1):
         """
-        Pop value from an instance (SMUserList superclass method)
+        Pop value from an instance (BasePoseList superclass method)
 
         :param i: item in the list to pop, default is last
         :type i: int
@@ -464,9 +464,9 @@ class SMUserList(UserList, ABC):
         Perform binary operation
         
         :param left: left operand
-        :type left: SMUserList subclass
+        :type left: BasePoseList subclass
         :param right: right operand
-        :type right: SMUserList subclass, scalar or array
+        :type right: BasePoseList subclass, scalar or array
         :param op: binary operation
         :type op: callable
         :param op2: binary operation
@@ -479,7 +479,7 @@ class SMUserList(UserList, ABC):
 
         The is a helper method for implementing binary operation with overloaded
         operators such as ``X * Y`` where ``X`` and ``Y`` are both subclasses
-        of ``SMUserList``.  Each operand has a list of one or more
+        of ``BasePoseList``.  Each operand has a list of one or more
         values and this methods computes a list of result values according to:
 
         =========   ==========   ====  ===================================
@@ -499,7 +499,7 @@ class SMUserList(UserList, ABC):
         The result is always a list, except for the first case above and
         ``list1`` is ``False``.
 
-        If the right operand is not a ``SMUserList`` subclass, but is a numeric
+        If the right operand is not a ``BasePoseList`` subclass, but is a numeric
         scalar or array then then ``op2`` is invoked
 
         For example::
@@ -589,7 +589,7 @@ class SMUserList(UserList, ABC):
         Perform unary operation
         
         :param self: operand
-        :type self: SMUserList subclass
+        :type self: BasePoseList subclass
         :param op: unnary operation
         :type op: callable
         :param matrix: return array instead of list, default False
