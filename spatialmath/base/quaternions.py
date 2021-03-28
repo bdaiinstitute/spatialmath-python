@@ -504,7 +504,7 @@ def r2q(R, check=False, tol=100):
     :type check: bool
     :param tol: tolerance in units of eps
     :type tol: float
-    :return: unit-quaternion
+    :return: unit-quaternion as Euler parameters
     :rtype: ndarray(4)
     :raises ValueError: for non SO(3) argument
 
@@ -519,49 +519,117 @@ def r2q(R, check=False, tol=100):
 
     .. warning:: There is no check that the passed matrix is a valid rotation matrix.
 
-    .. note:: Scalar part is always positive.
+    .. note:: 
+        - Scalar part is always positive
+        - implements Cayley's method
+
+    :reference: 
+        - Sarabandi, S., and Thomas, F. (March 1, 2019). 
+          "A Survey on the Computation of Quaternions From Rotation Matrices." 
+          ASME. J. Mechanisms Robotics. April 2019; 11(2): 021006. 
+          `doi.org/10.1115/1.4041889 <https://doi.org/10.1115/1.4041889>`_
 
     :seealso: :func:`q2r`
     """
     if not base.isrot(R, check=check, tol=tol):
         raise ValueError("Argument must be a valid SO(3) matrix")
 
-    qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0  # scalar part
-    kx = R[2, 1] - R[1, 2]  # Oz - Ay
-    ky = R[0, 2] - R[2, 0]  # Ax - Nz
-    kz = R[1, 0] - R[0, 1]  # Ny - Ox
+    t12p = (R[0,1] + R[1,0]) ** 2
+    t13p = (R[0,2] + R[2,0]) ** 2
+    t23p = (R[1,2] + R[2,1]) ** 2
 
-    if (R[0, 0] >= R[1, 1]) and (R[0, 0] >= R[2, 2]):
-        kx1 = R[0, 0] - R[1, 1] - R[2, 2] + 1  # Nx - Oy - Az + 1
-        ky1 = R[1, 0] + R[0, 1]  # Ny + Ox
-        kz1 = R[2, 0] + R[0, 2]  # Nz + Ax
-        add = (kx >= 0)
-    elif R[1, 1] >= R[2, 2]:
-        kx1 = R[1, 0] + R[0, 1]  # Ny + Ox
-        ky1 = R[1, 1] - R[0, 0] - R[2, 2] + 1  # Oy - Nx - Az + 1
-        kz1 = R[2, 1] + R[1, 2]  # Oz + Ay
-        add = (ky >= 0)
-    else:
-        kx1 = R[2, 0] + R[0, 2]  # Nz + Ax
-        ky1 = R[2, 1] + R[1, 2]  # Oz + Ay
-        kz1 = R[2, 2] - R[0, 0] - R[1, 1] + 1  # Az - Nx - Oy + 1
-        add = (kz >= 0)
+    t12m = (R[0,1] - R[1,0]) ** 2
+    t13m = (R[0,2] - R[2,0]) ** 2
+    t23m = (R[1,2] - R[2,1]) ** 2
 
-    if add:
-        kx = kx + kx1
-        ky = ky + ky1
-        kz = kz + kz1
-    else:
-        kx = kx - kx1
-        ky = ky - ky1
-        kz = kz - kz1
+    d1 = ( R[0,0] + R[1,1] + R[2,2] + 1) ** 2
+    d2 = ( R[0,0] - R[1,1] - R[2,2] + 1) ** 2
+    d3 = (-R[0,0] + R[1,1] - R[2,2] + 1) ** 2
+    d4 = (-R[0,0] - R[1,1] + R[2,2] + 1) ** 2
 
-    kv = np.r_[kx, ky, kz]
-    nm = np.linalg.norm(kv)
-    if abs(nm) < tol * _eps:
-        return eye()
-    else:
-        return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
+    e0 = math.sqrt(  d1 + t23m + t13m + t12m) / 4.0
+    e1 = math.sqrt(t23m +   d2 + t12p + t13p) / 4.0
+    e2 = math.sqrt(t13m + t12p +   d3 + t23p) / 4.0
+    e3 = math.sqrt(t12m + t13p + t23p +   d4) / 4.0
+
+    # transfer sign from rotation element differences
+    if R[2,1] < R[1,2]:
+        e1 = -e1
+    if R[0,2] < R[2,0]:
+        e2 = -e2
+    if R[1,0] < R[0,1]:
+        e3 = -e3
+    
+    return np.r_[e0, e1, e2, e3]
+
+# def r2q_old(R, check=False, tol=100):
+#     """
+#     Convert SO(3) rotation matrix to unit-quaternion
+
+#     :arg R: SO(3) rotation matrix
+#     :type R: ndarray(3,3)
+#     :param check: check validity of rotation matrix, default False
+#     :type check: bool
+#     :param tol: tolerance in units of eps
+#     :type tol: float
+#     :return: unit-quaternion
+#     :rtype: ndarray(4)
+#     :raises ValueError: for non SO(3) argument
+
+#     Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.
+
+#     .. runblock:: pycon
+
+#         >>> from spatialmath.base import r2q, qprint, rotx
+#         >>> R = rotx(90, 'deg') # rotation of 90deg about x-axis
+#         >>> print(R)
+#         >>> qprint(r2q(R))
+
+#     .. warning:: There is no check that the passed matrix is a valid rotation matrix.
+
+#     .. note:: Scalar part is always positive.
+
+#     :seealso: :func:`q2r`
+#     """
+#     if not base.isrot(R, check=check, tol=tol):
+#         raise ValueError("Argument must be a valid SO(3) matrix")
+
+#     qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0  # scalar part
+#     kx = R[2, 1] - R[1, 2]  # Oz - Ay
+#     ky = R[0, 2] - R[2, 0]  # Ax - Nz
+#     kz = R[1, 0] - R[0, 1]  # Ny - Ox
+
+#     if (R[0, 0] >= R[1, 1]) and (R[0, 0] >= R[2, 2]):
+#         kx1 = R[0, 0] - R[1, 1] - R[2, 2] + 1  # Nx - Oy - Az + 1
+#         ky1 = R[1, 0] + R[0, 1]  # Ny + Ox
+#         kz1 = R[2, 0] + R[0, 2]  # Nz + Ax
+#         add = (kx >= 0)
+#     elif R[1, 1] >= R[2, 2]:
+#         kx1 = R[1, 0] + R[0, 1]  # Ny + Ox
+#         ky1 = R[1, 1] - R[0, 0] - R[2, 2] + 1  # Oy - Nx - Az + 1
+#         kz1 = R[2, 1] + R[1, 2]  # Oz + Ay
+#         add = (ky >= 0)
+#     else:
+#         kx1 = R[2, 0] + R[0, 2]  # Nz + Ax
+#         ky1 = R[2, 1] + R[1, 2]  # Oz + Ay
+#         kz1 = R[2, 2] - R[0, 0] - R[1, 1] + 1  # Az - Nx - Oy + 1
+#         add = (kz >= 0)
+
+#     if add:
+#         kx = kx + kx1
+#         ky = ky + ky1
+#         kz = kz + kz1
+#     else:
+#         kx = kx - kx1
+#         ky = ky - ky1
+#         kz = kz - kz1
+
+#     kv = np.r_[kx, ky, kz]
+#     nm = np.linalg.norm(kv)
+#     if abs(nm) < tol * _eps:
+#         return eye()
+#     else:
+#         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
 
 
 def slerp(q0, q1, s, shortest=False):
