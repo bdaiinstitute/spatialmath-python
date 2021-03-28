@@ -940,20 +940,19 @@ class UnitQuaternion(Quaternion):
           list, tuple, or ndarray(3). If ``norm`` is True the resulting 
           quaternion is normalized.
         - ``UnitQuaternion(v)`` constructs a unit quaternion with specified
-          elements from ``v`` which is a 4-vector given as a list, tuple, or ndarray(4)
+          elements from ``v`` which is a 4-vector given as a list, tuple, or ndarray(4). Also known
+          as the Euler parameters.
+        - ``UnitQuaternion(M)`` construct a new unit quaternion with ``N`` values where ``Q`` is a Nx4 NumPy array
+          whose rows are the quaternion in vector form
         - ``UnitQuaternion(R)`` constructs a unit quaternion from an SO(3)
           rotation matrix given as a ndarray(3,3). If ``check`` is True
           test the rotation submatrix for orthogonality.
-        - ``UnitQuaternion(T)`` constructs a unit quaternion from an SE(3)
-          homogeneous transformation matrix given as a ndarray(4,4). If ``check`` is True
-          test the matrix for orthogonality.
         - ``UnitQuaternion(X)`` constructs a unit quaternion from the rotational
           part of ``X`` which is an SO3 or SE3 instance.  If len(X) > 1 then
           the resulting unit quaternion is of the same length.
         - ``UnitQuaternion([q1, q2 .. qN])`` construct a new unit quaternion with ``N`` values where each element is a 4-vector
         - ``UnitQuaternion([Q1, Q2 .. QN])`` construct a new unit quaternion with ``N`` values where each element is a UnitQuaternion instance
         - ``UnitQuaternion([X1, X2 .. XN])`` construct a new unit quaternion with ``N`` values where each element is an SO3 or SE3 instance
-        - ``UnitQuaternion(M)`` construct a new unit quaternion with ``N`` values where ``Q`` is a Nx4 NumPy array.
 
         Example:
 
@@ -972,10 +971,6 @@ class UnitQuaternion(Quaternion):
             if super().arghandler(s, check=check):
                 # create unit quaternion
                 self.data = [base.unit(q) for q in self.data]
-
-            elif isinstance(s, np.ndarray) and base.isrot(s, check=check):
-                # UnitQuaternion(R) R is 3x3 rotation matrix
-                self.data = [base.r2q(s)]
 
             elif isinstance(s, np.ndarray):
                 # passed a NumPy array, it could be:

@@ -68,7 +68,10 @@ class SO3(BasePoseMatrix):
         """
         super().__init__()
         
-        if not super().arghandler(arg, check=check):
+        if isinstance(arg, SE3):
+            self.data = [base.t2r(x) for x in arg.data]
+
+        elif not super().arghandler(arg, check=check):
             raise ValueError('bad argument to constructor')
 
     @staticmethod
@@ -689,21 +692,23 @@ class SE3(SO3):
 
         :rtype: SE3 instance
 
-        There are multiple call signatures:
+        There are multiple call signatures that return an ``SE3`` instance
+        with one or more values.
 
-        - ``SE3()`` is an ``SE3`` instance with one value  -- a 4x4 identity
-          matrix which corresponds to a null motion.
+        - ``SE3()`` null motion, value is the identity matrix.
         - ``SE3(x, y, z)`` is a pure translation of (x,y,z)
-        - ``SE3(T)`` is an ``SE3`` instance with the value ``T`` which is a 4x4
-          numpy array representing an SE(3) matrix.  If ``check`` is ``True``
-          check the matrix belongs to SE(3).
-        - ``SE3(X)`` is an ``SE3`` instance with the same value as ``X``, ie.
-          a copy.
-        - ``SE3([T1, T2, ... TN])`` is an ``SE3`` instance with ``N`` values
+        - ``SE3(T)``  where ``T`` is a 4x4 Numpy  array representing an SE(3)
+          matrix.  If ``check`` is ``True`` check the matrix belongs to SE(3).
+        - ``SE3([T1, T2, ... TN])`` has ``N`` values
           given by the elements ``Ti`` each of which is a 4x4 NumPy array
           representing an SE(3) matrix. If ``check`` is ``True`` check the
           matrix belongs to SE(3).
-        - ``SE3([X1, X2, ... XN])`` is an ``SE3`` instance with ``N`` values
+        - ``SE3(X)`` where ``X`` is:
+          -  ``SE3`` is a copy of ``X``
+          -  ``SO3`` is the rotation of ``X`` with zero translation
+          -  ``SE2`` is the z-axis rotation and x- and y-axis translation of
+             ``X``
+        - ``SE3([X1, X2, ... XN])`` has ``N`` values
           given by the elements ``Xi`` each of which is an SE3 instance.
         
         :SymPy: supported
@@ -713,6 +718,16 @@ class SE3(SO3):
 
             if super().arghandler(x, check=check):
                 return
+            elif isinstance(x, SO3):
+                self.data = [base.r2t(_x) for _x in x.data]
+            elif isinstance(x, SE2):
+                def convert(x):
+                    # convert SE(2) to SE(3)
+                    out = np.identity(4, dtype=x.dtype)
+                    out[:2,:2] = x[:2,:2]
+                    out[:2,3] = x[:2,2]
+                    return out
+                self.data = [convert(_x) for _x in x.data]
             elif base.isvector(x, 3):
                 # SE3( [x, y, z] )
                 self.data = [base.transl(x)]
@@ -896,7 +911,7 @@ class SE3(SO3):
         """
         return base.tr2jac(self.A)
 
-    def Twist3(self):
+    def twist(self):
         """
         SE(3) as twist
 
@@ -906,7 +921,7 @@ class SE3(SO3):
         Example::
 
             >>> x = SE3(1,2,3)
-            >>> x.Twist3()
+            >>> x.twist()
             Twist3([1, 2, 3, 0, 0, 0])
 
         :seealso: :func:`spatialmath.twist.Twist3`
@@ -1425,31 +1440,58 @@ class SE3(SO3):
         return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
     @classmethod
-    def SO3(cls, R, t=None, check=True):
+    def Rt(cls, R, t, check=True):
+        """
+        Create an SE(3) from rotation and translation
+
+        :param R: rotation
+        :type R: SO3 or ndarray(3,3)
+        :param t: translation
+        :type t: array_like(3)
+        :param check: check rotation validity, defaults to True
+        :type check: bool, optional
+        :raises ValueError: bad rotation matrix
+        :return: SE(3) matrix
+        :rtype: SE3 instance
+        """
         if isinstance(R, SO3):
             R = R.A
         elif base.isrot(R, check=check):
             pass
         else:
             raise ValueError('expecting SO3 or rotation matrix')
-        if t is None:
-            return cls(base.r2t(R))
-        else:
-            return cls(base.rt2tr(R, t))
+
+        return cls(base.rt2tr(R, t))
+
+    # @classmethod
+    # def SO3(cls, R, t=None, check=True):
+    #     if isinstance(R, SO3):
+    #         R = R.A
+    #     elif base.isrot(R, check=check):
+    #         pass
+    #     else:
+    #         raise ValueError('expecting SO3 or rotation matrix')
+    #     if t is None:
+    #         return cls(base.r2t(R))
+    #     else:
+    #         return cls(base.rt2tr(R, t))
 
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
 
-    a = SO3.RPY([.1, .2, .3])
-    print(a)
-    a = SO3.RPY(.1, .2, .3)
-    print(a)
+    a = SE3(1,2,3)
+    b = SO3(a)
+    print(b)
 
-    SE3._bgcolor = 'yellow'
-    # SE3._format = '{:< 6.2f}'
-    SE3._supress_small = False
-    a = SE3.Rx(np.pi/2)
-    print(a)
+    a = SO3.RPY([.1, .2, .3])
+    b = SE3(a)
+    print(b)
+
+    from spatialmath import SE2
+    a = SE2(1,2,.4)
+    b = SE3(a)
+    print(b)
+
 
     exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose3d.py").read())  # pylint: disable=exec-used

@@ -74,7 +74,10 @@ class SO2(BasePoseMatrix):
         """
         super().__init__()
         
-        if  super().arghandler(arg, check=check):
+        if isinstance(arg, SE2):
+            self.data = [tr.t2r(x) for x in arg.data]
+
+        elif  super().arghandler(arg, check=check):
             return
 
         elif argcheck.isscalar(arg):
@@ -287,6 +290,9 @@ class SE2(SO2):
 
             if super().arghandler(x, check=check):
                 return
+
+            if isinstance(x, SO2):
+                self.data = [tr.r2t(_x) for _x in x.data]
 
             elif argcheck.isscalar(x):
                 self.data = [tr.trot2(x, unit=unit)]
