@@ -20,11 +20,11 @@ import numpy as np
 from typing import Any, Type
 from spatialmath import base
 from spatialmath.pose3d import SO3, SE3
-from spatialmath.smuserlist import SMUserList
+from spatialmath.baseposelist import BasePoseList
 
 _eps = np.finfo(np.float64).eps
 
-class Quaternion(SMUserList):
+class Quaternion(BasePoseList):
     r"""
     Quaternion class
 

@@ -5,7 +5,7 @@ import unittest
 
 from spatialmath import *
 from spatialmath.base import *
-from spatialmath.super_pose import SMPose
+from spatialmath.baseposematrix import BasePoseMatrix
 
 import numpy as np
 from math import pi, sin, cos
@@ -14,11 +14,11 @@ from math import pi, sin, cos
 def qcompare(x, y):
     if isinstance(x, Quaternion):
         x = x.vec
-    elif isinstance(x, SMPose):
+    elif isinstance(x, BasePoseMatrix):
         x = x.A
     if isinstance(y, Quaternion):
         y = y.vec
-    elif isinstance(y, SMPose):
+    elif isinstance(y, BasePoseMatrix):
         y = y.A
     nt.assert_array_almost_equal(x, y)
 
@@ -27,7 +27,7 @@ def qcompare(x, y):
 
 class TestUnitQuaternion(unittest.TestCase):
 
-    def test_constructor(self):
+    def test_constructor_variants(self):
         nt.assert_array_almost_equal(UnitQuaternion().vec, np.r_[1, 0, 0, 0])
 
         nt.assert_array_almost_equal(UnitQuaternion.Rx(90, 'deg').vec, np.r_[1, 1, 0, 0] / math.sqrt(2))
@@ -36,6 +36,7 @@ class TestUnitQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(UnitQuaternion.Ry(-90, 'deg').vec, np.r_[1, 0, -1, 0] / math.sqrt(2))
         nt.assert_array_almost_equal(UnitQuaternion.Rz(90, 'deg').vec, np.r_[1, 0, 0, 1] / math.sqrt(2))
         nt.assert_array_almost_equal(UnitQuaternion.Rz(-90, 'deg').vec, np.r_[1, 0, 0, -1] / math.sqrt(2))
+
 
     def test_constructor(self):
 
@@ -92,7 +93,9 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(SO3.Rz(pi)), np.r_[0, 0, 0, 1])
 
         # vector of SO3
-        qcompare(UnitQuaternion([SO3.Rx(pi / 2), SO3.Ry(pi / 2), SE3.Rz(pi / 2)]), np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
+        q = UnitQuaternion([SO3.Rx(pi / 2), SO3.Ry(pi / 2), SO3.Rz(pi / 2)])
+        self.assertEqual(len(q), 3)
+        qcompare(q, np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
 
         # from SE3
 
@@ -111,7 +114,21 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(SE3.Rz(pi)), np.r_[0, 0, 0, 1])
 
         # vector of SE3
-        qcompare(UnitQuaternion([SE3.Rx(pi / 2), SE3.Ry(pi / 2), SE3.Rz(pi / 2)]), np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
+        q = UnitQuaternion([SE3.Rx(pi / 2), SE3.Ry(pi / 2), SE3.Rz(pi / 2)])
+        self.assertEqual(len(q), 3)
+        qcompare(q, np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
+
+
+        # from S
+        M = np.identity(4)
+        q = UnitQuaternion(M)
+        self.assertEqual(len(q), 4)
+
+        qcompare(q[0], np.r_[1, 0, 0, 0])
+        qcompare(q[1], np.r_[0, 1, 0, 0])
+        qcompare(q[2], np.r_[0, 0, 1, 0])
+        qcompare(q[3], np.r_[0, 0, 0, 1])
+
 
         # # vectorised forms of R, T
         # R = []; T = []

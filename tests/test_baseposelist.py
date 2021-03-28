@@ -1,10 +1,10 @@
 import unittest
 import numpy as np
-from spatialmath.smuserlist import SMUserList
+from spatialmath.baseposelist import BasePoseList
 
 # create a subclass to test with, its value is a scalar
-class X(SMUserList):
-    def __init__(self, value=0):
+class X(BasePoseList):
+    def __init__(self, value=0, check=False):
         super().__init__()
         self.data = [value]
         
@@ -20,7 +20,7 @@ class X(SMUserList):
     def isvalid(x):
         return True
 
-class TestSMUserList(unittest.TestCase):
+class TestBasePoseList(unittest.TestCase):
 
     def test_constructor(self):
 

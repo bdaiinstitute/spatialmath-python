@@ -7,20 +7,20 @@ we will assume that the primitives rotx,trotx, etc. all work
 """
 from math import pi
 from spatialmath.twist import *
-from spatialmath import super_pose # as sp
+# from spatialmath import super_pose # as sp
 from spatialmath.base import *
 from spatialmath.base import argcheck
-from spatialmath.super_pose import SMPose
-from spatialmath.twist import SMTwist
+from spatialmath.baseposematrix import BasePoseMatrix
+from spatialmath.twist import BaseTwist
 
 def array_compare(x, y):
-    if isinstance(x, SMPose):
+    if isinstance(x, BasePoseMatrix):
         x = x.A
-    if isinstance(y, SMPose):
+    if isinstance(y, BasePoseMatrix):
         y = y.A
-    if isinstance(x, SMTwist):
+    if isinstance(x, BaseTwist):
         x = x.S
-    if isinstance(y, SMTwist):
+    if isinstance(y, BaseTwist):
         y = y.S
     nt.assert_array_almost_equal(x, y)
 

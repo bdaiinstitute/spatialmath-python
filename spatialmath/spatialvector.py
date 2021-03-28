@@ -16,12 +16,12 @@ A set of cooperating classes to support Featherstone's spatial vector formalism
 
 from abc import abstractmethod
 import numpy as np
-from spatialmath.smuserlist import SMUserList
+from spatialmath.baseposelist import BasePoseList
 from spatialmath import base
 from spatialmath.pose3d import SE3
 from spatialmath.twist import Twist3
 
-class SpatialVector(SMUserList):
+class SpatialVector(BasePoseList):
     """
     Spatial 6-vector abstract superclass
 
@@ -467,7 +467,7 @@ class SpatialMomentum(SpatialF6):
 
 # ------------------------------------------------------------------------- #
 
-class SpatialInertia(SMUserList):
+class SpatialInertia(BasePoseList):
     """
     Spatial inertia class
 

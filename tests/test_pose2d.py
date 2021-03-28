@@ -11,17 +11,17 @@ from spatialmath.pose2d import *
 from spatialmath.base import *
 import spatialmath.base.argcheck as argcheck
 import spatialmath as sm
-from spatialmath.super_pose import SMPose
-from spatialmath.twist import SMTwist
+from spatialmath.baseposematrix import BasePoseMatrix
+from spatialmath.twist import BaseTwist
 
 def array_compare(x, y):
-    if isinstance(x, SMPose):
+    if isinstance(x, BasePoseMatrix):
         x = x.A
-    if isinstance(y, SMPose):
+    if isinstance(y, BasePoseMatrix):
         y = y.A
-    if isinstance(x, SMTwist):
+    if isinstance(x, BaseTwist):
         x = x.S
-    if isinstance(y, SMTwist):
+    if isinstance(y, BaseTwist):
         y = y.S
     nt.assert_array_almost_equal(x, y)
 

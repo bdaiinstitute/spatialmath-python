@@ -8,9 +8,9 @@ from spatialmath.pose3d import SO3, SE3
 from spatialmath.pose2d import SE2
 from spatialmath.geom3d import Plucker
 import spatialmath.base as base
-from spatialmath.smuserlist import SMUserList
+from spatialmath.baseposelist import BasePoseList
 
-class SMTwist(SMUserList):
+class BaseTwist(BasePoseList):
     """
     Superclass for 3D and 2D twist objects
 
@@ -303,7 +303,7 @@ class SMTwist(SMUserList):
 # ======================================================================== #
 
 
-class Twist3(SMTwist):
+class Twist3(BaseTwist):
     r"""
     3D twist class
 
@@ -1072,7 +1072,7 @@ class Twist3(SMTwist):
 
 # ======================================================================== #
 
-class Twist2(SMTwist):
+class Twist2(BaseTwist):
 
     def __init__(self, arg=None, w=None, check=True):
         r"""

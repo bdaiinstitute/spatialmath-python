@@ -25,13 +25,13 @@ import numpy as np
 
 from spatialmath.base import argcheck
 from spatialmath import base as tr
-from spatialmath.super_pose import SMPose
+from spatialmath.baseposematrix import BasePoseMatrix
 import spatialmath.pose3d as p3
 
 # ============================== SO2 =====================================#
 
 
-class SO2(SMPose):
+class SO2(BasePoseMatrix):
     """
     SO(2) matrix class
 

@@ -4,7 +4,7 @@
 
 import numpy as np
 from spatialmath.base import base
-from spatialmath.smuserlist import SMUserList
+from spatialmath.baseposelist import BasePoseList
 from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
@@ -28,7 +28,7 @@ except ImportError:
     _ANSIMatrix = False
 
 
-class SMPose(SMUserList):
+class BasePoseMatrix(BasePoseList):
     """
     Superclass for SO(N) and SE(N) objects
 
@@ -117,7 +117,7 @@ class SMPose(SMUserList):
         ``UserList`` capabilities.
         """
 
-        pose = super(SMPose, cls).__new__(cls)  # create a new instance
+        pose = super(BasePoseMatrix, cls).__new__(cls)  # create a new instance
         super().__init__(pose)  # initialize UserList
         return pose
 

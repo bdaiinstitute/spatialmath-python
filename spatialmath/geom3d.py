@@ -8,7 +8,7 @@ from collections import namedtuple
 import matplotlib.pyplot as plt
 import spatialmath.base as base
 from spatialmath import SE3
-from spatialmath.smuserlist import SMUserList
+from spatialmath.baseposelist import BasePoseList
 
 _eps = np.finfo(np.float64).eps
 
@@ -126,7 +126,7 @@ class Plane:
 
 # ======================================================================== #
 
-class Plucker(SMUserList):
+class Plucker(BasePoseList):
     """
     Plucker coordinate class
     
