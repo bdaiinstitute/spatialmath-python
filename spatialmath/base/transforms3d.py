@@ -17,6 +17,7 @@ import sys
 import math
 from math import sin, cos
 import numpy as np
+import scipy as sp
 from spatialmath import base
 from collections.abc import Iterable
 
@@ -1526,16 +1527,12 @@ def tr2jac(T):
     R = base.t2r(T)
     return np.block([[R, Z], [Z, R]])
 
-def eul2jac(*angles):
+def eul2jac(angles):
     """
     Euler angle rate Jacobian
 
-    :param phi: Z-axis rotation
-    :type phi: float
-    :param theta: Y-axis rotation
-    :type theta: float
-    :param psi: Z-axis rotation
-    :type psi: float
+    :param angles: Euler angles (φ, θ, ψ)
+    :type angles: array_like(3)
     :return: Jacobian matrix
     :rtype: ndarray(3,3)
 
@@ -1561,7 +1558,7 @@ def eul2jac(*angles):
 
     :SymPy: supported
 
-    :seealso: :func:`rpy2jac`, :func:`eul2r`
+    :seealso: :func:`rpy2jac`, :func:`exp2jac`, :func:`rot2jac`
     """
 
     if len(angles) == 1:
@@ -1582,25 +1579,19 @@ def eul2jac(*angles):
         ])
 
 
-def rpy2jac(*angles, order='zyx'):
+def rpy2jac(angles, order='zyx'):
     """
     Jacobian from RPY angle rates to angular velocity
 
-    :param order: [description], defaults to 'zyx'
+    :param angles: roll-pitch-yaw angles (⍺, β, γ)
+    :param order: angle sequence, defaults to 'zyx'
     :type order: str, optional
-
-    :param roll: roll angle
-    :type roll: float
-    :param pitch: pitch angle
-    :type pitch: float
-    :param yaw: yaw angle
-    :type yaw: float
     :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
     :type order: str
     :return: Jacobian matrix
     :rtype: ndarray(3,3)
 
-    - ``rpy2r(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
+    - ``rpy2jac(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
       rates to angular velocity at the operating point (⍺, β, γ).
       These correspond to successive rotations about the axes specified by
       ``order``:
@@ -1615,7 +1606,7 @@ def rpy2jac(*angles, order='zyx'):
           then by ⍺ about the new z-axis. Convention for a camera with z-axis
           parallel to the optic axis and x-axis parallel to the pixel rows.
 
-    - ``rpy2r(𝚪)`` as above but the roll, pitch, yaw angles are taken
+    - ``rpy2jac(𝚪)`` as above but the roll, pitch, yaw angles are taken
       from ``𝚪`` which is a 3-vector with values (⍺, β, γ).
 
     .. runblock:: pycon
@@ -1632,11 +1623,8 @@ def rpy2jac(*angles, order='zyx'):
 
     :SymPy: supported
 
-    :seealso: :func:`eul2jac`, :func:`rpy2r`
+    :seealso: :func:`eul2jac`, :func:`exp2jac`, :func:`rot2jac`
     """
-    
-    if len(angles) == 1:
-        angles = angles[0]
     
     pitch = angles[1]
     yaw = angles[2]
@@ -1667,7 +1655,112 @@ def rpy2jac(*angles, order='zyx'):
                 [ cp * cy, -sy, 0]
             ])
     return J
+
+def exp2jac(v, theta=None):
+    """
+    Jacobian from exponential coordinate rates to angular velocity
+
+    :param v: Exponential coordinates
+    :type v: array_like(3)
+    :return: Jacobian matrix
+    :rtype: ndarray(3,3)
+
+    - ``exp2jac(v)`` is a Jacobian matrix (3x3) that maps exponential coordinate
+      rates to angular velocity at the operating point ``v``.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> expjac(0.3 * np.r_[1, 0, 0])
+
+    .. note::
+        - Used in the creation of an analytical Jacobian.
+
+    Reference::
+
+        - A compact formula for the derivative of a 3-D rotation in 
+          exponential coordinate
+          Guillermo Gallego, Anthony Yezzi
+          https://arxiv.org/pdf/1312.0788v1.pdf
+
+    :SymPy: supported
+
+    :seealso: :func:`eul2jac`, :func:`rpy2jac`, :func:`rot2jac`
+    """
+    R = trexp(v)
+    if theta is None:
+        v, theta = base.unitvec_norm(v)
+
+    z = np.eye(3,3) - R
+    A = []
+    for i in range(3):
+        dRdvi = v[i] * base.skew(v) + base.skew(np.cross(v, z[:,i])) / theta
+        x = base.vex(dRdvi)
+        A.append(x)
+    return np.c_[A].T
+
+def rot2jac(R, representation='rpy-xyz'):
+    """
+    Velocity transform for analytical Jacobian
+
+    :param R: SO(3) rotation matrix
+    :type R: ndarray(3,3)
+    :param representation: defaults to 'rpy-xyz'
+    :type representation: str, optional
+    :return: Jacobian matrix
+    :rtype: ndarray(6,6)
+
+    Computes the transformation from spatial velocity, where rotation rate is
+    expressed as angular velocity, to analytical rates where the rotational part
+    is expressed as rate of change in some other representation
+
+    .. math::
+
+        \dvec{x} = \mat{A} \vec{\mu}
+
+    :math:`\mat{A}` is a block diagonal matrix
+
+    ==================  ========================================
+    ``representation``  Rotational representation
+    ==================  ========================================
+    ``'rpy-xyz'``       RPY angular rates in XYZ order (default)
+    ``'rpy-zyx'``       RPY angular rates in XYZ order
+    ``'eul'``           Euler angular rates in ZYZ order
+    ``'exp'``           exponential coordinate rates
+    =================   ========================================
+
+    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`
+        - This performs the inverse mapping
+        - This maps a 6-vector, the others map a 3-vector
+
+    :seealso: :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
+    """
+
+    if ishom(R):
+        R = base.t2r(R)
     
+    R = R.T
+
+    if representation == 'rpy-xyz':
+        rpy = tr2rpy(R, 'xyz')
+        A = rpy2jac(rpy, 'xyz')
+    elif representation == 'rpy-zyx':
+        rpy = tr2rpy(R, 'zyx')
+        A = rpy2jac(rpy, 'zyx')
+    elif representation == 'eul':
+        eul = tr2eul(R)
+        A = eul2jac(eul)
+    elif representation == 'exp':
+        (theta, v) = trlog(R)
+        A = exp2jac(v, theta)
+    else:
+        raise ValueError('bad representation specified')
+
+    return sp.linalg.block_diag(np.eye(3,3), np.linalg.inv(A))
+
+
+
+
 def tr2adjoint(T):
     r"""
     SE(3) adjoint matrix

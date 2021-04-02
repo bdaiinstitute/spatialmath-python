@@ -11,6 +11,7 @@ from spatialmath.base.vectors import *       # lgtm [py/polluting-import]
 from spatialmath.base.symbolic import *      # lgtm [py/polluting-import]
 from spatialmath.base.animate import *       # lgtm [py/polluting-import]
 from spatialmath.base.graphics import *       # lgtm [py/polluting-import]
+from spatialmath.base.matrix import *       # lgtm [py/polluting-import]
 
 __all__ = [
 # spatialmath.base.argcheck
@@ -93,6 +94,8 @@ __all__ = [
     'tr2jac',
     'rpy2jac',
     'eul2jac',
+    'exp2jac',
+    'rot2jac',
     'trprint',
     'trplot',
     'tranimate',
@@ -117,6 +120,7 @@ __all__ = [
 # spatialmath.base.vectors
     'colvec',
     'unitvec',
+    'unitvec_norm',
     'norm',
     'normsq',
     'isunitvec',
@@ -148,5 +152,7 @@ __all__ = [
     'plot_sphere',
     'plot_ellipsoid',
     'isnotebook',
+# spatial.base.matrix
+    'numjac',
 
  ]
