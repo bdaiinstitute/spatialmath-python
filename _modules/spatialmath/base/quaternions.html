@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.base.quaternions &mdash; Spatial Maths package 0.9.3
+  <title>spatialmath.base.quaternions &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -296,6 +296,7 @@
         <span class="k">return</span> <span class="n">q</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">q</span></div>
+    <span class="c1"># return q</span>
 
 
 <div class="viewcode-block" id="isunit"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.isunit">[docs]</a><span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
@@ -669,7 +670,7 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :param tol: tolerance in units of eps</span>
 <span class="sd">    :type tol: float</span>
-<span class="sd">    :return: unit-quaternion</span>
+<span class="sd">    :return: unit-quaternion as Euler parameters</span>
 <span class="sd">    :rtype: ndarray(4)</span>
 <span class="sd">    :raises ValueError: for non SO(3) argument</span>
 
@@ -684,49 +685,117 @@
 
 <span class="sd">    .. warning:: There is no check that the passed matrix is a valid rotation matrix.</span>
 
-<span class="sd">    .. note:: Scalar part is always positive.</span>
+<span class="sd">    .. note:: </span>
+<span class="sd">        - Scalar part is always positive</span>
+<span class="sd">        - implements Cayley&#39;s method</span>
+
+<span class="sd">    :reference: </span>
+<span class="sd">        - Sarabandi, S., and Thomas, F. (March 1, 2019). </span>
+<span class="sd">          &quot;A Survey on the Computation of Quaternions From Rotation Matrices.&quot; </span>
+<span class="sd">          ASME. J. Mechanisms Robotics. April 2019; 11(2): 021006. </span>
+<span class="sd">          `doi.org/10.1115/1.4041889 &lt;https://doi.org/10.1115/1.4041889&gt;`_</span>
 
 <span class="sd">    :seealso: :func:`q2r`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument must be a valid SO(3) matrix&quot;</span><span class="p">)</span>
 
-    <span class="n">qs</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>  <span class="c1"># scalar part</span>
-    <span class="n">kx</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz - Ay</span>
-    <span class="n">ky</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># Ax - Nz</span>
-    <span class="n">kz</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny - Ox</span>
+    <span class="n">t12p</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">t13p</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">t23p</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]):</span>
-        <span class="n">kx1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Nx - Oy - Az + 1</span>
-        <span class="n">ky1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny + Ox</span>
-        <span class="n">kz1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Nz + Ax</span>
-        <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">kx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
-        <span class="n">kx1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Ny + Ox</span>
-        <span class="n">ky1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Oy - Nx - Az + 1</span>
-        <span class="n">kz1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz + Ay</span>
-        <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">ky</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">kx1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Nz + Ax</span>
-        <span class="n">ky1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># Oz + Ay</span>
-        <span class="n">kz1</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># Az - Nx - Oy + 1</span>
-        <span class="n">add</span> <span class="o">=</span> <span class="p">(</span><span class="n">kz</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">t12m</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">t13m</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">t23m</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
 
-    <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
-        <span class="n">kx</span> <span class="o">=</span> <span class="n">kx</span> <span class="o">+</span> <span class="n">kx1</span>
-        <span class="n">ky</span> <span class="o">=</span> <span class="n">ky</span> <span class="o">+</span> <span class="n">ky1</span>
-        <span class="n">kz</span> <span class="o">=</span> <span class="n">kz</span> <span class="o">+</span> <span class="n">kz1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">kx</span> <span class="o">=</span> <span class="n">kx</span> <span class="o">-</span> <span class="n">kx1</span>
-        <span class="n">ky</span> <span class="o">=</span> <span class="n">ky</span> <span class="o">-</span> <span class="n">ky1</span>
-        <span class="n">kz</span> <span class="o">=</span> <span class="n">kz</span> <span class="o">-</span> <span class="n">kz1</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="p">(</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="p">(</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">d3</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">d4</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
 
-    <span class="n">kv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">kx</span><span class="p">,</span> <span class="n">ky</span><span class="p">,</span> <span class="n">kz</span><span class="p">]</span>
-    <span class="n">nm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">kv</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nm</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">eye</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">qs</span><span class="p">,</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">qs</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">nm</span><span class="p">)</span> <span class="o">*</span> <span class="n">kv</span><span class="p">]</span></div>
+    <span class="n">e0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>  <span class="n">d1</span> <span class="o">+</span> <span class="n">t23m</span> <span class="o">+</span> <span class="n">t13m</span> <span class="o">+</span> <span class="n">t12m</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t23m</span> <span class="o">+</span>   <span class="n">d2</span> <span class="o">+</span> <span class="n">t12p</span> <span class="o">+</span> <span class="n">t13p</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+    <span class="n">e2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t13m</span> <span class="o">+</span> <span class="n">t12p</span> <span class="o">+</span>   <span class="n">d3</span> <span class="o">+</span> <span class="n">t23p</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+    <span class="n">e3</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t12m</span> <span class="o">+</span> <span class="n">t13p</span> <span class="o">+</span> <span class="n">t23p</span> <span class="o">+</span>   <span class="n">d4</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+
+    <span class="c1"># transfer sign from rotation element differences</span>
+    <span class="k">if</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="n">e1</span> <span class="o">=</span> <span class="o">-</span><span class="n">e1</span>
+    <span class="k">if</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">e2</span> <span class="o">=</span> <span class="o">-</span><span class="n">e2</span>
+    <span class="k">if</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">e3</span> <span class="o">=</span> <span class="o">-</span><span class="n">e3</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">e0</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">e3</span><span class="p">]</span></div>
+
+<span class="c1"># def r2q_old(R, check=False, tol=100):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Convert SO(3) rotation matrix to unit-quaternion</span>
+
+<span class="c1">#     :arg R: SO(3) rotation matrix</span>
+<span class="c1">#     :type R: ndarray(3,3)</span>
+<span class="c1">#     :param check: check validity of rotation matrix, default False</span>
+<span class="c1">#     :type check: bool</span>
+<span class="c1">#     :param tol: tolerance in units of eps</span>
+<span class="c1">#     :type tol: float</span>
+<span class="c1">#     :return: unit-quaternion</span>
+<span class="c1">#     :rtype: ndarray(4)</span>
+<span class="c1">#     :raises ValueError: for non SO(3) argument</span>
+
+<span class="c1">#     Returns a unit-quaternion corresponding to the input SO(3) rotation matrix.</span>
+
+<span class="c1">#     .. runblock:: pycon</span>
+
+<span class="c1">#         &gt;&gt;&gt; from spatialmath.base import r2q, qprint, rotx</span>
+<span class="c1">#         &gt;&gt;&gt; R = rotx(90, &#39;deg&#39;) # rotation of 90deg about x-axis</span>
+<span class="c1">#         &gt;&gt;&gt; print(R)</span>
+<span class="c1">#         &gt;&gt;&gt; qprint(r2q(R))</span>
+
+<span class="c1">#     .. warning:: There is no check that the passed matrix is a valid rotation matrix.</span>
+
+<span class="c1">#     .. note:: Scalar part is always positive.</span>
+
+<span class="c1">#     :seealso: :func:`q2r`</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     if not base.isrot(R, check=check, tol=tol):</span>
+<span class="c1">#         raise ValueError(&quot;Argument must be a valid SO(3) matrix&quot;)</span>
+
+<span class="c1">#     qs = math.sqrt(max(0, np.trace(R) + 1)) / 2.0  # scalar part</span>
+<span class="c1">#     kx = R[2, 1] - R[1, 2]  # Oz - Ay</span>
+<span class="c1">#     ky = R[0, 2] - R[2, 0]  # Ax - Nz</span>
+<span class="c1">#     kz = R[1, 0] - R[0, 1]  # Ny - Ox</span>
+
+<span class="c1">#     if (R[0, 0] &gt;= R[1, 1]) and (R[0, 0] &gt;= R[2, 2]):</span>
+<span class="c1">#         kx1 = R[0, 0] - R[1, 1] - R[2, 2] + 1  # Nx - Oy - Az + 1</span>
+<span class="c1">#         ky1 = R[1, 0] + R[0, 1]  # Ny + Ox</span>
+<span class="c1">#         kz1 = R[2, 0] + R[0, 2]  # Nz + Ax</span>
+<span class="c1">#         add = (kx &gt;= 0)</span>
+<span class="c1">#     elif R[1, 1] &gt;= R[2, 2]:</span>
+<span class="c1">#         kx1 = R[1, 0] + R[0, 1]  # Ny + Ox</span>
+<span class="c1">#         ky1 = R[1, 1] - R[0, 0] - R[2, 2] + 1  # Oy - Nx - Az + 1</span>
+<span class="c1">#         kz1 = R[2, 1] + R[1, 2]  # Oz + Ay</span>
+<span class="c1">#         add = (ky &gt;= 0)</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         kx1 = R[2, 0] + R[0, 2]  # Nz + Ax</span>
+<span class="c1">#         ky1 = R[2, 1] + R[1, 2]  # Oz + Ay</span>
+<span class="c1">#         kz1 = R[2, 2] - R[0, 0] - R[1, 1] + 1  # Az - Nx - Oy + 1</span>
+<span class="c1">#         add = (kz &gt;= 0)</span>
+
+<span class="c1">#     if add:</span>
+<span class="c1">#         kx = kx + kx1</span>
+<span class="c1">#         ky = ky + ky1</span>
+<span class="c1">#         kz = kz + kz1</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         kx = kx - kx1</span>
+<span class="c1">#         ky = ky - ky1</span>
+<span class="c1">#         kz = kz - kz1</span>
+
+<span class="c1">#     kv = np.r_[kx, ky, kz]</span>
+<span class="c1">#     nm = np.linalg.norm(kv)</span>
+<span class="c1">#     if abs(nm) &lt; tol * _eps:</span>
+<span class="c1">#         return eye()</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]</span>
 
 
 <div class="viewcode-block" id="slerp"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.slerp">[docs]</a><span class="k">def</span> <span class="nf">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1019,7 +1088,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>

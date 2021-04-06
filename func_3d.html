@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Transforms in 3D &mdash; Spatial Maths package 0.9.3
+  <title>Transforms in 3D &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -1739,15 +1739,11 @@ elative to {A} is represented by the homogeneous transform T = <span class="math
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.eul2jac">
-<code class="sig-name descname"><span class="pre">eul2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#eul2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.eul2jac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">eul2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#eul2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.eul2jac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Euler angle rate Jacobian</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>phi</strong> (<em>float</em>) – Z-axis rotation</p></li>
-<li><p><strong>theta</strong> (<em>float</em>) – Y-axis rotation</p></li>
-<li><p><strong>psi</strong> (<em>float</em>) – Z-axis rotation</p></li>
-</ul>
+<dd class="field-odd"><p><strong>angles</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Euler angles (φ, θ, ψ)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Jacobian matrix</p>
@@ -1764,11 +1760,7 @@ angles φ, ϴ, ψ.</p></li>
 is a 3-vector with values (φ θ ψ).</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">eul2jac</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-<span class="go">array([[ 0.    , -0.0998,  0.1977],</span>
-<span class="go">       [ 0.    ,  0.995 ,  0.0198],</span>
-<span class="go">       [ 1.    ,  0.    ,  0.9801]])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1785,22 +1777,20 @@ is a 3-vector with values (φ θ ψ).</p></li>
 <dd class="field-odd"><p>supported</p>
 </dd>
 <dt class="field-even">Seealso</dt>
-<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.eul2r" title="spatialmath.base.transforms3d.eul2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2r()</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rot2jac" title="spatialmath.base.transforms3d.rot2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rot2jac()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.rpy2jac">
-<code class="sig-name descname"><span class="pre">rpy2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#rpy2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.rpy2jac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">rpy2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#rpy2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.rpy2jac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Jacobian from RPY angle rates to angular velocity</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>order</strong> (<em>str</em>) – [description], defaults to ‘zyx’</p></li>
-<li><p><strong>roll</strong> (<em>float</em>) – roll angle</p></li>
-<li><p><strong>pitch</strong> (<em>float</em>) – pitch angle</p></li>
-<li><p><strong>yaw</strong> (<em>float</em>) – yaw angle</p></li>
+<li><p><strong>angles</strong> – roll-pitch-yaw angles (⍺, β, γ)</p></li>
+<li><p><strong>order</strong> (<em>str</em>) – angle sequence, defaults to ‘zyx’</p></li>
 <li><p><strong>order</strong> – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
 </ul>
 </dd>
@@ -1812,7 +1802,7 @@ is a 3-vector with values (φ θ ψ).</p></li>
 </dd>
 </dl>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(⍺,</span> <span class="pre">β,</span> <span class="pre">γ)</span></code> is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
+<li><p><code class="docutils literal notranslate"><span class="pre">rpy2jac(⍺,</span> <span class="pre">β,</span> <span class="pre">γ)</span></code> is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
 rates to angular velocity at the operating point (⍺, β, γ).
 These correspond to successive rotations about the axes specified by
 <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
@@ -1830,14 +1820,10 @@ parallel to the optic axis and x-axis parallel to the pixel rows.</p></li>
 </ul>
 </div></blockquote>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rpy2r(𝚪)</span></code> as above but the roll, pitch, yaw angles are taken
+<li><p><code class="docutils literal notranslate"><span class="pre">rpy2jac(𝚪)</span></code> as above but the roll, pitch, yaw angles are taken
 from <code class="docutils literal notranslate"><span class="pre">𝚪</span></code> which is a 3-vector with values (⍺, β, γ).</p></li>
 </ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rpy2jac</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-<span class="go">array([[ 0.9363, -0.2955,  0.    ],</span>
-<span class="go">       [ 0.2896,  0.9553,  0.    ],</span>
-<span class="go">       [-0.1987,  0.    ,  1.    ]])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1854,9 +1840,102 @@ from <code class="docutils literal notranslate"><span class="pre">𝚪</span></c
 <dd class="field-odd"><p>supported</p>
 </dd>
 <dt class="field-even">Seealso</dt>
-<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rot2jac" title="spatialmath.base.transforms3d.rot2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rot2jac()</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.exp2jac">
+<code class="sig-name descname"><span class="pre">exp2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#exp2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.exp2jac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jacobian from exponential coordinate rates to angular velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Exponential coordinates</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">exp2jac(v)</span></code> is a Jacobian matrix (3x3) that maps exponential coordinate
+rates to angular velocity at the operating point <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Used in the creation of an analytical Jacobian.</p></li>
+</ul>
+</div>
+<p>Reference:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">A</span> <span class="n">compact</span> <span class="n">formula</span> <span class="k">for</span> <span class="n">the</span> <span class="n">derivative</span> <span class="n">of</span> <span class="n">a</span> <span class="mi">3</span><span class="o">-</span><span class="n">D</span> <span class="n">rotation</span> <span class="ow">in</span> 
+  <span class="n">exponential</span> <span class="n">coordinate</span>
+  <span class="n">Guillermo</span> <span class="n">Gallego</span><span class="p">,</span> <span class="n">Anthony</span> <span class="n">Yezzi</span>
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">arxiv</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pdf</span><span class="o">/</span><span class="mf">1312.0788</span><span class="n">v1</span><span class="o">.</span><span class="n">pdf</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">SymPy</dt>
+<dd class="field-odd"><p>supported</p>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rot2jac" title="spatialmath.base.transforms3d.rot2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rot2jac()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.rot2jac">
+<code class="sig-name descname"><span class="pre">rot2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy-xyz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#rot2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.rot2jac" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Velocity transform for analytical Jacobian</p>
+<dl class="field-list simple">
+<dt class="field-odd">param R</dt>
+<dd class="field-odd"><p>SO(3) rotation matrix</p>
+</dd>
+<dt class="field-even">type R</dt>
+<dd class="field-even"><p>ndarray(3,3)</p>
+</dd>
+<dt class="field-odd">param representation</dt>
+<dd class="field-odd"><p>defaults to ‘rpy-xyz’</p>
+</dd>
+<dt class="field-even">type representation</dt>
+<dd class="field-even"><p>str, optional</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>ndarray(6,6)</p>
+</dd>
+</dl>
+<p>Computes the transformation from spatial velocity, where rotation rate is
+expressed as angular velocity, to analytical rates where the rotational part
+is expressed as rate of change in some other representation</p>
+<div class="math notranslate nohighlight">
+\[\dvec{x} = \mat{A} \]</div>
+</div></blockquote>
+<p>ec{mu}</p>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\mat{A}\)</span> is a block diagonal matrix</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Compared to <a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a>
+- This performs the inverse mapping
+- This maps a 6-vector, the others map a 3-vector</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a></p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
@@ -1898,7 +1977,7 @@ homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.trprint">
-<code class="sig-name descname"><span class="pre">trprint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">T</span></em>, <em class="sig-param"><span class="pre">orient='rpy/zyx'</span></em>, <em class="sig-param"><span class="pre">label=None</span></em>, <em class="sig-param"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></em>, <em class="sig-param"><span class="pre">fmt='{:8.2g}'</span></em>, <em class="sig-param"><span class="pre">degsym=True</span></em>, <em class="sig-param"><span class="pre">unit='deg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trprint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">trprint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">T</span></em>, <em class="sig-param"><span class="pre">orient='rpy/zyx'</span></em>, <em class="sig-param"><span class="pre">label=None</span></em>, <em class="sig-param"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></em>, <em class="sig-param"><span class="pre">fmt='{:.3g}'</span></em>, <em class="sig-param"><span class="pre">degsym=True</span></em>, <em class="sig-param"><span class="pre">unit='deg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trprint" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Compact display of SO(3) or SE(3) matrices</p>
 <dl class="field-list simple">
@@ -1927,7 +2006,7 @@ homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf
 <dd class="field-even"><p>file object</p>
 </dd>
 <dt class="field-odd">param fmt</dt>
-<dd class="field-odd"><p>conversion format for each number</p>
+<dd class="field-odd"><p>conversion format for each number in the format used with <code class="docutils literal notranslate"><span class="pre">format</span></code></p>
 </dd>
 <dt class="field-even">type fmt</dt>
 <dd class="field-even"><p>str</p>
@@ -1953,7 +2032,7 @@ string is returned.  To suppress writing to a file, set <code class="docutils li
 </div></blockquote>
 <ul>
 <li><dl>
-<dt><code class="docutils literal notranslate"><span class="pre">trprint(R)</span></code> displays the SO(3) rotation matrix in a compact</dt><dd><p>single-line format:</p>
+<dt><code class="docutils literal notranslate"><span class="pre">trprint(R)</span></code> prints the SO(3) rotation matrix to stdout in a compact</dt><dd><p>single-line format:</p>
 <blockquote>
 <div><p>[LABEL:] ORIENTATION UNIT</p>
 </div></blockquote>
@@ -1963,12 +2042,14 @@ string is returned.  To suppress writing to a file, set <code class="docutils li
 </ul>
 <blockquote>
 <div><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">trprint(T)</span></code> displays the SE(3) homogoneous transform in a compact
-single-line format:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">trprint(T)</span></code> prints the SE(3) homogoneous transform to stdout in a
+compact single-line format:</p>
 <blockquote>
 <div><p>[LABEL:] [t=X, Y, Z;] ORIENTATION UNIT</p>
 </div></blockquote>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trprint(X,</span> <span class="pre">file=None)</span></code> as above but returns the string rather than 
+printing to a file</p></li>
 </ul>
 <p>Orientation is expressed in one of several formats:</p>
 <ul class="simple">
@@ -1981,9 +2062,9 @@ single-line format:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">transl</span><span class="p">,</span> <span class="n">rpy2tr</span><span class="p">,</span> <span class="n">trprint</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">@</span> <span class="n">rpy2tr</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="go">&#39;t =        1,        2,        3; rpy/zyx =       10°,       20°,       30°&#39;</span>
+<span class="go">&#39;t = 1, 2, 3; rpy/zyx = 10°, 20°, 30°&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;angvec&#39;</span><span class="p">)</span>
-<span class="go">&#39;T: t =        1,        2,        3; angvec = (      36° |     0.12,     0.62,     0.78)&#39;</span>
+<span class="go">&#39;T: t = 1, 2, 3; angvec = (35.8° | 0.124, 0.616, 0.778)&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trprint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;angvec&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:8.4g}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="go">&#39;T: t =        1,        2,        3; angvec = (   35.82° |    0.124,   0.6156,   0.7782)&#39;</span>
 </pre></div>
@@ -2001,7 +2082,7 @@ single-line format:</p>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.trplot">
-<code class="sig-name descname"><span class="pre">trplot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('X',</span> <span class="pre">'Y',</span> <span class="pre">'Z')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arrow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origindot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anaglyph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trplot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">trplot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">textcolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('X',</span> <span class="pre">'Y',</span> <span class="pre">'Z')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arrow'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">originsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origincolor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ortho'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anaglyph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a 3D coordinate frame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2011,13 +2092,14 @@ single-line format:</p>
 <li><p><strong>block</strong> (<em>bool</em>) – run the GUI main loop until all windows are closed, default True</p></li>
 <li><p><strong>dims</strong> (<em>array_like</em><em>(</em><em>6</em><em>) or </em><em>array_like</em><em>(</em><em>2</em><em>)</em>) – dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
 If dims is [min, max] those limits are applied to the x-, y- and z-axes.</p></li>
-<li><p><strong>color</strong> (<em>str</em>) – color of the lines defining the frame</p></li>
-<li><p><strong>textcolor</strong> (<em>str</em>) – color of text labels for the frame, default color of lines above</p></li>
+<li><p><strong>color</strong> (<em>str</em><em> or </em><em>list</em><em>(</em><em>3</em><em>) </em><em>of str</em>) – color of the lines defining the frame</p></li>
+<li><p><strong>textcolor</strong> (<em>str</em>) – color of text labels for the frame, default <code class="docutils literal notranslate"><span class="pre">color</span></code></p></li>
 <li><p><strong>frame</strong> (<em>str</em>) – label the frame, name is shown below the frame and as subscripts on the frame axis labels</p></li>
 <li><p><strong>labels</strong> (<em>3-tuple of strings</em>) – labels for the axes, defaults to X, Y and Z</p></li>
-<li><p><strong>length</strong> (<em>float</em>) – length of coordinate frame axes, default 1</p></li>
-<li><p><strong>style</strong> (<em>str</em>) – axis style: ‘arrow’ [default], ‘line’, ‘rgb’ (Rviz style)</p></li>
-<li><p><strong>origindot</strong> (<em>int</em>) – size of dot to draw at the origin (default 20)</p></li>
+<li><p><strong>length</strong> (<em>float</em><em> or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – length of coordinate frame axes, default 1</p></li>
+<li><p><strong>style</strong> (<em>str</em>) – axis style: ‘arrow’ [default], ‘line’, ‘rviz’ (Rviz style)</p></li>
+<li><p><strong>originsize</strong> (<em>int</em>) – size of dot to draw at the origin, 0 for no dot (default 20)</p></li>
+<li><p><strong>origincolor</strong> (<em>str</em>) – color of dot to draw at the origin, default is <code class="docutils literal notranslate"><span class="pre">color</span></code></p></li>
 <li><p><strong>anaglyph</strong> – 3D anaglyph display, left-right lens colors eg. <code class="docutils literal notranslate"><span class="pre">'rc'</span></code></p></li>
 </ul>
 </dd>
@@ -2069,7 +2151,7 @@ is from a view point shifted in the positive x-direction.</p>
 <p class="admonition-title">Note</p>
 <p>The origin is normally indicated with a marker of the same color
 as the frame.  The default size is 20. This can be disabled by setting
-its size to zero by <code class="docutils literal notranslate"><span class="pre">origindot=0</span></code>.  For <code class="docutils literal notranslate"><span class="pre">'rgb'</span></code> style the default is 0
+its size to zero by <code class="docutils literal notranslate"><span class="pre">originsize=0</span></code>.  For <code class="docutils literal notranslate"><span class="pre">'rgb'</span></code> style the default is 0
 but it can be set explicitly, and the color is as per the <code class="docutils literal notranslate"><span class="pre">color</span></code>
 option.</p>
 </div>
@@ -2158,7 +2240,7 @@ be a matplotlib bug #19599</p>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>

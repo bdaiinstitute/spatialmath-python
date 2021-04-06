@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Transforms in 2D &mdash; Spatial Maths package 0.9.3
+  <title>Transforms in 2D &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -383,9 +383,9 @@ list, dict, or a numpy array, row or column vector.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="go">array([[1., 0., 3.],</span>
-<span class="go">       [0., 1., 4.],</span>
-<span class="go">       [0., 0., 1.]])</span>
+<span class="go">array([[1, 0, 3],</span>
+<span class="go">       [0, 1, 4],</span>
+<span class="go">       [0, 0, 1]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 <span class="go">array([[1., 0., 3.],</span>
 <span class="go">       [0., 1., 4.],</span>
@@ -707,6 +707,44 @@ given by <code class="docutils literal notranslate"><span class="pre">θ</span><
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="spatialmath.base.transforms2d.tr2jac2">
+<code class="sig-name descname"><span class="pre">tr2jac2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2jac2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2jac2" title="Permalink to this definition">¶</a></dt>
+<dd><p>SE(2) Jacobian matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<p>Computes an Jacobian matrix that maps spatial velocity between two frames defined by
+an SE(2) matrix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tr2jac2(T)</span></code> is a Jacobian matrix (3x3) that maps spatial velocity or
+differential motion from frame {B} to frame {A} where the pose of {B}
+elative to {A} is represented by the homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2jac2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([[ 0.9553, -0.2955,  0.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="spatialmath.base.transforms2d.trinterp2">
 <code class="sig-name descname"><span class="pre">trinterp2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinterp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinterp2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolate SE(2) or SO(2) matrices</p>
@@ -926,7 +964,7 @@ tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], mo
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>

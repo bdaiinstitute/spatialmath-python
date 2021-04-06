@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.twist &mdash; Spatial Maths package 0.9.3
+  <title>spatialmath.twist &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -174,9 +174,9 @@
 <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
 <span class="kn">from</span> <span class="nn">spatialmath.geom3d</span> <span class="kn">import</span> <span class="n">Plucker</span>
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">base</span>
-<span class="kn">from</span> <span class="nn">spatialmath.smuserlist</span> <span class="kn">import</span> <span class="n">SMUserList</span>
+<span class="kn">from</span> <span class="nn">spatialmath.baseposelist</span> <span class="kn">import</span> <span class="n">BasePoseList</span>
 
-<span class="k">class</span> <span class="nc">SMTwist</span><span class="p">(</span><span class="n">SMUserList</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BaseTwist</span><span class="p">(</span><span class="n">BasePoseList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Superclass for 3D and 2D twist objects</span>
 
@@ -469,7 +469,7 @@
 <span class="c1"># ======================================================================== #</span>
 
 
-<div class="viewcode-block" id="Twist3"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3">[docs]</a><span class="k">class</span> <span class="nc">Twist3</span><span class="p">(</span><span class="n">SMTwist</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist3"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3">[docs]</a><span class="k">class</span> <span class="nc">Twist3</span><span class="p">(</span><span class="n">BaseTwist</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    3D twist class</span>
 
@@ -507,15 +507,18 @@
 
         <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># zero or one arguments passed</span>
-            <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">convertfrom</span><span class="o">=</span><span class="p">(</span><span class="n">SE3</span><span class="p">,),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
                 <span class="k">return</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">SE3</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">twist</span><span class="p">()</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
             <span class="c1"># Twist(v, w)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">arg</span><span class="p">,</span> <span class="n">w</span><span class="p">]]</span>
             <span class="k">return</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad twist value&#39;</span><span class="p">)</span></div>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad value to Twist constructor&#39;</span><span class="p">)</span></div>
             
     <span class="c1"># ------------------------ SMUserList required ---------------------------#</span>
 
@@ -1238,7 +1241,7 @@
 
 <span class="c1"># ======================================================================== #</span>
 
-<div class="viewcode-block" id="Twist2"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2">[docs]</a><span class="k">class</span> <span class="nc">Twist2</span><span class="p">(</span><span class="n">SMTwist</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist2"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2">[docs]</a><span class="k">class</span> <span class="nc">Twist2</span><span class="p">(</span><span class="n">BaseTwist</span><span class="p">):</span>
 
 <div class="viewcode-block" id="Twist2.__init__"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1730,11 +1733,11 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
 
+    <span class="n">tw</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
 
+    <span class="c1"># import pathlib</span>
 
-    <span class="kn">import</span> <span class="nn">pathlib</span>
-
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_twist.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
+    <span class="c1"># exec(open(pathlib.Path(__file__).parent.parent.absolute() / &quot;tests&quot; / &quot;test_twist.py&quot;).read())  # pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -1748,7 +1751,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>

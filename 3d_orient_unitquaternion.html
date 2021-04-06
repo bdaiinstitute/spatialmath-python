@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Unit quaternion &mdash; Spatial Maths package 0.9.3
+  <title>Unit quaternion &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -214,10 +214,10 @@ written as</p>
 \[\q = \cos \frac{\theta}{2} \sin \frac{\theta}{2} &lt;v_x v_y v_z&gt;\]</div>
 <p>The quaternion <span class="math notranslate nohighlight">\(\q\)</span> and <span class="math notranslate nohighlight">\(-\q\)</span> represent the equivalent rotation, and this is referred to
 as a double mapping.</p>
-<div class="graphviz"><img src="_images/inheritance-b0940778b3c56f55143e6c3e55b3da96068b3139.png" alt="Inheritance diagram of spatialmath.quaternion.UnitQuaternion" usemap="#inheritance82463f53b1" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-480d9a337088617da471bf081f5189e4d9e93101.png" alt="Inheritance diagram of spatialmath.quaternion.UnitQuaternion" usemap="#inheritance82463f53b1" class="inheritance graphviz" /></div>
 <map id="inheritance82463f53b1" name="inheritance82463f53b1">
-<area shape="rect" id="node2" href="3d_quaternion.html#spatialmath.quaternion.Quaternion" target="_top" title="Quaternion class" alt="" coords="271,31,365,56"/>
-<area shape="rect" id="node5" href="#spatialmath.quaternion.UnitQuaternion" target="_top" title="Unit quaternion class" alt="" coords="413,31,535,56"/>
+<area shape="rect" id="node4" href="3d_quaternion.html#spatialmath.quaternion.Quaternion" target="_top" title="Quaternion class" alt="" coords="284,31,379,56"/>
+<area shape="rect" id="node5" href="#spatialmath.quaternion.UnitQuaternion" target="_top" title="Unit quaternion class" alt="" coords="427,31,548,56"/>
 </map><p>The <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> class inherits many methods from the <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> class</p>
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.__init__">
@@ -247,20 +247,19 @@ real <code class="docutils literal notranslate"><span class="pre">s</span></code
 list, tuple, or ndarray(3). If <code class="docutils literal notranslate"><span class="pre">norm</span></code> is True the resulting 
 quaternion is normalized.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion(v)</span></code> constructs a unit quaternion with specified
-elements from <code class="docutils literal notranslate"><span class="pre">v</span></code> which is a 4-vector given as a list, tuple, or ndarray(4)</p></li>
+elements from <code class="docutils literal notranslate"><span class="pre">v</span></code> which is a 4-vector given as a list, tuple, or ndarray(4). Also known
+as the Euler parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion(M)</span></code> construct a new unit quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where <code class="docutils literal notranslate"><span class="pre">Q</span></code> is a Nx4 NumPy array
+whose rows are the quaternion in vector form</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion(R)</span></code> constructs a unit quaternion from an SO(3)
 rotation matrix given as a ndarray(3,3). If <code class="docutils literal notranslate"><span class="pre">check</span></code> is True
 test the rotation submatrix for orthogonality.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion(T)</span></code> constructs a unit quaternion from an SE(3)
-homogeneous transformation matrix given as a ndarray(4,4). If <code class="docutils literal notranslate"><span class="pre">check</span></code> is True
-test the matrix for orthogonality.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion(X)</span></code> constructs a unit quaternion from the rotational
 part of <code class="docutils literal notranslate"><span class="pre">X</span></code> which is an SO3 or SE3 instance.  If len(X) &gt; 1 then
 the resulting unit quaternion is of the same length.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion([q1,</span> <span class="pre">q2</span> <span class="pre">..</span> <span class="pre">qN])</span></code> construct a new unit quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where each element is a 4-vector</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion([Q1,</span> <span class="pre">Q2</span> <span class="pre">..</span> <span class="pre">QN])</span></code> construct a new unit quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where each element is a UnitQuaternion instance</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion([X1,</span> <span class="pre">X2</span> <span class="pre">..</span> <span class="pre">XN])</span></code> construct a new unit quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where each element is an SO3 or SE3 instance</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">UnitQuaternion(M)</span></code> construct a new unit quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where <code class="docutils literal notranslate"><span class="pre">Q</span></code> is a Nx4 NumPy array.</p></li>
 </ul>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
@@ -516,11 +515,11 @@ values.</p></li>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
-<span class="go"> 0.4134 &lt;&lt; -0.0412,  0.3856, -0.8239 &gt;&gt;</span>
+<span class="go"> 0.2313 &lt;&lt; -0.8214, -0.2619, -0.4508 &gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go"> 0.7293 &lt;&lt;  0.0375,  0.1385,  0.6690 &gt;&gt;</span>
-<span class="go"> 0.3085 &lt;&lt;  0.3202,  0.6306,  0.6361 &gt;&gt;</span>
-<span class="go"> 0.2980 &lt;&lt; -0.3653, -0.4914,  0.7323 &gt;&gt;</span>
+<span class="go"> 0.9171 &lt;&lt;  0.2727, -0.0015, -0.2908 &gt;&gt;</span>
+<span class="go"> 0.0142 &lt;&lt; -0.2929, -0.1275,  0.9475 &gt;&gt;</span>
+<span class="go"> 0.2480 &lt;&lt;  0.3298,  0.6647, -0.6228 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -651,7 +650,7 @@ R = [N O A] and N = O x A.</p>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">OA</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
-<span class="go"> 0.7071 &lt;&lt; -0.7071,  0.0000, -0.0000 &gt;&gt;</span>
+<span class="go"> 0.7071 &lt;&lt; -0.7071,  0.0000,  0.0000 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -1343,38 +1342,9 @@ There are many options, see the links below.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spatialmath.quaternion.UnitQuaternion.animate">
-<code class="sig-name descname"><span class="pre">animate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.animate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.animate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot unit quaternion as an animated coordinate frame</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference internal" href="#spatialmath.quaternion.UnitQuaternion" title="spatialmath.quaternion.UnitQuaternion"><em>UnitQuaternion</em></a>) – initial pose, defaults to null/identity</p></li>
-<li><p><strong>**kwargs</strong> – plotting options</p></li>
-</ul>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">q.animate()</span></code> displays the orientation <code class="docutils literal notranslate"><span class="pre">q</span></code> as a coordinate frame moving
-from the origin in either 3D.  There are 
-many options, see the links below.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">q.animate(*args,</span> <span class="pre">start=q1)</span></code> displays the orientation <code class="docutils literal notranslate"><span class="pre">q</span></code> as a coordinate
-frame moving from orientation <code class="docutils literal notranslate"><span class="pre">q11</span></code>, in 3D.  There are 
-many options, see the links below.</p></li>
-</ul>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">UQ</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">UQ</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>:see <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tranimate" title="spatialmath.base.transforms3d.tranimate"><code class="xref py py-func docutils literal notranslate"><span class="pre">tranimate()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trplot" title="spatialmath.base.transforms3d.trplot"><code class="xref py py-func docutils literal notranslate"><span class="pre">trplot()</span></code></a></p>
-</dd></dl>
-
-<dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.A">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">A</span></code><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.A" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array value of an instance (SMUserList superclass method)</p>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>NumPy array value of this instance</p>
@@ -1397,7 +1367,7 @@ instance.</p>
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.Alloc">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Alloc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.Alloc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct an instance with N default values (SMUserList superclass method)</p>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
@@ -1431,7 +1401,7 @@ vector.</p>
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.Empty">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Empty</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.Empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct an empty instance (SMUserList superclass method)</p>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>pose instance with zero values</p>
@@ -1766,9 +1736,38 @@ A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.</p
 </dd></dl>
 
 <dl class="py method">
+<dt id="spatialmath.quaternion.UnitQuaternion.animate">
+<code class="sig-name descname"><span class="pre">animate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.animate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.animate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot unit quaternion as an animated coordinate frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference internal" href="#spatialmath.quaternion.UnitQuaternion" title="spatialmath.quaternion.UnitQuaternion"><em>UnitQuaternion</em></a>) – initial pose, defaults to null/identity</p></li>
+<li><p><strong>**kwargs</strong> – plotting options</p></li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">q.animate()</span></code> displays the orientation <code class="docutils literal notranslate"><span class="pre">q</span></code> as a coordinate frame moving
+from the origin in either 3D.  There are 
+many options, see the links below.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q.animate(*args,</span> <span class="pre">start=q1)</span></code> displays the orientation <code class="docutils literal notranslate"><span class="pre">q</span></code> as a coordinate
+frame moving from orientation <code class="docutils literal notranslate"><span class="pre">q11</span></code>, in 3D.  There are 
+many options, see the links below.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">UQ</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">UQ</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>:see <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tranimate" title="spatialmath.base.transforms3d.tranimate"><code class="xref py py-func docutils literal notranslate"><span class="pre">tranimate()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trplot" title="spatialmath.base.transforms3d.trplot"><code class="xref py py-func docutils literal notranslate"><span class="pre">trplot()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.append">
 <code class="sig-name descname"><span class="pre">append</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a value to an instance (SMUserList superclass method)</p>
+<dd><p>Append a value to an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="3d_quaternion.html#spatialmath.quaternion.Quaternion" title="spatialmath.quaternion.Quaternion"><em>Quaternion</em></a><em> or </em><em>UnitQuaternion instance</em>) – the value to append</p>
@@ -1861,7 +1860,7 @@ the axis of rotation and whose norm is the magnitude of rotation.</p>
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.extend">
 <code class="sig-name descname"><span class="pre">extend</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extend sequence of values in an instance (SMUserList superclass method)</p>
+<dd><p>Extend sequence of values in an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>instance of same type</em>) – the value to extend</p>
@@ -1909,7 +1908,7 @@ The value of <code class="docutils literal notranslate"><span class="pre">q.inne
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.insert">
 <code class="sig-name descname"><span class="pre">insert</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.insert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert a value to an instance (SMUserList superclass method)</p>
+<dd><p>Insert a value to an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2039,7 +2038,7 @@ equivalent of the Hamilton product.</p>
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.pop">
 <code class="sig-name descname"><span class="pre">pop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.pop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pop value from an instance (SMUserList superclass method)</p>
+<dd><p>Pop value from an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – item in the list to pop, default is last</p>
@@ -2075,57 +2074,6 @@ instance is modified.</p>
 <dt id="spatialmath.quaternion.UnitQuaternion.reverse">
 <code class="sig-name descname"><span class="pre">reverse</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.reverse" title="Permalink to this definition">¶</a></dt>
 <dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="spatialmath.quaternion.UnitQuaternion.rpy">
-<code class="sig-name descname"><span class="pre">rpy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.rpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.rpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unit quaternion as roll-pitch-yaw angles</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>order</strong> (<em>str</em>) – angle sequence order, default to ‘zyx’</p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>3-vector of roll-pitch-yaw angles</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.rpy</span></code> is the roll-pitch-yaw angle representation of the 3D rotation.  The angles are
-a 3-vector <span class="math notranslate nohighlight">\((r, p, y)\)</span> which correspond to successive rotations about the axes
-specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>‘zyx’ [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
-then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
-and y-axis sideways.</p></li>
-<li><p>‘xyz’, rotate by yaw about the x-axis, then by pitch about the new y-axis,
-then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
-and y-axis between the gripper fingers.</p></li>
-<li><p>‘yxz’, rotate by yaw about the y-axis, then by pitch about the new x-axis,
-then by roll about the new z-axis. Convention for a camera with z-axis parallel
-to the optic axis and x-axis parallel to the pixel rows.</p></li>
-</ul>
-</div></blockquote>
-<p>If <code class="docutils literal notranslate"><span class="pre">len(x)</span></code> is:</p>
-<ul class="simple">
-<li><p>1, return an ndarray with shape=(3,)</p></li>
-<li><p>N&gt;1, return ndarray with shape=(N,3)</p></li>
-</ul>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
-<span class="go">NameError: name &#39;y&#39; is not defined</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3.RPY" title="spatialmath.pose3d.SE3.RPY"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPY()</span></code></a>, :<a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.transforms3d.tr2rpy()</span></code></a></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2264,6 +2212,57 @@ vector part.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spatialmath.quaternion.UnitQuaternion.rpy">
+<code class="sig-name descname"><span class="pre">rpy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.rpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.rpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unit quaternion as roll-pitch-yaw angles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>str</em>) – angle sequence order, default to ‘zyx’</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3-vector of roll-pitch-yaw angles</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.rpy</span></code> is the roll-pitch-yaw angle representation of the 3D rotation.  The angles are
+a 3-vector <span class="math notranslate nohighlight">\((r, p, y)\)</span> which correspond to successive rotations about the axes
+specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘zyx’ [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
+and y-axis sideways.</p></li>
+<li><p>‘xyz’, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
+and y-axis between the gripper fingers.</p></li>
+<li><p>‘yxz’, rotate by yaw about the y-axis, then by pitch about the new x-axis,
+then by roll about the new z-axis. Convention for a camera with z-axis parallel
+to the optic axis and x-axis parallel to the pixel rows.</p></li>
+</ul>
+</div></blockquote>
+<p>If <code class="docutils literal notranslate"><span class="pre">len(x)</span></code> is:</p>
+<ul class="simple">
+<li><p>1, return an ndarray with shape=(3,)</p></li>
+<li><p>N&gt;1, return ndarray with shape=(N,3)</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;y&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3.RPY" title="spatialmath.pose3d.SE3.RPY"><code class="xref py py-func docutils literal notranslate"><span class="pre">RPY()</span></code></a>, :<a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.tr2rpy" title="spatialmath.base.transforms3d.tr2rpy"><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.transforms3d.tr2rpy()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.eul">
 <code class="sig-name descname"><span class="pre">eul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.eul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.eul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unit quaternion as Euler angles</p>
@@ -2338,13 +2337,13 @@ the unit quaternion <code class="docutils literal notranslate"><span class="pre"
 
 <dl class="py method">
 <dt id="spatialmath.quaternion.UnitQuaternion.angdist">
-<code class="sig-name descname"><span class="pre">angdist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.angdist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.angdist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">angdist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#UnitQuaternion.angdist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.angdist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Angular distance metric between unit quaternions</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<em>UnitQuaternion instance</em>) – second unit quaternion</p></li>
-<li><p><strong>metric</strong> (<em>int</em>) – metric, default is 0</p></li>
+<li><p><strong>metric</strong> (<em>int</em>) – metric, default is 3</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -2357,8 +2356,8 @@ the unit quaternion <code class="docutils literal notranslate"><span class="pre"
 <dd class="field-even"><p>float</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">q1.angle(q2)</span></code> is the geodesic norm, or geodesic distance between two
-unit quaternions and has units of angle.  We can consider it as the angle between two quaternions.</p>
+<p><code class="docutils literal notranslate"><span class="pre">q1.angdist(q2)</span></code> is the geodesic norm, or geodesic distance between two
+unit quaternions.  We can consider it as the angle between two quaternions.</p>
 <p>Several metrics are supported:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -2381,13 +2380,15 @@ unit quaternions and has units of angle.  We can consider it as the angle betwee
 <td><p><span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p>3</p></td>
-<td><p><span class="math notranslate nohighlight">\(2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2 \tan^{-1} \| \q_1 \pm \q_2\| / \|\q_1 \mp \q_2\| \in [0, \pi/2]\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p>4</p></td>
 <td><p><span class="math notranslate nohighlight">\(\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]\)</span></p></td>
 </tr>
 </tbody>
 </table>
+<p>Metric 3 computes the sum and difference of the quaternions and uses
+the largest value in the denominator.</p>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
@@ -2395,7 +2396,7 @@ unit quaternions and has units of angle.  We can consider it as the angle betwee
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q1</span><span class="o">.</span><span class="n">angdist</span><span class="p">(</span><span class="n">q1</span><span class="p">))</span>
 <span class="go">0.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q1</span><span class="o">.</span><span class="n">angdist</span><span class="p">(</span><span class="n">q2</span><span class="p">))</span>
-<span class="go">0.0223317554371969</span>
+<span class="go">0.2117327177378023</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -2406,7 +2407,7 @@ numeric errors which push the argument of <code class="docutils literal notransl
 outside its domain [0, 1].</p></li>
 <li><p>metrics 2 and 3 are equivalent, but 3 is more robust</p></li>
 <li><p>SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()</p></li>
-<li><p>MATLAB’s quaternion.dist() uses metric 2</p></li>
+<li><p>MATLAB’s quaternion.dist() uses metric 4</p></li>
 </ul>
 </div>
 </dd></dl>
@@ -2471,7 +2472,7 @@ as the unit quaternion <code class="docutils literal notranslate"><span class="p
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>

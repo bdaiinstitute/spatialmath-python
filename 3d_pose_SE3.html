@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>SE(3) matrix &mdash; Spatial Maths package 0.9.3
+  <title>SE(3) matrix &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -206,10 +206,10 @@
 <p>This subclass represents rigid-body motion in 3D space.  Internally it is a 
 4x4 homogeneous transformation matrix belonging to the group SE(3).</p>
 </div></blockquote>
-<div class="graphviz"><img src="_images/inheritance-3cee4373f45461e517d622ef8aba995f7e641ef3.png" alt="Inheritance diagram of spatialmath.pose3d.SE3" usemap="#inheritance7d797e0ff4" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-937e4b33055eedad4b1ff20b70e2737d0231bec4.png" alt="Inheritance diagram of spatialmath.pose3d.SE3" usemap="#inheritance7d797e0ff4" class="inheritance graphviz" /></div>
 <map id="inheritance7d797e0ff4" name="inheritance7d797e0ff4">
-<area shape="rect" id="node2" href="#spatialmath.pose3d.SE3" target="_top" title="SE(3) matrix class" alt="" coords="511,31,583,56"/>
-<area shape="rect" id="node3" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" target="_top" title="SO(3) matrix class" alt="" coords="391,31,463,56"/>
+<area shape="rect" id="node6" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" target="_top" title="SO(3) matrix class" alt="" coords="459,31,531,56"/>
+<area shape="rect" id="node5" href="#spatialmath.pose3d.SE3" target="_top" title="SE(3) matrix class" alt="" coords="579,31,651,56"/>
 </map><dl class="py method">
 <dt id="spatialmath.pose3d.SE3.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.__init__" title="Permalink to this definition">¶</a></dt>
@@ -219,21 +219,26 @@
 <dd class="field-odd"><p>SE3 instance</p>
 </dd>
 </dl>
-<p>There are multiple call signatures:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3()</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with one value  – a 4x4 identity
-matrix which corresponds to a null motion.</p></li>
+<p>There are multiple call signatures that return an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance
+with one or more values.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3()</span></code> null motion, value is the identity matrix.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SE3(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> is a pure translation of (x,y,z)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3(T)</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with the value <code class="docutils literal notranslate"><span class="pre">T</span></code> which is a 4x4
-numpy array representing an SE(3) matrix.  If <code class="docutils literal notranslate"><span class="pre">check</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>
-check the matrix belongs to SE(3).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3(X)</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with the same value as <code class="docutils literal notranslate"><span class="pre">X</span></code>, ie.
-a copy.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3([T1,</span> <span class="pre">T2,</span> <span class="pre">...</span> <span class="pre">TN])</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with <code class="docutils literal notranslate"><span class="pre">N</span></code> values
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3(T)</span></code>  where <code class="docutils literal notranslate"><span class="pre">T</span></code> is a 4x4 Numpy  array representing an SE(3)
+matrix.  If <code class="docutils literal notranslate"><span class="pre">check</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> check the matrix belongs to SE(3).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3([T1,</span> <span class="pre">T2,</span> <span class="pre">...</span> <span class="pre">TN])</span></code> has <code class="docutils literal notranslate"><span class="pre">N</span></code> values
 given by the elements <code class="docutils literal notranslate"><span class="pre">Ti</span></code> each of which is a 4x4 NumPy array
 representing an SE(3) matrix. If <code class="docutils literal notranslate"><span class="pre">check</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> check the
 matrix belongs to SE(3).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3([X1,</span> <span class="pre">X2,</span> <span class="pre">...</span> <span class="pre">XN])</span></code> is an <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance with <code class="docutils literal notranslate"><span class="pre">N</span></code> values
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3(X)</span></code> where <code class="docutils literal notranslate"><span class="pre">X</span></code> is:
+-  <code class="docutils literal notranslate"><span class="pre">SE3</span></code> is a copy of <code class="docutils literal notranslate"><span class="pre">X</span></code>
+-  <code class="docutils literal notranslate"><span class="pre">SO3</span></code> is the rotation of <code class="docutils literal notranslate"><span class="pre">X</span></code> with zero translation
+-  <code class="docutils literal notranslate"><span class="pre">SE2</span></code> is the z-axis rotation and x- and y-axis translation of</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">X</span></code></p>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3([X1,</span> <span class="pre">X2,</span> <span class="pre">...</span> <span class="pre">XN])</span></code> has <code class="docutils literal notranslate"><span class="pre">N</span></code> values
 given by the elements <code class="docutils literal notranslate"><span class="pre">Xi</span></code> each of which is an SE3 instance.</p></li>
 </ul>
 <dl class="field-list simple">
@@ -454,8 +459,8 @@ on the same rigid-body.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spatialmath.pose3d.SE3.Twist3">
-<code class="sig-name descname"><span class="pre">Twist3</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Twist3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Twist3" title="Permalink to this definition">¶</a></dt>
+<dt id="spatialmath.pose3d.SE3.twist">
+<code class="sig-name descname"><span class="pre">twist</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.twist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.twist" title="Permalink to this definition">¶</a></dt>
 <dd><p>SE(3) as twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -467,7 +472,7 @@ on the same rigid-body.</p>
 </dl>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">Twist3</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">twist</span><span class="p">()</span>
 <span class="go">Twist3([1, 2, 3, 0, 0, 0])</span>
 </pre></div>
 </div>
@@ -1170,14 +1175,33 @@ Example:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="spatialmath.pose3d.SE3.SO3">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">SO3</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.SO3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.SO3" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="spatialmath.pose3d.SE3.Rt">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Rt</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Rt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Rt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an SE(3) from rotation and translation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>R</strong> (<a class="reference internal" href="3d_orient_SO3.html#spatialmath.pose3d.SO3" title="spatialmath.pose3d.SO3"><em>SO3</em></a><em> or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – rotation</p></li>
+<li><p><strong>t</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – translation</p></li>
+<li><p><strong>check</strong> (<em>bool</em><em>, </em><em>optional</em>) – check rotation validity, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad rotation matrix</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>SE3 instance</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.A">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">A</span></code><a class="headerlink" href="#spatialmath.pose3d.SE3.A" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array value of an instance (SMUserList superclass method)</p>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>NumPy array value of this instance</p>
@@ -1200,7 +1224,7 @@ instance.</p>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.Alloc">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Alloc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.Alloc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct an instance with N default values (SMUserList superclass method)</p>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
@@ -1234,7 +1258,7 @@ vector.</p>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.Empty">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">Empty</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.Empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct an empty instance (SMUserList superclass method)</p>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>pose instance with zero values</p>
@@ -1974,6 +1998,92 @@ example:</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="spatialmath.pose3d.SE3.angdist">
+<code class="sig-name descname"><span class="pre">angdist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.angdist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angular distance metric between rotations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<em>SO3 instance</em>) – second rotation</p></li>
+<li><p><strong>metric</strong> (<em>int</em>) – metric, default is 6</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if other is not an SO3</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>angle in radians</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float or ndarray</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">R1.angdist(R2)</span></code> is the geodesic norm, or geodesic distance between two
+rotations.</p>
+<p>Several metrics are supported, the first 5 are computed after conversion
+to unit quaternions.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 92%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><span class="math notranslate nohighlight">\(1 - | \q_1 \bullet \q_2 | \in [0, 1]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><span class="math notranslate nohighlight">\(2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><span class="math notranslate nohighlight">\(\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><span class="math notranslate nohighlight">\(\|I - \mat{R}_1 \mat{R}_2^T\| \in [0, 2]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><span class="math notranslate nohighlight">\(\|\log \mat{R}_1 \mat{R}_2^T\| \in [0, \pi]\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;SO3&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;R1&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;R1&#39; is not defined</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>metrics 1, 2, 4 can throw ValueError “math domain error” due to
+numeric errors which push the argument of <code class="docutils literal notranslate"><span class="pre">acos()</span></code> marginally
+outside its domain [0, 1].</p></li>
+<li><p>metrics 2 and 3 are equivalent, but 3 is more robust</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">UnitQuaternion.angdist()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="spatialmath.pose3d.SE3.angvec">
 <code class="sig-name descname"><span class="pre">angvec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.angvec" title="Permalink to this definition">¶</a></dt>
 <dd><p>SO(3) or SE(3) as angle and rotation vector</p>
@@ -2044,7 +2154,7 @@ many options, see the links below.</p></li>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.append">
 <code class="sig-name descname"><span class="pre">append</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a value to an instance (SMUserList superclass method)</p>
+<dd><p>Append a value to an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="3d_quaternion.html#spatialmath.quaternion.Quaternion" title="spatialmath.quaternion.Quaternion"><em>Quaternion</em></a><em> or </em><em>UnitQuaternion instance</em>) – the value to append</p>
@@ -2137,7 +2247,7 @@ rotations about the Z, Y, Z axes respectively.</p>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.extend">
 <code class="sig-name descname"><span class="pre">extend</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extend sequence of values in an instance (SMUserList superclass method)</p>
+<dd><p>Extend sequence of values in an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>instance of same type</em>) – the value to extend</p>
@@ -2162,7 +2272,7 @@ rotations about the Z, Y, Z axes respectively.</p>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.insert">
 <code class="sig-name descname"><span class="pre">insert</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.insert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert a value to an instance (SMUserList superclass method)</p>
+<dd><p>Insert a value to an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2655,7 +2765,7 @@ defined by this pose.</p>
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.pop">
 <code class="sig-name descname"><span class="pre">pop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.pop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pop value from an instance (SMUserList superclass method)</p>
+<dd><p>Pop value from an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – item in the list to pop, default is last</p>
@@ -2689,8 +2799,8 @@ instance is modified.</p>
 
 <dl class="py method">
 <dt id="spatialmath.pose3d.SE3.printline">
-<code class="sig-name descname"><span class="pre">printline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.printline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stringify pose as a single line (superclass method)</p>
+<code class="sig-name descname"><span class="pre">printline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.printline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print pose in compact single line format (superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2700,14 +2810,8 @@ instance is modified.</p>
 <li><p><strong>orient</strong> (<em>str</em>) – 3-angle convention to use, optional, <code class="docutils literal notranslate"><span class="pre">SO3</span></code> and <code class="docutils literal notranslate"><span class="pre">SE3</span></code>
 only</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-<li><p><strong>file</strong> – file to write formatted string to. [default, stdout]</p></li>
+<li><p><strong>file</strong> (<em>file object</em>) – file to write formatted string to. [default, stdout]</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>formatted string</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 <ul class="simple">
@@ -2716,26 +2820,33 @@ only</p></li>
 </ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">X</span></code> has multiple values, print one per line.</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">=</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
-<span class="go">t =        0,        0,        0; rpy/zyx =       17°,        0°,        0°</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
-<span class="go">t =        0,        0,        0; rpy/zyx =       11°,        0°,        0°</span>
-<span class="go">t =        0,        0,        0; rpy/zyx =       17°,        0°,        0°</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1002, in &lt;listcomp&gt;</span>
+<span class="go">    return cls([base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 163, in trotx</span>
+<span class="go">    T = base.r2t(rotx(theta, unit))</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 54, in rotx</span>
+<span class="go">    theta = base.getunit(theta, unit)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 452, in getunit</span>
+<span class="go">    raise ValueError(&quot;invalid angular units&quot;)</span>
+<span class="go">ValueError: invalid angular units</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;SE2&#39; is not defined</span>
 </pre></div>
 </div>
-<dl>
-<dt>&gt;&gt; x = SE2(1, 2, 0.3)</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
-<span class="go">t =        1,        2;       17 deg</span>
-</pre></div>
-</div>
-</dd>
-</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The formatted string is always returned.</p>
+<ul class="simple">
+<li><p>Default formatting is for compact display of data</p></li>
+<li><p>For tabular data set <code class="docutils literal notranslate"><span class="pre">fmt</span></code> to a fixed width format such as
+<code class="docutils literal notranslate"><span class="pre">fmt='{:.3g}'</span></code></p></li>
+</ul>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">trprint()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">trprint2()</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2874,7 +2985,7 @@ pose instane.</p>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>

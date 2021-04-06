@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.base.animate &mdash; Spatial Maths package 0.9.3
+  <title>spatialmath.base.animate &mdash; Spatial Maths package 0.9.5
  documentation</title>
   
 
@@ -233,11 +233,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">displaylist</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># create an axes</span>
+            <span class="c1"># no axes specified</span>
+
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+            <span class="c1"># check any current axes</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;3d&quot;</span><span class="p">:</span>
-                    <span class="n">fig</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                    <span class="c1"># if they are not 3D axes, remove them, otherwise will </span>
+                    <span class="c1"># get plot errors</span>
+                    <span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># no axes in the figure, create a 3D axes</span>
                 <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">,</span> <span class="n">proj_type</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
@@ -942,7 +946,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 14-Mar-2021.
+        Last updated on 06-Apr-2021.
       </span>
 
     </p>
