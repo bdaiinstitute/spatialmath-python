@@ -202,9 +202,9 @@ class SO3(BasePoseMatrix):
         :SymPy: not supported
         """
         if len(self) == 1:
-            return base.tr2eul(self.A, unit=unit)
+            return base.tr2eul(self.A, unit=unit, flip=flip)
         else:
-            return np.array([base.tr2eul(x, unit=unit) for x in self.A])
+            return np.array([base.tr2eul(x, unit=unit, flip=flip) for x in self.A])
 
     def rpy(self, unit='rad', order='zyx'):
         """
