@@ -341,15 +341,18 @@ class Twist3(BaseTwist):
 
         if w is None:
             # zero or one arguments passed
-            if super().arghandler(arg, convertfrom=(SE3,), check=check):
+            if super().arghandler(arg, check=check):
                 return
+            elif isinstance(arg, SE3):
+                self.data = [arg.twist().A]
 
         elif w is not None and base.isvector(w, 3) and base.isvector(arg,3):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
             return
 
-        raise ValueError('bad twist value')
+        else:
+            raise ValueError('bad value to Twist constructor')
             
     # ------------------------ SMUserList required ---------------------------#
 
@@ -1564,8 +1567,8 @@ class Twist2(BaseTwist):
 
 if __name__ == '__main__':   # pragma: no cover
 
+    tw = Twist3( SE3.Rx(0) )
 
+    # import pathlib
 
-    import pathlib
-
-    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_twist.py").read())  # pylint: disable=exec-used
+    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_twist.py").read())  # pylint: disable=exec-used
