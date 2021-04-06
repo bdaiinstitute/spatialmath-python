@@ -221,8 +221,20 @@ s3 = np.r_[1.0,2,3]
 a = np.r_[1.0, 2.0, 3.0]
 b = np.r_[-5.0, 4.0, 3.0]
 
+A = np.random.randn(6,6)
+As = (A + A.T) / 2
+bb = np.random.randn(6)
 '''
 table.rule()
+
+t = timeit.timeit(stmt='c = np.linalg.inv(As)', setup=misc_setup, number=N)
+result("np.inv(As)", t)
+
+t = timeit.timeit(stmt='c = np.linalg.pinv(As)', setup=misc_setup, number=N)
+result("np.pinv(As)", t)
+
+t = timeit.timeit(stmt='c = np.linalg.solve(As, bb)', setup=misc_setup, number=N)
+result("np.solve(As, b)", t)
 
 t = timeit.timeit(stmt='c = np.cross(a,b)', setup=misc_setup, number=N)
 result("np.cross()", t)
