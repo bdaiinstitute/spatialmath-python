@@ -562,9 +562,9 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def printline(self, **kwargs):
+    def printline(self, *args, **kwargs):
         """
-        Stringify pose as a single line (superclass method)
+        Print pose in compact single line format (superclass method)
 
         :param label: text label to put at start of line
         :type label: str
@@ -578,40 +578,38 @@ class BasePoseMatrix(BasePoseList):
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param file: file to write formatted string to. [default, stdout]
-        :type file: 
-        :return: formatted string
-        :rtype: str
+        :type file: file object
 
         - ``X.printline()`` print ``X`` in single-line format
         - ``X.printline(file=None)`` is a string representing the pose ``X`` in single-line format
 
         If ``X`` has multiple values, print one per line.
 
-        Example::
+        Example:
 
-            >>> x=SE3.Rx(0.3)
+        .. runblock:: pycon
+
+            >>> x = SE3.Rx(0.3)
             >>> x.printline()
-            t =        0,        0,        0; rpy/zyx =       17°,        0°,        0°
-            >>> x = SE3.Rx([0.2, 0.3])
+            >>> x = SE3.Rx([0.2, 0.3], 'rpy/xyz')
             >>> x.printline()
-            t =        0,        0,        0; rpy/zyx =       11°,        0°,        0°
-            t =        0,        0,        0; rpy/zyx =       17°,        0°,        0°
-        >> x = SE2(1, 2, 0.3)
+            >>> x = SE2(1, 2, 0.3)
             >>> x.printline()
-            t =        1,        2;       17 deg
+            >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
         
-        .. note:: The formatted string is always returned.
+        .. note:: 
+            - Default formatting is for compact display of data
+            - For tabular data set ``fmt`` to a fixed width format such as
+              ``fmt='{:.3g}'``
 
+        :seealso: :func:`trprint`, :func:`trprint2`
         """
-        s = []
         if self.N == 2:
             for x in self.data:
-                s.append(base.trprint2(x, **kwargs))
+                base.trprint2(x, *args, **kwargs)
         else:
             for x in self.data:
-                s.append(base.trprint(x, **kwargs))
-
-        return '\n'.join(s)
+                base.trprint(x, *args, **kwargs)
 
     def __repr__(self):
         """
@@ -1476,4 +1474,4 @@ if __name__ == "__main__":
     from spatialmath import SE3
     x = SE3.Rand(N=6)
 
-    print(x)
+    x.printline('rpy/xyz', fmt='{:8.3g}')

@@ -1809,7 +1809,7 @@ def tr2adjoint(T):
         raise ValueError('bad argument')
         
 
-def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', degsym=True, unit='deg'):
+def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:.3g}', degsym=True, unit='deg'):
     """
     Compact display of SO(3) or SE(3) matrices
 
@@ -1821,7 +1821,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
     :type orient: str
     :param file: file to write formatted string to. [default, stdout]
     :type file: file object
-    :param fmt: conversion format for each number
+    :param fmt: conversion format for each number in the format used with ``format``
     :type fmt: str
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
@@ -1832,15 +1832,18 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
     The matrix is formatted and written to ``file`` and the
     string is returned.  To suppress writing to a file, set ``file=None``.
 
-   - ``trprint(R)`` displays the SO(3) rotation matrix in a compact
+   - ``trprint(R)`` prints the SO(3) rotation matrix to stdout in a compact
       single-line format:
 
         [LABEL:] ORIENTATION UNIT
 
-    - ``trprint(T)`` displays the SE(3) homogoneous transform in a compact
-      single-line format:
+    - ``trprint(T)`` prints the SE(3) homogoneous transform to stdout in a
+      compact single-line format:
 
         [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT
+
+    - ``trprint(X, file=None)`` as above but returns the string rather than 
+      printing to a file
 
     Orientation is expressed in one of several formats:
 
@@ -1864,7 +1867,9 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:8.2g}', deg
         - If the 'rpy' option is selected, then the particular angle sequence can be
           specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
           'zyx' is the default.
-        - Default formatting is for readable columns of data
+        - Default formatting is for compact display of data
+        - For tabular data set ``fmt`` to a fixed width format such as
+          ``fmt='{:.3g}'``
 
     :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
     :SymPy: not supported
