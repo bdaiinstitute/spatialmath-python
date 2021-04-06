@@ -11,7 +11,7 @@ from spatialmath.base.vectors import *       # lgtm [py/polluting-import]
 from spatialmath.base.symbolic import *      # lgtm [py/polluting-import]
 from spatialmath.base.animate import *       # lgtm [py/polluting-import]
 from spatialmath.base.graphics import *       # lgtm [py/polluting-import]
-from spatialmath.base.matrix import *       # lgtm [py/polluting-import]
+from spatialmath.base.numeric import *       # lgtm [py/polluting-import]
 
 __all__ = [
 # spatialmath.base.argcheck
@@ -152,7 +152,7 @@ __all__ = [
     'plot_sphere',
     'plot_ellipsoid',
     'isnotebook',
-# spatial.base.matrix
+# spatial.base.numeric
     'numjac',
 
  ]
