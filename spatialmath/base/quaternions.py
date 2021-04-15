@@ -53,6 +53,7 @@ def pure(v):
     v = base.getvector(v, 3)
     return np.r_[0, v]
 
+
 def qpositive(q):
     """
     Quaternion with positive scalar part
@@ -68,6 +69,7 @@ def qpositive(q):
         return -q
     else:
         return q
+
 
 def qnorm(q):
     r"""
@@ -125,7 +127,7 @@ def unit(q, tol=10):
         raise ValueError("cannot normalize (near) zero length quaternion")
     else:
         q /= nm
-    
+
     if q[0] >= 0:
         return q
     else:
@@ -216,7 +218,7 @@ def q2v(q):
         >>> print(q2v(q))
         >>> q = [-1 / sqrt(2), 0, 1 / sqrt(2), 0]
         >>> print(q2v(q))
-        
+
     .. warning:: There is no check that the passed value is a unit-quaternion.
 
     :seealso: :func:`~v2q`
@@ -490,11 +492,12 @@ def q2r(q):
     y = q[2]
     z = q[3]
     return np.array([[1 - 2 * (y ** 2 + z ** 2), 2 * (x * y - s * z), 2 * (x * z + s * y)],
-                     [2 * (x * y + s * z), 1 - 2 * (x ** 2 + z ** 2), 2 * (y * z - s * x)],
+                     [2 * (x * y + s * z), 1 - 2 *
+                      (x ** 2 + z ** 2), 2 * (y * z - s * x)],
                      [2 * (x * z - s * y), 2 * (y * z + s * x), 1 - 2 * (x ** 2 + y ** 2)]])
 
 
-def r2q(R, check=False, tol=100):
+def r2q(R, check=False, tol=100, order='sxyz'):
     """
     Convert SO(3) rotation matrix to unit-quaternion
 
@@ -504,6 +507,9 @@ def r2q(R, check=False, tol=100):
     :type check: bool
     :param tol: tolerance in units of eps
     :type tol: float
+    :param order: the order of the returned quaternion. Must be 'sxyz' or
+        'xyzs'. Defaults to 'sxyz'.
+    :type order: str
     :return: unit-quaternion as Euler parameters
     :rtype: ndarray(4)
     :raises ValueError: for non SO(3) argument
@@ -534,33 +540,38 @@ def r2q(R, check=False, tol=100):
     if not base.isrot(R, check=check, tol=tol):
         raise ValueError("Argument must be a valid SO(3) matrix")
 
-    t12p = (R[0,1] + R[1,0]) ** 2
-    t13p = (R[0,2] + R[2,0]) ** 2
-    t23p = (R[1,2] + R[2,1]) ** 2
+    t12p = (R[0, 1] + R[1, 0]) ** 2
+    t13p = (R[0, 2] + R[2, 0]) ** 2
+    t23p = (R[1, 2] + R[2, 1]) ** 2
 
-    t12m = (R[0,1] - R[1,0]) ** 2
-    t13m = (R[0,2] - R[2,0]) ** 2
-    t23m = (R[1,2] - R[2,1]) ** 2
+    t12m = (R[0, 1] - R[1, 0]) ** 2
+    t13m = (R[0, 2] - R[2, 0]) ** 2
+    t23m = (R[1, 2] - R[2, 1]) ** 2
 
-    d1 = ( R[0,0] + R[1,1] + R[2,2] + 1) ** 2
-    d2 = ( R[0,0] - R[1,1] - R[2,2] + 1) ** 2
-    d3 = (-R[0,0] + R[1,1] - R[2,2] + 1) ** 2
-    d4 = (-R[0,0] - R[1,1] + R[2,2] + 1) ** 2
+    d1 = (R[0, 0] + R[1, 1] + R[2, 2] + 1) ** 2
+    d2 = (R[0, 0] - R[1, 1] - R[2, 2] + 1) ** 2
+    d3 = (-R[0, 0] + R[1, 1] - R[2, 2] + 1) ** 2
+    d4 = (-R[0, 0] - R[1, 1] + R[2, 2] + 1) ** 2
 
-    e0 = math.sqrt(  d1 + t23m + t13m + t12m) / 4.0
-    e1 = math.sqrt(t23m +   d2 + t12p + t13p) / 4.0
-    e2 = math.sqrt(t13m + t12p +   d3 + t23p) / 4.0
-    e3 = math.sqrt(t12m + t13p + t23p +   d4) / 4.0
+    e0 = math.sqrt(d1 + t23m + t13m + t12m) / 4.0
+    e1 = math.sqrt(t23m + d2 + t12p + t13p) / 4.0
+    e2 = math.sqrt(t13m + t12p + d3 + t23p) / 4.0
+    e3 = math.sqrt(t12m + t13p + t23p + d4) / 4.0
 
     # transfer sign from rotation element differences
-    if R[2,1] < R[1,2]:
+    if R[2, 1] < R[1, 2]:
         e1 = -e1
-    if R[0,2] < R[2,0]:
+    if R[0, 2] < R[2, 0]:
         e2 = -e2
-    if R[1,0] < R[0,1]:
+    if R[1, 0] < R[0, 1]:
         e3 = -e3
-    
-    return np.r_[e0, e1, e2, e3]
+
+    if order == 'sxyz':
+        return np.r_[e0, e1, e2, e3]
+    elif order == 'xyzs':
+        return np.r_[e1, e2, e3, e0]
+    else:
+        raise ValueError("order is invalid, must be 'sxyz' or 'xyzs'")
 
 # def r2q_old(R, check=False, tol=100):
 #     """
@@ -688,7 +699,7 @@ def slerp(q0, q1, s, shortest=False):
     if shortest:
         if dotprod < 0:
             q0 = -q0   # pylint: disable=invalid-unary-operand-type
-            dotprod = -dotprod # pylint: disable=invalid-unary-operand-type
+            dotprod = -dotprod  # pylint: disable=invalid-unary-operand-type
 
     dotprod = np.clip(dotprod, -1, 1)  # Clip within domain of acos()
     theta = math.acos(dotprod)  # theta is the angle between rotation vectors
@@ -716,7 +727,8 @@ def rand():
         >>> from spatialmath.base import rand, qprint
         >>> qprint(rand())
     """
-    u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
+    u = np.random.uniform(
+        low=0, high=1, size=3)  # get 3 random numbers in [0,1]
     return np.r_[
         math.sqrt(1 - u[0]) * math.sin(2 * math.pi * u[1]),
         math.sqrt(1 - u[0]) * math.cos(2 * math.pi * u[1]),
@@ -848,7 +860,7 @@ def angle(q1, q2):
         >>> angle(q1, q2)
 
     :References:  
-    
+
     - Metrics for 3D rotations: comparison and analysis,
       Du Q. Huynh, % J.Math Imaging Vis. DOFI 10.1007/s10851-009-0161-2.
 
@@ -908,4 +920,5 @@ def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
 if __name__ == '__main__':  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_quaternions.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" /
+         "base" / "test_quaternions.py").read())  # pylint: disable=exec-used
