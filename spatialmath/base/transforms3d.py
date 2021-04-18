@@ -2215,7 +2215,7 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:.3g}', degs
 
 
 def _vec2s(fmt, v):
-    v = [x if np.abs(x) > 100 * _eps else 0.0 for x in v]
+    v = [x if np.abs(x) > 1e-6 else 0.0 for x in v]
     return ', '.join([fmt.format(x) for x in v])
 
 
