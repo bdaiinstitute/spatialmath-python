@@ -1365,22 +1365,12 @@ class SE3(SO3):
 
         `SE3.Tx(x)` is an SE(3) translation of ``x`` along the x-axis
 
-        Example::
+        Example:
+
+        .. runblock:: pycon
+
             >>> SE3.Tx(2)
-            SE3(array([[1., 0., 0., 2.],
-                       [0., 1., 0., 0.],
-                       [0., 0., 1., 0.],
-                       [0., 0., 0., 1.]]))
             >>> SE3.Tx([2,3])
-            SE3([
-            array([[1., 0., 0., 2.],
-                   [0., 1., 0., 0.],
-                   [0., 0., 1., 0.],
-                   [0., 0., 0., 1.]]),
-            array([[1., 0., 0., 3.],
-                   [0., 1., 0., 0.],
-                   [0., 0., 1., 0.],
-                   [0., 0., 0., 1.]]) ])
 
 
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
@@ -1400,22 +1390,13 @@ class SE3(SO3):
         :rtype: SE3 instance
 
         `SE3.Ty(y) is an SE(3) translation of ``y`` along the y-axis
-        Example::
+
+        Example:
+
+        .. runblock:: pycon
+
             >>> SE3.Ty(2)
-            SE3(array([[1., 0., 0., 0.],
-                       [0., 1., 0., 2.],
-                       [0., 0., 1., 0.],
-                       [0., 0., 0., 1.]]))
-            >>> SE3.Ty([2,3])
-            SE3([
-            array([[1., 0., 0., 0.],
-                   [0., 1., 0., 2.],
-                   [0., 0., 1., 0.],
-                   [0., 0., 0., 1.]]),
-            array([[1., 0., 0., 0.],
-                   [0., 1., 0., 3.],
-                   [0., 0., 1., 0.],
-                   [0., 0., 0., 1.]]) ])
+            >>> SE3.Tz([2,3])
 
 
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
@@ -1434,23 +1415,13 @@ class SE3(SO3):
         :rtype: SE3 instance
 
         `SE3.Tz(z)` is an SE(3) translation of ``z`` along the z-axis
-        Example::
-            >>> SE3.Tz(2)
-            SE3(array([[1., 0., 0., 0.],
-                       [0., 1., 0., 0.],
-                       [0., 0., 1., 2.],
-                       [0., 0., 0., 1.]]))
-            >>> SE3.Tz([2,3])
-            SE3([
-            array([[1., 0., 0., 0.],
-                   [0., 1., 0., 0.],
-                   [0., 0., 1., 2.],
-                   [0., 0., 0., 1.]]),
-            array([[1., 0., 0., 0.],
-                   [0., 1., 0., 0.],
-                   [0., 0., 1., 3.],
-                   [0., 0., 0., 1.]]) ])
 
+        Example:
+
+        .. runblock:: pycon
+
+            >>> SE3.Tz(2)
+            >>> SE3.Tz([2,3])
 
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
