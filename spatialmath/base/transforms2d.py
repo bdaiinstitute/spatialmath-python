@@ -654,6 +654,14 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
         >>> from spatialmath.base import *
         >>> T = transl2(1,2) @ trot2(0.3)
         >>> trprint2(T, file=None, label='T')
+        >>> trprint2(T, file=None, label='T', fmt='{:8.4g}')
+
+
+    .. notes::
+
+        - Default formatting is for compact display of data
+        - For tabular data set ``fmt`` to a fixed width format such as
+          ``fmt='{:.3g}'``
 
     :seealso: trprint
     """
@@ -670,7 +678,9 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
     angle = math.atan2(T[1, 0], T[0, 0])
     if unit == 'deg':
         angle *= 180.0 / math.pi
-    s += ' {} {}'.format(_vec2s(fmt, [angle]), unit)
+        s += ' {}°'.format(_vec2s(fmt, [angle]))
+    else:
+        s += ' {} rad'.format(_vec2s(fmt, [angle]))
 
     if file:
         print(s, file=file)
