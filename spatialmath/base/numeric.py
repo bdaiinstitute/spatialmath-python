@@ -1,7 +1,8 @@
 import numpy as np
 from spatialmath import base
 
-def numjac(f, x, dx=1e-8, tN=0, rN=0):
+
+def numjac(f, x, dx=1e-8, SO=0, SE=0):
     r"""
     Numerically compute Jacobian of function
 
@@ -11,8 +12,11 @@ def numjac(f, x, dx=1e-8, tN=0, rN=0):
     :type x: ndarray(n)
     :param dx: the numerical perturbation, defaults to 1e-8
     :type dx: float, optional
-    :param N: function returns SE(N) matrix, defaults to 0
-    :type N: int, optional
+    :param SO: function returns SO(N) matrix, defaults to 0
+    :type SO: int, optional
+    :param SE: function returns SE(N) matrix, defaults to 0
+    :type SE: int, optional
+
     :return: Jacobian matrix
     :rtype: ndarray(m,n)
 
@@ -21,9 +25,16 @@ def numjac(f, x, dx=1e-8, tN=0, rN=0):
 
     Uses first-order difference :math:`J[:,i] = (f(x + dx) - f(x)) / dx`.
 
-    If ``N`` is 2 or 3, then it is assumed that the function returns
-    an SE(N) matrix which is converted into a Jacobian column comprising the
-    translational Jacobian followed by the rotational Jacobian.
+    If ``SO`` is 2 or 3, then it is assumed that the function returns
+    an SO(N) matrix and the derivative is converted to a column vector
+    
+    .. math:
+    
+        \vex \dmat{R} \mat{R}^T
+        
+    If ``SE`` is 2 or 3, then it is assumed that the function returns
+    an SE(N) matrix and the derivative is converted to a colun vector.
+    
     """
     x = np.array(x)
     Jcol = []
@@ -34,13 +45,13 @@ def numjac(f, x, dx=1e-8, tN=0, rN=0):
         fi = np.array(f(x + I[:,i] * dx))
         Ji = (fi - f0) / dx
 
-        if tN > 0:
-            t = Ji[:tN,tN]
-            r = base.vex(Ji[:tN,:tN] @ J0[:tN,:tN].T)
+        if SE > 0:
+            t = Ji[:SE,SE]
+            r = base.vex(Ji[:SE,:SE] @ J0[:SE,:SE].T)
             Jcol.append(np.r_[t, r])
-        elif rN > 0:
-            R = Ji[:rN,:rN]
-            r = base.vex(R @ J0[:rN,:rN].T)
+        elif SO > 0:
+            R = Ji[:SO,:SO]
+            r = base.vex(R @ J0[:SO,:SO].T)
             Jcol.append(r)
         else:
             Jcol.append(Ji)
