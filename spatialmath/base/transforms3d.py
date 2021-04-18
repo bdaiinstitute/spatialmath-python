@@ -1800,21 +1800,21 @@ def rot2jac(R, representation='rpy-xyz'):
     :return: Jacobian matrix
     :rtype: ndarray(6,6)
 
-    Computes the transformation from spatial velocity, where rotation rate is
-    expressed as angular velocity, to analytical rates where the rotational part
-    is expressed as rate of change in some other representation
+    Computes the transformation from spatial velocity :math:`\nu`, where
+    rotation rate is expressed as angular velocity, to analytical rates
+    :math:`\dvec{x}` where the rotational part is expressed as rate of change in
+    some other representation
 
     .. math::
+        \dvec{x} = \mat{A} \vec{\nu}
 
-        \dvec{x} = \mat{A} \vec{\mu}
-
-    :math:`\mat{A}` is a block diagonal matrix
+    where :math:`\mat{A}` is a block diagonal 6x6 matrix
 
     ==================  ========================================
     ``representation``  Rotational representation
     ==================  ========================================
-    ``'rpy-xyz'``       RPY angular rates in XYZ order (default)
-    ``'rpy-zyx'``       RPY angular rates in XYZ order
+    ``'rpy/xyz'``       RPY angular rates in XYZ order (default)
+    ``'rpy/zyx'``       RPY angular rates in XYZ order
     ``'eul'``           Euler angular rates in ZYZ order
     ``'exp'``           exponential coordinate rates
     =================   ========================================
@@ -1829,14 +1829,14 @@ def rot2jac(R, representation='rpy-xyz'):
     if ishom(R):
         R = base.t2r(R)
     
-    R = R.T
+    # R = R.T
 
-    if representation == 'rpy-xyz':
-        rpy = tr2rpy(R, 'xyz')
-        A = rpy2jac(rpy, 'xyz')
-    elif representation == 'rpy-zyx':
-        rpy = tr2rpy(R, 'zyx')
-        A = rpy2jac(rpy, 'zyx')
+    if representation == 'rpy/xyz':
+        rpy = tr2rpy(R, order='xyz')
+        A = rpy2jac(rpy, order='xyz')
+    elif representation == 'rpy/zyx':
+        rpy = tr2rpy(R, order='zyx')
+        A = rpy2jac(rpy, order='zyx')
     elif representation == 'eul':
         eul = tr2eul(R)
         A = eul2jac(eul)
