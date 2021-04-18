@@ -1742,7 +1742,7 @@ def rpy2jac(angles, order='zyx'):
             ])
     return J
 
-def exp2jac(v, theta=None):
+def exp2jac(v):
     """
     Jacobian from exponential coordinate rates to angular velocity
 
