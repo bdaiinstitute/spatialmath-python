@@ -451,7 +451,8 @@ class Plucker(BasePoseList):
         :seealso: Plucker.ppd, Plucker.point
         """
         
-        return np.cross(self.v, self.w) / np.dot(self.w, self.w)    
+        return np.cross(self.v, self.w) / np.dot(self.w, self.w)
+
     @property
     def ppd(self):
         """
@@ -486,6 +487,9 @@ class Plucker(BasePoseList):
         """
         lam = base.getvector(lam, out='row')
         return self.pp.reshape((3,1)) + self.uw.reshape((3,1)) * lam
+
+    def lam(self, point):
+        return np.dot( point.flatten() - self.pp, self.uw)
 
     # ------------------------------------------------------------------------- #
     #  TESTS ON PLUCKER OBJECTS
@@ -596,7 +600,6 @@ class Plucker(BasePoseList):
         l1 = self
         return l1.isparallel(l2)
 
-    
     def __xor__(self, l2):  # pylint: disable=no-self-argument
         
         """
@@ -853,7 +856,7 @@ class Plucker(BasePoseList):
             # P = -(np.cross(line.v, plane.n) + plane.d * line.w) / den
             p = (np.cross(self.v, plane.n) - plane.d * self.w) / den
             
-            t = np.dot( self.pp - p, plane.n)
+            t = self.lam(p)
             return namedtuple('intersect_plane', 'p lam')(p, t)
         else:
             return None

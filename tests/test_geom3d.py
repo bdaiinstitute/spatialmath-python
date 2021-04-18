@@ -239,7 +239,7 @@ class PluckerTest(unittest.TestCase):
         # side
         pass
     
-    def test_point(self):
+    def test_contains(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
         L = Plucker.PQ(P, Q)
@@ -247,7 +247,16 @@ class PluckerTest(unittest.TestCase):
         self.assertTrue( L.contains(L.point(0)) )
         self.assertTrue( L.contains(L.point(1)) )
         self.assertTrue( L.contains(L.point(-1)) )
-    
+
+    def test_point(self):
+        P = [2, 3, 7]
+        Q = [2, 1, 0]
+        L = Plucker.PQ(P, Q)
+        
+        nt.assert_array_almost_equal(L.point(0).flatten(), L.pp)
+
+        for x in (-2, 0, 3):
+            nt.assert_array_almost_equal(L.lam(L.point(x)), x)
     
     def test_char(self):
         P = [2, 3, 7]
@@ -256,6 +265,7 @@ class PluckerTest(unittest.TestCase):
         
         s = str(L)
         self.assertIsInstance(s, str)
+
 
     def test_plane(self):
         
