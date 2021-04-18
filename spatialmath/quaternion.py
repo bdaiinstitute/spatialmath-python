@@ -216,6 +216,9 @@ class Quaternion(BasePoseList):
             - 1, return a NumPy array shape=(4,)
             - N>1, return a NumPy array shape=(N,4).
 
+        The quaternion coefficients are in the order (s, vx, vy, vz), ie. with
+        the scalar (real part) first.
+
         Example:
 
         .. runblock:: pycon
@@ -223,6 +226,36 @@ class Quaternion(BasePoseList):
             >>> from spatialmath import Quaternion
             >>> Quaternion([1,2,3,4]).vec
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec
+        """
+        if len(self) == 1:
+            return self._A
+        else:
+            return np.array([q._A for q in self])
+
+    @property
+    def vec_xyzs(self):
+        """
+        Quaternion as a vector
+
+        :return: quaternion expressed as a 4-vector
+        :rtype: numpy ndarray, shape=(4,)
+
+        ``q.vec`` is the quaternion as a vector.  If `len(q)` is:
+
+            - 1, return a NumPy array shape=(4,)
+            - N>1, return a NumPy array shape=(N,4).
+
+        The quaternion coefficients are in the order (vx, vy, vz, s), ie. with
+        the scalar (real part) last. This is useful when exporting to other
+        packages like three.js or pybullet.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Quaternion
+            >>> Quaternion([1,2,3,4]).vec_xyzs
+            >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec_xyzs
         """
         if len(self) == 1:
             return self._A
