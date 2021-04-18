@@ -296,9 +296,13 @@ def transl(x, y=None, z=None):
     elif base.isvector(x, 3):
         t = base.getvector(x, 3, out='array')
     elif base.ismatrix(x, (4, 4)):
+        # SE(3) -> R3
         return x[:3, 3]
     else:
         raise ValueError('bad argument')
+
+    if t.dtype != 'O':
+        t = t.astype('float64')
     
     T = np.identity(4, dtype=t.dtype)
     T[:3, 3] = t
