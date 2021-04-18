@@ -1035,7 +1035,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
                 rpy[2] = math.atan2(R[2, 1], R[1, 1])   # R+Y
             else:
                 rpy[2] = -math.atan2(R[1, 0], R[2, 0])   # R-Y
-            rpy[1] = math.asin(R[0, 2])
+            rpy[1] = math.asin(np.clip(R[0, 2], -1.0, 1.0))
         else:
             rpy[0] = -math.atan2(R[0, 1], R[0, 0])
             rpy[2] = -math.atan2(R[1, 2], R[2, 2])
@@ -1060,7 +1060,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
                 rpy[2] = -math.atan2(R[0, 1], R[0, 2])  # R-Y
             else:
                 rpy[2] = math.atan2(-R[0, 1], -R[0, 2])  # R+Y
-            rpy[1] = -math.asin(R[2, 0])
+            rpy[1] = -math.asin(np.clip(R[2, 0], -1.0, 1.0))
         else:
             rpy[0] = math.atan2(R[2, 1], R[2, 2])  # R
             rpy[2] = math.atan2(R[1, 0], R[0, 0])  # Y
@@ -1084,7 +1084,7 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
                 rpy[2] = -math.atan2(R[2, 0], R[0, 0])   # R-Y
             else:
                 rpy[2] = math.atan2(-R[2, 0], -R[2, 1])   # R+Y
-            rpy[1] = -math.asin(R[1, 2])    # P
+            rpy[1] = -math.asin(np.clip(R[1, 2], -1.0, 1.0))    # P
         else:
             rpy[0] = math.atan2(R[1, 0], R[1, 1])
             rpy[2] = math.atan2(R[0, 2], R[2, 2])
