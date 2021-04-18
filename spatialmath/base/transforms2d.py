@@ -193,20 +193,23 @@ def transl2(x, y=None):
         function.
     """
 
-    if base.isscalar(x):
+    if base.isscalar(x) and base.isscalar(y):
+        # (x, y) -> SE(2)
         t = np.r_[x, y]
-        T = np.identity(3, dtype=t.dtype)
-        T[:2, 2] = t
-        return T
     elif base.isvector(x, 2):
-        T = np.identity(3)
-        T[:2, 2] = base.getvector(x, 2)
-        return T
+        # R2 -> SE(2)
+        t = base.getvector(x, 2)
     elif base.ismatrix(x, (3, 3)):
+        # SE(2) -> R2
         return x[:2, 2]
     else:
         raise ValueError('bad argument')
 
+    if t.dtype != 'O':
+        t = t.astype('float64')
+    T = np.identity(3, dtype=t.dtype)
+    T[:2, 2] = t
+    return T
 
 def ishom2(T, check=False):
     """
