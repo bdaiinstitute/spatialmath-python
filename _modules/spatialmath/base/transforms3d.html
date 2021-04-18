@@ -462,9 +462,13 @@
     <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+        <span class="c1"># SE(3) -&gt; R3</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
     
     <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
@@ -824,7 +828,89 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">angvec2r</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">))</span></div>
 
+<span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
+<div class="viewcode-block" id="exp2r"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.exp2r">[docs]</a><span class="k">def</span> <span class="nf">exp2r</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an SO(3) rotation matrix from exponential coordinates</span>
+
+<span class="sd">    :param w: exponential coordinate vector</span>
+<span class="sd">    :type w: array_like(3)</span>
+<span class="sd">    :return: SO(3) rotation matrix</span>
+<span class="sd">    :rtype: ndarray(3,3)</span>
+<span class="sd">    :raises ValueError: bad arguments</span>
+
+<span class="sd">    ``exp2r(w)`` is an SO(3) orthonormal rotation matrix</span>
+<span class="sd">    equivalent to a rotation of :math:`\| w \|` about the vector :math:`\hat{w}`.</span>
+
+<span class="sd">    If ``w`` is zero then result is the identity matrix.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; eulervec2r([0.3, 0, 0])  # rotx(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; angvec2r([0, 0, 0])      # rotx(0)</span>
+
+<span class="sd">    .. note:: Exponential coordinates are also known as an Euler vector</span>
+
+<span class="sd">    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`</span>
+
+<span class="sd">    :SymPy: not supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Arguments must be a 3-vector&quot;</span><span class="p">)</span>
+
+    <span class="n">v</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Rodrigue&#39;s equation</span>
+
+    <span class="n">sk</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span>
+    <span class="k">return</span> <span class="n">R</span></div>
+
+<div class="viewcode-block" id="exp2tr"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.exp2tr">[docs]</a><span class="k">def</span> <span class="nf">exp2tr</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an SE(3) pure rotation matrix from exponential coordinates</span>
+
+<span class="sd">    :param w: exponential coordinate vector</span>
+<span class="sd">    :type w: array_like(3)</span>
+<span class="sd">    :return: SO(3) rotation matrix</span>
+<span class="sd">    :rtype: ndarray(3,3)</span>
+<span class="sd">    :raises ValueError: bad arguments</span>
+
+<span class="sd">    ``exp2r(w)`` is an SO(3) orthonormal rotation matrix</span>
+<span class="sd">    equivalent to a rotation of :math:`\| w \|` about the vector :math:`\hat{w}`.</span>
+
+<span class="sd">    If ``w`` is zero then result is the identity matrix.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; eulervec2r([0.3, 0, 0])  # rotx(0.3)</span>
+<span class="sd">        &gt;&gt;&gt; angvec2r([0, 0, 0])      # rotx(0)</span>
+
+<span class="sd">    .. note:: Exponential coordinates are also known as an Euler vector</span>
+
+<span class="sd">    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`</span>
+
+<span class="sd">    :SymPy: not supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Arguments must be a 3-vector&quot;</span><span class="p">)</span>
+
+    <span class="n">v</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># Rodrigue&#39;s equation</span>
+
+    <span class="n">sk</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span>
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 <div class="viewcode-block" id="oa2r"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.oa2r">[docs]</a><span class="k">def</span> <span class="nf">oa2r</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1115,7 +1201,7 @@
                 <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>   <span class="c1"># R+Y</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>   <span class="c1"># R-Y</span>
-            <span class="n">rpy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+            <span class="n">rpy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rpy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
             <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -1140,7 +1226,7 @@
                 <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># R-Y</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># R+Y</span>
-            <span class="n">rpy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">rpy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rpy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># R</span>
             <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># Y</span>
@@ -1164,7 +1250,7 @@
                 <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>   <span class="c1"># R-Y</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="o">-</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>   <span class="c1"># R+Y</span>
-            <span class="n">rpy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>    <span class="c1"># P</span>
+            <span class="n">rpy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>    <span class="c1"># P</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rpy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
             <span class="n">rpy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -1822,7 +1908,7 @@
             <span class="p">])</span>
     <span class="k">return</span> <span class="n">J</span></div>
 
-<div class="viewcode-block" id="exp2jac"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.exp2jac">[docs]</a><span class="k">def</span> <span class="nf">exp2jac</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="exp2jac"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.exp2jac">[docs]</a><span class="k">def</span> <span class="nf">exp2jac</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Jacobian from exponential coordinate rates to angular velocity</span>
 
@@ -1853,14 +1939,18 @@
 
 <span class="sd">    :seealso: :func:`eul2jac`, :func:`rpy2jac`, :func:`rot2jac`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">trexp</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+
+    <span class="n">vn</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">v</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">R</span> <span class="o">=</span> <span class="n">trexp</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
     <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">R</span>
     <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-        <span class="n">dRdvi</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">+</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">z</span><span class="p">[:,</span><span class="n">i</span><span class="p">]))</span> <span class="o">/</span> <span class="n">theta</span>
+        <span class="n">dRdvi</span> <span class="o">=</span> <span class="n">vn</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span> <span class="o">+</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="n">z</span><span class="p">[:,</span><span class="n">i</span><span class="p">]))</span> <span class="o">/</span> <span class="n">theta</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">vex</span><span class="p">(</span><span class="n">dRdvi</span><span class="p">)</span>
         <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">A</span><span class="p">]</span><span class="o">.</span><span class="n">T</span></div>
@@ -1876,21 +1966,21 @@
 <span class="sd">    :return: Jacobian matrix</span>
 <span class="sd">    :rtype: ndarray(6,6)</span>
 
-<span class="sd">    Computes the transformation from spatial velocity, where rotation rate is</span>
-<span class="sd">    expressed as angular velocity, to analytical rates where the rotational part</span>
-<span class="sd">    is expressed as rate of change in some other representation</span>
+<span class="sd">    Computes the transformation from spatial velocity :math:`\nu`, where</span>
+<span class="sd">    rotation rate is expressed as angular velocity, to analytical rates</span>
+<span class="sd">    :math:`\dvec{x}` where the rotational part is expressed as rate of change in</span>
+<span class="sd">    some other representation</span>
 
 <span class="sd">    .. math::</span>
+<span class="sd">        \dvec{x} = \mat{A} \vec{\nu}</span>
 
-<span class="sd">        \dvec{x} = \mat{A} \vec{\mu}</span>
-
-<span class="sd">    :math:`\mat{A}` is a block diagonal matrix</span>
+<span class="sd">    where :math:`\mat{A}` is a block diagonal 6x6 matrix</span>
 
 <span class="sd">    ==================  ========================================</span>
 <span class="sd">    ``representation``  Rotational representation</span>
 <span class="sd">    ==================  ========================================</span>
-<span class="sd">    ``&#39;rpy-xyz&#39;``       RPY angular rates in XYZ order (default)</span>
-<span class="sd">    ``&#39;rpy-zyx&#39;``       RPY angular rates in XYZ order</span>
+<span class="sd">    ``&#39;rpy/xyz&#39;``       RPY angular rates in XYZ order (default)</span>
+<span class="sd">    ``&#39;rpy/zyx&#39;``       RPY angular rates in XYZ order</span>
 <span class="sd">    ``&#39;eul&#39;``           Euler angular rates in ZYZ order</span>
 <span class="sd">    ``&#39;exp&#39;``           exponential coordinate rates</span>
 <span class="sd">    =================   ========================================</span>
@@ -1905,14 +1995,14 @@
     <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
     
-    <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span>
+    <span class="c1"># R = R.T</span>
 
-    <span class="k">if</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy-xyz&#39;</span><span class="p">:</span>
-        <span class="n">rpy</span> <span class="o">=</span> <span class="n">tr2rpy</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">rpy2jac</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy-zyx&#39;</span><span class="p">:</span>
-        <span class="n">rpy</span> <span class="o">=</span> <span class="n">tr2rpy</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="s1">&#39;zyx&#39;</span><span class="p">)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">rpy2jac</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="s1">&#39;zyx&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy/xyz&#39;</span><span class="p">:</span>
+        <span class="n">rpy</span> <span class="o">=</span> <span class="n">tr2rpy</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">rpy2jac</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy/zyx&#39;</span><span class="p">:</span>
+        <span class="n">rpy</span> <span class="o">=</span> <span class="n">tr2rpy</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">rpy2jac</span><span class="p">(</span><span class="n">rpy</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;zyx&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;eul&#39;</span><span class="p">:</span>
         <span class="n">eul</span> <span class="o">=</span> <span class="n">tr2eul</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">eul2jac</span><span class="p">(</span><span class="n">eul</span><span class="p">)</span>
@@ -1925,7 +2015,209 @@
     <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="angvelxform"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.angvelxform">[docs]</a><span class="k">def</span> <span class="nf">angvelxform</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s1">&#39;rpy/xyz&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Angular velocity transformation</span>
 
+<span class="sd">    :param 𝚪: angular representation</span>
+<span class="sd">    :type 𝚪: ndarray(3)</span>
+<span class="sd">    :param representation: defaults to &#39;rpy-xyz&#39;</span>
+<span class="sd">    :type representation: str, optional</span>
+<span class="sd">    :param inverse: compute mapping from analytical rates to angular velocity</span>
+<span class="sd">    :type inverse: bool</span>
+<span class="sd">    :param full: return 6x6 transform for spatial velocity</span>
+<span class="sd">    :type full: bool</span>
+<span class="sd">    :return: angular velocity transformation matrix</span>
+<span class="sd">    :rtype: ndarray(6,6) or ndarray(3,3)</span>
+
+<span class="sd">    Computes the transformation from spatial velocity, where rotation rate is</span>
+<span class="sd">    expressed as angular velocity, to analytical rates where the rotational part</span>
+<span class="sd">    is expressed as rate of change in some other representation</span>
+
+<span class="sd">    Computes the transformation from spatial velocity :math:`\nu`, where</span>
+<span class="sd">    rotation rate is expressed as angular velocity, to analytical rates</span>
+<span class="sd">    :math:`\dvec{x}` where the rotational part is expressed as rate of change in</span>
+<span class="sd">    some other representation</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \dvec{x} = \mat{A} \vec{\nu}</span>
+
+<span class="sd">    where :math:`\mat{A}` is a block diagonal 6x6 matrix</span>
+
+<span class="sd">    ==================  ========================================</span>
+<span class="sd">    ``representation``  Rotational representation</span>
+<span class="sd">    ==================  ========================================</span>
+<span class="sd">    ``&#39;rpy/xyz&#39;``       RPY angular rates in XYZ order (default)</span>
+<span class="sd">    ``&#39;rpy/zyx&#39;``       RPY angular rates in XYZ order</span>
+<span class="sd">    ``&#39;eul&#39;``           Euler angular rates in ZYZ order</span>
+<span class="sd">    ``&#39;exp&#39;``           exponential coordinate rates</span>
+<span class="sd">    =================   ========================================</span>
+
+<span class="sd">    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`</span>
+<span class="sd">        - This performs the inverse mapping</span>
+<span class="sd">        - This maps a 6-vector, the others map a 3-vector</span>
+
+<span class="sd">https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf</span>
+<span class="sd">    :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy/xyz&#39;</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> 
+                <span class="p">[</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)],</span> 
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)],</span> 
+                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">)]</span>
+                <span class="p">])</span>
+
+
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy/zyx&#39;</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+                <span class="p">[</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;eul&#39;</span><span class="p">:</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)],</span> 
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> 
+                <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]</span>
+                <span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="p">[</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="mi">1</span><span class="p">],</span> 
+                <span class="p">[</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+                <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="p">])</span>
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;exp&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">UserWarning</span><span class="p">(</span><span class="s1">&#39;not implemented yet&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad representation specified&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">A</span></div>
+
+<div class="viewcode-block" id="angvelxform_dot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.angvelxform_dot">[docs]</a><span class="k">def</span> <span class="nf">angvelxform_dot</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s1">&#39;rpy/xyz&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Angular acceleratipn transformation</span>
+
+<span class="sd">    :param 𝚪: angular representation</span>
+<span class="sd">    :type 𝚪: ndarray(3)</span>
+<span class="sd">    :param 𝚪d: angular representation rate</span>
+<span class="sd">    :type 𝚪d: ndarray(3)</span>
+<span class="sd">    :param representation: defaults to &#39;rpy-xyz&#39;</span>
+<span class="sd">    :type representation: str, optional</span>
+<span class="sd">    :param full: return 6x6 transform for spatial velocity</span>
+<span class="sd">    :type full: bool</span>
+<span class="sd">    :return: angular velocity transformation matrix</span>
+<span class="sd">    :rtype: ndarray(6,6) or ndarray(3,3)</span>
+
+<span class="sd">    Computes the transformation from spatial velocity, where rotation rate is</span>
+<span class="sd">    expressed as angular velocity, to analytical rates where the rotational part</span>
+<span class="sd">    is expressed as rate of change in some other representation</span>
+
+<span class="sd">    Computes the transformation from spatial velocity :math:`\nu`, where</span>
+<span class="sd">    rotation rate is expressed as angular velocity, to analytical rates</span>
+<span class="sd">    :math:`\dvec{x}` where the rotational part is expressed as rate of change in</span>
+<span class="sd">    some other representation</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \ddvec{x} = \mat{A}_d \dvec{\nu}</span>
+
+<span class="sd">    where :math:`\mat{A}_d` is a block diagonal 6x6 matrix</span>
+
+<span class="sd">    ==================  ========================================</span>
+<span class="sd">    ``representation``  Rotational representation</span>
+<span class="sd">    ==================  ========================================</span>
+<span class="sd">    ``&#39;rpy/xyz&#39;``       RPY angular rates in XYZ order (default)</span>
+<span class="sd">    ``&#39;rpy/zyx&#39;``       RPY angular rates in XYZ order</span>
+<span class="sd">    ``&#39;eul&#39;``           Euler angular rates in ZYZ order</span>
+<span class="sd">    ``&#39;exp&#39;``           exponential coordinate rates</span>
+<span class="sd">    =================   ========================================</span>
+
+<span class="sd">    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`</span>
+<span class="sd">        - This performs the inverse mapping</span>
+<span class="sd">        - This maps a 6-vector, the others map a 3-vector</span>
+
+<span class="sd">https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf</span>
+<span class="sd">    :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy/xyz&#39;</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">alpha_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">beta_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gamma_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">Ad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="p">(</span><span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)],</span> 
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)],</span> 
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="o">-</span><span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">)]</span>
+            <span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;rpy/zyx&#39;</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">alpha_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">beta_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">gamma_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">Ad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[(</span><span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="p">(</span><span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="o">-</span><span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="o">-</span><span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">beta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">gamma_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;eul&#39;</span><span class="p">:</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">𝚪</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">phi_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">theta_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">psi_dot</span> <span class="o">=</span> <span class="n">𝚪d</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="n">phi_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">theta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">phi_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">theta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="o">-</span><span class="n">phi_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="o">-</span><span class="n">phi_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span> 
+            <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">phi_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">+</span> <span class="n">theta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="p">(</span><span class="n">phi_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">-</span> <span class="n">theta_dot</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="p">])</span>
+    
+    <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;exp&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">UserWarning</span><span class="p">(</span><span class="s1">&#39;not implemented yet&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad representation specified&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">A</span></div>
 
 <div class="viewcode-block" id="tr2adjoint"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2adjoint">[docs]</a><span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2089,7 +2381,7 @@
 
 
 <span class="k">def</span> <span class="nf">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-6</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
     <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
 
 
@@ -2410,7 +2702,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Apr-2021.
+        Last updated on 18-Apr-2021.
       </span>
 
     </p>

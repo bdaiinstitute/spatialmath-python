@@ -368,24 +368,22 @@ rotation for this SO(2) matrix.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SE(2) transform matrix or the translation elements of a homogeneous transform</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3)</p>
+<dd class="field-even"><p>SE(2) transform matrix or the translation elements of a homogeneous
+transform :rtype: ndarray(3,3)</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2([X,</span> <span class="pre">Y])</span></code> is an SE(2) homogeneous transform (3x3) representing a
-pure translation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2([X,</span> <span class="pre">Y])</span></code> is an SE(2) homogeneous transform (3x3)
+representing a pure translation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2(</span> <span class="pre">V</span> <span class="pre">)</span></code> as above but the translation is given by a 2-element
 list, dict, or a numpy array, row or column vector.</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="go">array([[1, 0, 3],</span>
-<span class="go">       [0, 1, 4],</span>
-<span class="go">       [0, 0, 1]])</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 <span class="go">array([[1., 0., 3.],</span>
 <span class="go">       [0., 1., 4.],</span>
@@ -818,7 +816,7 @@ between R0 (2x2) when S=0 and R1 (2x2) when S=1.</p></li>
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms2d.trprint2">
-<code class="sig-name descname"><span class="pre">trprint2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">T</span></em>, <em class="sig-param"><span class="pre">label=None</span></em>, <em class="sig-param"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></em>, <em class="sig-param"><span class="pre">fmt='{:8.2g}'</span></em>, <em class="sig-param"><span class="pre">unit='deg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">trprint2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">T</span></em>, <em class="sig-param"><span class="pre">label=None</span></em>, <em class="sig-param"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></em>, <em class="sig-param"><span class="pre">fmt='{:.3g}'</span></em>, <em class="sig-param"><span class="pre">unit='deg'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compact display of SE(2) or SO(2) matrices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -856,7 +854,9 @@ single-line format and returns the string:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
-<span class="go">&#39;T: t =        1,        2;       17 deg&#39;</span>
+<span class="go">&#39;T: t = 1, 2; 17.2°&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:8.4g}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="go">&#39;T: t =        1,        2;    17.19°&#39;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -964,7 +964,7 @@ tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], mo
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Apr-2021.
+        Last updated on 18-Apr-2021.
       </span>
 
     </p>

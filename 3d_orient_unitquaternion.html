@@ -515,11 +515,11 @@ values.</p></li>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span> <span class="k">as</span> <span class="n">UQ</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
-<span class="go"> 0.3133 &lt;&lt; -0.2483, -0.6576, -0.6385 &gt;&gt;</span>
+<span class="go"> 0.4676 &lt;&lt; -0.1619, -0.4433, -0.7474 &gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">UQ</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go"> 0.0836 &lt;&lt; -0.1272,  0.9800, -0.1279 &gt;&gt;</span>
-<span class="go"> 0.9402 &lt;&lt;  0.1954, -0.2173,  0.1748 &gt;&gt;</span>
-<span class="go"> 0.0234 &lt;&lt; -0.1530, -0.9080,  0.3894 &gt;&gt;</span>
+<span class="go"> 0.2378 &lt;&lt; -0.0332, -0.9512,  0.1941 &gt;&gt;</span>
+<span class="go"> 0.6332 &lt;&lt; -0.2309,  0.2788,  0.6841 &gt;&gt;</span>
+<span class="go"> 0.7883 &lt;&lt;  0.4252, -0.2082, -0.3930 &gt;&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2200,11 +2200,46 @@ vector part.</p>
 <li><p>N&gt;1, return a NumPy array shape=(N,4).</p></li>
 </ul>
 </div></blockquote>
+<p>The quaternion coefficients are in the order (s, vx, vy, vz), ie. with
+the scalar (real part) first.</p>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vec</span>
 <span class="go">array([1, 2, 3, 4])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">vec</span>
+<span class="go">array([[1, 2, 3, 4],</span>
+<span class="go">       [5, 6, 7, 8]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="spatialmath.quaternion.UnitQuaternion.vec_xyzs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vec_xyzs</span></code><a class="headerlink" href="#spatialmath.quaternion.UnitQuaternion.vec_xyzs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quaternion as a vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>quaternion expressed as a 4-vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy ndarray, shape=(4,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.vec</span></code> is the quaternion as a vector.  If <cite>len(q)</cite> is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1, return a NumPy array shape=(4,)</p></li>
+<li><p>N&gt;1, return a NumPy array shape=(N,4).</p></li>
+</ul>
+</div></blockquote>
+<p>The quaternion coefficients are in the order (vx, vy, vz, s), ie. with
+the scalar (real part) last. This is useful when exporting to other
+packages like three.js or pybullet.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vec_xyzs</span>
+<span class="go">array([1, 2, 3, 4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">vec_xyzs</span>
 <span class="go">array([[1, 2, 3, 4],</span>
 <span class="go">       [5, 6, 7, 8]])</span>
 </pre></div>
@@ -2472,7 +2507,7 @@ as the unit quaternion <code class="docutils literal notranslate"><span class="p
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Apr-2021.
+        Last updated on 18-Apr-2021.
       </span>
 
     </p>

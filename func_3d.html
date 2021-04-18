@@ -504,10 +504,10 @@ list, dict, or a numpy array, row or column vector.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transl</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="go">array([[1, 0, 0, 3],</span>
-<span class="go">       [0, 1, 0, 4],</span>
-<span class="go">       [0, 0, 1, 5],</span>
-<span class="go">       [0, 0, 0, 1]])</span>
+<span class="go">array([[1., 0., 0., 3.],</span>
+<span class="go">       [0., 1., 0., 4.],</span>
+<span class="go">       [0., 0., 1., 5.],</span>
+<span class="go">       [0., 0., 0., 1.]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">transl</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="go">array([[1., 0., 0., 3.],</span>
 <span class="go">       [0., 1., 0., 4.],</span>
@@ -992,6 +992,84 @@ equivalent to a rotation of <code class="docutils literal notranslate"><span cla
 <li><p>If <code class="docutils literal notranslate"><span class="pre">θ</span> <span class="pre">~=</span> <span class="pre">0</span></code> then <code class="docutils literal notranslate"><span class="pre">V</span></code> must have a finite length.</p></li>
 <li><p>The translational part is zero.</p></li>
 </ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.angvec2r" title="spatialmath.base.transforms3d.angvec2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec2r()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.tr2angvec" title="spatialmath.base.transforms3d.tr2angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2angvec()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.exp2r">
+<code class="sig-name descname"><span class="pre">exp2r</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#exp2r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.exp2r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an SO(3) rotation matrix from exponential coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>w</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – exponential coordinate vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SO(3) rotation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">exp2r(w)</span></code> is an SO(3) orthonormal rotation matrix
+equivalent to a rotation of <span class="math notranslate nohighlight">\(\| w \|\)</span> about the vector <span class="math notranslate nohighlight">\(\hat{w}\)</span>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">w</span></code> is zero then result is the identity matrix.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">TypeError: angvec2r() missing 1 required positional argument: &#39;v&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Exponential coordinates are also known as an Euler vector</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.angvec2r" title="spatialmath.base.transforms3d.angvec2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec2r()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.tr2angvec" title="spatialmath.base.transforms3d.tr2angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2angvec()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.exp2tr">
+<code class="sig-name descname"><span class="pre">exp2tr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#exp2tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.exp2tr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an SE(3) pure rotation matrix from exponential coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>w</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – exponential coordinate vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SO(3) rotation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">exp2r(w)</span></code> is an SO(3) orthonormal rotation matrix
+equivalent to a rotation of <span class="math notranslate nohighlight">\(\| w \|\)</span> about the vector <span class="math notranslate nohighlight">\(\hat{w}\)</span>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">w</span></code> is zero then result is the identity matrix.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">TypeError: angvec2r() missing 1 required positional argument: &#39;v&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Exponential coordinates are also known as an Euler vector</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -1847,7 +1925,7 @@ from <code class="docutils literal notranslate"><span class="pre">𝚪</span></c
 
 <dl class="py function">
 <dt id="spatialmath.base.transforms3d.exp2jac">
-<code class="sig-name descname"><span class="pre">exp2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#exp2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.exp2jac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">exp2jac</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#exp2jac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.exp2jac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Jacobian from exponential coordinate rates to angular velocity</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1915,15 +1993,20 @@ rates to angular velocity at the operating point <code class="docutils literal n
 <dd class="field-even"><p>ndarray(6,6)</p>
 </dd>
 </dl>
-<p>Computes the transformation from spatial velocity, where rotation rate is
-expressed as angular velocity, to analytical rates where the rotational part
-is expressed as rate of change in some other representation</p>
+<p>Computes the transformation from spatial velocity :math:<a href="#id1"><span class="problematic" id="id2">`</span></a></p>
+</div></blockquote>
+<dl>
+<dt>u`, where</dt><dd><p>rotation rate is expressed as angular velocity, to analytical rates
+<span class="math notranslate nohighlight">\(\dvec{x}\)</span> where the rotational part is expressed as rate of change in
+some other representation</p>
 <div class="math notranslate nohighlight">
 \[\dvec{x} = \mat{A} \]</div>
-</div></blockquote>
-<p>ec{mu}</p>
+</dd>
+</dl>
+<p>ec{
+u}</p>
 <blockquote>
-<div><p><span class="math notranslate nohighlight">\(\mat{A}\)</span> is a block diagonal matrix</p>
+<div><p>where <span class="math notranslate nohighlight">\(\mat{A}\)</span> is a block diagonal 6x6 matrix</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Compared to <a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a>
@@ -1936,6 +2019,147 @@ is expressed as rate of change in some other representation</p>
 </dd>
 </dl>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.angvelxform">
+<code class="sig-name descname"><span class="pre">angvelxform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Γ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy/xyz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#angvelxform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.angvelxform" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Angular velocity transformation</p>
+<dl class="field-list simple">
+<dt class="field-odd">param 𝚪</dt>
+<dd class="field-odd"><p>angular representation</p>
+</dd>
+<dt class="field-even">type 𝚪</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+<dt class="field-odd">param representation</dt>
+<dd class="field-odd"><p>defaults to ‘rpy-xyz’</p>
+</dd>
+<dt class="field-even">type representation</dt>
+<dd class="field-even"><p>str, optional</p>
+</dd>
+<dt class="field-odd">param inverse</dt>
+<dd class="field-odd"><p>compute mapping from analytical rates to angular velocity</p>
+</dd>
+<dt class="field-even">type inverse</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">param full</dt>
+<dd class="field-odd"><p>return 6x6 transform for spatial velocity</p>
+</dd>
+<dt class="field-even">type full</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>angular velocity transformation matrix</p>
+</dd>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>ndarray(6,6) or ndarray(3,3)</p>
+</dd>
+</dl>
+<p>Computes the transformation from spatial velocity, where rotation rate is
+expressed as angular velocity, to analytical rates where the rotational part
+is expressed as rate of change in some other representation</p>
+<p>Computes the transformation from spatial velocity :math:<a href="#id3"><span class="problematic" id="id4">`</span></a></p>
+</div></blockquote>
+<dl>
+<dt>u`, where</dt><dd><p>rotation rate is expressed as angular velocity, to analytical rates
+<span class="math notranslate nohighlight">\(\dvec{x}\)</span> where the rotational part is expressed as rate of change in
+some other representation</p>
+<div class="math notranslate nohighlight">
+\[\dvec{x} = \mat{A} \]</div>
+</dd>
+</dl>
+<p>ec{
+u}</p>
+<blockquote>
+<div><p>where <span class="math notranslate nohighlight">\(\mat{A}\)</span> is a block diagonal 6x6 matrix</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Compared to <a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a>
+- This performs the inverse mapping
+- This maps a 6-vector, the others map a 3-vector</p>
+</div>
+</div></blockquote>
+<dl class="simple">
+<dt><a class="reference external" href="https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf">https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf</a></dt><dd><dl class="field-list simple">
+<dt class="field-odd">seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.rot2jac" title="spatialmath.base.transforms3d.rot2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rot2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="spatialmath.base.transforms3d.angvelxform_dot">
+<code class="sig-name descname"><span class="pre">angvelxform_dot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Γ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Γd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpy/xyz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#angvelxform_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.angvelxform_dot" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Angular acceleratipn transformation</p>
+<dl class="field-list simple">
+<dt class="field-odd">param 𝚪</dt>
+<dd class="field-odd"><p>angular representation</p>
+</dd>
+<dt class="field-even">type 𝚪</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+<dt class="field-odd">param 𝚪d</dt>
+<dd class="field-odd"><p>angular representation rate</p>
+</dd>
+<dt class="field-even">type 𝚪d</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+<dt class="field-odd">param representation</dt>
+<dd class="field-odd"><p>defaults to ‘rpy-xyz’</p>
+</dd>
+<dt class="field-even">type representation</dt>
+<dd class="field-even"><p>str, optional</p>
+</dd>
+<dt class="field-odd">param full</dt>
+<dd class="field-odd"><p>return 6x6 transform for spatial velocity</p>
+</dd>
+<dt class="field-even">type full</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>angular velocity transformation matrix</p>
+</dd>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>ndarray(6,6) or ndarray(3,3)</p>
+</dd>
+</dl>
+<p>Computes the transformation from spatial velocity, where rotation rate is
+expressed as angular velocity, to analytical rates where the rotational part
+is expressed as rate of change in some other representation</p>
+<p>Computes the transformation from spatial velocity :math:<a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+</div></blockquote>
+<dl>
+<dt>u`, where</dt><dd><p>rotation rate is expressed as angular velocity, to analytical rates
+<span class="math notranslate nohighlight">\(\dvec{x}\)</span> where the rotational part is expressed as rate of change in
+some other representation</p>
+<div class="math notranslate nohighlight">
+\[\ddvec{x} = \mat{A}_d \dvec{\]</div>
+</dd>
+</dl>
+<p>u}</p>
+<blockquote>
+<div><p>where <span class="math notranslate nohighlight">\(\mat{A}_d\)</span> is a block diagonal 6x6 matrix</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Compared to <a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2jac" title="spatialmath.base.transforms3d.rpy2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a>
+- This performs the inverse mapping
+- This maps a 6-vector, the others map a 3-vector</p>
+</div>
+</div></blockquote>
+<dl class="simple">
+<dt><a class="reference external" href="https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf">https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf</a></dt><dd><dl class="field-list simple">
+<dt class="field-odd">seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms3d.rot2jac" title="spatialmath.base.transforms3d.rot2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">rot2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.eul2jac" title="spatialmath.base.transforms3d.eul2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">eul2jac()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.rpy2r" title="spatialmath.base.transforms3d.rpy2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">rpy2r()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transforms3d.exp2jac" title="spatialmath.base.transforms3d.exp2jac"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp2jac()</span></code></a></p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1966,7 +2190,7 @@ homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf
 <dt class="field-odd">Reference</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">`</span></a>Lie groups for 2D and 3D Transformations &lt;<a class="reference external" href="http://ethaneade.com/lie.pdf">http://ethaneade.com/lie.pdf</a>&gt;_</p></li>
+<li><p><a href="#id7"><span class="problematic" id="id8">`</span></a>Lie groups for 2D and 3D Transformations &lt;<a class="reference external" href="http://ethaneade.com/lie.pdf">http://ethaneade.com/lie.pdf</a>&gt;_</p></li>
 </ul>
 </dd>
 <dt class="field-even">SymPy</dt>
@@ -2240,7 +2464,7 @@ be a matplotlib bug #19599</p>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 15-Apr-2021.
+        Last updated on 18-Apr-2021.
       </span>
 
     </p>
