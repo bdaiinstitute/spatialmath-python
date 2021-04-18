@@ -98,6 +98,7 @@ __all__ = [
     'eul2jac',
     'exp2jac',
     'rot2jac',
+    'angvelxform',
     'trprint',
     'trplot',
     'tranimate',

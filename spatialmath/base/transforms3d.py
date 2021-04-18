@@ -1841,7 +1841,209 @@ def rot2jac(R, representation='rpy-xyz'):
     return sp.linalg.block_diag(np.eye(3,3), np.linalg.inv(A))
 
 
+def angvelxform(𝚪, inverse=False, full=True, representation='rpy/xyz'):
+    """
+    Angular velocity transformation
 
+    :param 𝚪: angular representation
+    :type 𝚪: ndarray(3)
+    :param representation: defaults to 'rpy-xyz'
+    :type representation: str, optional
+    :param inverse: compute mapping from analytical rates to angular velocity
+    :type inverse: bool
+    :param full: return 6x6 transform for spatial velocity
+    :type full: bool
+    :return: angular velocity transformation matrix
+    :rtype: ndarray(6,6) or ndarray(3,3)
+
+    Computes the transformation from spatial velocity, where rotation rate is
+    expressed as angular velocity, to analytical rates where the rotational part
+    is expressed as rate of change in some other representation
+
+    Computes the transformation from spatial velocity :math:`\nu`, where
+    rotation rate is expressed as angular velocity, to analytical rates
+    :math:`\dvec{x}` where the rotational part is expressed as rate of change in
+    some other representation
+
+    .. math::
+        \dvec{x} = \mat{A} \vec{\nu}
+
+    where :math:`\mat{A}` is a block diagonal 6x6 matrix
+
+    ==================  ========================================
+    ``representation``  Rotational representation
+    ==================  ========================================
+    ``'rpy/xyz'``       RPY angular rates in XYZ order (default)
+    ``'rpy/zyx'``       RPY angular rates in XYZ order
+    ``'eul'``           Euler angular rates in ZYZ order
+    ``'exp'``           exponential coordinate rates
+    =================   ========================================
+
+    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`
+        - This performs the inverse mapping
+        - This maps a 6-vector, the others map a 3-vector
+
+https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf
+    :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
+    """
+
+    if representation == 'rpy/xyz':
+        alpha = 𝚪[0]
+        beta = 𝚪[1]
+        gamma = 𝚪[2]
+        if inverse:
+            A = np.array([
+                [math.sin(beta), 0, 1], 
+                [-math.sin(gamma)*math.cos(beta), math.cos(gamma), 0], 
+                [math.cos(beta)*math.cos(gamma), math.sin(gamma), 0]
+                ])
+        else:
+            A = np.array([
+                [0, -math.sin(gamma)/math.cos(beta), math.cos(gamma)/math.cos(beta)], 
+                [0, math.cos(gamma), math.sin(gamma)], 
+                [1, math.sin(gamma)*math.tan(beta), -math.cos(gamma)*math.tan(beta)]
+                ])
+
+
+    elif representation == 'rpy/zyx':
+        alpha = 𝚪[0]
+        beta = 𝚪[1]
+        gamma = 𝚪[2]
+
+        if inverse:
+            A = np.array([
+                [math.cos(beta)*math.cos(gamma), -math.sin(gamma), 0], 
+                [math.sin(gamma)*math.cos(beta), math.cos(gamma), 0], 
+                [-math.sin(beta), 0, 1]
+                ])
+        else:
+            A = np.array([
+                [math.cos(gamma)/math.cos(beta), math.sin(gamma)/math.cos(beta), 0],
+                [-math.sin(gamma), math.cos(gamma), 0],
+                [math.cos(gamma)*math.tan(beta), math.sin(gamma)*math.tan(beta), 1]
+                ])
+
+    elif representation == 'eul':
+        phi = 𝚪[0]
+        theta = 𝚪[1]
+        psi = 𝚪[2]
+
+        if inverse:
+            A = np.array([
+                [0, -math.sin(phi), math.sin(theta)*math.cos(phi)], 
+                [0, math.cos(phi), math.sin(phi)*math.sin(theta)], 
+                [1, 0, math.cos(theta)]
+                ])
+        else:
+            A = np.array([
+                [-math.cos(phi)/math.tan(theta), -math.sin(phi)/math.tan(theta), 1], 
+                [-math.sin(phi), math.cos(phi), 0], 
+                [math.cos(phi)/math.sin(theta), math.sin(phi)/math.sin(theta), 0]
+                ])
+    elif representation == 'exp':
+        raise UserWarning('not implemented yet')
+    else:
+        raise ValueError('bad representation specified')
+
+    if full:
+        return sp.linalg.block_diag(np.eye(3,3), A)
+    else:
+        return A
+
+def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
+    """
+    Angular acceleratipn transformation
+
+    :param 𝚪: angular representation
+    :type 𝚪: ndarray(3)
+    :param 𝚪d: angular representation rate
+    :type 𝚪d: ndarray(3)
+    :param representation: defaults to 'rpy-xyz'
+    :type representation: str, optional
+    :param full: return 6x6 transform for spatial velocity
+    :type full: bool
+    :return: angular velocity transformation matrix
+    :rtype: ndarray(6,6) or ndarray(3,3)
+
+    Computes the transformation from spatial velocity, where rotation rate is
+    expressed as angular velocity, to analytical rates where the rotational part
+    is expressed as rate of change in some other representation
+
+    Computes the transformation from spatial velocity :math:`\nu`, where
+    rotation rate is expressed as angular velocity, to analytical rates
+    :math:`\dvec{x}` where the rotational part is expressed as rate of change in
+    some other representation
+
+    .. math::
+        \ddvec{x} = \mat{A}_d \dvec{\nu}
+
+    where :math:`\mat{A}_d` is a block diagonal 6x6 matrix
+
+    ==================  ========================================
+    ``representation``  Rotational representation
+    ==================  ========================================
+    ``'rpy/xyz'``       RPY angular rates in XYZ order (default)
+    ``'rpy/zyx'``       RPY angular rates in XYZ order
+    ``'eul'``           Euler angular rates in ZYZ order
+    ``'exp'``           exponential coordinate rates
+    =================   ========================================
+
+    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`
+        - This performs the inverse mapping
+        - This maps a 6-vector, the others map a 3-vector
+
+https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2016/RD2016script.pdf
+    :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
+    """
+
+    if representation == 'rpy/xyz':
+        alpha = 𝚪[0]
+        beta = 𝚪[1]
+        gamma = 𝚪[2]
+        alpha_dot = 𝚪d[0]
+        beta_dot = 𝚪d[1]
+        gamma_dot = 𝚪d[2]
+        Ad = np.array([
+            [0, -(beta_dot*math.sin(beta)*math.sin(gamma)/math.cos(beta) + gamma_dot*math.cos(gamma))/math.cos(beta), (beta_dot*math.sin(beta)*math.cos(gamma)/math.cos(beta) - gamma_dot*math.sin(gamma))/math.cos(beta)], 
+            [0, -gamma_dot*math.sin(gamma), gamma_dot*math.cos(gamma)], 
+            [0, beta_dot*math.sin(gamma)/math.cos(beta)**2 + gamma_dot*math.cos(gamma)*math.tan(beta), -beta_dot*math.cos(gamma)/math.cos(beta)**2 + gamma_dot*math.sin(gamma)*math.tan(beta)]
+            ])
+
+    elif representation == 'rpy/zyx':
+        alpha = 𝚪[0]
+        beta = 𝚪[1]
+        gamma = 𝚪[2]
+        alpha_dot = 𝚪d[0]
+        beta_dot = 𝚪d[1]
+        gamma_dot = 𝚪d[2]
+        Ad = np.array([
+            [(beta_dot*math.sin(beta)*math.cos(gamma)/math.cos(beta) - gamma_dot*math.sin(gamma))/math.cos(beta), (beta_dot*math.sin(beta)*math.sin(gamma)/math.cos(beta) + gamma_dot*math.cos(gamma))/math.cos(beta), 0], 
+            [-gamma_dot*math.cos(gamma), -gamma_dot*math.sin(gamma), 0], 
+            [beta_dot*math.cos(gamma)/math.cos(beta)**2 - gamma_dot*math.sin(gamma)*math.tan(beta), beta_dot*math.sin(gamma)/math.cos(beta)**2 + gamma_dot*math.cos(gamma)*math.tan(beta), 0]
+            ])
+
+    elif representation == 'eul':
+        phi = 𝚪[0]
+        theta = 𝚪[1]
+        psi = 𝚪[2]
+        phi_dot = 𝚪d[0]
+        theta_dot = 𝚪d[1]
+        psi_dot = 𝚪d[2]
+        A = np.array([
+            [phi_dot*math.sin(phi)/math.tan(theta) + theta_dot*math.cos(phi)/math.sin(theta)**2, -phi_dot*math.cos(phi)/math.tan(theta) + theta_dot*math.sin(phi)/math.sin(theta)**2, 0], 
+            [-phi_dot*math.cos(phi), -phi_dot*math.sin(phi), 0], 
+            [-(phi_dot*math.sin(phi) + theta_dot*math.cos(phi)*math.cos(theta)/math.sin(theta))/math.sin(theta), (phi_dot*math.cos(phi) - theta_dot*math.sin(phi)*math.cos(theta)/math.sin(theta))/math.sin(theta), 0]
+            ])
+    
+    elif representation == 'exp':
+        raise UserWarning('not implemented yet')
+    else:
+        raise ValueError('bad representation specified')
+
+    if full:
+        return sp.linalg.block_diag(np.eye(3,3), A)
+    else:
+        return A
 
 def tr2adjoint(T):
     r"""
