@@ -102,7 +102,7 @@ class BasePoseMatrix(BasePoseList):
     _bgcolor = None
     _constcolor = 'grey_50'
     _indexcolor = (None, 'yellow_2')
-    _format = '{:< 12g}'
+    _format = '{:< 9.4g}'
     _suppress_small = True
     _suppress_tol = 100
     _color = _colored
@@ -766,7 +766,7 @@ class BasePoseMatrix(BasePoseList):
             out = ''
             n = self.N  # dimension of rotation submatrix
             for rownum, row in enumerate(X):
-                rowstr = '  '
+                rowstr = ' '
                 # format the columns
                 for colnum, element in enumerate(row):
                     if sym.issymbol(element):
@@ -786,7 +786,7 @@ class BasePoseMatrix(BasePoseList):
                     else:
                         # bottom row
                         s = constcol + bgcol + s + reset
-                    rowstr += s
+                    rowstr += ' ' + s
                 out += rowstr + bgcol + '  ' + reset + '\n'
             return out
 
