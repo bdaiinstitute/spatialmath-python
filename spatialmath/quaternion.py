@@ -1931,14 +1931,14 @@ class UnitQuaternion(Quaternion):
         """
 
         # is (v, theta) or None
-        vt = base.unitvec_norm(w)
+        v, theta = base.unitvec_norm(w)
 
-        if vt is None:
+        if v is None:
             # zero update
             return
     
-        ds = math.cos(vt[1] / 2)
-        dv = math.sin(vt[1] / 2) * vt[0]
+        ds = math.cos(theta / 2)
+        dv = math.sin(theta / 2) * v
 
         updated = base.qqmul(self.A, np.r_[ds, dv])
         if normalize:

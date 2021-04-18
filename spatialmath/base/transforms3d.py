@@ -1769,14 +1769,18 @@ def exp2jac(v, theta=None):
 
     :seealso: :func:`eul2jac`, :func:`rpy2jac`, :func:`rot2jac`
     """
-    R = trexp(v)
+
+
+    vn, theta = base.unitvec_norm(v)
     if theta is None:
-        v, theta = base.unitvec_norm(v)
+        return np.eye(3)
+
+    R = trexp(v)
 
     z = np.eye(3,3) - R
     A = []
     for i in range(3):
-        dRdvi = v[i] * base.skew(v) + base.skew(np.cross(v, z[:,i])) / theta
+        dRdvi = vn[i] * base.skew(vn) + base.skew(np.cross(vn, z[:,i])) / theta
         x = base.vex(dRdvi)
         A.append(x)
     return np.c_[A].T

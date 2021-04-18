@@ -104,7 +104,7 @@ def unitvec_norm(v):
     if n > 100 * _eps:  # if greater than eps
         return (v / n, n)
     else:
-        return None
+        return None, None
 
 def norm(v):
     """
