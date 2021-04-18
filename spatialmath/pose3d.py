@@ -1329,7 +1329,7 @@ class SE3(SO3):
         if base.isvector(S, 6):
             return cls(base.trexp(base.getvector(S)), check=False)
         else:
-            return cls([base.trexp(s) for s in S], check=False)
+            return cls(base.trexp(S), check=False)
             
 
     @classmethod
