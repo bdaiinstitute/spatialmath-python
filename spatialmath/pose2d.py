@@ -397,6 +397,55 @@ class SE2(SO2):
             return cls([tr.trexp2(s) for s in S])
         else:
             return cls(tr.trexp2(S), check=False)
+    @classmethod
+    def Tx(cls, x):
+        """
+        Create an SE(2) translation along the X-axis
+
+        :param x: translation distance along the X-axis
+        :type x: float
+        :return: SE(2) matrix
+        :rtype: SE2 instance
+
+        `SE2.Tx(x)` is an SE(2) translation of ``x`` along the x-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> SE2.Tx(2)
+            >>> SE2.Tx([2,3])
+
+
+        :seealso: :func:`~spatialmath.base.transforms3d.transl`
+        :SymPy: supported
+        """
+        return cls([base.transl2(_x, 0) for _x in base.getvector(x)], check=False)
+
+
+    @classmethod
+    def Ty(cls, y):
+        """
+        Create an SE(2) translation along the Y-axis
+
+        :param y: translation distance along the Y-axis
+        :type y: float
+        :return: SE(2) matrix
+        :rtype: SE2 instance
+
+        `SE2.Ty(y) is an SE(2) translation of ``y`` along the y-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> SE2.Ty(2)
+            >>> SE2.Ty([2,3])
+
+        :seealso: :func:`~spatialmath.base.transforms3d.transl`
+        :SymPy: supported
+        """
+        return cls([base.transl2(0, _y) for _y in base.getvector(y)], check=False)
 
     @staticmethod
     def isvalid(x, check=True):
