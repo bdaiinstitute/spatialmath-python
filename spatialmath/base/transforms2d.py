@@ -153,11 +153,11 @@ def transl2(x, y=None):
     :type x: float
     :param y: translation along Y-axis
     :type y: float
-    :return: SE(2) transform matrix or the translation elements of a homogeneous transform
-    :rtype: ndarray(3,3)
+    :return: SE(2) transform matrix or the translation elements of a homogeneous
+        transform :rtype: ndarray(3,3)
 
-    - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3) representing a
-      pure translation.
+    - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3)
+      representing a pure translation.
     - ``T = transl2( V )`` as above but the translation is given by a 2-element
       list, dict, or a numpy array, row or column vector.
 
@@ -619,7 +619,7 @@ def trinterp2(start, end, s=None):
         return ValueError('Argument must be SO(2) or SE(2)')
 
 
-def trprint2(T, label=None, file=sys.stdout, fmt='{:8.2g}', unit='deg'):
+def trprint2(T, label=None, file=sys.stdout, fmt='{:.3g}', unit='deg'):
     """
     Compact display of SE(2) or SO(2) matrices
 
