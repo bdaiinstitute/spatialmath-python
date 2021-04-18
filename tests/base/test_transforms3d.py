@@ -228,6 +228,44 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(eul2tr(0.1 * r2d, 0.2 * r2d, 0.3 * r2d, unit='deg'), T)
         nt.assert_array_almost_equal(eul2tr([0.1 * r2d, 0.2 * r2d, 0.3 * r2d], unit='deg'), T)
 
+    def test_angvec2r(self):
+
+        r2d = 180 / pi
+
+        nt.assert_array_almost_equal(angvec2r(0, [1, 0, 0]), rotx(0))
+        nt.assert_array_almost_equal(angvec2r(pi/4, [1, 0, 0]), rotx(pi/4))
+        nt.assert_array_almost_equal(angvec2r(-pi/4, [1, 0, 0]), rotx(-pi/4))
+
+        nt.assert_array_almost_equal(angvec2r(0, [0, 1, 0]), roty(0))
+        nt.assert_array_almost_equal(angvec2r(pi/4, [0, 1, 0]), roty(pi/4))
+        nt.assert_array_almost_equal(angvec2r(-pi/4, [0, 1, 0]), roty(-pi/4))
+
+        nt.assert_array_almost_equal(angvec2r(0, [0, 0, 1]), rotz(0))
+        nt.assert_array_almost_equal(angvec2r(pi/4, [0, 0, 1]), rotz(pi/4))
+        nt.assert_array_almost_equal(angvec2r(-pi/4, [0, 0, 1]), rotz(-pi/4))
+
+    def test_angvec2tr(self):
+
+        r2d = 180 / pi
+
+        nt.assert_array_almost_equal(angvec2tr(0, [1, 0, 0]), trotx(0))
+        nt.assert_array_almost_equal(angvec2tr(pi/4, [1, 0, 0]), trotx(pi/4))
+        nt.assert_array_almost_equal(angvec2tr(-pi/4, [1, 0, 0]), trotx(-pi/4))
+
+        nt.assert_array_almost_equal(angvec2tr(0, [0, 1, 0]), troty(0))
+        nt.assert_array_almost_equal(angvec2tr(pi/4, [0, 1, 0]), troty(pi/4))
+        nt.assert_array_almost_equal(angvec2tr(-pi/4, [0, 1, 0]), troty(-pi/4))
+
+        nt.assert_array_almost_equal(angvec2tr(0, [0, 0, 1]), trotz(0))
+        nt.assert_array_almost_equal(angvec2tr(pi/4, [0, 0, 1]), trotz(pi/4))
+        nt.assert_array_almost_equal(angvec2tr(-pi/4, [0, 0, 1]), trotz(-pi/4))
+
+        r2d = 180 / pi
+
+        nt.assert_array_almost_equal(angvec2r(0, [1, 0, 0]), rotx(0))
+        nt.assert_array_almost_equal(angvec2r(pi/4, [1, 0, 0]), rotx(pi/4))
+        nt.assert_array_almost_equal(angvec2r(-pi/4, [1, 0, 0]), rotx(-pi/4))
+
     def test_exp2r(self):
 
         r2d = 180 / pi
