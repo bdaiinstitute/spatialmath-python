@@ -658,7 +658,89 @@ def angvec2tr(theta, v, unit='rad'):
     """
     return base.r2t(angvec2r(theta, v, unit=unit))
 
+# ---------------------------------------------------------------------------------------#
 
+def exp2r(w):
+    """
+    Create an SO(3) rotation matrix from exponential coordinates
+
+    :param w: exponential coordinate vector
+    :type w: array_like(3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
+    :raises ValueError: bad arguments
+
+    ``exp2r(w)`` is an SO(3) orthonormal rotation matrix
+    equivalent to a rotation of :math:`\| w \|` about the vector :math:`\hat{w}`.
+
+    If ``w`` is zero then result is the identity matrix.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
+        >>> angvec2r([0, 0, 0])      # rotx(0)
+
+    .. note:: Exponential coordinates are also known as an Euler vector
+
+    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
+
+    :SymPy: not supported
+    """
+    if not base.isvector(w, 3):
+        raise ValueError("Arguments must be a 3-vector")
+
+    v, theta = base.unitvec_norm(w)
+
+    if theta is None:
+        return np.eye(3)
+
+    # Rodrigue's equation
+
+    sk = base.skew(v)
+    R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
+    return R
+
+def exp2tr(w):
+    """
+    Create an SE(3) pure rotation matrix from exponential coordinates
+
+    :param w: exponential coordinate vector
+    :type w: array_like(3)
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
+    :raises ValueError: bad arguments
+
+    ``exp2r(w)`` is an SO(3) orthonormal rotation matrix
+    equivalent to a rotation of :math:`\| w \|` about the vector :math:`\hat{w}`.
+
+    If ``w`` is zero then result is the identity matrix.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
+        >>> angvec2r([0, 0, 0])      # rotx(0)
+
+    .. note:: Exponential coordinates are also known as an Euler vector
+
+    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
+
+    :SymPy: not supported
+    """
+    if not base.isvector(w, 3):
+        raise ValueError("Arguments must be a 3-vector")
+
+    v, theta = base.unitvec_norm(w)
+
+    if theta is None:
+        return np.eye(4)
+
+    # Rodrigue's equation
+
+    sk = base.skew(v)
+    R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
+    return base.r2t(R)
 # ---------------------------------------------------------------------------------------#
 def oa2r(o, a=None):
     """

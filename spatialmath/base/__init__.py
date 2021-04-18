@@ -79,6 +79,8 @@ __all__ = [
     'eul2tr',
     'angvec2r',
     'angvec2tr',
+    'exp2r',
+    'exp2tr',
     'oa2r',
     'oa2tr',
     'tr2angvec',

@@ -228,6 +228,38 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(eul2tr(0.1 * r2d, 0.2 * r2d, 0.3 * r2d, unit='deg'), T)
         nt.assert_array_almost_equal(eul2tr([0.1 * r2d, 0.2 * r2d, 0.3 * r2d], unit='deg'), T)
 
+    def test_exp2r(self):
+
+        r2d = 180 / pi
+
+        nt.assert_array_almost_equal(exp2r([0, 0, 0]), rotx(0))
+        nt.assert_array_almost_equal(exp2r([pi/4, 0, 0]), rotx(pi/4))
+        nt.assert_array_almost_equal(exp2r([-pi/4, 0, 0]), rotx(-pi/4))
+
+        nt.assert_array_almost_equal(exp2r([0, 0, 0]), roty(0))
+        nt.assert_array_almost_equal(exp2r([0, pi/4, 0]), roty(pi/4))
+        nt.assert_array_almost_equal(exp2r([0, -pi/4, 0]), roty(-pi/4))
+
+        nt.assert_array_almost_equal(exp2r([0, 0, 0]), rotz(0))
+        nt.assert_array_almost_equal(exp2r([0, 0, pi/4]), rotz(pi/4))
+        nt.assert_array_almost_equal(exp2r([0, 0, -pi/4]), rotz(-pi/4))
+
+    def test_exp2tr(self):
+
+        r2d = 180 / pi
+
+        nt.assert_array_almost_equal(exp2tr([0, 0, 0]), trotx(0))
+        nt.assert_array_almost_equal(exp2tr([pi/4, 0, 0]), trotx(pi/4))
+        nt.assert_array_almost_equal(exp2tr([-pi/4, 0, 0]), trotx(-pi/4))
+
+        nt.assert_array_almost_equal(exp2tr([0, 0, 0]), troty(0))
+        nt.assert_array_almost_equal(exp2tr([0, pi/4, 0]), troty(pi/4))
+        nt.assert_array_almost_equal(exp2tr([0, -pi/4, 0]), troty(-pi/4))
+
+        nt.assert_array_almost_equal(exp2tr([0, 0, 0]), trotz(0))
+        nt.assert_array_almost_equal(exp2tr([0, 0, pi/4]), trotz(pi/4))
+        nt.assert_array_almost_equal(exp2tr([0, 0, -pi/4]), trotz(-pi/4))
+
     def test_tr2rpy(self):
         rpy = np.r_[0.1, 0.2, 0.3]
         R = rpy2r(rpy)
