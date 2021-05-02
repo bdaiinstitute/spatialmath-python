@@ -579,9 +579,12 @@ class BasePoseMatrix(BasePoseList):
         :type unit: str
         :param file: file to write formatted string to. [default, stdout]
         :type file: file object
+        :return: the formatted value as a string
+        :rtype: str
 
         - ``X.printline()`` print ``X`` in single-line format
-        - ``X.printline(file=None)`` is a string representing the pose ``X`` in single-line format
+        - ``X.printline(file=None)`` is a string representing the pose ``X`` in
+          single-line format
 
         If ``X`` has multiple values, print one per line.
 
@@ -606,10 +609,10 @@ class BasePoseMatrix(BasePoseList):
         """
         if self.N == 2:
             for x in self.data:
-                base.trprint2(x, *args, **kwargs)
+                return base.trprint2(x, *args, **kwargs)
         else:
             for x in self.data:
-                base.trprint(x, *args, **kwargs)
+                return base.trprint(x, *args, **kwargs)
 
     def __repr__(self):
         """
