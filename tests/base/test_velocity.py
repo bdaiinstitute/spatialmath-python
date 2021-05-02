@@ -89,6 +89,8 @@ class TestVelocity(unittest.TestCase):
         # ZYX order
         gamma = np.r_[1, 0, 0]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
+        print(numjac(exp2r, gamma, SO=3))
+
         gamma = np.r_[0.2, 0.3, 0.4]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
         gamma = np.r_[0, 0, 0]
@@ -117,6 +119,12 @@ class TestVelocity(unittest.TestCase):
         A3 = np.linalg.inv(A[3:6,3:6])
         nt.assert_array_almost_equal(A3, eul2jac(gamma))
 
+        gamma = [0.1, 0.2, 0.3]
+        R = trexp(gamma)
+        A = rot2jac(R, representation='exp')
+        self.assertEqual(A.shape, (6,6))
+        A3 = np.linalg.inv(A[3:6,3:6])
+        nt.assert_array_almost_equal(A3, exp2jac(gamma))
 
     def test_angvelxform(self):
 
@@ -136,6 +144,12 @@ class TestVelocity(unittest.TestCase):
         A = angvelxform(gamma, full=False, representation='eul')
         Ai = angvelxform(gamma, full=False, inverse=True, representation='eul')
         nt.assert_array_almost_equal(Ai, eul2jac(gamma))
+        nt.assert_array_almost_equal(A @ Ai, np.eye(3))
+
+        gamma = [0.1, 0.2, 0.3]
+        A = angvelxform(gamma, full=False, representation='exp')
+        Ai = angvelxform(gamma, full=False, inverse=True, representation='exp')
+        nt.assert_array_almost_equal(Ai, exp2jac(gamma))
         nt.assert_array_almost_equal(A @ Ai, np.eye(3))
 
     # def test_angvelxform_dot(self):
