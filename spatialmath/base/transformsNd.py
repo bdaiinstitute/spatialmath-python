@@ -660,7 +660,7 @@ def h2e(v):
     """
     if isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
-        return v[:-1, :] / np.tile(v[-1, :], (v.shape[0] - 1, 1))
+        return v[:-1, :] / v[-1, :][np.newaxis, :]
     
     elif base.isvector(v):
         # dealing with shape (N,) array
