@@ -24,29 +24,36 @@ class Test2D(unittest.TestCase):
     def test_rot2(self):
         R = np.array([[1, 0], [0, 1]])
         nt.assert_array_almost_equal(rot2(0), R)
-        nt.assert_array_almost_equal(rot2(0, unit='rad'), R)
-        nt.assert_array_almost_equal(rot2(0, unit='deg'), R)
-        nt.assert_array_almost_equal(rot2(0, 'deg'), R)
+        nt.assert_array_almost_equal(rot2(0, unit="rad"), R)
+        nt.assert_array_almost_equal(rot2(0, unit="deg"), R)
+        nt.assert_array_almost_equal(rot2(0, "deg"), R)
         nt.assert_almost_equal(np.linalg.det(rot2(0)), 1)
 
         R = np.array([[0, -1], [1, 0]])
         nt.assert_array_almost_equal(rot2(pi / 2), R)
-        nt.assert_array_almost_equal(rot2(pi / 2, unit='rad'), R)
-        nt.assert_array_almost_equal(rot2(90, unit='deg'), R)
-        nt.assert_array_almost_equal(rot2(90, 'deg'), R)
+        nt.assert_array_almost_equal(rot2(pi / 2, unit="rad"), R)
+        nt.assert_array_almost_equal(rot2(90, unit="deg"), R)
+        nt.assert_array_almost_equal(rot2(90, "deg"), R)
         nt.assert_almost_equal(np.linalg.det(rot2(pi / 2)), 1)
 
         R = np.array([[-1, 0], [0, -1]])
         nt.assert_array_almost_equal(rot2(pi), R)
-        nt.assert_array_almost_equal(rot2(pi, unit='rad'), R)
-        nt.assert_array_almost_equal(rot2(180, unit='deg'), R)
-        nt.assert_array_almost_equal(rot2(180, 'deg'), R)
+        nt.assert_array_almost_equal(rot2(pi, unit="rad"), R)
+        nt.assert_array_almost_equal(rot2(180, unit="deg"), R)
+        nt.assert_array_almost_equal(rot2(180, "deg"), R)
         nt.assert_almost_equal(np.linalg.det(rot2(pi)), 1)
 
     def test_trot2(self):
-        nt.assert_array_almost_equal(trot2(pi / 2, t=[3, 4]), np.array([[0, -1, 3], [1, 0, 4], [0, 0, 1]]))
-        nt.assert_array_almost_equal(trot2(pi / 2, t=(3, 4)), np.array([[0, -1, 3], [1, 0, 4], [0, 0, 1]]))
-        nt.assert_array_almost_equal(trot2(pi / 2, t=np.array([3, 4])), np.array([[0, -1, 3], [1, 0, 4], [0, 0, 1]]))
+        nt.assert_array_almost_equal(
+            trot2(pi / 2, t=[3, 4]), np.array([[0, -1, 3], [1, 0, 4], [0, 0, 1]])
+        )
+        nt.assert_array_almost_equal(
+            trot2(pi / 2, t=(3, 4)), np.array([[0, -1, 3], [1, 0, 4], [0, 0, 1]])
+        )
+        nt.assert_array_almost_equal(
+            trot2(pi / 2, t=np.array([3, 4])),
+            np.array([[0, -1, 3], [1, 0, 4], [0, 0, 1]]),
+        )
 
     def test_Rt(self):
         nt.assert_array_almost_equal(rot2(0.3), t2r(trot2(0.3)))
@@ -60,8 +67,12 @@ class Test2D(unittest.TestCase):
         # TODO
 
     def test_transl2(self):
-        nt.assert_array_almost_equal(transl2(1, 2), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]]))
-        nt.assert_array_almost_equal(transl2([1, 2]), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]]))
+        nt.assert_array_almost_equal(
+            transl2(1, 2), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])
+        )
+        nt.assert_array_almost_equal(
+            transl2([1, 2]), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])
+        )
 
     def test_print2(self):
 
@@ -149,13 +160,15 @@ class Test2D(unittest.TestCase):
 
     def test_plot(self):
         plt.figure()
-        trplot2(transl2(1, 2), block=False, frame='A', rviz=True, width=1)
-        trplot2(transl2(3, 1), block=False, color='red', arrow=True, width=3, frame='B')
-        trplot2(transl2(4, 3)@trot2(math.pi / 3), block=False, color='green', frame='c')
-        plt.close('all')
+        trplot2(transl2(1, 2), block=False, frame="A", rviz=True, width=1)
+        trplot2(transl2(3, 1), block=False, color="red", arrow=True, width=3, frame="B")
+        trplot2(
+            transl2(4, 3) @ trot2(math.pi / 3), block=False, color="green", frame="c"
+        )
+        plt.close("all")
 
 
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     unittest.main()

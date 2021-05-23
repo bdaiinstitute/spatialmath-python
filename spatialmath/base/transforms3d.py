@@ -146,7 +146,7 @@ def trotx(theta, unit="rad", t=None):
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
     :param t: 3D translation vector, defaults to [0,0,0]
-    :type t: array_like(3)    
+    :type t: array_like(3)
     :return: SE(3) transformation matrix
     :rtype: ndarray(4,4)
 
@@ -166,7 +166,7 @@ def trotx(theta, unit="rad", t=None):
     """
     T = base.r2t(rotx(theta, unit))
     if t is not None:
-        T[:3, 3] = base.getvector(t, 3, 'array')
+        T[:3, 3] = base.getvector(t, 3, "array")
     return T
 
 
@@ -200,7 +200,7 @@ def troty(theta, unit="rad", t=None):
     """
     T = base.r2t(roty(theta, unit))
     if t is not None:
-        T[:3, 3] = base.getvector(t, 3, 'array')
+        T[:3, 3] = base.getvector(t, 3, "array")
     return T
 
 
@@ -234,8 +234,9 @@ def trotz(theta, unit="rad", t=None):
     """
     T = base.r2t(rotz(theta, unit))
     if t is not None:
-        T[:3, 3] = base.getvector(t, 3, 'array')
+        T[:3, 3] = base.getvector(t, 3, "array")
     return T
+
 
 # ---------------------------------------------------------------------------------------#
 
@@ -257,8 +258,8 @@ def transl(x, y=None, z=None):
     :rtype: numpy(4,4)
     :raises ValueError: bad argument
 
-    - ``T = transl( X, Y, Z )`` is an SE(3) homogeneous transform (4x4) representing a
-      pure translation of X, Y and Z.
+    - ``T = transl( X, Y, Z )`` is an SE(3) homogeneous transform (4x4)
+      representing a pure translation of X, Y and Z.
     - ``T = transl( V )`` as above but the translation is given by a 3-element
       list, dict, or a numpy array, row or column vector.
 
@@ -288,26 +289,26 @@ def transl(x, y=None, z=None):
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> transl(T)
 
-    .. note:: This function is compatible with the MATLAB version of the Toolbox.  It
-        is unusual/weird in doing two completely different things inside the one
-        function.
+    .. note:: This function is compatible with the MATLAB version of the
+        Toolbox.  It is unusual/weird in doing two completely different things
+        inside the one function.
     :seealso: :func:`~spatialmath.base.transforms2d.transl2`
     :SymPy: supported
-   """
+    """
 
     if base.isscalar(x) and y is not None and z is not None:
         t = np.r_[x, y, z]
     elif base.isvector(x, 3):
-        t = base.getvector(x, 3, out='array')
+        t = base.getvector(x, 3, out="array")
     elif base.ismatrix(x, (4, 4)):
         # SE(3) -> R3
         return x[:3, 3]
     else:
-        raise ValueError('bad argument')
+        raise ValueError("bad argument")
 
-    if t.dtype != 'O':
-        t = t.astype('float64')
-    
+    if t.dtype != "O":
+        t = t.astype("float64")
+
     T = np.identity(4, dtype=t.dtype)
     T[:3, 3] = t
     return T
@@ -325,8 +326,8 @@ def ishom(T, check=False, tol=100):
     :rtype: bool
 
     - ``ishom(T)`` is True if the argument ``T`` is of dimension 4x4
-    - ``ishom(T, check=True)`` as above, but also checks orthogonality of the rotation sub-matrix and
-      validitity of the bottom row.
+    - ``ishom(T, check=True)`` as above, but also checks orthogonality of the
+      rotation sub-matrix and validitity of the bottom row.
 
     .. runblock:: pycon
 
@@ -342,7 +343,17 @@ def ishom(T, check=False, tol=100):
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`
     """
-    return isinstance(T, np.ndarray) and T.shape == (4, 4) and (not check or (base.isR(T[:3, :3], tol=tol) and np.all(T[3, :] == np.array([0, 0, 0, 1]))))
+    return (
+        isinstance(T, np.ndarray)
+        and T.shape == (4, 4)
+        and (
+            not check
+            or (
+                base.isR(T[:3, :3], tol=tol)
+                and np.all(T[3, :] == np.array([0, 0, 0, 1]))
+            )
+        )
+    )
 
 
 def isrot(R, check=False, tol=100):
@@ -357,7 +368,8 @@ def isrot(R, check=False, tol=100):
     :rtype: bool
 
     - ``isrot(R)`` is True if the argument ``R`` is of dimension 3x3
-    - ``isrot(R, check=True)`` as above, but also checks orthogonality of the rotation matrix.
+    - ``isrot(R, check=True)`` as above, but also checks orthogonality of the
+      rotation matrix.
 
     .. runblock:: pycon
 
@@ -373,11 +385,15 @@ def isrot(R, check=False, tol=100):
 
     :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
     """
-    return isinstance(R, np.ndarray) and R.shape == (3, 3) and (not check or base.isR(R, tol=tol))
+    return (
+        isinstance(R, np.ndarray)
+        and R.shape == (3, 3)
+        and (not check or base.isR(R, tol=tol))
+    )
 
 
 # ---------------------------------------------------------------------------------------#
-def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
+def rpy2r(roll, pitch=None, yaw=None, *, unit="rad", order="zyx"):
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
@@ -430,20 +446,20 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit='rad', order='zyx'):
 
     angles = base.getunit(angles, unit)
 
-    if order == 'xyz' or order == 'arm':
+    if order == "xyz" or order == "arm":
         R = rotx(angles[2]) @ roty(angles[1]) @ rotz(angles[0])
-    elif order == 'zyx' or order == 'vehicle':
+    elif order == "zyx" or order == "vehicle":
         R = rotz(angles[2]) @ roty(angles[1]) @ rotx(angles[0])
-    elif order == 'yxz' or order == 'camera':
+    elif order == "yxz" or order == "camera":
         R = roty(angles[2]) @ rotx(angles[1]) @ rotz(angles[0])
     else:
-        raise ValueError('Invalid angle order')
+        raise ValueError("Invalid angle order")
 
     return R
 
 
 # ---------------------------------------------------------------------------------------#
-def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
+def rpy2tr(roll, pitch=None, yaw=None, unit="rad", order="zyx"):
     """
     Create an SE(3) rotation matrix from roll-pitch-yaw angles
 
@@ -484,7 +500,7 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
         >>> rpy2tr([0.1, 0.2, 0.3])
         >>> rpy2tr([10, 20, 30], unit='deg')
 
-    .. note:: By default, the translational component is zero but it can be 
+    .. note:: By default, the translational component is zero but it can be
         set to a non-zero value.
 
     :seealso: :func:`~eul2tr`, :func:`~rpy2r`, :func:`~tr2rpy`
@@ -493,10 +509,11 @@ def rpy2tr(roll, pitch=None, yaw=None, unit='rad', order='zyx'):
     R = rpy2r(roll, pitch, yaw, order=order, unit=unit)
     return base.r2t(R)
 
+
 # ---------------------------------------------------------------------------------------#
 
 
-def eul2r(phi, theta=None, psi=None, unit='rad'):
+def eul2r(phi, theta=None, psi=None, unit="rad"):
     """
     Create an SO(3) rotation matrix from Euler angles
 
@@ -540,7 +557,7 @@ def eul2r(phi, theta=None, psi=None, unit='rad'):
 
 
 # ---------------------------------------------------------------------------------------#
-def eul2tr(phi, theta=None, psi=None, unit='rad'):
+def eul2tr(phi, theta=None, psi=None, unit="rad"):
     """
     Create an SE(3) pure rotation matrix from Euler angles
 
@@ -570,7 +587,7 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
         >>> eul2tr([0.1, 0.2, 0.3])
         >>> eul2tr([10, 20, 30], unit='deg')
 
-    .. note:: By default, the translational component is zero but it can be 
+    .. note:: By default, the translational component is zero but it can be
         set to a non-zero value.
 
     :seealso: :func:`~rpy2tr`, :func:`~eul2r`, :func:`~tr2eul`
@@ -581,10 +598,11 @@ def eul2tr(phi, theta=None, psi=None, unit='rad'):
     R = eul2r(phi, theta, psi, unit=unit)
     return base.r2t(R)
 
+
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta, v, unit='rad'):
+def angvec2r(theta, v, unit="rad"):
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -632,7 +650,7 @@ def angvec2r(theta, v, unit='rad'):
 
 
 # ---------------------------------------------------------------------------------------#
-def angvec2tr(theta, v, unit='rad'):
+def angvec2tr(theta, v, unit="rad"):
     """
     Create an SE(3) pure rotation from rotation angle and axis
 
@@ -665,7 +683,9 @@ def angvec2tr(theta, v, unit='rad'):
     """
     return base.r2t(angvec2r(theta, v, unit=unit))
 
+
 # ---------------------------------------------------------------------------------------#
+
 
 def exp2r(w):
     """
@@ -708,6 +728,7 @@ def exp2r(w):
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
+
 def exp2tr(w):
     """
     Create an SE(3) pure rotation matrix from exponential coordinates
@@ -748,6 +769,8 @@ def exp2tr(w):
     sk = base.skew(v)
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return base.r2t(R)
+
+
 # ---------------------------------------------------------------------------------------#
 def oa2r(o, a=None):
     """
@@ -760,10 +783,11 @@ def oa2r(o, a=None):
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
 
-    ``T = oa2tr(O, A)`` is an SO(3) orthonormal rotation matrix for a frame defined in terms of
-    vectors parallel to its Y- and Z-axes with respect to a reference frame.  In robotics these axes are
-    respectively called the orientation and approach vectors defined such that
-    R = [N O A] and N = O x A.
+    ``T = oa2tr(O, A)`` is an SO(3) orthonormal rotation matrix for a frame
+    defined in terms of vectors parallel to its Y- and Z-axes with respect to a
+    reference frame.  In robotics these axes are respectively called the
+    orientation and approach vectors defined such that R = [N O A] and N = O x
+    A.
 
     Steps:
 
@@ -779,18 +803,19 @@ def oa2r(o, a=None):
 
     .. note::
 
-        - The A vector is the only guaranteed to have the same direction in the resulting
-          rotation matrix
+        - The A vector is the only guaranteed to have the same direction in the 
+          resulting rotation matrix
         - O and A do not have to be unit-length, they are normalized
         - O and A do not have to be orthogonal, so long as they are not parallel
-        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+        - The vectors O and A are parallel to the Y- and Z-axes of the 
+          equivalent coordinate frame.
 
     :seealso: :func:`~oa2tr`
 
     :SymPy: not supported
     """
-    o = base.getvector(o, 3, out='array')
-    a = base.getvector(a, 3, out='array')
+    o = base.getvector(o, 3, out="array")
+    a = base.getvector(a, 3, out="array")
     n = np.cross(o, a)
     o = np.cross(a, n)
     R = np.stack((base.unitvec(n), base.unitvec(o), base.unitvec(a)), axis=1)
@@ -809,10 +834,11 @@ def oa2tr(o, a=None):
     :return: SE(3) transformation matrix
     :rtype: ndarray(4,4)
 
-    ``T = oa2tr(O, A)`` is an SE(3) homogeneous transformation matrix for a frame defined in terms of
-    vectors parallel to its Y- and Z-axes with respect to a reference frame.  In robotics these axes are
-    respectively called the orientation and approach vectors defined such that
-    R = [N O A] and N = O x A.
+    ``T = oa2tr(O, A)`` is an SE(3) homogeneous transformation matrix for a
+    frame defined in terms of vectors parallel to its Y- and Z-axes with respect
+    to a reference frame.  In robotics these axes are respectively called the
+    orientation and approach vectors defined such that R = [N O A] and N = O x
+    A.
 
     Steps:
 
@@ -828,12 +854,13 @@ def oa2tr(o, a=None):
 
     .. note:
 
-        - The A vector is the only guaranteed to have the same direction in the resulting
-          rotation matrix
+        - The A vector is the only guaranteed to have the same direction in the
+          resulting rotation matrix
         - O and A do not have to be unit-length, they are normalized
         - O and A do not have to be orthogonal, so long as they are not parallel
         - The translational part is zero.
-        - The vectors O and A are parallel to the Y- and Z-axes of the equivalent coordinate frame.
+        - The vectors O and A are parallel to the Y- and Z-axes of the 
+          equivalent coordinate frame.
 
     :seealso: :func:`~oa2r`
 
@@ -843,7 +870,7 @@ def oa2tr(o, a=None):
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2angvec(T, unit='rad', check=False):
+def tr2angvec(T, unit="rad", check=False):
     r"""
     Convert SO(3) or SE(3) to angle and rotation vector
 
@@ -857,8 +884,8 @@ def tr2angvec(T, unit='rad', check=False):
     :rtype: float, ndarray(3)
     :raises ValueError: bad arguments
 
-    ``(v, θ) = tr2angvec(R)`` is a rotation angle and a vector about which the rotation
-    acts that corresponds to the rotation part of ``R``.
+    ``(v, θ) = tr2angvec(R)`` is a rotation angle and a vector about which the
+    rotation acts that corresponds to the rotation part of ``R``.
 
     By default the angle is in radians but can be changed setting `unit='deg'`.
 
@@ -892,14 +919,14 @@ def tr2angvec(T, unit='rad', check=False):
         theta = base.norm(v)
         v = base.unitvec(v)
 
-    if unit == 'deg':
+    if unit == "deg":
         theta *= 180 / math.pi
 
     return (theta, v)
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2eul(T, unit='rad', flip=False, check=False):
+def tr2eul(T, unit="rad", flip=False, check=False):
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
 
@@ -917,8 +944,8 @@ def tr2eul(T, unit='rad', flip=False, check=False):
     ``tr2eul(R)`` are the Euler angles corresponding to
     the rotation part of ``R``.
 
-    The 3 angles :math:`[\phi, \theta, \psi]` correspond to sequential rotations about the
-    Z, Y and Z axes respectively.
+    The 3 angles :math:`[\phi, \theta, \psi]` correspond to sequential rotations
+    about the Z, Y and Z axes respectively.
 
     By default the angles are in radians but can be changed setting `unit='deg'`.
 
@@ -931,7 +958,7 @@ def tr2eul(T, unit='rad', flip=False, check=False):
 
     .. note::
 
-        - There is a singularity for the case where :math:`\theta=0` in which 
+        - There is a singularity for the case where :math:`\theta=0` in which
           case we arbitrarily set :math:`\phi = 0` and :math:`\phi` is set to
           :math:`\phi+\psi`.
         - If the input is SE(3) the translation component is ignored.
@@ -965,15 +992,16 @@ def tr2eul(T, unit='rad', flip=False, check=False):
         eul[1] = math.atan2(cp * R[0, 2] + sp * R[1, 2], R[2, 2])
         eul[2] = math.atan2(-sp * R[0, 0] + cp * R[1, 0], -sp * R[0, 1] + cp * R[1, 1])
 
-    if unit == 'deg':
+    if unit == "deg":
         eul *= 180 / math.pi
 
     return eul
 
+
 # ------------------------------------------------------------------------------------------------------------------- #
 
 
-def tr2rpy(T, unit='rad', order='zyx', check=False):
+def tr2rpy(T, unit="rad", order="zyx", check=False):
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
 
@@ -992,14 +1020,15 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     ``tr2rpy(R)`` are the roll-pitch-yaw angles corresponding to
     the rotation part of ``R``.
 
-    The 3 angles RPY = :math:`[\theta_R, \theta_P, \theta_Y]` correspond to sequential rotations about the
-    Z, Y and X axes respectively.  The axis order sequence can be changed by
-    setting:
+    The 3 angles RPY = :math:`[\theta_R, \theta_P, \theta_Y]` correspond to
+    sequential rotations about the Z, Y and X axes respectively.  The axis order
+    sequence can be changed by setting:
 
     - ``order='xyz'``  for sequential rotations about X, Y, Z axes
     - ``order='yxz'``  for sequential rotations about Y, X, Z axes
 
-    By default the angles are in radians but can be changed setting ``unit='deg'``.
+    By default the angles are in radians but can be changed setting
+    ``unit='deg'``.
 
     .. runblock:: pycon
 
@@ -1011,11 +1040,11 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
     .. note::
 
         - There is a singularity for the case where :math:`\theta_P = \pi/2` in
-          which case we arbitrarily set :math:`\theta_R=0` and 
+          which case we arbitrarily set :math:`\theta_R=0` and
           :math:`\theta_Y = \theta_R + \theta_Y`.
         - If the input is SE(3) the translation component is ignored.
 
-    :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`, 
+    :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`,
               :func:`~tr2angvec`
     :SymPy: not supported
     """
@@ -1028,16 +1057,16 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
         raise ValueError("not a valid SO(3) matrix")
 
     rpy = np.zeros((3,))
-    if order == 'xyz' or order == 'arm':
+    if order == "xyz" or order == "arm":
 
         # XYZ order
         if abs(abs(R[0, 2]) - 1) < 10 * _eps:  # when |R13| == 1
             # singularity
             rpy[0] = 0  # roll is zero
             if R[0, 2] > 0:
-                rpy[2] = math.atan2(R[2, 1], R[1, 1])   # R+Y
+                rpy[2] = math.atan2(R[2, 1], R[1, 1])  # R+Y
             else:
-                rpy[2] = -math.atan2(R[1, 0], R[2, 0])   # R-Y
+                rpy[2] = -math.atan2(R[1, 0], R[2, 0])  # R-Y
             rpy[1] = math.asin(np.clip(R[0, 2], -1.0, 1.0))
         else:
             rpy[0] = -math.atan2(R[0, 1], R[0, 0])
@@ -1053,12 +1082,12 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
             elif k == 3:
                 rpy[1] = math.atan(R[0, 2] * math.cos(rpy[2]) / R[2, 2])
 
-    elif order == 'zyx' or order == 'vehicle':
+    elif order == "zyx" or order == "vehicle":
 
         # old ZYX order (as per Paul book)
         if abs(abs(R[2, 0]) - 1) < 10 * _eps:  # when |R31| == 1
             # singularity
-            rpy[0] = 0     # roll is zero
+            rpy[0] = 0  # roll is zero
             if R[2, 0] < 0:
                 rpy[2] = -math.atan2(R[0, 1], R[0, 2])  # R-Y
             else:
@@ -1078,16 +1107,16 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
             elif k == 3:
                 rpy[1] = -math.atan(R[2, 0] * math.cos(rpy[0]) / R[2, 2])
 
-    elif order == 'yxz' or order == 'camera':
+    elif order == "yxz" or order == "camera":
 
         if abs(abs(R[1, 2]) - 1) < 10 * _eps:  # when |R23| == 1
-                # singularity
+            # singularity
             rpy[0] = 0
             if R[1, 2] < 0:
-                rpy[2] = -math.atan2(R[2, 0], R[0, 0])   # R-Y
+                rpy[2] = -math.atan2(R[2, 0], R[0, 0])  # R-Y
             else:
-                rpy[2] = math.atan2(-R[2, 0], -R[2, 1])   # R+Y
-            rpy[1] = -math.asin(np.clip(R[1, 2], -1.0, 1.0))    # P
+                rpy[2] = math.atan2(-R[2, 0], -R[2, 1])  # R+Y
+            rpy[1] = -math.asin(np.clip(R[1, 2], -1.0, 1.0))  # P
         else:
             rpy[0] = math.atan2(R[1, 0], R[1, 1])
             rpy[2] = math.atan2(R[0, 2], R[2, 2])
@@ -1103,9 +1132,9 @@ def tr2rpy(T, unit='rad', order='zyx', check=False):
                 rpy[1] = -math.atan(R[1, 2] * math.cos(rpy[2]) / R[2, 2])
 
     else:
-        raise ValueError('Invalid order')
+        raise ValueError("Invalid order")
 
-    if unit == 'deg':
+    if unit == "deg":
         rpy *= 180 / math.pi
 
     return rpy
@@ -1126,14 +1155,17 @@ def trlog(T, check=True, twist=False):
     :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad argument
 
-    An efficient closed-form solution of the matrix logarithm for arguments that are SO(3) or SE(3).
+    An efficient closed-form solution of the matrix logarithm for arguments that
+    are SO(3) or SE(3).
 
-    - ``trlog(R)`` is the logarithm of the passed rotation matrix ``R`` which will be
-      3x3 skew-symmetric matrix.  The equivalent vector from ``vex()`` is parallel to rotation axis
-      and its norm is the amount of rotation about that axis.
-    - ``trlog(T)`` is the logarithm of the passed homogeneous transformation matrix ``T`` which will be
-      4x4 augumented skew-symmetric matrix. The equivalent vector from ``vexa()`` is the twist
-      vector (6x1) comprising [v w].
+    - ``trlog(R)`` is the logarithm of the passed rotation matrix ``R`` which
+      will be 3x3 skew-symmetric matrix.  The equivalent vector from ``vex()``
+      is parallel to rotation axis and its norm is the amount of rotation about
+      that axis.
+    - ``trlog(T)`` is the logarithm of the passed homogeneous transformation
+      matrix ``T`` which will be 4x4 augumented skew-symmetric matrix. The
+      equivalent vector from ``vexa()`` is the twist vector (6x1) comprising [v
+      w].
 
     .. runblock:: pycon
 
@@ -1168,7 +1200,11 @@ def trlog(T, check=True, twist=False):
                 S = trlog(R, check=False)  # recurse
                 w = base.vex(S)
                 theta = base.norm(w)
-                Ginv = np.eye(3) - S / 2 + (1 / theta - 1 / math.tan(theta / 2) / 2) / theta * S @ S
+                Ginv = (
+                    np.eye(3)
+                    - S / 2
+                    + (1 / theta - 1 / math.tan(theta / 2) / 2) / theta * S @ S
+                )
                 v = Ginv @ t
                 if twist:
                     return np.r_[v, w]
@@ -1208,6 +1244,7 @@ def trlog(T, check=True, twist=False):
                 return skw * theta
     else:
         raise ValueError("Expect SO(3) or SE(3) matrix")
+
 
 # ---------------------------------------------------------------------------------------#
 
@@ -1301,9 +1338,13 @@ def trexp(S, theta=None, check=True):
         R = base.rodrigues(w, theta)
 
         skw = base.skew(w)
-        V = np.eye(3) * theta + (1.0 - math.cos(theta)) * skw + (theta - math.sin(theta)) * skw @ skw
+        V = (
+            np.eye(3) * theta
+            + (1.0 - math.cos(theta)) * skw
+            + (theta - math.sin(theta)) * skw @ skw
+        )
 
-        return base.rt2tr(R, V@t)
+        return base.rt2tr(R, V @ t)
 
     elif base.ismatrix(S, (3, 3)) or base.isvector(S, 3):
         # so(3) case
@@ -1374,8 +1415,8 @@ def trnorm(T):
     o = T[:3, 1]
     a = T[:3, 2]
 
-    n = np.cross(o, a)        # N = O x A
-    o = np.cross(a, n)        # (a)];
+    n = np.cross(o, a)  # N = O x A
+    o = np.cross(a, n)  # (a)];
     R = np.stack((base.unitvec(n), base.unitvec(o), base.unitvec(a)), axis=1)
 
     if ishom(T):
@@ -1424,18 +1465,18 @@ def trinterp(start, end, s=None):
     :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
     """
 
-    if not 0 <= s <= 1: 
+    if not 0 <= s <= 1:
         raise ValueError("s outside interval [0,1]")
 
     if base.ismatrix(end, (3, 3)):
         # SO(3) case
 
         if start is None:
-            #	TRINTERP(T, s)
+            # 	TRINTERP(T, s)
             q0 = base.r2q(base.t2r(end))
             qr = base.slerp(base.eye(), q0, s)
         else:
-            #	TRINTERP(T0, T1, s)
+            # 	TRINTERP(T0, T1, s)
             q0 = base.r2q(base.t2r(start))
             q1 = base.r2q(base.t2r(end))
             qr = base.slerp(q0, q1, s)
@@ -1445,14 +1486,14 @@ def trinterp(start, end, s=None):
     elif base.ismatrix(end, (4, 4)):
         # SE(3) case
         if start is None:
-            #	TRINTERP(T, s)
+            # 	TRINTERP(T, s)
             q0 = base.r2q(base.t2r(end))
             p0 = transl(end)
 
             qr = base.slerp(base.eye(), q0, s)
             pr = s * p0
         else:
-            #	TRINTERP(T0, T1, s)
+            # 	TRINTERP(T0, T1, s)
             q0 = base.r2q(base.t2r(start))
             q1 = base.r2q(base.t2r(end))
 
@@ -1464,7 +1505,7 @@ def trinterp(start, end, s=None):
 
         return base.rt2tr(base.q2r(qr), pr)
     else:
-        return ValueError('Argument must be SO(3) or SE(3)')
+        return ValueError("Argument must be SO(3) or SE(3)")
 
 
 def delta2tr(d):
@@ -1521,10 +1562,10 @@ def trinv(T):
     # inline this code for speed, don't use tr2rt and rt2tr
     R = T[:3, :3]
     t = T[:3, 3]
-    Ti = np.zeros((4,4), dtype=T.dtype)
+    Ti = np.zeros((4, 4), dtype=T.dtype)
     Ti[:3, :3] = R.T
     Ti[:3, 3] = -R.T @ t
-    Ti[3,3] = 1
+    Ti[3, 3] = 1
     return Ti
 
 
@@ -1541,13 +1582,16 @@ def tr2delta(T0, T1=None):
     :raises ValueError: bad arguments
 
     - ``tr2delta(T0, T1)`` is the differential motion Δ (6x1) corresponding to
-      infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3) matrices.
+      infinitessimal motion (in the T0 frame) from pose T0 to T1 which are SE(3)
+      matrices.
 
-    - ``tr2delta(T)`` as above but the motion is from the world frame to the pose represented by T.
+    - ``tr2delta(T)`` as above but the motion is from the world frame to the
+      pose represented by T.
 
-    The vector :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z`
-    represents infinitessimal translation and rotation, and is an approximation to the
-    instantaneous spatial velocity multiplied by time step.
+    The vector :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x,
+    \theta_y, \theta_z` represents infinitessimal translation and rotation, and
+    is an approximation to the instantaneous spatial velocity multiplied by time
+    step.
 
     .. runblock:: pycon
 
@@ -1592,19 +1636,20 @@ def tr2jac(T):
     :return: Jacobian matrix
     :rtype: ndarray(6,6)
 
-    Computes an Jacobian matrix that maps spatial velocity between two frames defined by
-    an SE(3) matrix.
+    Computes an Jacobian matrix that maps spatial velocity between two frames
+    defined by an SE(3) matrix.
 
     ``tr2jac(T)`` is a Jacobian matrix (6x6) that maps spatial velocity or
     differential motion from frame {B} to frame {A} where the pose of {B}
-    elative to {A} is represented by the homogeneous transform T = :math:`{}^A {\bf T}_B`.
+    elative to {A} is represented by the homogeneous transform T = :math:`{}^A
+    {\bf T}_B`.
 
     .. runblock:: pycon
 
         >>> from spatialmath.base import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2jac(T)
-    
+
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
     :SymPy: supported
     """
@@ -1615,6 +1660,7 @@ def tr2jac(T):
     Z = np.zeros((3, 3), dtype=T.dtype)
     R = base.t2r(T)
     return np.block([[R, Z], [Z, R]])
+
 
 def eul2jac(angles):
     """
@@ -1652,7 +1698,7 @@ def eul2jac(angles):
 
     if len(angles) == 1:
         angles = angles[0]
-    
+
     phi = angles[0]
     theta = angles[1]
 
@@ -1669,7 +1715,8 @@ def eul2jac(angles):
         ])
     # fmt: on
 
-def rpy2jac(angles, order='zyx'):
+
+def rpy2jac(angles, order="zyx"):
     """
     Jacobian from RPY angle rates to angular velocity
 
@@ -1681,10 +1728,9 @@ def rpy2jac(angles, order='zyx'):
     :return: Jacobian matrix
     :rtype: ndarray(3,3)
 
-    - ``rpy2jac(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw angle 
-      rates to angular velocity at the operating point (⍺, β, γ).
-      These correspond to successive rotations about the axes specified by
-      ``order``:
+    - ``rpy2jac(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw
+      angle rates to angular velocity at the operating point (⍺, β, γ). These
+      correspond to successive rotations about the axes specified by ``order``:
 
         - 'zyx' [default], rotate by γ about the z-axis, then by β about the new
           y-axis, then by ⍺ about the new x-axis.  Convention for a mobile robot
@@ -1715,16 +1761,16 @@ def rpy2jac(angles, order='zyx'):
 
     :seealso: :func:`eul2jac`, :func:`exp2jac`, :func:`rot2jac`
     """
-    
+
     pitch = angles[1]
     yaw = angles[2]
-    
+
     cp = base.sym.cos(pitch)
     sp = base.sym.sin(pitch)
     cy = base.sym.cos(yaw)
     sy = base.sym.sin(yaw)
-    
-    if order == 'xyz':
+
+    if order == "xyz":
         # fmt: off
         J = np.array([	
             [ sp,       0,   1], 
@@ -1732,7 +1778,7 @@ def rpy2jac(angles, order='zyx'):
             [ cp * cy,  sy,  0]
         ])
         # fmt: on
-    elif order == 'zyx':
+    elif order == "zyx":
         # fmt: off
         J = np.array([	 
                 [ cp * cy, -sy, 0],
@@ -1740,7 +1786,7 @@ def rpy2jac(angles, order='zyx'):
                 [-sp,       0,  1],
             ])
         # fmt: on
-    elif order == 'yxz':
+    elif order == "yxz":
         # fmt: off
         J = np.array([	
                 [ cp * sy,  cy, 0],
@@ -1749,6 +1795,7 @@ def rpy2jac(angles, order='zyx'):
             ])
         # fmt: on
     return J
+
 
 def exp2jac(v):
     """
@@ -1772,7 +1819,7 @@ def exp2jac(v):
 
     Reference::
 
-        - A compact formula for the derivative of a 3-D rotation in 
+        - A compact formula for the derivative of a 3-D rotation in
           exponential coordinate
           Guillermo Gallego, Anthony Yezzi
           https://arxiv.org/pdf/1312.0788v1.pdf
@@ -1784,7 +1831,6 @@ def exp2jac(v):
 
     :seealso: :func:`eul2jac`, :func:`rpy2jac`, :func:`rot2jac`
     """
-
 
     vn, theta = base.unitvec_norm(v)
     if theta is None:
@@ -1806,10 +1852,15 @@ def exp2jac(v):
     sk = base.skew(v)
 
     # (2.106)
-    E = np.eye(3) + sk * (1 - np.cos(theta)) / theta ** 2 + sk @ sk  * (theta - np.sin(theta)) / theta ** 3
+    E = (
+        np.eye(3)
+        + sk * (1 - np.cos(theta)) / theta ** 2
+        + sk @ sk * (theta - np.sin(theta)) / theta ** 3
+    )
     return E
 
-def rot2jac(R, representation='rpy-xyz'):
+
+def rot2jac(R, representation="rpy-xyz"):
     """
     Velocity transform for analytical Jacobian
 
@@ -1848,28 +1899,28 @@ def rot2jac(R, representation='rpy-xyz'):
 
     if ishom(R):
         R = base.t2r(R)
-    
+
     # R = R.T
 
-    if representation == 'rpy/xyz':
-        rpy = tr2rpy(R, order='xyz')
-        A = rpy2jac(rpy, order='xyz')
-    elif representation == 'rpy/zyx':
-        rpy = tr2rpy(R, order='zyx')
-        A = rpy2jac(rpy, order='zyx')
-    elif representation == 'eul':
+    if representation == "rpy/xyz":
+        rpy = tr2rpy(R, order="xyz")
+        A = rpy2jac(rpy, order="xyz")
+    elif representation == "rpy/zyx":
+        rpy = tr2rpy(R, order="zyx")
+        A = rpy2jac(rpy, order="zyx")
+    elif representation == "eul":
         eul = tr2eul(R)
         A = eul2jac(eul)
-    elif representation == 'exp':
+    elif representation == "exp":
         v = trlog(R, twist=True)
         A = exp2jac(v)
     else:
-        raise ValueError('bad representation specified')
+        raise ValueError("bad representation specified")
 
-    return sp.linalg.block_diag(np.eye(3,3), np.linalg.inv(A))
+    return sp.linalg.block_diag(np.eye(3, 3), np.linalg.inv(A))
 
 
-def angvelxform(𝚪, inverse=False, full=True, representation='rpy/xyz'):
+def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
     """
     Angular velocity transformation
 
@@ -1917,7 +1968,7 @@ def angvelxform(𝚪, inverse=False, full=True, representation='rpy/xyz'):
     :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
     """
 
-    if representation == 'rpy/xyz':
+    if representation == "rpy/xyz":
         alpha = 𝚪[0]
         beta = 𝚪[1]
         gamma = 𝚪[2]
@@ -1941,7 +1992,7 @@ def angvelxform(𝚪, inverse=False, full=True, representation='rpy/xyz'):
                 ])
             # fmt: on
 
-    elif representation == 'rpy/zyx':
+    elif representation == "rpy/zyx":
         alpha = 𝚪[0]
         beta = 𝚪[1]
         gamma = 𝚪[2]
@@ -1964,7 +2015,7 @@ def angvelxform(𝚪, inverse=False, full=True, representation='rpy/xyz'):
                 [math.cos(gamma)*math.tan(beta), math.sin(gamma)*math.tan(beta), 1]
                 ])
             # fmt: on
-    elif representation == 'eul':
+    elif representation == "eul":
         phi = 𝚪[0]
         theta = 𝚪[1]
         psi = 𝚪[2]
@@ -1987,30 +2038,39 @@ def angvelxform(𝚪, inverse=False, full=True, representation='rpy/xyz'):
                 [math.cos(phi)/math.sin(theta), math.sin(phi)/math.sin(theta), 0]
                 ])
             # fmt: on
-    elif representation == 'exp':
+    elif representation == "exp":
         # from ETHZ class notes
         sk = base.skew(𝚪)
         theta = base.norm(𝚪)
         if inverse:
             # analytical rates -> angular velocity
             # (2.106)
-            A = np.eye(3) + sk * (1 - np.cos(theta)) / theta ** 2 \
-                + sk @ sk  * (theta - np.sin(theta)) / theta ** 3
+            A = (
+                np.eye(3)
+                + sk * (1 - np.cos(theta)) / theta ** 2
+                + sk @ sk * (theta - np.sin(theta)) / theta ** 3
+            )
         else:
             # angular velocity -> analytical rates
             # (2.107)
-            A = np.eye(3) - sk / 2 + sk @ sk / theta ** 2 * (
-                1 - (theta / 2) * (np.sin(theta) / (1 - np.cos(theta)))
-                ) 
+            A = (
+                np.eye(3)
+                - sk / 2
+                + sk
+                @ sk
+                / theta ** 2
+                * (1 - (theta / 2) * (np.sin(theta) / (1 - np.cos(theta))))
+            )
     else:
-        raise ValueError('bad representation specified')
+        raise ValueError("bad representation specified")
 
     if full:
-        return sp.linalg.block_diag(np.eye(3,3), A)
+        return sp.linalg.block_diag(np.eye(3, 3), A)
     else:
         return A
 
-def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
+
+def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     """
     Angular acceleratipn transformation
 
@@ -2025,9 +2085,10 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
     :return: angular velocity transformation matrix
     :rtype: ndarray(6,6) or ndarray(3,3)
 
-    Computes the transformation from spatial acceleration :math:`\dot{\nu}`, where the rotational part is
-    expressed as angular acceleration, to analytical rates :math:`\ddvec{x}` where the rotational part
-    is expressed as acceleration in some other representation
+    Computes the transformation from spatial acceleration :math:`\dot{\nu}`,
+    where the rotational part is expressed as angular acceleration, to
+    analytical rates :math:`\ddvec{x}` where the rotational part is expressed as
+    acceleration in some other representation
 
     .. math::
         \ddvec{x} = \mat{A}_d \dvec{\nu}
@@ -2055,7 +2116,7 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
     :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
     """
 
-    if representation == 'rpy/xyz':
+    if representation == "rpy/xyz":
         # autogenerated by symbolic/angvelxform.ipynb
         alpha = 𝚪[0]
         beta = 𝚪[1]
@@ -2063,23 +2124,33 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
         alpha_dot = 𝚪d[0]
         beta_dot = 𝚪d[1]
         gamma_dot = 𝚪d[2]
-        Ad = np.array([
-            [   0,
-                -(beta_dot*math.sin(beta)*math.sin(gamma)/math.cos(beta) \
-                    + gamma_dot*math.cos(gamma))/math.cos(beta), \
-                (beta_dot*math.sin(beta)*math.cos(gamma)/math.cos(beta) - \
-                    gamma_dot*math.sin(gamma))/math.cos(beta)
-            ], 
-            [   0, -gamma_dot*math.sin(gamma), gamma_dot*math.cos(gamma)], 
-            [   0,
-                beta_dot*math.sin(gamma)/math.cos(beta)**2 \
-                    + gamma_dot*math.cos(gamma)*math.tan(beta),
-                -beta_dot*math.cos(gamma)/math.cos(beta)**2 \
-                    + gamma_dot*math.sin(gamma)*math.tan(beta)
+        Ad = np.array(
+            [
+                [
+                    0,
+                    -(
+                        beta_dot * math.sin(beta) * math.sin(gamma) / math.cos(beta)
+                        + gamma_dot * math.cos(gamma)
+                    )
+                    / math.cos(beta),
+                    (
+                        beta_dot * math.sin(beta) * math.cos(gamma) / math.cos(beta)
+                        - gamma_dot * math.sin(gamma)
+                    )
+                    / math.cos(beta),
+                ],
+                [0, -gamma_dot * math.sin(gamma), gamma_dot * math.cos(gamma)],
+                [
+                    0,
+                    beta_dot * math.sin(gamma) / math.cos(beta) ** 2
+                    + gamma_dot * math.cos(gamma) * math.tan(beta),
+                    -beta_dot * math.cos(gamma) / math.cos(beta) ** 2
+                    + gamma_dot * math.sin(gamma) * math.tan(beta),
+                ],
             ]
-        ])
+        )
 
-    elif representation == 'rpy/zyx':
+    elif representation == "rpy/zyx":
         # autogenerated by symbolic/angvelxform.ipynb
         alpha = 𝚪[0]
         beta = 𝚪[1]
@@ -2087,23 +2158,33 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
         alpha_dot = 𝚪d[0]
         beta_dot = 𝚪d[1]
         gamma_dot = 𝚪d[2]
-        Ad = np.array([
-            [   (beta_dot*math.sin(beta)*math.cos(gamma)/math.cos(beta) \
-                    - gamma_dot*math.sin(gamma))/math.cos(beta), 
-                (beta_dot*math.sin(beta)*math.sin(gamma)/math.cos(beta) \
-                    + gamma_dot*math.cos(gamma))/math.cos(beta), 
-                0
-            ], 
-            [   -gamma_dot*math.cos(gamma), -gamma_dot*math.sin(gamma), 0], 
-            [   beta_dot*math.cos(gamma)/math.cos(beta)**2 \
-                    - gamma_dot*math.sin(gamma)*math.tan(beta), 
-                beta_dot*math.sin(gamma)/math.cos(beta)**2 \
-                    + gamma_dot*math.cos(gamma)*math.tan(beta), 
-                0
+        Ad = np.array(
+            [
+                [
+                    (
+                        beta_dot * math.sin(beta) * math.cos(gamma) / math.cos(beta)
+                        - gamma_dot * math.sin(gamma)
+                    )
+                    / math.cos(beta),
+                    (
+                        beta_dot * math.sin(beta) * math.sin(gamma) / math.cos(beta)
+                        + gamma_dot * math.cos(gamma)
+                    )
+                    / math.cos(beta),
+                    0,
+                ],
+                [-gamma_dot * math.cos(gamma), -gamma_dot * math.sin(gamma), 0],
+                [
+                    beta_dot * math.cos(gamma) / math.cos(beta) ** 2
+                    - gamma_dot * math.sin(gamma) * math.tan(beta),
+                    beta_dot * math.sin(gamma) / math.cos(beta) ** 2
+                    + gamma_dot * math.cos(gamma) * math.tan(beta),
+                    0,
+                ],
             ]
-        ])
+        )
 
-    elif representation == 'eul':
+    elif representation == "eul":
         # autogenerated by symbolic/angvelxform.ipynb
         phi = 𝚪[0]
         theta = 𝚪[1]
@@ -2111,25 +2192,33 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
         phi_dot = 𝚪d[0]
         theta_dot = 𝚪d[1]
         psi_dot = 𝚪d[2]
-        Ad = np.array([
-            [   phi_dot*math.sin(phi)/math.tan(theta) \
-                    + theta_dot*math.cos(phi)/math.sin(theta)**2, 
-                -phi_dot*math.cos(phi)/math.tan(theta) +\
-                    theta_dot*math.sin(phi)/math.sin(theta)**2, 
-                0
-            ], 
-            [   -phi_dot*math.cos(phi), -phi_dot*math.sin(phi), 0], 
-            [   -(phi_dot*math.sin(phi) \
-                    + theta_dot*math.cos(phi)*math.cos(theta) \
-                    /math.sin(theta))/math.sin(theta), 
-                (phi_dot*math.cos(phi) \
-                    - theta_dot*math.sin(phi)*math.cos(theta) \
-                    /math.sin(theta))/math.sin(theta),
-                0
+        Ad = np.array(
+            [
+                [
+                    phi_dot * math.sin(phi) / math.tan(theta)
+                    + theta_dot * math.cos(phi) / math.sin(theta) ** 2,
+                    -phi_dot * math.cos(phi) / math.tan(theta)
+                    + theta_dot * math.sin(phi) / math.sin(theta) ** 2,
+                    0,
+                ],
+                [-phi_dot * math.cos(phi), -phi_dot * math.sin(phi), 0],
+                [
+                    -(
+                        phi_dot * math.sin(phi)
+                        + theta_dot * math.cos(phi) * math.cos(theta) / math.sin(theta)
+                    )
+                    / math.sin(theta),
+                    (
+                        phi_dot * math.cos(phi)
+                        - theta_dot * math.sin(phi) * math.cos(theta) / math.sin(theta)
+                    )
+                    / math.sin(theta),
+                    0,
+                ],
             ]
-        ])
-    
-    elif representation == 'exp':
+        )
+
+    elif representation == "exp":
         # autogenerated by symbolic/angvelxform_dot.ipynb
         v = 𝚪
         vd = 𝚪d
@@ -2137,20 +2226,28 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation='rpy/xyz'):
         skd = base.skew(vd)
         theta_dot = np.inner(𝚪, 𝚪d) / base.norm(𝚪)
         theta = base.norm(𝚪)
-        Theta = (1 - theta / 2 * np.sin(theta) / (1 - np.cos(theta)))
-        Theta_dot = (-0.5*theta*theta_dot*math.cos(theta)/(1 - math.cos(theta)) \
-            + 0.5*theta*theta_dot*math.sin(theta)**2/(1 - math.cos(theta))**2\
-            - 0.5*theta_dot*math.sin(theta)/(1 - math.cos(theta)))/theta**2\
-            - 2*theta_dot*(-1/2*theta*math.sin(theta)/(1 - math.cos(theta)) + 1)/theta**3
+        Theta = 1 - theta / 2 * np.sin(theta) / (1 - np.cos(theta))
+        Theta_dot = (
+            -0.5 * theta * theta_dot * math.cos(theta) / (1 - math.cos(theta))
+            + 0.5
+            * theta
+            * theta_dot
+            * math.sin(theta) ** 2
+            / (1 - math.cos(theta)) ** 2
+            - 0.5 * theta_dot * math.sin(theta) / (1 - math.cos(theta))
+        ) / theta ** 2 - 2 * theta_dot * (
+            -1 / 2 * theta * math.sin(theta) / (1 - math.cos(theta)) + 1
+        ) / theta ** 3
 
         Ad = -0.5 * skd + 2 * sk @ skd * Theta + sk @ sk * Theta_dot
     else:
-        raise ValueError('bad representation specified')
+        raise ValueError("bad representation specified")
 
     if full:
-        return sp.linalg.block_diag(np.eye(3,3), Ad)
+        return sp.linalg.block_diag(np.eye(3, 3), Ad)
     else:
         return Ad
+
 
 def tr2adjoint(T):
     r"""
@@ -2174,16 +2271,16 @@ def tr2adjoint(T):
         >>> from spatialmath.base import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2adjoint(T)
-    
-    :Reference: 
+
+    :Reference:
         - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
         - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>_
 
     :SymPy: supported
     """
-    
+
     Z = np.zeros((3, 3), dtype=T.dtype)
-    if T.shape == (3,3):
+    if T.shape == (3, 3):
         # SO(3) adjoint
         # fmt: off
         return np.block([
@@ -2191,7 +2288,7 @@ def tr2adjoint(T):
                     [Z, R]
                 ])
         # fmt: on
-    elif T.shape == (4,4):
+    elif T.shape == (4, 4):
         # SE(3) adjoint
         (R, t) = base.tr2rt(T)
         # fmt: off
@@ -2201,88 +2298,96 @@ def tr2adjoint(T):
                 ])
         # fmt: on
     else:
-        raise ValueError('bad argument')
-        
+        raise ValueError("bad argument")
 
-def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:.3g}', degsym=True, unit='deg'):
+
+def trprint(
+    T,
+    orient="rpy/zyx",
+    label=None,
+    file=sys.stdout,
+    fmt="{:.3g}",
+    degsym=True,
+    unit="deg",
+):
     """
-    Compact display of SO(3) or SE(3) matrices
+     Compact display of SO(3) or SE(3) matrices
 
-    :param T: SE(3) or SO(3) matrix
-    :type T: ndarray(4,4) or ndarray(3,3)
-    :param label: text label to put at start of line
-    :type label: str
-    :param orient: 3-angle convention to use
-    :type orient: str
-    :param file: file to write formatted string to. [default, stdout]
-    :type file: file object
-    :param fmt: conversion format for each number in the format used with ``format``
-    :type fmt: str
-    :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
-    :return: formatted string
-    :rtype: str
-    :raises ValueError: bad argument
+     :param T: SE(3) or SO(3) matrix
+     :type T: ndarray(4,4) or ndarray(3,3)
+     :param label: text label to put at start of line
+     :type label: str
+     :param orient: 3-angle convention to use
+     :type orient: str
+     :param file: file to write formatted string to. [default, stdout]
+     :type file: file object
+     :param fmt: conversion format for each number in the format used with ``format``
+     :type fmt: str
+     :param unit: angular units: 'rad' [default], or 'deg'
+     :type unit: str
+     :return: formatted string
+     :rtype: str
+     :raises ValueError: bad argument
 
-    The matrix is formatted and written to ``file`` and the
-    string is returned.  To suppress writing to a file, set ``file=None``.
+     The matrix is formatted and written to ``file`` and the
+     string is returned.  To suppress writing to a file, set ``file=None``.
 
-   - ``trprint(R)`` prints the SO(3) rotation matrix to stdout in a compact
-      single-line format:
+    - ``trprint(R)`` prints the SO(3) rotation matrix to stdout in a compact
+       single-line format:
 
-        [LABEL:] ORIENTATION UNIT
+         [LABEL:] ORIENTATION UNIT
 
-    - ``trprint(T)`` prints the SE(3) homogoneous transform to stdout in a
-      compact single-line format:
+     - ``trprint(T)`` prints the SE(3) homogoneous transform to stdout in a
+       compact single-line format:
 
-        [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT
+         [LABEL:] [t=X, Y, Z;] ORIENTATION UNIT
 
-    - ``trprint(X, file=None)`` as above but returns the string rather than 
-      printing to a file
+     - ``trprint(X, file=None)`` as above but returns the string rather than
+       printing to a file
 
-    Orientation is expressed in one of several formats:
+     Orientation is expressed in one of several formats:
 
-    - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order [default]
-    - 'rpy/yxz' roll-pitch-yaw angles in YXZ axis order
-    - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order
-    - 'eul' Euler angles in ZYZ axis order
-    - 'angvec' angle and axis
+     - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order [default]
+     - 'rpy/yxz' roll-pitch-yaw angles in YXZ axis order
+     - 'rpy/zyx' roll-pitch-yaw angles in ZYX axis order
+     - 'eul' Euler angles in ZYZ axis order
+     - 'angvec' angle and axis
 
 
-    .. runblock:: pycon
+     .. runblock:: pycon
 
-        >>> from spatialmath.base import transl, rpy2tr, trprint
-        >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
-        >>> trprint(T, file=None)
-        >>> trprint(T, file=None, label='T', orient='angvec')
-        >>> trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')
+         >>> from spatialmath.base import transl, rpy2tr, trprint
+         >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
+         >>> trprint(T, file=None)
+         >>> trprint(T, file=None, label='T', orient='angvec')
+         >>> trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')
 
-    .. notes::
+     .. notes::
 
-        - If the 'rpy' option is selected, then the particular angle sequence can be
-          specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
-          'zyx' is the default.
-        - Default formatting is for compact display of data
-        - For tabular data set ``fmt`` to a fixed width format such as
-          ``fmt='{:.3g}'``
+         - If the 'rpy' option is selected, then the particular angle sequence can be
+           specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.
+           'zyx' is the default.
+         - Default formatting is for compact display of data
+         - For tabular data set ``fmt`` to a fixed width format such as
+           ``fmt='{:.3g}'``
 
-    :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
-    :SymPy: not supported
+     :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
+     :SymPy: not supported
     """
 
-    s = ''
+    s = ""
 
     if label is not None:
-        s += '{:s}: '.format(label)
+        s += "{:s}: ".format(label)
 
     # print the translational part if it exists
     if ishom(T):
-        s += 't = {};'.format(_vec2s(fmt, transl(T)))
+        s += "t = {};".format(_vec2s(fmt, transl(T)))
 
     # print the angular part in various representations
 
-    a = orient.split('/')
-    if a[0] == 'rpy':
+    a = orient.split("/")
+    if a[0] == "rpy":
         if len(a) == 2:
             seq = a[1]
         else:
@@ -2290,26 +2395,26 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:.3g}', degs
         angles = tr2rpy(T, order=seq, unit=unit)
         if degsym and unit == "deg":
             fmt += "\u00b0"
-        s += ' {} = {}'.format(orient, _vec2s(fmt, angles))
+        s += " {} = {}".format(orient, _vec2s(fmt, angles))
 
-    elif a[0].startswith('eul'):
+    elif a[0].startswith("eul"):
         angles = tr2eul(T, unit)
         if degsym and unit == "deg":
             fmt += "\u00b0"
-        s += ' eul = {}'.format(_vec2s(fmt, angles))
+        s += " eul = {}".format(_vec2s(fmt, angles))
 
-    elif a[0] == 'angvec':
+    elif a[0] == "angvec":
         # as a vector and angle
         (theta, v) = tr2angvec(T, unit)
         if theta == 0:
-            s += ' R = nil'
+            s += " R = nil"
         else:
             theta = fmt.format(theta)
             if degsym and unit == "deg":
                 theta += "\u00b0"
-            s += ' angvec = ({} | {})'.format(theta, _vec2s(fmt, v))
+            s += " angvec = ({} | {})".format(theta, _vec2s(fmt, v))
     else:
-        raise ValueError('bad orientation format')
+        raise ValueError("bad orientation format")
 
     if file:
         print(s, file=file)
@@ -2319,19 +2424,38 @@ def trprint(T, orient='rpy/zyx', label=None, file=sys.stdout, fmt='{:.3g}', degs
 
 def _vec2s(fmt, v):
     v = [x if np.abs(x) > 1e-6 else 0.0 for x in v]
-    return ', '.join([fmt.format(x) for x in v])
+    return ", ".join([fmt.format(x) for x in v])
 
 
 try:
     import matplotlib.pyplot as plt
+
     _matplotlib_exists = True
-except ImportError:  # pragma: no cover      
+except ImportError:  # pragma: no cover
     _matplotlib_exists = False
 
-def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
-           textcolor=None, labels=('X', 'Y', 'Z'), length=1, style='arrow',
-           originsize=20, origincolor=None, projection='ortho', wtl=0.2, width=None,
-           d2=1.15, flo=(-0.05, -0.05, -0.05), anaglyph=None, **kwargs):
+
+def trplot(
+    T,
+    axes=None,
+    block=False,
+    dims=None,
+    color="blue",
+    frame=None,  # pylint: disable=unused-argument,function-redefined
+    textcolor=None,
+    labels=("X", "Y", "Z"),
+    length=1,
+    style="arrow",
+    originsize=20,
+    origincolor=None,
+    projection="ortho",
+    wtl=0.2,
+    width=None,
+    d2=1.15,
+    flo=(-0.05, -0.05, -0.05),
+    anaglyph=None,
+    **kwargs
+):
     """
     Plot a 3D coordinate frame
 
@@ -2419,16 +2543,16 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     # anaglyph
 
     if not _matplotlib_exists:
-        print('matplotlib is not installed: pip install matplotlib')
+        print("matplotlib is not installed: pip install matplotlib")
         return
-        
+
     if axes is None:
         # create an axes
         fig = plt.gcf()
         if fig.axes == []:
             # no axes in the figure, create a 3D axes
-            ax = fig.add_subplot(111, projection='3d', proj_type=projection)
-            ax.autoscale(enable=True, axis='both')
+            ax = fig.add_subplot(111, projection="3d", proj_type=projection)
+            ax.autoscale(enable=True, axis="both")
 
             # ax.set_aspect('equal')
             ax.set_xlabel(labels[0])
@@ -2442,17 +2566,17 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
     if anaglyph is not None:
         # enforce perspective projection
-        ax.set_proj_type('persp')
-        
+        ax.set_proj_type("persp")
+
         # collect all the arguments to use for left and right views
         args = {
-            'axes': ax,
-            'frame': frame,
-            'length': length,
-            'style': style,
-            'wtl': wtl,
-            'd1': d1,
-            'd2': d2
+            "axes": ax,
+            "frame": frame,
+            "length": length,
+            "style": style,
+            "wtl": wtl,
+            "d1": d1,
+            "d2": d2,
         }
         args = {**args, **kwargs}
 
@@ -2472,17 +2596,17 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
         return
 
-    if style == 'rviz':
+    if style == "rviz":
         if originsize is None:
             originsize = 0
-        color = 'rgb'
+        color = "rgb"
         if width is None:
             width = 8
-        style = 'line'
-    
+        style = "line"
+
     if isinstance(color, str):
-        if color == 'rgb':
-            color = ('red', 'green', 'blue')
+        if color == "rgb":
+            color = ("red", "green", "blue")
         else:
             color = (color,) * 3
 
@@ -2494,10 +2618,27 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     else:
         # assume it is an iterable
         for Tk in T:
-            trplot(Tk, axes=ax, block=block, dims=dims, color=color, frame=frame,
-                textcolor=textcolor, labels=labels, length=length, style=style,
-                projection=projection, originsize=originsize, origincolor=origincolor, wtl=wtl, width=width, d1=d1,
-                d2=d2, flo=flo, anaglyph=anaglyph, **kwargs)
+            trplot(
+                Tk,
+                axes=ax,
+                block=block,
+                dims=dims,
+                color=color,
+                frame=frame,
+                textcolor=textcolor,
+                labels=labels,
+                length=length,
+                style=style,
+                projection=projection,
+                originsize=originsize,
+                origincolor=origincolor,
+                wtl=wtl,
+                width=width,
+                d2=d2,
+                flo=flo,
+                anaglyph=anaglyph,
+                **kwargs
+            )
         return
 
     if dims is not None:
@@ -2518,33 +2659,84 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
 
     # draw the axes
 
-    if style == 'arrow':
-        ax.quiver(o[0], o[1], o[2], x[0] - o[0], x[1] - o[1], x[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color[0], edgecolor=color[1])
-        ax.quiver(o[0], o[1], o[2], y[0] - o[0], y[1] - o[1], y[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color[1], edgecolor=color[1])
-        ax.quiver(o[0], o[1], o[2], z[0] - o[0], z[1] - o[1], z[2] - o[2], arrow_length_ratio=wtl, linewidth=width, facecolor=color[2], edgecolor=color[2])
-        
+    if style == "arrow":
+        ax.quiver(
+            o[0],
+            o[1],
+            o[2],
+            x[0] - o[0],
+            x[1] - o[1],
+            x[2] - o[2],
+            arrow_length_ratio=wtl,
+            linewidth=width,
+            facecolor=color[0],
+            edgecolor=color[1],
+        )
+        ax.quiver(
+            o[0],
+            o[1],
+            o[2],
+            y[0] - o[0],
+            y[1] - o[1],
+            y[2] - o[2],
+            arrow_length_ratio=wtl,
+            linewidth=width,
+            facecolor=color[1],
+            edgecolor=color[1],
+        )
+        ax.quiver(
+            o[0],
+            o[1],
+            o[2],
+            z[0] - o[0],
+            z[1] - o[1],
+            z[2] - o[2],
+            arrow_length_ratio=wtl,
+            linewidth=width,
+            facecolor=color[2],
+            edgecolor=color[2],
+        )
+
         # plot some points
         #  invisible point at the end of each arrow to allow auto-scaling to work
-        ax.scatter(xs=[o[0], x[0], y[0], z[0]], ys=[o[1], x[1], y[1], z[1]], zs=[o[2], x[2], y[2], z[2]], 
-            s=[0, 0, 0, 0])
-    elif style == 'line':
-        ax.plot([o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color[0], linewidth=width)
-        ax.plot([o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color[1], linewidth=width)
-        ax.plot([o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color[2], linewidth=width)
+        ax.scatter(
+            xs=[o[0], x[0], y[0], z[0]],
+            ys=[o[1], x[1], y[1], z[1]],
+            zs=[o[2], x[2], y[2], z[2]],
+            s=[0, 0, 0, 0],
+        )
+    elif style == "line":
+        ax.plot(
+            [o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color[0], linewidth=width
+        )
+        ax.plot(
+            [o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color[1], linewidth=width
+        )
+        ax.plot(
+            [o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color[2], linewidth=width
+        )
 
     # label the frame
     if frame:
         if textcolor is None:
             textcolor = color[0]
         else:
-            textcolor = 'blue'
+            textcolor = "blue"
         if origincolor is None:
             origincolor = color[0]
         else:
-            origincolor = 'black'
+            origincolor = "black"
 
         o1 = T @ np.array(np.r_[flo, 1])
-        ax.text(o1[0], o1[1], o1[2], r'$\{' + frame + r'\}$', color=textcolor, verticalalignment='top', horizontalalignment='center')
+        ax.text(
+            o1[0],
+            o1[1],
+            o1[2],
+            r"$\{" + frame + r"\}$",
+            color=textcolor,
+            verticalalignment="top",
+            horizontalalignment="center",
+        )
 
         # add the labels to each axis
 
@@ -2552,9 +2744,33 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         y = (y - o) * d2 + o
         z = (z - o) * d2 + o
 
-        ax.text(x[0], x[1], x[2], "$%c_{%s}$" % (labels[0], frame), color=textcolor, horizontalalignment='center', verticalalignment='center')
-        ax.text(y[0], y[1], y[2], "$%c_{%s}$" % (labels[1], frame), color=textcolor, horizontalalignment='center', verticalalignment='center')
-        ax.text(z[0], z[1], z[2], "$%c_{%s}$" % (labels[2], frame), color=textcolor, horizontalalignment='center', verticalalignment='center')
+        ax.text(
+            x[0],
+            x[1],
+            x[2],
+            "$%c_{%s}$" % (labels[0], frame),
+            color=textcolor,
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
+        ax.text(
+            y[0],
+            y[1],
+            y[2],
+            "$%c_{%s}$" % (labels[1], frame),
+            color=textcolor,
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
+        ax.text(
+            z[0],
+            z[1],
+            z[2],
+            "$%c_{%s}$" % (labels[2], frame),
+            color=textcolor,
+            horizontalalignment="center",
+            verticalalignment="center",
+        )
 
     if originsize > 0:
         ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=origincolor, s=originsize)
@@ -2563,6 +2779,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
         plt.show(block=block)
     return ax
+
 
 def tranimate(T, **kwargs):
     """
@@ -2581,7 +2798,7 @@ def tranimate(T, **kwargs):
     :param movie: name of file to write MP4 movie into
     :type movie: str
     :param **kwargs: arguments passed to ``trplot``
-    
+
     - ``tranimate(T)`` where ``T`` is an SO(3) or SE(3) matrix, animates a 3D
       coordinate frame moving from the world frame to the frame ``T`` in
       ``nsteps``.
@@ -2594,7 +2811,7 @@ def tranimate(T, **kwargs):
 
             >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
             >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
-    
+
     .. note:: For Jupyter this works with the ``notebook`` and ``TkAgg``
         backends.
 
@@ -2602,19 +2819,19 @@ def tranimate(T, **kwargs):
         returned. If ``block=True`` this blocks after the animation has completed.
 
     .. note:: When saving animation to a file the animation does not appear
-        on screen.  A ``StopIteration`` exception may occur, this seems to 
+        on screen.  A ``StopIteration`` exception may occur, this seems to
         be a matplotlib bug #19599
-        
+
     :SymPy: not supported
 
     :seealso: `trplot`, `plotvol3`
     """
     if not _matplotlib_exists:
-        print('matplotlib is not installed: pip install matplotlib')
+        print("matplotlib is not installed: pip install matplotlib")
         return
 
-    block = kwargs.get('block', False)
-    kwargs['block'] = False
+    block = kwargs.get("block", False)
+    kwargs["block"] = False
 
     anim = base.animate.Animate(**kwargs)
     anim.trplot(T, **kwargs)
@@ -2622,10 +2839,16 @@ def tranimate(T, **kwargs):
 
     plt.show(block=block)
 
-if __name__ == '__main__':  # pragma: no cover
+
+if __name__ == "__main__":  # pragma: no cover
 
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_transforms3d.py").read())  # pylint: disable=exec-used
-    
-
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_transforms3d.py"
+        ).read()
+    )  # pylint: disable=exec-used

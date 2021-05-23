@@ -23,7 +23,7 @@ _eps = np.finfo(np.float64).eps
 
 
 # ---------------------------------------------------------------------------------------#
-def rot2(theta, unit='rad'):
+def rot2(theta, unit="rad"):
     """
     Create SO(2) rotation
 
@@ -55,7 +55,7 @@ def rot2(theta, unit='rad'):
 
 
 # ---------------------------------------------------------------------------------------#
-def trot2(theta, unit='rad', t=None):
+def trot2(theta, unit="rad", t=None):
     """
     Create SE(2) pure rotation
 
@@ -64,7 +64,7 @@ def trot2(theta, unit='rad', t=None):
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
     :param t: 2D translation vector, defaults to [0,0]
-    :type t: array_like(2)   
+    :type t: array_like(2)
     :return: 3x3 homogeneous transformation matrix
     :rtype: ndarray(3,3)
 
@@ -78,25 +78,26 @@ def trot2(theta, unit='rad', t=None):
         >>> trot2(0.3)
         >>> trot2(45, 'deg', t=[1,2])
 
-    .. note:: By default, the translational component is zero but it can be 
+    .. note:: By default, the translational component is zero but it can be
         set to a non-zero value.
 
     :seealso: xyt2tr
     """
-    T = np.pad(rot2(theta, unit), (0, 1), mode='constant')
+    T = np.pad(rot2(theta, unit), (0, 1), mode="constant")
     if t is not None:
-        T[:2, 2] = base.getvector(t, 2, 'array')
+        T[:2, 2] = base.getvector(t, 2, "array")
     T[2, 2] = 1  # integer to be symbolic friendly
     return T
 
-def xyt2tr(xyt, unit='rad'):
+
+def xyt2tr(xyt, unit="rad"):
     """
     Create SE(2) pure rotation
 
     :param xyt: 2d translation and rotation
     :type xyt: array_like(3)
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str 
+    :type unit: str
     :return: 3x3 homogeneous transformation matrix
     :rtype: ndarray(3,3)
 
@@ -112,12 +113,13 @@ def xyt2tr(xyt, unit='rad'):
     :seealso: tr2xyt
     """
     xyt = base.getvector(xyt, 3)
-    T = np.pad(rot2(xyt[2], unit), (0, 1), mode='constant')
+    T = np.pad(rot2(xyt[2], unit), (0, 1), mode="constant")
     T[:2, 2] = xyt[0:2]
     T[2, 2] = 1.0
     return T
 
-def tr2xyt(T, unit='rad'):
+
+def tr2xyt(T, unit="rad"):
     """
     Convert SE(2) to x, y, theta
 
@@ -141,7 +143,8 @@ def tr2xyt(T, unit='rad'):
     :seealso: trot2
     """
     angle = math.atan2(T[1, 0], T[0, 0])
-    return np.r_[T[0,2], T[1,2], angle]
+    return np.r_[T[0, 2], T[1, 2], angle]
+
 
 # ---------------------------------------------------------------------------------------#
 def transl2(x, y=None):
@@ -189,7 +192,7 @@ def transl2(x, y=None):
         >>> import numpy as np
         >>> T = np.array([[1, 0, 3], [0, 1, 4], [0, 0, 1]])
         >>> transl2(T)
-        
+
     .. note:: This function is compatible with the MATLAB version of the Toolbox.  It
         is unusual/weird in doing two completely different things inside the one
         function.
@@ -205,13 +208,14 @@ def transl2(x, y=None):
         # SE(2) -> R2
         return x[:2, 2]
     else:
-        raise ValueError('bad argument')
+        raise ValueError("bad argument")
 
-    if t.dtype != 'O':
-        t = t.astype('float64')
+    if t.dtype != "O":
+        t = t.astype("float64")
     T = np.identity(3, dtype=t.dtype)
     T[:2, 2] = t
     return T
+
 
 def ishom2(T, check=False):
     """
@@ -242,9 +246,14 @@ def ishom2(T, check=False):
 
     :seealso: isR, isrot2, ishom, isvec
     """
-    return isinstance(T, np.ndarray) and T.shape == (3, 3) \
-        and (not check or (base.isR(T[:2, :2])
-                           and np.all(T[2, :] == np.array([0, 0, 1]))))
+    return (
+        isinstance(T, np.ndarray)
+        and T.shape == (3, 3)
+        and (
+            not check
+            or (base.isR(T[:2, :2]) and np.all(T[2, :] == np.array([0, 0, 1])))
+        )
+    )
 
 
 def isrot2(R, check=False):
@@ -275,10 +284,13 @@ def isrot2(R, check=False):
 
     :seealso: isR, ishom2, isrot
     """
-    return isinstance(R, np.ndarray) and R.shape == (2, 2) \
-        and (not check or base.isR(R))
+    return (
+        isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or base.isR(R))
+    )
+
 
 # ---------------------------------------------------------------------------------------#
+
 
 def trinv2(T):
     r"""
@@ -308,11 +320,12 @@ def trinv2(T):
     # inline this code for speed, don't use tr2rt and rt2tr
     R = T[:2, :2]
     t = T[:2, 2]
-    Ti = np.zeros((3,3), dtype=T.dtype)
+    Ti = np.zeros((3, 3), dtype=T.dtype)
     Ti[:2, :2] = R.T
     Ti[:2, 2] = -R.T @ t
-    Ti[2,2] = 1
+    Ti[2, 2] = 1
     return Ti
+
 
 def trlog2(T, check=True, twist=False):
     """
@@ -375,6 +388,8 @@ def trlog2(T, check=True, twist=False):
             return scipy.linalg.logm(T)
     else:
         raise ValueError("Expect SO(2) or SE(2) matrix")
+
+
 # ---------------------------------------------------------------------------------------#
 
 
@@ -463,9 +478,13 @@ def trexp2(S, theta=None, check=True):
         R = base.rodrigues(w, theta)
 
         skw = base.skew(w)
-        V = np.eye(2) * theta + (1.0 - math.cos(theta)) * skw + (theta - math.sin(theta)) * skw @ skw
+        V = (
+            np.eye(2) * theta
+            + (1.0 - math.cos(theta)) * skw
+            + (theta - math.sin(theta)) * skw @ skw
+        )
 
-        return base.rt2tr(R, V@t)
+        return base.rt2tr(R, V @ t)
 
     elif base.ismatrix(S, (2, 2)) or base.isvector(S, 1):
         # so(2) case
@@ -486,12 +505,13 @@ def trexp2(S, theta=None, check=True):
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
 
+
 def adjoint2(T):
     # http://ethaneade.com/lie.pdf
-    if T.shape == (3,3):
+    if T.shape == (3, 3):
         # SO(2) adjoint
         return np.identity(2)
-    elif T.shape == (3,3):
+    elif T.shape == (3, 3):
         # SE(2) adjoint
         (R, t) = base.tr2rt(T)
         # fmt: off
@@ -501,7 +521,8 @@ def adjoint2(T):
                 ])
         # fmt: on
     else:
-        raise ValueError('bad argument')
+        raise ValueError("bad argument")
+
 
 def tr2jac2(T):
     r"""
@@ -524,7 +545,7 @@ def tr2jac2(T):
         >>> from spatialmath.base import *
         >>> T = trot2(0.3, t=[4,5])
         >>> tr2jac2(T)
-    
+
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
     :SymPy: supported
     """
@@ -533,8 +554,9 @@ def tr2jac2(T):
         raise ValueError("expecting an SE(2) matrix")
 
     J = np.eye(3, dtype=T.dtype)
-    J[:2,:2] = base.t2r(T)
+    J[:2, :2] = base.t2r(T)
     return J
+
 
 def trinterp2(start, end, s=None):
     """
@@ -579,13 +601,13 @@ def trinterp2(start, end, s=None):
     if base.ismatrix(end, (2, 2)):
         # SO(2) case
         if start is None:
-            #	TRINTERP2(T, s)
+            # 	TRINTERP2(T, s)
 
             th0 = math.atan2(end[1, 0], end[0, 0])
 
             th = s * th0
         else:
-            #	TRINTERP2(T1, start= s)
+            # 	TRINTERP2(T1, start= s)
             if start.shape != end.shape:
                 raise ValueError("start and end matrices must be same shape")
 
@@ -597,7 +619,7 @@ def trinterp2(start, end, s=None):
         return rot2(th)
     elif base.ismatrix(end, (3, 3)):
         if start is None:
-            #	TRINTERP2(T, s)
+            # 	TRINTERP2(T, s)
 
             th0 = math.atan2(end[1, 0], end[0, 0])
             p0 = transl2(end)
@@ -605,7 +627,7 @@ def trinterp2(start, end, s=None):
             th = s * th0
             pr = s * p0
         else:
-            #	TRINTERP2(T0, T1, s)
+            # 	TRINTERP2(T0, T1, s)
             if start.shape != end.shape:
                 raise ValueError("both matrices must be same shape")
 
@@ -620,10 +642,10 @@ def trinterp2(start, end, s=None):
 
         return base.rt2tr(rot2(th), pr)
     else:
-        return ValueError('Argument must be SO(2) or SE(2)')
+        return ValueError("Argument must be SO(2) or SE(2)")
 
 
-def trprint2(T, label=None, file=sys.stdout, fmt='{:.3g}', unit='deg'):
+def trprint2(T, label=None, file=sys.stdout, fmt="{:.3g}", unit="deg"):
     """
     Compact display of SE(2) or SO(2) matrices
 
@@ -670,21 +692,21 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:.3g}', unit='deg'):
     :seealso: trprint
     """
 
-    s = ''
+    s = ""
 
     if label is not None:
-        s += '{:s}: '.format(label)
+        s += "{:s}: ".format(label)
 
     # print the translational part if it exists
     if ishom2(T):
-        s += 't = {};'.format(_vec2s(fmt, transl2(T)))
+        s += "t = {};".format(_vec2s(fmt, transl2(T)))
 
     angle = math.atan2(T[1, 0], T[0, 0])
-    if unit == 'deg':
+    if unit == "deg":
         angle *= 180.0 / math.pi
-        s += ' {}°'.format(_vec2s(fmt, [angle]))
+        s += " {}°".format(_vec2s(fmt, [angle]))
     else:
-        s += ' {} rad'.format(_vec2s(fmt, [angle]))
+        s += " {} rad".format(_vec2s(fmt, [angle]))
 
     if file:
         print(s, file=file)
@@ -693,23 +715,43 @@ def trprint2(T, label=None, file=sys.stdout, fmt='{:.3g}', unit='deg'):
 
 def _vec2s(fmt, v):
     v = [x if np.abs(x) > 100 * _eps else 0.0 for x in v]
-    return ', '.join([fmt.format(x) for x in v])
+    return ", ".join([fmt.format(x) for x in v])
 
 
 try:
     import matplotlib.pyplot as plt
+
     _matplotlib_exists = True
 
 except ImportError:  # pragma: no cover
-    def trplot2(*args, **kwargs):  # pylint: disable=unused-argument,missing-function-docstring
-        print('matplotlib is not installed: pip install matplotlib')
+
+    def trplot2(
+        *args, **kwargs
+    ):  # pylint: disable=unused-argument,missing-function-docstring
+        print("matplotlib is not installed: pip install matplotlib")
+
     _matplotlib_exists = False
 
 if _matplotlib_exists:
 
-    def trplot2(T, axes=None, block=False, dims=None, color='blue', frame=None, # pylint: disable=unused-argument,function-redefined
-                textcolor=None, labels=('X', 'Y'), length=1, arrow=True,
-                rviz=False, wtl=0.2, width=1, d1=0.05, d2=1.15, **kwargs):  
+    def trplot2(
+        T,
+        axes=None,
+        block=False,
+        dims=None,
+        color="blue",
+        frame=None,  # pylint: disable=unused-argument,function-redefined
+        textcolor=None,
+        labels=("X", "Y"),
+        length=1,
+        arrow=True,
+        rviz=False,
+        wtl=0.2,
+        width=1,
+        d1=0.05,
+        d2=1.15,
+        **kwargs
+    ):
         """
         Plot a 2D coordinate frame
 
@@ -778,13 +820,13 @@ if _matplotlib_exists:
                 ax = plt.gca()
 
                 if dims is None:
-                    ax.autoscale(enable=True, axis='both')
+                    ax.autoscale(enable=True, axis="both")
                 else:
                     if len(dims) == 2:
                         dims = dims * 2
                     ax.set_xlim(dims[0:2])
                     ax.set_ylim(dims[2:4])
-                ax.set_aspect('equal')
+                ax.set_aspect("equal")
                 ax.set_xlabel(labels[0])
                 ax.set_ylabel(labels[1])
             else:
@@ -801,11 +843,33 @@ if _matplotlib_exists:
         # draw the axes
 
         if rviz:
-            ax.plot([o[0], x[0]], [o[1], x[1]], color='red', linewidth=5 * width)
-            ax.plot([o[0], y[0]], [o[1], y[1]], color='lime', linewidth=5 * width)
+            ax.plot([o[0], x[0]], [o[1], x[1]], color="red", linewidth=5 * width)
+            ax.plot([o[0], y[0]], [o[1], y[1]], color="lime", linewidth=5 * width)
         elif arrow:
-            ax.quiver(o[0], o[1], x[0] - o[0], x[1] - o[1], angles='xy', scale_units='xy', scale=1, linewidth=width, facecolor=color, edgecolor=color)
-            ax.quiver(o[0], o[1], y[0] - o[0], y[1] - o[1], angles='xy', scale_units='xy', scale=1, linewidth=width, facecolor=color, edgecolor=color)
+            ax.quiver(
+                o[0],
+                o[1],
+                x[0] - o[0],
+                x[1] - o[1],
+                angles="xy",
+                scale_units="xy",
+                scale=1,
+                linewidth=width,
+                facecolor=color,
+                edgecolor=color,
+            )
+            ax.quiver(
+                o[0],
+                o[1],
+                y[0] - o[0],
+                y[1] - o[1],
+                angles="xy",
+                scale_units="xy",
+                scale=1,
+                linewidth=width,
+                facecolor=color,
+                edgecolor=color,
+            )
             # plot an invisible point at the end of each arrow to allow auto-scaling to work
             ax.scatter(x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[20, 0, 0])
         else:
@@ -818,15 +882,36 @@ if _matplotlib_exists:
                 color = textcolor
 
             o1 = T @ np.array([-d1, -d1, 1])
-            ax.text(o1[0], o1[1], r'$\{' + frame + r'\}$', color=color, verticalalignment='top', horizontalalignment='center')
+            ax.text(
+                o1[0],
+                o1[1],
+                r"$\{" + frame + r"\}$",
+                color=color,
+                verticalalignment="top",
+                horizontalalignment="center",
+            )
 
             # add the labels to each axis
 
             x = (x - o) * d2 + o
             y = (y - o) * d2 + o
 
-            ax.text(x[0], x[1], "$%c_{%s}$" % (labels[0], frame), color=color, horizontalalignment='center', verticalalignment='center')
-            ax.text(y[0], y[1], "$%c_{%s}$" % (labels[1], frame), color=color, horizontalalignment='center', verticalalignment='center')
+            ax.text(
+                x[0],
+                x[1],
+                "$%c_{%s}$" % (labels[0], frame),
+                color=color,
+                horizontalalignment="center",
+                verticalalignment="center",
+            )
+            ax.text(
+                y[0],
+                y[1],
+                "$%c_{%s}$" % (labels[1], frame),
+                color=color,
+                horizontalalignment="center",
+                verticalalignment="center",
+            )
 
         if block:
             # calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit
@@ -864,7 +949,7 @@ if _matplotlib_exists:
         anim.run(**kwargs)
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     import pathlib
 
     # trplot2( transl2(1,2), frame='A', rviz=True, width=1)
@@ -872,4 +957,11 @@ if __name__ == '__main__':  # pragma: no cover
     # trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
     # plt.grid(True)
 
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_transforms2d.py").read())  # pylint: disable=exec-used
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_transforms2d.py"
+        ).read()
+    )  # pylint: disable=exec-used

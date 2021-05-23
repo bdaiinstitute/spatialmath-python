@@ -18,6 +18,7 @@ from spatialmath.base import symbolic as sym
 # valid scalar types
 _scalartypes = (int, np.integer, float, np.floating) + sym.symtype
 
+
 def isscalar(x):
     """
     Test if argument is a real scalar
@@ -38,6 +39,7 @@ def isscalar(x):
     """
     return isinstance(x, _scalartypes)
 
+
 def isinteger(x):
     """
     Test if argument is a scalar integer
@@ -56,6 +58,7 @@ def isinteger(x):
 
     """
     return isinstance(x, (int, np.integer))
+
 
 def assertmatrix(m, shape=None):
     """
@@ -83,15 +86,33 @@ def assertmatrix(m, shape=None):
 
     if not isinstance(m, np.ndarray):
         raise TypeError("input must be a numPy ndarray")
-    if m.dtype.kind == 'c':
+    if m.dtype.kind == "c":
         raise TypeError("input must be a real numPy ndarray")
     if shape is not None:
         if len(shape) != len(m.shape):
-            raise ValueError("incorrect scalar of matrix dimensions, expecting {}, got {}".format(shape, m.shape))
+            raise ValueError(
+                "incorrect scalar of matrix dimensions, expecting {}, got {}".format(
+                    shape, m.shape
+                )
+            )
         if shape[0] is not None and shape[0] > 0 and shape[0] != m.shape[0]:
-            raise ValueError("incorrect matrix dimensions, expecting {}, got {}".format(shape, m.shape))
-        if len(shape) > 1 and shape[1] is not None and shape[1] > 0 and shape[1] != m.shape[1]:
-            raise ValueError("incorrect matrix dimensions, expecting {}, got {}".format(shape, m.shape))
+            raise ValueError(
+                "incorrect matrix dimensions, expecting {}, got {}".format(
+                    shape, m.shape
+                )
+            )
+        if (
+            len(shape) > 1
+            and shape[1] is not None
+            and shape[1] > 0
+            and shape[1] != m.shape[1]
+        ):
+            raise ValueError(
+                "incorrect matrix dimensions, expecting {}, got {}".format(
+                    shape, m.shape
+                )
+            )
+
 
 def ismatrix(m, shape):
     """
@@ -121,7 +142,7 @@ def ismatrix(m, shape):
     """
     if not isinstance(m, np.ndarray):
         return False
-    if m.dtype.kind == 'c':
+    if m.dtype.kind == "c":
         return False
     if len(shape) != len(m.shape):
         return False
@@ -130,6 +151,7 @@ def ismatrix(m, shape):
     if shape[1] is not None and shape[1] > 0 and shape[1] != m.shape[1]:
         return False
     return True
+
 
 def getmatrix(m, shape, dtype=np.float64):
     r"""
@@ -166,7 +188,7 @@ def getmatrix(m, shape, dtype=np.float64):
        - If ``m`` is a 1D array its shape is checked to see if it can be
          reshaped to ``shape``.  A n-array could be reshaped as (n,1) or (1,n)
          or any other shape with the correct number of elements.  A value of
-         ``None`` in the shape stands for unspecified, ie. ``(None, 2)`` will 
+         ``None`` in the shape stands for unspecified, ie. ``(None, 2)`` will
          attempt to reshape ``m`` as an array with shape (k,2) where :math:`k \times 2 \eq n`.
        - If ``m`` is a scalar, return an array of shape (1,1)
 
@@ -177,32 +199,34 @@ def getmatrix(m, shape, dtype=np.float64):
         # passed a 2D array
         mshape = m.shape
 
-        if m.dtype == 'O':
-            dtype = 'O'
+        if m.dtype == "O":
+            dtype = "O"
 
-        if (shape[0] is None or shape[0] == mshape[0]) and (shape[1] is None or shape[1] == mshape[1]):
-                return np.array(m, dtype=dtype)
+        if (shape[0] is None or shape[0] == mshape[0]) and (
+            shape[1] is None or shape[1] == mshape[1]
+        ):
+            return np.array(m, dtype=dtype)
         else:
             raise ValueError(f"expecting {shape} but got {mshape}")
 
     elif isvector(m):
-            # passed a 1D array
-            m = getvector(m, dtype=dtype)
-            if shape[0] is not None and shape[1] is not None:
-                if len(m) == np.prod(shape):
-                    return m.reshape(shape)
-                else:
-                    raise ValueError('array cannot be reshaped')
-            elif shape[0] is not None and shape[1] is None:
-                return m.reshape((shape[0], -1))
-            elif shape[0] is None and shape[1] is not None:
-                return m.reshape((-1, shape[1]))
+        # passed a 1D array
+        m = getvector(m, dtype=dtype)
+        if shape[0] is not None and shape[1] is not None:
+            if len(m) == np.prod(shape):
+                return m.reshape(shape)
             else:
-                return m.reshape((1, -1))
+                raise ValueError("array cannot be reshaped")
+        elif shape[0] is not None and shape[1] is None:
+            return m.reshape((shape[0], -1))
+        elif shape[0] is None and shape[1] is not None:
+            return m.reshape((-1, shape[1]))
+        else:
+            return m.reshape((1, -1))
 
     else:
-        raise TypeError('argument must be scalar or ndarray')
-  
+        raise TypeError("argument must be scalar or ndarray")
+
 
 def verifymatrix(m, shape):
     """
@@ -214,7 +238,7 @@ def verifymatrix(m, shape):
     :raises TypeError: argument is not a NumPy array
     :raises ValueError: argument has incorrect shape
 
-    Raises an exception if the argument ``m`` is not a NumPy array of the 
+    Raises an exception if the argument ``m`` is not a NumPy array of the
     specified shape.
 
     .. note:: Unlike ``assertmatrix`` the specified shape cannot have wildcard
@@ -226,13 +250,13 @@ def verifymatrix(m, shape):
         raise TypeError("input must be a numPy ndarray")
 
     if not m.shape == shape:
-        raise ValueError("incorrect matrix dimensions, "
-                         "expecting {0}".format(shape))
+        raise ValueError("incorrect matrix dimensions, " "expecting {0}".format(shape))
+
 
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 
-def getvector(v, dim=None, out='array', dtype=np.float64):
+def getvector(v, dim=None, out="array", dtype=np.float64):
     """
     Return a vector value
 
@@ -247,13 +271,13 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
     :raises TypeError: value is not a list or NumPy array
     :raises ValueError: incorrect number of elements
 
-    - ``getvector(vec)`` is ``vec`` converted to the output format ``out`` 
+    - ``getvector(vec)`` is ``vec`` converted to the output format ``out``
       where ``vec`` is any of:
 
         - a Python native int or float, a 1-vector
         - Python native list or tuple
         - numPy real 1D array, ie. shape=(N,)
-        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+        - numPy real 2D array with a singleton dimension, ie. shape=(1,N)
           or (N,1)
 
     - ``getvector(vec, N)`` as above but must be an ``N``-element vector.
@@ -283,7 +307,7 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
         >>> getvector([1])
         >>> getvector([[1]])
 
-    .. note:: 
+    .. note::
         - For 'array', 'row' or 'col' output the NumPy dtype defaults to the
           ``dtype`` of ``v`` if it is a NumPy array, otherwise it is
           set to the value specified by the ``dtype`` keyword which defaults
@@ -302,18 +326,18 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
 
         if sym.issymbol(v):
             dt = None
-            
+
         if dim is not None and v and len(v) != dim:
             raise ValueError("incorrect vector length")
-        if out == 'sequence':
+        if out == "sequence":
             return v
-        elif out == 'list':
+        elif out == "list":
             return list(v)
-        elif out == 'array':
+        elif out == "array":
             return np.array(v, dtype=dt)
-        elif out == 'row':
+        elif out == "row":
             return np.array(v, dtype=dt).reshape(1, -1)
-        elif out == 'col':
+        elif out == "col":
             return np.array(v, dtype=dt).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
@@ -322,20 +346,22 @@ def getvector(v, dim=None, out='array', dtype=np.float64):
         s = v.shape
         if dim is not None:
             if not (s == (dim,) or s == (1, dim) or s == (dim, 1)):
-                raise ValueError("incorrect vector length: expected {}, got {}".format(dim, s))
+                raise ValueError(
+                    "incorrect vector length: expected {}, got {}".format(dim, s)
+                )
 
         v = v.flatten()
 
-        if v.dtype.kind == 'O':
-            dt = 'O'
+        if v.dtype.kind == "O":
+            dt = "O"
 
-        if out in ('sequence', 'list'):
+        if out in ("sequence", "list"):
             return list(v.flatten())
-        elif out == 'array':
+        elif out == "array":
             return v.astype(dt)
-        elif out == 'row':
+        elif out == "row":
             return v.astype(dt).reshape(1, -1)
-        elif out == 'col':
+        elif out == "col":
             return v.astype(dt).reshape(-1, 1)
         else:
             raise ValueError("invalid output specifier")
@@ -352,13 +378,13 @@ def assertvector(v, dim, msg=None):
     :type dim: int or None
     :raises ValueError: if not a vector of specified length
 
-    - ``assertvector(vec)`` raise an exception if ``vec`` is not a vector, ie. 
+    - ``assertvector(vec)`` raise an exception if ``vec`` is not a vector, ie.
       it is not any of:
 
         - a Python native int or float, a 1-vector
         - Python native list or tuple
         - numPy real 1D array, ie. shape=(N,)
-        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+        - numPy real 2D array with a singleton dimension, ie. shape=(1,N)
           or (N,1)
 
     - ``assertvector(vec, N)`` as above but must also check the length is ``N``.
@@ -384,7 +410,7 @@ def isvector(v, dim=None):
         - a Python native int or float, a 1-vector
         - Python native list or tuple
         - numPy real 1D array, ie. shape=(N,)
-        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) 
+        - numPy real 2D array with a singleton dimension, ie. shape=(1,N)
           or (N,1)
 
     - ``isvector(vec, N)`` as above but must also be an ``N``-element vector.
@@ -401,15 +427,21 @@ def isvector(v, dim=None):
 
     :seealso: :func:`getvector`, :func:`assertvector`
     """
-    if isinstance(v, (list, tuple)) and (dim is None or len(v) == dim) \
-       and all(map(lambda x: isinstance(x, _scalartypes), v)):
+    if (
+        isinstance(v, (list, tuple))
+        and (dim is None or len(v) == dim)
+        and all(map(lambda x: isinstance(x, _scalartypes), v))
+    ):
         return True  # list or tuple
 
     if isinstance(v, np.ndarray):
         s = v.shape
         if dim is None:
-            return (len(s) == 1 and s[0] > 0) or (s[0] == 1 and s[1] > 0) \
-                   or (s[0] > 0 and s[1] == 1)
+            return (
+                (len(s) == 1 and s[0] > 0)
+                or (s[0] == 1 and s[1] > 0)
+                or (s[0] > 0 and s[1] == 1)
+            )
         else:
             return s == (dim,) or s == (1, dim) or s == (dim, 1)
 
@@ -419,7 +451,7 @@ def isvector(v, dim=None):
     return False
 
 
-def getunit(v, unit='rad'):
+def getunit(v, unit="rad"):
     """
     Convert value according to angular units
 
@@ -472,8 +504,11 @@ def isnumberlist(x):
         >>> isnumberlist(np.r_[1,2])
     """
 
-    return isinstance(x, (list, tuple)) and len(x) > 0 \
-           and all(map(lambda x: isinstance(x, _scalartypes), x))
+    return (
+        isinstance(x, (list, tuple))
+        and len(x) > 0
+        and all(map(lambda x: isinstance(x, _scalartypes), x))
+    )
 
 
 def isvectorlist(x, n):
@@ -497,6 +532,7 @@ def isvectorlist(x, n):
         >>> isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6,7]], 2)
     """
     return islistof(x, lambda x: isinstance(x, np.ndarray) and x.shape == (n,))
+
 
 def islistof(value, what, n=None):
     """
@@ -537,17 +573,24 @@ def islistof(value, what, n=None):
         return False
     if n is not None and len(value) != n:
         return False
-    
+
     if isinstance(what, type) or isinstance(what, tuple):
         # it's a type or tuple of types
         return all([isinstance(x, what) for x in value])
     elif callable(what):
         return all([what(x) for x in value])
     else:
-        raise ValueError('bad value of what')
+        raise ValueError("bad value of what")
 
-        
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_argcheck.py").read())  # pylint: disable=exec-used
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_argcheck.py"
+        ).read()
+    )  # pylint: disable=exec-used

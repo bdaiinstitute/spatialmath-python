@@ -6,7 +6,11 @@ import scipy as sp
 from scipy.stats.distributions import chi2
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection, pathpatch_2d_to_3d
+from mpl_toolkits.mplot3d.art3d import (
+    Poly3DCollection,
+    Line3DCollection,
+    pathpatch_2d_to_3d,
+)
 from spatialmath import base
 
 """
@@ -25,6 +29,7 @@ All return a list of the graphic objects they create.
 
 # =========================== 2D shapes =================================== #
 
+
 def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     """
     Plot text using matplotlib
@@ -42,7 +47,7 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     :rtype: list of Text instance
 
     Example:
-    
+
     .. runblock:: pycon
 
         >>> from spatialmath.base import plotvol2, plot_text
@@ -51,21 +56,19 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
         >>> plot_text((2,2), 'bar', 'b')
         >>> plot_text((2,2), 'baz', fontsize=14, horizontalalignment='centre')
     """
-    
-    defaults = {
-        'horizontalalignment': 'left',
-        'verticalalignment': 'center'
-    }
+
+    defaults = {"horizontalalignment": "left", "verticalalignment": "center"}
     for k, v in defaults.items():
         if k not in kwargs:
             kwargs[k] = v
     if ax is None:
         ax = plt.gca()
-    
+
     handle = plt.text(pos[0], pos[1], text, color=color, **kwargs)
     return [handle]
 
-def plot_point(pos, marker='bs', text=None, ax=None, textargs=None, **kwargs):
+
+def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     """
     Plot a point using matplotlib
 
@@ -89,7 +92,7 @@ def plot_point(pos, marker='bs', text=None, ax=None, textargs=None, **kwargs):
       overlaid, for instance ``["rx", "ro"]`` will give a ⨂ symbol.
 
     - The optional text label is placed to the right of the marker, and
-      vertically aligned. 
+      vertically aligned.
 
     - Multiple points can be marked if ``pos`` is a 2xn array or a list of
       coordinate pairs.  If a label is provided every point will have the same
@@ -115,8 +118,8 @@ def plot_point(pos, marker='bs', text=None, ax=None, textargs=None, **kwargs):
             x = pos[0]
             y = pos[1]
         elif pos.ndim == 2 and pos.shape[0] == 2:
-            x = pos[0,:]
-            y = pos[1,:]
+            x = pos[0, :]
+            y = pos[1, :]
     elif isinstance(pos, (tuple, list)):
         # [x, y]
         # [(x,y), (x,y), ...]
@@ -133,10 +136,10 @@ def plot_point(pos, marker='bs', text=None, ax=None, textargs=None, **kwargs):
             y = pos[1]
 
     textopts = {
-        'fontsize': 12, 
-        'horizontalalignment': 'left',
-        'verticalalignment': 'center'
-            }
+        "fontsize": 12,
+        "horizontalalignment": "left",
+        "verticalalignment": "center",
+    }
     if textargs is not None:
         textopts = {**textopts, **textargs}
 
@@ -153,18 +156,19 @@ def plot_point(pos, marker='bs', text=None, ax=None, textargs=None, **kwargs):
         if isinstance(text, str):
             # simple string, but might have format chars
             for i, xy in enumerate(zip(x, y)):
-                handles.append(
-                    plt.text(xy[0], xy[1], ' ' + text.format(i), 
-                        **textopts)
-                )
+                handles.append(plt.text(xy[0], xy[1], " " + text.format(i), **textopts))
         elif isinstance(text, (tuple, list)):
             for i, xy in enumerate(zip(x, y)):
                 handles.append(
-                    plt.text(xy[0], xy[1], 
-                        ' ' + text[0].format(i, *[d[i] for d in text[1:]]), 
-                        **textopts)
+                    plt.text(
+                        xy[0],
+                        xy[1],
+                        " " + text[0].format(i, *[d[i] for d in text[1:]]),
+                        **textopts
                     )
+                )
     return handles
+
 
 def plot_homline(lines, *args, ax=None, **kwargs):
     """
@@ -187,7 +191,7 @@ def plot_homline(lines, *args, ax=None, **kwargs):
     If ``lines`` is a 3xN array then ``N`` lines are drawn, one per column.
 
     Example:
-    
+
     .. runblock:: pycon
 
         >>> from spatialmath.base import plotvol2, plot_homline
@@ -214,10 +218,25 @@ def plot_homline(lines, *args, ax=None, **kwargs):
     return handles
 
 
-def plot_box( 
-        *fmt, bl=None, tl=None, br=None, tr=None, wh=None, centre=None,
-        l=None, r=None, t=None, b=None, w=None, h=None,
-        ax=None, bbox=None, filled=False, **kwargs):
+def plot_box(
+    *fmt,
+    bl=None,
+    tl=None,
+    br=None,
+    tr=None,
+    wh=None,
+    centre=None,
+    l=None,
+    r=None,
+    t=None,
+    b=None,
+    w=None,
+    h=None,
+    ax=None,
+    bbox=None,
+    filled=False,
+    **kwargs
+):
     """
     Plot a 2D box using matplotlib
 
@@ -355,6 +374,7 @@ def plot_box(
 
     return [r]
 
+
 def circle(centre=(0, 0), radius=1, resolution=50):
     """
     Points on a circle
@@ -377,13 +397,16 @@ def circle(centre=(0, 0), radius=1, resolution=50):
 
     return np.array((x, y))
 
-def plot_circle(radius, *fmt, centre=(0,0), resolution=50, ax=None, filled=False, **kwargs):
+
+def plot_circle(
+    radius, *fmt, centre=(0, 0), resolution=50, ax=None, filled=False, **kwargs
+):
     """
     Plot a circle using matplotlib
 
     :param centre: centre of circle, defaults to (0,0)
     :type centre: array_like(2), optional
-    :param args: 
+    :param args:
     :param radius: radius of circle
     :type radius: float
     :param resolution: number of points on circumferece, defaults to 50
@@ -418,7 +441,8 @@ def plot_circle(radius, *fmt, centre=(0,0), resolution=50, ax=None, filled=False
             handles.append(ax.plot(xy[0, :], xy[1, :], *fmt, **kwargs))
     return handles
 
-def ellipse(E, centre=(0,0), scale=1, confidence=None, resolution=40, inverted=False):
+
+def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=False):
     """
     Points on ellipse
 
@@ -444,14 +468,14 @@ def ellipse(E, centre=(0,0), scale=1, confidence=None, resolution=40, inverted=F
 
     .. note:: For some common cases we require :math:`\mat{E}^{-1}`, for example
         - for robot manipulability
-          :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i 
+          :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i
         - a covariance matrix
           :math:`(x - \mu)^T \mat{P}^{-1} (x - \mu)`
-        so to avoid inverting ``E`` twice to compute the ellipse, we flag that 
+        so to avoid inverting ``E`` twice to compute the ellipse, we flag that
         the inverse is provided using ``inverted``.
     """
-    if E.shape != (2,2):
-        raise ValueError('ellipse is defined by a 2x2 matrix')
+    if E.shape != (2, 2):
+        raise ValueError("ellipse is defined by a 2x2 matrix")
 
     if confidence:
         # process the probability
@@ -467,7 +491,19 @@ def ellipse(E, centre=(0,0), scale=1, confidence=None, resolution=40, inverted=F
     e = s * sp.linalg.sqrtm(E) @ xy + np.array(centre, ndmin=2).T
     return e
 
-def plot_ellipse(E, *fmt, centre=(0,0), scale=1, confidence=None, resolution=40, inverted=False, ax=None, filled=None, **kwargs):
+
+def plot_ellipse(
+    E,
+    *fmt,
+    centre=(0, 0),
+    scale=1,
+    confidence=None,
+    resolution=40,
+    inverted=False,
+    ax=None,
+    filled=None,
+    **kwargs
+):
     """
     Plot an ellipse using matplotlib
 
@@ -487,12 +523,12 @@ def plot_ellipse(E, *fmt, centre=(0,0), scale=1, confidence=None, resolution=40,
 
     .. note:: For some common cases we require :math:`\mat{E}^{-1}`, for example
         - for robot manipulability
-          :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i 
+          :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i
         - a covariance matrix
           :math:`(x - \mu)^T \mat{P}^{-1} (x - \mu)`
-        so to avoid inverting ``E`` twice to compute the ellipse, we flag that 
+        so to avoid inverting ``E`` twice to compute the ellipse, we flag that
         the inverse is provided using ``inverted``.
-        
+
     Returns a set of ``resolution``  that lie on the circumference of a circle
     of given ``center`` and ``radius``.
 
@@ -506,7 +542,7 @@ def plot_ellipse(E, *fmt, centre=(0,0), scale=1, confidence=None, resolution=40,
         >>> plot_ellipse(np.diag((1,2)), 'b--')  # blue dashed ellipse
         >>> plot_ellipse(np.diag((1,2)), filled=True, facecolor='y')  # yellow filled ellipse
 
-    """    
+    """
     # allow for centre[2] to plot ellipse in a plane in a 3D plot
 
     xy = ellipse(E, centre, scale, confidence, resolution, inverted)
@@ -517,9 +553,11 @@ def plot_ellipse(E, *fmt, centre=(0,0), scale=1, confidence=None, resolution=40,
     else:
         plt.plot(xy[0, :], xy[1, :], *fmt, **kwargs)
 
+
 # =========================== 3D shapes =================================== #
 
-def sphere(radius=1, centre=(0,0,0), resolution=50):
+
+def sphere(radius=1, centre=(0, 0, 0), resolution=50):
     """
     Points on a sphere
 
@@ -543,7 +581,8 @@ def sphere(radius=1, centre=(0,0,0), resolution=50):
 
     return (x, y, z)
 
-def plot_sphere(radius, centre=(0,0,0), pose=None, resolution=50, ax=None, **kwargs):
+
+def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **kwargs):
     """
     Plot a sphere using matplotlib
 
@@ -602,7 +641,10 @@ def plot_sphere(radius, centre=(0,0,0), pose=None, resolution=50, ax=None, **kwa
 
     return handles
 
-def ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, resolution=40, inverted=False):
+
+def ellipsoid(
+    E, centre=(0, 0, 0), scale=1, confidence=None, resolution=40, inverted=False
+):
     """
     Points on an ellipsoid
 
@@ -624,20 +666,21 @@ def ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, resolution=40, invert
 
     .. note:: For some common cases we require :math:`\mat{E}^{-1}`, for example
         - for robot manipulability
-          :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i 
+          :math:`\nu (\mat{J} \mat{J}^T)^{-1} \nu` i
         - a covariance matrix
           :math:`(x - \mu)^T \mat{P}^{-1} (x - \mu)`
-        so to avoid inverting ``E`` twice to compute the ellipse, we flag that 
+        so to avoid inverting ``E`` twice to compute the ellipse, we flag that
         the inverse is provided using ``inverted``.
 
     :seealso: :func:`plot_ellipsoid`, :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
-    if E.shape != (3,3):
-        raise ValueError('ellipsoid is defined by a 3x3 matrix')
+    if E.shape != (3, 3):
+        raise ValueError("ellipsoid is defined by a 3x3 matrix")
 
     if confidence:
         # process the probability
         from scipy.stats.distributions import chi2
+
         s = math.sqrt(chi2.ppf(confidence, df=2)) * scale
     else:
         s = scale
@@ -646,10 +689,23 @@ def ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, resolution=40, invert
         E = np.linalg.inv(E)
 
     x, y, z = sphere()  # unit sphere
-    e = s * sp.linalg.sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()]) + np.c_[centre].T
-    return e[0,:].reshape(x.shape), e[1,:].reshape(x.shape), e[2,:].reshape(x.shape)
+    e = (
+        s * sp.linalg.sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
+        + np.c_[centre].T
+    )
+    return e[0, :].reshape(x.shape), e[1, :].reshape(x.shape), e[2, :].reshape(x.shape)
 
-def plot_ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, resolution=40, inverted=False, ax=None, **kwargs):
+
+def plot_ellipsoid(
+    E,
+    centre=(0, 0, 0),
+    scale=1,
+    confidence=None,
+    resolution=40,
+    inverted=False,
+    ax=None,
+    **kwargs
+):
     """
     Draw an ellipsoid using matplotlib
 
@@ -692,10 +748,20 @@ def plot_ellipsoid(E, centre=(0,0,0), scale=1, confidence=None, resolution=40, i
     """
     X, Y, Z = ellipsoid(E, centre, scale, confidence, resolution, inverted)
     ax = axes_logic(ax, 3)
-    handle =  _render3D(ax, X, Y, Z, **kwargs)
+    handle = _render3D(ax, X, Y, Z, **kwargs)
     return [handle]
 
-def plot_cylinder(radius, height, resolution=50, centre=(0, 0, 0), ends=False, ax=None, filled=False, **kwargs):
+
+def plot_cylinder(
+    radius,
+    height,
+    resolution=50,
+    centre=(0, 0, 0),
+    ends=False,
+    ax=None,
+    filled=False,
+    **kwargs
+):
     """
     Plot a cylinder using matplotlib
 
@@ -733,13 +799,13 @@ def plot_cylinder(radius, height, resolution=50, centre=(0, 0, 0), ends=False, a
     z = height
     X, Z = np.meshgrid(x, z)
 
-    Y = np.sqrt(radius ** 2 - (X - centre[0]) ** 2) + centre[1] # Pythagorean theorem
+    Y = np.sqrt(radius ** 2 - (X - centre[0]) ** 2) + centre[1]  # Pythagorean theorem
 
     handles = []
     handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
     handles.append(_render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, **kwargs))
 
-    if ends and kwargs.get('filled', default=False):
+    if ends and kwargs.get("filled", default=False):
         floor = Circle(centre[:2], radius, **kwargs)
         handles.append(ax.add_patch(floor))
         pathpatch_2d_to_3d(floor, z=height[0], zdir="z")
@@ -750,7 +816,10 @@ def plot_cylinder(radius, height, resolution=50, centre=(0, 0, 0), ends=False, a
 
     return handles
 
-def plot_cuboid(sides=[1,1,1], centre=(0,0,0), pose=None, ax=None, filled=False, **kwargs):
+
+def plot_cuboid(
+    sides=[1, 1, 1], centre=(0, 0, 0), pose=None, ax=None, filled=False, **kwargs
+):
     """
     Plot a cuboid (3D box) using matplotlib
 
@@ -773,10 +842,17 @@ def plot_cuboid(sides=[1,1,1], centre=(0,0,0), pose=None, ax=None, filled=False,
     :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
 
-    vertices = np.array(list(product(
-        [-sides[0], sides[0]],
-        [-sides[1], sides[1]],
-        [-sides[2], sides[2]]))) / 2 + centre
+    vertices = (
+        np.array(
+            list(
+                product(
+                    [-sides[0], sides[0]], [-sides[1], sides[1]], [-sides[2], sides[2]]
+                )
+            )
+        )
+        / 2
+        + centre
+    )
     vertices = vertices.T
 
     if pose is not None:
@@ -788,23 +864,19 @@ def plot_cuboid(sides=[1,1,1], centre=(0,0,0), pose=None, ax=None, filled=False,
         # show faces
 
         faces = [
-                [0, 1, 3, 2], [4, 5, 7, 6],  # YZ planes
-                [0, 1, 5, 4], [2, 3, 7, 6],  # XZ planes
-                [0, 2, 6, 4], [1, 3, 7, 5]   # XY planes
-            ]
+            [0, 1, 3, 2],
+            [4, 5, 7, 6],  # YZ planes
+            [0, 1, 5, 4],
+            [2, 3, 7, 6],  # XZ planes
+            [0, 2, 6, 4],
+            [1, 3, 7, 5],  # XY planes
+        ]
         F = [[vertices[:, i] for i in face] for face in faces]
         collection = Poly3DCollection(F, **kwargs)
         ax.add_collection3d(collection)
         return collection
     else:
-        edges = [
-            [0, 1, 3, 2, 0],
-            [4, 5, 7, 6, 4],
-            [0, 4],
-            [1, 5],
-            [3, 7],
-            [2, 6]
-        ]
+        edges = [[0, 1, 3, 2, 0], [4, 5, 7, 6, 4], [0, 4], [1, 5], [3, 7], [2, 6]]
         lines = []
         for edge in edges:
             E = vertices[:, edge]
@@ -841,26 +913,28 @@ def _render3D(ax, X, Y, Z, pose=None, filled=False, color=None, **kwargs):
     if filled:
         ax.plot_surface(X, Y, Z, color=color, **kwargs)
     else:
-        kwargs['colors'] = color
+        kwargs["colors"] = color
         ax.plot_wireframe(X, Y, Z, **kwargs)
+
 
 def _axes_dimensions(ax):
     """
     Dimensions of axes
 
-    :param ax: axes 
+    :param ax: axes
     :type ax: Axes3DSubplot or AxesSubplot
     :return: dimensionality of axes, either 2 or 3
     :rtype: int
     """
     classname = ax.__class__.__name__
 
-    if  classname == 'Axes3DSubplot':
+    if classname == "Axes3DSubplot":
         return 3
-    elif classname == 'AxesSubplot':
+    elif classname == "AxesSubplot":
         return 2
-    
-def axes_logic(ax, dimensions, projection='ortho'):
+
+
+def axes_logic(ax, dimensions, projection="ortho"):
     """
     Axis creation logic
 
@@ -889,7 +963,7 @@ def axes_logic(ax, dimensions, projection='ortho'):
         nfigs = len(plt.get_fignums())
         if nfigs > 0:
             # there are figures
-            fig = plt.gcf() # get current figure
+            fig = plt.gcf()  # get current figure
             naxes = len(fig.axes)
             # print(f"existing fig with {naxes} axes")
             if naxes > 0:
@@ -900,9 +974,9 @@ def axes_logic(ax, dimensions, projection='ortho'):
 
     else:
         # axis was given
-        
+
         if _axes_dimensions(ax) == dimensions:
-            print('use existing axes')
+            print("use existing axes")
             return ax
         # mismatch in dimensions, create new axes
     # print('create new axes')
@@ -911,8 +985,9 @@ def axes_logic(ax, dimensions, projection='ortho'):
     if dimensions == 2:
         ax = plt.axes()
     else:
-        ax = plt.axes(projection='3d', proj_type=projection)
+        ax = plt.axes(projection="3d", proj_type=projection)
     return ax
+
 
 def plotvol2(dim, ax=None, equal=True, grid=False):
     """
@@ -937,16 +1012,17 @@ def plotvol2(dim, ax=None, equal=True, grid=False):
     if ax is None:
         ax = plt.subplot()
     ax.axis(dims)
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
 
     if equal:
-        ax.set_aspect('equal')
+        ax.set_aspect("equal")
     if grid:
         ax.grid(True)
     return ax
 
-def plotvol3(dim=None, ax=None, equal=True, grid=False, projection='ortho'):
+
+def plotvol3(dim=None, ax=None, equal=True, grid=False, projection="ortho"):
     """
     Create 3D plot volume
 
@@ -975,19 +1051,22 @@ def plotvol3(dim=None, ax=None, equal=True, grid=False, projection='ortho'):
         ax.set_xlim3d(dims[0], dims[1])
         ax.set_ylim3d(dims[2], dims[3])
         ax.set_zlim3d(dims[4], dims[5])
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
+        ax.set_xlabel("X")
+        ax.set_ylabel("Y")
+        ax.set_zlabel("Z")
 
     if equal:
         try:
             ax.set_box_aspect((1,) * 3)
         except AttributeError:
             # old version of MPL doesn't support this
-            warnings.warn('Current version of matplotlib does not support set_box_aspect()')
+            warnings.warn(
+                "Current version of matplotlib does not support set_box_aspect()"
+            )
     if grid:
         ax.grid(True)
     return ax
+
 
 def expand_dims(dim=None, nd=2):
     """[summary]
@@ -1018,22 +1097,23 @@ def expand_dims(dim=None, nd=2):
         if len(dim) == 1:
             return np.r_[-dim, dim, -dim, dim]
         elif len(dim) == 2:
-                return np.r_[-dim[0], dim[0], -dim[1], dim[1]]
+            return np.r_[-dim[0], dim[0], -dim[1], dim[1]]
         elif len(dim) == 4:
-                return dim
+            return dim
         else:
-            raise ValueError('bad dimension specified')
+            raise ValueError("bad dimension specified")
     elif nd == 3:
         if len(dim) == 1:
-                return np.r_[-dim, dim, -dim, dim, -dim, dim]
+            return np.r_[-dim, dim, -dim, dim, -dim, dim]
         elif len(dim) == 3:
-                return np.r_[-dim[0], dim[0], -dim[1], dim[1], -dim[2], dim[2]]
+            return np.r_[-dim[0], dim[0], -dim[1], dim[1], -dim[2], dim[2]]
         elif len(dim) == 6:
-                return dim
+            return dim
         else:
-            raise ValueError('bad dimension specified')
+            raise ValueError("bad dimension specified")
     else:
-        raise ValueError('nd is 2 or 3')
+        raise ValueError("nd is 2 or 3")
+
 
 def isnotebook():
     """
@@ -1046,15 +1126,24 @@ def isnotebook():
     """
     try:
         shell = get_ipython().__class__.__name__
-        if shell == 'ZMQInteractiveShell':
-            return True   # Jupyter notebook or qtconsole
-        elif shell == 'TerminalInteractiveShell':
+        if shell == "ZMQInteractiveShell":
+            return True  # Jupyter notebook or qtconsole
+        elif shell == "TerminalInteractiveShell":
             return False  # Terminal running IPython
         else:
             return False  # Other type (?)
     except NameError:
-        return False      # Probably standard Python interpreter
+        return False  # Probably standard Python interpreter
+
 
 if __name__ == "__main__":
     import pathlib
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_graphics.py").read())  # pylint: disable=exec-used
+
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_graphics.py"
+        ).read()
+    )  # pylint: disable=exec-used

@@ -14,7 +14,6 @@ from spatialmath.base.argcheck import *
 
 
 class Test_check(unittest.TestCase):
-
     def test_ismatrix(self):
         a = np.eye(3, 3)
         self.assertTrue(ismatrix(a, (3, 3)))
@@ -33,7 +32,7 @@ class Test_check(unittest.TestCase):
         with self.assertRaises(TypeError):
             assertmatrix(3)
         with self.assertRaises(TypeError):
-            assertmatrix('not a matrix')
+            assertmatrix("not a matrix")
 
         with self.assertRaises(TypeError):
             a = np.eye(3, 3, dtype=complex)
@@ -55,11 +54,11 @@ class Test_check(unittest.TestCase):
 
     def test_getmatrix(self):
 
-        a = np.random.rand(4,3)
-        self.assertEqual(getmatrix(a, (4,3)).shape, (4,3))
-        self.assertEqual(getmatrix(a, (None,3)).shape, (4,3))
-        self.assertEqual(getmatrix(a, (4,None)).shape, (4,3))
-        self.assertEqual(getmatrix(a, (None,None)).shape, (4,3))
+        a = np.random.rand(4, 3)
+        self.assertEqual(getmatrix(a, (4, 3)).shape, (4, 3))
+        self.assertEqual(getmatrix(a, (None, 3)).shape, (4, 3))
+        self.assertEqual(getmatrix(a, (4, None)).shape, (4, 3))
+        self.assertEqual(getmatrix(a, (None, None)).shape, (4, 3))
         with self.assertRaises(ValueError):
             m = getmatrix(a, (5, 3))
         with self.assertRaises(ValueError):
@@ -68,49 +67,49 @@ class Test_check(unittest.TestCase):
             m = getmatrix(a, (None, 4))
 
         with self.assertRaises(TypeError):
-            m = getmatrix({}, (4,3))
+            m = getmatrix({}, (4, 3))
 
-        a = np.r_[1,2,3,4]
-        self.assertEqual(getmatrix(a, (1, 4)).shape, (1,4))
-        self.assertEqual(getmatrix(a, (4, 1)).shape, (4,1))
-        self.assertEqual(getmatrix(a, (2, 2)).shape, (2,2))
+        a = np.r_[1, 2, 3, 4]
+        self.assertEqual(getmatrix(a, (1, 4)).shape, (1, 4))
+        self.assertEqual(getmatrix(a, (4, 1)).shape, (4, 1))
+        self.assertEqual(getmatrix(a, (2, 2)).shape, (2, 2))
         with self.assertRaises(ValueError):
             m = getmatrix(a, (5, None))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None,5))
+            m = getmatrix(a, (None, 5))
 
-        a = [1,2,3,4]
-        self.assertEqual(getmatrix(a, (1, 4)).shape, (1,4))
-        self.assertEqual(getmatrix(a, (4, 1)).shape, (4,1))
-        self.assertEqual(getmatrix(a, (2, 2)).shape, (2,2))
+        a = [1, 2, 3, 4]
+        self.assertEqual(getmatrix(a, (1, 4)).shape, (1, 4))
+        self.assertEqual(getmatrix(a, (4, 1)).shape, (4, 1))
+        self.assertEqual(getmatrix(a, (2, 2)).shape, (2, 2))
         with self.assertRaises(ValueError):
             m = getmatrix(a, (5, None))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None,5))
+            m = getmatrix(a, (None, 5))
 
         a = 7
-        self.assertEqual(getmatrix(a, (1, 1)).shape, (1,1))
-        self.assertEqual(getmatrix(a, (None, None)).shape, (1,1))
+        self.assertEqual(getmatrix(a, (1, 1)).shape, (1, 1))
+        self.assertEqual(getmatrix(a, (None, None)).shape, (1, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2,1))
+            m = getmatrix(a, (2, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (1,2))
+            m = getmatrix(a, (1, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None,2))
+            m = getmatrix(a, (None, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2,None))
+            m = getmatrix(a, (2, None))
 
         a = 7.0
-        self.assertEqual(getmatrix(a, (1, 1)).shape, (1,1))
-        self.assertEqual(getmatrix(a, (None, None)).shape, (1,1))
+        self.assertEqual(getmatrix(a, (1, 1)).shape, (1, 1))
+        self.assertEqual(getmatrix(a, (None, None)).shape, (1, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2,1))
+            m = getmatrix(a, (2, 1))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (1,2))
+            m = getmatrix(a, (1, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (None,2))
+            m = getmatrix(a, (None, 2))
         with self.assertRaises(ValueError):
-            m = getmatrix(a, (2,None))
+            m = getmatrix(a, (2, None))
 
     def test_verifymatrix(self):
         with self.assertRaises(TypeError):
@@ -120,20 +119,27 @@ class Test_check(unittest.TestCase):
 
         a = np.eye(3, 3)
 
-        verifymatrix(a, (3,3))
+        verifymatrix(a, (3, 3))
         with self.assertRaises(ValueError):
-            verifymatrix(a, (3,4))
+            verifymatrix(a, (3, 4))
 
     def test_unit(self):
-        nt.assert_equal(getunit(5, 'rad'), 5)
-        nt.assert_equal(getunit(5, 'deg'), 5 * math.pi / 180.0)
-        nt.assert_equal(getunit([3, 4, 5], 'rad'), [3, 4, 5])
-        nt.assert_equal(getunit([3, 4, 5], 'deg'), [x * math.pi / 180.0 for x in [3, 4, 5]])
-        nt.assert_equal(getunit((3, 4, 5), 'rad'), [3, 4, 5])
-        nt.assert_equal(getunit((3, 4, 5), 'deg'), [x * math.pi / 180.0 for x in [3, 4, 5]])
+        nt.assert_equal(getunit(5, "rad"), 5)
+        nt.assert_equal(getunit(5, "deg"), 5 * math.pi / 180.0)
+        nt.assert_equal(getunit([3, 4, 5], "rad"), [3, 4, 5])
+        nt.assert_equal(
+            getunit([3, 4, 5], "deg"), [x * math.pi / 180.0 for x in [3, 4, 5]]
+        )
+        nt.assert_equal(getunit((3, 4, 5), "rad"), [3, 4, 5])
+        nt.assert_equal(
+            getunit((3, 4, 5), "deg"), [x * math.pi / 180.0 for x in [3, 4, 5]]
+        )
 
-        nt.assert_equal(getunit(np.array([3, 4, 5]), 'rad'), [3, 4, 5])
-        nt.assert_equal(getunit(np.array([3, 4, 5]), 'deg'), [x * math.pi / 180.0 for x in [3, 4, 5]])
+        nt.assert_equal(getunit(np.array([3, 4, 5]), "rad"), [3, 4, 5])
+        nt.assert_equal(
+            getunit(np.array([3, 4, 5]), "deg"),
+            [x * math.pi / 180.0 for x in [3, 4, 5]],
+        )
 
     def test_isvector(self):
         # no length specified
@@ -183,43 +189,43 @@ class Test_check(unittest.TestCase):
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(l, out='sequence')
+        v = getvector(l, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(l, 3, out='sequence')
+        v = getvector(l, 3, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(l, out='array')
+        v = getvector(l, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(l, 3, out='array')
+        v = getvector(l, 3, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(l, out='row')
+        v = getvector(l, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(l, 3, out='row')
+        v = getvector(l, 3, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(l, out='col')
+        v = getvector(l, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
-        v = getvector(l, 3, out='col')
+        v = getvector(l, 3, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
         nt.assert_raises(ValueError, getvector, l, 4)
-        nt.assert_raises(ValueError, getvector, l, 4, 'sequence')
-        nt.assert_raises(ValueError, getvector, l, 4, 'array')
-        nt.assert_raises(ValueError, getvector, l, 4, 'row')
-        nt.assert_raises(ValueError, getvector, l, 4, 'col')
+        nt.assert_raises(ValueError, getvector, l, 4, "sequence")
+        nt.assert_raises(ValueError, getvector, l, 4, "array")
+        nt.assert_raises(ValueError, getvector, l, 4, "row")
+        nt.assert_raises(ValueError, getvector, l, 4, "col")
 
         # input is tuple
 
@@ -231,43 +237,43 @@ class Test_check(unittest.TestCase):
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(t, out='sequence')
+        v = getvector(t, out="sequence")
         self.assertIsInstance(v, tuple)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(t, 3, out='sequence')
+        v = getvector(t, 3, out="sequence")
         self.assertIsInstance(v, tuple)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(t, out='array')
+        v = getvector(t, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(t, 3, out='array')
+        v = getvector(t, 3, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(t, out='row')
+        v = getvector(t, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(t, 3, out='row')
+        v = getvector(t, 3, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(t, out='col')
+        v = getvector(t, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
-        v = getvector(t, 3, out='col')
+        v = getvector(t, 3, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
         nt.assert_raises(ValueError, getvector, t, 4)
-        nt.assert_raises(ValueError, getvector, t, 4, 'sequence')
-        nt.assert_raises(ValueError, getvector, t, 4, 'array')
-        nt.assert_raises(ValueError, getvector, t, 4, 'row')
-        nt.assert_raises(ValueError, getvector, t, 4, 'col')
+        nt.assert_raises(ValueError, getvector, t, 4, "sequence")
+        nt.assert_raises(ValueError, getvector, t, 4, "array")
+        nt.assert_raises(ValueError, getvector, t, 4, "row")
+        nt.assert_raises(ValueError, getvector, t, 4, "col")
 
         # input is array
 
@@ -279,43 +285,43 @@ class Test_check(unittest.TestCase):
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(a, out='sequence')
+        v = getvector(a, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(a, 3, out='sequence')
+        v = getvector(a, 3, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(a, out='array')
+        v = getvector(a, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(a, 3, out='array')
+        v = getvector(a, 3, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(a, out='row')
+        v = getvector(a, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(a, 3, out='row')
+        v = getvector(a, 3, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(a, out='col')
+        v = getvector(a, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
-        v = getvector(a, 3, out='col')
+        v = getvector(a, 3, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
         nt.assert_raises(ValueError, getvector, a, 4)
-        nt.assert_raises(ValueError, getvector, a, 4, 'sequence')
-        nt.assert_raises(ValueError, getvector, a, 4, 'array')
-        nt.assert_raises(ValueError, getvector, a, 4, 'row')
-        nt.assert_raises(ValueError, getvector, a, 4, 'col')
+        nt.assert_raises(ValueError, getvector, a, 4, "sequence")
+        nt.assert_raises(ValueError, getvector, a, 4, "array")
+        nt.assert_raises(ValueError, getvector, a, 4, "row")
+        nt.assert_raises(ValueError, getvector, a, 4, "col")
 
         # input is row
 
@@ -327,43 +333,43 @@ class Test_check(unittest.TestCase):
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(r, out='sequence')
+        v = getvector(r, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(r, 3, out='sequence')
+        v = getvector(r, 3, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(r, out='array')
+        v = getvector(r, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(r, 3, out='array')
+        v = getvector(r, 3, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(r, out='row')
+        v = getvector(r, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(r, 3, out='row')
+        v = getvector(r, 3, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(r, out='col')
+        v = getvector(r, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
-        v = getvector(r, 3, out='col')
+        v = getvector(r, 3, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
         nt.assert_raises(ValueError, getvector, r, 4)
-        nt.assert_raises(ValueError, getvector, r, 4, 'sequence')
-        nt.assert_raises(ValueError, getvector, r, 4, 'array')
-        nt.assert_raises(ValueError, getvector, r, 4, 'row')
-        nt.assert_raises(ValueError, getvector, r, 4, 'col')
+        nt.assert_raises(ValueError, getvector, r, 4, "sequence")
+        nt.assert_raises(ValueError, getvector, r, 4, "array")
+        nt.assert_raises(ValueError, getvector, r, 4, "row")
+        nt.assert_raises(ValueError, getvector, r, 4, "col")
 
         # input is col
 
@@ -375,43 +381,43 @@ class Test_check(unittest.TestCase):
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(c, out='sequence')
+        v = getvector(c, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(c, 3, out='sequence')
+        v = getvector(c, 3, out="sequence")
         self.assertIsInstance(v, list)
         nt.assert_equal(len(v), 3)
 
-        v = getvector(c, out='array')
+        v = getvector(c, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(c, 3, out='array')
+        v = getvector(c, 3, out="array")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3,))
 
-        v = getvector(c, out='row')
+        v = getvector(c, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(c, 3, out='row')
+        v = getvector(c, 3, out="row")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (1, 3))
 
-        v = getvector(c, out='col')
+        v = getvector(c, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
-        v = getvector(c, 3, out='col')
+        v = getvector(c, 3, out="col")
         self.assertIsInstance(v, np.ndarray)
         nt.assert_equal(v.shape, (3, 1))
 
         nt.assert_raises(ValueError, getvector, c, 4)
-        nt.assert_raises(ValueError, getvector, c, 4, 'sequence')
-        nt.assert_raises(ValueError, getvector, c, 4, 'array')
-        nt.assert_raises(ValueError, getvector, c, 4, 'row')
-        nt.assert_raises(ValueError, getvector, c, 4, 'col')
+        nt.assert_raises(ValueError, getvector, c, 4, "sequence")
+        nt.assert_raises(ValueError, getvector, c, 4, "array")
+        nt.assert_raises(ValueError, getvector, c, 4, "row")
+        nt.assert_raises(ValueError, getvector, c, 4, "col")
 
     def test_isnumberlist(self):
         nt.assert_equal(isnumberlist([1]), True)
@@ -423,13 +429,13 @@ class Test_check(unittest.TestCase):
         nt.assert_equal(isnumberlist(np.array([1, 2, 3])), False)
 
     def test_isvectorlist(self):
-        a = [np.r_[1,2], np.r_[3,4], np.r_[5,6]]
+        a = [np.r_[1, 2], np.r_[3, 4], np.r_[5, 6]]
         self.assertTrue(isvectorlist(a, 2))
 
-        a = [(1,2), (3,4), (5,6)]
+        a = [(1, 2), (3, 4), (5, 6)]
         self.assertFalse(isvectorlist(a, 2))
 
-        a = [np.r_[1,2], np.r_[3,4], np.r_[5,6,7]]
+        a = [np.r_[1, 2], np.r_[3, 4], np.r_[5, 6, 7]]
         self.assertFalse(isvectorlist(a, 2))
 
     def test_islistof(self):
@@ -445,10 +451,11 @@ class Test_check(unittest.TestCase):
         a = [3, 4.5, 5.6]
         self.assertFalse(islistof(a, int))
         self.assertTrue(islistof(a, (int, float)))
-        a = [[1,2], [3, 4], [5,6]]
+        a = [[1, 2], [3, 4], [5, 6]]
         self.assertTrue(islistof(a, lambda x: islistof(x, int, 2)))
-        
+
+
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
 
     unittest.main()

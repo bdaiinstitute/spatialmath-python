@@ -192,7 +192,9 @@ def isequal(q1, q2, tol=100, unitq=False):
     q2 = base.getvector(q2, 4)
 
     if unitq:
-        return (np.sum(np.abs(q1 - q2)) < tol * _eps) or (np.sum(np.abs(q1 + q2)) < tol * _eps)
+        return (np.sum(np.abs(q1 - q2)) < tol * _eps) or (
+            np.sum(np.abs(q1 + q2)) < tol * _eps
+        )
     else:
         return np.sum(np.abs(q1 - q2)) < tol * _eps
 
@@ -258,7 +260,7 @@ def v2q(v):
     :seealso: :func:`q2v`
     """
     v = base.getvector(v, 3)
-    s = math.sqrt(1 - np.sum(v**2))
+    s = math.sqrt(1 - np.sum(v ** 2))
     return np.r_[s, v]
 
 
@@ -300,7 +302,7 @@ def inner(q1, q2):
     """
     Quaternion inner product
 
-    :arg q0: quaternion 
+    :arg q0: quaternion
     :type q0: : array_like(4)
     :arg q1: uaternion
     :type q1: array_like(4)
@@ -393,9 +395,13 @@ def vvmul(qa, qb):
 
     :seealso: :func:`q2v`, :func:`v2q`, :func:`qvmul`
     """
-    t6 = math.sqrt(1.0 - np.sum(qa**2))
-    t11 = math.sqrt(1.0 - np.sum(qb**2))
-    return np.r_[qa[1] * qb[2] - qb[1] * qa[2] + qb[0] * t6 + qa[0] * t11, -qa[0] * qb[2] + qb[0] * qa[2] + qb[1] * t6 + qa[1] * t11, qa[0] * qb[1] - qb[0] * qa[1] + qb[2] * t6 + qa[2] * t11]
+    t6 = math.sqrt(1.0 - np.sum(qa ** 2))
+    t11 = math.sqrt(1.0 - np.sum(qb ** 2))
+    return np.r_[
+        qa[1] * qb[2] - qb[1] * qa[2] + qb[0] * t6 + qa[0] * t11,
+        -qa[0] * qb[2] + qb[0] * qa[2] + qb[1] * t6 + qa[1] * t11,
+        qa[0] * qb[1] - qb[0] * qa[1] + qb[2] * t6 + qa[2] * t11,
+    ]
 
 
 def qpow(q, power):
@@ -491,13 +497,16 @@ def q2r(q):
     x = q[1]
     y = q[2]
     z = q[3]
-    return np.array([[1 - 2 * (y ** 2 + z ** 2), 2 * (x * y - s * z), 2 * (x * z + s * y)],
-                     [2 * (x * y + s * z), 1 - 2 *
-                      (x ** 2 + z ** 2), 2 * (y * z - s * x)],
-                     [2 * (x * z - s * y), 2 * (y * z + s * x), 1 - 2 * (x ** 2 + y ** 2)]])
+    return np.array(
+        [
+            [1 - 2 * (y ** 2 + z ** 2), 2 * (x * y - s * z), 2 * (x * z + s * y)],
+            [2 * (x * y + s * z), 1 - 2 * (x ** 2 + z ** 2), 2 * (y * z - s * x)],
+            [2 * (x * z - s * y), 2 * (y * z + s * x), 1 - 2 * (x ** 2 + y ** 2)],
+        ]
+    )
 
 
-def r2q(R, check=False, tol=100, order='sxyz'):
+def r2q(R, check=False, tol=100, order="sxyz"):
     """
     Convert SO(3) rotation matrix to unit-quaternion
 
@@ -525,14 +534,14 @@ def r2q(R, check=False, tol=100, order='sxyz'):
 
     .. warning:: There is no check that the passed matrix is a valid rotation matrix.
 
-    .. note:: 
+    .. note::
         - Scalar part is always positive
         - implements Cayley's method
 
-    :reference: 
-        - Sarabandi, S., and Thomas, F. (March 1, 2019). 
-          "A Survey on the Computation of Quaternions From Rotation Matrices." 
-          ASME. J. Mechanisms Robotics. April 2019; 11(2): 021006. 
+    :reference:
+        - Sarabandi, S., and Thomas, F. (March 1, 2019).
+          "A Survey on the Computation of Quaternions From Rotation Matrices."
+          ASME. J. Mechanisms Robotics. April 2019; 11(2): 021006.
           `doi.org/10.1115/1.4041889 <https://doi.org/10.1115/1.4041889>`_
 
     :seealso: :func:`q2r`
@@ -566,12 +575,13 @@ def r2q(R, check=False, tol=100, order='sxyz'):
     if R[1, 0] < R[0, 1]:
         e3 = -e3
 
-    if order == 'sxyz':
+    if order == "sxyz":
         return np.r_[e0, e1, e2, e3]
-    elif order == 'xyzs':
+    elif order == "xyzs":
         return np.r_[e1, e2, e3, e0]
     else:
         raise ValueError("order is invalid, must be 'sxyz' or 'xyzs'")
+
 
 # def r2q_old(R, check=False, tol=100):
 #     """
@@ -698,7 +708,7 @@ def slerp(q0, q1, s, shortest=False):
     # the shorter path. Fix by reversing one quaternion.
     if shortest:
         if dotprod < 0:
-            q0 = -q0   # pylint: disable=invalid-unary-operand-type
+            q0 = -q0  # pylint: disable=invalid-unary-operand-type
             dotprod = -dotprod  # pylint: disable=invalid-unary-operand-type
 
     dotprod = np.clip(dotprod, -1, 1)  # Clip within domain of acos()
@@ -727,13 +737,13 @@ def rand():
         >>> from spatialmath.base import rand, qprint
         >>> qprint(rand())
     """
-    u = np.random.uniform(
-        low=0, high=1, size=3)  # get 3 random numbers in [0,1]
+    u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
     return np.r_[
         math.sqrt(1 - u[0]) * math.sin(2 * math.pi * u[1]),
         math.sqrt(1 - u[0]) * math.cos(2 * math.pi * u[1]),
         math.sqrt(u[0]) * math.sin(2 * math.pi * u[2]),
-        math.sqrt(u[0]) * math.cos(2 * math.pi * u[2])]
+        math.sqrt(u[0]) * math.cos(2 * math.pi * u[2]),
+    ]
 
 
 def matrix(q):
@@ -768,10 +778,7 @@ def matrix(q):
     x = q[1]
     y = q[2]
     z = q[3]
-    return np.array([[s, -x, -y, -z],
-                     [x, s, -z, y],
-                     [y, z, s, -x],
-                     [z, -y, x, s]])
+    return np.array([[s, -x, -y, -z], [x, s, -z, y], [y, z, s, -x], [z, -y, x, s]])
 
 
 def dot(q, w):
@@ -802,7 +809,7 @@ def dot(q, w):
     q = base.getvector(q, 4)
     w = base.getvector(w, 3)
     E = q[0] * (np.eye(3, 3)) - base.skew(q[1:4])
-    return 0.5 * np.r_[-np.dot(q[1:4], w), E@w]
+    return 0.5 * np.r_[-np.dot(q[1:4], w), E @ w]
 
 
 def dotb(q, w):
@@ -833,7 +840,7 @@ def dotb(q, w):
     q = base.getvector(q, 4)
     w = base.getvector(w, 3)
     E = q[0] * (np.eye(3, 3)) + base.skew(q[1:4])
-    return 0.5 * np.r_[-np.dot(q[1:4], w), E@w]
+    return 0.5 * np.r_[-np.dot(q[1:4], w), E @ w]
 
 
 def angle(q1, q2):
@@ -859,7 +866,7 @@ def angle(q1, q2):
         >>> q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]    # 90deg rotation about y-axis
         >>> angle(q1, q2)
 
-    :References:  
+    :References:
 
     - Metrics for 3D rotations: comparison and analysis,
       Du Q. Huynh, % J.Math Imaging Vis. DOFI 10.1007/s10851-009-0161-2.
@@ -874,7 +881,7 @@ def angle(q1, q2):
     return 2.0 * math.atan2(base.norm(q1 - q2), base.norm(q1 + q2))
 
 
-def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
+def qprint(q, delim=("<", ">"), fmt="{: .4f}", file=sys.stdout):
     """
     Format a quaternion
 
@@ -909,16 +916,22 @@ def qprint(q, delim=('<', '>'), fmt='{: .4f}', file=sys.stdout):
         >>> qprint(q, delim=('<<', '>>'))
     """
     q = base.getvector(q, 4)
-    template = "# {} #, #, # {}".replace('#', fmt)
+    template = "# {} #, #, # {}".replace("#", fmt)
     s = template.format(q[0], delim[0], q[1], q[2], q[3], delim[1])
     if file:
-        file.write(s + '\n')
+        file.write(s + "\n")
     else:
         return s
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" /
-         "base" / "test_quaternions.py").read())  # pylint: disable=exec-used
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_quaternions.py"
+        ).read()
+    )  # pylint: disable=exec-used

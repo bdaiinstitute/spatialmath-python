@@ -28,6 +28,7 @@ except ImportError:  # pragma: no cover
 
 # ---------------------------------------------------------------------------------------#
 
+
 def symbol(name, real=True):
     """
     Create symbolic variables
@@ -60,6 +61,7 @@ def symbol(name, real=True):
     """
     return sympy.symbols(name, real=real)
 
+
 def issymbol(var):
     """
     Test if variable is symbolic
@@ -84,6 +86,7 @@ def issymbol(var):
     else:
         return False
 
+
 def sin(theta):
     """
     Generalized sine function
@@ -107,6 +110,7 @@ def sin(theta):
     else:
         return math.sin(theta)
 
+
 def cos(theta):
     """
     Generalized cosine function
@@ -122,13 +126,14 @@ def cos(theta):
         >>> theta = symbol('theta')
         >>> cos(theta)
         >>> cos(0.5)
-    
+
     :seealso: :func:`sympy.cos`
     """
     if issymbol(theta):
         return sympy.cos(theta)
     else:
         return math.cos(theta)
+
 
 def sqrt(v):
     """
@@ -151,7 +156,8 @@ def sqrt(v):
     if issymbol(v):
         return sympy.sqrt(v)
     else:
-        return math.sqrt(v)    
+        return math.sqrt(v)
+
 
 def zero():
     """
@@ -171,6 +177,7 @@ def zero():
     """
     return S.Zero
 
+
 def one():
     """
     Symbolic constant: one
@@ -189,6 +196,7 @@ def one():
     """
     return S.One
 
+
 def negative_one():
     """
     Symbolic constant: negative one
@@ -202,10 +210,11 @@ def negative_one():
         >>> x = symbol('x')
         >>> negative_one()
         >>> negative_one() * x
-    
+
     :seealso: :func:`sympy.S.NegativeOne`
     """
     return S.NegativeOne
+
 
 def pi():
     """
@@ -225,6 +234,7 @@ def pi():
     """
     return S.Pi
 
+
 def simplify(x):
     """
     Symbolic simplification
@@ -241,13 +251,14 @@ def simplify(x):
         >>> y = (x - 1) * (x + 1) - x ** 2
         >>> y
         >>> simplify(y)
-    
+
     :seealso: :func:`sympy.simplify`
     """
     if _symbolics:
         return sympy.simplify(x)
     else:
         return x
+
 
 def det(x):
     """
@@ -268,7 +279,7 @@ def det(x):
         >>> print(det(R))
         >>> simplify(print(det(R)))
 
-    .. note:: Converts to a SymPy ``Matrix`` and then back again.    
+    .. note:: Converts to a SymPy ``Matrix`` and then back again.
     """
 
     return sympy.Matrix(x).det()

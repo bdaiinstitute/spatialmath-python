@@ -1535,19 +1535,4 @@ class SE3(SO3):
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
-
-    a = SE3(1,2,3)
-    b = SO3(a)
-    print(b)
-
-    a = SO3.RPY([.1, .2, .3])
-    b = SE3(a)
-    print(b)
-
-    from spatialmath import SE2
-    a = SE2(1,2,.4)
-    b = SE3(a)
-    print(b)
-
-
     exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose3d.py").read())  # pylint: disable=exec-used

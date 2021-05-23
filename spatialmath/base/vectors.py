@@ -106,6 +106,7 @@ def unitvec_norm(v):
     else:
         return None, None
 
+
 def norm(v):
     """
     Norm of vector
@@ -122,7 +123,7 @@ def norm(v):
         >>> from spatialmath.base import *
         >>> norm([3, 4])
 
-    .. note:: This function does not use NumPy, it is ~2x faster than 
+    .. note:: This function does not use NumPy, it is ~2x faster than
         `numpy.linalg.norm()` for a 3-vector
 
     :seealso: :func:`~spatialmath.base.unit`
@@ -138,6 +139,7 @@ def norm(v):
     else:
         return math.sqrt(sum)
 
+
 def normsq(v):
     """
     Squared norm of vector
@@ -147,7 +149,7 @@ def normsq(v):
     :return: norm of vector
     :rtype: float
 
-    ``norm(sq)`` is the sum of squared elements of the vector ``v`` 
+    ``norm(sq)`` is the sum of squared elements of the vector ``v``
     or :math:`|v|^2`.
 
     .. runblock:: pycon
@@ -155,7 +157,7 @@ def normsq(v):
         >>> from spatialmath.base import *
         >>> normsq([2, 3])
 
-    .. note:: This function does not use NumPy, it is ~2x faster than 
+    .. note:: This function does not use NumPy, it is ~2x faster than
         `numpy.linalg.norm() ** 2` for a 3-vector
 
     :seealso: :func:`~spatialmath.base.unit`
@@ -167,6 +169,7 @@ def normsq(v):
         sum += x * x
 
     return sum
+
 
 def cross(u, v):
     """
@@ -186,7 +189,7 @@ def cross(u, v):
         >>> from spatialmath.base import *
         >>> cross([1, 0, 0], [0, 1, 0])
 
-    .. note:: This function does not use NumPy, it is ~1.5x faster than 
+    .. note:: This function does not use NumPy, it is ~1.5x faster than
         `numpy.cross()`
 
     :seealso: :func:`~spatialmath.base.unit`
@@ -194,10 +197,9 @@ def cross(u, v):
     :SymPy: supported
     """
     return np.r_[
-        u[1] * v[2] - u[2] * v[1],
-        u[2] * v[0] - u[0] * v[2],
-        u[0] * v[1] - u[1] * v[0]
-                ]
+        u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]
+    ]
+
 
 def isunitvec(v, tol=10):
     """
@@ -242,6 +244,7 @@ def iszerovec(v, tol=10):
     """
     return np.linalg.norm(v) < tol * _eps
 
+
 def iszero(v, tol=10):
     """
     Test if scalar is zero
@@ -262,6 +265,7 @@ def iszero(v, tol=10):
     :seealso: unit, iszerovec, isunittwist
     """
     return abs(v) < tol * _eps
+
 
 def isunittwist(v, tol=10):
     r"""
@@ -296,7 +300,9 @@ def isunittwist(v, tol=10):
 
     if len(v) == 6:
         # test for SE(3) twist
-        return isunitvec(v[3:6], tol=tol) or (np.linalg.norm(v[3:6]) < tol * _eps and isunitvec(v[0:3], tol=tol))
+        return isunitvec(v[3:6], tol=tol) or (
+            np.linalg.norm(v[3:6]) < tol * _eps and isunitvec(v[0:3], tol=tol)
+        )
     else:
         raise ValueError
 
@@ -333,7 +339,9 @@ def isunittwist2(v, tol=10):
 
     if len(v) == 3:
         # test for SE(2) twist
-        return isunitvec(v[2], tol=tol) or (np.abs(v[2]) < tol * _eps and isunitvec(v[0:2], tol=tol))
+        return isunitvec(v[2], tol=tol) or (
+            np.abs(v[2]) < tol * _eps and isunitvec(v[0:2], tol=tol)
+        )
     else:
         raise ValueError
 
@@ -430,7 +438,7 @@ def unittwist2(S):
 
     :param S: twist vector
     :type S: array_like(3)
-    :return: unit twist 
+    :return: unit twist
     :rtype: ndarray(3)
 
     A unit twist is a twist where:
@@ -456,6 +464,7 @@ def unittwist2(S):
         th = abs(w)
 
     return S / th
+
 
 def unittwist2_norm(S):
     """
@@ -489,6 +498,7 @@ def unittwist2_norm(S):
         th = abs(w)
 
     return (S / th, th)
+
 
 def angdiff(a, b=None):
     """
@@ -529,6 +539,7 @@ def angdiff(a, b=None):
     else:
         return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
 
+
 def removesmall(v, tol=100):
     """
     Set small values to zero
@@ -555,7 +566,14 @@ def removesmall(v, tol=100):
     return np.where(abs(v) < tol * _eps, 0, v)
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     import pathlib
 
-    exec(open(pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_vectors.py").read())  # pylint: disable=exec-used
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_vectors.py"
+        ).read()
+    )  # pylint: disable=exec-used

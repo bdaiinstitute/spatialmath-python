@@ -20,10 +20,9 @@ import matplotlib.pyplot as plt
 
 
 class TestVector(unittest.TestCase):
-
     @classmethod
     def tearDownClass(cls):
-        plt.close('all')
+        plt.close("all")
 
     def test_unit(self):
 
@@ -49,9 +48,9 @@ class TestVector(unittest.TestCase):
 
     def test_colvec(self):
 
-        t = np.r_[1,2,3]
+        t = np.r_[1, 2, 3]
         cv = colvec(t)
-        self.assertEqual(cv.shape, (3,1))
+        self.assertEqual(cv.shape, (3, 1))
         nt.assert_array_almost_equal(cv.flatten(), t)
 
     def test_isunitvec(self):
@@ -77,21 +76,21 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(norm([0, 0, 0]), 0)
         self.assertAlmostEqual(norm([1, 2, 3]), math.sqrt(14))
         self.assertAlmostEqual(norm(np.r_[1, 2, 3]), math.sqrt(14))
-        
-        x, y = sym.symbol('x y')
+
+        x, y = sym.symbol("x y")
         v = [x, y]
-        self.assertEqual(norm(v), sym.sqrt(x**2 + y**2))
-        self.assertEqual(norm(np.r_[v]), sym.sqrt(x**2 + y**2))
+        self.assertEqual(norm(v), sym.sqrt(x ** 2 + y ** 2))
+        self.assertEqual(norm(np.r_[v]), sym.sqrt(x ** 2 + y ** 2))
 
     def test_norm(self):
         self.assertAlmostEqual(norm([0, 0, 0]), 0)
         self.assertAlmostEqual(normsq([1, 2, 3]), 14)
         self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
 
-        x, y = sym.symbol('x y')
+        x, y = sym.symbol("x y")
         v = [x, y]
-        self.assertEqual(normsq(v), x**2 + y**2)
-        self.assertEqual(normsq(np.r_[v]), x**2 + y**2)
+        self.assertEqual(normsq(v), x ** 2 + y ** 2)
+        self.assertEqual(normsq(np.r_[v]), x ** 2 + y ** 2)
 
     def test_cross(self):
 
@@ -100,7 +99,7 @@ class TestVector(unittest.TestCase):
         for i in range(0, 3):
             j = (i + 1) % 3
             k = (i + 2) % 3
-            self.assertTrue(all(cross(A[:,i], A[:,j]) == A[:,k]))
+            self.assertTrue(all(cross(A[:, i], A[:, j]) == A[:, k]))
 
     def test_isunittwist(self):
         # 3D
@@ -132,23 +131,41 @@ class TestVector(unittest.TestCase):
         self.assertFalse(isunittwist2([2, 0, 0]))
 
         with self.assertRaises(ValueError):
-            isunittwist([3,4])
+            isunittwist([3, 4])
 
         with self.assertRaises(ValueError):
-            isunittwist2([3,4])
+            isunittwist2([3, 4])
 
     def test_unittwist(self):
-        nt.assert_array_almost_equal(unittwist([0, 0, 0, 1, 0, 0]), np.r_[0, 0, 0, 1, 0, 0])
-        nt.assert_array_almost_equal(unittwist([0, 0, 0, 0, 2, 0]), np.r_[0, 0, 0, 0, 1, 0])
-        nt.assert_array_almost_equal(unittwist([0, 0, 0, 0, 0, -3]), np.r_[0, 0, 0, 0, 0, -1])
+        nt.assert_array_almost_equal(
+            unittwist([0, 0, 0, 1, 0, 0]), np.r_[0, 0, 0, 1, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist([0, 0, 0, 0, 2, 0]), np.r_[0, 0, 0, 0, 1, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist([0, 0, 0, 0, 0, -3]), np.r_[0, 0, 0, 0, 0, -1]
+        )
 
-        nt.assert_array_almost_equal(unittwist([1, 0, 0, 1, 0, 0]), np.r_[1, 0, 0, 1, 0, 0])
-        nt.assert_array_almost_equal(unittwist([1, 0, 0, 0, 2, 0]), np.r_[0.5, 0, 0, 0, 1, 0])
-        nt.assert_array_almost_equal(unittwist([1, 0, 0, 0, 0, -2]), np.r_[0.5, 0, 0, 0, 0, -1])
+        nt.assert_array_almost_equal(
+            unittwist([1, 0, 0, 1, 0, 0]), np.r_[1, 0, 0, 1, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist([1, 0, 0, 0, 2, 0]), np.r_[0.5, 0, 0, 0, 1, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist([1, 0, 0, 0, 0, -2]), np.r_[0.5, 0, 0, 0, 0, -1]
+        )
 
-        nt.assert_array_almost_equal(unittwist([1, 0, 0, 0, 0, 0]), np.r_[1, 0, 0, 0, 0, 0])
-        nt.assert_array_almost_equal(unittwist([0, 2, 0, 0, 0, 0]), np.r_[0, 1, 0, 0, 0, 0])
-        nt.assert_array_almost_equal(unittwist([0, 0, -2, 0, 0, 0]), np.r_[0, 0, -1, 0, 0, 0])
+        nt.assert_array_almost_equal(
+            unittwist([1, 0, 0, 0, 0, 0]), np.r_[1, 0, 0, 0, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist([0, 2, 0, 0, 0, 0]), np.r_[0, 1, 0, 0, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist([0, 0, -2, 0, 0, 0]), np.r_[0, 0, -1, 0, 0, 0]
+        )
 
         self.assertIsNone(unittwist([0, 0, 0, 0, 0, 0]))
 
@@ -212,7 +229,7 @@ class TestVector(unittest.TestCase):
         self.assertEqual(angdiff(-np.pi, np.pi), 0)
 
     def test_removesmall(self):
-        
+
         v = np.r_[1, 2, 3]
         nt.assert_array_almost_equal(removesmall(v), v)
 
@@ -220,15 +237,16 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(removesmall(v), v)
 
         v = np.r_[1, 2, 3, 1e-15, -1e-15]
-        nt.assert_array_almost_equal(removesmall(v), [1,2,3,0, 0])
+        nt.assert_array_almost_equal(removesmall(v), [1, 2, 3, 0, 0])
 
         v = np.r_[1, 2, 3, 1e-10, -1e-10]
-        nt.assert_array_almost_equal(removesmall(v), [1,2,3,1e-10,-1e-10])
+        nt.assert_array_almost_equal(removesmall(v), [1, 2, 3, 1e-10, -1e-10])
 
         v = np.r_[1, 2, 3, 1e-10, -1e-10]
-        nt.assert_array_almost_equal(removesmall(v, tol=1e8), [1,2,3,0,0])
+        nt.assert_array_almost_equal(removesmall(v, tol=1e8), [1, 2, 3, 0, 0])
+
 
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     unittest.main()

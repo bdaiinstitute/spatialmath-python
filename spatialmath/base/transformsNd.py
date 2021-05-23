@@ -14,6 +14,7 @@ tuple, numpy array, numpy row vector or numpy column vector.
 import math
 import numpy as np
 from spatialmath import base
+
 # from spatialmath.base import vectors as vec
 # from spatialmath.base import transforms2d as t2d
 # from spatialmath.base import transforms3d as t3d
@@ -61,30 +62,31 @@ def r2t(R, check=False):
     :seealso: t2r, rt2tr
     """
     if not isinstance(R, np.ndarray):
-        raise ValueError('argument must be NumPy array')
+        raise ValueError("argument must be NumPy array")
     dim = R.shape
     if dim[0] != dim[1]:
-        raise ValueError('Matrix must be square')
+        raise ValueError("Matrix must be square")
     n = dim[0] + 1
     m = dim[0]
 
-    if R.dtype == 'O':
+    if R.dtype == "O":
         # symbolic matrix
-        T = np.zeros((n, n), dtype='O')
+        T = np.zeros((n, n), dtype="O")
     else:
         # numeric matrix
         if not isinstance(R, np.ndarray):
-            raise ValueError('Argument must be a NumPy array')
+            raise ValueError("Argument must be a NumPy array")
         if check and not isR(R):
-            raise ValueError('Invalid SO(3) matrix ')
+            raise ValueError("Invalid SO(3) matrix ")
 
         # T = np.pad(R, (0, 1), mode='constant')
         # T[-1, -1] = 1.0
         T = np.zeros((n, n))
-    T[:m,:m] = R
+    T[:m, :m] = R
     T[-1, -1] = 1
 
     return T
+
 
 # ---------------------------------------------------------------------------------------#
 def t2r(T, check=False):
@@ -117,22 +119,23 @@ def t2r(T, check=False):
     :seealso: r2t, tr2rt
     """
     if not isinstance(T, np.ndarray):
-        raise ValueError('argument must be NumPy array')
+        raise ValueError("argument must be NumPy array")
     dim = T.shape
     if dim[0] != dim[1]:
-        raise ValueError('Matrix must be square')
+        raise ValueError("Matrix must be square")
 
     if dim[0] == 3:
         R = T[:2, :2]
     elif dim[0] == 4:
         R = T[:3, :3]
     else:
-        raise ValueError('Value must be an SE(3) matrix')
+        raise ValueError("Value must be an SE(3) matrix")
 
     if check and not isR(R):
-        raise ValueError('Invalid rotation submatrix')
+        raise ValueError("Invalid rotation submatrix")
 
     return R
+
 
 # ---------------------------------------------------------------------------------------#
 
@@ -167,10 +170,10 @@ def tr2rt(T, check=False):
     :seealso: rt2tr, tr2r
     """
     if not isinstance(T, np.ndarray):
-        raise ValueError('argument must be NumPy array')
+        raise ValueError("argument must be NumPy array")
     dim = T.shape
     if dim[0] != dim[1]:
-        raise ValueError('Matrix must be square')
+        raise ValueError("Matrix must be square")
 
     if dim[0] == 3:
         R = t2r(T, check)
@@ -179,9 +182,10 @@ def tr2rt(T, check=False):
         R = t2r(T, check)
         t = T[:3, 3]
     else:
-        raise ValueError('T must be an SE2 or SE3 homogeneous transformation matrix')
+        raise ValueError("T must be an SE2 or SE3 homogeneous transformation matrix")
 
     return [R, t]
+
 
 # ---------------------------------------------------------------------------------------#
 
@@ -213,16 +217,16 @@ def rt2tr(R, t, check=False):
         >>> R = rot2(0.3)
         >>> t = [1, 2]
         >>> rt2tr(R, t)
- 
+
     :seealso: rt2m, tr2rt, r2t
     """
-    t = base.getvector(t, dim=None, out='array')
+    t = base.getvector(t, dim=None, out="array")
     if not isinstance(R, np.ndarray):
-        raise ValueError('Rotation matrix not a NumPy array')
+        raise ValueError("Rotation matrix not a NumPy array")
     if R.shape[0] != t.shape[0]:
         raise ValueError("R and t must have the same number of rows")
     if check and not isR(R):
-        raise ValueError('Invalid rotation matrix')
+        raise ValueError("Invalid rotation matrix")
 
     if R.shape == (2, 2):
         T = np.eye(3)
@@ -233,9 +237,10 @@ def rt2tr(R, t, check=False):
         T[:3, :3] = R
         T[:3, 3] = t
     else:
-        raise ValueError('R must be an SO2 or SO3 rotation matrix')
+        raise ValueError("R must be an SO2 or SO3 rotation matrix")
 
     return T
+
 
 # ---------------------------------------------------------------------------------------#
 
@@ -267,9 +272,9 @@ def Ab2M(A, b):
 
     :seealso: rt2tr, tr2rt, r2t
     """
-    b = base.getvector(b, dim=None, out='array')
+    b = base.getvector(b, dim=None, out="array")
     if not isinstance(A, np.ndarray):
-        raise ValueError('Rotation matrix not a NumPy array')
+        raise ValueError("Rotation matrix not a NumPy array")
     if A.shape[0] != b.shape[0]:
         raise ValueError("A and b must have the same number of rows")
 
@@ -282,9 +287,10 @@ def Ab2M(A, b):
         T[:3, :3] = A
         T[:3, 3] = b
     else:
-        raise ValueError('A must be 2x2 or 3x3')
+        raise ValueError("A must be 2x2 or 3x3")
 
     return T
+
 
 # ======================= predicates
 
@@ -312,8 +318,10 @@ def isR(R, tol=100):
 
     :seealso: isrot2, isrot
     """
-    return np.linalg.norm(R@R.T - np.eye(R.shape[0])) < tol * _eps \
-        and np.linalg.det(R@R.T) > 0
+    return (
+        np.linalg.norm(R @ R.T - np.eye(R.shape[0])) < tol * _eps
+        and np.linalg.det(R @ R.T) > 0
+    )
 
 
 def isskew(S, tol=10):
@@ -368,8 +376,9 @@ def isskewa(S, tol=10):
 
     :seealso: isskew
     """
-    return np.linalg.norm(S[0:-1, 0:-1] + S[0:-1, 0:-1].T) < tol * _eps \
-        and np.all(S[-1, :] == 0)
+    return np.linalg.norm(S[0:-1, 0:-1] + S[0:-1, 0:-1].T) < tol * _eps and np.all(
+        S[-1, :] == 0
+    )
 
 
 def iseye(S, tol=10):
@@ -431,18 +440,11 @@ def skew(v):
     :seealso: :func:`vex`, :func:`skewa`
     :SymPy: supported
     """
-    v = base.getvector(v, None, 'sequence')
+    v = base.getvector(v, None, "sequence")
     if len(v) == 1:
-        return np.array([
-                [ 0,   -v[0] ],
-                [ v[0], 0]   ]
-            )
+        return np.array([[0, -v[0]], [v[0], 0]])
     elif len(v) == 3:
-        return np.array([
-                [ 0,    -v[2],  v[1] ],
-                [ v[2],  0,    -v[0] ],
-                [-v[1],  v[0],  0]   ]
-            )
+        return np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
     else:
         raise ValueError("argument must be a 1- or 3-vector")
 
@@ -496,6 +498,7 @@ def vex(s, check=False):
         return np.array([s[1, 0] - s[0, 1]]) / 2
     else:
         raise ValueError("Argument must be 2x2 or 3x3 matrix")
+
 
 # ---------------------------------------------------------------------------------------#
 
@@ -629,7 +632,12 @@ def rodrigues(w, theta=None):
         w, theta = base.unitvec_norm(w)
 
     skw = skew(w)
-    return np.eye(skw.shape[0]) + math.sin(theta) * skw + (1.0 - math.cos(theta)) * skw @ skw
+    return (
+        np.eye(skw.shape[0])
+        + math.sin(theta) * skw
+        + (1.0 - math.cos(theta)) * skw @ skw
+    )
+
 
 def h2e(v):
     """
@@ -661,11 +669,12 @@ def h2e(v):
     if isinstance(v, np.ndarray) and len(v.shape) == 2:
         # dealing with matrix
         return v[:-1, :] / v[-1, :][np.newaxis, :]
-    
+
     elif base.isvector(v):
         # dealing with shape (N,) array
-        v = base.getvector(v, out='col')
+        v = base.getvector(v, out="col")
         return v[0:-1] / v[-1]
+
 
 def e2h(v):
     """
@@ -699,8 +708,9 @@ def e2h(v):
 
     elif base.isvector(v):
         # dealing with shape (N,) array
-        v = base.getvector(v, out='col')
+        v = base.getvector(v, out="col")
         return np.vstack((v, 1))
+
 
 def homtrans(T, p):
     r"""
@@ -714,8 +724,8 @@ def homtrans(T, p):
     :rtype: ndarray(n-1,m)
     :raises ValueError: bad argument
 
-    - ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the Euclidean points 
-      stored columnwise in the array ``p``. 
+    - ``homtrans(T, p)`` applies the homogeneous transformation ``T`` to the Euclidean points
+      stored columnwise in the array ``p``.
 
     - ``homtrans(T, v)`` as above but ``v`` is a 1D array considered to be a column vector, and the
       retured value will be a column vector.
@@ -739,9 +749,10 @@ def homtrans(T, p):
     """
     p = e2h(p)
     if p.shape[0] != T.shape[0]:
-        raise ValueError('matrices and point data do not conform')
-    
-    return h2e( T @ p )
+        raise ValueError("matrices and point data do not conform")
+
+    return h2e(T @ p)
+
 
 def det(m):
     """
@@ -763,14 +774,19 @@ def det(m):
 
     :SymPy: supported
     """
-    if m.dtype.kind == 'O':
+    if m.dtype.kind == "O":
         return Matrix(m).det()
     else:
         return np.linalg.det(m)
 
-if __name__ == '__main__':  # pragma: no cover
+
+if __name__ == "__main__":  # pragma: no cover
     import pathlib
 
-    print(e2h((1,2,3)))
-    print(h2e((1,2,3)))
-    exec(open(pathlib.Path(__file__).parent.absolute() / "test" / "test_transformsNd.py").read())  # pylint: disable=exec-used
+    print(e2h((1, 2, 3)))
+    print(h2e((1, 2, 3)))
+    exec(
+        open(
+            pathlib.Path(__file__).parent.absolute() / "test" / "test_transformsNd.py"
+        ).read()
+    )  # pylint: disable=exec-used

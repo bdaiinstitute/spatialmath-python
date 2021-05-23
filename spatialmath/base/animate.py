@@ -21,6 +21,7 @@ import time
 # for animatiion to work
 _ani = None
 
+
 class Animate:
     """
     Animate objects for matplotlib 3d
@@ -45,7 +46,9 @@ class Animate:
         anim.run(loop=True)  # animate it
     """
 
-    def __init__(self, axes=None, dims=None, projection='ortho', labels=('X', 'Y', 'Z'), **kwargs):
+    def __init__(
+        self, axes=None, dims=None, projection="ortho", labels=("X", "Y", "Z"), **kwargs
+    ):
         """
         Construct an Animate object
 
@@ -73,16 +76,16 @@ class Animate:
             # check any current axes
             for a in fig.axes:
                 if a.name != "3d":
-                    # if they are not 3D axes, remove them, otherwise will 
+                    # if they are not 3D axes, remove them, otherwise will
                     # get plot errors
                     a.remove()
             if len(fig.axes) == 0:
                 # no axes in the figure, create a 3D axes
-                axes = fig.add_subplot(111, projection='3d', proj_type=projection)
+                axes = fig.add_subplot(111, projection="3d", proj_type=projection)
                 axes.set_xlabel(labels[0])
                 axes.set_ylabel(labels[1])
                 axes.set_zlabel(labels[2])
-                axes.autoscale(enable=True, axis='both')
+                axes.autoscale(enable=True, axis="both")
             else:
                 # reuse an existing axis
                 axes = plt.gca()
@@ -107,7 +110,7 @@ class Animate:
         :type end: ndarray(4,4) or ndarray(3,3)
         :param start: the initial pose SE(3) or SO(3) to display as a coordinate frame, defaults to null
         :type start: ndarray(4,4) or ndarray(3,3)
-        :param start: an 
+        :param start: an
 
         Is polymorphic with ``base.trplot`` and accepts the same parameters.
         This sets up the animation but doesn't execute it.
@@ -115,7 +118,7 @@ class Animate:
         :seealso: :func:`run`
 
         """
-        if not isinstance(end, (np.ndarray, np.generic) ) and isinstance(end, Iterable):
+        if not isinstance(end, (np.ndarray, np.generic)) and isinstance(end, Iterable):
             try:
                 if len(end) == 1:
                     end = end[0]
@@ -142,7 +145,16 @@ class Animate:
         # draw axes at the origin
         base.trplot(self.start, axes=self, **kwargs)
 
-    def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, wait=False, **kwargs):
+    def run(
+        self,
+        movie=None,
+        axes=None,
+        repeat=False,
+        interval=50,
+        nframes=100,
+        wait=False,
+        **kwargs
+    ):
         """
         Run the animation
 
@@ -182,9 +194,9 @@ class Animate:
             else:
                 # assume it is an SO(3) or SE(3)
                 T = frame
-                
+
             # ensure result is SE(3)
-            if T.shape == (3,3):
+            if T.shape == (3, 3):
                 T = base.r2t(T)
 
             # update the scene
@@ -209,15 +221,25 @@ class Animate:
         else:
             frames = iter(np.linspace(0, 1, nframes))
 
-        _ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=frames, fargs=(self,), blit=False, interval=interval, repeat=repeat)
+        _ani = animation.FuncAnimation(
+            fig=plt.gcf(),
+            func=update,
+            frames=frames,
+            fargs=(self,),
+            blit=False,
+            interval=interval,
+            repeat=repeat,
+        )
 
         if movie is not None:
             # Set up formatting for the movie files
             if os.path.exists(movie):
-                print('overwriting movie', movie)
+                print("overwriting movie", movie)
             else:
-                print('creating movie', movie)
-            FFwriter = animation.FFMpegWriter(fps=1000 / interval, extra_args=['-vcodec', 'libx264'])
+                print("creating movie", movie)
+            FFwriter = animation.FFMpegWriter(
+                fps=1000 / interval, extra_args=["-vcodec", "libx264"]
+            )
             _ani.save(movie, writer=FFwriter)
 
         if wait:
@@ -237,7 +259,7 @@ class Animate:
         :returns: readable version of the display list
         :rtype: str
         """
-        return ', '.join([x.type for x in self.displaylist])
+        return ", ".join([x.type for x in self.displaylist])
 
     def artists(self):
         """
@@ -257,12 +279,11 @@ class Animate:
     # ------------------- plot()
 
     class _Line:
-
         def __init__(self, anim, h, xs, ys, zs):
             # form 4x2 matrix, columns are first/last point in homogeneous form
             self.p = np.vstack([xs, ys, zs, [1, 1]])
             self.h = h
-            self.type = 'line'
+            self.type = "line"
             self.anim = anim
 
         def draw(self, T):
@@ -288,15 +309,14 @@ class Animate:
         :seealso: :func:`matplotlib.pyplot.plot`
         """
 
-        h, = self.ax.plot(x, y, z, *args, **kwargs)
+        (h,) = self.ax.plot(x, y, z, *args, **kwargs)
         self.displaylist.append(Animate._Line(self, h, x, y, z))
 
     # ------------------- quiver()
 
     class _Quiver:
-
         def __init__(self, anim, h):
-            self.type = 'quiver'
+            self.type = "quiver"
             self.anim = anim
             # for matplotlib 3.1.x
             # ._segments3d is 3x2x3
@@ -311,11 +331,15 @@ class Animate:
             # turn to homogeneous form, with columns per point, alternating start, end
 
             if isinstance(h._segments3d, np.ndarray):
-                self.p = np.vstack([h._segments3d.reshape(6, 3).T, np.ones((1, 6))])  # result is 4x6
+                self.p = np.vstack(
+                    [h._segments3d.reshape(6, 3).T, np.ones((1, 6))]
+                )  # result is 4x6
             else:
-                self.p = np.vstack([np.hstack([x.T for x in h._segments3d]), np.ones((1, 6))])
+                self.p = np.vstack(
+                    [np.hstack([x.T for x in h._segments3d]), np.ones((1, 6))]
+                )
             self.h = h
-            self.type = 'arrow'
+            self.type = "arrow"
             self.anim = anim
 
         def draw(self, T):
@@ -356,9 +380,8 @@ class Animate:
     # ------------------- text()
 
     class _Text:
-
         def __init__(self, anim, h, x, y, z):
-            self.type = 'text'
+            self.type = "text"
             self.h = h
             self.p = np.r_[x, y, z, 1]
             self.anim = anim
@@ -369,7 +392,7 @@ class Animate:
             #   p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))
             self.h.set_position((p[0], p[1]))
-            self.h.set_3d_properties(z=p[2], zdir='x')
+            self.h.set_3d_properties(z=p[2], zdir="x")
 
     def text(self, x, y, z, *args, **kwargs):
         """
@@ -383,7 +406,7 @@ class Animate:
         :type z: float
         :param kwargs: Other arguments as accepted by the matplotlib method.
 
-        ``.text(x, y, z, s)`` display the string ``s`` at coordinate 
+        ``.text(x, y, z, s)`` display the string ``s`` at coordinate
         (``x``, ``y``, ``z``).
 
         :seealso: :func:`~matplotlib.pyplot.text`
@@ -441,13 +464,13 @@ class Animate2:
         anim.run(loop=True)  # animate it
     """
 
-    def __init__(self, axes=None, dims=None, labels=('X', 'Y'), **kwargs):
+    def __init__(self, axes=None, dims=None, labels=("X", "Y"), **kwargs):
         """
         Construct an Animate object
 
         :param axes: the axes to plot into, defaults to current axes
         :type axes: Axes3D reference
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]. If 
+        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]. If
             dims is [min, max] those limits are applied to the x- and y-axes.
         :type dims: array_like(4) or array_like(2)
         :param projection: 3D projection: ortho [default] or persp
@@ -469,7 +492,7 @@ class Animate2:
                 axes = fig.add_subplot(111)
                 axes.set_xlabel(labels[0])
                 axes.set_ylabel(labels[1])
-                axes.autoscale(enable=True, axis='both')
+                axes.autoscale(enable=True, axis="both")
             else:
                 # reuse an existing axis
                 axes = plt.gca()
@@ -500,7 +523,7 @@ class Animate2:
         :seealso: :func:`run`
 
         """
-        if not isinstance(end, (np.ndarray, np.generic) ) and isinstance(end, Iterable):
+        if not isinstance(end, (np.ndarray, np.generic)) and isinstance(end, Iterable):
             if len(end) == 1:
                 end = end[0]
             elif len(end) >= 2:
@@ -523,7 +546,9 @@ class Animate2:
         # draw axes at the origin
         base.trplot2(self.start, axes=self, block=False, **kwargs)
 
-    def run(self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs):
+    def run(
+        self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs
+    ):
         """
         Run the animation
 
@@ -566,7 +591,15 @@ class Animate2:
         self.done = False
         if self.trajectory is not None:
             nframes = len(self.trajectory)
-        ani = animation.FuncAnimation(fig=plt.gcf(), func=update, frames=range(0, nframes), fargs=(self,), blit=False, interval=interval, repeat=repeat)
+        ani = animation.FuncAnimation(
+            fig=plt.gcf(),
+            func=update,
+            frames=range(0, nframes),
+            fargs=(self,),
+            blit=False,
+            interval=interval,
+            repeat=repeat,
+        )
 
         if movie is None:
             while repeat or not self.done:
@@ -574,10 +607,10 @@ class Animate2:
         else:
             # Set up formatting for the movie files
             if os.path.exists(movie):
-                print('overwriting movie', movie)
+                print("overwriting movie", movie)
             else:
-                print('creating movie', movie)
-            FFwriter = animation.FFMpegWriter(fps=10, extra_args=['-vcodec', 'libx264'])
+                print("creating movie", movie)
+            FFwriter = animation.FFMpegWriter(fps=10, extra_args=["-vcodec", "libx264"])
             ani.save(movie, writer=FFwriter)
 
     def __repr__(self):
@@ -589,7 +622,7 @@ class Animate2:
         :returns: readable version of the display list
         :rtype: str
         """
-        return ', '.join([x.type for x in self.displaylist])
+        return ", ".join([x.type for x in self.displaylist])
 
     def artists(self):
         """
@@ -609,12 +642,11 @@ class Animate2:
     # ------------------- plot()
 
     class _Line:
-
         def __init__(self, anim, h, xs, ys):
             # form 3x2 matrix, columns are first/last point in homogeneous form
             self.p = np.vstack([xs, ys, [1, 1]])
             self.h = h
-            self.type = 'line'
+            self.type = "line"
             self.anim = anim
 
         def draw(self, T):
@@ -637,19 +669,18 @@ class Animate2:
         :seealso: :func:`matplotlib.pyplot.plot`
         """
 
-        h, = self.ax.plot(x, y, *args, **kwargs)
+        (h,) = self.ax.plot(x, y, *args, **kwargs)
         self.displaylist.append(Animate2._Line(self, h, x, y))
 
     # ------------------- quiver()
 
     class _Quiver:
-
         def __init__(self, anim, h, x, y, u, v):
-            self.type = 'quiver'
+            self.type = "quiver"
             self.anim = anim
 
             self.h = h
-            self.type = 'arrow'
+            self.type = "arrow"
             self.anim = anim
 
             self.p = np.c_[u - x, v - y].T
@@ -689,9 +720,8 @@ class Animate2:
     # ------------------- text()
 
     class _Text:
-
         def __init__(self, anim, h, x, y):
-            self.type = 'text'
+            self.type = "text"
             self.h = h
             self.p = np.r_[x, y, 1]
             self.anim = anim
@@ -715,7 +745,7 @@ class Animate2:
         :type z: float
         :param kwargs: Other arguments as accepted by the matplotlib method.
 
-        ``.text(x, y, s)`` display the string ``s`` at coordinate 
+        ``.text(x, y, s)`` display the string ``s`` at coordinate
         (``x``, ``y``).
 
         :seealso: :func:`matplotlib.pyplot.text`
@@ -741,7 +771,6 @@ class Animate2:
 
     def set_ylabel(self, *args, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
-
 
 
 if __name__ == "__main__":

@@ -22,21 +22,13 @@ import matplotlib.pyplot as plt
 
 
 class TestLie(unittest.TestCase):
-
     def test_vex(self):
-        S = np.array([
-            [0, -3],
-            [3, 0]
-        ])
+        S = np.array([[0, -3], [3, 0]])
 
         nt.assert_array_almost_equal(vex(S), np.array([3]))
         nt.assert_array_almost_equal(vex(-S), np.array([-3]))
 
-        S = np.array([
-            [0, -3, 2],
-            [3, 0, -1],
-            [-2, 1, 0]
-        ])
+        S = np.array([[0, -3, 2], [3, 0, -1], [-2, 1, 0]])
 
         nt.assert_array_almost_equal(vex(S), np.array([1, 2, 3]))
         nt.assert_array_almost_equal(vex(-S), -np.array([1, 2, 3]))
@@ -45,43 +37,29 @@ class TestLie(unittest.TestCase):
         R = skew(3)
         nt.assert_equal(isrot2(R, check=False), True)  # check size
         nt.assert_array_almost_equal(np.linalg.norm(R.T + R), 0)  # check is skew
-        nt.assert_array_almost_equal(vex(R), np.array([3]))  # check contents, vex already verified
+        nt.assert_array_almost_equal(
+            vex(R), np.array([3])
+        )  # check contents, vex already verified
 
         R = skew([1, 2, 3])
         nt.assert_equal(isrot(R, check=False), True)  # check size
         nt.assert_array_almost_equal(np.linalg.norm(R.T + R), 0)  # check is skew
-        nt.assert_array_almost_equal(vex(R), np.array([1, 2, 3]))  # check contents, vex already verified
+        nt.assert_array_almost_equal(
+            vex(R), np.array([1, 2, 3])
+        )  # check contents, vex already verified
 
     def test_vexa(self):
 
-        S = np.array([
-            [0, -3, 1],
-            [3, 0, 2],
-            [0, 0, 0]
-        ])
+        S = np.array([[0, -3, 1], [3, 0, 2], [0, 0, 0]])
         nt.assert_array_almost_equal(vexa(S), np.array([1, 2, 3]))
 
-        S = np.array([
-            [0, 3, -1],
-            [-3, 0, 2],
-            [0, 0, 0]
-        ])
+        S = np.array([[0, 3, -1], [-3, 0, 2], [0, 0, 0]])
         nt.assert_array_almost_equal(vexa(S), np.array([-1, 2, -3]))
 
-        S = np.array([
-            [0, -6, 5, 1],
-            [6, 0, -4, 2],
-            [-5, 4, 0, 3],
-            [0, 0, 0, 0]
-        ])
+        S = np.array([[0, -6, 5, 1], [6, 0, -4, 2], [-5, 4, 0, 3], [0, 0, 0, 0]])
         nt.assert_array_almost_equal(vexa(S), np.array([1, 2, 3, 4, 5, 6]))
 
-        S = np.array([
-            [0, 6, 5, 1],
-            [-6, 0, 4, -2],
-            [-5, -4, 0, 3],
-            [0, 0, 0, 0]
-        ])
+        S = np.array([[0, 6, 5, 1], [-6, 0, 4, -2], [-5, -4, 0, 3], [0, 0, 0, 0]])
         nt.assert_array_almost_equal(vexa(S), np.array([1, -2, 3, -4, 5, -6]))
 
     def test_skewa(self):
@@ -89,13 +67,17 @@ class TestLie(unittest.TestCase):
         nt.assert_equal(ishom2(T, check=False), True)  # check size
         R = t2r(T)
         nt.assert_equal(np.linalg.norm(R.T + R), 0)  # check is skew
-        nt.assert_array_almost_equal(vexa(T), np.array([3, 4, 5]))  # check contents, vexa already verified
+        nt.assert_array_almost_equal(
+            vexa(T), np.array([3, 4, 5])
+        )  # check contents, vexa already verified
 
         T = skewa([1, 2, 3, 4, 5, 6])
         nt.assert_equal(ishom(T, check=False), True)  # check size
         R = t2r(T)
         nt.assert_equal(np.linalg.norm(R.T + R), 0)  # check is skew
-        nt.assert_array_almost_equal(vexa(T), np.array([1, 2, 3, 4, 5, 6]))  # check contents, vexa already verified
+        nt.assert_array_almost_equal(
+            vexa(T), np.array([1, 2, 3, 4, 5, 6])
+        )  # check contents, vexa already verified
 
     def test_trlog(self):
 
@@ -129,8 +111,13 @@ class TestLie(unittest.TestCase):
         # SE(3) tests
 
         # pure translation
-        nt.assert_array_almost_equal(trlog(transl([1, 2, 3])), np.array([[0, 0, 0, 1], [0, 0, 0, 2], [0, 0, 0, 3], [0, 0, 0, 0]]))
-        nt.assert_array_almost_equal(trlog(transl([1, 2, 3]), twist=True), np.r_[1,2,3,0,0,0])
+        nt.assert_array_almost_equal(
+            trlog(transl([1, 2, 3])),
+            np.array([[0, 0, 0, 1], [0, 0, 0, 2], [0, 0, 0, 3], [0, 0, 0, 0]]),
+        )
+        nt.assert_array_almost_equal(
+            trlog(transl([1, 2, 3]), twist=True), np.r_[1, 2, 3, 0, 0, 0]
+        )
 
         # pure rotation
         # rotation by pi case
@@ -138,18 +125,30 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trlog(troty(pi)), skewa([0, 0, 0, 0, pi, 0]))
         nt.assert_array_almost_equal(trlog(trotz(pi)), skewa([0, 0, 0, 0, 0, pi]))
 
-        nt.assert_array_almost_equal(trlog(trotx(pi), twist=True), np.r_[0, 0, 0, pi, 0, 0])
-        nt.assert_array_almost_equal(trlog(troty(pi), twist=True), np.r_[0, 0, 0, 0, pi, 0])
-        nt.assert_array_almost_equal(trlog(trotz(pi), twist=True), np.r_[0, 0, 0, 0, 0, pi])
+        nt.assert_array_almost_equal(
+            trlog(trotx(pi), twist=True), np.r_[0, 0, 0, pi, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            trlog(troty(pi), twist=True), np.r_[0, 0, 0, 0, pi, 0]
+        )
+        nt.assert_array_almost_equal(
+            trlog(trotz(pi), twist=True), np.r_[0, 0, 0, 0, 0, pi]
+        )
 
         # general case
         nt.assert_array_almost_equal(trlog(trotx(0.2)), skewa([0, 0, 0, 0.2, 0, 0]))
         nt.assert_array_almost_equal(trlog(troty(0.3)), skewa([0, 0, 0, 0, 0.3, 0]))
         nt.assert_array_almost_equal(trlog(trotz(0.4)), skewa([0, 0, 0, 0, 0, 0.4]))
 
-        nt.assert_array_almost_equal(trlog(trotx(0.2), twist=True), np.r_[0, 0, 0, 0.2, 0, 0])
-        nt.assert_array_almost_equal(trlog(troty(0.3), twist=True), np.r_[0, 0, 0, 0, 0.3, 0])
-        nt.assert_array_almost_equal(trlog(trotz(0.4), twist=True), np.r_[0, 0, 0, 0, 0, 0.4])
+        nt.assert_array_almost_equal(
+            trlog(trotx(0.2), twist=True), np.r_[0, 0, 0, 0.2, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            trlog(troty(0.3), twist=True), np.r_[0, 0, 0, 0, 0.3, 0]
+        )
+        nt.assert_array_almost_equal(
+            trlog(trotz(0.4), twist=True), np.r_[0, 0, 0, 0, 0, 0.4]
+        )
 
         # mixture
         T = transl([1, 2, 3]) @ trotx(0.3)
@@ -159,7 +158,6 @@ class TestLie(unittest.TestCase):
         T = transl([1, 2, 3]) @ troty(0.3)
         nt.assert_array_almost_equal(trlog(T), logm(T))
         nt.assert_array_almost_equal(trlog(T, twist=True), vexa(logm(T)))
-
 
     # def test_trlog2(self):
 
@@ -232,7 +230,9 @@ class TestLie(unittest.TestCase):
 
         # % sigma = se(3)
         # pure translation
-        nt.assert_array_almost_equal(trexp(skewa([1, 2, 3, 0, 0, 0])), transl([1, 2, 3]))
+        nt.assert_array_almost_equal(
+            trexp(skewa([1, 2, 3, 0, 0, 0])), transl([1, 2, 3])
+        )
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 0.2, 0, 0])), trotx(0.2))
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 0, 0.3, 0])), troty(0.3))
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 0, 0, 0.4])), trotz(0.4))
@@ -247,21 +247,27 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trexp(S), expm(S))
 
         # twist vector
-        #nt.assert_array_almost_equal(trexp( double(Twist(T))), T)
+        # nt.assert_array_almost_equal(trexp( double(Twist(T))), T)
 
         # (sigma, theta)
-        nt.assert_array_almost_equal(trexp(skewa([1, 0, 0, 0, 0, 0]), 2), transl([2, 0, 0]))
-        nt.assert_array_almost_equal(trexp(skewa([0, 1, 0, 0, 0, 0]), 2), transl([0, 2, 0]))
-        nt.assert_array_almost_equal(trexp(skewa([0, 0, 1, 0, 0, 0]), 2), transl([0, 0, 2]))
+        nt.assert_array_almost_equal(
+            trexp(skewa([1, 0, 0, 0, 0, 0]), 2), transl([2, 0, 0])
+        )
+        nt.assert_array_almost_equal(
+            trexp(skewa([0, 1, 0, 0, 0, 0]), 2), transl([0, 2, 0])
+        )
+        nt.assert_array_almost_equal(
+            trexp(skewa([0, 0, 1, 0, 0, 0]), 2), transl([0, 0, 2])
+        )
 
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 1, 0, 0]), 0.2), trotx(0.2))
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 0, 1, 0]), 0.2), troty(0.2))
         nt.assert_array_almost_equal(trexp(skewa([0, 0, 0, 0, 0, 1]), 0.2), trotz(0.2))
 
         # (twist, theta)
-        #nt.assert_array_almost_equal(trexp(Twist('R', [1, 0, 0], [0, 0, 0]).S, 0.3), trotx(0.3))
+        # nt.assert_array_almost_equal(trexp(Twist('R', [1, 0, 0], [0, 0, 0]).S, 0.3), trotx(0.3))
 
-        T = transl([1, 2, 3])@trotz(0.3)
+        T = transl([1, 2, 3]) @ trotz(0.3)
         nt.assert_array_almost_equal(trexp(trlog(T)), T)
 
     def test_trexp2(self):
@@ -295,7 +301,7 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trexp2(S), expm(S))
 
         # twist vector
-        #nt.assert_array_almost_equal(trexp( double(Twist(T))), T)
+        # nt.assert_array_almost_equal(trexp( double(Twist(T))), T)
 
         # (sigma, theta)
         nt.assert_array_almost_equal(trexp2(skewa([1, 0, 0]), 2), transl2([2, 0]))
@@ -304,7 +310,7 @@ class TestLie(unittest.TestCase):
         nt.assert_array_almost_equal(trexp2(skewa([0, 0, 1]), 0.2), trot2(0.2))
 
         # (twist, theta)
-        #nt.assert_array_almost_equal(trexp(Twist('R', [1, 0, 0], [0, 0, 0]).S, 0.3), trotx(0.3))
+        # nt.assert_array_almost_equal(trexp(Twist('R', [1, 0, 0], [0, 0, 0]).S, 0.3), trotx(0.3))
 
         # T = transl2([1, 2])@trot2(0.3)
         # nt.assert_array_almost_equal(trexp2(trlog2(T)), T)
@@ -316,6 +322,6 @@ class TestLie(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     unittest.main()
