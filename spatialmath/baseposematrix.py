@@ -560,6 +560,19 @@ class BasePoseMatrix(BasePoseList):
         vf = np.vectorize(sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
 
+    def stack(self):
+        """
+        Convert to 3-dimensional matrix
+
+        :return: 3-dimensional NumPy array
+        :rtype: ndarray(n,n,m)
+
+        Converts the value to a 3-dimensional NumPy array where the values are
+        stacked along the third axis.  The first two dimensions are given by
+        ``self.shape``.
+        """
+        return np.dstack(self.data)
+
     # ----------------------- i/o stuff
 
     def printline(self, *args, **kwargs):
