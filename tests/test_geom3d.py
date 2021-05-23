@@ -45,7 +45,7 @@ class PluckerTest(unittest.TestCase):
         # 2, point constructor
         P = np.r_[2, 3, 7]
         Q = np.r_[2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         nt.assert_array_almost_equal(L.w, P-Q)
         nt.assert_array_almost_equal(L.v, np.cross(P-Q, Q))
     
@@ -74,7 +74,7 @@ class PluckerTest(unittest.TestCase):
     
     def test_pp(self):
         # validate pp and ppd
-        L = Plucker.PQ([-1, 1, 2], [1, 1, 2])
+        L = Plucker.TwoPoints([-1, 1, 2], [1, 1, 2])
         nt.assert_array_almost_equal(L.pp, np.r_[0, 1, 2])
         self.assertEqual(L.ppd, math.sqrt(5))
         
@@ -85,7 +85,7 @@ class PluckerTest(unittest.TestCase):
     def test_contains(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         # validate contains
         self.assertTrue( L.contains([2, 3, 7]) )
@@ -96,31 +96,31 @@ class PluckerTest(unittest.TestCase):
     def test_closest(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
-        out = L.closest(P)
+        out = L.closest_to_point(P)
         nt.assert_array_almost_equal(out.p, P)
         self.assertAlmostEqual(out.d, 0)
         
             # validate closest with given points and origin
-        out = L.closest(Q)
+        out = L.closest_to_point(Q)
         nt.assert_array_almost_equal(out.p, Q)
         self.assertAlmostEqual(out.d, 0)
         
-        L = Plucker.PQ([-1, 1, 2], [1, 1, 2])
-        out = L.closest([0, 1, 2])
+        L = Plucker.TwoPoints([-1, 1, 2], [1, 1, 2])
+        out = L.closest_to_point([0, 1, 2])
         nt.assert_array_almost_equal(out.p, np.r_[0, 1, 2])
         self.assertAlmostEqual(out.d, 0)
         
-        out = L.closest([5, 1, 2])
+        out = L.closest_to_point([5, 1, 2])
         nt.assert_array_almost_equal(out.p, np.r_[5, 1, 2])
         self.assertAlmostEqual(out.d, 0)
         
-        out = L.closest([0, 0, 0])
+        out = L.closest_to_point([0, 0, 0])
         nt.assert_array_almost_equal(out.p, L.pp)
         self.assertEqual(out.d, L.ppd)
         
-        out = L.closest([5, 1, 0])
+        out = L.closest_to_point([5, 1, 0])
         nt.assert_array_almost_equal(out.p, [5, 1, 2])
         self.assertAlmostEqual(out.d, 2)
     
@@ -128,7 +128,7 @@ class PluckerTest(unittest.TestCase):
         
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d', proj_type='ortho')
@@ -142,9 +142,9 @@ class PluckerTest(unittest.TestCase):
         w = np.r_[1, 2, 3]
         P = np.r_[-2, 4, 3]
         
-        L1 = Plucker.PQ(P, P + w)
-        L2 = Plucker.PQ(P + 2 * w, P + 5 * w)
-        L3 = Plucker.PQ(P + np.r_[1, 0, 0], P + w)
+        L1 = Plucker.TwoPoints(P, P + w)
+        L2 = Plucker.TwoPoints(P + 2 * w, P + 5 * w)
+        L3 = Plucker.TwoPoints(P + np.r_[1, 0, 0], P + w)
         
         self.assertTrue(L1 == L2)
         self.assertFalse(L1 == L3)
@@ -155,7 +155,7 @@ class PluckerTest(unittest.TestCase):
     def test_skew(self):
         
         P = [2, 3, 7]; Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         m = L.skew
         
@@ -165,7 +165,7 @@ class PluckerTest(unittest.TestCase):
     def test_mtimes(self):
         P = [1, 2, 0]
         Q = [1, 2, 10]  # vertical line through (1,2)
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         # check transformation by SE3
         
@@ -242,7 +242,7 @@ class PluckerTest(unittest.TestCase):
     def test_contains(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         self.assertTrue( L.contains(L.point(0)) )
         self.assertTrue( L.contains(L.point(1)) )
@@ -251,7 +251,7 @@ class PluckerTest(unittest.TestCase):
     def test_point(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         nt.assert_array_almost_equal(L.point(0).flatten(), L.pp)
 
@@ -261,7 +261,7 @@ class PluckerTest(unittest.TestCase):
     def test_char(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Plucker.PQ(P, Q)
+        L = Plucker.TwoPoints(P, Q)
         
         s = str(L)
         self.assertIsInstance(s, str)
@@ -271,10 +271,10 @@ class PluckerTest(unittest.TestCase):
         
         xyplane = [0, 0, 1, 0]
         xzplane = [0, 1, 0, 0]
-        L = Plucker.Planes(xyplane, xzplane) # x axis
+        L = Plucker.TwoPlanes(xyplane, xzplane) # x axis
         nt.assert_array_almost_equal(L.vec, np.r_[0, 0, 0, -1, 0, 0])
         
-        L = Plucker.PQ([-1, 2, 3], [1, 2, 3]);  # line at y=2,z=3
+        L = Plucker.TwoPoints([-1, 2, 3], [1, 2, 3]);  # line at y=2,z=3
         x6 = [1, 0, 0, -6]  # x = 6
         
         # plane_intersect
@@ -291,9 +291,9 @@ class PluckerTest(unittest.TestCase):
     
     def test_methods(self):
         # intersection
-        px = Plucker.PQ([0, 0, 0], [1, 0, 0]);  # x-axis
-        py = Plucker.PQ([0, 0, 0], [0, 1, 0]);  # y-axis
-        px1 = Plucker.PQ([0, 1, 0], [1, 1, 0]); # offset x-axis
+        px = Plucker.TwoPoints([0, 0, 0], [1, 0, 0]);  # x-axis
+        py = Plucker.TwoPoints([0, 0, 0], [0, 1, 0]);  # y-axis
+        px1 = Plucker.TwoPoints([0, 1, 0], [1, 1, 0]); # offset x-axis
         
         self.assertEqual(px.ppd, 0)
         self.assertEqual(px1.ppd, 1)

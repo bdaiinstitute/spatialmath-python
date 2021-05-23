@@ -252,7 +252,7 @@ class Plucker(BasePoseList):
         return x.shape == (6,)
 
     @staticmethod
-    def Points2(P=None, Q=None):
+    def TwoPoints(P=None, Q=None):
         """
         Create Plucker line object from two 3D points
         
@@ -277,7 +277,7 @@ class Plucker(BasePoseList):
         return Plucker(np.r_[v, w])
     
     @staticmethod
-    def Planes2(pi1, pi2):
+    def TwoPlanes(pi1, pi2):
         r"""
         Create Plucker line from two planes
                 
