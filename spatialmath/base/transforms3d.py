@@ -2330,8 +2330,8 @@ except ImportError:  # pragma: no cover
 
 def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # pylint: disable=unused-argument,function-redefined
            textcolor=None, labels=('X', 'Y', 'Z'), length=1, style='arrow',
-           originsize=20, origincolor=None, projection='ortho', wtl=0.2, width=None, d1=0.05,
-           d2=1.15, anaglyph=None, **kwargs):
+           originsize=20, origincolor=None, projection='ortho', wtl=0.2, width=None,
+           d2=1.15, flo=(-0.05, -0.05, -0.05), anaglyph=None, **kwargs):
     """
     Plot a 3D coordinate frame
 
@@ -2371,8 +2371,11 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
     :type projection: str
     :param width: width of lines, default 1
     :type width: float
-    :param d1: distance of frame axis label text from origin, default 1.15
-    :type d2: distance of frame label text from origin, default 0.05
+    :param flo: frame label offset, a vector for frame label text string relative
+        to frame origin, default (-0.05, -0.05, -0.05)
+    :type flo: array_like(3)
+    :param d2: distance of frame axis label text from origin, default 1.15
+    :type d2: float
     :return: axes containing the frame
     :rtype: Axes3DSubplot
     :raises ValueError: bad arguments
@@ -2494,7 +2497,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
             trplot(Tk, axes=ax, block=block, dims=dims, color=color, frame=frame,
                 textcolor=textcolor, labels=labels, length=length, style=style,
                 projection=projection, originsize=originsize, origincolor=origincolor, wtl=wtl, width=width, d1=d1,
-                d2=d2, anaglyph=anaglyph, **kwargs)
+                d2=d2, flo=flo, anaglyph=anaglyph, **kwargs)
         return
 
     if dims is not None:
@@ -2540,7 +2543,7 @@ def trplot(T, axes=None, block=False, dims=None, color='blue', frame=None,   # p
         else:
             origincolor = 'black'
 
-        o1 = T @ np.array([-d1, -d1, -d1, 1])
+        o1 = T @ np.array(np.r_[flo, 1])
         ax.text(o1[0], o1[1], o1[2], r'$\{' + frame + r'\}$', color=textcolor, verticalalignment='top', horizontalalignment='center')
 
         # add the labels to each axis
