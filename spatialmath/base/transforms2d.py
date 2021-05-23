@@ -46,9 +46,11 @@ def rot2(theta, unit='rad'):
     theta = base.getunit(theta, unit)
     ct = base.sym.cos(theta)
     st = base.sym.sin(theta)
+    # fmt: off
     R = np.array([
         [ct, -st],
-        [st, ct]])
+        [st,  ct]])
+    # fmt: on
     return R
 
 
@@ -492,10 +494,12 @@ def adjoint2(T):
     elif T.shape == (3,3):
         # SE(2) adjoint
         (R, t) = base.tr2rt(T)
+        # fmt: off
         return np.block([
                 [R, np.c_[t[1], -t[0]].T], 
-                [0, 0, 1]
+                [0, 0,           1]
                 ])
+        # fmt: on
     else:
         raise ValueError('bad argument')
 
