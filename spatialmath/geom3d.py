@@ -252,7 +252,7 @@ class Plucker(BasePoseList):
         return x.shape == (6,)
 
     @staticmethod
-    def PQ(P=None, Q=None):
+    def Points2(P=None, Q=None):
         """
         Create Plucker line object from two 3D points
         
@@ -273,11 +273,11 @@ class Plucker(BasePoseList):
         Q = base.getvector(Q, 3)
         # compute direction and moment
         w = P - Q
-        v = np.cross(P - Q, P)
+        v = np.cross(w, P)
         return Plucker(np.r_[v, w])
     
     @staticmethod
-    def Planes(pi1, pi2):
+    def Planes2(pi1, pi2):
         r"""
         Create Plucker line from two planes
                 
@@ -324,10 +324,10 @@ class Plucker(BasePoseList):
         :seealso: Plucker, Plucker.Planes, Plucker.PQ
         """
 
-        point = base.getvector(point, 3)
-        dir = base.getvector(dir, 3)
-        
-        return Plucker(np.r_[np.cross(dir, point), dir])
+        p = base.getvector(point, 3)
+        w = base.getvector(dir, 3)
+        v = np.cross(w, p)
+        return Plucker(np.r_[v, w])
     
     def append(self, x):
         """
@@ -688,8 +688,32 @@ class Plucker(BasePoseList):
                 l = abs(l1 * l2) / np.linalg.norm(np.cross(l1.w, l2.w))**2
         return l
 
-    
-    def closest(self, x):
+    def closest_to_line(self, line):
+        # point on line closest to another line
+        # https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
+        # but (20) (21) is the negative of correct answer
+
+        p = []
+        dist = []
+        for line1, line2 in zip(self, line):
+            v1 = line1.v
+            w1 = line1.w
+            v2 = line2.v
+            w2 = line2.w
+            p1 = (np.cross(v1, np.cross(w2, np.cross(w1, w2))) - np.dot(v2, np.cross(w1, w2)) * w1) \
+                    / np.sum(np.cross(w1, w2) ** 2)
+            p2 = (np.cross(-v2, np.cross(w1, np.cross(w1, w2))) + np.dot(v1, np.cross(w1, w2)) * w2) \
+                    / np.sum(np.cross(w1, w2) ** 2)
+
+            p.append(p1)
+            dist.append(np.linalg.norm(p1 - p2))
+        
+        if len(p) == 1:
+            return p[0], dist[0]
+        else:
+            return np.array(p).T, np.array(dist)
+
+    def closest_to_point(self, x):
         """
         Point on line closest to given point
         
