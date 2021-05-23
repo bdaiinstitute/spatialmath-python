@@ -62,7 +62,7 @@ class SO3(BasePoseMatrix):
           representing an SO(3) matrix. If ``check`` is ``True`` check the
           matrix belongs to SO(3).
         - ``SO3([X1, X2, ... XN])`` is an ``SO3`` instance with ``N`` values
-          given by the elements ``Xi`` each of which is an SO3 instance.
+          given by the elements ``Xi`` each of which is an SO3 or SE3 instance.
 
         :SymPy: supported
         """
