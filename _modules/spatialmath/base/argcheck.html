@@ -14,6 +14,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
 
   
@@ -33,6 +35,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -184,6 +187,7 @@
 <span class="c1"># valid scalar types</span>
 <span class="n">_scalartypes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span> <span class="o">+</span> <span class="n">sym</span><span class="o">.</span><span class="n">symtype</span>
 
+
 <div class="viewcode-block" id="isscalar"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.isscalar">[docs]</a><span class="k">def</span> <span class="nf">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if argument is a real scalar</span>
@@ -204,6 +208,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="isinteger"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.isinteger">[docs]</a><span class="k">def</span> <span class="nf">isinteger</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if argument is a scalar integer</span>
@@ -222,6 +227,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span></div>
+
 
 <div class="viewcode-block" id="assertmatrix"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.assertmatrix">[docs]</a><span class="k">def</span> <span class="nf">assertmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -249,15 +255,33 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a numPy ndarray&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a real numPy ndarray&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect scalar of matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;incorrect scalar of matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;incorrect matrix dimensions, expecting </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">shape</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="ismatrix"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.ismatrix">[docs]</a><span class="k">def</span> <span class="nf">ismatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -287,7 +311,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -296,6 +320,7 @@
     <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span></div>
+
 
 <div class="viewcode-block" id="getmatrix"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getmatrix">[docs]</a><span class="k">def</span> <span class="nf">getmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -332,7 +357,7 @@
 <span class="sd">       - If ``m`` is a 1D array its shape is checked to see if it can be</span>
 <span class="sd">         reshaped to ``shape``.  A n-array could be reshaped as (n,1) or (1,n)</span>
 <span class="sd">         or any other shape with the correct number of elements.  A value of</span>
-<span class="sd">         ``None`` in the shape stands for unspecified, ie. ``(None, 2)`` will </span>
+<span class="sd">         ``None`` in the shape stands for unspecified, ie. ``(None, 2)`` will</span>
 <span class="sd">         attempt to reshape ``m`` as an array with shape (k,2) where :math:`k \times 2 \eq n`.</span>
 <span class="sd">       - If ``m`` is a scalar, return an array of shape (1,1)</span>
 
@@ -343,32 +368,34 @@
         <span class="c1"># passed a 2D array</span>
         <span class="n">mshape</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span>
 
-        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;O&#39;</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;O&quot;</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">mshape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mshape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">mshape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">mshape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;expecting </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2"> but got </span><span class="si">{</span><span class="n">mshape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">isvector</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-            <span class="c1"># passed a 1D array</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;array cannot be reshaped&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># passed a 1D array</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;array cannot be reshaped&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;argument must be scalar or ndarray&#39;</span><span class="p">)</span></div>
-  
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;argument must be scalar or ndarray&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="verifymatrix"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.verifymatrix">[docs]</a><span class="k">def</span> <span class="nf">verifymatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -380,7 +407,7 @@
 <span class="sd">    :raises TypeError: argument is not a NumPy array</span>
 <span class="sd">    :raises ValueError: argument has incorrect shape</span>
 
-<span class="sd">    Raises an exception if the argument ``m`` is not a NumPy array of the </span>
+<span class="sd">    Raises an exception if the argument ``m`` is not a NumPy array of the</span>
 <span class="sd">    specified shape.</span>
 
 <span class="sd">    .. note:: Unlike ``assertmatrix`` the specified shape cannot have wildcard</span>
@@ -392,13 +419,13 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a numPy ndarray&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">shape</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, &quot;</span>
-                         <span class="s2">&quot;expecting </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect matrix dimensions, &quot;</span> <span class="s2">&quot;expecting </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span></div>
+
 
 <span class="c1"># and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive</span>
 
 
-<div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+<div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a vector value</span>
 
@@ -413,13 +440,13 @@
 <span class="sd">    :raises TypeError: value is not a list or NumPy array</span>
 <span class="sd">    :raises ValueError: incorrect number of elements</span>
 
-<span class="sd">    - ``getvector(vec)`` is ``vec`` converted to the output format ``out`` </span>
+<span class="sd">    - ``getvector(vec)`` is ``vec`` converted to the output format ``out``</span>
 <span class="sd">      where ``vec`` is any of:</span>
 
 <span class="sd">        - a Python native int or float, a 1-vector</span>
 <span class="sd">        - Python native list or tuple</span>
 <span class="sd">        - numPy real 1D array, ie. shape=(N,)</span>
-<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) </span>
+<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N)</span>
 <span class="sd">          or (N,1)</span>
 
 <span class="sd">    - ``getvector(vec, N)`` as above but must be an ``N``-element vector.</span>
@@ -449,7 +476,7 @@
 <span class="sd">        &gt;&gt;&gt; getvector([1])</span>
 <span class="sd">        &gt;&gt;&gt; getvector([[1]])</span>
 
-<span class="sd">    .. note:: </span>
+<span class="sd">    .. note::</span>
 <span class="sd">        - For &#39;array&#39;, &#39;row&#39; or &#39;col&#39; output the NumPy dtype defaults to the</span>
 <span class="sd">          ``dtype`` of ``v`` if it is a NumPy array, otherwise it is</span>
 <span class="sd">          set to the value specified by the ``dtype`` keyword which defaults</span>
@@ -468,18 +495,18 @@
 
         <span class="k">if</span> <span class="n">sym</span><span class="o">.</span><span class="n">issymbol</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-            
+
         <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dim</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect vector length&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;sequence&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;list&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;list&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;array&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;row&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;row&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;col&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;col&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid output specifier&quot;</span><span class="p">)</span>
@@ -488,20 +515,22 @@
         <span class="n">s</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="n">dim</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect vector length: expected </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;incorrect vector length: expected </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="p">)</span>
 
         <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="s1">&#39;O&#39;</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="s2">&quot;O&quot;</span>
 
-        <span class="k">if</span> <span class="n">out</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;sequence&quot;</span><span class="p">,</span> <span class="s2">&quot;list&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;array&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;array&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;row&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;row&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s1">&#39;col&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">out</span> <span class="o">==</span> <span class="s2">&quot;col&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid output specifier&quot;</span><span class="p">)</span>
@@ -518,13 +547,13 @@
 <span class="sd">    :type dim: int or None</span>
 <span class="sd">    :raises ValueError: if not a vector of specified length</span>
 
-<span class="sd">    - ``assertvector(vec)`` raise an exception if ``vec`` is not a vector, ie. </span>
+<span class="sd">    - ``assertvector(vec)`` raise an exception if ``vec`` is not a vector, ie.</span>
 <span class="sd">      it is not any of:</span>
 
 <span class="sd">        - a Python native int or float, a 1-vector</span>
 <span class="sd">        - Python native list or tuple</span>
 <span class="sd">        - numPy real 1D array, ie. shape=(N,)</span>
-<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) </span>
+<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N)</span>
 <span class="sd">          or (N,1)</span>
 
 <span class="sd">    - ``assertvector(vec, N)`` as above but must also check the length is ``N``.</span>
@@ -550,7 +579,7 @@
 <span class="sd">        - a Python native int or float, a 1-vector</span>
 <span class="sd">        - Python native list or tuple</span>
 <span class="sd">        - numPy real 1D array, ie. shape=(N,)</span>
-<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N) </span>
+<span class="sd">        - numPy real 2D array with a singleton dimension, ie. shape=(1,N)</span>
 <span class="sd">          or (N,1)</span>
 
 <span class="sd">    - ``isvector(vec, N)`` as above but must also be an ``N``-element vector.</span>
@@ -567,15 +596,21 @@
 
 <span class="sd">    :seealso: :func:`getvector`, :func:`assertvector`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">dim</span><span class="p">)</span> \
-       <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">),</span> <span class="n">v</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">dim</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">),</span> <span class="n">v</span><span class="p">))</span>
+    <span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># list or tuple</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span>
         <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> \
-                   <span class="ow">or</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="n">dim</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -585,7 +620,7 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="getunit"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getunit">[docs]</a><span class="k">def</span> <span class="nf">getunit</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="getunit"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getunit">[docs]</a><span class="k">def</span> <span class="nf">getunit</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert value according to angular units</span>
 
@@ -638,8 +673,11 @@
 <span class="sd">        &gt;&gt;&gt; isnumberlist(np.r_[1,2])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> \
-           <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">),</span> <span class="n">x</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_scalartypes</span><span class="p">),</span> <span class="n">x</span><span class="p">))</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="isvectorlist"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.isvectorlist">[docs]</a><span class="k">def</span> <span class="nf">isvectorlist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -663,6 +701,7 @@
 <span class="sd">        &gt;&gt;&gt; isvectorlist([np.r_[1,2], np.r_[3,4], np.r_[5,6,7]], 2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">islistof</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">,))</span></div>
+
 
 <div class="viewcode-block" id="islistof"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.islistof">[docs]</a><span class="k">def</span> <span class="nf">islistof</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">what</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -703,20 +742,27 @@
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
-    
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">what</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="c1"># it&#39;s a type or tuple of types</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">what</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">what</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">what</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad value of what&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad value of what&quot;</span><span class="p">)</span></div>
 
-        
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
 
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;base&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_argcheck.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
+    <span class="n">exec</span><span class="p">(</span>
+        <span class="nb">open</span><span class="p">(</span>
+            <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+            <span class="o">/</span> <span class="s2">&quot;tests&quot;</span>
+            <span class="o">/</span> <span class="s2">&quot;base&quot;</span>
+            <span class="o">/</span> <span class="s2">&quot;test_argcheck.py&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="p">)</span>  <span class="c1"># pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -730,7 +776,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 18-Apr-2021.
+        Last updated on 23-May-2021.
       </span>
 
     </p>
