@@ -1452,6 +1452,73 @@ class SE3(SO3):
 
         return cls(base.rt2tr(R, t))
 
+    def angdist(self, other, metric=6):
+        r"""
+        Angular distance metric between poses
+
+        :param other: second rotation
+        :type other: SE3 instance
+        :param metric: metric, default is 6
+        :type metric: int
+        :raises TypeError: if other is not an SE3
+        :return: angle in radians
+        :rtype: float or ndarray
+
+        ``T1.angdist(T2)`` is the geodesic norm, or geodesic distance between the
+        rotational parts of the two poses.
+
+        Several metrics are supported, the first 5 are computed after conversion
+        to unit quaternions.
+
+        ======   ===============================================================
+        Metric   Details
+        ======   ===============================================================
+        0        :math:`1 - | \q_1 \bullet \q_2 | \in [0, 1]`
+        1        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
+        2        :math:`\cos^{-1} | \q_1 \bullet \q_2 | \in [0, \pi/2]`
+        3        :math:`2 \tan^{-1} \| \q_1 - \q_2\| / \|\q_1 + \q_2\| \in [0, \pi/2]`
+        4        :math:`\cos^{-1} \left( 2 (\q_1 \bullet \q_2)^2 - 1\right) \in [0, 1]`
+        5        :math:`\|I - \mat{R}_1 \mat{R}_2^T\| \in [0, 2]`
+        6        :math:`\|\log \mat{R}_1 \mat{R}_2^T\| \in [0, \pi]`
+        ======   ===============================================================
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import UnitQuaternion
+            >>> T1 = SE3.Rx(0.3)
+            >>> T2 = SE3.Ry(0.3)
+            >>> print(T1.angdist(T1))
+            >>> print(T1.angdist(T2))
+
+        .. note::
+            - metrics 1, 2, 4 can throw ValueError "math domain error" due to
+              numeric errors which push the argument of ``acos()`` marginally
+              outside its domain [0, 1].
+            - metrics 2 and 3 are equivalent, but 3 is more robust
+
+        :seealso: :func:`UnitQuaternion.angdist`
+        """
+
+        if metric < 5:
+            from spatialmath.quaternion import UnitQuaternion
+
+            return UnitQuaternion(self).angdist(UnitQuaternion(other), metric=metric)
+
+        elif metric == 5:
+            op = lambda T1, T2: np.linalg.norm(np.eye(3) - T1[:3,:3] @ T2[:3,:3].T)
+        elif metric == 6:
+            op = lambda T1, T2: base.norm(base.trlog(T1[:3,:3] @ T2[:3,:3].T, twist=True))
+        else:
+            raise ValueError('unknown metric')
+        
+        ad = self._op2(other, op)
+        if isinstance(ad, list):
+            return np.array(ad)
+        else:
+            return ad
+
     # @classmethod
     # def SO3(cls, R, t=None, check=True):
     #     if isinstance(R, SO3):
