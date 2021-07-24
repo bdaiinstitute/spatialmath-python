@@ -584,7 +584,6 @@ def plot_ellipse(
 
 # =========================== 3D shapes =================================== #
 
-
 def sphere(radius=1, centre=(0, 0, 0), resolution=50):
     """
     Points on a sphere
@@ -600,12 +599,14 @@ def sphere(radius=1, centre=(0, 0, 0), resolution=50):
 
     :seealso: :func:`plot_sphere`, :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
-    u = np.linspace(0.0, 2.0 * np.pi, resolution)
-    v = np.linspace(0.0, np.pi, resolution)
+    theta_range = np.linspace(0, np.pi, resolution)
+    phi_range = np.linspace(-np.pi, np.pi, resolution)
 
-    x = radius * np.outer(np.cos(u), np.sin(v)) + centre[0]
-    y = radius * np.outer(np.sin(u), np.sin(v)) + centre[1]
-    z = radius * np.outer(np.ones_like(u), np.cos(v)) + centre[2]
+    Phi, Theta = np.meshgrid(phi_range, theta_range)
+
+    x = radius * np.sin(Theta) * np.cos(Phi)
+    y = radius * np.sin(Theta) * np.sin(Phi)
+    z = radius * np.cos(Theta)
 
     return (x, y, z)
 
@@ -641,9 +642,8 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
     .. runblock:: pycon
 
         >>> from spatialmath.base import plot_sphere
-        >>> plot_sphere(1, 'r')   # red sphere wireframe
-        >>> plot_sphere(1, centre=(1,1,1), filled=True, facecolor='b')
-
+        >>> plot_sphere(radius=1, color='r')   # red sphere wireframe
+        >>> plot_sphere(radius=1, centre=(1,1,1), filled=True, facecolor='b')
 
     :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
@@ -654,17 +654,6 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
     handles = []
     for c in centre.T:
         X, Y, Z = sphere(centre=c, radius=radius, resolution=resolution)
-
-        if pose is not None:
-            xc = X.reshape((-1,))
-            yc = Y.reshape((-1,))
-            zc = Z.reshape((-1,))
-            xyz = np.array((xc, yc, zc))
-            xyz = pose * xyz
-            X = xyz[0, :].reshape(x.shape)
-            Y = xyz[1, :].reshape(y.shape)
-            Z = xyz[2, :].reshape(z.shape)
-
         handles.append(_render3D(ax, X, Y, Z, **kwargs))
 
     return handles
