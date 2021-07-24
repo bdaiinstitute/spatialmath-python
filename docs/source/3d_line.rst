@@ -1,7 +1,9 @@
-Plucker line
-^^^^^^^^^^^^
+3D line 
+^^^^^^^
 
-.. automodule:: spatialmath.geom3d.Plucker
+A 3D line using Plücker coordinates.
+
+.. autoclass:: spatialmath.geom3d.Line3
    :members:
    :undoc-members:
    :show-inheritance:

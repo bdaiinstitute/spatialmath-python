@@ -14,7 +14,7 @@ _eps = np.finfo(np.float64).eps
 
 # ======================================================================== #
 
-class Plane:
+class Plane3:
     r"""
     Create a plane object from linear coefficients
     
@@ -126,7 +126,8 @@ class Plane:
 
 # ======================================================================== #
 
-class Plucker(BasePoseList):
+
+class Line3(BasePoseList):
     """
     Plucker coordinate class
     
@@ -274,7 +275,7 @@ class Plucker(BasePoseList):
         # compute direction and moment
         w = P - Q
         v = np.cross(w, P)
-        return Plucker(np.r_[v, w])
+        return cls(np.r_[v, w])
     
     @staticmethod
     def TwoPlanes(pi1, pi2):
@@ -297,17 +298,19 @@ class Plucker(BasePoseList):
         :seealso: Plucker, Plucker.PQ, Plucker.PointDir
         """
 
-        if not isinstance(pi1, Plane):
-            pi1 = Plane(base.getvector(pi1, 4))
-        if not isinstance(pi2, Plane):
-            pi2 = Plane(base.getvector(pi2, 4))
+        # TODO inefficient to create 2 temporary planes
+
+        if not isinstance(pi1, Plane3):
+            pi1 = Plane3(base.getvector(pi1, 4))
+        if not isinstance(pi2, Plane3):
+            pi2 = Plane3(base.getvector(pi2, 4))
         
         w = np.cross(pi1.n, pi2.n)
         v = pi2.d * pi1.n - pi1.d * pi2.n
-        return Plucker(np.r_[v, w])
+        return cls(np.r_[v, w])
 
-    @staticmethod
-    def PointDir(point, dir):
+    @classmethod
+    def PointDir(cls, point, dir):
         """
         Create Plucker line from point and direction
         
@@ -327,7 +330,7 @@ class Plucker(BasePoseList):
         p = base.getvector(point, 3)
         w = base.getvector(dir, 3)
         v = np.cross(w, p)
-        return Plucker(np.r_[v, w])
+        return cls(np.r_[v, w])
     
     def append(self, x):
         """
@@ -775,7 +778,7 @@ class Plucker(BasePoseList):
             v = np.cross(l1.v, l2.w) - np.cross(l2.v, l1.w) + \
                 (l1 * l2) * np.dot(l1.w, l2.w) * base.unitvec(np.cross(l1.w, l2.w))
             
-        return Plucker(v, w)
+        return self.__class__(v, w)
 
 
     def __mul__(self, right):  # pylint: disable=no-self-argument
@@ -826,7 +829,7 @@ class Plucker(BasePoseList):
             A = np.r_[ np.c_[left.R,          base.skew(-left.t) @ left.R],
                        np.c_[np.zeros((3,3)), left.R]
                         ]
-            return Plucker( A @ right.vec)  # premultiply by SE3
+            return self.__class__( A @ right.vec)  # premultiply by SE3
         else:
             raise ValueError('bad arguments')
 
@@ -871,8 +874,8 @@ class Plucker(BasePoseList):
         # Note that this is in homogeneous coordinates.
         #    intersection of plane (n,p) with the line (v,p)
         #    returns point and line parameter
-        if not isinstance(plane, Plane):
-            plane = Plane(base.getvector(plane, 4))
+        if not isinstance(plane, Plane3):
+            plane = Plane3(base.getvector(plane, 4))
             
         den = np.dot(self.w, plane.n)
         
@@ -937,7 +940,7 @@ class Plucker(BasePoseList):
             I = np.eye(3,3)
             p = [0, 0, 0]
             p[i] = bounds[face]
-            plane = Plane.PN(n=I[:,i], p=p)
+            plane = Plane3.PN(n=I[:,i], p=p)
             
             # find where line pierces the plane
             try:
@@ -1121,13 +1124,24 @@ See also Twist.char.
         
     # Static factory methods for constructors from exotic representations
 
+class Plucker(Line3):
 
+    def __init__(self, v=None, w=None):
+        import warnings
+
+        warnings.warn('use Line class instead', DeprecationWarning)
+        super().__init__(v, w)
     
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
     import os.path
-    
-    a = SE3.Exp([2,0,0,0,0,0])
 
-    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_geom3d.py").read())  # pylint: disable=exec-used
+    a = Plane3([0.1, -1, -1, 2])
+    base.plotvol3(5)
+    a.plot(color='r', alpha=0.3)
+    plt.show(block=True)
+    
+    # a = SE3.Exp([2,0,0,0,0,0])
+
+    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_geom3d.py").read())  # pylint: disable=exec-used

@@ -6,7 +6,7 @@ import numpy as np
 
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.pose2d import SE2
-from spatialmath.geom3d import Plucker
+from spatialmath.geom3d import Line3
 import spatialmath.base as base
 from spatialmath.baseposelist import BasePoseList
 
@@ -888,7 +888,7 @@ class Twist3(BaseTwist):
         Line of action of 3D twist as a Plucker line
 
         :return: the 3D line of action
-        :rtype: Plucker instance
+        :rtype: Line instance
 
         ``X.line()`` is a Plucker object representing the line of the twist axis.
 
@@ -901,7 +901,7 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.line()
         """
-        return Plucker([Plucker(-tw.v - tw.pitch() * tw.w, tw.w) for tw in self])
+        return Line3([Line3(-tw.v - tw.pitch() * tw.w, tw.w) for tw in self])
 
     def pole(self):
         """

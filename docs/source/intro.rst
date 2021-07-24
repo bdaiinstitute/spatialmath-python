@@ -55,7 +55,7 @@ orientation   ``SO3`` ``UnitQuaternion``   ``SO2``
 Additional classes include:
 
 - ``Quaternion`` a general quaternion, and parent class to ``UnitQuaternion``
-- ``Plucker`` to represent a line in 3D space
+- ``Line3`` to represent a line in 3D space
 - ``Plane`` to represent a plane in 3D space
 
 These classes abstract, and implement appropriate operations, for the following
@@ -521,7 +521,7 @@ Spatial object       equivalent class   NumPy ndarray.shape
 n/a                  Quaternion            (4,)
 =================    ================   ===================
 
-.. note:: ``SpatialVector`` and ``Plucker`` objects have no equivalent in the 
+.. note:: ``SpatialVector`` and ``Line3`` objects have no equivalent in the 
   ``base`` package.
 
 Inputs to functions in this package are either floats, lists, tuples or
