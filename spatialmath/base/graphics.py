@@ -159,16 +159,20 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     else:
         handles.append(plt.plot(x, y, marker, **kwargs))
     if text is not None:
+        try:
+            xy = zip(x, y)
+        except TypeError:
+            xy = [(x, y)]
         if isinstance(text, str):
             # simple string, but might have format chars
-            for i, xy in enumerate(zip(x, y)):
-                handles.append(plt.text(xy[0], xy[1], " " + text.format(i), **textopts))
+            for i, (x, y) in enumerate(xy):
+                handles.append(plt.text(x, y, " " + text.format(i), **textopts))
         elif isinstance(text, (tuple, list)):
-            for i, xy in enumerate(zip(x, y)):
+            for i, (x, y) in enumerate(xy):
                 handles.append(
                     plt.text(
-                        xy[0],
-                        xy[1],
+                        x,
+                        y,
                         " " + text[0].format(i, *[d[i] for d in text[1:]]),
                         **textopts
                     )
@@ -529,7 +533,7 @@ def plot_ellipse(
     resolution=40,
     inverted=False,
     ax=None,
-    filled=None,
+    filled=False,
     **kwargs
 ):
     """
@@ -748,7 +752,7 @@ def plot_ellipsoid(
     ``plot_ellipse(E)`` draws the ellipsoid defined by :math:`x^T \mat{E} x = 0`
     on the current plot.
 
-    Example:
+    Example::
 
           H = plot_ellipse(diag([1 2]), [3 4]', 'r'); % draw red ellipse
           plot_ellipse(diag([1 2]), [5 6]', 'alter', H); % move the ellipse
@@ -782,8 +786,8 @@ def plot_cylinder(
     """
     Plot a cylinder using matplotlib
 
-    :param radius: radius of sphere, defaults to 1
-    :type radius: float, optional
+    :param radius: radius of sphere
+    :type radius: float
     :param height: height of cylinder in the z-direction
     :type height: float or array_like(2)
     :param resolution: number of points on circumferece, defaults to 50
@@ -1023,8 +1027,14 @@ def _axes_dimensions(ax):
     elif classname == "AxesSubplot":
         return 2
 
+def axes_get_limits(ax):
+    return np.r_[ax.get_xlim(), ax.get_ylim()]
 
-def axes_logic(ax, dimensions, projection="ortho"):
+def axes_get_scale(ax):
+    limits = axes_get_limits(ax)
+    return max(abs(limits[1] - limits[0]), abs(limits[3] - limits[2]))
+
+def axes_logic(ax, dimensions, projection="ortho", autoscale=True):
     """
     Axis creation logic
 
@@ -1070,7 +1080,7 @@ def axes_logic(ax, dimensions, projection="ortho"):
         # axis was given
 
         if _axes_dimensions(ax) == dimensions:
-            print("use existing axes")
+            #print("use existing axes")
             return ax
         # mismatch in dimensions, create new axes
     # print('create new axes')
@@ -1078,12 +1088,14 @@ def axes_logic(ax, dimensions, projection="ortho"):
     # no axis specified
     if dimensions == 2:
         ax = plt.axes()
+        if autoscale:
+            ax.autoscale()
     else:
         ax = plt.axes(projection="3d", proj_type=projection)
     return ax
 
 
-def plotvol2(dim, ax=None, equal=True, grid=False):
+def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
     """
     Create 2D plot area
 
@@ -1100,23 +1112,35 @@ def plotvol2(dim, ax=None, equal=True, grid=False):
         * [A,B], A:B x A:B
         * [A,B,C,D], A:B x C:D
 
+    ==================  ======  ======
+    input               xrange  yrange
+    ==================  ======  ======
+    A (scalar)          -A:A    -A:A  
+    [A, B]              A:B     A:B   
+    [A, B, C, D, E, F]  A:B     C:D   
+    ==================  ======  ======
+
     :seealso: :func:`plotvol3`, :func:`expand_dims`
     """
     dims = expand_dims(dim, 2)
     if ax is None:
         ax = plt.subplot()
     ax.axis(dims)
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
+    if labels:
+        ax.set_xlabel("X")
+        ax.set_ylabel("Y")
 
     if equal:
         ax.set_aspect("equal")
     if grid:
         ax.grid(True)
+
+    # signal to related functions that plotvol set the axis limits
+    ax._plotvol = True
     return ax
 
 
-def plotvol3(dim=None, ax=None, equal=True, grid=False, projection="ortho"):
+def plotvol3(dim=None, ax=None, equal=True, grid=False, labels=True, projection="ortho"):
     """
     Create 3D plot volume
 
@@ -1129,9 +1153,13 @@ def plotvol3(dim=None, ax=None, equal=True, grid=False, projection="ortho"):
 
     Initialize axes with dimensions given by ``dim`` which can be:
 
-        * A (scalar), -A:A x -A:A x -A:A
-        * [A,B], A:B x A:B x A:B
-        * [A,B,C,D,E,F], A:B x C:D x E:F
+    ==================  ======  ======  =======
+    input               xrange  yrange  zrange
+    ==================  ======  ======  =======
+    A (scalar)          -A:A    -A:A    -A:A
+    [A, B]              A:B     A:B     A:B
+    [A, B, C, D, E, F]  A:B     C:D     E:F
+    ==================  ======  ======  =======
 
     :seealso: :func:`plotvol2`, :func:`expand_dims`
     """
@@ -1145,9 +1173,10 @@ def plotvol3(dim=None, ax=None, equal=True, grid=False, projection="ortho"):
         ax.set_xlim3d(dims[0], dims[1])
         ax.set_ylim3d(dims[2], dims[3])
         ax.set_zlim3d(dims[4], dims[5])
-        ax.set_xlabel("X")
-        ax.set_ylabel("Y")
-        ax.set_zlabel("Z")
+        if labels:
+            ax.set_xlabel("X")
+            ax.set_ylabel("Y")
+            ax.set_zlabel("Z")
 
     if equal:
         try:
@@ -1159,15 +1188,19 @@ def plotvol3(dim=None, ax=None, equal=True, grid=False, projection="ortho"):
             )
     if grid:
         ax.grid(True)
+
+    # signal to related functions that plotvol set the axis limits
+    ax._plotvol = True
     return ax
 
 
 def expand_dims(dim=None, nd=2):
-    """[summary]
+    """
+    Expact compact axis dimensions
 
-    :param dim: [description], defaults to None
-    :type dim: [type], optional
-    :param nd: [description], defaults to 2
+    :param dim: dimensions, defaults to None
+    :type dim: scalar, array_like(2), array_like(4), array_like(6), optional
+    :param nd: number of axes dimensions, defaults to 2
     :type nd: int, optional
     :raises ValueError: bad arguments
     :return: 2d or 3d dimensions vector
@@ -1191,7 +1224,7 @@ def expand_dims(dim=None, nd=2):
         if len(dim) == 1:
             return np.r_[-dim, dim, -dim, dim]
         elif len(dim) == 2:
-            return np.r_[-dim[0], dim[0], -dim[1], dim[1]]
+            return np.r_[dim[0], dim[1], dim[0], dim[1]]
         elif len(dim) == 4:
             return dim
         else:
@@ -1241,3 +1274,4 @@ if __name__ == "__main__":
             / "test_graphics.py"
         ).read()
     )  # pylint: disable=exec-used
+
