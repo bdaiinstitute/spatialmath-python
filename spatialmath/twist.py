@@ -948,7 +948,7 @@ class Twist3(BaseTwist):
         """
         return base.norm(self.w)
 
-    def exp(self, theta=None, units='rad'):
+    def exp(self, theta=None, unit='rad'):
         """
         Exponentiate a 3D twist
 
@@ -981,13 +981,13 @@ class Twist3(BaseTwist):
 
         :seealso: :func:`spatialmath.base.trexp`
         """
-        if units != 'rad' and self.isprismatic:
+        if unit != 'rad' and self.isprismatic:
             print('Twist3.exp: using degree mode for a prismatic twist')
 
         if theta is None:
             theta = 1
         else:
-            theta = base.getunit(theta, units)
+            theta = base.getunit(theta, unit)
 
         if base.isscalar(theta):
             # theta is a scalar
@@ -1421,14 +1421,14 @@ class Twist2(BaseTwist):
         else:
             return [base.skewa(x.S) for x in self]
 
-    def exp(self, theta=None, units='rad'):
+    def exp(self, theta=None, unit='rad'):
         r"""
         Exponentiate a 2D twist
 
         :param theta: rotation magnitude, defaults to None
         :type theta: float, optional
-        :param units: rotational units, defaults to 'rad'
-        :type units: str, optional
+        :param unit: rotational units, defaults to 'rad'
+        :type unit: str, optional
         :return: SE(2) matrix
         :rtype: SE2 instance
 
@@ -1455,13 +1455,13 @@ class Twist2(BaseTwist):
         :seealso: :func:`spatialmath.base.trexp2`
         """
 
-        if units != 'rad' and self.isprismatic:
+        if unit != 'rad' and self.isprismatic:
             print('Twist3.exp: using degree mode for a prismatic twist')
 
         if theta is None:
             theta = 1
         else:
-            theta = base.getunit(theta, units)
+            theta = base.getunit(theta, unit)
 
         if base.isscalar(theta):
             return SE2(base.trexp2(self.S * theta))
