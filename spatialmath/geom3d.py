@@ -765,7 +765,7 @@ class Line3(BasePoseList):
         p = self.point(lam).flatten()  # is the closest point on the line
         d = np.linalg.norm( x - p)
         
-        return namedtuple('closest', 'p d lam')(p, d, lam)
+        return p, d
     
     
     def commonperp(self, l2):  # pylint: disable=no-self-argument
