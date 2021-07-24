@@ -436,12 +436,20 @@ class Line3(BasePoseList):
         ``M = line.skew()`` is the Plucker matrix, a 4x4 skew-symmetric matrix
         representation of the line.
 
-        Notes:
+        .. math::
+
+            \sk{L} = \begin{bmatrix} 0 & v_z & -v_y & \omega_x \\
+                -v_z & 0 & v_x & \omega_y \\
+                v_y & -v_x & 0 & \omega_z \\
+                -\omega_x & -\omega_y & -\omega_z & 0 \end{bmatrix}
+
+        .. note::
             
-         - For two homogeneous points P and Q on the line, :math:`PQ^T-QP^T` is also skew
-           symmetric.
-         - The projection of Plucker line by a perspective camera is a homogeneous line (3x1)
-           given by :math:`\vee C M C^T` where :math:`C \in \mathbf{R}^{3 \times 4}` is the camera matrix.
+         - For two homogeneous points P and Q on the line, :math:`PQ^T-QP^T` is
+           also skew symmetric.
+         - The projection of Plucker line by a perspective camera is a
+           homogeneous line (3x1) given by :math:`\vee C M C^T` where :math:`C
+           \in \mathbf{R}^{3 \times 4}` is the camera matrix.
         """
         
         v = self.v
@@ -707,6 +715,31 @@ class Line3(BasePoseList):
         return l
 
     def closest_to_line(self, line):
+        """
+        Closest point between two lines
+
+        :param line: second line
+        :type line: Plucker
+        :return: nearest points and distance between lines at those points
+        :rtype: ndarray(3,N), ndarray(N)
+
+        Finds the point on the first line closest to the second line, as well
+        as the minimum distance between the lines.
+
+        For two sets of lines, of equal size, return an array of closest points
+        and distances.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Plucker
+            >>> line1 = Plucker.TwoPoints([1, 1, 0], [1, 1, 1])
+            >>> line2 = Plucker.TwoPoints([0, 0, 0], [2, 3, 5])
+            >>> line1.closest_to_line(line2)
+
+        :reference: `Plucker coordinates <https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf>`_
+        """
         # point on line closest to another line
         # https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
         # but (20) (21) is the negative of correct answer
@@ -741,18 +774,18 @@ class Line3(BasePoseList):
         :param l2: An arbitrary 3D point
         :type l2: 3-element array_like
         :return: Point on the line and distance to line
-        :rtype: collections.namedtuple
+        :rtype: ndarray(3), float
 
-        - ``line.closest(x).p`` is the coordinate of a point on the line that is
-          closest to ``x``.
+        Find the point on the line closest to ``x`` as well as the distance
+        at that closest point.
 
-        - ``line.closest(x).d`` is the distance between the point on the line and ``x``.
-        
-        The return value is a named tuple with elements:
-            
-            - ``.p`` for the point on the line as a numpy.ndarray, shape=(3,)
-            - ``.d`` for the distance to the point from ``x``
-            - ``.lam`` the `lambda` value for the point on the line.
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Plucker
+            >>> line1 = Plucker.TwoPoints([0, 0, 0], [2, 2, 3])
+            >>> line1.closest_to_point([1, 1, 1])
 
         :seealso: Plucker.point
         """
@@ -818,7 +851,7 @@ class Line3(BasePoseList):
         :seealso: Plucker.__rmul__
         """
         left = self
-        if isinstance(right, Plucker):
+        if isinstance(right, Line3):
             # reciprocal product
             return np.dot(left.uw, right.v) + np.dot(right.uw, left.v)
         else:
