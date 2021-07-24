@@ -631,6 +631,80 @@ class Twist3(BaseTwist):
         :SymPy: supported
         """
         return cls([np.r_[0,0,0,0,0,x] for x in base.getunit(theta, unit=unit)])
+    @classmethod
+    def Tx(cls, x):
+        """
+        Create a new 3D twist for pure translation along the X-axis
+
+        :param x: translation distance along the X-axis
+        :type x: float
+        :return: 3D twist vector
+        :rtype: Twist3 instance
+
+        `Twist3.Tx(x)` is an se(3) translation of ``x`` along the x-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> Twist3.Tx(2)
+            >>> Twist3.Tx([2,3])
+
+
+        :seealso: :func:`~spatialmath.base.transforms3d.transl`
+        :SymPy: supported
+        """
+        return cls([base.transl(_x, 0, 0) for _x in base.getvector(x)], check=False)
+
+
+    @classmethod
+    def Ty(cls, y):
+        """
+        Create a new 3D twist for pure translation along the Y-axis
+
+        :param y: translation distance along the Y-axis
+        :type y: float
+        :return: 3D twist vector
+        :rtype: Twist3 instance
+
+        `Twist3.Ty(y) is an se(3) translation of ``y`` along the y-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> Twist3.Ty(2)
+            >>> Twist3.Ty([2, 3])
+
+
+        :seealso: :func:`~spatialmath.base.transforms3d.transl`
+        :SymPy: supported
+        """
+        return cls([base.transl(0, _y, 0) for _y in base.getvector(y)], check=False)
+
+    @classmethod
+    def Tz(cls, z):
+        """
+        Create a new 3D twist for pure translation along the Z-axis
+
+        :param z: translation distance along the Z-axis
+        :type z: float
+        :return: 3D twist vector
+        :rtype: Twist3 instance
+
+        `Twist3.Tz(z)` is an se(3) translation of ``z`` along the z-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> Twist3.Tz(2)
+            >>> Twist3.Tz([2, 3])
+
+        :seealso: :func:`~spatialmath.base.transforms3d.transl`
+        :SymPy: supported
+        """
+        return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
     @classmethod
     def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
