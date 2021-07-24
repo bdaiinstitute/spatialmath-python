@@ -2,24 +2,23 @@
 # dot -Tpng -Gdpi=150 -Nfontsize=20 -Nfontname=Roboto classes.dot > classes.png
 digraph G {
 	graph [rankdir=BT];
-	SMUserList -> "collections.UserList"
-	SMPose -> SMUserList
-	SO2 -> SMPose
-	SO3 -> SMPose
+	BasePoseList -> "collections.UserList"
+	BasePoseMatrix -> BasePoseList
+	SO2 -> BasePoseMatrix
+	SO3 -> BasePoseMatrix
 	SE2 -> SO2
 	SE3 -> SO3
-	SMTwist -> SMUserList
-	Twist2 -> SMTwist
-	Twist3 -> SMTwist
-	Quaternion -> SMUserList
+	BaseTwist -> BasePoseList
+	Twist2 -> BaseTwist
+	Twist3 -> BaseTwist
+	Quaternion -> BasePoseList
 	UnitQuaternion -> Quaternion
-	Plucker -> SMUserList
-	SpatialVector -> SMUserList
+	SpatialVector -> BasePoseList
 	SpatialM6 -> SpatialVector
 	SpatialF6 -> SpatialVector
 	SpatialVelocity -> SpatialM6
 	SpatialAcceleration -> SpatialM6
 	SpatialMomentum -> SpatialF6
 	SpatialForce -> SpatialF6
-	SpatialInertia -> SMUserList
+	SpatialInertia -> BasePoseList
 }
