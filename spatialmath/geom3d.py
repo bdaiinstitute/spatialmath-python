@@ -718,10 +718,11 @@ class Line3(BasePoseList):
             w1 = line1.w
             v2 = line2.v
             w2 = line2.w
-            p1 = (np.cross(v1, np.cross(w2, np.cross(w1, w2))) - np.dot(v2, np.cross(w1, w2)) * w1) \
-                    / np.sum(np.cross(w1, w2) ** 2)
-            p2 = (np.cross(-v2, np.cross(w1, np.cross(w1, w2))) + np.dot(v1, np.cross(w1, w2)) * w2) \
-                    / np.sum(np.cross(w1, w2) ** 2)
+            with np.errstate(divide='ignore', invalid='ignore'):
+                p1 = (np.cross(v1, np.cross(w2, np.cross(w1, w2))) - np.dot(v2, np.cross(w1, w2)) * w1) \
+                        / np.sum(np.cross(w1, w2) ** 2)
+                p2 = (np.cross(-v2, np.cross(w1, np.cross(w1, w2))) + np.dot(v1, np.cross(w1, w2)) * w2) \
+                        / np.sum(np.cross(w1, w2) ** 2)
 
             p.append(p1)
             dist.append(np.linalg.norm(p1 - p2))
