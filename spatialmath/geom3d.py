@@ -115,6 +115,21 @@ class Plane3:
         """
         return abs(np.dot(self.n, p) - self.d) < tol
     
+    def plot(self, bounds=None, ax=None, **kwargs):
+        ax = base.axes_logic(ax, 3)
+        if bounds is None:
+            bounds = np.r_[ax.get_xlim(), ax.get_ylim(), ax.get_zlim()]
+
+        # X, Y = np.meshgrid(bounds[0: 2], bounds[2: 4])
+        # Z = -(X * self.plane[0] + Y * self.plane[1] + self.plane[3]) / self.plane[2]
+
+        X, Y = np.meshgrid(np.linspace(bounds[0], bounds[1], 50), 
+        np.linspace(bounds[2], bounds[3], 50))
+        Z = -(X * self.plane[0] + Y * self.plane[1] + self.plane[3]) / self.plane[2]
+        Z[Z < bounds[4]] = np.nan
+        Z[Z > bounds[5]] = np.nan
+        ax.plot_surface(X, Y, Z, **kwargs)
+
     def __str__(self):
         """
         
