@@ -176,7 +176,7 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     return handles
 
 
-def plot_homline(lines, *args, ax=None, **kwargs):
+def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
     """
     Plot a homogeneous line using matplotlib
 
@@ -207,8 +207,10 @@ def plot_homline(lines, *args, ax=None, **kwargs):
     """
     ax = axes_logic(ax, 2)
     # get plot limits from current graph
-    xlim = np.r_[ax.get_xlim()]
-    ylim = np.r_[ax.get_ylim()]
+    if xlim is None:
+        xlim = np.r_[ax.get_xlim()]
+    if ylim is None:
+        ylim = np.r_[ax.get_ylim()]
 
     lines = base.getmatrix(lines, (None, 3))
 
