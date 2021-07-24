@@ -537,6 +537,30 @@ class SO3(BasePoseMatrix):
         return cls(base.oa2r(o, a), check=False)
 
     @classmethod
+    def AngleAxis(cls, theta, v, *, unit='rad'):
+        r"""
+        Construct a new SO(3) rotation matrix from rotation angle and axis
+
+        :param theta: rotation
+        :type theta: float
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :param v: rotation axis, 3-vector
+        :type v: array_like
+        :return: SO(3) rotation
+        :rtype: SO3 instance
+
+        ``SO3.AngleAxis(theta, V)`` is an SO(3) rotation defined by
+        a rotation of ``THETA`` about the vector ``V``.
+
+        .. note:: :math:`\theta \eq 0` the result in an identity matrix, otherwise
+            ``V`` must have a finite length, ie. :math:`|V| > 0`.
+
+        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
+        """
+        return cls(base.angvec2r(theta, v, unit=unit), check=False)
+        
+    @classmethod
     def AngVec(cls, theta, v, *, unit='rad'):
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
@@ -553,8 +577,8 @@ class SO3(BasePoseMatrix):
         ``SO3.AngVec(theta, V)`` is an SO(3) rotation defined by
         a rotation of ``THETA`` about the vector ``V``.
 
-        .. note:: :math:`\theta \eq 0` the result in an identity matrix, otherwise
-            ``V`` must have a finite length, ie. :math:`|V| > 0`.
+        .. deprecated:: 0.9.8
+            Use :meth:`AngleAxis` instead.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
@@ -1250,6 +1274,35 @@ class SE3(SO3):
         return cls(base.oa2tr(o, a), check=False)
 
     @classmethod
+    def AngleAxis(cls, theta, v, *, unit='rad'):
+        r"""
+        Create an SE(3) pure rotation matrix from rotation angle and axis
+
+        :param θ: rotation
+        :type θ: float
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :param v: rotation axis, 3-vector
+        :type v: array_like
+        :return: SE(3) matrix
+        :rtype: SE3 instance
+
+        ``SE3.AngleAxis(θ, v)`` is an SE(3) rotation defined by
+        a rotation of ``θ`` about the vector ``v``.
+
+        .. math::
+        
+            \mbox{if}\,\, \theta \left\{ \begin{array}{ll}
+                = 0 & \mbox{return identity matrix}\\
+                \ne 0 & \mbox{v must have a finite length}
+                \end{array}
+                \right.
+
+        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.pose3d.SE3.EulerVec`, :func:`~spatialmath.base.transforms3d.angvec2r`
+        """
+        return cls(base.angvec2tr(theta, v, unit=unit), check=False)
+
+    @classmethod
     def AngVec(cls, theta, v, *, unit='rad'):
         r"""
         Create an SE(3) pure rotation matrix from rotation angle and axis
@@ -1266,13 +1319,8 @@ class SE3(SO3):
         ``SE3.AngVec(θ, v)`` is an SE(3) rotation defined by
         a rotation of ``θ`` about the vector ``v``.
 
-        .. math::
-        
-            \mbox{if}\,\, \theta \left\{ \begin{array}{ll}
-                = 0 & \mbox{return identity matrix}\\
-                \ne 0 & \mbox{v must have a finite length}
-                \end{array}
-                \right.
+        .. deprecated:: 0.9.8
+            Use :meth:`AngleAxis` instead.
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.pose3d.SE3.EulerVec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
@@ -1396,7 +1444,7 @@ class SE3(SO3):
         .. runblock:: pycon
 
             >>> SE3.Ty(2)
-            >>> SE3.Tz([2,3])
+            >>> SE3.Ty([2,3])
 
 
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
