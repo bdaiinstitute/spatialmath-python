@@ -267,8 +267,8 @@ class Line3(BasePoseList):
     def isvalid(x, check=False):
         return x.shape == (6,)
 
-    @staticmethod
-    def TwoPoints(P=None, Q=None):
+    @classmethod
+    def TwoPoints(cls, P=None, Q=None):
         """
         Create Plucker line object from two 3D points
         
@@ -292,8 +292,8 @@ class Line3(BasePoseList):
         v = np.cross(w, P)
         return cls(np.r_[v, w])
     
-    @staticmethod
-    def TwoPlanes(pi1, pi2):
+    @classmethod
+    def TwoPlanes(cls, pi1, pi2):
         r"""
         Create Plucker line from two planes
                 
