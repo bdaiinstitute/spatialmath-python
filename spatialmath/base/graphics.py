@@ -844,6 +844,79 @@ def plot_cylinder(
 
     return handles
 
+def plot_cone(
+    radius,
+    height,
+    resolution=50,
+    flip=False,
+    centre=(0, 0, 0),
+    ends=False,
+    ax=None,
+    filled=False,
+    **kwargs
+):
+    """
+    Plot a cone using matplotlib
+
+    :param radius: radius of cone at open end
+    :type radius: float
+    :param height: height of cone in the z-direction
+    :type height: float
+    :param resolution: number of points on circumferece, defaults to 50
+    :type resolution: int, optional
+    :param flip: cone faces upward, defaults to False
+    :type flip: bool, optional
+
+    :param pose: pose of cone, defaults to None
+    :type pose: SE3, optional
+    :param ax: axes to draw into, defaults to None
+    :type ax: Axes3D, optional
+    :param filled: draw filled polygon, else wireframe, defaults to False
+    :type filled: bool, optional
+    :param kwargs: arguments passed to ``plot_wireframe`` or ``plot_surface``
+
+    :return: matplotlib objects
+    :rtype: list of matplotlib object types
+
+    The axis of the cone is parallel to the z-axis and it is drawn pointing
+    down. The point is at z=0 and the open end at z= ``height``.  If ``flip`` is
+    True then the cone faces upwards, the point is at z= ``height`` and the open
+    end at z=0.
+
+    The cylinder can be positioned by setting ``centre``, or positioned
+    and orientated by setting ``pose``.
+
+    :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
+    """
+    ax = axes_logic(ax, 3)
+    
+    # https://stackoverflow.com/questions/26874791/disconnected-surfaces-when-plotting-cones
+    # Set up the grid in polar coords
+    theta = np.linspace(0, 2 * np.pi, resolution)
+    r = np.linspace(0, radius, resolution)
+    T, R = np.meshgrid(theta, r)
+
+    # Then calculate X, Y, and Z
+    X = R * np.cos(T) + centre[0]
+    Y = R * np.sin(T) + centre[1]
+    Z = np.sqrt(X**2 + Y**2) / radius * height + centre[2]
+    if flip:
+        Z = height - Z
+
+    handles = []
+    handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
+    handles.append(_render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, **kwargs))
+
+    if ends and kwargs.get("filled", default=False):
+        floor = Circle(centre[:2], radius, **kwargs)
+        handles.append(ax.add_patch(floor))
+        pathpatch_2d_to_3d(floor, z=height[0], zdir="z")
+
+        ceiling = Circle(centre[:2], radius, **kwargs)
+        handles.append(ax.add_patch(ceiling))
+        pathpatch_2d_to_3d(ceiling, z=height[1], zdir="z")
+
+    return handles
 
 def plot_cuboid(
     sides=[1, 1, 1], centre=(0, 0, 0), pose=None, ax=None, filled=False, **kwargs
