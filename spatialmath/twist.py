@@ -631,6 +631,7 @@ class Twist3(BaseTwist):
         :SymPy: supported
         """
         return cls([np.r_[0,0,0,0,0,x] for x in base.getunit(theta, unit=unit)])
+
     @classmethod
     def Tx(cls, x):
         """
@@ -654,7 +655,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([base.transl(_x, 0, 0) for _x in base.getvector(x)], check=False)
+        return cls([np.r_[_x,0,0,0,0,0] for _x in base.getvector(x)], check=False)
 
 
     @classmethod
@@ -680,7 +681,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([base.transl(0, _y, 0) for _y in base.getvector(y)], check=False)
+        return cls([np.r_[0,_y,0,0,0,0] for _y in base.getvector(y)], check=False)
 
     @classmethod
     def Tz(cls, z):
@@ -704,7 +705,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
+        return cls([np.r_[0,0,_z,0,0,0] for _z in base.getvector(z)], check=False)
 
     @classmethod
     def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
