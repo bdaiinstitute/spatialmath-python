@@ -2427,21 +2427,16 @@ def _vec2s(fmt, v):
     return ", ".join([fmt.format(x) for x in v])
 
 
-try:
-    import matplotlib.pyplot as plt
 
-    _matplotlib_exists = True
-except ImportError:  # pragma: no cover
-    _matplotlib_exists = False
 
 
 def trplot(
     T,
-    axes=None,
-    block=False,
-    dims=None,
+
     color="blue",
-    frame=None,  # pylint: disable=unused-argument,function-redefined
+    frame=None,
+    axislabel=True,
+    axissubscript=True,
     textcolor=None,
     labels=("X", "Y", "Z"),
     length=1,
@@ -2449,11 +2444,14 @@ def trplot(
     originsize=20,
     origincolor=None,
     projection="ortho",
+    block=False,
+    anaglyph=None,
     wtl=0.2,
     width=None,
+    ax=None,
+    dims=None,
     d2=1.15,
     flo=(-0.05, -0.05, -0.05),
-    anaglyph=None,
     **kwargs
 ):
     """
@@ -2461,19 +2459,17 @@ def trplot(
 
     :param T: SE(3) or SO(3) matrix
     :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
-    :param axes: the axes to plot into, defaults to current axes
-    :type axes: Axes3D reference
-    :param block: run the GUI main loop until all windows are closed, default True
-    :type block: bool
-    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
-                    If dims is [min, max] those limits are applied to the x-, y- and z-axes.
-    :type dims: array_like(6) or array_like(2)
+
     :param color: color of the lines defining the frame
     :type color: str or list(3) of str
     :param textcolor: color of text labels for the frame, default ``color``
     :type textcolor: str
     :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
     :type frame: str
+    :param axislabel: display labels on axes, default True
+    :type axislabel: bool
+    :param axissubscript: display subscripts on axis labels, default True
+    :type axissubscript: bool
     :param labels: labels for the axes, defaults to X, Y and Z
     :type labels: 3-tuple of strings
     :param length: length of coordinate frame axes, default 1
@@ -2484,6 +2480,13 @@ def trplot(
     :type originsize: int
     :param origincolor: color of dot to draw at the origin, default is ``color``
     :type origincolor: str
+    :param ax: the axes to plot into, defaults to current axes
+    :type ax: Axes3D reference
+    :param block: run the GUI main loop until all windows are closed, default True
+    :type block: bool
+    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
+        If dims is [min, max] those limits are applied to the x-, y- and z-axes.
+    :type dims: array_like(6) or array_like(2)
     :param anaglyph: 3D anaglyph display, left-right lens colors eg. ``'rc'``
     for red-cyan glasses.  To set the disparity (default 0.1) provide second
     argument in a tuple, eg. ``('rc', 0.2)``.  Bigger disparity exagerates the
@@ -2506,6 +2509,29 @@ def trplot(
 
     Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the
     current axes. If ``T`` is iterable then multiple frames will be drawn.
+
+    The appearance of the coordinate frame depends on many parameters:
+
+    - coordinate axes depend on:
+        - ``color`` of axes
+        - ``width`` of line
+        - ``length`` of line
+        - ``style`` which is one of:
+            - ``'arrow'`` [default], draw line with arrow head in ``color``
+            - ``'line'``, draw line with no arrow head in ``color``
+            - ``'rviz'``, draw line with no arrow head with color depending upon
+              axis, red for X, green for Y, blue for Z
+    - coordinate axis labels depend on:
+        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
+        - ``labels`` 3-list of alternative axis labels
+        - ``textcolor`` which defaults to ``color``
+        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
+          for each axis label
+    - coordinate frame label depends on:
+        - `frame` the label placed inside {} near the origin of the frame
+    - a dot at the origin
+        - ``originsize`` size of the dot, if zero no dot
+        - ``origincolor`` color of the dot, defaults to ``color``
 
     Examples:
 
@@ -2535,34 +2561,24 @@ def trplot(
 
     :SymPy: not supported
 
-    :seealso: `tranimate`, `plotvol3`
+    :seealso: :func:`tranimate` :func:`plotvol3` :func:`axes_logic`
     """
 
     # TODO
     # animation
     # anaglyph
 
-    if not _matplotlib_exists:
-        print("matplotlib is not installed: pip install matplotlib")
-        return
-
-    if axes is None:
-        # create an axes
-        fig = plt.gcf()
-        if fig.axes == []:
-            # no axes in the figure, create a 3D axes
-            ax = fig.add_subplot(111, projection="3d", proj_type=projection)
-            ax.autoscale(enable=True, axis="both")
-
-            # ax.set_aspect('equal')
-            ax.set_xlabel(labels[0])
-            ax.set_ylabel(labels[1])
-            ax.set_zlabel(labels[2])
-        else:
-            # reuse an existing axis
-            ax = plt.gca()
+    if dims is None:
+        ax = base.axes_logic(ax, 3, projection)
     else:
-        ax = axes
+        ax = base.plotvol3(dims, ax=ax)
+
+    if not ax.get_xlabel():
+        ax.set_xlabel(labels[0])
+    if not ax.get_ylabel():
+        ax.set_ylabel(labels[0])
+    if not ax.get_zlabel():
+        ax.set_zlabel(labels[0])
 
     if anaglyph is not None:
         # enforce perspective projection
@@ -2716,6 +2732,15 @@ def trplot(
             [o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color[2], linewidth=width
         )
 
+    if textcolor is None:
+        textcolor = color[0]
+    else:
+        textcolor = "blue"
+    if origincolor is None:
+        origincolor = color[0]
+    else:
+        origincolor = "black"
+
     # label the frame
     if frame:
         if textcolor is None:
@@ -2738,17 +2763,23 @@ def trplot(
             horizontalalignment="center",
         )
 
+    if axislabel:
         # add the labels to each axis
 
         x = (x - o) * d2 + o
         y = (y - o) * d2 + o
         z = (z - o) * d2 + o
 
+        if frame is None or not axissubscript:
+            format = "${:s}$"
+        else:
+            format = "${:s}_{{{:s}}}$"
+
         ax.text(
             x[0],
             x[1],
             x[2],
-            "$%c_{%s}$" % (labels[0], frame),
+            format.format(labels[0], frame),
             color=textcolor,
             horizontalalignment="center",
             verticalalignment="center",
@@ -2757,7 +2788,7 @@ def trplot(
             y[0],
             y[1],
             y[2],
-            "$%c_{%s}$" % (labels[1], frame),
+            format.format(labels[1], frame),
             color=textcolor,
             horizontalalignment="center",
             verticalalignment="center",
@@ -2766,7 +2797,7 @@ def trplot(
             z[0],
             z[1],
             z[2],
-            "$%c_{%s}$" % (labels[2], frame),
+            format.format(labels[2], frame),
             color=textcolor,
             horizontalalignment="center",
             verticalalignment="center",
@@ -2826,9 +2857,6 @@ def tranimate(T, **kwargs):
 
     :seealso: `trplot`, `plotvol3`
     """
-    if not _matplotlib_exists:
-        print("matplotlib is not installed: pip install matplotlib")
-        return
 
     block = kwargs.get("block", False)
     kwargs["block"] = False
@@ -2837,7 +2865,7 @@ def tranimate(T, **kwargs):
     anim.trplot(T, **kwargs)
     anim.run(**kwargs)
 
-    plt.show(block=block)
+    #plt.show(block=block)
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -4,14 +4,20 @@ import warnings
 import numpy as np
 import scipy as sp
 from scipy.stats.distributions import chi2
-import matplotlib.pyplot as plt
-from matplotlib.patches import Circle
-from mpl_toolkits.mplot3d.art3d import (
-    Poly3DCollection,
-    Line3DCollection,
-    pathpatch_2d_to_3d,
-)
+
 from spatialmath import base
+
+try:
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle
+    from mpl_toolkits.mplot3d.art3d import (
+        Poly3DCollection,
+        Line3DCollection,
+        pathpatch_2d_to_3d,
+    )
+    _matplotlib_exists = True
+except ImportError:  # pragma: no cover
+    _matplotlib_exists = False
 
 """
 Set of functions to draw 2D and 3D graphical primitives using matplotlib.
@@ -955,6 +961,10 @@ def axes_logic(ax, dimensions, projection="ortho"):
 
     Used by all plot_xxx() functions in this module.
     """
+
+    if not _matplotlib_exists:
+        raise NotImplementedError("Matplotlib is not installed: pip install matplotlib")
+
     # print(f"new axis logic ({dimensions}D): ", end='')
     if ax is None:
         # no axes passed in, find out what's happening
