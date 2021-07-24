@@ -382,6 +382,26 @@ def plot_box(
 
     return [r]
 
+def plot_poly(vertices, *fmt, close=False,**kwargs):
+
+    if close:
+        vertices = np.hstack((vertices, vertices[:, [0]]))
+    return _render2D(vertices, fmt=fmt, **kwargs)
+
+
+def _render2D(vertices, pose=None, filled=False, ax=None, fmt=(), **kwargs):
+
+    ax = axes_logic(ax, 2)
+    if pose is not None:
+        vertices = pose * vertices
+
+    if filled:
+        r = plt.Polygon(vertices.T, closed=True, **kwargs)
+        ax.add_patch(r)
+    else:
+        r = plt.plot(vertices[0, :], vertices[1, :], *fmt, **kwargs)
+    return r
+
 
 def circle(centre=(0, 0), radius=1, resolution=50):
     """
