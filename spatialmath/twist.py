@@ -1483,8 +1483,8 @@ class Twist2(BaseTwist):
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
-            >>> T = SE3(1, 2, 3) * SE3.Rx(0.3)
-            >>> S = Twist3(T)
+            >>> T = SE2(1, 2, 0.3)
+            >>> S = Twist2(T)
             >>> S.pole()
         """
         p = np.cross(np.r_[0, 0, self.w], np.r_[self.v, 0]) / self.theta()
@@ -1495,8 +1495,17 @@ class Twist2(BaseTwist):
         """
         Unit twist
 
-        - ``S.unit()`` is a Twist3 object representing a unit twist aligned with the
-        Twist ``S``.
+        - ``S.unit()`` is a Twist2 object representing a unit twist aligned with the
+          Twist ``S``.
+
+        Example:
+        
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3, Twist3
+            >>> T = SE2(1, 2, 0.3)
+            >>> S = Twist2(T)
+            >>> S.unit()
         """
         if base.iszerovec(self.w):
             # rotational twist
@@ -1508,14 +1517,77 @@ class Twist2(BaseTwist):
     @property
     def ad(self):
         """
-        Twist3.ad Logarithm of adjoint
+        Twist2.ad Logarithm of adjoint
 
         - ``S.ad()`` is the logarithm of the adjoint matrix of the corresponding
-        homogeneous transformation.
+          homogeneous transformation.
+
+        Example:
+        
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3, Twist3
+            >>> T = SE2(1, 2, 0.3)
+            >>> S = Twist2(T)
+            >>> S.unit()
 
         :seealso: SE3.Ad.
         """
-        return np.array([base.skew(self.w), base.skew(self.v), [np.zeros((3, 3)), base.skew(self.w)]])
+        return np.array([
+                    [base.skew(self.w), base.skew(self.v)], 
+                    [np.zeros((3, 3)), base.skew(self.w)]
+                ])
+
+    @classmethod
+    def Tx(cls, x):
+        """
+        Create a new 2D twist for pure translation along the X-axis
+
+        :param x: translation distance along the X-axis
+        :type x: float
+        :return: 2D twist vector
+        :rtype: Twist2 instance
+
+        `Twist2.Tx(x)` is an se(2) translation of ``x`` along the x-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> Twist2.Tx(2)
+            >>> Twist2.Tx([2,3])
+
+
+        :seealso: :func:`~spatialmath.base.transforms2d.transl2`
+        :SymPy: supported
+        """
+        return cls([np.r_[_x,0,0] for _x in base.getvector(x)], check=False)
+
+
+    @classmethod
+    def Ty(cls, y):
+        """
+        Create a new 2D twist for pure translation along the Y-axis
+
+        :param y: translation distance along the Y-axis
+        :type y: float
+        :return: 2D twist vector
+        :rtype: Twist2 instance
+
+        `Twist2.Ty(y) is an se(2) translation of ``y`` along the y-axis
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> Twist2.Ty(2)
+            >>> Twist2.Ty([2, 3])
+
+
+        :seealso: :func:`~spatialmath.base.transforms2d.transl2`
+        :SymPy: supported
+        """
+        return cls([np.r_[0,_y,0] for _y in base.getvector(y)], check=False)
 
     def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
