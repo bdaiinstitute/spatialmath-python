@@ -499,6 +499,27 @@ def unittwist2_norm(S):
 
     return (S / th, th)
 
+def wrap_0_2pi(theta):
+    r"""
+    Wrap angle to range [0, 2pi)
+
+    :param theta: input angle
+    :type theta: scalar or ndarray
+    :return: angle wrapped into range :math:`[0, 2\pi)`
+    """
+    return theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
+
+
+def wrap_mpi_pi(angle):
+    r"""
+    Wrap angle to range [-pi, pi)
+
+    :param theta: input angle
+    :type theta: scalar or ndarray
+    :return: angle wrapped into range :math:`[-\pi, \pi)`
+    """
+    return np.mod(angle + math.pi, 2 * math.pi) - np.pi
+
 
 def angdiff(a, b=None):
     """
