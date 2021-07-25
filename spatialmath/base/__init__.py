@@ -137,6 +137,8 @@ __all__ = [
     "removesmall",
     "cross",
     "iszero",
+    "wrap_0_2pi",
+    "wrap_mpi_pi",
     # spatialmath.base.animate
     "Animate",
     "Animate2",
@@ -146,6 +148,7 @@ __all__ = [
     "plot_point",
     "plot_text",
     "plot_box",
+    "plot_poly",
     "circle",
     "ellipse",
     "sphere",
@@ -157,9 +160,12 @@ __all__ = [
     "plot_sphere",
     "plot_ellipsoid",
     "plot_cylinder",
+    "plot_cone",
     "plot_cuboid",
     "axes_logic",
     "isnotebook",
     # spatial.base.numeric
     "numjac",
+    "array2str",
+    "bresenham",
 ]
