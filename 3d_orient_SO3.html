@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>SO(3) matrix &mdash; Spatial Maths package 0.9.5
+  <title>SO(3) matrix &mdash; Spatial Maths package 0.9.7
  documentation</title>
   
 
@@ -111,7 +111,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="spatialmath.html#d-spatial-vectors">6D spatial vectors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#geometry-in-3d">Geometry in 3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#supporting">Supporting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="spatialmath.html#id1">2D-space</a></li>
@@ -623,9 +624,9 @@ elements.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SO3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span>
-<span class="go">SO3(array([[-0.8007,  0.0995,  0.5908],</span>
-<span class="go">           [ 0.4053,  0.8162,  0.4118],</span>
-<span class="go">           [-0.4412,  0.5691, -0.6938]]))</span>
+<span class="go">SO3(array([[ 0.0304, -0.9218,  0.3864],</span>
+<span class="go">           [ 0.8779,  0.2095,  0.4306],</span>
+<span class="go">           [-0.4779,  0.3261,  0.8156]]))</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -663,13 +664,13 @@ defined by Euler angles corresponding to the rows of <code class="docutils liter
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 451, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 451, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.eul2r(a, unit=unit) for a in angles], check=False)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 556, in eul2r</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 556, in eul2r</span>
 <span class="go">    return rotz(angles[0]) @ roty(angles[1]) @ rotz(angles[2])</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 93, in roty</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 93, in roty</span>
 <span class="go">    ct = base.sym.cos(theta)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 135, in cos</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 135, in cos</span>
 <span class="go">    return math.cos(theta)</span>
 <span class="go">TypeError: must be real number, not NoneType</span>
 </pre></div>
@@ -729,13 +730,13 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 scalars.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 509, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 509, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.rpy2r(a, unit=unit, order=order) for a in angles], check=False)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 452, in rpy2r</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 452, in rpy2r</span>
 <span class="go">    R = rotz(angles[2]) @ roty(angles[1]) @ rotx(angles[0])</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 129, in rotz</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 129, in rotz</span>
 <span class="go">    ct = base.sym.cos(theta)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 135, in cos</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 135, in cos</span>
 <span class="go">    return math.cos(theta)</span>
 <span class="go">TypeError: must be real number, not NoneType</span>
 </pre></div>
@@ -777,6 +778,39 @@ R = [N, O, A] and N = O x A.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.pose3d.SO3.AngleAxis">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">AngleAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SO3.AngleAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SO3.AngleAxis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a new SO(3) rotation matrix from rotation angle and axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theta</strong> (<em>float</em>) – rotation</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+<li><p><strong>v</strong> (<em>array_like</em>) – rotation axis, 3-vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SO(3) rotation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SO3 instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">SO3.AngleAxis(theta,</span> <span class="pre">V)</span></code> is an SO(3) rotation defined by
+a rotation of <code class="docutils literal notranslate"><span class="pre">THETA</span></code> about the vector <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><span class="math notranslate nohighlight">\(\theta \eq 0\)</span> the result in an identity matrix, otherwise
+<code class="docutils literal notranslate"><span class="pre">V</span></code> must have a finite length, ie. <span class="math notranslate nohighlight">\(|V| &gt; 0\)</span>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3.angvec" title="spatialmath.pose3d.SE3.angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec()</span></code></a>, <a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.angvec2r" title="spatialmath.base.transforms3d.angvec2r"><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.transforms3d.angvec2r()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SO3.AngVec">
 <em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">AngVec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SO3.AngVec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SO3.AngVec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a new SO(3) rotation matrix from rotation angle and axis</p>
@@ -797,10 +831,8 @@ R = [N, O, A] and N = O x A.</p>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">SO3.AngVec(theta,</span> <span class="pre">V)</span></code> is an SO(3) rotation defined by
 a rotation of <code class="docutils literal notranslate"><span class="pre">THETA</span></code> about the vector <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><span class="math notranslate nohighlight">\(\theta \eq 0\)</span> the result in an identity matrix, otherwise
-<code class="docutils literal notranslate"><span class="pre">V</span></code> must have a finite length, ie. <span class="math notranslate nohighlight">\(|V| &gt; 0\)</span>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.9.8: </span>Use <a class="reference internal" href="#spatialmath.pose3d.SO3.AngleAxis" title="spatialmath.pose3d.SO3.AngleAxis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AngleAxis()</span></code></a> instead.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
@@ -1929,7 +1961,7 @@ The result is always a list, except for the first case above and
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SO3.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span> <span class="pre">–</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span><a class="headerlink" href="#spatialmath.pose3d.SO3.clear" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">–</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#spatialmath.pose3d.SO3.clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2511,13 +2543,13 @@ single-line format</p></li>
 </ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">X</span></code> has multiple values, print one per line.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1002, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1026, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 167, in trotx</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 167, in trotx</span>
 <span class="go">    T = base.r2t(rotx(theta, unit))</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 54, in rotx</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 54, in rotx</span>
 <span class="go">    theta = base.getunit(theta, unit)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.10/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 484, in getunit</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.11/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 484, in getunit</span>
 <span class="go">    raise ValueError(&quot;invalid angular units&quot;)</span>
 <span class="go">ValueError: invalid angular units</span>
 <span class="gt">Traceback (most recent call last):</span>
@@ -2705,7 +2737,7 @@ that the value is a 1D array.</p></li>
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 23-May-2021.
+        Last updated on 25-Jul-2021.
       </span>
 
     </p>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Plane &mdash; Spatial Maths package 0.9.5
+  <title>Plane &mdash; Spatial Maths package 0.9.7
  documentation</title>
   
 
@@ -47,8 +47,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="SE(2) matrix" href="2d_pose_SE2.html" />
-    <link rel="prev" title="Plucker line" href="3d_plucker.html" /> 
+    <link rel="next" title="Quaternion" href="3d_quaternion.html" />
+    <link rel="prev" title="3D line" href="3d_line.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -107,13 +107,12 @@
 <li class="toctree-l3"><a class="reference internal" href="spatialmath.html#pose-in-3d">Pose in 3D</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spatialmath.html#orientation-in-3d">Orientation in 3D</a></li>
 <li class="toctree-l3"><a class="reference internal" href="spatialmath.html#d-spatial-vectors">6D spatial vectors</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="spatialmath.html#geometry">Geometry</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="3d_quaternion.html">Quaternion</a></li>
-<li class="toctree-l4"><a class="reference internal" href="3d_dualquaternion.html">Dual Quaternion</a></li>
-<li class="toctree-l4"><a class="reference internal" href="3d_plucker.html">Plucker line</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="spatialmath.html#geometry-in-3d">Geometry in 3D</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="3d_line.html">3D line</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Plane</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#supporting">Supporting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="spatialmath.html#id1">2D-space</a></li>
@@ -187,10 +186,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="2d_pose_SE2.html" class="btn btn-neutral float-right" title="SE(2) matrix" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="3d_quaternion.html" class="btn btn-neutral float-right" title="Quaternion" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="3d_plucker.html" class="btn btn-neutral float-left" title="Plucker line" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3d_line.html" class="btn btn-neutral float-left" title="3D line" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -199,44 +198,71 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-spatialmath.geom3d.Plane">
-<span id="plane"></span><h1>Plane<a class="headerlink" href="#module-spatialmath.geom3d.Plane" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="plane">
+<h1>Plane<a class="headerlink" href="#plane" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Plane3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Create a plane object from linear coefficients</p>
 <dl class="field-list simple">
-<dt class="field-odd">param c</dt>
-<dd class="field-odd"><p>Plane coefficients</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>4-element array_like</em>) – Plane coefficients</p>
 </dd>
-<dt class="field-even">type c</dt>
-<dd class="field-even"><p>4-element array_like</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Plane object</p>
 </dd>
-<dt class="field-odd">return</dt>
-<dd class="field-odd"><p>a Plane object</p>
-</dd>
-<dt class="field-even">rtype</dt>
-<dd class="field-even"><p>Plane</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Plane</p>
 </dd>
 </dl>
 <p>Planes are represented by the 4-vector <span class="math notranslate nohighlight">\([a, b, c, d]\)</span> which describes
 the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spatialmath.geom3d.Plane.d">
-<span class="sig-name descname"><span class="pre">d</span></span><a class="headerlink" href="#spatialmath.geom3d.Plane.d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plane offset</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.PN">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">PN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.PN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.PN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a plane object from point and normal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Offset of the plane</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>3-element array_like</em>) – Point in the plane</p></li>
+<li><p><strong>n</strong> (<em>3-element array_like</em>) – Normal to the plane</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Plane object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Plane</p>
 </dd>
 </dl>
-<p>For a plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span> this is the scalar
-<span class="math notranslate nohighlight">\(d\)</span>.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="spatialmath.geom3d.Plane.n">
-<span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#spatialmath.geom3d.Plane.n" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.P3">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">P3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.P3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.P3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a plane object from three points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – Three points in the plane</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Plane object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Plane</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.n">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#spatialmath.geom3d.Plane3.n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normal to the plane</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -250,6 +276,48 @@ the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)
 <span class="math notranslate nohighlight">\([a,b,c]\)</span>.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.d">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">d</span></span><a class="headerlink" href="#spatialmath.geom3d.Plane3.d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plane offset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Offset of the plane</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p>For a plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span> this is the scalar
+<span class="math notranslate nohighlight">\(d\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.220446049250313e-15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.contains" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>3-element array_like</em>) – A 3D point</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Tolerance, defaults to 10*_eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if the point is in the plane</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -258,8 +326,8 @@ the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="2d_pose_SE2.html" class="btn btn-neutral float-right" title="SE(2) matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="3d_plucker.html" class="btn btn-neutral float-left" title="Plucker line" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3d_quaternion.html" class="btn btn-neutral float-right" title="Quaternion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="3d_line.html" class="btn btn-neutral float-left" title="3D line" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
@@ -268,7 +336,7 @@ the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 23-May-2021.
+        Last updated on 25-Jul-2021.
       </span>
 
     </p>

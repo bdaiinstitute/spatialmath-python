@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>se(2) twist &mdash; Spatial Maths package 0.9.5
+  <title>se(2) twist &mdash; Spatial Maths package 0.9.7
  documentation</title>
   
 
@@ -111,6 +111,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="spatialmath.html#orientation-in-2d">Orientation in 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spatialmath.html#geometry-in-2d">Geometry in 2D</a></li>
 </ul>
 </li>
 </ul>
@@ -474,13 +475,13 @@ skew-symmetric 3x3 matrix.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist2.exp">
-<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist2.exp" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist2.exp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exponentiate a 2D twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>theta</strong> (<em>float</em><em>, </em><em>optional</em>) – rotation magnitude, defaults to None</p></li>
-<li><p><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – rotational units, defaults to ‘rad’</p></li>
+<li><p><strong>unit</strong> (<em>str</em><em>, </em><em>optional</em>) – rotational units, defaults to ‘rad’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -532,11 +533,11 @@ skew-symmetric 3x3 matrix.</p>
 <p><code class="docutils literal notranslate"><span class="pre">X.pole()</span></code> is a point on the twist axis. For a pure translation 
 this point is at infinity.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">pole</span><span class="p">()</span>
-<span class="go">array([ 0.    , -2.6775,  2.435 ])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist2&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -546,22 +547,100 @@ this point is at infinity.</p>
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#spatialmath.Twist2.unit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unit twist</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">S.unit()</span></code> is a Twist3 object representing a unit twist aligned with the</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">S.unit()</span></code> is a Twist2 object representing a unit twist aligned with the
+Twist <code class="docutils literal notranslate"><span class="pre">S</span></code>.</p></li>
 </ul>
-<p>Twist <code class="docutils literal notranslate"><span class="pre">S</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist2&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.Twist2.ad">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ad</span></span><a class="headerlink" href="#spatialmath.Twist2.ad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Twist3.ad Logarithm of adjoint</p>
+<dd><p>Twist2.ad Logarithm of adjoint</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">S.ad()</span></code> is the logarithm of the adjoint matrix of the corresponding</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">S.ad()</span></code> is the logarithm of the adjoint matrix of the corresponding
+homogeneous transformation.</p></li>
 </ul>
-<p>homogeneous transformation.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist2&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p>SE3.Ad.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist2.Tx">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.Tx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist2.Tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new 2D twist for pure translation along the X-axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>float</em>) – translation distance along the X-axis</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2D twist vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Twist2 instance</p>
+</dd>
+</dl>
+<p><cite>Twist2.Tx(x)</cite> is an se(2) translation of <code class="docutils literal notranslate"><span class="pre">x</span></code> along the x-axis</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist2&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.transl2" title="spatialmath.base.transforms2d.transl2"><code class="xref py py-func docutils literal notranslate"><span class="pre">transl2()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist2.Ty">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Ty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.Ty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist2.Ty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new 2D twist for pure translation along the Y-axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>y</strong> (<em>float</em>) – translation distance along the Y-axis</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2D twist vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Twist2 instance</p>
+</dd>
+</dl>
+<p><cite>Twist2.Ty(y) is an se(2) translation of ``y`</cite> along the y-axis</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist2&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.transl2" title="spatialmath.base.transforms2d.transl2"><code class="xref py py-func docutils literal notranslate"><span class="pre">transl2()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
 </dd>
 </dl>
 </dd></dl>
@@ -871,7 +950,7 @@ X is a <code class="docutils literal notranslate"><span class="pre">Twist3</span
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist2.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span> <span class="pre">–</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span><a class="headerlink" href="#spatialmath.Twist2.clear" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">–</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#spatialmath.Twist2.clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -953,9 +1032,9 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([0.39384, -0.48535, -1.0391, -1.9802, 2.0094, -0.78862])</span>
+<span class="go">Twist3([-0.36153, 0.60055, 0.41109, -0.50546, 1.3926, 2.2839])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([-0.39384, 0.48535, 1.0391, 1.9802, -2.0094, 0.78862])</span>
+<span class="go">Twist3([0.36153, -0.60055, -0.41109, 0.50546, -1.3926, -2.2839])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
 <span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
 </pre></div>
@@ -1127,7 +1206,7 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 23-May-2021.
+        Last updated on 25-Jul-2021.
       </span>
 
     </p>

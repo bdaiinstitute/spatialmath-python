@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.base.transforms2d &mdash; Spatial Maths package 0.9.5
+  <title>spatialmath.base.transforms2d &mdash; Spatial Maths package 0.9.7
  documentation</title>
   
 
@@ -887,235 +887,255 @@
     <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
 
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-    <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">True</span>
+<div class="viewcode-block" id="trplot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trplot2">[docs]</a><span class="k">def</span> <span class="nf">trplot2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">,</span>
 
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+    <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">axislabel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">axissubscript</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">textcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">),</span>
+    <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">rviz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">wtl</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">d1</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a 2D coordinate frame</span>
 
-    <span class="k">def</span> <span class="nf">trplot2</span><span class="p">(</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument,missing-function-docstring</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;matplotlib is not installed: pip install matplotlib&quot;</span><span class="p">)</span>
+<span class="sd">    :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame</span>
+<span class="sd">    :type: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :param color: color of the lines defining the frame</span>
+<span class="sd">    :type color: str</span>
+<span class="sd">    :param textcolor: color of text labels for the frame, default color of lines above</span>
+<span class="sd">    :type textcolor: str</span>
+<span class="sd">    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
+<span class="sd">    :type frame: str</span>
+<span class="sd">    :param axislabel: display labels on axes, default True</span>
+<span class="sd">    :type axislabel: bool</span>
+<span class="sd">    :param axissubscript: display subscripts on axis labels, default True</span>
+<span class="sd">    :type axissubscript: bool</span>
+<span class="sd">    :param labels: labels for the axes, defaults to X and Y</span>
+<span class="sd">    :type labels: 2-tuple of strings</span>
+<span class="sd">    :param length: length of coordinate frame axes, default 1</span>
+<span class="sd">    :type length: float</span>
+<span class="sd">    :param arrow: show arrow heads, default True</span>
+<span class="sd">    :type arrow: bool</span>
+<span class="sd">    :param ax: the axes to plot into, defaults to current axes</span>
+<span class="sd">    :type ax: Axes3D reference</span>
+<span class="sd">    :param block: run the GUI main loop until all windows are closed, default True</span>
+<span class="sd">    :type block: bool</span>
+<span class="sd">    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]</span>
+<span class="sd">    :type dims: array_like(4)</span>
+<span class="sd">    :param wtl: width-to-length ratio for arrows, default 0.2</span>
+<span class="sd">    :type wtl: float</span>
+<span class="sd">    :param rviz: show Rviz style arrows, default False</span>
+<span class="sd">    :type rviz: bool</span>
+<span class="sd">    :param projection: 3D projection: ortho [default] or persp</span>
+<span class="sd">    :type projection: str</span>
+<span class="sd">    :param width: width of lines, default 1</span>
+<span class="sd">    :type width: float</span>
+<span class="sd">    :param d1: distance of frame axis label text from origin, default 0.05</span>
+<span class="sd">    :type d1: float</span>
+<span class="sd">    :param d2: distance of frame label text from origin, default 1.15</span>
+<span class="sd">    :type d2: float</span>
+<span class="sd">    :return: axes containing the frame</span>
+<span class="sd">    :rtype: AxesSubplot</span>
+<span class="sd">    :raises ValueError: bad argument</span>
 
-    <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="sd">    Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
 
-<span class="k">if</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
+<span class="sd">    The appearance of the coordinate frame depends on many parameters:</span>
 
-<div class="viewcode-block" id="trplot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trplot2">[docs]</a>    <span class="k">def</span> <span class="nf">trplot2</span><span class="p">(</span>
-        <span class="n">T</span><span class="p">,</span>
-        <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-        <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument,function-redefined</span>
-        <span class="n">textcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">),</span>
-        <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">rviz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">wtl</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-        <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">d1</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-        <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot a 2D coordinate frame</span>
-
-<span class="sd">        :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame</span>
-<span class="sd">        :type: ndarray(3,3) or ndarray(2,2)</span>
-<span class="sd">        :param axes: the axes to plot into, defaults to current axes</span>
-<span class="sd">        :type axes: Axes3D reference</span>
-<span class="sd">        :param block: run the GUI main loop until all windows are closed, default True</span>
-<span class="sd">        :type block: bool</span>
-<span class="sd">        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]</span>
-<span class="sd">        :type dims: array_like(4)</span>
-<span class="sd">        :param color: color of the lines defining the frame</span>
-<span class="sd">        :type color: str</span>
-<span class="sd">        :param textcolor: color of text labels for the frame, default color of lines above</span>
-<span class="sd">        :type textcolor: str</span>
-<span class="sd">        :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
-<span class="sd">        :type frame: str</span>
-<span class="sd">        :param labels: labels for the axes, defaults to X, Y and Z</span>
-<span class="sd">        :type labels: 3-tuple of strings</span>
-<span class="sd">        :param length: length of coordinate frame axes, default 1</span>
-<span class="sd">        :type length: float</span>
-<span class="sd">        :param arrow: show arrow heads, default True</span>
-<span class="sd">        :type arrow: bool</span>
-<span class="sd">        :param wtl: width-to-length ratio for arrows, default 0.2</span>
-<span class="sd">        :type wtl: float</span>
-<span class="sd">        :param rviz: show Rviz style arrows, default False</span>
-<span class="sd">        :type rviz: bool</span>
-<span class="sd">        :param projection: 3D projection: ortho [default] or persp</span>
-<span class="sd">        :type projection: str</span>
-<span class="sd">        :param width: width of lines, default 1</span>
-<span class="sd">        :type width: float</span>
-<span class="sd">        :param d1: distance of frame axis label text from origin, default 1.15</span>
-<span class="sd">        :type d2: distance of frame label text from origin, default 0.05</span>
-<span class="sd">        :return: axes containing the frame</span>
-<span class="sd">        :rtype: AxesSubplot</span>
-<span class="sd">        :raises ValueError: bad argument</span>
-
-<span class="sd">        Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
-
+<span class="sd">    - coordinate axes depend on:</span>
+<span class="sd">        - ``color`` of axes</span>
+<span class="sd">        - ``width`` of line</span>
+<span class="sd">        - ``length`` of line</span>
+<span class="sd">        - ``arrow`` if True [default] draw the axis with an arrow head</span>
+<span class="sd">    - coordinate axis labels depend on:</span>
+<span class="sd">        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z</span>
+<span class="sd">        - ``labels`` 2-list of alternative axis labels</span>
+<span class="sd">        - ``textcolor`` which defaults to ``color``</span>
+<span class="sd">        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript</span>
+<span class="sd">            for each axis label</span>
+<span class="sd">    - coordinate frame label depends on:</span>
+<span class="sd">        - `frame` the label placed inside {} near the origin of the frame</span>
+<span class="sd">    - a dot at the origin</span>
+<span class="sd">        - ``originsize`` size of the dot, if zero no dot</span>
+<span class="sd">        - ``origincolor`` color of the dot, defaults to ``color``</span>
 <span class="sd">        - If no current figure, one is created</span>
 <span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
 
-<span class="sd">        Examples:</span>
+<span class="sd">    Examples:</span>
 
-<span class="sd">             trplot2(T, frame=&#39;A&#39;)</span>
-<span class="sd">             trplot2(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
-<span class="sd">             trplot2(T1, &#39;labels&#39;, &#39;AB&#39;);</span>
+<span class="sd">            trplot2(T, frame=&#39;A&#39;)</span>
+<span class="sd">            trplot2(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
+<span class="sd">            trplot2(T1, &#39;labels&#39;, &#39;AB&#39;);</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    :SymPy: not supported</span>
 
-        <span class="c1"># TODO</span>
-        <span class="c1"># animation</span>
-        <span class="c1"># style=&#39;line&#39;, &#39;arrow&#39;, &#39;rviz&#39;</span>
+<span class="sd">    :seealso: :func:`tranimate2` :func:`plotvol2` :func:`axes_logic`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-        <span class="c1"># check input types</span>
-        <span class="k">if</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument is not valid SE(2) matrix&quot;</span><span class="p">)</span>
+    <span class="c1"># TODO</span>
+    <span class="c1"># animation</span>
+    <span class="c1"># style=&#39;line&#39;, &#39;arrow&#39;, &#39;rviz&#39;</span>
 
-        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># create an axes</span>
-            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="o">==</span> <span class="p">[]:</span>
-                <span class="c1"># no axes in the figure, create a 3D axes</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="c1"># check input types</span>
+    <span class="k">if</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument is not valid SE(2) matrix&quot;</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span> <span class="o">*</span> <span class="mi">2</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
-                    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># reuse an existing axis</span>
-                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># if axes are an Animate object</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;_plotvol&#39;</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">dims</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;_plotvol&#39;</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+
+    <span class="c1"># create unit vectors in homogeneous form</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
+
+    <span class="c1"># draw the axes</span>
+
+    <span class="k">if</span> <span class="n">rviz</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lime&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">arrow</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
+            <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+            <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
+            <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+            <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># plot an invisible point at the end of each arrow to allow auto-scaling to work</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+
+    <span class="c1"># label the frame</span>
+    <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
+
+        <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+            <span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">o1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="sa">r</span><span class="s2">&quot;$\{&quot;</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\}$&quot;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
+            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">axislabel</span><span class="p">:</span>
+        <span class="c1"># add the labels to each axis</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
+
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">axissubscript</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">$&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">_{{</span><span class="si">{:s}</span><span class="s2">}}$&quot;</span>
 
-        <span class="c1"># create unit vectors in homogeneous form</span>
-        <span class="n">o</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">length</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+            <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="c1"># draw the axes</span>
+    <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+        <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
 
-        <span class="k">if</span> <span class="n">rviz</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lime&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">arrow</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
-                <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-                <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-                <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
-                <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
-                <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-                <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-                <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
-                <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="c1"># plot an invisible point at the end of each arrow to allow auto-scaling to work</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+<div class="viewcode-block" id="tranimate2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tranimate2">[docs]</a><span class="k">def</span> <span class="nf">tranimate2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Animate a 2D coordinate frame</span>
 
-        <span class="c1"># label the frame</span>
-        <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
+<span class="sd">    :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame</span>
+<span class="sd">    :type: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :param nframes: number of steps in the animation [defaault 100]</span>
+<span class="sd">    :type nframes: int</span>
+<span class="sd">    :param repeat: animate in endless loop [default False]</span>
+<span class="sd">    :type repeat: bool</span>
+<span class="sd">    :param interval: number of milliseconds between frames [default 50]</span>
+<span class="sd">    :type interval: int</span>
+<span class="sd">    :param movie: name of file to write MP4 movie into</span>
+<span class="sd">    :type movie: str</span>
 
-            <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                <span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">o1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="sa">r</span><span class="s2">&quot;$\{&quot;</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\}$&quot;</span><span class="p">,</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
-                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
+<span class="sd">    Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
 
-            <span class="c1"># add the labels to each axis</span>
-
-            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
-
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-                <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
-                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
-            <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ax</span></div>
-
-<div class="viewcode-block" id="tranimate2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tranimate2">[docs]</a>    <span class="k">def</span> <span class="nf">tranimate2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Animate a 2D coordinate frame</span>
-
-<span class="sd">        :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame</span>
-<span class="sd">        :type: ndarray(3,3) or ndarray(2,2)</span>
-<span class="sd">        :param nframes: number of steps in the animation [defaault 100]</span>
-<span class="sd">        :type nframes: int</span>
-<span class="sd">        :param repeat: animate in endless loop [default False]</span>
-<span class="sd">        :type repeat: bool</span>
-<span class="sd">        :param interval: number of milliseconds between frames [default 50]</span>
-<span class="sd">        :type interval: int</span>
-<span class="sd">        :param movie: name of file to write MP4 movie into</span>
-<span class="sd">        :type movie: str</span>
-
-<span class="sd">        Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
-
-<span class="sd">        - If no current figure, one is created</span>
-<span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
+<span class="sd">    - If no current figure, one is created</span>
+<span class="sd">    - If current figure, but no axes, a 3d Axes is created</span>
 
 
-<span class="sd">        Examples:</span>
+<span class="sd">    Examples:</span>
 
-<span class="sd">             tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
-<span class="sd">             tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">anim</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate2</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">anim</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<span class="sd">            tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
+<span class="sd">            tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">anim</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate2</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="n">anim</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -1147,7 +1167,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 23-May-2021.
+        Last updated on 25-Jul-2021.
       </span>
 
     </p>

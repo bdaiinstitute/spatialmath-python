@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>spatialmath.base.transforms3d &mdash; Spatial Maths package 0.9.5
+  <title>spatialmath.base.transforms3d &mdash; Spatial Maths package 0.9.7
  documentation</title>
   
 
@@ -2596,21 +2596,16 @@
     <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
 
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-    <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <div class="viewcode-block" id="trplot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trplot">[docs]</a><span class="k">def</span> <span class="nf">trplot</span><span class="p">(</span>
     <span class="n">T</span><span class="p">,</span>
-    <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
     <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-    <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument,function-redefined</span>
+    <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">axislabel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">axissubscript</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">textcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">),</span>
     <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -2618,11 +2613,14 @@
     <span class="n">originsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">origincolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">,</span>
+    <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">anaglyph</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">wtl</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
     <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span>
     <span class="n">flo</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">),</span>
-    <span class="n">anaglyph</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -2630,19 +2628,17 @@
 
 <span class="sd">    :param T: SE(3) or SO(3) matrix</span>
 <span class="sd">    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same</span>
-<span class="sd">    :param axes: the axes to plot into, defaults to current axes</span>
-<span class="sd">    :type axes: Axes3D reference</span>
-<span class="sd">    :param block: run the GUI main loop until all windows are closed, default True</span>
-<span class="sd">    :type block: bool</span>
-<span class="sd">    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].</span>
-<span class="sd">                    If dims is [min, max] those limits are applied to the x-, y- and z-axes.</span>
-<span class="sd">    :type dims: array_like(6) or array_like(2)</span>
+
 <span class="sd">    :param color: color of the lines defining the frame</span>
 <span class="sd">    :type color: str or list(3) of str</span>
 <span class="sd">    :param textcolor: color of text labels for the frame, default ``color``</span>
 <span class="sd">    :type textcolor: str</span>
 <span class="sd">    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
 <span class="sd">    :type frame: str</span>
+<span class="sd">    :param axislabel: display labels on axes, default True</span>
+<span class="sd">    :type axislabel: bool</span>
+<span class="sd">    :param axissubscript: display subscripts on axis labels, default True</span>
+<span class="sd">    :type axissubscript: bool</span>
 <span class="sd">    :param labels: labels for the axes, defaults to X, Y and Z</span>
 <span class="sd">    :type labels: 3-tuple of strings</span>
 <span class="sd">    :param length: length of coordinate frame axes, default 1</span>
@@ -2653,6 +2649,13 @@
 <span class="sd">    :type originsize: int</span>
 <span class="sd">    :param origincolor: color of dot to draw at the origin, default is ``color``</span>
 <span class="sd">    :type origincolor: str</span>
+<span class="sd">    :param ax: the axes to plot into, defaults to current axes</span>
+<span class="sd">    :type ax: Axes3D reference</span>
+<span class="sd">    :param block: run the GUI main loop until all windows are closed, default True</span>
+<span class="sd">    :type block: bool</span>
+<span class="sd">    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].</span>
+<span class="sd">        If dims is [min, max] those limits are applied to the x-, y- and z-axes.</span>
+<span class="sd">    :type dims: array_like(6) or array_like(2)</span>
 <span class="sd">    :param anaglyph: 3D anaglyph display, left-right lens colors eg. ``&#39;rc&#39;``</span>
 <span class="sd">    for red-cyan glasses.  To set the disparity (default 0.1) provide second</span>
 <span class="sd">    argument in a tuple, eg. ``(&#39;rc&#39;, 0.2)``.  Bigger disparity exagerates the</span>
@@ -2675,6 +2678,29 @@
 
 <span class="sd">    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the</span>
 <span class="sd">    current axes. If ``T`` is iterable then multiple frames will be drawn.</span>
+
+<span class="sd">    The appearance of the coordinate frame depends on many parameters:</span>
+
+<span class="sd">    - coordinate axes depend on:</span>
+<span class="sd">        - ``color`` of axes</span>
+<span class="sd">        - ``width`` of line</span>
+<span class="sd">        - ``length`` of line</span>
+<span class="sd">        - ``style`` which is one of:</span>
+<span class="sd">            - ``&#39;arrow&#39;`` [default], draw line with arrow head in ``color``</span>
+<span class="sd">            - ``&#39;line&#39;``, draw line with no arrow head in ``color``</span>
+<span class="sd">            - ``&#39;rviz&#39;``, draw line with no arrow head with color depending upon</span>
+<span class="sd">              axis, red for X, green for Y, blue for Z</span>
+<span class="sd">    - coordinate axis labels depend on:</span>
+<span class="sd">        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z</span>
+<span class="sd">        - ``labels`` 3-list of alternative axis labels</span>
+<span class="sd">        - ``textcolor`` which defaults to ``color``</span>
+<span class="sd">        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript</span>
+<span class="sd">          for each axis label</span>
+<span class="sd">    - coordinate frame label depends on:</span>
+<span class="sd">        - `frame` the label placed inside {} near the origin of the frame</span>
+<span class="sd">    - a dot at the origin</span>
+<span class="sd">        - ``originsize`` size of the dot, if zero no dot</span>
+<span class="sd">        - ``origincolor`` color of the dot, defaults to ``color``</span>
 
 <span class="sd">    Examples:</span>
 
@@ -2704,34 +2730,27 @@
 
 <span class="sd">    :SymPy: not supported</span>
 
-<span class="sd">    :seealso: `tranimate`, `plotvol3`</span>
+<span class="sd">    :seealso: :func:`tranimate` :func:`plotvol3` :func:`axes_logic`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO</span>
     <span class="c1"># animation</span>
     <span class="c1"># anaglyph</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;matplotlib is not installed: pip install matplotlib&quot;</span><span class="p">)</span>
-        <span class="k">return</span>
-
-    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># create an axes</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span> <span class="o">==</span> <span class="p">[]:</span>
-            <span class="c1"># no axes in the figure, create a 3D axes</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">,</span> <span class="n">proj_type</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
-
-            <span class="c1"># ax.set_aspect(&#39;equal&#39;)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># reuse an existing axis</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">projection</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">plotvol3</span><span class="p">(</span><span class="n">dims</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlabel</span><span class="p">():</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># if axes are an Animate object</span>
 
     <span class="k">if</span> <span class="n">anaglyph</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># enforce perspective projection</span>
@@ -2885,6 +2904,15 @@
             <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span>
         <span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">textcolor</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">textcolor</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
+    <span class="k">if</span> <span class="n">origincolor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">origincolor</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">origincolor</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
+
     <span class="c1"># label the frame</span>
     <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2907,17 +2935,23 @@
             <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">axislabel</span><span class="p">:</span>
         <span class="c1"># add the labels to each axis</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
         <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
 
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">axissubscript</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">$&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">_{{</span><span class="si">{:s}</span><span class="s2">}}$&quot;</span>
+
         <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
             <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-            <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
             <span class="n">color</span><span class="o">=</span><span class="n">textcolor</span><span class="p">,</span>
             <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
             <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
@@ -2926,7 +2960,7 @@
             <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-            <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
             <span class="n">color</span><span class="o">=</span><span class="n">textcolor</span><span class="p">,</span>
             <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
             <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
@@ -2935,7 +2969,7 @@
             <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-            <span class="s2">&quot;$</span><span class="si">%c</span><span class="s2">_{</span><span class="si">%s</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
             <span class="n">color</span><span class="o">=</span><span class="n">textcolor</span><span class="p">,</span>
             <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
             <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
@@ -2946,6 +2980,8 @@
 
     <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
         <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="c1"># TODO move blocking into graphics</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 
@@ -2995,18 +3031,20 @@
 
 <span class="sd">    :seealso: `trplot`, `plotvol3`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;matplotlib is not installed: pip install matplotlib&quot;</span><span class="p">)</span>
-        <span class="k">return</span>
 
     <span class="n">block</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;block&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;block&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="n">anim</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
     <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span></div>
+    <span class="c1">#plt.show(block=block)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -3034,7 +3072,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 23-May-2021.
+        Last updated on 25-Jul-2021.
       </span>
 
     </p>

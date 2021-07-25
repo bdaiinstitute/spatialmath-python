@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>&lt;no title&gt; &mdash; Spatial Maths package 0.9.5
+  <title>Geometry &mdash; Spatial Maths package 0.9.7
  documentation</title>
   
 
@@ -39,6 +39,8 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -149,7 +151,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>Geometry</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,7 +170,2723 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
+  <div class="section" id="module-spatialmath.geom3d">
+<span id="geometry"></span><h1>Geometry<a class="headerlink" href="#module-spatialmath.geom3d" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Plane3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a plane object from linear coefficients</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>4-element array_like</em>) – Plane coefficients</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Plane object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Plane</p>
+</dd>
+</dl>
+<p>Planes are represented by the 4-vector <span class="math notranslate nohighlight">\([a, b, c, d]\)</span> which describes
+the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.PN">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">PN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.PN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.PN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a plane object from point and normal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>3-element array_like</em>) – Point in the plane</p></li>
+<li><p><strong>n</strong> (<em>3-element array_like</em>) – Normal to the plane</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Plane object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Plane</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.P3">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">P3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.P3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.P3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a plane object from three points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – Three points in the plane</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a Plane object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Plane</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.n">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n</span></span><a class="headerlink" href="#spatialmath.geom3d.Plane3.n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normal to the plane</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Normal to the plane</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>3-element array_like</p>
+</dd>
+</dl>
+<p>For a plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span> this is the vector
+<span class="math notranslate nohighlight">\([a,b,c]\)</span>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.d">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">d</span></span><a class="headerlink" href="#spatialmath.geom3d.Plane3.d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plane offset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Offset of the plane</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p>For a plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span> this is the scalar
+<span class="math notranslate nohighlight">\(d\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.220446049250313e-15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.contains" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>3-element array_like</em>) – A 3D point</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Tolerance, defaults to 10*_eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>if the point is in the plane</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plane3.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plane3.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plane3.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Line3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.baseposelist.BasePoseList</span></code></p>
+<p>Plucker coordinate class</p>
+<p>Concrete class to represent a 3D line using Plucker coordinates.</p>
+<p>Methods:</p>
+<p>Plucker            Contructor from points
+Plucker.planes     Constructor from planes
+Plucker.pointdir   Constructor from point and direction</p>
+<p>Information and test methods::
+closest            closest point on line
+commonperp         common perpendicular for two lines
+contains           test if point is on line
+distance           minimum distance between two lines
+intersects         intersection point for two lines
+intersect_plane    intersection points with a plane
+intersect_volume   intersection points with a volume
+pp                 principal point
+ppd                principal point distance from origin
+point              generate point on line</p>
+<p>Conversion methods::
+char               convert to human readable string
+double             convert to 6-vector
+skew               convert to 4x4 skew symmetric matrix</p>
+<p>Display and print methods::
+display            display in human readable form
+plot               plot line</p>
+<p>Operators:
+*                  multiply Plucker matrix by a general matrix
+|                  test if lines are parallel
+^                  test if lines intersect
+==                 test if two lines are equivalent
+~=                 test if lines are not equivalent</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This is reference (handle) class object</p></li>
+<li><p>Plucker objects can be used in vectors and arrays</p></li>
+</ul>
+</div></blockquote>
+<p>References:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ken Shoemake, “Ray Tracing News”, Volume 11, Number 1
+<a class="reference external" href="http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3">http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3</a></p></li>
+<li><p>Matt Mason lecture notes <a class="reference external" href="http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf">http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf</a></p></li>
+<li><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p596-7.</p></li>
+</ul>
+</div></blockquote>
+<p>Implementation notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The internal representation is a 6-vector [v, w] where v (moment), w (direction).</p></li>
+<li><p>There is a huge variety of notation used across the literature, as well as the ordering
+of the direction and moment components in the 6-vector.</p></li>
+</ul>
+</div></blockquote>
+<p>Copyright (C) 1993-2019 Peter I. Corke</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Plucker 3D line object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>6-element array_like</em><em>, </em><em>Plucker instance</em><em>, </em><em>3-element array_like</em>) – Plucker vector, Plucker object, Plucker moment</p></li>
+<li><p><strong>w</strong> (<em>3-element array_like</em><em>, </em><em>optional</em>) – Plucker direction, optional</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Plucker line</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(X)</span></code> creates a Plucker object from the Plucker coordinate vector
+<code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector) is the moment and W (3-vector) is the line direction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(L)</span></code> creates a copy of the Plucker object <code class="docutils literal notranslate"><span class="pre">L</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(V,</span> <span class="pre">W)</span></code> creates a Plucker object from moment <code class="docutils literal notranslate"><span class="pre">V</span></code> (3-vector) and
+line direction <code class="docutils literal notranslate"><span class="pre">W</span></code> (3-vector).</p></li>
+</ul>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>The Plucker object inherits from <code class="docutils literal notranslate"><span class="pre">collections.UserList</span></code> and has list-like
+behaviours.</p></li>
+<li><p>A single Plucker object contains a 1D array of Plucker coordinates.</p></li>
+<li><p>The elements of the array are guaranteed to be Plucker coordinates.</p></li>
+<li><p>The number of elements is given by <code class="docutils literal notranslate"><span class="pre">len(L)</span></code></p></li>
+<li><p>The elements can be accessed using index and slice notation, eg. <code class="docutils literal notranslate"><span class="pre">L[1]</span></code> or
+<code class="docutils literal notranslate"><span class="pre">L[2:3]</span></code></p></li>
+<li><p>The Plucker instance can be used as an iterator in a for loop or list comprehension.</p></li>
+<li><p>Some methods support operations on the internal list.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.PQ, Plucker.Planes, Plucker.PointDir</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.shape">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.isvalid">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.isvalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator indicating abstract staticmethods.</p>
+<p>Similar to abstractmethod.</p>
+<p>Usage:</p>
+<blockquote>
+<div><dl>
+<dt>class C(metaclass=ABCMeta):</dt><dd><p>&#64;abstractstaticmethod
+def my_abstract_staticmethod(…):</p>
+<blockquote>
+<div><p>…</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p>‘abstractstaticmethod’ is deprecated. Use ‘staticmethod’ with
+‘abstractmethod’ instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.TwoPoints">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">TwoPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.TwoPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.TwoPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Plucker line object from two 3D points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>3-element array_like</em>) – First 3D point</p></li>
+<li><p><strong>Q</strong> (<em>3-element array_like</em>) – Second 3D point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(P,</span> <span class="pre">Q)</span></code> create a Plucker object that represents
+the line joining the 3D points <code class="docutils literal notranslate"><span class="pre">P</span></code> (3-vector) and <code class="docutils literal notranslate"><span class="pre">Q</span></code> (3-vector). The direction
+is from <code class="docutils literal notranslate"><span class="pre">Q</span></code> to <code class="docutils literal notranslate"><span class="pre">P</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker, Plucker.Planes, Plucker.PointDir</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.TwoPlanes">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">TwoPlanes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pi1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.TwoPlanes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.TwoPlanes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Plucker line from two planes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pi1</strong> (<em>4-element array_like</em><em>, or </em><em>Plane</em>) – First plane</p></li>
+<li><p><strong>pi2</strong> (<em>4-element array_like</em><em>, or </em><em>Plane</em>) – Second plane</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker.planes(PI1,</span> <span class="pre">PI2)</span></code> is a Plucker object that represents
+the line formed by the intersection of two planes <code class="docutils literal notranslate"><span class="pre">PI1</span></code> and <code class="docutils literal notranslate"><span class="pre">PI2</span></code>.</p>
+<p>Planes are represented by the 4-vector <span class="math notranslate nohighlight">\([a, b, c, d]\)</span> which describes
+the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker, Plucker.PQ, Plucker.PointDir</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.PointDir">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">PointDir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.PointDir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.PointDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Plucker line from point and direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<em>3-element array_like</em>) – A 3D point</p></li>
+<li><p><strong>dir</strong> (<em>3-element array_like</em>) – Direction vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker.pointdir(P,</span> <span class="pre">W)</span></code> is a Plucker object that represents the
+line containing the point <code class="docutils literal notranslate"><span class="pre">P</span></code> and parallel to the direction vector <code class="docutils literal notranslate"><span class="pre">W</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker, Plucker.Planes, Plucker.PQ</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.append" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Plucker object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Attempt to append a non Plucker object</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Plucker object with new Plucker line appended</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.A">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">A</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.A" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>NumPy array value of this instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance, 
+and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
+instance.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.v">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moment vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the moment vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.w">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direction vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the direction vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.uw</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.uw">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">uw</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.uw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line direction as a unit vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Line direction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.uw</span></code> is a unit-vector parallel to the line.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.vec">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">vec</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line as a Plucker coordinate vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Coordinate vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(6,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.vec</span></code> is the  Plucker coordinate vector <code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector)
+is the moment and W (3-vector) is the line direction.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.skew">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">skew</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.skew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line as a Plucker skew-matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Skew-symmetric matrix form of Plucker coordinates</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(4,4)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">line.skew()</span></code> is the Plucker matrix, a 4x4 skew-symmetric matrix
+representation of the line.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\sk{L} = \begin{bmatrix} 0 &amp; v_z &amp; -v_y &amp; \omega_x \\
+    -v_z &amp; 0 &amp; v_x &amp; \omega_y \\
+    v_y &amp; -v_x &amp; 0 &amp; \omega_z \\
+    -\omega_x &amp; -\omega_y &amp; -\omega_z &amp; 0 \end{bmatrix}\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For two homogeneous points P and Q on the line, <span class="math notranslate nohighlight">\(PQ^T-QP^T\)</span> is
+also skew symmetric.</p></li>
+<li><p>The projection of Plucker line by a perspective camera is a
+homogeneous line (3x1) given by <span class="math notranslate nohighlight">\(\vee C M C^T\)</span> where <span class="math notranslate nohighlight">\(C
+\in \mathbf{R}^{3 \times 4}\)</span> is the camera matrix.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.pp">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pp</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal point of the line</p>
+<p><code class="docutils literal notranslate"><span class="pre">line.pp</span></code> is the point on the line that is closest to the origin.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Same as Plucker.point(0)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.ppd, Plucker.point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.ppd">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ppd</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.ppd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance from principal point to the origin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Distance from principal point to the origin</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.ppd</span></code> is the distance from the principal point to the origin.
+This is the smallest distance of any point on the line
+to the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.pp</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.point">
+<span class="sig-name descname"><span class="pre">point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate point on line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lam</strong> (<em>float</em>) – Scalar distance from principal point</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance from principal point to the origin</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.point(LAMBDA)</span></code> is a point on the line, where <code class="docutils literal notranslate"><span class="pre">LAMBDA</span></code> is the parametric
+distance along the line from the principal point of the line such
+that <span class="math notranslate nohighlight">\(P = P_p + \lambda \hat{d}\)</span> and <span class="math notranslate nohighlight">\(\hat{d}\)</span> is the line
+direction given by <code class="docutils literal notranslate"><span class="pre">line.uw</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.pp, Plucker.closest, Plucker.uw</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.lam">
+<span class="sig-name descname"><span class="pre">lam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.lam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.lam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1102230246251565e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if points are on the line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>3-element array_like</em><em>, or </em><em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>N</em><em>)</em>) – 3D point</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Tolerance, defaults to 50*_eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Bad argument</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether point is on the line</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool or numpy.ndarray(N) of bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.contains(X)</span></code> is true if the point <code class="docutils literal notranslate"><span class="pre">X</span></code> lies on the line defined by
+the Plucker object self.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">X</span></code> is an array with 3 rows, the test is performed on every column and
+an array of booleans is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if two lines are equivalent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>line equivalence</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">==</span> <span class="pre">L2</span></code> is true if the Plucker objects describe the same line in
+space.  Note that because of the over parameterization, lines can be
+equivalent even if their coordinate vectors are different.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__ne__">
+<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__ne__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if two lines are not equivalent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>line inequivalence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">!=</span> <span class="pre">L2</span></code> is true if the Plucker objects describe different lines in
+space.  Note that because of the over parameterization, lines can be
+equivalent even if their coordinate vectors are different.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.isparallel">
+<span class="sig-name descname"><span class="pre">isparallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.220446049250313e-15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.isparallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.isparallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if lines are parallel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lines are parallel</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1.isparallel(l2)</span></code> is true if the two lines are parallel.</p>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">|</span> <span class="pre">l2</span></code> as above but in binary operator form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.or, Plucker.intersects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__or__">
+<span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__or__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__or__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">|</span></code> operator tests for parallelism</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lines are parallel</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">|</span> <span class="pre">l2</span></code> is an operator which is true if the two lines are parallel.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">|</span></code> operator has low precendence.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.isparallel, Plucker.__xor__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__xor__">
+<span class="sig-name descname"><span class="pre">__xor__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__xor__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__xor__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">^</span></code> operator tests for intersection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lines intersect</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">^</span> <span class="pre">l2</span></code> is an operator which is true if the two lines intersect at a point.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">^</span></code> operator has low precendence.</p></li>
+<li><p>Is <code class="docutils literal notranslate"><span class="pre">False</span></code> if the lines are equivalent since they would intersect at
+an infinite number of points.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.intersects, Plucker.parallel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.intersects">
+<span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.intersects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intersection point of two lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3D intersection point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray, shape=(3,) or None</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1.intersects(l2)</span></code> is the point of intersection of the two lines, or
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if the lines do not intersect or are equivalent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.commonperp, Plucker.eq, Plucker.__xor__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.distance">
+<span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum distance between lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Closest distance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a>l1.distance(l2) is the minimum distance between two lines.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Works for parallel, skew and intersecting lines.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.closest_to_line">
+<span class="sig-name descname"><span class="pre">closest_to_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.closest_to_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.closest_to_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closest point between two lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – second line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nearest points and distance between lines at those points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,N), ndarray(N)</p>
+</dd>
+</dl>
+<p>Finds the point on the first line closest to the second line, as well
+as the minimum distance between the lines.</p>
+<p>For two sets of lines, of equal size, return an array of closest points
+and distances.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Plucker&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;Plucker&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;line1&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf">Plucker coordinates</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.closest_to_point">
+<span class="sig-name descname"><span class="pre">closest_to_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.closest_to_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.closest_to_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point on line closest to given point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> – A line</p></li>
+<li><p><strong>l2</strong> (<em>3-element array_like</em>) – An arbitrary 3D point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Point on the line and distance to line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3), float</p>
+</dd>
+</dl>
+<p>Find the point on the line closest to <code class="docutils literal notranslate"><span class="pre">x</span></code> as well as the distance
+at that closest point.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Plucker&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;line1&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.commonperp">
+<span class="sig-name descname"><span class="pre">commonperp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.commonperp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.commonperp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Common perpendicular to two lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Perpendicular line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a> or None</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1.commonperp(l2)</span></code> is the common perpendicular line between the two lines.
+Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the lines are parallel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.intersect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__mul__">
+<span class="sig-name descname"><span class="pre">__mul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__mul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reciprocal product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Left operand</p></li>
+<li><p><strong>right</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Right operand</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reciprocal product</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">left</span> <span class="pre">*</span> <span class="pre">right</span></code> is the scalar reciprocal product <span class="math notranslate nohighlight">\(\hat{w}_L \dot m_R + \hat{w}_R \dot m_R\)</span>.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Multiplication or composition of Plucker lines is not defined.</p></li>
+<li><p>Pre-multiplication by an SE3 object is supported, see <code class="docutils literal notranslate"><span class="pre">__rmul__</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.__rmul__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__rmul__">
+<span class="sig-name descname"><span class="pre">__rmul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__rmul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__rmul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line transformation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a>) – Rigid-body transform</p></li>
+<li><p><strong>right</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Right operand</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transformed line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">*</span> <span class="pre">line</span></code> is the line transformed by the rigid body transformation <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.__mul__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.intersect_plane">
+<span class="sig-name descname"><span class="pre">intersect_plane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plane</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.intersect_plane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.intersect_plane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line intersection with a plane</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
+<li><p><strong>plane</strong> (<em>4-element array_like</em><em> or </em><em>Plane</em>) – A plane</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Intersection point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.namedtuple</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line.intersect_plane(plane).p</span></code> is the point where the line 
+intersects the plane, or None if no intersection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line.intersect_plane(plane).lam</span></code> is the <cite>lambda</cite> value for the point on the line
+that intersects the plane.</p></li>
+</ul>
+<p>The plane can be specified as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a 4-vector <span class="math notranslate nohighlight">\([a, b, c, d]\)</span> which describes the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p></li>
+<li><p>a <code class="docutils literal notranslate"><span class="pre">Plane</span></code> object</p></li>
+</ul>
+<p>The return value is a named tuple with elements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.p</span></code> for the point on the line as a numpy.ndarray, shape=(3,)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.lam</span></code> the <cite>lambda</cite> value for the point on the line.</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p>See also Plucker.point.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.intersect_volume">
+<span class="sig-name descname"><span class="pre">intersect_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.intersect_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.intersect_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line intersection with a volume</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
+<li><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Intersection point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.namedtuple</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.intersect_volume(bounds).p</span></code> is a matrix (3xN) with columns
+that indicate where the line intersects the faces of the volume
+specified by <code class="docutils literal notranslate"><span class="pre">bounds</span></code> = [xmin xmax ymin ymax zmin zmax].  The number of
+columns N is either:</p>
+<ul class="simple">
+<li><p>0, when the line is outside the plot volume or,</p></li>
+<li><p>2 when the line pierces the bounding volume.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">line.intersect_volume(bounds).lam</span></code> is an array of shape=(N,) where
+N is as above.</p>
+<p>The return value is a named tuple with elements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.p</span></code> for the points on the line as a numpy.ndarray, shape=(3,N)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.lam</span></code> for the <cite>lambda</cite> values for the intersection points as a
+numpy.ndarray, shape=(N,).</p></li>
+</ul>
+</div></blockquote>
+<p>See also Plucker.plot, Plucker.point.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.plot" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Plot a line</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
+<li><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid as [xmin xmax ymin ymax zmin zmax], optional</p></li>
+<li><p><strong>**kwargs</strong> – <p>Extra arguents passed to <a class="reference external" href="https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D">Line2D</a></p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plotted line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Line3D or None</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line.plot(bounds)</span></code> adds a line segment to the current axes, and the handle of the line is returned.  
+The line segment is defined by the intersection of the line and the given rectangular cuboid. 
+If the line does not intersect the plotting volume None is returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line.plot()</span></code> as above but the bounds are taken from the axis limits of the current axes.</p></li>
+</ul>
+<p>The line color or style is specified by:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a  MATLAB-style linestyle like ‘k–’</p></li>
+<li><p>additional arguments passed to <a class="reference external" href="https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D">Line2D</a></p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.intersect_volume</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.Alloc">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.Alloc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
+can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default value depends on the pose class and is the result
+of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, 
+<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
+twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
+for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
+vector.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.Empty">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.Empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pose instance with zero values</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.arghandler">
+<span class="sig-name descname"><span class="pre">arghandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convertfrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.arghandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard constructor support (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the instance to be initialized :type self: BasePoseList</p>
+</dd>
+</dl>
+<p>instance :param arg: initial value :param convertfrom: list of classes
+to accept and convert from :type: tuple of typles :param check: check
+value is valid, defaults to True :type check: bool :raises ValueError:
+bad type passed</p>
+<p>The value <code class="docutils literal notranslate"><span class="pre">arg</span></code> can be any of:</p>
+<ol class="arabic simple">
+<li><p>None, an identity value is created</p></li>
+<li><p>a numpy.ndarray of the appropriate shape and value which is valid for the subclass</p></li>
+<li><p>a list whose elements all meet the criteria above</p></li>
+<li><p>an instance of the subclass</p></li>
+<li><p>a list whose elements are all singelton instances of the subclass</p></li>
+</ol>
+<p>For cases 2 and 3, a NumPy array or a list of NumPy array is passed.
+Each NumPyarray is tested for validity (if <code class="docutils literal notranslate"><span class="pre">check</span></code> is False a cursory
+check of shape is made, if <code class="docutils literal notranslate"><span class="pre">check</span></code> is True the numerical value is
+inspected) and converted to the required internal format by the
+<code class="docutils literal notranslate"><span class="pre">_import</span></code> method. The default <code class="docutils literal notranslate"><span class="pre">_import</span></code> method calls the <code class="docutils literal notranslate"><span class="pre">isvalid</span></code>
+method for checking.  This mechanism allows equivalent forms to be
+passed, ie. 6x1 or 4x4 for an se(3).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">self</span></code> is an instance of class <code class="docutils literal notranslate"><span class="pre">A</span></code>, and an instance of class
+<code class="docutils literal notranslate"><span class="pre">B</span></code> is passed and <code class="docutils literal notranslate"><span class="pre">B</span></code> is an element of the <code class="docutils literal notranslate"><span class="pre">convertfrom</span></code> argument,
+then <code class="docutils literal notranslate"><span class="pre">B.A()</span></code> will be invoked to perform the type conversion.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SE3</span><span class="p">()</span>
+<span class="n">SE3</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">SE3</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
+<span class="n">SE3</span><span class="p">(</span><span class="n">SE3</span><span class="p">())</span>
+<span class="n">SE3</span><span class="p">([</span><span class="n">SE3</span><span class="p">(),</span> <span class="n">SE3</span><span class="p">()])</span>
+<span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.binop">
+<span class="sig-name descname"><span class="pre">binop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.binop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform binary operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<em>BasePoseList subclass</em>) – left operand</p></li>
+<li><p><strong>right</strong> (<em>BasePoseList subclass</em><em>, </em><em>scalar</em><em> or </em><em>array</em>) – right operand</p></li>
+<li><p><strong>op</strong> (<em>callable</em>) – binary operation</p></li>
+<li><p><strong>op2</strong> (<em>callable</em>) – binary operation</p></li>
+<li><p><strong>list1</strong> (<em>bool</em>) – return single array as a list, default True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – arguments are not compatible</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of values</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+<p>The is a helper method for implementing binary operation with overloaded
+operators such as <code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">*</span> <span class="pre">Y</span></code> where <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code> are both subclasses
+of <code class="docutils literal notranslate"><span class="pre">BasePoseList</span></code>.  Each operand has a list of one or more
+values and this methods computes a list of result values according to:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 17%" />
+<col style="width: 7%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" colspan="2"><p>Inputs</p></th>
+<th class="head" colspan="2"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>len(left)</p></th>
+<th class="head"><p>len(right)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret</span> <span class="pre">=</span> <span class="pre">op(left,</span> <span class="pre">right)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(left,</span> <span class="pre">right[i])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>M</p></td>
+<td><p>1</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(left[i],</span> <span class="pre">right)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(left[i],</span> <span class="pre">right[i])</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The arguments to <code class="docutils literal notranslate"><span class="pre">op</span></code> are the internal numeric values, ie. as returned
+by the <code class="docutils literal notranslate"><span class="pre">._A</span></code> property.</p>
+<p>The result is always a list, except for the first case above and
+<code class="docutils literal notranslate"><span class="pre">list1</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>If the right operand is not a <code class="docutils literal notranslate"><span class="pre">BasePoseList</span></code> subclass, but is a numeric
+scalar or array then then <code class="docutils literal notranslate"><span class="pre">op2</span></code> is invoked</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">.</span><span class="n">_binop</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 8%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head" colspan="2"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>len(left)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret</span> <span class="pre">=</span> <span class="pre">op2(left,</span> <span class="pre">right)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op2(left[i],</span> <span class="pre">right)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>There is no check on the shape of <code class="docutils literal notranslate"><span class="pre">right</span></code> if it is an array.
+The result is always a list, except for the first case above and
+<code class="docutils literal notranslate"><span class="pre">list1</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">–</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">–</span> <span class="pre">return</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">occurrences</span> <span class="pre">of</span> <span class="pre">value</span></span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend sequence of values in an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>instance of same type</em>) – the value to extend</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – incorrect type of appended object</p>
+</dd>
+</dl>
+<p>Appends the argument’s values to the object’s internal list of values.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>   <span class="c1"># extend the list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">15</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">value</span></em><span class="optional">[</span>, <em class="sig-param"><span class="pre">start</span></em><span class="optional">[</span>, <em class="sig-param"><span class="pre">stop</span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">–</span> <span class="pre">return</span> <span class="pre">first</span> <span class="pre">index</span> <span class="pre">of</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises ValueError if the value is not present.</p>
+<p>Supporting start and stop arguments is optional, but
+recommended.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a value to an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<em>int</em>) – element to insert value before</p></li>
+<li><p><strong>item</strong> (<em>instance of same type</em>) – the value to insert</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – incorrect type of inserted value</p>
+</dd>
+</dl>
+<p>Inserts the argument into the object’s internal list of values.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X</span><span class="p">())</span>   <span class="c1"># insert at start of list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">X</span><span class="p">())</span>   <span class="c1"># append to the list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">11</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">i</span></code> is beyond the end of the list, the item is appended
+to the list</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop value from an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – item in the list to pop, default is last</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the popped value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>instance of same type</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>IndexError</strong> – if there are no values to pop</p>
+</dd>
+</dl>
+<p>Removes a value from the value list and returns it.  The original
+instance is modified.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>  <span class="c1"># pop the last value x[9]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># pop the first value x[0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">8</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>S.remove(value) – remove first occurrence of value.
+Raise ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.sort">
+<span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.sort" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.unop">
+<span class="sig-name descname"><span class="pre">unop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Line3.unop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform unary operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<em>BasePoseList subclass</em>) – operand</p></li>
+<li><p><strong>op</strong> (<em>callable</em>) – unnary operation</p></li>
+<li><p><strong>matrix</strong> (<em>bool</em>) – return array instead of list, default False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>operation results</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list or NumPy array</p>
+</dd>
+</dl>
+<p>The is a helper method for implementing unary operations where the
+operand has multiple value. This method computes the value of 
+the operation for all input values and returns the result as either
+a list or as a matrix which vertically stacks the results.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 8%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head" colspan="2"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>len(self)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret</span> <span class="pre">=</span> <span class="pre">op(self)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(self[i])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i,;]</span> <span class="pre">=</span> <span class="pre">op(self[i])</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The result is:</p>
+<ul class="simple">
+<li><p>a list of values if <code class="docutils literal notranslate"><span class="pre">matrix==False</span></code>, or</p></li>
+<li><p>a 2D NumPy stack of values if <code class="docutils literal notranslate"><span class="pre">matrix==True</span></code>, it is assumed
+that the value is a 1D array.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Plucker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plucker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plucker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.geom3d.Line3</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Plucker.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Plucker.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Plucker 3D line object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>6-element array_like</em><em>, </em><em>Plucker instance</em><em>, </em><em>3-element array_like</em>) – Plucker vector, Plucker object, Plucker moment</p></li>
+<li><p><strong>w</strong> (<em>3-element array_like</em><em>, </em><em>optional</em>) – Plucker direction, optional</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Plucker line</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(X)</span></code> creates a Plucker object from the Plucker coordinate vector
+<code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector) is the moment and W (3-vector) is the line direction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(L)</span></code> creates a copy of the Plucker object <code class="docutils literal notranslate"><span class="pre">L</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(V,</span> <span class="pre">W)</span></code> creates a Plucker object from moment <code class="docutils literal notranslate"><span class="pre">V</span></code> (3-vector) and
+line direction <code class="docutils literal notranslate"><span class="pre">W</span></code> (3-vector).</p></li>
+</ul>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>The Plucker object inherits from <code class="docutils literal notranslate"><span class="pre">collections.UserList</span></code> and has list-like
+behaviours.</p></li>
+<li><p>A single Plucker object contains a 1D array of Plucker coordinates.</p></li>
+<li><p>The elements of the array are guaranteed to be Plucker coordinates.</p></li>
+<li><p>The number of elements is given by <code class="docutils literal notranslate"><span class="pre">len(L)</span></code></p></li>
+<li><p>The elements can be accessed using index and slice notation, eg. <code class="docutils literal notranslate"><span class="pre">L[1]</span></code> or
+<code class="docutils literal notranslate"><span class="pre">L[2:3]</span></code></p></li>
+<li><p>The Plucker instance can be used as an iterator in a for loop or list comprehension.</p></li>
+<li><p>Some methods support operations on the internal list.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.PQ, Plucker.Planes, Plucker.PointDir</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.A">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">A</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.A" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>NumPy array value of this instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance, 
+and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
+instance.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.Alloc">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.Alloc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
+can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default value depends on the pose class and is the result
+of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, 
+<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
+twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
+for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
+vector.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.Empty">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.Empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pose instance with zero values</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.PointDir">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">PointDir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.PointDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Plucker line from point and direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<em>3-element array_like</em>) – A 3D point</p></li>
+<li><p><strong>dir</strong> (<em>3-element array_like</em>) – Direction vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker.pointdir(P,</span> <span class="pre">W)</span></code> is a Plucker object that represents the
+line containing the point <code class="docutils literal notranslate"><span class="pre">P</span></code> and parallel to the direction vector <code class="docutils literal notranslate"><span class="pre">W</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker, Plucker.Planes, Plucker.PQ</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.TwoPlanes">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">TwoPlanes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pi1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.TwoPlanes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Plucker line from two planes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pi1</strong> (<em>4-element array_like</em><em>, or </em><em>Plane</em>) – First plane</p></li>
+<li><p><strong>pi2</strong> (<em>4-element array_like</em><em>, or </em><em>Plane</em>) – Second plane</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker.planes(PI1,</span> <span class="pre">PI2)</span></code> is a Plucker object that represents
+the line formed by the intersection of two planes <code class="docutils literal notranslate"><span class="pre">PI1</span></code> and <code class="docutils literal notranslate"><span class="pre">PI2</span></code>.</p>
+<p>Planes are represented by the 4-vector <span class="math notranslate nohighlight">\([a, b, c, d]\)</span> which describes
+the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker, Plucker.PQ, Plucker.PointDir</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.TwoPoints">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">TwoPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.TwoPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Plucker line object from two 3D points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>3-element array_like</em>) – First 3D point</p></li>
+<li><p><strong>Q</strong> (<em>3-element array_like</em>) – Second 3D point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(P,</span> <span class="pre">Q)</span></code> create a Plucker object that represents
+the line joining the 3D points <code class="docutils literal notranslate"><span class="pre">P</span></code> (3-vector) and <code class="docutils literal notranslate"><span class="pre">Q</span></code> (3-vector). The direction
+is from <code class="docutils literal notranslate"><span class="pre">Q</span></code> to <code class="docutils literal notranslate"><span class="pre">P</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker, Plucker.Planes, Plucker.PointDir</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if two lines are equivalent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plucker</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>line equivalence</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">==</span> <span class="pre">L2</span></code> is true if the Plucker objects describe the same line in
+space.  Note that because of the over parameterization, lines can be
+equivalent even if their coordinate vectors are different.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__mul__">
+<span class="sig-name descname"><span class="pre">__mul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reciprocal product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Left operand</p></li>
+<li><p><strong>right</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Right operand</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reciprocal product</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">left</span> <span class="pre">*</span> <span class="pre">right</span></code> is the scalar reciprocal product <span class="math notranslate nohighlight">\(\hat{w}_L \dot m_R + \hat{w}_R \dot m_R\)</span>.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Multiplication or composition of Plucker lines is not defined.</p></li>
+<li><p>Pre-multiplication by an SE3 object is supported, see <code class="docutils literal notranslate"><span class="pre">__rmul__</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.__rmul__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__ne__">
+<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if two lines are not equivalent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>line inequivalence</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">!=</span> <span class="pre">L2</span></code> is true if the Plucker objects describe different lines in
+space.  Note that because of the over parameterization, lines can be
+equivalent even if their coordinate vectors are different.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__or__">
+<span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.__or__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">|</span></code> operator tests for parallelism</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lines are parallel</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">|</span> <span class="pre">l2</span></code> is an operator which is true if the two lines are parallel.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">|</span></code> operator has low precendence.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.isparallel, Plucker.__xor__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__rmul__">
+<span class="sig-name descname"><span class="pre">__rmul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.__rmul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line transformation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a>) – Rigid-body transform</p></li>
+<li><p><strong>right</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Right operand</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transformed line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">*</span> <span class="pre">line</span></code> is the line transformed by the rigid body transformation <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.__mul__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.__xor__">
+<span class="sig-name descname"><span class="pre">__xor__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.__xor__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">^</span></code> operator tests for intersection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lines intersect</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">^</span> <span class="pre">l2</span></code> is an operator which is true if the two lines intersect at a point.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">^</span></code> operator has low precendence.</p></li>
+<li><p>Is <code class="docutils literal notranslate"><span class="pre">False</span></code> if the lines are equivalent since they would intersect at
+an infinite number of points.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.intersects, Plucker.parallel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.append" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Plucker object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Attempt to append a non Plucker object</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Plucker object with new Plucker line appended</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.arghandler">
+<span class="sig-name descname"><span class="pre">arghandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convertfrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.arghandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard constructor support (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – the instance to be initialized :type self: BasePoseList</p>
+</dd>
+</dl>
+<p>instance :param arg: initial value :param convertfrom: list of classes
+to accept and convert from :type: tuple of typles :param check: check
+value is valid, defaults to True :type check: bool :raises ValueError:
+bad type passed</p>
+<p>The value <code class="docutils literal notranslate"><span class="pre">arg</span></code> can be any of:</p>
+<ol class="arabic simple">
+<li><p>None, an identity value is created</p></li>
+<li><p>a numpy.ndarray of the appropriate shape and value which is valid for the subclass</p></li>
+<li><p>a list whose elements all meet the criteria above</p></li>
+<li><p>an instance of the subclass</p></li>
+<li><p>a list whose elements are all singelton instances of the subclass</p></li>
+</ol>
+<p>For cases 2 and 3, a NumPy array or a list of NumPy array is passed.
+Each NumPyarray is tested for validity (if <code class="docutils literal notranslate"><span class="pre">check</span></code> is False a cursory
+check of shape is made, if <code class="docutils literal notranslate"><span class="pre">check</span></code> is True the numerical value is
+inspected) and converted to the required internal format by the
+<code class="docutils literal notranslate"><span class="pre">_import</span></code> method. The default <code class="docutils literal notranslate"><span class="pre">_import</span></code> method calls the <code class="docutils literal notranslate"><span class="pre">isvalid</span></code>
+method for checking.  This mechanism allows equivalent forms to be
+passed, ie. 6x1 or 4x4 for an se(3).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">self</span></code> is an instance of class <code class="docutils literal notranslate"><span class="pre">A</span></code>, and an instance of class
+<code class="docutils literal notranslate"><span class="pre">B</span></code> is passed and <code class="docutils literal notranslate"><span class="pre">B</span></code> is an element of the <code class="docutils literal notranslate"><span class="pre">convertfrom</span></code> argument,
+then <code class="docutils literal notranslate"><span class="pre">B.A()</span></code> will be invoked to perform the type conversion.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SE3</span><span class="p">()</span>
+<span class="n">SE3</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">SE3</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
+<span class="n">SE3</span><span class="p">(</span><span class="n">SE3</span><span class="p">())</span>
+<span class="n">SE3</span><span class="p">([</span><span class="n">SE3</span><span class="p">(),</span> <span class="n">SE3</span><span class="p">()])</span>
+<span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.binop">
+<span class="sig-name descname"><span class="pre">binop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.binop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform binary operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<em>BasePoseList subclass</em>) – left operand</p></li>
+<li><p><strong>right</strong> (<em>BasePoseList subclass</em><em>, </em><em>scalar</em><em> or </em><em>array</em>) – right operand</p></li>
+<li><p><strong>op</strong> (<em>callable</em>) – binary operation</p></li>
+<li><p><strong>op2</strong> (<em>callable</em>) – binary operation</p></li>
+<li><p><strong>list1</strong> (<em>bool</em>) – return single array as a list, default True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – arguments are not compatible</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of values</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+<p>The is a helper method for implementing binary operation with overloaded
+operators such as <code class="docutils literal notranslate"><span class="pre">X</span> <span class="pre">*</span> <span class="pre">Y</span></code> where <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code> are both subclasses
+of <code class="docutils literal notranslate"><span class="pre">BasePoseList</span></code>.  Each operand has a list of one or more
+values and this methods computes a list of result values according to:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 17%" />
+<col style="width: 7%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" colspan="2"><p>Inputs</p></th>
+<th class="head" colspan="2"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>len(left)</p></th>
+<th class="head"><p>len(right)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret</span> <span class="pre">=</span> <span class="pre">op(left,</span> <span class="pre">right)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(left,</span> <span class="pre">right[i])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>M</p></td>
+<td><p>1</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(left[i],</span> <span class="pre">right)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(left[i],</span> <span class="pre">right[i])</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The arguments to <code class="docutils literal notranslate"><span class="pre">op</span></code> are the internal numeric values, ie. as returned
+by the <code class="docutils literal notranslate"><span class="pre">._A</span></code> property.</p>
+<p>The result is always a list, except for the first case above and
+<code class="docutils literal notranslate"><span class="pre">list1</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>If the right operand is not a <code class="docutils literal notranslate"><span class="pre">BasePoseList</span></code> subclass, but is a numeric
+scalar or array then then <code class="docutils literal notranslate"><span class="pre">op2</span></code> is invoked</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">.</span><span class="n">_binop</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 8%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head" colspan="2"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>len(left)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret</span> <span class="pre">=</span> <span class="pre">op2(left,</span> <span class="pre">right)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op2(left[i],</span> <span class="pre">right)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>There is no check on the shape of <code class="docutils literal notranslate"><span class="pre">right</span></code> if it is an array.
+The result is always a list, except for the first case above and
+<code class="docutils literal notranslate"><span class="pre">list1</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">–</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.closest_to_line">
+<span class="sig-name descname"><span class="pre">closest_to_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.closest_to_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closest point between two lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – second line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nearest points and distance between lines at those points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,N), ndarray(N)</p>
+</dd>
+</dl>
+<p>Finds the point on the first line closest to the second line, as well
+as the minimum distance between the lines.</p>
+<p>For two sets of lines, of equal size, return an array of closest points
+and distances.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Plucker&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;Plucker&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;line1&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf">Plucker coordinates</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.closest_to_point">
+<span class="sig-name descname"><span class="pre">closest_to_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.closest_to_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point on line closest to given point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> – A line</p></li>
+<li><p><strong>l2</strong> (<em>3-element array_like</em>) – An arbitrary 3D point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Point on the line and distance to line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3), float</p>
+</dd>
+</dl>
+<p>Find the point on the line closest to <code class="docutils literal notranslate"><span class="pre">x</span></code> as well as the distance
+at that closest point.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Plucker&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;line1&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.commonperp">
+<span class="sig-name descname"><span class="pre">commonperp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.commonperp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Common perpendicular to two lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Perpendicular line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a> or None</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1.commonperp(l2)</span></code> is the common perpendicular line between the two lines.
+Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the lines are parallel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.intersect</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.1102230246251565e-14</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if points are on the line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>3-element array_like</em><em>, or </em><em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>3</em><em>,</em><em>N</em><em>)</em>) – 3D point</p></li>
+<li><p><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Tolerance, defaults to 50*_eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Bad argument</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether point is on the line</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool or numpy.ndarray(N) of bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.contains(X)</span></code> is true if the point <code class="docutils literal notranslate"><span class="pre">X</span></code> lies on the line defined by
+the Plucker object self.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">X</span></code> is an array with 3 rows, the test is performed on every column and
+an array of booleans is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">–</span> <span class="pre">return</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">occurrences</span> <span class="pre">of</span> <span class="pre">value</span></span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.distance">
+<span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum distance between lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Closest distance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a>l1.distance(l2) is the minimum distance between two lines.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Works for parallel, skew and intersecting lines.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend sequence of values in an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>instance of same type</em>) – the value to extend</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – incorrect type of appended object</p>
+</dd>
+</dl>
+<p>Appends the argument’s values to the object’s internal list of values.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>   <span class="c1"># extend the list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">15</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">value</span></em><span class="optional">[</span>, <em class="sig-param"><span class="pre">start</span></em><span class="optional">[</span>, <em class="sig-param"><span class="pre">stop</span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">–</span> <span class="pre">return</span> <span class="pre">first</span> <span class="pre">index</span> <span class="pre">of</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises ValueError if the value is not present.</p>
+<p>Supporting start and stop arguments is optional, but
+recommended.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a value to an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<em>int</em>) – element to insert value before</p></li>
+<li><p><strong>item</strong> (<em>instance of same type</em>) – the value to insert</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – incorrect type of inserted value</p>
+</dd>
+</dl>
+<p>Inserts the argument into the object’s internal list of values.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">X</span><span class="p">())</span>   <span class="c1"># insert at start of list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">X</span><span class="p">())</span>   <span class="c1"># append to the list</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">11</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">i</span></code> is beyond the end of the list, the item is appended
+to the list</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.intersect_plane">
+<span class="sig-name descname"><span class="pre">intersect_plane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plane</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.intersect_plane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line intersection with a plane</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
+<li><p><strong>plane</strong> (<em>4-element array_like</em><em> or </em><em>Plane</em>) – A plane</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Intersection point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.namedtuple</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line.intersect_plane(plane).p</span></code> is the point where the line 
+intersects the plane, or None if no intersection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line.intersect_plane(plane).lam</span></code> is the <cite>lambda</cite> value for the point on the line
+that intersects the plane.</p></li>
+</ul>
+<p>The plane can be specified as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a 4-vector <span class="math notranslate nohighlight">\([a, b, c, d]\)</span> which describes the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p></li>
+<li><p>a <code class="docutils literal notranslate"><span class="pre">Plane</span></code> object</p></li>
+</ul>
+<p>The return value is a named tuple with elements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.p</span></code> for the point on the line as a numpy.ndarray, shape=(3,)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.lam</span></code> the <cite>lambda</cite> value for the point on the line.</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p>See also Plucker.point.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.intersect_volume">
+<span class="sig-name descname"><span class="pre">intersect_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.intersect_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line intersection with a volume</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
+<li><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Intersection point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.namedtuple</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.intersect_volume(bounds).p</span></code> is a matrix (3xN) with columns
+that indicate where the line intersects the faces of the volume
+specified by <code class="docutils literal notranslate"><span class="pre">bounds</span></code> = [xmin xmax ymin ymax zmin zmax].  The number of
+columns N is either:</p>
+<ul class="simple">
+<li><p>0, when the line is outside the plot volume or,</p></li>
+<li><p>2 when the line pierces the bounding volume.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">line.intersect_volume(bounds).lam</span></code> is an array of shape=(N,) where
+N is as above.</p>
+<p>The return value is a named tuple with elements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.p</span></code> for the points on the line as a numpy.ndarray, shape=(3,N)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.lam</span></code> for the <cite>lambda</cite> values for the intersection points as a
+numpy.ndarray, shape=(N,).</p></li>
+</ul>
+</div></blockquote>
+<p>See also Plucker.plot, Plucker.point.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.intersects">
+<span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.intersects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intersection point of two lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3D intersection point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray, shape=(3,) or None</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1.intersects(l2)</span></code> is the point of intersection of the two lines, or
+<code class="docutils literal notranslate"><span class="pre">None</span></code> if the lines do not intersect or are equivalent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.commonperp, Plucker.eq, Plucker.__xor__</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.isparallel">
+<span class="sig-name descname"><span class="pre">isparallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.220446049250313e-15</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.isparallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if lines are parallel</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>l1</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
+<li><p><strong>l2</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lines are parallel</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">l1.isparallel(l2)</span></code> is true if the two lines are parallel.</p>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">|</span> <span class="pre">l2</span></code> as above but in binary operator form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.or, Plucker.intersects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.isvalid">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.isvalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator indicating abstract staticmethods.</p>
+<p>Similar to abstractmethod.</p>
+<p>Usage:</p>
+<blockquote>
+<div><dl>
+<dt>class C(metaclass=ABCMeta):</dt><dd><p>&#64;abstractstaticmethod
+def my_abstract_staticmethod(…):</p>
+<blockquote>
+<div><p>…</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p>‘abstractstaticmethod’ is deprecated. Use ‘staticmethod’ with
+‘abstractmethod’ instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.lam">
+<span class="sig-name descname"><span class="pre">lam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.lam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.plot" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Plot a line</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line</strong> (<a class="reference internal" href="#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
+<li><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid as [xmin xmax ymin ymax zmin zmax], optional</p></li>
+<li><p><strong>**kwargs</strong> – <p>Extra arguents passed to <a class="reference external" href="https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D">Line2D</a></p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plotted line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Line3D or None</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">line.plot(bounds)</span></code> adds a line segment to the current axes, and the handle of the line is returned.  
+The line segment is defined by the intersection of the line and the given rectangular cuboid. 
+If the line does not intersect the plotting volume None is returned.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">line.plot()</span></code> as above but the bounds are taken from the axis limits of the current axes.</p></li>
+</ul>
+<p>The line color or style is specified by:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a  MATLAB-style linestyle like ‘k–’</p></li>
+<li><p>additional arguments passed to <a class="reference external" href="https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D">Line2D</a></p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.intersect_volume</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.point">
+<span class="sig-name descname"><span class="pre">point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate point on line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lam</strong> (<em>float</em>) – Scalar distance from principal point</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance from principal point to the origin</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.point(LAMBDA)</span></code> is a point on the line, where <code class="docutils literal notranslate"><span class="pre">LAMBDA</span></code> is the parametric
+distance along the line from the principal point of the line such
+that <span class="math notranslate nohighlight">\(P = P_p + \lambda \hat{d}\)</span> and <span class="math notranslate nohighlight">\(\hat{d}\)</span> is the line
+direction given by <code class="docutils literal notranslate"><span class="pre">line.uw</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.pp, Plucker.closest, Plucker.uw</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop value from an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – item in the list to pop, default is last</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the popped value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>instance of same type</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>IndexError</strong> – if there are no values to pop</p>
+</dd>
+</dl>
+<p>Removes a value from the value list and returns it.  The original
+instance is modified.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>  <span class="c1"># pop the last value x[9]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># pop the first value x[0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">8</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.pp">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">pp</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal point of the line</p>
+<p><code class="docutils literal notranslate"><span class="pre">line.pp</span></code> is the point on the line that is closest to the origin.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Same as Plucker.point(0)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.ppd, Plucker.point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.ppd">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">ppd</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.ppd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance from principal point to the origin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Distance from principal point to the origin</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.ppd</span></code> is the distance from the principal point to the origin.
+This is the smallest distance of any point on the line
+to the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.pp</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>S.remove(value) – remove first occurrence of value.
+Raise ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.shape">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.skew">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">skew</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.skew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line as a Plucker skew-matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Skew-symmetric matrix form of Plucker coordinates</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(4,4)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">line.skew()</span></code> is the Plucker matrix, a 4x4 skew-symmetric matrix
+representation of the line.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\sk{L} = \begin{bmatrix} 0 &amp; v_z &amp; -v_y &amp; \omega_x \\
+    -v_z &amp; 0 &amp; v_x &amp; \omega_y \\
+    v_y &amp; -v_x &amp; 0 &amp; \omega_z \\
+    -\omega_x &amp; -\omega_y &amp; -\omega_z &amp; 0 \end{bmatrix}\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For two homogeneous points P and Q on the line, <span class="math notranslate nohighlight">\(PQ^T-QP^T\)</span> is
+also skew symmetric.</p></li>
+<li><p>The projection of Plucker line by a perspective camera is a
+homogeneous line (3x1) given by <span class="math notranslate nohighlight">\(\vee C M C^T\)</span> where <span class="math notranslate nohighlight">\(C
+\in \mathbf{R}^{3 \times 4}\)</span> is the camera matrix.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.sort">
+<span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.sort" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.unop">
+<span class="sig-name descname"><span class="pre">unop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.geom3d.Plucker.unop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform unary operation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<em>BasePoseList subclass</em>) – operand</p></li>
+<li><p><strong>op</strong> (<em>callable</em>) – unnary operation</p></li>
+<li><p><strong>matrix</strong> (<em>bool</em>) – return array instead of list, default False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>operation results</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list or NumPy array</p>
+</dd>
+</dl>
+<p>The is a helper method for implementing unary operations where the
+operand has multiple value. This method computes the value of 
+the operation for all input values and returns the result as either
+a list or as a matrix which vertically stacks the results.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 8%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head" colspan="2"><p>Output</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>len(self)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret</span> <span class="pre">=</span> <span class="pre">op(self)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i]</span> <span class="pre">=</span> <span class="pre">op(self[i])</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ret[i,;]</span> <span class="pre">=</span> <span class="pre">op(self[i])</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The result is:</p>
+<ul class="simple">
+<li><p>a list of values if <code class="docutils literal notranslate"><span class="pre">matrix==False</span></code>, or</p></li>
+<li><p>a 2D NumPy stack of values if <code class="docutils literal notranslate"><span class="pre">matrix==True</span></code>, it is assumed
+that the value is a 1D array.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.uw">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">uw</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.uw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line direction as a unit vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Line direction</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.uw</span></code> is a unit-vector parallel to the line.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.v">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moment vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the moment vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.vec">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">vec</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line as a Plucker coordinate vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Coordinate vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(6,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.vec</span></code> is the  Plucker coordinate vector <code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector)
+is the moment and W (3-vector) is the line direction.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Plucker.w">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#spatialmath.geom3d.Plucker.w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Direction vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the direction vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+</dd>
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>Plucker.uw</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
 
            </div>
            
@@ -181,7 +2899,7 @@
     <p>
         &#169; Copyright 2020, Peter Corke.
       <span class="lastupdated">
-        Last updated on 23-May-2021.
+        Last updated on 25-Jul-2021.
       </span>
 
     </p>

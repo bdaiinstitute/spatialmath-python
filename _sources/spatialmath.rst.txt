@@ -52,16 +52,25 @@ Orientation in 3D
    6d_momentum.rst
    6d_inertia.rst
 
-Geometry
---------
+Geometry in 3D
+--------------
+
+.. toctree::
+   :maxdepth: 2
+
+   3d_line
+   3d_plane
+
+Supporting
+----------
 
 .. toctree::
    :maxdepth: 2
 
    3d_quaternion
    3d_dualquaternion
-   3d_plucker
-   3d_plane
+
+---------------
 
 2D-space
 ========
@@ -82,3 +91,12 @@ Orientation in 2D
    :maxdepth: 2
 
    2d_orient_SO2
+
+Geometry in 2D
+--------------
+
+.. toctree::
+   :maxdepth: 2
+
+   2d_line
+   2d_polygon
