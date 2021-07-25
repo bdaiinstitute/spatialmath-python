@@ -12,8 +12,9 @@ Function reference
    func_quat
    func_symbolic
    func_vector
-   func_args
    func_graphics
+   func_args
+
 
 
 
