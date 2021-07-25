@@ -522,7 +522,7 @@ def wrap_mpi_pi(angle):
 
 
 def angdiff(a, b=None):
-    """
+    r"""
     Angular difference
 
     :param a: angle in radians
