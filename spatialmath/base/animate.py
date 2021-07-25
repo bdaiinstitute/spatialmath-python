@@ -118,6 +118,7 @@ class Animate:
         :seealso: :func:`run`
 
         """
+        self.trajectory = None
         if not isinstance(end, (np.ndarray, np.generic)) and isinstance(end, Iterable):
             try:
                 if len(end) == 1:
@@ -143,7 +144,7 @@ class Animate:
                 self.start = start
 
         # draw axes at the origin
-        base.trplot(self.start, axes=self, **kwargs)
+        base.trplot(self.start, ax=self, **kwargs)
 
     def run(
         self,
@@ -280,8 +281,9 @@ class Animate:
 
     class _Line:
         def __init__(self, anim, h, xs, ys, zs):
-            # form 4x2 matrix, columns are first/last point in homogeneous form
-            self.p = np.vstack([xs, ys, zs, [1, 1]])
+            # form 4xN matrix, columns are first/last point in homogeneous form
+            p = np.vstack([xs, ys, zs])
+            self.p = np.vstack([p, np.ones((p.shape[1],))])
             self.h = h
             self.type = "line"
             self.anim = anim
@@ -311,6 +313,7 @@ class Animate:
 
         (h,) = self.ax.plot(x, y, z, *args, **kwargs)
         self.displaylist.append(Animate._Line(self, h, x, y, z))
+        return h
 
     # ------------------- quiver()
 
@@ -416,8 +419,9 @@ class Animate:
 
     # ------------------- scatter()
 
-    def scatter(self, **kwargs):
-        pass
+    def scatter(self, xs, ys, zs, s=0, **kwargs):
+        h = self.plot(xs, ys, zs, '.', markersize=0, **kwargs)
+        self.displaylist.append(Animate._Line(self, h, xs, ys, zs))
 
     # ------------------- wrappers for Axes primitives
 
@@ -503,6 +507,8 @@ class Animate2:
             axes.set_xlim(dims[0:2])
             axes.set_ylim(dims[2:4])
             # ax.set_aspect('equal')
+        else:
+            axes.autoscale(enable=True, axis='both')
 
         self.ax = axes
 
@@ -544,7 +550,7 @@ class Animate2:
                 self.start = start
 
         # draw axes at the origin
-        base.trplot2(self.start, axes=self, block=False, **kwargs)
+        base.trplot2(self.start, ax=self, block=False, **kwargs)
 
     def run(
         self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs
@@ -641,10 +647,18 @@ class Animate2:
 
     # ------------------- plot()
 
+    def set_aspect(self, *args, **kwargs):
+        self.ax.set_aspect(*args, **kwargs)
+
+    def autoscale(self, *args, **kwargs):
+        #self.ax.autoscale(*args, **kwargs)
+        pass
+
     class _Line:
         def __init__(self, anim, h, xs, ys):
-            # form 3x2 matrix, columns are first/last point in homogeneous form
-            self.p = np.vstack([xs, ys, [1, 1]])
+            # form 3xN matrix, columns are first/last point in homogeneous form
+            p = np.vstack([xs, ys])
+            self.p = np.vstack([p, np.ones((p.shape[1],))])
             self.h = h
             self.type = "line"
             self.anim = anim
@@ -671,6 +685,7 @@ class Animate2:
 
         (h,) = self.ax.plot(x, y, *args, **kwargs)
         self.displaylist.append(Animate2._Line(self, h, x, y))
+        return h
 
     # ------------------- quiver()
 
@@ -755,8 +770,9 @@ class Animate2:
 
     # ------------------- scatter()
 
-    def scatter(self, **kwargs):
-        pass
+    def scatter(self, x, y, s=0, **kwargs):
+        h = self.plot(x, y, '.', markersize=0, **kwargs)
+        self.displaylist.append(Animate2._Line(self, h, x, y))
 
     # ------------------- wrappers for Axes primitives
 
@@ -791,8 +807,11 @@ if __name__ == "__main__":
     # plotvol3(2)
     # tranimate(attitude())
 
-    # from spatialmath import base
+    from spatialmath import base
 
-    # T = base.rpy2r(0.3, 0.4, 0.5)
+    T = base.rpy2r(0.3, 0.4, 0.5)
     # base.tranimate(T, wait=True)
+
+    T = base.rot2(2)
+    base.tranimate2(T, wait=True)
     pass

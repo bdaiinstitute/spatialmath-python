@@ -829,10 +829,13 @@ def trplot2(
 
     ax = base.axes_logic(ax, 2)
 
-    if not ax.get_xlabel():
-        ax.set_xlabel(labels[0])
-    if not ax.get_ylabel():
-        ax.set_ylabel(labels[0])
+    try:
+        if not ax.get_xlabel():
+            ax.set_xlabel(labels[0])
+        if not ax.get_ylabel():
+            ax.set_ylabel(labels[0])
+    except AttributeError:
+        pass  # if axes are an Animate object
 
     if not hasattr(ax, '_plotvol'):
         ax.set_aspect("equal")
@@ -957,6 +960,11 @@ def tranimate2(T, **kwargs):
             tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
     """
     anim = base.animate.Animate2(**kwargs)
+    try:
+        del kwargs['dims']
+    except KeyError:
+        pass
+    
     anim.trplot2(T, **kwargs)
     anim.run(**kwargs)
 

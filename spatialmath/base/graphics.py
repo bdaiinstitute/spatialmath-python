@@ -1022,9 +1022,9 @@ def _axes_dimensions(ax):
     """
     classname = ax.__class__.__name__
 
-    if classname == "Axes3DSubplot":
+    if classname in ("Axes3DSubplot", "Animate"):
         return 3
-    elif classname == "AxesSubplot":
+    elif classname in ("AxesSubplot", "Animate2"):
         return 2
 
 def axes_get_limits(ax):

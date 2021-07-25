@@ -2573,12 +2573,15 @@ def trplot(
     else:
         ax = base.plotvol3(dims, ax=ax)
 
-    if not ax.get_xlabel():
-        ax.set_xlabel(labels[0])
-    if not ax.get_ylabel():
-        ax.set_ylabel(labels[0])
-    if not ax.get_zlabel():
-        ax.set_zlabel(labels[0])
+    try:
+        if not ax.get_xlabel():
+            ax.set_xlabel(labels[0])
+        if not ax.get_ylabel():
+            ax.set_ylabel(labels[0])
+        if not ax.get_zlabel():
+            ax.set_zlabel(labels[0])
+    except AttributeError:
+        pass  # if axes are an Animate object
 
     if anaglyph is not None:
         # enforce perspective projection
@@ -2808,6 +2811,8 @@ def trplot(
 
     if block:
         # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
+        import matplotlib.pyplot as plt
+        # TODO move blocking into graphics
         plt.show(block=block)
     return ax
 
@@ -2862,6 +2867,11 @@ def tranimate(T, **kwargs):
     kwargs["block"] = False
 
     anim = base.animate.Animate(**kwargs)
+    try:
+        del kwargs['dims']
+    except KeyError:
+        pass
+    
     anim.trplot(T, **kwargs)
     anim.run(**kwargs)
 
