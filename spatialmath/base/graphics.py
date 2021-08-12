@@ -74,7 +74,7 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     return [handle]
 
 
-def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
+def plot_point(pos, marker="bs", label=None, text=None, ax=None, textargs=None, **kwargs):
     """
     Plot a point using matplotlib
 
@@ -82,8 +82,8 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     :type pos: array_like(2), ndarray(2,n), list of 2-tuples
     :param marker: matplotlub marker style, defaults to 'bs'
     :type marker: str or list of str, optional
-    :param text: text label, defaults to None
-    :type text: str, optional
+    :param label: text label, defaults to None
+    :type label: str, optional
     :param ax: axes to plot in, defaults to ``gca()``
     :type ax: Axis, optional
     :return: the matplotlib object
@@ -101,8 +101,17 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
       vertically aligned.
 
     - Multiple points can be marked if ``pos`` is a 2xn array or a list of
-      coordinate pairs.  If a label is provided every point will have the same
-      label.
+      coordinate pairs.  In this case:
+        - all points have the same label
+        - label can include the format string {} which is susbstituted for the
+          point index, starting at zero
+        - label can be a tuple containing a format string followed by vectors
+          of shape(n).  For example::
+
+            ``("#{0} a={1:.1f}, b={2:.1f}", a, b)``
+
+          will label each point with its index (argument 0) and consecutive
+          elements of ``a`` and ``b`` which are arguments 1 and 2 respectively.
 
     Examples:
 
@@ -119,6 +128,10 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     - ``plot_point(p, 'r*', ('{1:.1f}', z))`` plot red star at points defined by
       columns of ``p`` and label them all with successive elements of ``z``.
     """
+
+    if text is not None:
+        raise DeprecationWarning('use label not text')
+
     if isinstance(pos, np.ndarray):
         if pos.ndim == 1:
             x = pos[0]
@@ -158,22 +171,22 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
             handles.append(plt.plot(x, y, m, **kwargs))
     else:
         handles.append(plt.plot(x, y, marker, **kwargs))
-    if text is not None:
+    if label is not None:
         try:
             xy = zip(x, y)
         except TypeError:
             xy = [(x, y)]
-        if isinstance(text, str):
+        if isinstance(label, str):
             # simple string, but might have format chars
             for i, (x, y) in enumerate(xy):
-                handles.append(plt.text(x, y, " " + text.format(i), **textopts))
-        elif isinstance(text, (tuple, list)):
+                handles.append(plt.text(x, y, " " + label.format(i), **textopts))
+        elif isinstance(label, (tuple, list)):
             for i, (x, y) in enumerate(xy):
                 handles.append(
                     plt.text(
                         x,
                         y,
-                        " " + text[0].format(i, *[d[i] for d in text[1:]]),
+                        " " + label[0].format(i, *[d[i] for d in label[1:]]),
                         **textopts
                     )
                 )
