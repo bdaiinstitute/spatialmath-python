@@ -186,7 +186,7 @@ class Polygon2:
         # https://stackoverflow.com/questions/45957229/matplotlib-path-contains-points-radius-parameter-defined-inconsistently
         # edges are included but the corners are not
 
-        if p.ndim == 1:
+        if isinstance(p, (list, tuple)) or (isinstance(p, np.ndarray) and p.ndim == 1):
             return self.path.contains_point(tuple(p), radius=radius)
         else:
             return self.path.contains_points(p.T, radius=radius)
@@ -252,6 +252,11 @@ class Polygon2:
             for p1, p2 in self.segments():
                 # test each edge segment against the line
                 if other.intersect_segment(p1, p2):
+                    return True
+            return False
+        elif isinstance(other, (list, tuple)):
+            for polygon in other:
+                if self.path.intersects_path(polygon.path, filled=True):
                     return True
             return False
 
