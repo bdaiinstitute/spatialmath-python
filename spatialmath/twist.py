@@ -861,6 +861,7 @@ class Twist3(BaseTwist):
         else:
             return [base.skewa(x.S) for x in self]
 
+    @property
     def pitch(self):
         """
         Pitch of a 3D twist
@@ -882,7 +883,7 @@ class Twist3(BaseTwist):
             >>> from spatialmath import SE3, Twist3
             >>> T = SE3(1, 2, 3) * SE3.Rx(0.3)
             >>> S = Twist3(T)
-            >>> S.pitch()
+            >>> S.pitch
 
         """
         return np.dot(self.w, self.v)
@@ -905,8 +906,9 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.line()
         """
-        return Line3([Line3(-tw.v - tw.pitch() * tw.w, tw.w) for tw in self])
+        return Line3([Line3(-tw.v - tw.pitch * tw.w, tw.w) for tw in self])
 
+    @property
     def pole(self):
         """
         Pole of a 3D twist
@@ -924,9 +926,9 @@ class Twist3(BaseTwist):
             >>> from spatialmath import SE3, Twist3
             >>> T = SE3(1, 2, 3) * SE3.Rx(0.3)
             >>> S = Twist3(T)
-            >>> S.pole()
+            >>> S.pole
         """
-        return np.cross(self.w, self.v) / self.theta()
+        return np.cross(self.w, self.v) / self.theta
 
     def theta(self):
         """
@@ -1374,9 +1376,35 @@ class Twist2(BaseTwist):
         """
         return self.data[0][2]
 
+    @property
+    def pole(self):
+        """
+        Pole of a 2D twist
+
+        :return: the pole of the twist
+        :rtype: ndarray(2)
+
+        ``X.pole()`` is a point on the twist axis. For a pure translation 
+        this point is at infinity.
+
+        Example:
+        
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3, Twist3
+            >>> T = SE2(1, 2, 0.3)
+            >>> S = Twist2(T)
+            >>> S.pole()
+        """
+        p = np.cross(np.r_[0, 0, self.w], np.r_[self.v, 0]) / self.theta
+        return p[:2]
+
     # -------------------------  methods -------------------------------#
 
-    def SE2(self):
+    def printline(self):
+        return self.SE2().printline()
+
+    def SE2(self, theta=1):
         """
         Convert 2D twist to SE(2) matrix
 
@@ -1471,29 +1499,7 @@ class Twist2(BaseTwist):
         else:
             return SE2([base.trexp2(self.S * t) for t in theta])
 
-    def pole(self):
-        """
-        Pole of a 2D twist
 
-        :return: the pole of the twist
-        :rtype: ndarray(2)
-
-        ``X.pole()`` is a point on the twist axis. For a pure translation 
-        this point is at infinity.
-
-        Example:
-        
-        .. runblock:: pycon
-
-            >>> from spatialmath import SE3, Twist3
-            >>> T = SE2(1, 2, 0.3)
-            >>> S = Twist2(T)
-            >>> S.pole()
-        """
-        p = np.cross(np.r_[0, 0, self.w], np.r_[self.v, 0]) / self.theta()
-        return p[:2]
-
-    @property
     def unit(self):
         """
         Unit twist
