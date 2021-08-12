@@ -732,6 +732,9 @@ class Twist3(BaseTwist):
 
     # -------------------------  methods -------------------------------#
 
+    def printline(self):
+        return self.SE3().printline()
+
     def unit(self):
         """
         Unit twist
