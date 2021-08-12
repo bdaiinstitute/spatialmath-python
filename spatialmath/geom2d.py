@@ -49,10 +49,23 @@ class Polygon2:
         .. note:: The polygon is represented by a Matplotlib ``Path``
         """
         
-        if vertices is not None:
-            vertices = np.array(vertices)
-            self.path = Path(vertices.T, closed=False)
-            self.path0 = self.path
+        if isinstance(vertices, (list, tuple)):
+            vertices = np.array(vertices).T
+        elif isinstance(vertices, np.ndarray):
+            if vertices.shape[0] != 2:
+                raise ValueError('ndarray must be 2xN')
+        elif vertices is None:
+            return
+        else:
+            raise TypeError('expecting list of 2-tuples or ndarray(2,N)')
+
+        # replicate the first vertex to make it closed.
+        # setting closed=False and codes=None leads to a different
+        # path which gives incorrect intersection results
+        vertices = np.hstack((vertices, vertices[:, 0:1]))
+        
+        self.path = Path(vertices.T, closed=True)
+        self.path0 = self.path
 
     def __str__(self):
         """
