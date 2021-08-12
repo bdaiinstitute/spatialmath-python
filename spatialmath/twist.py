@@ -163,26 +163,6 @@ class BaseTwist(BasePoseList):
             return [base.isunitvec(x) for x in self.data]
 
     @property
-    def unit(self):
-        """
-        Unitize twist (superclass property)
-
-        :return: a unit twist
-        :rtype: Twist3 or Twist2
-
-        - ``S.unit()`` is a Twist3 object representing a unit twist aligned with the
-        Twist ``S``.
-
-        Example:
-
-        .. runblock:: pycon
-
-            >>> from spatialmath import Twist3
-            >>> S = Twist3([1,2,3,4,5,6])
-            >>> S.unit()
-        """
-        return Twist3(base.unitvec(self.S))
-
     def theta(self):
         """
         Twist angle (superclass method)
@@ -751,6 +731,29 @@ class Twist3(BaseTwist):
 
 
     # -------------------------  methods -------------------------------#
+
+    def unit(self):
+        """
+        Unit twist
+
+        - ``S.unit()`` is a Twist2 objec3 representing a unit twist aligned with the
+          Twist ``S``.
+
+        Example:
+        
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3, Twist3
+            >>> T = SE3(1, 2, 0.3)
+            >>> S = Twist3(T)
+            >>> S.unit()
+        """
+        if base.iszerovec(self.w):
+            # rotational twist
+            return Twist3(self.S / base.norm(S.w))
+        else:
+            # prismatic twist
+            return Twist3(base.unitvec(self.v), [0, 0, 0])
 
     def ad(self):
         """
