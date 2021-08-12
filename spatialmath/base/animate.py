@@ -146,6 +146,9 @@ class Animate:
         # draw axes at the origin
         base.trplot(self.start, ax=self, **kwargs)
 
+    def set_proj_type(self, proj_type):
+        self.ax.set_proj_type(proj_type)
+
     def run(
         self,
         movie=None,
