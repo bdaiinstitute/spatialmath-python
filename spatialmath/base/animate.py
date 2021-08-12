@@ -260,7 +260,10 @@ class Animate:
         :returns: readable version of the display list
         :rtype: str
         """
-        return ", ".join([x.type for x in self.displaylist])
+        return "Animate(" + ", ".join([x.type for x in self.displaylist]) + ")"
+
+    def __str__(self):
+        return f"Animate(len={len(self.displaylist)}"
 
     def artists(self):
         """
@@ -628,7 +631,10 @@ class Animate2:
         :returns: readable version of the display list
         :rtype: str
         """
-        return ", ".join([x.type for x in self.displaylist])
+        return "Animate2(" + ", ".join([x.type for x in self.displaylist]) + ")"
+
+    def __str__(self):
+        return f"Animate2(len={len(self.displaylist)}"
 
     def artists(self):
         """
