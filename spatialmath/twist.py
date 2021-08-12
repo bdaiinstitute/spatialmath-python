@@ -468,9 +468,9 @@ class Twist3(BaseTwist):
     # -------------------- variant constructors ----------------------------#
 
     @classmethod
-    def Revolute(cls, a, q, pitch=None):
+    def UnitRevolute(cls, a, q, pitch=None):
         """
-        Construct a new unit rotational 3D twist
+        Construct a new 3D rotational unit twist
 
         :param a: Twist axis or line of action
         :type a: array_like(3)
@@ -497,9 +497,9 @@ class Twist3(BaseTwist):
         return cls(v, w)
 
     @classmethod
-    def Prismatic(cls, a):
+    def UnitPrismatic(cls, a):
         """
-        Construct a new unit prismatic 3D twist
+        Construct a new 3D unit prismatic twist
 
         :param a: Twist axis or line of action
         :type a: array_like(3)
@@ -1262,9 +1262,9 @@ class Twist2(BaseTwist):
     # -------------------- variant constructors ----------------------------#
 
     @classmethod
-    def Revolute(cls, q):
+    def UnitRevolute(cls, q):
         """
-        Construct a new 2D revolute Twist object
+        Construct a new 2D revolute unit twist
 
         :param q: Point on the line of action
         :type q: array_like(2)
@@ -1286,9 +1286,9 @@ class Twist2(BaseTwist):
         return cls(v[:2], 1)
 
     @classmethod
-    def Prismatic(cls, a):
+    def UnitPrismatic(cls, a):
         """
-        Construct a new 2D primsmatic Twist object
+        Construct a new 2D primsmatic unit twist
 
         :param a: Displacment
         :type a: array-like(2)
