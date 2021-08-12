@@ -817,27 +817,7 @@ class Twist3(BaseTwist):
         """
         return self.SE3().Ad()
 
-    def SE3(self):
-        """
-        Convert 3D twist to SE(3) matrix
 
-        :return: an SE(3) representation
-        :rtype: SE3 instance
-
-        ``S.SE3()`` is an SE3 object representing the homogeneous transformation 
-        equivalent to the Twist3. This is the exponentiation of the twist vector.
-
-        Example:
-        
-        .. runblock:: pycon
-
-            >>> from spatialmath import Twist3
-            >>> S = Twist3.Rx(0.3)
-            >>> S.SE3()
-
-        :seealso: :func:`Twist3.exp`
-        """
-        return SE3(self.exp())
 
     def se3(self):
         """
@@ -933,30 +913,42 @@ class Twist3(BaseTwist):
         """
         return np.cross(self.w, self.v) / self.theta
 
-    def theta(self):
+    def SE3(self, theta=1, unit='rad'):
         """
-        Twist rotation
+        Convert 3D twist to SE(3) matrix
 
-        :return: rotation about the twist axis
-        :rtype: float
+        :return: an SE(3) representation
+        :rtype: SE3 instance
 
-        ``X.theta`` is the rotation about the twist axis in units of radians.
-
-        If we consider the twist as a screw, this is the rotation about the
-        screw axis to achieve the rigid-body motion.
+        ``S.SE3()`` is an SE3 object representing the homogeneous transformation 
+        equivalent to the Twist3. This is the exponentiation of the twist vector.
 
         Example:
         
         .. runblock:: pycon
 
-            >>> from spatialmath import SE3, Twist3
-            >>> T = SE3(1, 2, 3) * SE3.Rx(0.3)
-            >>> S = Twist3(T)
-            >>> S.theta()
-        """
-        return base.norm(self.w)
+            >>> from spatialmath import Twist3
+            >>> S = Twist3.Rx(0.3)
+            >>> S.SE3()
 
-    def exp(self, theta=None, unit='rad'):
+        :seealso: :func:`Twist3.exp`
+        """
+        theta = base.getunit(theta, unit)
+
+        if base.isscalar(theta):
+            # theta is a scalar
+            return SE3(base.trexp(self.S * theta))
+        else:
+            # theta is a vector
+            if len(self) == 1:
+                return SE3([base.trexp(self.S * t) for t in theta])
+            elif len(self) == len(theta):
+                return SE3([base.trexp(S * t) for S, t in zip(self.data, theta)])
+            else:
+                raise ValueError('length of twist and theta not consistent')
+        return SE3(self.exp(theta))
+
+    def exp(self, theta=1, unit='rad'):
         """
         Exponentiate a 3D twist
 
@@ -989,26 +981,9 @@ class Twist3(BaseTwist):
 
         :seealso: :func:`spatialmath.base.trexp`
         """
-        if unit != 'rad' and self.isprismatic:
-            print('Twist3.exp: using degree mode for a prismatic twist')
+        theta = base.getunit(theta, unit)
 
-        if theta is None:
-            theta = 1
-        else:
-            theta = base.getunit(theta, unit)
-
-        if base.isscalar(theta):
-            # theta is a scalar
-            return SE3(base.trexp(self.S * theta))
-        else:
-            # theta is a vector
-            if len(self) == 1:
-                return SE3([base.trexp(self.S * t) for t in theta])
-            elif len(self) == len(theta):
-                return SE3([base.trexp(S * t) for S, t in zip(self.data, theta)])
-            else:
-                raise ValueError('length of twist and theta not consistent')
-
+        return base.trexp(self.S * theta)
 
 
     # ------------------------- arithmetic -------------------------------#
@@ -1427,8 +1402,18 @@ class Twist2(BaseTwist):
 
         :seealso: :func:`Twist3.exp`
         """
+        if unit != 'rad' and self.isprismatic:
+            print('Twist3.exp: using degree mode for a prismatic twist')
 
-        return SE2(self.exp())
+        if theta is None:
+            theta = 1
+        else:
+            theta = base.getunit(theta, unit)
+
+        if base.isscalar(theta):
+            return SE2(base.trexp2(self.S * theta))
+        else:
+            return SE2([base.trexp2(self.S * t) for t in theta])
 
     def se2(self):
         """
@@ -1488,19 +1473,7 @@ class Twist2(BaseTwist):
 
         :seealso: :func:`spatialmath.base.trexp2`
         """
-
-        if unit != 'rad' and self.isprismatic:
-            print('Twist3.exp: using degree mode for a prismatic twist')
-
-        if theta is None:
-            theta = 1
-        else:
-            theta = base.getunit(theta, unit)
-
-        if base.isscalar(theta):
-            return SE2(base.trexp2(self.S * theta))
-        else:
-            return SE2([base.trexp2(self.S * t) for t in theta])
+        return base.trexp2(theta)
 
 
     def unit(self):
