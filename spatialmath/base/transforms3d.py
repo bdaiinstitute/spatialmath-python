@@ -2589,18 +2589,21 @@ def trplot(
 
         # collect all the arguments to use for left and right views
         args = {
-            "axes": ax,
+            "ax": ax,
             "frame": frame,
             "length": length,
             "style": style,
             "wtl": wtl,
-            "d1": d1,
+            "flo": flo,
             "d2": d2,
         }
         args = {**args, **kwargs}
 
         # unpack the anaglyph parameters
-        if isinstance(anaglyph, tuple):
+        if anaglyph is True:
+            colors = 'rc'
+            shift = 0.1
+        elif isinstance(anaglyph, tuple):
             colors = anaglyph[0]
             shift = anaglyph[1]
         else:
@@ -2611,6 +2614,8 @@ def trplot(
         trplot(T, color=colors[0], **args)
 
         # the right eye sees a from a viewpoint in shifted in the X direction
+        if base.isrot(T):
+            T = base.r2t(T)
         trplot(transl(shift, 0, 0) @ T, color=colors[1], **args)
 
         return
@@ -2639,7 +2644,7 @@ def trplot(
         for Tk in T:
             trplot(
                 Tk,
-                axes=ax,
+                ax=ax,
                 block=block,
                 dims=dims,
                 color=color,
