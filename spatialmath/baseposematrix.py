@@ -3,6 +3,7 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
+from sympy.core.singleton import S
 from spatialmath.base import base
 from spatialmath.baseposelist import BasePoseList
 from spatialmath.base import symbolic as sym
@@ -592,14 +593,9 @@ class BasePoseMatrix(BasePoseList):
         :type unit: str
         :param file: file to write formatted string to. [default, stdout]
         :type file: file object
-        :return: the formatted value as a string
-        :rtype: str
 
-        - ``X.printline()`` print ``X`` in single-line format
-        - ``X.printline(file=None)`` is a string representing the pose ``X`` in
-          single-line format
-
-        If ``X`` has multiple values, print one per line.
+        Print pose in a compact single line format. If ``X`` has multiple
+        values, print one per line.
 
         Example:
 
@@ -622,10 +618,58 @@ class BasePoseMatrix(BasePoseList):
         """
         if self.N == 2:
             for x in self.data:
-                return base.trprint2(x, *args, **kwargs)
+                base.trprint2(x, *args, **kwargs)
         else:
             for x in self.data:
-                return base.trprint(x, *args, **kwargs)
+                base.trprint(x, *args, **kwargs)
+
+
+    def strline(self, *args, **kwargs):
+        """
+        Print pose in compact single line format (superclass method)
+
+        :param label: text label to put at start of line
+        :type label: str
+        :param fmt: conversion format for each number as used by ``format()``
+        :type fmt: str
+        :param label: text label to put at start of line
+        :type label: str
+        :param orient: 3-angle convention to use, optional, ``SO3`` and ``SE3``
+                       only
+        :type orient: str
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+
+        Print pose in a compact single line format. If ``X`` has multiple
+        values, print one per line.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> x = SE3.Rx(0.3)
+            >>> x.printline()
+            >>> x = SE3.Rx([0.2, 0.3], 'rpy/xyz')
+            >>> x.printline()
+            >>> x = SE2(1, 2, 0.3)
+            >>> x.printline()
+            >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
+        
+        .. note:: 
+            - Default formatting is for compact display of data
+            - For tabular data set ``fmt`` to a fixed width format such as
+              ``fmt='{:.3g}'``
+
+        :seealso: :func:`trprint`, :func:`trprint2`
+        """
+        s = ''
+        if self.N == 2:
+            for x in self.data:
+                s += base.trprint2(x, *args, file=False, **kwargs)
+        else:
+            for x in self.data:
+                s += base.trprint(x, *args, file=False, **kwargs)
+        return s
 
     def __repr__(self):
         """
