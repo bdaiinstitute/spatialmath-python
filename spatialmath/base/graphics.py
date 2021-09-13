@@ -618,9 +618,9 @@ def sphere(radius=1, centre=(0, 0, 0), resolution=50):
 
     Phi, Theta = np.meshgrid(phi_range, theta_range)
 
-    x = radius * np.sin(Theta) * np.cos(Phi)
-    y = radius * np.sin(Theta) * np.sin(Phi)
-    z = radius * np.cos(Theta)
+    x = radius * np.sin(Theta) * np.cos(Phi) + centre[0]
+    y = radius * np.sin(Theta) * np.sin(Phi) + centre[1]
+    z = radius * np.cos(Theta) + centre[2]
 
     return (x, y, z)
 
