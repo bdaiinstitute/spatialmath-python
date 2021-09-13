@@ -738,8 +738,8 @@ class Twist3(BaseTwist):
 
     # -------------------------  methods -------------------------------#
 
-    def printline(self):
-        return self.SE3().printline()
+    def printline(self, **kwargs):
+        return self.SE3().printline(**kwargs)
 
     def unit(self):
         """
@@ -1385,8 +1385,8 @@ class Twist2(BaseTwist):
 
     # -------------------------  methods -------------------------------#
 
-    def printline(self):
-        return self.SE2().printline()
+    def printline(self, **kwargs):
+        return self.SE2().printline(**kwargs)
 
     def SE2(self, theta=1):
         """
