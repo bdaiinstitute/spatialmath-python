@@ -497,9 +497,9 @@ class SE2(SO2):
         - N>1, return an ndarray with shape=(N,3)
         """
         if len(self) == 1:
-            return np.r_[self.t, self.theta()]
+            return base.tr2xyt(self.A)
         else:
-            return [np.r_[x.t, x.theta()] for x in self]
+            return [base.tr2xyt(x) for x in self.A]
 
     def inv(self):
         r"""
