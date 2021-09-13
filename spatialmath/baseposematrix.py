@@ -576,7 +576,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def printline(self, *args, **kwargs):
+    def printline(self, **kwargs):
         """
         Print pose in compact single line format (superclass method)
 
@@ -618,10 +618,10 @@ class BasePoseMatrix(BasePoseList):
         """
         if self.N == 2:
             for x in self.data:
-                base.trprint2(x, *args, **kwargs)
+                base.trprint2(x, **kwargs)
         else:
             for x in self.data:
-                base.trprint(x, *args, **kwargs)
+                base.trprint(x, **kwargs)
 
 
     def strline(self, *args, **kwargs):
