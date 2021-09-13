@@ -1144,6 +1144,7 @@ def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
         ax.set_aspect("equal")
     if grid:
         ax.grid(True)
+        ax.set_axisbelow(True)
 
     # signal to related functions that plotvol set the axis limits
     ax._plotvol = True
