@@ -1388,7 +1388,7 @@ class Twist2(BaseTwist):
     def printline(self, **kwargs):
         return self.SE2().printline(**kwargs)
 
-    def SE2(self, theta=1):
+    def SE2(self, theta=1, unit='rad'):
         """
         Convert 2D twist to SE(2) matrix
 
@@ -1479,7 +1479,10 @@ class Twist2(BaseTwist):
 
         :seealso: :func:`spatialmath.base.trexp2`
         """
-        theta = base.getunit(theta, unit)
+        if theta is None:
+            theta = 1.0
+        else:
+            theta = base.getunit(theta, unit)
 
         return base.trexp2(self.S * theta)
 
