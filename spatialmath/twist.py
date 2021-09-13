@@ -1479,7 +1479,9 @@ class Twist2(BaseTwist):
 
         :seealso: :func:`spatialmath.base.trexp2`
         """
-        return base.trexp2(theta)
+        theta = base.getunit(theta, unit)
+
+        return base.trexp2(self.S * theta)
 
 
     def unit(self):
