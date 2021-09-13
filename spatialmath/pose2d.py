@@ -517,9 +517,9 @@ class SE2(SO2):
 
         """
         if len(self) == 1:
-            return SE2(base.rt2tr(self.R.T, -self.R.T @ self.t))
+            return SE2(base.rt2tr(self.R.T, -self.R.T @ self.t), check=False)
         else:
-            return SE2([base.rt2tr(x.R.T, -x.R.T @ x.t) for x in self])
+            return SE2([base.rt2tr(x.R.T, -x.R.T @ x.t) for x in self], check=False)
 
     def SE3(self, z=0):
         """
