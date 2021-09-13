@@ -280,6 +280,12 @@ class BaseTwist(BasePoseList):
             raise TypeError('operands to != are of different types')
         return left.binop(right, lambda x, y: not all(x == y), list1=False)
 
+    def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        if base.isscalar(right):
+            return Twist3(left.S / right)
+        else:
+            raise ValueError('Twist /, incorrect right operand')
+
 # ======================================================================== #
 
 
@@ -1062,7 +1068,7 @@ class Twist3(BaseTwist):
         - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
         """
         if base.isscalar(left):
-            return Twist3(self.S * left)
+            return Twist3(right.S * left)
         else:
             raise ValueError('Twist3 *, incorrect left operand')
 
