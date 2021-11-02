@@ -3,7 +3,6 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
-from sympy.core.singleton import S
 from spatialmath.base import base
 from spatialmath.baseposelist import BasePoseList
 from spatialmath.base import symbolic as sym
