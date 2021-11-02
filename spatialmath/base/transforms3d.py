@@ -1859,6 +1859,36 @@ def exp2jac(v):
     )
     return E
 
+def tr2x(T, representation="rpy/xyz"):
+    t = transl(T)
+    R = base.t2r(T)
+    if representation == "rpy/xyz":
+        r = tr2rpy(R, order="xyz")
+    elif representation == "rpy/zyx":
+        r = tr2rpy(R, order="zyx")
+    elif representation == "eul":
+        r = tr2eul(R)
+    elif representation == "exp":
+        r = trlog(R, twist=True)
+    else:
+        raise ValueError(f"unknown representation: {representation}")
+    return np.r_[t, r]
+
+def x2tr(x, representation="rpy/xyz"):
+    t = x[:3]
+    r = x[3:]
+    if representation == "rpy/xyz":
+        R = rpy2r(r, order="xyz")
+    elif representation == "rpy/zyx":
+        R = rpy2r(r, order="zyx")
+    elif representation == "eul":
+        R = eul2r(r)
+    elif representation == "exp":
+        R = trexp(r)
+    else:
+        raise ValueError(f"unknown representation: {representation}")
+    return base.rt2tr(R, t)
+
 
 def rot2jac(R, representation="rpy-xyz"):
     """
