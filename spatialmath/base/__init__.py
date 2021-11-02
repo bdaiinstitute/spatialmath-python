@@ -99,9 +99,12 @@ __all__ = [
     "exp2jac",
     "rot2jac",
     "angvelxform",
+    "angvelxform_dot",
     "trprint",
     "trplot",
     "tranimate",
+    "tr2x",
+    "x2tr",
     # spatialmath.base.transformsNd
     "t2r",
     "r2t",
@@ -166,6 +169,7 @@ __all__ = [
     "isnotebook",
     # spatial.base.numeric
     "numjac",
+    "numhess",
     "array2str",
     "bresenham",
 ]
