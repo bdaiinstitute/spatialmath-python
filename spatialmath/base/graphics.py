@@ -1,5 +1,6 @@
 import math
 from itertools import product
+from collections import Iterable
 import warnings
 import numpy as np
 import scipy as sp
@@ -242,10 +243,10 @@ def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
 
 def plot_box(
     *fmt,
-    bl=None,
-    tl=None,
-    br=None,
-    tr=None,
+    lb=None,
+    lt=None,
+    rb=None,
+    rt=None,
     wh=None,
     centre=None,
     l=None,
@@ -256,6 +257,7 @@ def plot_box(
     h=None,
     ax=None,
     bbox=None,
+    ltrb=None,
     filled=False,
     **kwargs
 ):
@@ -268,10 +270,10 @@ def plot_box(
     :type tl: [array_like(2), optional
     :param br: bottom-right corner, defaults to None
     :type br: array_like(2), optional
-    :param tr: top -ight corner, defaults to None
+    :param tr: top-right corner, defaults to None
     :type tr: array_like(2), optional
-    :param wh: width and height, defaults to None
-    :type wh: array_like(2), optional
+    :param wh: width and height, if both are the same provide scalar, defaults to None
+    :type wh: scalar, array_like(2), optional
     :param centre: centre of box, defaults to None
     :type centre: array_like(2), optional
     :param l: left side of box, minimum x, defaults to None
@@ -304,35 +306,48 @@ def plot_box(
     The box can be specified in many ways:
 
     - bounding box which is a 2x2 matrix [xmin, xmax; ymin, ymax]
+    - bounding box [xmin, xmax, ymin, ymax]
+    - alternative box [xmin, ymin, xmax, ymax]
     - centre and width+height
     - bottom-left and top-right corners
     - bottom-left corner and width+height
     - top-right corner and width+height
     - top-left corner and width+height
 
+    For plots where the y-axis is inverted (eg. for images) then top is the
+    smaller vertical coordinate.
+    
     Example:
 
     .. runblock:: pycon
 
         >>> from spatialmath.base import plotvol2, plot_box
         >>> plotvol2(5)
-        >>> plot_box('r', centre=(2,3), wh=(1,1))
+        >>> plot_box('r', centre=(2,3), wh=1) # w=h=1
         >>> plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
     """
 
     if bbox is not None:
-        l, r, b, t = bbox
+        if isinstance(bbox, ndarray) and bbox.ndims > 1:
+            # case of [l r; t b]
+            bbox = bbox.ravel()
+        l, r, t, b = bbox
+    elif ltrb is not None:
+        l, t, r, b = ltrb
     else:
-        if tl is not None:
-            l, t = tl
-        if tr is not None:
-            r, t = tr
-        if bl is not None:
-            l, b = bl
-        if br is not None:
-            r, b = br
+        if lt is not None:
+            l, t = lt
+        if rt is not None:
+            r, t = rt
+        if lb is not None:
+            l, b = lb
+        if rb is not None:
+            r, b = rb
         if wh is not None:
-            w, h = wh
+            if isinstance(wh, Iterable):
+                w, h = wh
+            else:
+                w = wh; h = wh
         if centre is not None:
             cx, cy = centre
         if l is None:
@@ -347,16 +362,25 @@ def plot_box(
                 pass
         if b is None:
             try:
-                b = t - h
+                t = b + h
             except:
                 pass
         if b is None:
             try:
-                b = cy + h / 2
+                t = cy - h / 2
             except:
                 pass
 
     ax = axes_logic(ax, 2)
+
+    if ax.yaxis_inverted():
+        # if y-axis is flipped, switch top and bottom
+        t, b = b, t
+
+    if l >= r:
+        raise ValueError("left must be less than right")
+    if b >= t:
+        raise ValueError("bottom must be less than top")
 
     if filled:
         if w is None:
@@ -392,9 +416,9 @@ def plot_box(
                 t = cy + h / 2
             except:
                 pass
-        r = plt.plot([l, l, r, r, l], [b, t, t, b, b], *fmt, **kwargs)
+        r = plt.plot([l, l, r, r, l], [b, t, t, b, b], *fmt, **kwargs)[0]
 
-    return [r]
+    return r
 
 def plot_poly(vertices, *fmt, close=False,**kwargs):
 
