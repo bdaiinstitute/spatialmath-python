@@ -758,10 +758,14 @@ def points2tr2(p1, p2):
     M = np.dot(p2_centered.T, p1_centered)
 
     # get singular value decomposition of the cross covariance matrix
-    U, W, V_t = np.linalg.svd(M)
+    U, W, VT = np.linalg.svd(M)
 
     # get rotation between the two point clouds
-    R = np.dot(U, V_t)
+    R = U @ VT
+    # special reflection case
+    if np.linalg.det(R) < 0:
+       VT[-1, :] *= -1
+       R = VT.T @ U.T
 
     # get the translation
     t = np.expand_dims(p2_centroid,0).T - np.dot(R, np.expand_dims(p1_centroid,0).T)
