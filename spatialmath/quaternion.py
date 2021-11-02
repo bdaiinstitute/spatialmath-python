@@ -2218,13 +2218,7 @@ class UnitQuaternion(Quaternion):
         if not isinstance(other, UnitQuaternion):
             raise TypeError('bad operand')
 
-        def metric3(p, q):
-            x =  base.norm(p - q)
-            y =  base.norm(p + q)
-            if x >= y:
-                return 2 * math.atan(y / x)
-            else:
-                return 2 * math.atan(x / y)
+
 
         if metric == 0:
             measure = lambda p, q: 1 - abs(np.dot(p, q))
@@ -2233,6 +2227,15 @@ class UnitQuaternion(Quaternion):
         elif metric == 2:
             measure =  lambda p, q: math.acos(abs(np.dot(p, q)))
         elif metric == 3:
+
+            def metric3(p, q):
+                x =  base.norm(p - q)
+                y =  base.norm(p + q)
+                if x >= y:
+                    return 2 * math.atan(y / x)
+                else:
+                    return 2 * math.atan(x / y)
+
             measure =  metric3
         elif metric == 4:
             measure = lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1)
@@ -2241,7 +2244,7 @@ class UnitQuaternion(Quaternion):
         if len(ad) == 1:
             return ad[0]
         else:
-            return ad
+            return np.array(ad)
 
     def SO3(self):
         """
