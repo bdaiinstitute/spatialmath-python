@@ -240,7 +240,7 @@ class Quaternion(BasePoseList):
         :return: quaternion expressed as a 4-vector
         :rtype: numpy ndarray, shape=(4,)
 
-        ``q.vec`` is the quaternion as a vector.  If `len(q)` is:
+        ``q.vec_xyzs`` is the quaternion as a vector.  If `len(q)` is:
 
             - 1, return a NumPy array shape=(4,)
             - N>1, return a NumPy array shape=(N,4).
@@ -258,9 +258,9 @@ class Quaternion(BasePoseList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec_xyzs
         """
         if len(self) == 1:
-            return self._A
+            return np.roll(self._A, -1)
         else:
-            return np.array([q._A for q in self])
+            return np.array([np.roll(q._A, -1) for q in self])
 
     @property
     def matrix(self):
