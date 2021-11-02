@@ -109,6 +109,8 @@ class BasePoseMatrix(BasePoseList):
     _ansimatrix = False
     _ansiformatter = None
 
+    __array_ufunc__ = None  # allow pose matrices operators with NumPy values
+
     def __new__(cls, *args, **kwargs):
         """
         Create the subclass instance (superclass method)
