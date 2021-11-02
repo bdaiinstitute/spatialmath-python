@@ -1890,13 +1890,13 @@ def x2tr(x, representation="rpy/xyz"):
     return base.rt2tr(R, t)
 
 
-def rot2jac(R, representation="rpy-xyz"):
+def rot2jac(R, representation="rpy/xyz"):
     """
     Velocity transform for analytical Jacobian
 
     :param R: SO(3) rotation matrix
     :type R: ndarray(3,3)
-    :param representation: defaults to 'rpy-xyz'
+    :param representation: defaults to 'rpy/xyz'
     :type representation: str, optional
     :return: Jacobian matrix
     :rtype: ndarray(6,6)
@@ -1956,7 +1956,7 @@ def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
 
     :param 𝚪: angular representation
     :type 𝚪: ndarray(3)
-    :param representation: defaults to 'rpy-xyz'
+    :param representation: defaults to 'rpy/xyz'
     :type representation: str, optional
     :param inverse: compute mapping from analytical rates to angular velocity
     :type inverse: bool
@@ -2102,13 +2102,13 @@ def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
 
 def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     """
-    Angular acceleratipn transformation
+    Angular acceleration transformation
 
     :param 𝚪: angular representation
     :type 𝚪: ndarray(3)
     :param 𝚪d: angular representation rate
     :type 𝚪d: ndarray(3)
-    :param representation: defaults to 'rpy-xyz'
+    :param representation: defaults to 'rpy/xyz'
     :type representation: str, optional
     :param full: return 6x6 transform for spatial velocity
     :type full: bool
