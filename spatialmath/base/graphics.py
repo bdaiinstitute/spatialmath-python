@@ -465,7 +465,7 @@ def circle(centre=(0, 0), radius=1, resolution=50):
 
 
 def plot_circle(
-    radius, *fmt, centre=(0, 0), resolution=50, ax=None, filled=False, **kwargs
+    radius, centre=(0, 0), *fmt, resolution=50, ax=None, filled=False, **kwargs
 ):
     """
     Plot a circle using matplotlib
