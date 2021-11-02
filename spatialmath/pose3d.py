@@ -832,6 +832,12 @@ class SE3(SO3):
         else:
             return np.array([x[:3, 3] for x in self.A])
 
+    @t.setter
+    def t(self, v):
+        if len(self) > 1:
+            raise ValueError("can only assign translation to length 1 object")
+        v = base.getvector(v, 3)
+        self.A[:3, 3] = v
     # ------------------------------------------------------------------------ #
 
     def inv(self):
