@@ -736,7 +736,7 @@ def ellipsoid(
         # process the probability
         from scipy.stats.distributions import chi2
 
-        s = math.sqrt(chi2.ppf(confidence, df=2)) * scale
+        s = math.sqrt(chi2.ppf(confidence, df=3)) * scale
     else:
         s = scale
 
