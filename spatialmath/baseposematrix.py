@@ -1079,16 +1079,21 @@ class BasePoseMatrix(BasePoseList):
 
         elif isinstance(right, (list, tuple, np.ndarray)):
             #print('*: pose x array')
-            if len(left) == 1 and base.isvector(right, left.N):
-                # pose x vector
-                #print('*: pose x vector')
-                v = base.getvector(right, out='col')
-                if left.isSE:
-                    # SE(n) x vector
-                    return base.h2e(left.A @ base.e2h(v))
+            if len(left) == 1:
+                if  base.isvector(right, left.N):
+                    # pose x vector
+                    #print('*: pose x vector')
+                    v = base.getvector(right, out='col')
+                    if left.isSE:
+                        # SE(n) x vector
+                        return base.h2e(left.A @ base.e2h(v))
+                    else:
+                        # SO(n) x vector
+                        return left.A @ v
                 else:
-                    # SO(n) x vector
-                    return left.A @ v
+                    if right.shape == left.A.shape:
+                        # SE(n) x (nxn)
+                        return left.A @ right
 
             elif len(left) > 1 and base.isvector(right, left.N):
                 # pose array x vector
@@ -1165,10 +1170,11 @@ class BasePoseMatrix(BasePoseList):
 
         :seealso: :func:`__mul__`
         """
-        if base.isscalar(left):
-            return right.__mul__(left)
-        else:
-            return NotImplemented
+        # if base.isscalar(left):
+        #     return right.__mul__(left)
+        # else:
+        #     return NotImplemented
+        return right.__mul__(left)
 
     def __imul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
