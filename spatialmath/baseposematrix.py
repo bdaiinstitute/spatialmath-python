@@ -476,10 +476,6 @@ class BasePoseMatrix(BasePoseList):
         s = base.getvector(s)
         s = np.clip(s, 0, 1)
 
-        if start is not None:
-            assert len(start) == 1, 'len(start) must == 1'
-            start = start.A
-
         if self.N == 2:
             # SO(2) or SE(2)
             if len(s) > 1:
@@ -491,9 +487,9 @@ class BasePoseMatrix(BasePoseList):
             # SO(3) or SE(3)
             if len(s) > 1:
                 assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
-                return self.__class__([base.trinterp(start, self.A, s=_s) for _s in s])
+                return self.__class__([base.trinterp(None, self.A, s=_s) for _s in s])
             else:
-                return self.__class__([base.trinterp(start, x, s=s[0]) for x in self.data])
+                return self.__class__([base.trinterp(None, x, s=s[0]) for x in self.data])
     def norm(self):
         """
         Normalize pose (superclass method)
