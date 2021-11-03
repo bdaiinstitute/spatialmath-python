@@ -3,8 +3,17 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
-from sympy.core.singleton import S
-from spatialmath.base import base
+
+# try:  # pragma: no cover
+#     # print('Using SymPy')
+#     from sympy.core.singleton import S
+
+#     _symbolics = True
+
+# except ImportError:  # pragma: no cover
+#     _symbolics = False
+
+import spatialmath.base as base
 from spatialmath.baseposelist import BasePoseList
 from spatialmath.base import symbolic as sym
 
@@ -14,6 +23,7 @@ _eps = np.finfo(np.float64).eps
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
 try:
     from colored import fg, bg, attr
+
     _colored = True
     # print('using colored output')
 except ImportError:
@@ -22,6 +32,7 @@ except ImportError:
 
 try:
     from ansitable import ANSIMatrix
+
     _ANSIMatrix = True
     # print('using colored output')
 except ImportError:
@@ -48,7 +59,7 @@ class BasePoseMatrix(BasePoseList):
     - ``+`` will add two instances of the same subclass, and the result will be
       a matrix, not an instance of the same subclass, since addition is not a group operator.
 
-    These classes all inherit from ``UserList`` which enables them to 
+    These classes all inherit from ``UserList`` which enables them to
     represent a sequence of values, ie. an ``SE3`` instance can contain
     a sequence of SE(3) values.  Most of the Python ``list`` operators
     are applicable::
@@ -98,12 +109,12 @@ class BasePoseMatrix(BasePoseList):
         is installed.  It does not currently support colorization of elements.
     """
 
-    _rotcolor = 'red'
-    _transcolor = 'blue'
+    _rotcolor = "red"
+    _transcolor = "blue"
     _bgcolor = None
-    _constcolor = 'grey_50'
-    _indexcolor = (None, 'yellow_2')
-    _format = '{:< 9.4g}'
+    _constcolor = "grey_50"
+    _indexcolor = (None, "yellow_2")
+    _format = "{:< 9.4g}"
     _suppress_small = True
     _suppress_tol = 100
     _color = _colored
@@ -114,7 +125,7 @@ class BasePoseMatrix(BasePoseList):
         """
         Create the subclass instance (superclass method)
 
-        Create a new instance and call the superclass initializer to enable the 
+        Create a new instance and call the superclass initializer to enable the
         ``UserList`` capabilities.
         """
 
@@ -122,7 +133,7 @@ class BasePoseMatrix(BasePoseList):
         super().__init__(pose)  # initialize UserList
         return pose
 
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
 
     @property
     def about(self):
@@ -132,7 +143,7 @@ class BasePoseMatrix(BasePoseList):
         :return: succinct summary
         :rtype: str
 
-        Displays the type and the number of elements in compact form, for 
+        Displays the type and the number of elements in compact form, for
         example::
 
             >>> x = SE3([SE3() for i in range(20)])
@@ -162,12 +173,12 @@ class BasePoseMatrix(BasePoseList):
             >>> SE2().N
             2
         """
-        if type(self).__name__ == 'SO2' or type(self).__name__ == 'SE2':
+        if type(self).__name__ == "SO2" or type(self).__name__ == "SE2":
             return 2
         else:
             return 3
 
-    #----------------------- tests
+    # ----------------------- tests
     @property
     def isSO(self):
         """
@@ -178,7 +189,7 @@ class BasePoseMatrix(BasePoseList):
         :return: ``True`` if object is instance of SO2 or SO3
         :rtype: bool
         """
-        return type(self).__name__ == 'SO2' or type(self).__name__ == 'SO3'
+        return type(self).__name__ == "SO2" or type(self).__name__ == "SO3"
 
     @property
     def isSE(self):
@@ -190,16 +201,13 @@ class BasePoseMatrix(BasePoseList):
         :return: ``True`` if object is instance of SE2 or SE3
         :rtype: bool
         """
-        return type(self).__name__ == 'SE2' or type(self).__name__ == 'SE3'
+        return type(self).__name__ == "SE2" or type(self).__name__ == "SE3"
 
+    # ------------------------------------------------------------------------ #
 
-# ------------------------------------------------------------------------ #
-
-
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
 
     # --------- compatibility methods
-
 
     def isrot(self):
         """
@@ -220,7 +228,7 @@ class BasePoseMatrix(BasePoseList):
             >>> x.isrot()
             False
         """
-        return type(self).__name__ == 'SO3'
+        return type(self).__name__ == "SO3"
 
     def isrot2(self):
         """
@@ -241,7 +249,7 @@ class BasePoseMatrix(BasePoseList):
             >>> x.isrot()
             False
         """
-        return type(self).__name__ == 'SO2'
+        return type(self).__name__ == "SO2"
 
     def ishom(self):
         """
@@ -262,7 +270,7 @@ class BasePoseMatrix(BasePoseList):
             >>> x.isrot()
             True
         """
-        return type(self).__name__ == 'SE3'
+        return type(self).__name__ == "SE3"
 
     def ishom2(self):
         """
@@ -283,9 +291,9 @@ class BasePoseMatrix(BasePoseList):
             >>> x.isrot()
             True
         """
-        return type(self).__name__ == 'SE2'
+        return type(self).__name__ == "SE2"
 
-     #----------------------- functions
+    # ----------------------- functions
 
     def det(self):
         """
@@ -295,7 +303,7 @@ class BasePoseMatrix(BasePoseList):
         :rtype: float or NumPy array
 
         ``x.det()`` is the determinant of the rotation component of the values
-        of ``x``.  
+        of ``x``.
 
         Example::
 
@@ -308,17 +316,16 @@ class BasePoseMatrix(BasePoseList):
 
         :SymPy: not supported
         """
-        if type(self).__name__ in ('SO3', 'SE3'):
+        if type(self).__name__ in ("SO3", "SE3"):
             if len(self) == 1:
-                return np.linalg.det(self.A[:3,:3])
+                return np.linalg.det(self.A[:3, :3])
             else:
-                return [np.linalg.det(T[:3,:3]) for T in self.data]
-        elif type(self).__name__ in ('SO2', 'SE2'):
+                return [np.linalg.det(T[:3, :3]) for T in self.data]
+        elif type(self).__name__ in ("SO2", "SE2"):
             if len(self) == 1:
-                return np.linalg.det(self.A[:2,:2])
+                return np.linalg.det(self.A[:2, :2])
             else:
-                return [np.linalg.det(T[:2,:2]) for T in self.data]
-
+                return [np.linalg.det(T[:2, :2]) for T in self.data]
 
     def log(self, twist=False):
         """
@@ -406,21 +413,25 @@ class BasePoseMatrix(BasePoseList):
             s = base.getvector(s)
             s = np.clip(s, 0, 1)
 
-        if len(self) > 1: 
-            raise ValueError('start pose must be a singleton')
+        if len(self) > 1:
+            raise ValueError("start pose must be a singleton")
 
         if end is not None:
-            if len(end) > 1: 
-                raise ValueError('end pose must be a singleton')
+            if len(end) > 1:
+                raise ValueError("end pose must be a singleton")
             end = end.A
 
         if self.N == 2:
             # SO(2) or SE(2)
-            return self.__class__([base.trinterp2(start=self.A, end=end, s=_s) for _s in s])
+            return self.__class__(
+                [base.trinterp2(start=self.A, end=end, s=_s) for _s in s]
+            )
 
         elif self.N == 3:
             # SO(3) or SE(3)
-            return self.__class__([base.trinterp(start=self.A, end=end, s=_s) for _s in s])
+            return self.__class__(
+                [base.trinterp(start=self.A, end=end, s=_s) for _s in s]
+            )
 
     def interp1(self, s=None):
         """
@@ -477,23 +488,28 @@ class BasePoseMatrix(BasePoseList):
         s = np.clip(s, 0, 1)
 
         if start is not None:
-            assert len(start) == 1, 'len(start) must == 1'
+            assert len(start) == 1, "len(start) must == 1"
             start = start.A
 
         if self.N == 2:
             # SO(2) or SE(2)
             if len(s) > 1:
-                assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
+                assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
                 return self.__class__([base.trinterp2(start, self.A, s=_s) for _s in s])
             else:
-                return self.__class__([base.trinterp2(start, x, s=s[0]) for x in self.data])
+                return self.__class__(
+                    [base.trinterp2(start, x, s=s[0]) for x in self.data]
+                )
         elif self.N == 3:
             # SO(3) or SE(3)
             if len(s) > 1:
-                assert len(self) == 1, 'if len(s) > 1, len(X) must == 1'
+                assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
                 return self.__class__([base.trinterp(start, self.A, s=_s) for _s in s])
             else:
-                return self.__class__([base.trinterp(start, x, s=s[0]) for x in self.data])
+                return self.__class__(
+                    [base.trinterp(start, x, s=s[0]) for x in self.data]
+                )
+
     def norm(self):
         """
         Normalize pose (superclass method)
@@ -501,7 +517,7 @@ class BasePoseMatrix(BasePoseList):
         :return: pose
         :rtype: SO2, SE2, SO3, SE3 instance
 
-        - ``X.norm()`` is an equivalent pose object but the rotational matrix 
+        - ``X.norm()`` is an equivalent pose object but the rotational matrix
           part of all values has been adjusted to ensure it is a proper orthogonal
           matrix rotation.
 
@@ -518,7 +534,7 @@ class BasePoseMatrix(BasePoseList):
         Notes:
 
         #. Only the direction of A vector (the z-axis) is unchanged.
-        #. Used to prevent finite word length arithmetic causing transforms to 
+        #. Used to prevent finite word length arithmetic causing transforms to
            become 'unnormalized'.
 
         :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`
@@ -536,7 +552,7 @@ class BasePoseMatrix(BasePoseList):
         :rtype: pose instance
 
         Apply symbolic simplification to every element of every value in the
-        pose instane. 
+        pose instane.
 
         Example::
 
@@ -608,8 +624,8 @@ class BasePoseMatrix(BasePoseList):
             >>> x = SE2(1, 2, 0.3)
             >>> x.printline()
             >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
-        
-        .. note:: 
+
+        .. note::
             - Default formatting is for compact display of data
             - For tabular data set ``fmt`` to a fixed width format such as
               ``fmt='{:.3g}'``
@@ -622,7 +638,6 @@ class BasePoseMatrix(BasePoseList):
         else:
             for x in self.data:
                 base.trprint(x, *args, **kwargs)
-
 
     def strline(self, *args, **kwargs):
         """
@@ -654,15 +669,15 @@ class BasePoseMatrix(BasePoseList):
             >>> x = SE2(1, 2, 0.3)
             >>> x.printline()
             >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
-        
-        .. note:: 
+
+        .. note::
             - Default formatting is for compact display of data
             - For tabular data set ``fmt`` to a fixed width format such as
               ``fmt='{:.3g}'``
 
         :seealso: :func:`trprint`, :func:`trprint2`
         """
-        s = ''
+        s = ""
         if self.N == 2:
             for x in self.data:
                 s += base.trprint2(x, *args, file=False, **kwargs)
@@ -692,20 +707,25 @@ class BasePoseMatrix(BasePoseList):
         # TODO: really should iterate over all the elements, can have a symb
         #       element and ~eps values
         def trim(x):
-            if x.dtype == 'O':
+            if x.dtype == "O":
                 return x
             else:
                 return base.removesmall(x)
 
         name = type(self).__name__
         if len(self) == 0:
-            return name + '([])'
+            return name + "([])"
         elif len(self) == 1:
             # need to indent subsequent lines of the native repr string by 4 spaces
-            return name + '(' + trim(self.A).__repr__().replace('\n', '\n    ') + ')'
+            return name + "(" + trim(self.A).__repr__().replace("\n", "\n    ") + ")"
         else:
             # format this as a list of ndarrays
-            return name + '([\n' + ',\n'.join([trim(v).__repr__() for v in self.data]) + ' ])'
+            return (
+                name
+                + "([\n"
+                + ",\n".join([trim(v).__repr__() for v in self.data])
+                + " ])"
+            )
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -723,13 +743,12 @@ class BasePoseMatrix(BasePoseList):
 
         """
         # see https://ipython.org/ipython-doc/stable/api/generated/IPython.lib.pretty.html
-        
+
         if len(self) == 1:
             p.text(str(self))
         else:
             for i, x in enumerate(self):
                 p.text(f"{i}:\n{str(x)}")
-                
 
     def __str__(self):
         """
@@ -744,10 +763,10 @@ class BasePoseMatrix(BasePoseList):
 
             >>> x = SE3.Rx(0.3)
             >>> print(x)
-               1           0           0           0            
-               0           0.955336   -0.29552     0            
-               0           0.29552     0.955336    0            
-               0           0           0           1 
+               1           0           0           0
+               0           0.955336   -0.29552     0
+               0           0.29552     0.955336    0
+               0           0           0           1
 
         Notes:
 
@@ -765,7 +784,7 @@ class BasePoseMatrix(BasePoseList):
 
     def _string_matrix(self):
         if self._ansiformatter is None:
-            self._ansiformatter = ANSIMatrix(style='thick')
+            self._ansiformatter = ANSIMatrix(style="thick")
 
         return "\n".join([self._ansiformatter.str(A) for A in self.data])
 
@@ -791,48 +810,51 @@ class BasePoseMatrix(BasePoseList):
 
             >>> x = SE3.Rx(0.3)
             >>> print(str(x))
-               1           0           0           0            
-               0           0.955336   -0.29552     0            
-               0           0.29552     0.955336    0            
-               0           0           0           1 
+               1           0           0           0
+               0           0.955336   -0.29552     0
+               0           0.29552     0.955336    0
+               0           0           0           1
 
         """
-        #print('in __str__', _color)
-        
+        # print('in __str__', _color)
+
         if self._color:
 
             def color(c, f):
                 if c is None:
-                    return ''
+                    return ""
                 else:
                     return f(c)
+
             bgcol = color(self._bgcolor, bg)
             trcol = color(self._transcolor, fg) + bgcol
             rotcol = color(self._rotcolor, fg) + bgcol
             constcol = color(self._constcolor, fg) + bgcol
-            indexcol = color(self._indexcolor[0], fg) \
-                       + color(self._indexcolor[1], bg)
+            indexcol = color(self._indexcolor[0], fg) + color(self._indexcolor[1], bg)
             reset = attr(0)
         else:
-            bgcol = ''
-            trcol = ''
-            rotcol = ''
-            constcol = ''
-            reset = ''
+            bgcol = ""
+            trcol = ""
+            rotcol = ""
+            constcol = ""
+            reset = ""
 
         def mformat(self, X):
             # X is an ndarray value to be display
             # self provides set type for formatting
-            out = ''
+            out = ""
             n = self.N  # dimension of rotation submatrix
             for rownum, row in enumerate(X):
-                rowstr = ' '
+                rowstr = " "
                 # format the columns
                 for colnum, element in enumerate(row):
                     if sym.issymbol(element):
-                        s = '{:<12s}'.format(str(element))
+                        s = "{:<12s}".format(str(element))
                     else:
-                        if self._suppress_small and abs(element) < self._suppress_tol * _eps:
+                        if (
+                            self._suppress_small
+                            and abs(element) < self._suppress_tol * _eps
+                        ):
                             element = 0
                         s = self._format.format(element)
 
@@ -846,14 +868,14 @@ class BasePoseMatrix(BasePoseList):
                     else:
                         # bottom row
                         s = constcol + bgcol + s + reset
-                    rowstr += ' ' + s
-                out += rowstr + bgcol + '  ' + reset + '\n'
+                    rowstr += " " + s
+                out += rowstr + bgcol + "  " + reset + "\n"
             return out
 
-        output_str = ''
+        output_str = ""
 
         if len(self.data) == 0:
-            output_str = '[]'
+            output_str = "[]"
         elif len(self.data) == 1:
             # single matrix case
             output_str = mformat(self, self.A)
@@ -861,8 +883,13 @@ class BasePoseMatrix(BasePoseList):
             # sequence case
             for count, X in enumerate(self.data):
                 # add separator lines and the index
-                output_str += indexcol + '[{:d}] ='.format(count) + reset \
-                    + '\n' + mformat(self, X)
+                output_str += (
+                    indexcol
+                    + "[{:d}] =".format(count)
+                    + reset
+                    + "\n"
+                    + mformat(self, X)
+                )
 
         return output_str
 
@@ -898,10 +925,10 @@ class BasePoseMatrix(BasePoseList):
         :param `**kwargs`: plotting options
 
         - ``X.animate()`` displays the pose ``X`` as a coordinate frame moving
-          from the origin in either 2D or 3D.  There are many options, see the 
+          from the origin in either 2D or 3D.  There are many options, see the
           links below.
         - ``X.animate(*args, start=X1)`` displays the pose ``X`` as a coordinate
-          frame moving from pose ``X1``, in either 2D or 3D.  There are 
+          frame moving from pose ``X1``, in either 2D or 3D.  There are
           many options, see the links below.
 
         Example::
@@ -914,7 +941,7 @@ class BasePoseMatrix(BasePoseList):
         """
         if start is not None:
             start = start.A
-        
+
         if len(self) > 1:
             # trajectory case
             if self.N == 2:
@@ -928,8 +955,7 @@ class BasePoseMatrix(BasePoseList):
             else:
                 base.tranimate(self.A, start=start, *args, **kwargs)
 
-
-# ------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------ #
     def prod(self):
         r"""
         Product of elements (superclass method)
@@ -986,12 +1012,16 @@ class BasePoseMatrix(BasePoseList):
 
         """
 
-        assert type(n) is int, 'exponent must be an int'
-        return self.__class__([np.linalg.matrix_power(x, n) for x in self.data], check=False)
-    #----------------------- arithmetic
+        assert type(n) is int, "exponent must be an int"
+        return self.__class__(
+            [np.linalg.matrix_power(x, n) for x in self.data], check=False
+        )
 
+    # ----------------------- arithmetic
 
-    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __mul__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1064,12 +1094,12 @@ class BasePoseMatrix(BasePoseList):
         1          (N,M)        (N,M)  column transformation
         =========  ===========  =====  ==========================
 
-        .. note:: 
+        .. note::
             - The vector is an array-like, a 1D NumPy array or a list/tuple
             - For the ``SE2`` and ``SE3`` case the vectors are converted to homogeneous
               form, transformed, then converted back to Euclidean form.
 
-        Example:: 
+        Example::
 
             >>> SE3.Rx(pi/2) * [0, 1, 0]
             array([0.000000e+00, 6.123234e-17, 1.000000e+00])
@@ -1077,15 +1107,15 @@ class BasePoseMatrix(BasePoseList):
             array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
         if isinstance(left, right.__class__):
-            #print('*: pose x pose')
+            # print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
 
         elif isinstance(right, (list, tuple, np.ndarray)):
-            #print('*: pose x array')
+            # print('*: pose x array')
             if len(left) == 1 and base.isvector(right, left.N):
                 # pose x vector
-                #print('*: pose x vector')
-                v = base.getvector(right, out='col')
+                # print('*: pose x vector')
+                v = base.getvector(right, out="col")
                 if left.isSE:
                     # SE(n) x vector
                     return base.h2e(left.A @ base.e2h(v))
@@ -1095,7 +1125,7 @@ class BasePoseMatrix(BasePoseList):
 
             elif len(left) > 1 and base.isvector(right, left.N):
                 # pose array x vector
-                #print('*: pose array x vector')
+                # print('*: pose array x vector')
                 v = base.getvector(right)
                 if left.isSE:
                     # SE(n) x vector
@@ -1105,26 +1135,50 @@ class BasePoseMatrix(BasePoseList):
                     # SO(n) x vector
                     return np.array([(x @ v).flatten() for x in left.A]).T
 
-            elif len(left) == 1 and isinstance(right, np.ndarray) and left.isSO and right.shape[0] == left.N:
+            elif (
+                len(left) == 1
+                and isinstance(right, np.ndarray)
+                and left.isSO
+                and right.shape[0] == left.N
+            ):
                 # SO(n) x matrix
                 return left.A @ right
-            elif len(left) == 1 and isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N:
+            elif (
+                len(left) == 1
+                and isinstance(right, np.ndarray)
+                and left.isSE
+                and right.shape[0] == left.N
+            ):
                 # SE(n) x matrix
                 return base.h2e(left.A @ base.e2h(right))
-            elif isinstance(right, np.ndarray) and left.isSO and right.shape[0] == left.N and len(left) == right.shape[1]:
+            elif (
+                isinstance(right, np.ndarray)
+                and left.isSO
+                and right.shape[0] == left.N
+                and len(left) == right.shape[1]
+            ):
                 # SO(n) x matrix
                 return np.c_[[x.A @ y for x, y in zip(right, left.T)]].T
-            elif isinstance(right, np.ndarray) and left.isSE and right.shape[0] == left.N and len(left) == right.shape[1]:
+            elif (
+                isinstance(right, np.ndarray)
+                and left.isSE
+                and right.shape[0] == left.N
+                and len(left) == right.shape[1]
+            ):
                 # SE(n) x matrix
-                return np.c_[[base.h2e(x.A @ base.e2h(y)) for x, y in zip(right, left.T)]].T
+                return np.c_[
+                    [base.h2e(x.A @ base.e2h(y)) for x, y in zip(right, left.T)]
+                ].T
             else:
-                raise ValueError('bad operands')
+                raise ValueError("bad operands")
         elif base.isscalar(right):
             return left._op2(right, lambda x, y: x * y)
         else:
             return NotImplemented
 
-    def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __matmul__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``@`` operator (superclass method)
 
@@ -1137,18 +1191,22 @@ class BasePoseMatrix(BasePoseList):
           and places the result in ``X``
 
         .. note:: This operator is functionally equivalent to ``*`` but is more
-            costly.  It is useful for cases where a pose is incrementally 
+            costly.  It is useful for cases where a pose is incrementally
             update over many cycles.
 
         :seealso: :func:`__mul__`, :func:`~spatialmath.base.trnorm`
         """
         if isinstance(left, right.__class__):
-            #print('*: pose x pose')
-            return left.__class__(left._op2(right, lambda x, y: base.trnorm(x @ y)), check=False)
+            # print('*: pose x pose')
+            return left.__class__(
+                left._op2(right, lambda x, y: base.trnorm(x @ y)), check=False
+            )
         else:
-            raise TypeError('@ only applies to pose composition')
+            raise TypeError("@ only applies to pose composition")
 
-    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(
+        right, left
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1173,7 +1231,9 @@ class BasePoseMatrix(BasePoseList):
         else:
             return NotImplemented
 
-    def __imul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __imul__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -1189,7 +1249,9 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__mul__(right)
 
-    def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __truediv__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -1215,7 +1277,7 @@ class BasePoseMatrix(BasePoseList):
 
             #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
             #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
-            #. Scalar multiplication is not a group operation so the result will 
+            #. Scalar multiplication is not a group operation so the result will
                be a matrix
             #. Any other input combinations result in a ValueError.
 
@@ -1234,13 +1296,17 @@ class BasePoseMatrix(BasePoseList):
 
         """
         if isinstance(left, right.__class__):
-            return left.__class__(left._op2(right.inv(), lambda x, y: x @ y), check=False)
+            return left.__class__(
+                left._op2(right.inv(), lambda x, y: x @ y), check=False
+            )
         elif base.isscalar(right):
             return left._op2(right, lambda x, y: x / y)
         else:
-            raise ValueError('bad operands')
+            raise ValueError("bad operands")
 
-    def __itruediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __itruediv__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/=`` operator (superclass method)
 
@@ -1256,7 +1322,9 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__truediv__(right)
 
-    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __add__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1306,7 +1374,9 @@ class BasePoseMatrix(BasePoseList):
         # results is not in the group, return an array, not a class
         return left._op2(right, lambda x, y: x + y)
 
-    def __radd__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __radd__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1322,8 +1392,9 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__add__(right)
 
-
-    def __iadd__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __iadd__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+=`` operator (superclass method)
 
@@ -1339,7 +1410,9 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__add__(right)
 
-    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __sub__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1389,7 +1462,9 @@ class BasePoseMatrix(BasePoseList):
         # TODO allow class +/- a conformant array
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rsub__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1405,7 +1480,9 @@ class BasePoseMatrix(BasePoseList):
         """
         return -left.__sub__(right)
 
-    def __isub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __isub__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1447,7 +1524,7 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        assert type(left) == type(right), 'operands to == are of different types'
+        assert type(left) == type(right), "operands to == are of different types"
         return left._op2(right, lambda x, y: np.allclose(x, y))
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
@@ -1477,7 +1554,9 @@ class BasePoseMatrix(BasePoseList):
         """
         return [not x for x in left == right]
 
-    def _op2(left, right, op):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def _op2(
+        left, right, op
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Perform binary operation
 
@@ -1509,29 +1588,33 @@ class BasePoseMatrix(BasePoseList):
             # class by class
             if len(left) == 1:
                 if len(right) == 1:
-                    #print('== 1x1')
+                    # print('== 1x1')
                     return op(left.A, right.A)
                 else:
-                    #print('== 1xN')
+                    # print('== 1xN')
                     return [op(left.A, x) for x in right.A]
             else:
                 if len(right) == 1:
-                    #print('== Nx1')
+                    # print('== Nx1')
                     return [op(x, right.A) for x in left.A]
                 elif len(left) == len(right):
-                    #print('== NxN')
+                    # print('== NxN')
                     return [op(x, y) for (x, y) in zip(left.A, right.A)]
                 else:
-                    raise ValueError('length of lists to == must be same length')
-        elif base.isscalar(right) or (isinstance(right, np.ndarray) and right.shape == left.shape):
+                    raise ValueError("length of lists to == must be same length")
+        elif base.isscalar(right) or (
+            isinstance(right, np.ndarray) and right.shape == left.shape
+        ):
             # class by matrix
             if len(left) == 1:
                 return op(left.A, right)
             else:
                 return [op(x, right) for x in left.A]
 
+
 if __name__ == "__main__":
     from spatialmath import SE3
+
     x = SE3.Rand(N=6)
 
-    x.printline('rpy/xyz', fmt='{:8.3g}')
+    x.printline("rpy/xyz", fmt="{:8.3g}")
