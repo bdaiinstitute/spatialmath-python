@@ -1073,7 +1073,7 @@ class BasePoseMatrix(BasePoseList):
             >>> SE3.Rx(pi/2) * np.r_[0, 0, 1]
             array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
-        if isinstance(left, right.__class__):
+        if type(left) == type(right):
             #print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
 
@@ -1534,7 +1534,12 @@ class BasePoseMatrix(BasePoseList):
                 return [op(x, right) for x in left.A]
 
 if __name__ == "__main__":
-    from spatialmath import SE3
+    from spatialmath import SE3, SE2
     x = SE3.Rand(N=6)
 
-    x.printline('rpy/xyz', fmt='{:8.3g}')
+    x.printline(orient='rpy/xyz', fmt='{:8.3g}')
+
+    d = np.diag([0.25, 0.25, 1])
+    a = SE2()
+    print(a)
+    print(d * a)
