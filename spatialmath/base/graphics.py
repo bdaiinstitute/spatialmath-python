@@ -3,9 +3,12 @@ from itertools import product
 import warnings
 import numpy as np
 import scipy as sp
-from scipy.stats.distributions import chi2
 
 from spatialmath import base
+
+# Only import chi2 from scipy.stats.distributions when used
+_chi2 = None
+
 
 try:
     import matplotlib.pyplot as plt
@@ -15,6 +18,7 @@ try:
         Line3DCollection,
         pathpatch_2d_to_3d,
     )
+
     _matplotlib_exists = True
 except ImportError:  # pragma: no cover
     _matplotlib_exists = False
@@ -74,7 +78,9 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     return [handle]
 
 
-def plot_point(pos, marker="bs", label=None, text=None, ax=None, textargs=None, **kwargs):
+def plot_point(
+    pos, marker="bs", label=None, text=None, ax=None, textargs=None, **kwargs
+):
     """
     Plot a point using matplotlib
 
@@ -130,7 +136,7 @@ def plot_point(pos, marker="bs", label=None, text=None, ax=None, textargs=None, 
     """
 
     if text is not None:
-        raise DeprecationWarning('use label not text')
+        raise DeprecationWarning("use label not text")
 
     if isinstance(pos, np.ndarray):
         if pos.ndim == 1:
@@ -399,7 +405,8 @@ def plot_box(
 
     return [r]
 
-def plot_poly(vertices, *fmt, close=False,**kwargs):
+
+def plot_poly(vertices, *fmt, close=False, **kwargs):
 
     if close:
         vertices = np.hstack((vertices, vertices[:, [0]]))
@@ -523,6 +530,10 @@ def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=
         raise ValueError("ellipse is defined by a 2x2 matrix")
 
     if confidence:
+        # Import chi2 if first time used
+        if _chi2 is None:
+            from scipy.stats.distributions import chi2
+
         # process the probability
         s = math.sqrt(chi2.ppf(confidence, df=2)) * scale
     else:
@@ -600,6 +611,7 @@ def plot_ellipse(
 
 
 # =========================== 3D shapes =================================== #
+
 
 def sphere(radius=1, centre=(0, 0, 0), resolution=50):
     """
@@ -850,6 +862,7 @@ def plot_cylinder(
 
     return handles
 
+
 def plot_cone(
     radius,
     height,
@@ -895,7 +908,7 @@ def plot_cone(
     :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
     ax = axes_logic(ax, 3)
-    
+
     # https://stackoverflow.com/questions/26874791/disconnected-surfaces-when-plotting-cones
     # Set up the grid in polar coords
     theta = np.linspace(0, 2 * np.pi, resolution)
@@ -905,7 +918,7 @@ def plot_cone(
     # Then calculate X, Y, and Z
     X = R * np.cos(T) + centre[0]
     Y = R * np.sin(T) + centre[1]
-    Z = np.sqrt(X**2 + Y**2) / radius * height + centre[2]
+    Z = np.sqrt(X ** 2 + Y ** 2) / radius * height + centre[2]
     if flip:
         Z = height - Z
 
@@ -923,6 +936,7 @@ def plot_cone(
         pathpatch_2d_to_3d(ceiling, z=height[1], zdir="z")
 
     return handles
+
 
 def plot_cuboid(
     sides=[1, 1, 1], centre=(0, 0, 0), pose=None, ax=None, filled=False, **kwargs
@@ -1040,12 +1054,15 @@ def _axes_dimensions(ax):
     elif classname in ("AxesSubplot", "Animate2"):
         return 2
 
+
 def axes_get_limits(ax):
     return np.r_[ax.get_xlim(), ax.get_ylim()]
+
 
 def axes_get_scale(ax):
     limits = axes_get_limits(ax)
     return max(abs(limits[1] - limits[0]), abs(limits[3] - limits[2]))
+
 
 def axes_logic(ax, dimensions, projection="ortho", autoscale=True):
     """
@@ -1093,7 +1110,7 @@ def axes_logic(ax, dimensions, projection="ortho", autoscale=True):
         # axis was given
 
         if _axes_dimensions(ax) == dimensions:
-            #print("use existing axes")
+            # print("use existing axes")
             return ax
         # mismatch in dimensions, create new axes
     # print('create new axes')
@@ -1128,9 +1145,9 @@ def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
     ==================  ======  ======
     input               xrange  yrange
     ==================  ======  ======
-    A (scalar)          -A:A    -A:A  
-    [A, B]              A:B     A:B   
-    [A, B, C, D, E, F]  A:B     C:D   
+    A (scalar)          -A:A    -A:A
+    [A, B]              A:B     A:B
+    [A, B, C, D, E, F]  A:B     C:D
     ==================  ======  ======
 
     :seealso: :func:`plotvol3`, :func:`expand_dims`
@@ -1153,7 +1170,9 @@ def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
     return ax
 
 
-def plotvol3(dim=None, ax=None, equal=True, grid=False, labels=True, projection="ortho"):
+def plotvol3(
+    dim=None, ax=None, equal=True, grid=False, labels=True, projection="ortho"
+):
     """
     Create 3D plot volume
 
@@ -1287,4 +1306,3 @@ if __name__ == "__main__":
             / "test_graphics.py"
         ).read()
     )  # pylint: disable=exec-used
-
