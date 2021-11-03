@@ -1,5 +1,6 @@
 import math
 from itertools import product
+from collections import Iterable
 import warnings
 import numpy as np
 import scipy as sp
@@ -78,9 +79,7 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     return [handle]
 
 
-def plot_point(
-    pos, marker="bs", label=None, text=None, ax=None, textargs=None, **kwargs
-):
+def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     """
     Plot a point using matplotlib
 
@@ -88,8 +87,8 @@ def plot_point(
     :type pos: array_like(2), ndarray(2,n), list of 2-tuples
     :param marker: matplotlub marker style, defaults to 'bs'
     :type marker: str or list of str, optional
-    :param label: text label, defaults to None
-    :type label: str, optional
+    :param text: text label, defaults to None
+    :type text: str, optional
     :param ax: axes to plot in, defaults to ``gca()``
     :type ax: Axis, optional
     :return: the matplotlib object
@@ -108,10 +107,10 @@ def plot_point(
 
     - Multiple points can be marked if ``pos`` is a 2xn array or a list of
       coordinate pairs.  In this case:
-        - all points have the same label
-        - label can include the format string {} which is susbstituted for the
+        - all points have the same ``text`` label
+        - ``text`` can include the format string {} which is susbstituted for the
           point index, starting at zero
-        - label can be a tuple containing a format string followed by vectors
+        - ``text`` can be a tuple containing a format string followed by vectors
           of shape(n).  For example::
 
             ``("#{0} a={1:.1f}, b={2:.1f}", a, b)``
@@ -134,9 +133,6 @@ def plot_point(
     - ``plot_point(p, 'r*', ('{1:.1f}', z))`` plot red star at points defined by
       columns of ``p`` and label them all with successive elements of ``z``.
     """
-
-    if text is not None:
-        raise DeprecationWarning("use label not text")
 
     if isinstance(pos, np.ndarray):
         if pos.ndim == 1:
@@ -177,22 +173,22 @@ def plot_point(
             handles.append(plt.plot(x, y, m, **kwargs))
     else:
         handles.append(plt.plot(x, y, marker, **kwargs))
-    if label is not None:
+    if text is not None:
         try:
             xy = zip(x, y)
         except TypeError:
             xy = [(x, y)]
-        if isinstance(label, str):
+        if isinstance(text, str):
             # simple string, but might have format chars
             for i, (x, y) in enumerate(xy):
-                handles.append(plt.text(x, y, " " + label.format(i), **textopts))
-        elif isinstance(label, (tuple, list)):
+                handles.append(plt.text(x, y, " " + text.format(i), **textopts))
+        elif isinstance(text, (tuple, list)):
             for i, (x, y) in enumerate(xy):
                 handles.append(
                     plt.text(
                         x,
                         y,
-                        " " + label[0].format(i, *[d[i] for d in label[1:]]),
+                        " " + text[0].format(i, *[d[i] for d in text[1:]]),
                         **textopts
                     )
                 )
@@ -251,10 +247,10 @@ def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
 
 def plot_box(
     *fmt,
-    bl=None,
-    tl=None,
-    br=None,
-    tr=None,
+    lb=None,
+    lt=None,
+    rb=None,
+    rt=None,
     wh=None,
     centre=None,
     l=None,
@@ -265,6 +261,7 @@ def plot_box(
     h=None,
     ax=None,
     bbox=None,
+    ltrb=None,
     filled=False,
     **kwargs
 ):
@@ -277,10 +274,10 @@ def plot_box(
     :type tl: [array_like(2), optional
     :param br: bottom-right corner, defaults to None
     :type br: array_like(2), optional
-    :param tr: top -ight corner, defaults to None
+    :param tr: top-right corner, defaults to None
     :type tr: array_like(2), optional
-    :param wh: width and height, defaults to None
-    :type wh: array_like(2), optional
+    :param wh: width and height, if both are the same provide scalar, defaults to None
+    :type wh: scalar, array_like(2), optional
     :param centre: centre of box, defaults to None
     :type centre: array_like(2), optional
     :param l: left side of box, minimum x, defaults to None
@@ -313,11 +310,16 @@ def plot_box(
     The box can be specified in many ways:
 
     - bounding box which is a 2x2 matrix [xmin, xmax; ymin, ymax]
+    - bounding box [xmin, xmax, ymin, ymax]
+    - alternative box [xmin, ymin, xmax, ymax]
     - centre and width+height
     - bottom-left and top-right corners
     - bottom-left corner and width+height
     - top-right corner and width+height
     - top-left corner and width+height
+
+    For plots where the y-axis is inverted (eg. for images) then top is the
+    smaller vertical coordinate.
 
     Example:
 
@@ -325,23 +327,32 @@ def plot_box(
 
         >>> from spatialmath.base import plotvol2, plot_box
         >>> plotvol2(5)
-        >>> plot_box('r', centre=(2,3), wh=(1,1))
+        >>> plot_box('r', centre=(2,3), wh=1) # w=h=1
         >>> plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
     """
 
     if bbox is not None:
-        l, r, b, t = bbox
+        if isinstance(bbox, ndarray) and bbox.ndims > 1:
+            # case of [l r; t b]
+            bbox = bbox.ravel()
+        l, r, t, b = bbox
+    elif ltrb is not None:
+        l, t, r, b = ltrb
     else:
-        if tl is not None:
-            l, t = tl
-        if tr is not None:
-            r, t = tr
-        if bl is not None:
-            l, b = bl
-        if br is not None:
-            r, b = br
+        if lt is not None:
+            l, t = lt
+        if rt is not None:
+            r, t = rt
+        if lb is not None:
+            l, b = lb
+        if rb is not None:
+            r, b = rb
         if wh is not None:
-            w, h = wh
+            if isinstance(wh, Iterable):
+                w, h = wh
+            else:
+                w = wh
+                h = wh
         if centre is not None:
             cx, cy = centre
         if l is None:
@@ -356,16 +367,25 @@ def plot_box(
                 pass
         if b is None:
             try:
-                b = t - h
+                t = b + h
             except:
                 pass
         if b is None:
             try:
-                b = cy + h / 2
+                t = cy - h / 2
             except:
                 pass
 
     ax = axes_logic(ax, 2)
+
+    if ax.yaxis_inverted():
+        # if y-axis is flipped, switch top and bottom
+        t, b = b, t
+
+    if l >= r:
+        raise ValueError("left must be less than right")
+    if b >= t:
+        raise ValueError("bottom must be less than top")
 
     if filled:
         if w is None:
@@ -401,9 +421,9 @@ def plot_box(
                 t = cy + h / 2
             except:
                 pass
-        r = plt.plot([l, l, r, r, l], [b, t, t, b, b], *fmt, **kwargs)
+        r = plt.plot([l, l, r, r, l], [b, t, t, b, b], *fmt, **kwargs)[0]
 
-    return [r]
+    return r
 
 
 def plot_poly(vertices, *fmt, close=False, **kwargs):
@@ -451,7 +471,7 @@ def circle(centre=(0, 0), radius=1, resolution=50):
 
 
 def plot_circle(
-    radius, *fmt, centre=(0, 0), resolution=50, ax=None, filled=False, **kwargs
+    radius, centre=(0, 0), *fmt, resolution=50, ax=None, filled=False, **kwargs
 ):
     """
     Plot a circle using matplotlib
@@ -633,9 +653,9 @@ def sphere(radius=1, centre=(0, 0, 0), resolution=50):
 
     Phi, Theta = np.meshgrid(phi_range, theta_range)
 
-    x = radius * np.sin(Theta) * np.cos(Phi)
-    y = radius * np.sin(Theta) * np.sin(Phi)
-    z = radius * np.cos(Theta)
+    x = radius * np.sin(Theta) * np.cos(Phi) + centre[0]
+    y = radius * np.sin(Theta) * np.sin(Phi) + centre[1]
+    z = radius * np.cos(Theta) + centre[2]
 
     return (x, y, z)
 
@@ -727,7 +747,7 @@ def ellipsoid(
         # process the probability
         from scipy.stats.distributions import chi2
 
-        s = math.sqrt(chi2.ppf(confidence, df=2)) * scale
+        s = math.sqrt(chi2.ppf(confidence, df=3)) * scale
     else:
         s = scale
 
@@ -1164,6 +1184,7 @@ def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
         ax.set_aspect("equal")
     if grid:
         ax.grid(True)
+        ax.set_axisbelow(True)
 
     # signal to related functions that plotvol set the axis limits
     ax._plotvol = True

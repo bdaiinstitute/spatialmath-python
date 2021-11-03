@@ -59,6 +59,37 @@ def numjac(f, x, dx=1e-8, SO=0, SE=0):
 
     return np.c_[Jcol].T
 
+def numhess(J, x, dx=1e-8):
+    r"""
+    Numerically compute Hessian of Jacobian function
+
+    :param J: the Jacobian function, returns an ndarray(m,n)
+    :type J: callable
+    :param x: function argument
+    :type x: ndarray(n)
+    :param dx: the numerical perturbation, defaults to 1e-8
+    :type dx: float, optional
+    :return: Hessian matrix
+    :rtype: ndarray(m,n,n)
+
+    Computes a numerical approximation to the Hessian for ``J(x)`` where 
+    :math:`f: \mathbb{R}^n  \mapsto \mathbb{R}^{m \times n}`
+
+    Uses first-order difference :math:`H[:,:,i] = (J(x + dx) - J(x)) / dx`.
+    """
+
+    I = np.eye(len(x))
+    Hcol = []
+    J0 = J(x)
+    for i in range(len(x)):
+
+        Ji = J(x + I[:,i] * dx)
+        Hi = (Ji - J0) / dx
+
+        Hcol.append(Hi)
+        
+    return np.stack(Hcol, axis=2)
+
 def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}", 
     brackets=("[ ", " ]"), suppress_small=True):
     """

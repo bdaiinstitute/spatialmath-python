@@ -21,6 +21,14 @@ from spatialmath import base
 
 _eps = np.finfo(np.float64).eps
 
+try:  # pragma: no cover
+    # print('Using SymPy')
+    import sympy
+
+    _symbolics = True
+
+except ImportError:  # pragma: no cover
+    _symbolics = False
 
 # ---------------------------------------------------------------------------------------#
 def rot2(theta, unit="rad"):
@@ -142,7 +150,11 @@ def tr2xyt(T, unit="rad"):
 
     :seealso: trot2
     """
-    angle = math.atan2(T[1, 0], T[0, 0])
+
+    if T.dtype == "O" and _symbolics:
+        angle = sympy.atan2(T[1, 0], T[0, 0])
+    else:
+        angle = math.atan2(T[1, 0], T[0, 0])
     return np.r_[T[0, 2], T[1, 2], angle]
 
 
@@ -716,6 +728,54 @@ def trprint2(T, label=None, file=sys.stdout, fmt="{:.3g}", unit="deg"):
 def _vec2s(fmt, v):
     v = [x if np.abs(x) > 100 * _eps else 0.0 for x in v]
     return ", ".join([fmt.format(x) for x in v])
+
+
+def points2tr2(p1, p2):
+    """
+    SE(2) transform from corresponding points
+
+    :param p1: first set of points
+    :type p1: array_like(2,N)
+    :param p2: second set of points
+    :type p2: array_like(2,N)
+    :return: transform from ``p1`` to ``p2``
+    :rtype: ndarray(3,3)
+
+    Compute an SE(2) matrix that transforms the point set ``p1`` to ``p2``.
+    p1 and p2 must have the same number of columns, and columns correspond
+    to the same point.
+    """
+
+    # first find the centroids of both point clouds
+    p1_centroid = np.mean(p1, axis=0)
+    p2_centroid = np.mean(p2, axis=0)
+
+    # get the point clouds in reference to their centroids
+    p1_centered = p1 - p1_centroid
+    p2_centered = p2 - p2_centroid
+
+    # compute moment matrix
+    M = np.dot(p2_centered.T, p1_centered)
+
+    # get singular value decomposition of the cross covariance matrix
+    U, W, VT = np.linalg.svd(M)
+
+    # get rotation between the two point clouds
+    R = U @ VT
+    # special reflection case
+    if np.linalg.det(R) < 0:
+        VT[-1, :] *= -1
+        R = VT.T @ U.T
+
+    # get the translation
+    t = np.expand_dims(p2_centroid, 0).T - np.dot(R, np.expand_dims(p1_centroid, 0).T)
+
+    # assemble translation and rotation into a transformation matrix
+    T = np.identity(3)
+    T[:2, 2] = np.squeeze(t)
+    T[:2, :2] = R
+
+    return T
 
 
 def trplot2(

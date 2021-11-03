@@ -240,7 +240,7 @@ class Quaternion(BasePoseList):
         :return: quaternion expressed as a 4-vector
         :rtype: numpy ndarray, shape=(4,)
 
-        ``q.vec`` is the quaternion as a vector.  If `len(q)` is:
+        ``q.vec_xyzs`` is the quaternion as a vector.  If `len(q)` is:
 
             - 1, return a NumPy array shape=(4,)
             - N>1, return a NumPy array shape=(N,4).
@@ -258,9 +258,9 @@ class Quaternion(BasePoseList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec_xyzs
         """
         if len(self) == 1:
-            return self._A
+            return np.roll(self._A, -1)
         else:
-            return np.array([q._A for q in self])
+            return np.array([np.roll(q._A, -1) for q in self])
 
     @property
     def matrix(self):
@@ -2218,13 +2218,7 @@ class UnitQuaternion(Quaternion):
         if not isinstance(other, UnitQuaternion):
             raise TypeError('bad operand')
 
-        def metric3(p, q):
-            x =  base.norm(p - q)
-            y =  base.norm(p + q)
-            if x >= y:
-                return 2 * math.atan(y / x)
-            else:
-                return 2 * math.atan(x / y)
+
 
         if metric == 0:
             measure = lambda p, q: 1 - abs(np.dot(p, q))
@@ -2233,6 +2227,15 @@ class UnitQuaternion(Quaternion):
         elif metric == 2:
             measure =  lambda p, q: math.acos(abs(np.dot(p, q)))
         elif metric == 3:
+
+            def metric3(p, q):
+                x =  base.norm(p - q)
+                y =  base.norm(p + q)
+                if x >= y:
+                    return 2 * math.atan(y / x)
+                else:
+                    return 2 * math.atan(x / y)
+
             measure =  metric3
         elif metric == 4:
             measure = lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1)
@@ -2241,7 +2244,7 @@ class UnitQuaternion(Quaternion):
         if len(ad) == 1:
             return ad[0]
         else:
-            return ad
+            return np.array(ad)
 
     def SO3(self):
         """

@@ -121,6 +121,8 @@ class BasePoseMatrix(BasePoseList):
     _ansimatrix = False
     _ansiformatter = None
 
+    __array_ufunc__ = None  # allow pose matrices operators with NumPy values
+
     def __new__(cls, *args, **kwargs):
         """
         Create the subclass instance (superclass method)
@@ -487,10 +489,6 @@ class BasePoseMatrix(BasePoseList):
         s = base.getvector(s)
         s = np.clip(s, 0, 1)
 
-        if start is not None:
-            assert len(start) == 1, "len(start) must == 1"
-            start = start.A
-
         if self.N == 2:
             # SO(2) or SE(2)
             if len(s) > 1:
@@ -504,10 +502,10 @@ class BasePoseMatrix(BasePoseList):
             # SO(3) or SE(3)
             if len(s) > 1:
                 assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
-                return self.__class__([base.trinterp(start, self.A, s=_s) for _s in s])
+                return self.__class__([base.trinterp(None, self.A, s=_s) for _s in s])
             else:
                 return self.__class__(
-                    [base.trinterp(start, x, s=s[0]) for x in self.data]
+                    [base.trinterp(None, x, s=s[0]) for x in self.data]
                 )
 
     def norm(self):
@@ -592,7 +590,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def printline(self, *args, **kwargs):
+    def printline(self, **kwargs):
         """
         Print pose in compact single line format (superclass method)
 
@@ -634,10 +632,10 @@ class BasePoseMatrix(BasePoseList):
         """
         if self.N == 2:
             for x in self.data:
-                base.trprint2(x, *args, **kwargs)
+                base.trprint2(x, **kwargs)
         else:
             for x in self.data:
-                base.trprint(x, *args, **kwargs)
+                base.trprint(x, **kwargs)
 
     def strline(self, *args, **kwargs):
         """
@@ -1106,22 +1104,27 @@ class BasePoseMatrix(BasePoseList):
             >>> SE3.Rx(pi/2) * np.r_[0, 0, 1]
             array([ 0.000000e+00, -1.000000e+00,  6.123234e-17])
         """
-        if isinstance(left, right.__class__):
+        if type(left) == type(right):
             # print('*: pose x pose')
             return left.__class__(left._op2(right, lambda x, y: x @ y), check=False)
 
         elif isinstance(right, (list, tuple, np.ndarray)):
             # print('*: pose x array')
-            if len(left) == 1 and base.isvector(right, left.N):
-                # pose x vector
-                # print('*: pose x vector')
-                v = base.getvector(right, out="col")
-                if left.isSE:
-                    # SE(n) x vector
-                    return base.h2e(left.A @ base.e2h(v))
+            if len(left) == 1:
+                if base.isvector(right, left.N):
+                    # pose x vector
+                    # print('*: pose x vector')
+                    v = base.getvector(right, out="col")
+                    if left.isSE:
+                        # SE(n) x vector
+                        return base.h2e(left.A @ base.e2h(v))
+                    else:
+                        # SO(n) x vector
+                        return left.A @ v
                 else:
-                    # SO(n) x vector
-                    return left.A @ v
+                    if right.shape == left.A.shape:
+                        # SE(n) x (nxn)
+                        return left.A @ right
 
             elif len(left) > 1 and base.isvector(right, left.N):
                 # pose array x vector
@@ -1226,10 +1229,11 @@ class BasePoseMatrix(BasePoseList):
 
         :seealso: :func:`__mul__`
         """
-        if base.isscalar(left):
-            return right.__mul__(left)
-        else:
-            return NotImplemented
+        # if base.isscalar(left):
+        #     return right.__mul__(left)
+        # else:
+        #     return NotImplemented
+        return right.__mul__(left)
 
     def __imul__(
         left, right
@@ -1613,8 +1617,13 @@ class BasePoseMatrix(BasePoseList):
 
 
 if __name__ == "__main__":
-    from spatialmath import SE3
+    from spatialmath import SE3, SE2
 
     x = SE3.Rand(N=6)
 
-    x.printline("rpy/xyz", fmt="{:8.3g}")
+    x.printline(orient="rpy/xyz", fmt="{:8.3g}")
+
+    d = np.diag([0.25, 0.25, 1])
+    a = SE2()
+    print(a)
+    print(d * a)

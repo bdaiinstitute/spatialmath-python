@@ -228,16 +228,29 @@ def rt2tr(R, t, check=False):
     if check and not isR(R):
         raise ValueError("Invalid rotation matrix")
 
-    if R.shape == (2, 2):
-        T = np.eye(3)
-        T[:2, :2] = R
-        T[:2, 2] = t
-    elif R.shape == (3, 3):
-        T = np.eye(4)
-        T[:3, :3] = R
-        T[:3, 3] = t
+    if R.dtype == "O":
+        if R.shape == (2, 2):
+            T = np.pad(R, ((0, 1), (0, 1)), 'constant')
+            T[:2, 2] = t
+            T[2, 2] = 1
+        elif R.shape == (3, 3):
+            T = np.pad(R, ((0, 1), (0, 1)), 'constant')
+            T[:3, 3] = t
+            T[3, 3] = 1
+        else:
+            raise ValueError("R must be an SO2 or SO3 rotation matrix")
     else:
-        raise ValueError("R must be an SO2 or SO3 rotation matrix")
+
+        if R.shape == (2, 2):
+            T = np.eye(3)
+            T[:2, :2] = R
+            T[:2, 2] = t
+        elif R.shape == (3, 3):
+            T = np.eye(4)
+            T[:3, :3] = R
+            T[:3, 3] = t
+        else:
+            raise ValueError("R must be an SO2 or SO3 rotation matrix")
 
     return T
 

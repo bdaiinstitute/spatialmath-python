@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import spatialmath.base as base
 from spatialmath import SE3
 from spatialmath.baseposelist import BasePoseList
+from itertools import product
 
 _eps = np.finfo(np.float64).eps
 
@@ -746,7 +747,7 @@ class Line3(BasePoseList):
 
         p = []
         dist = []
-        for line1, line2 in zip(self, line):
+        for line1, line2 in product(self, line):
             v1 = line1.v
             w1 = line1.w
             v2 = line2.v

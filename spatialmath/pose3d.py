@@ -537,6 +537,69 @@ class SO3(BasePoseMatrix):
         return cls(base.oa2r(o, a), check=False)
 
     @classmethod
+    def TwoVectors(cls, x=None, y=None, z=None):
+        """
+        Construct a new SO(3) from any two vectors
+
+        :param x: new x-axis, defaults to None
+        :type x: str, array_like(3), optional
+        :param y: new y-axis, defaults to None
+        :type y: str, array_like(3), optional
+        :param z: new z-axis, defaults to None
+        :type z: str, array_like(3), optional
+
+        Create a rotation by defining the direction of two of the new
+        axes in terms of the old axes.  Axes are denoted by strings ``"x"``, 
+        ``"y"``, ``"z"``, ``"-x"``, ``"-y"``, ``"-z"``.
+
+        The directions can also be specified by 3-element vectors, but these
+        must be orthogonal.
+
+        To create a rotation where the new frame has its x-axis in -z-direction
+        of the previous frame, and its z-axis in the x-direction of the previous
+        frame is::
+        
+            >>> SO3.TwoVectors(x='-z', z='x')
+        """
+        def vval(v):
+            if isinstance(v, str):
+                sign = 1
+                if v[0] == '-':
+                    sign = -1
+                    v = v[1:] # skip sign char
+                elif v[0] == '+':
+                    v = v[1:] # skip sign char
+                if v[0] == 'x':
+                    v = [sign, 0, 0]
+                elif v[0] == 'y':
+                    v = [0, sign, 0]
+                elif v[0] == 'z':
+                    v = [0, 0, sign]
+                return np.r_[v]
+            else:
+                return base.unitvec(base.getvector(v, 3))
+
+        if x is not None and y is not None and z is None:
+            # z = x x y
+            x = vval(x)
+            y = vval(y)
+            z = np.cross(x, y)
+
+        elif x is None and y is not None and z is not None:
+            # x = y x z
+            y = vval(y)
+            z = vval(z)
+            x = np.cross(y, z)
+
+        elif x is not None and y is None and z is not None:
+            # y = z x x
+            z = vval(z)
+            x = vval(x)
+            y = np.cross(z, x)
+
+        return cls(np.c_[x, y, z], check=False)
+
+    @classmethod
     def AngleAxis(cls, theta, v, *, unit='rad'):
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
@@ -832,6 +895,12 @@ class SE3(SO3):
         else:
             return np.array([x[:3, 3] for x in self.A])
 
+    @t.setter
+    def t(self, v):
+        if len(self) > 1:
+            raise ValueError("can only assign translation to length 1 object")
+        v = base.getvector(v, 3)
+        self.A[:3, 3] = v
     # ------------------------------------------------------------------------ #
 
     def inv(self):
