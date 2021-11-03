@@ -718,10 +718,8 @@ def _vec2s(fmt, v):
     return ", ".join([fmt.format(x) for x in v])
 
 
-
 def trplot2(
     T,
-
     color="blue",
     frame=None,
     axislabel=True,
@@ -837,12 +835,12 @@ def trplot2(
     except AttributeError:
         pass  # if axes are an Animate object
 
-    if not hasattr(ax, '_plotvol'):
+    if not hasattr(ax, "_plotvol"):
         ax.set_aspect("equal")
 
     if dims is not None:
         ax.axis(base.expand_dims(dims))
-    elif not hasattr(ax, '_plotvol'):
+    elif not hasattr(ax, "_plotvol"):
         ax.autoscale(enable=True, axis="both")
 
     # create unit vectors in homogeneous form
@@ -933,6 +931,7 @@ def trplot2(
         plt.show(block=block)
     return ax
 
+
 def tranimate2(T, **kwargs):
     """
     Animate a 2D coordinate frame
@@ -961,10 +960,10 @@ def tranimate2(T, **kwargs):
     """
     anim = base.animate.Animate2(**kwargs)
     try:
-        del kwargs['dims']
+        del kwargs["dims"]
     except KeyError:
         pass
-    
+
     anim.trplot2(T, **kwargs)
     anim.run(**kwargs)
 
