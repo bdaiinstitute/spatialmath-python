@@ -138,7 +138,7 @@ class BaseTwist(BasePoseList):
 
     @property
     def isunit(self):
-        """
+        r"""
         Test for unit twist (superclass property)
 
         :return: Whether twist is a unit-twist

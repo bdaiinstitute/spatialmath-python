@@ -971,7 +971,7 @@ class SE3(SO3):
         return base.tr2delta(self.A, X2.A)
 
     def Ad(self):
-        """
+        r"""
         Adjoint of SE(3)
 
         :return: adjoint matrix
@@ -997,7 +997,7 @@ class SE3(SO3):
         return base.tr2adjoint(self.A)
 
     def jacob(self):
-        """
+        r"""
         Velocity transform for SE(3)
 
         :return: Jacobian matrix

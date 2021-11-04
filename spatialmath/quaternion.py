@@ -1286,7 +1286,7 @@ class UnitQuaternion(Quaternion):
 
     @classmethod
     def RPY(cls, *angles, order='zyx', unit='rad'):
-        """
+        r"""
         Construct a new unit quaternion from roll-pitch-yaw angles
 
         :param 𝚪: 3-vector of roll-pitch-yaw angles
