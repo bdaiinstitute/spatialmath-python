@@ -196,7 +196,7 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
 
 
 def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
-    """
+    r"""
     Plot a homogeneous line using matplotlib
 
     :param lines: homgeneous lines
@@ -539,7 +539,7 @@ def plot_circle(
 
 
 def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=False):
-    """
+    r"""
     Points on ellipse
 
     :param E: ellipse
@@ -604,7 +604,7 @@ def plot_ellipse(
     filled=False,
     **kwargs
 ):
-    """
+    r"""
     Plot an ellipse using matplotlib
 
     :param E: matrix describing ellipse
@@ -735,8 +735,8 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
 def ellipsoid(
     E, centre=(0, 0, 0), scale=1, confidence=None, resolution=40, inverted=False
 ):
-    """
-    Points on an ellipsoid
+    r"""
+    rPoints on an ellipsoid
 
     :param centre: centre of ellipsoid, defaults to (0, 0, 0)
     :type centre: array_like(3), optional
@@ -796,7 +796,7 @@ def plot_ellipsoid(
     ax=None,
     **kwargs
 ):
-    """
+    r"""
     Draw an ellipsoid using matplotlib
 
     :param E: ellipsoid

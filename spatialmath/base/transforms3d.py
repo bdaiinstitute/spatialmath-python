@@ -688,7 +688,7 @@ def angvec2tr(theta, v, unit="rad"):
 
 
 def exp2r(w):
-    """
+    r"""
     Create an SO(3) rotation matrix from exponential coordinates
 
     :param w: exponential coordinate vector
@@ -730,7 +730,7 @@ def exp2r(w):
 
 
 def exp2tr(w):
-    """
+    r"""
     Create an SE(3) pure rotation matrix from exponential coordinates
 
     :param w: exponential coordinate vector
@@ -1891,7 +1891,7 @@ def x2tr(x, representation="rpy/xyz"):
 
 
 def rot2jac(R, representation="rpy/xyz"):
-    """
+    r"""
     Velocity transform for analytical Jacobian
 
     :param R: SO(3) rotation matrix
@@ -1951,7 +1951,7 @@ def rot2jac(R, representation="rpy/xyz"):
 
 
 def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
-    """
+    r"""
     Angular velocity transformation
 
     :param 𝚪: angular representation
@@ -2101,7 +2101,7 @@ def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
 
 
 def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
-    """
+    r"""
     Angular acceleration transformation
 
     :param 𝚪: angular representation
