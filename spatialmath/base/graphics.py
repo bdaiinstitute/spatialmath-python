@@ -1,6 +1,6 @@
 import math
 from itertools import product
-from collections import Iterable
+from collections.abc import Iterable
 import warnings
 import numpy as np
 import scipy as sp
