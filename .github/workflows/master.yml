@@ -7,16 +7,17 @@ name: build
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
 
 jobs:
   # Run tests on different versions of python
   unittest:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -27,8 +28,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r .github/dev_requirements.txt
-        pip install .
+        pip install .[dev]
         pip install pytest-timeout
         pip install pytest-xvfb
     - name: Test with pytest
@@ -51,10 +51,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r .github/dev_requirements.txt
     - name: Run coverage
       run: |
-        pip install .
+        pip install .[dev]
         pip install pytest-xvfb
         pip install pytest-timeout
         pytest --cov --cov-config=./spatialmath/.coveragerc --cov-report xml
@@ -78,8 +77,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r .github/dev_requirements.txt
-        pip install .
+        pip install .[dev,docs]
         pip install git+https://github.com/petercorke/sphinx-autorun.git
         pip install sympy
         sudo apt-get install graphviz
