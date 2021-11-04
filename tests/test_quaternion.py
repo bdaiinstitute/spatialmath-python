@@ -525,7 +525,7 @@ class TestUnitQuaternion(unittest.TestCase):
         rz = UnitQuaternion.Rz(pi / 2)
         u = UnitQuaternion()
 
-        q = rx * ry * rz
+        q = UnitQuaternion.RPY([.2, .3, .4])
 
         # from null
         qcompare(q.interp1(0), u)
