@@ -1122,8 +1122,11 @@ class BasePoseMatrix(BasePoseList):
                         # SO(n) x vector
                         return left.A @ v
                 else:
-                    if right.shape == left.A.shape:
-                        # SE(n) x (nxn)
+                    if left.isSE:
+                        # SE(n) x array
+                        return base.h2e(left.A @ base.e2h(right))
+                    else:
+                        # SO(n) x array
                         return left.A @ right
 
             elif len(left) > 1 and base.isvector(right, left.N):
