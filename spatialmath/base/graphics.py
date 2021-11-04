@@ -355,6 +355,7 @@ def plot_box(
                 h = wh
         if centre is not None:
             cx, cy = centre
+
         if l is None:
             try:
                 l = r - w
@@ -365,14 +366,37 @@ def plot_box(
                 l = cx - w / 2
             except:
                 pass
-        if b is None:
+
+        if r is None:
+            try:
+                r = l + w
+            except:
+                pass
+        if r is None:
+            try:
+                r = cx + w / 2
+            except:
+                pass
+        
+        if t is None:
             try:
                 t = b + h
             except:
                 pass
+        if t is None:
+            try:
+                t = cy + h / 2
+            except:
+                pass
+
         if b is None:
             try:
-                t = cy - h / 2
+                b = t - h
+            except:
+                pass
+        if b is None:
+            try:
+                b = cy - h / 2
             except:
                 pass
 
@@ -471,7 +495,7 @@ def circle(centre=(0, 0), radius=1, resolution=50):
 
 
 def plot_circle(
-    radius, centre=(0, 0), *fmt, resolution=50, ax=None, filled=False, **kwargs
+    radius, centre, *fmt, resolution=50, ax=None, filled=False, **kwargs
 ):
     """
     Plot a circle using matplotlib
@@ -1318,6 +1342,11 @@ def isnotebook():
 
 if __name__ == "__main__":
     import pathlib
+
+
+    plotvol2(5)
+    plot_box(ltrb=[-1, 2, 2, 4], color='r')
+    plt.show(block=True)
 
     exec(
         open(
