@@ -234,6 +234,15 @@ class BasePoseList(UserList, ABC):
         return True
 
     @property
+    def __array_interface__(self):
+        """
+        Copies the numpy array interface from the first numpy array
+        so that C extenstions with this spatial math class have direct
+        access to the underlying numpy array
+        """
+        return self.data[0].__array_interface__
+
+    @property
     def _A(self):
         """
         Spatial vector as an array
