@@ -1567,7 +1567,7 @@ class SE3(SO3):
         else:
             raise ValueError('expecting SO3 or rotation matrix')
 
-        return cls(base.rt2tr(R, t))
+        return cls(base.rt2tr(R, t, check=check), check=check)
 
     def angdist(self, other, metric=6):
         r"""
