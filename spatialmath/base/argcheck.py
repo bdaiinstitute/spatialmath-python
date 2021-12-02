@@ -14,6 +14,7 @@ that can be passed.
 import math
 import numpy as np
 from spatialmath.base import symbolic as sym
+from numpy.typing import ArrayLike
 
 # valid scalar types
 _scalartypes = (int, np.integer, float, np.floating) + sym.symtype
@@ -256,7 +257,7 @@ def verifymatrix(m, shape):
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 
-def getvector(v, dim=None, out="array", dtype=np.float64):
+def getvector(v, dim=None, out="array", dtype=np.float64) -> ArrayLike:
     """
     Return a vector value
 
