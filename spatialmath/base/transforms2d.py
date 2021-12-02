@@ -904,7 +904,7 @@ def trplot2(
         ax.autoscale(enable=True, axis="both")
 
     # create unit vectors in homogeneous form
-    o = T @ np.array([0, 0, 1])
+    o = T @ np.array([0, 0, 1]) * length
     x = T @ np.array([1, 0, 1]) * length
     y = T @ np.array([0, 1, 1]) * length
 
