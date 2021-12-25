@@ -905,8 +905,8 @@ def trplot2(
 
     # create unit vectors in homogeneous form
     o = T @ np.array([0, 0, 1])
-    x = T @ np.array([1, 0, 1]) * length
-    y = T @ np.array([0, 1, 1]) * length
+    x = T @ np.array([length, 0, 1])
+    y = T @ np.array([0, length, 1])
 
     # draw the axes
 
