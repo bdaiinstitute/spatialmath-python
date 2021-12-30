@@ -61,7 +61,7 @@ def numjac(f, x, dx=1e-8, SO=0, SE=0):
 
 def numhess(J, x, dx=1e-8):
     r"""
-    Numerically compute Hessian of Jacobian function
+    Numerically compute Hessian given Jacobian function
 
     :param J: the Jacobian function, returns an ndarray(m,n)
     :type J: callable
