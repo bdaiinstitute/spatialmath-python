@@ -50,7 +50,7 @@ setup(
     keywords="python SO2 SE2 SO3 SE3 twist translation orientation rotation euler-angles roll-pitch-yaw roll-pitch-yaw-angles quaternion unit-quaternion rotation-matrix transforms robotics robot vision pose",
     license="MIT",  # TODO
     packages=find_packages(exclude=["test_*", "TODO*"]),
-    install_requires=["numpy", "scipy", "matplotlib", "colored", "ansitable"],
+    install_requires=["numpy", "sympy", "scipy", "matplotlib", "colored", "ansitable"],
     extras_require={
         "docs": docs_req,
     },
