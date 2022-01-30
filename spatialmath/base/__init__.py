@@ -316,6 +316,7 @@ __all__ = [
     "sphere",
     "ellipsoid",
     "plot_box",
+    "plot_arrow",
     "plot_circle",
     "plot_ellipse",
     "plot_homline",
