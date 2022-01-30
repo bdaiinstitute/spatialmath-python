@@ -936,7 +936,7 @@ class SE3(SO3):
         else:
             return SE3([base.trinv(x) for x in self.A], check=False)
 
-    def delta(self, X2):
+    def delta(self, X2=None):
         r"""
         Infinitesimal difference of SE(3) values
 
@@ -968,7 +968,10 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transforms3d.tr2delta`
         """
-        return base.tr2delta(self.A, X2.A)
+        if X2 is None:
+            return base.tr2delta(self.A)
+        else:
+            return base.tr2delta(self.A, X2.A)
 
     def Ad(self):
         r"""
