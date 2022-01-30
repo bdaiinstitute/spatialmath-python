@@ -1549,7 +1549,7 @@ class SE3(SO3):
         return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
     @classmethod
-    def Rt(cls, R, t, check=True):
+    def Rt(cls, R, t=None, check=True):
         """
         Create an SE(3) from rotation and translation
 
@@ -1570,6 +1570,8 @@ class SE3(SO3):
         else:
             raise ValueError('expecting SO3 or rotation matrix')
 
+        if t is None:
+            t = np.zeros((3,))
         return cls(base.rt2tr(R, t))
 
     def angdist(self, other, metric=6):
