@@ -1559,7 +1559,8 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        return [not x for x in left == right]
+        eq = left == right
+        return (not eq if isinstance(eq, bool) else [not x for x in eq])
 
     def _op2(
         left, right, op
