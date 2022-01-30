@@ -1531,8 +1531,8 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        assert type(left) == type(right), "operands to == are of different types"
-        return left._op2(right, lambda x, y: np.allclose(x, y))
+        return (left._op2(right, lambda x, y: np.allclose(x, y))
+                if type(left) == type(right) else False)
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
