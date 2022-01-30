@@ -106,7 +106,7 @@ def xyt2tr(xyt, unit="rad"):
     :type xyt: array_like(3)
     :param unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
-    :return: 3x3 homogeneous transformation matrix
+    :return: SE(2) matrix
     :rtype: ndarray(3,3)
 
     - ``xyt2tr([x,y,θ])`` is a homogeneous transformation (3x3) representing a rotation of
@@ -170,8 +170,8 @@ def transl2(x, y=None):
     :type x: float
     :param y: translation along Y-axis
     :type y: float
-    :return: SE(2) transform matrix or the translation elements of a homogeneous
-        transform :rtype: ndarray(3,3)
+    :return: SE(2) matrix
+    :rtype: ndarray(3,3)
 
     - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3)
       representing a pure translation.
@@ -584,14 +584,14 @@ def trinterp2(start, end, s=None):
     :rtype: ndarray(3,3) or ndarray(2,2)
     :raises ValueError: bad arguments
 
-    - ``trinterp2(None, T, S)`` is a homogeneous transform (3x3) interpolated
-      between identity when S=0 and T (3x3) when S=1.
+    - ``trinterp2(None, T, S)`` is an SE(2) matrix interpolated
+      between identity when `S`=0 and `T`  when `S`=1.
     - ``trinterp2(T0, T1, S)`` as above but interpolated
-      between T0 (3x3) when S=0 and T1 (3x3) when S=1.
-    - ``trinterp2(None, R, S)`` is a rotation matrix (2x2) interpolated
-      between identity when S=0 and R (2x2) when S=1.
+      between `T0` when `S`=0 and `T1` when `S`=1.
+    - ``trinterp2(None, R, S)`` is an SO(2) matrix interpolated
+      between identity when `S`=0 and `R` when `S`=1.
     - ``trinterp2(R0, R1, S)`` as above but interpolated
-      between R0 (2x2) when S=0 and R1 (2x2) when S=1.
+      between `R0` when `S`=0 and `R1` when `S`=1.
 
     .. note:: Rotation angle is linearly interpolated.
 
@@ -777,6 +777,160 @@ def points2tr2(p1, p2):
 
     return T
 
+# https://github.com/ClayFlannigan/icp/blob/master/icp.py
+# https://github.com/1988kramer/intel_dataset/blob/master/scripts/Align2D.py
+# hack below to use points2tr above
+# use ClayFlannigan's improved data association
+from scipy.spatial import KDTree
+import numpy as np
+
+# reference or target 2xN
+# source  2xN
+
+# params:
+#   source_points: numpy array containing points to align to the reference set
+#                  points should be homogeneous, with one point per row
+#   reference_points: numpy array containing points to which the source points
+#                  are to be aligned, points should be homogeneous with one
+#                  point per row
+#   initial_T:     initial estimate of the transform between reference and source
+# def __init__(self, source_points, reference_points, initial_T):
+# 	self.source = source_points
+# 	self.reference = reference_points
+# 	self.init_T = initial_T
+# 	self.reference_tree = KDTree(reference_points[:,:2])
+# 	self.transform = self.AlignICP(30, 1.0e-4)
+
+# uses the iterative closest point algorithm to find the
+# transformation between the source and reference point clouds
+# that minimizes the sum of squared errors between nearest 
+# neighbors in the two point clouds
+# params:
+#   max_iter: int, max number of iterations
+#   min_delta_err: float, minimum change in alignment error
+def ICP2d(reference, source, T=None, max_iter=20, min_delta_err=1e-4):
+
+    mean_sq_error = 1.0e6 # initialize error as large number
+    delta_err = 1.0e6    # change in error (used in stopping condition)
+    num_iter = 0         # number of iterations
+    if T is None:
+        T = np.eye(3)
+
+    ref_kdtree = KDTree(reference.T)
+    tf_source = source
+
+    source_hom = np.vstack((source, np.ones(source.shape[1])))
+
+    while delta_err > min_delta_err and num_iter < max_iter:
+
+        # find correspondences via nearest-neighbor search
+        matched_ref_pts, matched_source, indices = _FindCorrespondences(ref_kdtree, tf_source, reference)
+
+        # find alingment between source and corresponding reference points via SVD
+        # note: svd step doesn't use homogeneous points
+        new_T = _AlignSVD(matched_source, matched_ref_pts)
+
+        # update transformation between point sets
+        T = T @ new_T
+
+        # apply transformation to the source points
+        tf_source = T @ source_hom
+        tf_source = tf_source[:2, :]
+
+        # find mean squared error between transformed source points and reference points
+        # TODO: do this with fancy indexing
+        new_err = 0
+        for i in range(len(indices)):
+            if indices[i] != -1:
+                diff = tf_source[:, i] - reference[:, indices[i]]
+                new_err += np.dot(diff,diff.T)
+
+        new_err /= float(len(matched_ref_pts))
+
+        # update error and calculate delta error
+        delta_err = abs(mean_sq_error - new_err)
+        mean_sq_error = new_err
+        print('ITER', num_iter, delta_err, mean_sq_error)
+
+        num_iter += 1
+
+    return T
+
+
+def _FindCorrespondences(tree, source, reference):
+
+    # get distances to nearest neighbors and indices of nearest neighbors
+    dist, indices = tree.query(source.T)
+
+    # remove multiple associatons from index list
+    # only retain closest associations
+    unique = False
+    matched_src = source.copy()
+    while not unique:
+        unique = True
+        for i, idxi in enumerate(indices):
+            if idxi == -1:
+                continue
+            # could do this with np.nonzero
+            for j in range(i+1,len(indices)):
+                if idxi == indices[j]:
+                    if dist[i] < dist[j]:
+                        indices[j] = -1
+                    else:
+                        indices[i] = -1
+                        break
+    # build array of nearest neighbor reference points
+    # and remove unmatched source points
+    point_list = []
+    src_idx = 0
+    for idx in indices:
+        if idx != -1:
+            point_list.append(reference[:,idx])
+            src_idx += 1
+        else:
+            matched_src = np.delete(matched_src, src_idx, axis=1)
+
+    matched_ref = np.array(point_list).T
+
+    return matched_ref, matched_src, indices
+
+# uses singular value decomposition to find the 
+# transformation from the reference to the source point cloud
+# assumes source and reference point clounds are ordered such that 
+# corresponding points are at the same indices in each array
+#
+# params:
+#   source: numpy array representing source pointcloud
+#   reference: numpy array representing reference pointcloud
+# returns:
+#   T: transformation between the two point clouds
+
+# TODO: replace this func with 
+def _AlignSVD(source, reference):
+
+    # first find the centroids of both point clouds
+    src_centroid = source.mean(axis=1)
+    ref_centroid = reference.mean(axis=1)
+
+    # get the point clouds in reference to their centroids
+    source_centered = source - src_centroid[:, np.newaxis]
+    reference_centered = reference - ref_centroid[:, np.newaxis]
+
+    # compute the moment matrix
+    M = reference_centered @ source_centered.T
+
+    # do the singular value decomposition
+    U, W, V_t = np.linalg.svd(M)
+
+    # get rotation between the two point clouds
+    R = U @ V_t
+    if np.linalg.det(R) < 0:
+        raise RuntimeError('bad rotation matrix')
+
+    # translation is the difference between the point clound centroids
+    t = ref_centroid - R @ src_centroid
+
+    return base.rt2tr(R, t)
 
 def trplot2(
     T,
