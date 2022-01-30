@@ -1570,14 +1570,10 @@ class SE3(SO3):
         else:
             raise ValueError('expecting SO3 or rotation matrix')
 
-<<<<<<< HEAD
         if t is None:
             t = np.zeros((3,))
-        return cls(base.rt2tr(R, t))
-=======
         return cls(base.rt2tr(R, t, check=check), check=check)
->>>>>>> feeaa3639699359e3af0c2b29949edde096af8f2
-
+        
     def angdist(self, other, metric=6):
         r"""
         Angular distance metric between poses
