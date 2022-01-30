@@ -1577,8 +1577,8 @@ class BasePoseMatrix(BasePoseList):
         :return: list of matrices
         :rtype: list
 
-        Peform a binary operation on a pair of operands.  If either operand
-        contains a sequence the results is a sequence accordinging to this
+        Perform a binary operation on a pair of operands.  If either operand
+        contains a sequence the results is a sequence according to this
         truth table.
 
         =========   ==========   ====  ================================
