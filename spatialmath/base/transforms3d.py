@@ -2416,6 +2416,15 @@ def trprint(
 
     # print the angular part in various representations
 
+    # define some aliases for rpy conventions for arms, vehicles and cameras
+    aliases = {
+        'arm': 'rpy/xyz',
+        'vehicle': 'rpy/zyx',
+        'camera': 'rpy/yxz'
+    }
+    if orient in aliases:
+        orient = aliases[orient]
+
     a = orient.split("/")
     if a[0] == "rpy":
         if len(a) == 2:
