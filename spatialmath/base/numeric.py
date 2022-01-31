@@ -1,6 +1,8 @@
 import numpy as np
 from spatialmath import base
+from functools import reduce
 
+# this is a collection of useful algorithms, not otherwise categorized
 
 def numjac(f, x, dx=1e-8, SO=0, SE=0):
     r"""
@@ -207,14 +209,96 @@ def bresenham(p0, p1, array=None):
 
     return x.astype(int), y.astype(int)
 
+def mpq_point(data, p, q):
+    r"""
+    Moments of polygon
+
+    :param p: moment order x
+    :type p: int
+    :param q: moment order y
+    :type q: int
+
+    Returns the pq'th moment of the polygon
+
+    .. math::
+    
+        M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q
+
+    Example:
+
+    .. runblock:: pycon
+
+        >>> from spatialmath import Polygon2
+        >>> p = Polygon2([[1, 3, 2], [2, 2, 4]])
+        >>> p.moment(0, 0)  # area
+        >>> p.moment(3, 0)
+
+    Note is negative for clockwise perimeter.
+    """
+    x = data[0, :]
+    y = data[1, :]
+
+    return np.sum(x**p * y**q)
+
+def gauss1d(mu, var, x):
+    """
+    Gaussian function in 1D
+
+    :param mu: mean
+    :type mu: float
+    :param var: variance
+    :type var: float
+    :param x: x-coordinate values
+    :type x: array_like(n)
+    :return: Gaussian :math:`G(x)`
+    :rtype: ndarray(n)
+
+    :seealso: :func:`gauss2d`
+    """
+    sigma = np.sqrt(var)
+    x = base.getvector(x)
+
+    return 1.0 / np.sqrt(sigma**2 * 2 * np.pi) * np.exp(-(x-mu)**2/2/sigma**2)
+
+def gauss2d(mu, P, X, Y):
+    """
+    Gaussian function in 2D
+
+    :param mu: mean
+    :type mu: array_like(2)
+    :param P: covariance matrix
+    :type P: ndarray(2,2)
+    :param X: array of x-coordinates
+    :type X:  ndarray(n,m)
+    :param Y: array of y-coordinates
+    :type Y: ndarray(n,m)
+    :return: Gaussian :math:`g(x,y)`
+    :rtype: ndarray(n,m)
+
+    Computed :math:`g_{i,j} = G(x_{i,j}, y_{i,j})`
+
+    :seealso: :func:`gauss1d`
+    """
+
+    x = X.ravel() - mu[0]
+    y = Y.ravel() - mu[1]
+
+    Pi = np.linalg.inv(P);
+    g = 1/(2*np.pi*np.sqrt(np.linalg.det(P))) * np.exp(
+         -0.5*(x**2 * Pi[0, 0] + y**2 * Pi[1, 1] + 2 * x * y * Pi[0, 1]));
+    return g.reshape(X.shape)
+
 if __name__ == "__main__":
 
-    print(bresenham([2,2], [2,4]))
-    print(bresenham([2,2], [2,-4]))
-    print(bresenham([2,2], [4,2]))
-    print(bresenham([2,2], [-4,2]))
-    print(bresenham([2,2], [2,2]))
-    print(bresenham([2,2], [3,6])) # steep
-    print(bresenham([2,2], [6,3])) # shallow
-    print(bresenham([2,2], [3,6])) # steep
-    print(bresenham([2,2], [6,3])) # shallow
+    r = np.linspace(-4, 4, 6)
+    x, y = np.meshgrid(r, r)
+    print(gauss2d([0, 0], np.diag([1,2]), x, y))
+    # print(bresenham([2,2], [2,4]))
+    # print(bresenham([2,2], [2,-4]))
+    # print(bresenham([2,2], [4,2]))
+    # print(bresenham([2,2], [-4,2]))
+    # print(bresenham([2,2], [2,2]))
+    # print(bresenham([2,2], [3,6])) # steep
+    # print(bresenham([2,2], [6,3])) # shallow
+    # print(bresenham([2,2], [3,6])) # steep
+    # print(bresenham([2,2], [6,3])) # shallow

@@ -267,6 +267,7 @@ __all__ = [
     "tranimate",
     "tr2x",
     "x2tr",
+
     # spatialmath.base.transformsNd
     "t2r",
     "r2t",
@@ -333,9 +334,13 @@ __all__ = [
     "plot_cuboid",
     "axes_logic",
     "isnotebook",
+    
     # spatial.base.numeric
     "numjac",
     "numhess",
     "array2str",
     "bresenham",
+    "mpq_point",
+    "gauss1d",
+    "gauss2d",
 ]
