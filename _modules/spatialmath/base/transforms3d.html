@@ -2331,20 +2331,24 @@
         <span class="n">skd</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">vd</span><span class="p">)</span>
         <span class="n">theta_dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">)</span> <span class="o">/</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">𝚪</span><span class="p">)</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">𝚪</span><span class="p">)</span>
-        <span class="n">Theta</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
-        <span class="n">Theta_dot</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
-            <span class="o">+</span> <span class="mf">0.5</span>
-            <span class="o">*</span> <span class="n">theta</span>
-            <span class="o">*</span> <span class="n">theta_dot</span>
-            <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-            <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
-            <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
-        <span class="p">)</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="p">(</span>
-            <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="p">)</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="n">Theta</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span>
 
-        <span class="n">Ad</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">skd</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">skd</span> <span class="o">*</span> <span class="n">Theta</span> <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="n">Theta_dot</span>
+        <span class="c1"># hand optimized version of code from notebook</span>
+        <span class="c1"># TODO:</span>
+        <span class="c1">#   results are close but different to numerical cross check</span>
+        <span class="c1">#   something wrong in the derivation</span>
+        <span class="n">Theta_dot</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span>
+                <span class="o">-</span><span class="n">theta</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> 
+                <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span>
+                 <span class="n">theta</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> 
+                <span class="p">)</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">/</span> <span class="mi">2</span>  <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span>
+                <span class="o">-</span> <span class="p">(</span>
+                    <span class="mi">2</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+                  <span class="p">)</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">3</span>
+                <span class="p">)</span> 
+
+        <span class="n">Ad</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">skd</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">skd</span> <span class="o">*</span> <span class="n">Theta</span> <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="n">Theta_dot</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad representation specified&quot;</span><span class="p">)</span>
 
@@ -2490,6 +2494,15 @@
         <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;t = </span><span class="si">{}</span><span class="s2">;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">transl</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
 
     <span class="c1"># print the angular part in various representations</span>
+
+    <span class="c1"># define some aliases for rpy conventions for arms, vehicles and cameras</span>
+    <span class="n">aliases</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;arm&#39;</span><span class="p">:</span> <span class="s1">&#39;rpy/xyz&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;vehicle&#39;</span><span class="p">:</span> <span class="s1">&#39;rpy/zyx&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;camera&#39;</span><span class="p">:</span> <span class="s1">&#39;rpy/yxz&#39;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">orient</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
+        <span class="n">orient</span> <span class="o">=</span> <span class="n">aliases</span><span class="p">[</span><span class="n">orient</span><span class="p">]</span>
 
     <span class="n">a</span> <span class="o">=</span> <span class="n">orient</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rpy&quot;</span><span class="p">:</span>
@@ -2682,9 +2695,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_zlabel</span><span class="p">():</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">pass</span>  <span class="c1"># if axes are an Animate object</span>
 
@@ -2766,6 +2779,7 @@
                 <span class="n">d2</span><span class="o">=</span><span class="n">d2</span><span class="p">,</span>
                 <span class="n">flo</span><span class="o">=</span><span class="n">flo</span><span class="p">,</span>
                 <span class="n">anaglyph</span><span class="o">=</span><span class="n">anaglyph</span><span class="p">,</span>
+                <span class="n">axislabel</span><span class="o">=</span><span class="n">axislabel</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span>
             <span class="p">)</span>
         <span class="k">return</span>
@@ -3010,7 +3024,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 

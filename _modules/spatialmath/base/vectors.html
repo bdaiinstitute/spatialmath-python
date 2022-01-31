@@ -574,9 +574,30 @@
 
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span> <span class="o">/</span> <span class="n">th</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="wrap_0_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap angle to range :math:`[0, \pi]`</span>
+
+<span class="sd">    :param theta: input angle</span>
+<span class="sd">    :type theta: scalar or ndarray</span>
+<span class="sd">    :return: angle wrapped into range :math:`[0, \pi)`</span>
+
+<span class="sd">    This is used to fold angles of colatitude.  If zero is the angle of the</span>
+<span class="sd">    north pole, colatitude increases to :math:`\pi` at the south pole then</span>
+<span class="sd">    decreases to :math:`0` as we head back to the north pole.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="wrap_0_2pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_2pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_2pi</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrap angle to range [0, 2pi)</span>
+<span class="sd">    Wrap angle to range :math:`[0, 2\pi)`</span>
 
 <span class="sd">    :param theta: input angle</span>
 <span class="sd">    :type theta: scalar or ndarray</span>
@@ -587,7 +608,7 @@
 
 <div class="viewcode-block" id="wrap_mpi_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi_pi</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrap angle to range [-pi, pi)</span>
+<span class="sd">    Wrap angle to range :math:`[\-pi, \pi)`</span>
 
 <span class="sd">    :param theta: input angle</span>
 <span class="sd">    :type theta: scalar or ndarray</span>
@@ -683,7 +704,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 

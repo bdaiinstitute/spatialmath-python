@@ -545,7 +545,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span></div>
 
 
-<div class="viewcode-block" id="q2r"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.q2r">[docs]</a><span class="k">def</span> <span class="nf">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="q2r"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.q2r">[docs]</a><span class="k">def</span> <span class="nf">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;sxyz&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert unit-quaternion to SO(3) rotation matrix</span>
 
@@ -568,10 +568,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;sxyz&quot;</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">q</span>
+    <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;xyzs&quot;</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">q</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;order is invalid, must be &#39;sxyz&#39; or &#39;xyzs&#39;&quot;</span><span class="p">)</span>
+        
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">z</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">z</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">y</span><span class="p">)],</span>
@@ -1020,7 +1023,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 

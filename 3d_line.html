@@ -103,104 +103,55 @@
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Line3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.baseposelist.BasePoseList</span></code></p>
-<p>Plucker coordinate class</p>
-<p>Concrete class to represent a 3D line using Plucker coordinates.</p>
-<p>Methods:</p>
-<p>Plucker            Contructor from points
-Plucker.planes     Constructor from planes
-Plucker.pointdir   Constructor from point and direction</p>
-<p>Information and test methods::
-closest            closest point on line
-commonperp         common perpendicular for two lines
-contains           test if point is on line
-distance           minimum distance between two lines
-intersects         intersection point for two lines
-intersect_plane    intersection points with a plane
-intersect_volume   intersection points with a volume
-pp                 principal point
-ppd                principal point distance from origin
-point              generate point on line</p>
-<p>Conversion methods::
-char               convert to human readable string
-double             convert to 6-vector
-skew               convert to 4x4 skew symmetric matrix</p>
-<p>Display and print methods::
-display            display in human readable form
-plot               plot line</p>
-<p>Operators:
-*                  multiply Plucker matrix by a general matrix
-|                  test if lines are parallel
-^                  test if lines intersect
-==                 test if two lines are equivalent
-~=                 test if lines are not equivalent</p>
-<p>Notes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>This is reference (handle) class object</p></li>
-<li><p>Plucker objects can be used in vectors and arrays</p></li>
-</ul>
-</div></blockquote>
-<p>References:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Ken Shoemake, “Ray Tracing News”, Volume 11, Number 1
-<a class="reference external" href="http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3">http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3</a></p></li>
-<li><p>Matt Mason lecture notes <a class="reference external" href="http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf">http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf</a></p></li>
-<li><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p596-7.</p></li>
-</ul>
-</div></blockquote>
-<p>Implementation notes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>The internal representation is a 6-vector [v, w] where v (moment), w (direction).</p></li>
-<li><p>There is a huge variety of notation used across the literature, as well as the ordering
-of the direction and moment components in the 6-vector.</p></li>
-</ul>
-</div></blockquote>
-<p>Copyright (C) 1993-2019 Peter I. Corke</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Create a Plucker 3D line object</p>
+<dd><p>Create a Line3 object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<em>6-element array_like</em><em>, </em><em>Plucker instance</em><em>, </em><em>3-element array_like</em>) – Plucker vector, Plucker object, Plucker moment</p></li>
-<li><p><strong>w</strong> (<em>3-element array_like</em><em>, </em><em>optional</em>) – Plucker direction, optional</p></li>
+<li><p><strong>v</strong> (<em>array_like</em><em>(</em><em>6</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – Plucker coordinate vector, or Plucker moment vector</p></li>
+<li><p><strong>w</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em><em>, </em><em>optional</em>) – Plucker direction vector, optional</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Plucker line</p>
+<dd class="field-odd"><p>3D line</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Line3</span></code> instance</p>
 </dd>
 </dl>
+<p>A representation of a 3D line using Plucker coordinates.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(X)</span></code> creates a Plucker object from the Plucker coordinate vector
-<code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector) is the moment and W (3-vector) is the line direction.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(L)</span></code> creates a copy of the Plucker object <code class="docutils literal notranslate"><span class="pre">L</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(V,</span> <span class="pre">W)</span></code> creates a Plucker object from moment <code class="docutils literal notranslate"><span class="pre">V</span></code> (3-vector) and
-line direction <code class="docutils literal notranslate"><span class="pre">W</span></code> (3-vector).</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Line3(P)</span></code> creates a 3D line from a Plucker coordinate vector <code class="docutils literal notranslate"><span class="pre">[v,</span> <span class="pre">w]</span></code></dt><dd><p>where <code class="docutils literal notranslate"><span class="pre">v</span></code> (3,) is the moment and <code class="docutils literal notranslate"><span class="pre">w</span></code> (3,) is the line direction.</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Line3(v,</span> <span class="pre">w)</span></code> as above but the components <code class="docutils literal notranslate"><span class="pre">v</span></code> and <code class="docutils literal notranslate"><span class="pre">w</span></code> are
+provided separately.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Line3(L)</span></code> creates a copy of the <code class="docutils literal notranslate"><span class="pre">Line3</span></code> object <code class="docutils literal notranslate"><span class="pre">L</span></code>.</p></li>
 </ul>
-<p>Notes:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p>The Plucker object inherits from <code class="docutils literal notranslate"><span class="pre">collections.UserList</span></code> and has list-like
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Line3</span></code> object inherits from <code class="docutils literal notranslate"><span class="pre">collections.UserList</span></code> and has list-like
 behaviours.</p></li>
-<li><p>A single Plucker object contains a 1D array of Plucker coordinates.</p></li>
+<li><p>A single <code class="docutils literal notranslate"><span class="pre">Line3</span></code> object contains a 1D array of Plucker coordinates.</p></li>
 <li><p>The elements of the array are guaranteed to be Plucker coordinates.</p></li>
 <li><p>The number of elements is given by <code class="docutils literal notranslate"><span class="pre">len(L)</span></code></p></li>
 <li><p>The elements can be accessed using index and slice notation, eg. <code class="docutils literal notranslate"><span class="pre">L[1]</span></code> or
 <code class="docutils literal notranslate"><span class="pre">L[2:3]</span></code></p></li>
-<li><p>The Plucker instance can be used as an iterator in a for loop or list comprehension.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Line3</span></code> instance can be used as an iterator in a for loop or list comprehension.</p></li>
 <li><p>Some methods support operations on the internal list.</p></li>
 </ul>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.PQ, Plucker.Planes, Plucker.PointDir</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.TwoPoints" title="spatialmath.geom3d.Line3.TwoPoints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TwoPoints()</span></code></a> <code class="xref py py-meth docutils literal notranslate"><span class="pre">Planes()</span></code> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.PointDir" title="spatialmath.geom3d.Line3.PointDir"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PointDir()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,27 +184,27 @@ def my_abstract_staticmethod(…):</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.TwoPoints">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TwoPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.TwoPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.TwoPoints" title="Permalink to this definition"></a></dt>
-<dd><p>Create Plucker line object from two 3D points</p>
+<dd><p>Create 3D line from two 3D points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>P</strong> (<em>3-element array_like</em>) – First 3D point</p></li>
-<li><p><strong>Q</strong> (<em>3-element array_like</em>) – Second 3D point</p></li>
+<li><p><strong>P</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – First 3D point</p></li>
+<li><p><strong>Q</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Second 3D point</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Plucker line</p>
+<dd class="field-even"><p>3D line</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Line3</span></code> instance</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker(P,</span> <span class="pre">Q)</span></code> create a Plucker object that represents
-the line joining the 3D points <code class="docutils literal notranslate"><span class="pre">P</span></code> (3-vector) and <code class="docutils literal notranslate"><span class="pre">Q</span></code> (3-vector). The direction
+<p><code class="docutils literal notranslate"><span class="pre">Line3(P,</span> <span class="pre">Q)</span></code> create a <code class="docutils literal notranslate"><span class="pre">Line3</span></code> object that represents
+the line joining the 3D points <code class="docutils literal notranslate"><span class="pre">P</span></code> (3,) and <code class="docutils literal notranslate"><span class="pre">Q</span></code> (3,). The direction
 is from <code class="docutils literal notranslate"><span class="pre">Q</span></code> to <code class="docutils literal notranslate"><span class="pre">P</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker, Plucker.Planes, Plucker.PointDir</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Line3()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.PointDir" title="spatialmath.geom3d.Line3.PointDir"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PointDir()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -261,19 +212,19 @@ is from <code class="docutils literal notranslate"><span class="pre">Q</span></c
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.TwoPlanes">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TwoPlanes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pi1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.TwoPlanes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.TwoPlanes" title="Permalink to this definition"></a></dt>
-<dd><p>Create Plucker line from two planes</p>
+<dd><p>Create 3D line from intersection of two planes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pi1</strong> (<em>4-element array_like</em><em>, or </em><em>Plane</em>) – First plane</p></li>
-<li><p><strong>pi2</strong> (<em>4-element array_like</em><em>, or </em><em>Plane</em>) – Second plane</p></li>
+<li><p><strong>pi1</strong> (array_like(4), or <code class="docutils literal notranslate"><span class="pre">Plane</span></code>) – First plane</p></li>
+<li><p><strong>pi2</strong> (array_like(4), or <code class="docutils literal notranslate"><span class="pre">Plane</span></code>) – Second plane</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Plucker line</p>
+<dd class="field-even"><p>3D line</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Line3</span></code> instance</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker.planes(PI1,</span> <span class="pre">PI2)</span></code> is a Plucker object that represents
@@ -282,7 +233,7 @@ the line formed by the intersection of two planes <code class="docutils literal 
 the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker, Plucker.PQ, Plucker.PointDir</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.TwoPoints" title="spatialmath.geom3d.Line3.TwoPoints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TwoPoints()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.PointDir" title="spatialmath.geom3d.Line3.PointDir"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PointDir()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -290,26 +241,26 @@ the plane <span class="math notranslate nohighlight">\(\pi: ax + by + cz + d=0\)
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.PointDir">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PointDir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.PointDir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.PointDir" title="Permalink to this definition"></a></dt>
-<dd><p>Create Plucker line from point and direction</p>
+<dd><p>Create 3D line from a point and direction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>point</strong> (<em>3-element array_like</em>) – A 3D point</p></li>
-<li><p><strong>dir</strong> (<em>3-element array_like</em>) – Direction vector</p></li>
+<li><p><strong>point</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – A 3D point</p></li>
+<li><p><strong>dir</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Direction vector</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Plucker line</p>
+<dd class="field-even"><p>3D line</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Line3</span></code> instance</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">Plucker.pointdir(P,</span> <span class="pre">W)</span></code> is a Plucker object that represents the
+<p><code class="docutils literal notranslate"><span class="pre">Line3.pointdir(P,</span> <span class="pre">W)</span></code> is a Plucker object that represents the
 line containing the point <code class="docutils literal notranslate"><span class="pre">P</span></code> and parallel to the direction vector <code class="docutils literal notranslate"><span class="pre">W</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker, Plucker.Planes, Plucker.PQ</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.TwoPoints" title="spatialmath.geom3d.Line3.TwoPoints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TwoPoints()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.TwoPlanes" title="spatialmath.geom3d.Line3.TwoPlanes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TwoPlanes()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -328,7 +279,7 @@ line containing the point <code class="docutils literal notranslate"><span class
 <dd class="field-odd"><p>Plucker object with new Plucker line appended</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+<dd class="field-even"><p>Line3 instance</p>
 </dd>
 </dl>
 </dd></dl>
@@ -365,7 +316,13 @@ instance.</p>
 <dd class="field-odd"><p>the moment vector</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+</dl>
+<p>The line is represented by a vector <span class="math notranslate nohighlight">\((\vec{v}, \vec{w}) \in \mathbb{R}^6\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.w" title="spatialmath.geom3d.Line3.w"><code class="xref py py-meth docutils literal notranslate"><span class="pre">w()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -379,10 +336,13 @@ instance.</p>
 <dd class="field-odd"><p>the direction vector</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+<dd class="field-even"><p>ndarray(3)</p>
 </dd>
+</dl>
+<p>The line is represented by a vector <span class="math notranslate nohighlight">\((\vec{v}, \vec{w}) \in \mathbb{R}^6\)</span>.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.uw</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.v" title="spatialmath.geom3d.Line3.v"><code class="xref py py-meth docutils literal notranslate"><span class="pre">v()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.uw" title="spatialmath.geom3d.Line3.uw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">uw()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -390,48 +350,64 @@ instance.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.uw">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uw</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.uw" title="Permalink to this definition"></a></dt>
-<dd><p>Line direction as a unit vector</p>
+<dd><blockquote>
+<div><p>Line direction as a unit vector</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Line direction</p>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Line direction as a unit vector</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(3,)</p>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>ndarray(3,)</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">line.uw</span></code> is a unit-vector parallel to the line.</p>
+<p>The line is represented by a vector :math:<a href="#id1"><span class="problematic" id="id2">`</span></a>(</p>
+</div></blockquote>
+<p>ec{v}, 
+ec{w}) in mathbb{R}^6`.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.w" title="spatialmath.geom3d.Line3.w"><code class="xref py py-meth docutils literal notranslate"><span class="pre">w()</span></code></a></p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.vec">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vec</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.vec" title="Permalink to this definition"></a></dt>
-<dd><p>Line as a Plucker coordinate vector</p>
+<dd><blockquote>
+<div><p>Line as a Plucker coordinate vector</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Coordinate vector</p>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Plucker coordinate vector</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(6,)</p>
+<dt class="field-even">rtype</dt>
+<dd class="field-even"><p>ndarray(6,)</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">line.vec</span></code> is the  Plucker coordinate vector <code class="docutils literal notranslate"><span class="pre">X</span></code> = [V,W] where V (3-vector)
-is the moment and W (3-vector) is the line direction.</p>
+<p><code class="docutils literal notranslate"><span class="pre">line.vec</span></code> is the  Plucker coordinate vector :math:<a href="#id3"><span class="problematic" id="id4">`</span></a>(</p>
+</div></blockquote>
+<p>ec{v}, 
+ec{w}) in mathbb{R}^6`.</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.skew">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">skew</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.skew" title="Permalink to this definition"></a></dt>
-<dd><p>Line as a Plucker skew-matrix</p>
+<span class="sig-name descname"><span class="pre">skew</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.skew"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.skew" title="Permalink to this definition"></a></dt>
+<dd><p>Line as a Plucker skew-symmetric matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Skew-symmetric matrix form of Plucker coordinates</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray, shape=(4,4)</p>
+<dd class="field-even"><p>ndarray(4,4)</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">line.skew()</span></code> is the Plucker matrix, a 4x4 skew-symmetric matrix
-representation of the line.</p>
+<p><code class="docutils literal notranslate"><span class="pre">line.skew()</span></code> is the Plucker matrix, a 4x4 skew-symmetric matrix
+representation of the line whose six unique elements are the
+Plucker coordinates of the line.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\sk{L} = \begin{bmatrix} 0 &amp; v_z &amp; -v_y &amp; \omega_x \\
     -v_z &amp; 0 &amp; v_x &amp; \omega_y \\
@@ -440,19 +416,27 @@ representation of the line.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p>For two homogeneous points P and Q on the line, <span class="math notranslate nohighlight">\(PQ^T-QP^T\)</span> is
-also skew symmetric.</p></li>
-<li><p>The projection of Plucker line by a perspective camera is a
-homogeneous line (3x1) given by <span class="math notranslate nohighlight">\(\vee C M C^T\)</span> where <span class="math notranslate nohighlight">\(C
-\in \mathbf{R}^{3 \times 4}\)</span> is the camera matrix.</p></li>
+<li><p>For two homogeneous points P and Q on the line, <span class="math notranslate nohighlight">\(PQ^T-QP^T\)</span> is</p></li>
 </ul>
+<p>also skew symmetric.
+- The projection of Plucker line by a perspective camera is a
+homogeneous line (3x1) given by <span class="math notranslate nohighlight">\(\vee C M C^T\)</span> where <span class="math notranslate nohighlight">\(C
+\in \mathbf{R}^{3 \times 4}\)</span> is the camera matrix.</p>
 </div>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.pp">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pp</span></span><a class="headerlink" href="#spatialmath.geom3d.Line3.pp" title="Permalink to this definition"></a></dt>
-<dd><p>Principal point of the line</p>
+<dd><p>Principal point of the 3D line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Principal point of the line</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+</dl>
 <p><code class="docutils literal notranslate"><span class="pre">line.pp</span></code> is the point on the line that is closest to the origin.</p>
 <p>Notes:</p>
 <blockquote>
@@ -462,7 +446,7 @@ homogeneous line (3x1) given by <span class="math notranslate nohighlight">\(\ve
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.ppd, Plucker.point</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.ppd" title="spatialmath.geom3d.Line3.ppd"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ppd()</span></code></a> :meth`point`</p>
 </dd>
 </dl>
 </dd></dl>
@@ -484,7 +468,7 @@ This is the smallest distance of any point on the line
 to the origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.pp</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.pp" title="spatialmath.geom3d.Line3.pp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pp()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -504,13 +488,13 @@ to the origin.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">line.point(LAMBDA)</span></code> is a point on the line, where <code class="docutils literal notranslate"><span class="pre">LAMBDA</span></code> is the parametric
+<p><code class="docutils literal notranslate"><span class="pre">line.point(λ)</span></code> is a point on the line, where <code class="docutils literal notranslate"><span class="pre">λ</span></code> is the parametric
 distance along the line from the principal point of the line such
 that <span class="math notranslate nohighlight">\(P = P_p + \lambda \hat{d}\)</span> and <span class="math notranslate nohighlight">\(\hat{d}\)</span> is the line
 direction given by <code class="docutils literal notranslate"><span class="pre">line.uw</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.pp, Plucker.closest, Plucker.uw</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.pp" title="spatialmath.geom3d.Line3.pp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pp()</span></code></a> <code class="xref py py-meth docutils literal notranslate"><span class="pre">closest()</span></code> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.uw" title="spatialmath.geom3d.Line3.uw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">uw()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.lam" title="spatialmath.geom3d.Line3.lam"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lam()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -518,7 +502,26 @@ direction given by <code class="docutils literal notranslate"><span class="pre">
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.lam">
 <span class="sig-name descname"><span class="pre">lam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.lam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.lam" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Parametric distance from principal point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>point</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – 3D point</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parametric distance λ</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">line.lam(P)</span></code> is the value of <span class="math notranslate nohighlight">\(\lambda\)</span> such that 
+<span class="math notranslate nohighlight">\(Q = P_p + \lambda \hat{d}\)</span> is closest to <code class="docutils literal notranslate"><span class="pre">P</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.point" title="spatialmath.geom3d.Line3.point"><code class="xref py py-meth docutils literal notranslate"><span class="pre">point()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.contains">
@@ -553,24 +556,23 @@ an array of booleans is returned.</p>
 <dd><p>Test if two lines are equivalent</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<code class="docutils literal notranslate"><span class="pre">Line3</span></code>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Plucker</p>
+<dd class="field-even"><p>lines are equivalent</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>line equivalence</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">==</span> <span class="pre">L2</span></code> is true if the Plucker objects describe the same line in
+<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">==</span> <span class="pre">L2</span></code> is True if the <code class="docutils literal notranslate"><span class="pre">Line3</span></code> objects describe the same line in
 space.  Note that because of the over parameterization, lines can be
 equivalent even if their coordinate vectors are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__ne__" title="spatialmath.geom3d.Line3.__ne__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__ne__()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -579,21 +581,23 @@ equivalent even if their coordinate vectors are different.</p>
 <dd><p>Test if two lines are not equivalent</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<code class="docutils literal notranslate"><span class="pre">Line3</span></code>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>line inequivalence</p>
+<dd class="field-even"><p>lines are not equivalent</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">!=</span> <span class="pre">L2</span></code> is true if the Plucker objects describe different lines in
+<p><code class="docutils literal notranslate"><span class="pre">L1</span> <span class="pre">!=</span> <span class="pre">L2</span></code> is True if the Plucker objects describe different lines in
 space.  Note that because of the over parameterization, lines can be
 equivalent even if their coordinate vectors are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__ne__" title="spatialmath.geom3d.Line3.__ne__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__ne__()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -602,10 +606,7 @@ equivalent even if their coordinate vectors are different.</p>
 <dd><p>Test if lines are parallel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<code class="docutils literal notranslate"><span class="pre">Line3</span></code>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>lines are parallel</p>
@@ -618,7 +619,7 @@ equivalent even if their coordinate vectors are different.</p>
 <p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">|</span> <span class="pre">l2</span></code> as above but in binary operator form</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.or, Plucker.intersects</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__or__" title="spatialmath.geom3d.Line3.__or__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__or__()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.intersects" title="spatialmath.geom3d.Line3.intersects"><code class="xref py py-meth docutils literal notranslate"><span class="pre">intersects()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -629,10 +630,7 @@ equivalent even if their coordinate vectors are different.</p>
 <dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">|</span></code> operator tests for parallelism</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<code class="docutils literal notranslate"><span class="pre">Line3</span></code>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>lines are parallel</p>
@@ -648,7 +646,7 @@ equivalent even if their coordinate vectors are different.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.isparallel, Plucker.__xor__</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.isparallel" title="spatialmath.geom3d.Line3.isparallel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">isparallel()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__xor__" title="spatialmath.geom3d.Line3.__xor__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__xor__()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -659,10 +657,7 @@ equivalent even if their coordinate vectors are different.</p>
 <dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">^</span></code> operator tests for intersection</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>lines intersect</p>
@@ -671,7 +666,7 @@ equivalent even if their coordinate vectors are different.</p>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">^</span> <span class="pre">l2</span></code> is an operator which is true if the two lines intersect at a point.</p>
+<p><code class="docutils literal notranslate"><span class="pre">l1</span> <span class="pre">^</span> <span class="pre">l2</span></code> is an operator which is true if the two lines intersect.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
@@ -682,7 +677,7 @@ an infinite number of points.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.intersects, Plucker.parallel</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.intersects" title="spatialmath.geom3d.Line3.intersects"><code class="xref py py-meth docutils literal notranslate"><span class="pre">intersects()</span></code></a> <code class="xref py py-meth docutils literal notranslate"><span class="pre">parallel()</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -693,23 +688,20 @@ an infinite number of points.</p></li>
 <dd><p>Intersection point of two lines</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<code class="docutils literal notranslate"><span class="pre">Line3</span></code>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>3D intersection point</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray, shape=(3,) or None</p>
+<dd class="field-odd"><p>ndarray(3) or None</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">l1.intersects(l2)</span></code> is the point of intersection of the two lines, or
 <code class="docutils literal notranslate"><span class="pre">None</span></code> if the lines do not intersect or are equivalent.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.commonperp, Plucker.eq, Plucker.__xor__</p>
+<dd class="field-odd"><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">commonperp</span> <span class="pre">:meth:`eq()</span></code> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__xor__" title="spatialmath.geom3d.Line3.__xor__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__xor__()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -720,34 +712,30 @@ an infinite number of points.</p></li>
 <dd><p>Minimum distance between lines</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<code class="docutils literal notranslate"><span class="pre">Line3</span></code>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Closest distance</p>
+<dd class="field-even"><p>Closest distance between lines</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a>l1.distance(l2) is the minimum distance between two lines.</p>
-<p>Notes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Works for parallel, skew and intersecting lines.</p></li>
-</ul>
-</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a>l1.distance(l2) is the minimum distance between two lines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.closest_to_line" title="spatialmath.geom3d.Line3.closest_to_line"><code class="xref py py-meth docutils literal notranslate"><span class="pre">closest_to_line()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.closest_to_line">
-<span class="sig-name descname"><span class="pre">closest_to_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.closest_to_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.closest_to_line" title="Permalink to this definition"></a></dt>
-<dd><p>Closest point between two lines</p>
+<span class="sig-name descname"><span class="pre">closest_to_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.closest_to_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.closest_to_line" title="Permalink to this definition"></a></dt>
+<dd><p>Closest point between lines</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>line</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – second line</p>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><em>Line3</em></a>) – second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>nearest points and distance between lines at those points</p>
@@ -756,24 +744,38 @@ an infinite number of points.</p></li>
 <dd class="field-odd"><p>ndarray(3,N), ndarray(N)</p>
 </dd>
 </dl>
-<p>Finds the point on the first line closest to the second line, as well
-as the minimum distance between the lines.</p>
+<p>There are four cases:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">len(self)</span> <span class="pre">==</span> <span class="pre">len(other)</span> <span class="pre">==</span> <span class="pre">1</span></code> find the point on the first line closest to the second line, as well
+as the minimum distance between the lines.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len(self)</span> <span class="pre">==</span> <span class="pre">1,</span> <span class="pre">len(other)</span> <span class="pre">==</span> <span class="pre">N</span></code> find the point of intersection between the first
+line and the <code class="docutils literal notranslate"><span class="pre">N</span></code> other lines, returning <code class="docutils literal notranslate"><span class="pre">N</span></code> intersection points and distances.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len(self)</span> <span class="pre">==</span> <span class="pre">N,</span> <span class="pre">len(other)</span> <span class="pre">==</span> <span class="pre">1</span></code> find the point of intersection between the <code class="docutils literal notranslate"><span class="pre">N</span></code> first
+lines and the other line, returning <code class="docutils literal notranslate"><span class="pre">N</span></code> intersection points and distances.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len(self)</span> <span class="pre">==</span> <span class="pre">N,</span> <span class="pre">len(other)</span> <span class="pre">==</span> <span class="pre">M</span></code> for each  of the <code class="docutils literal notranslate"><span class="pre">N</span></code> first
+lines find the closest intersection with each of the <code class="docutils literal notranslate"><span class="pre">M</span></code> other lines, returning <code class="docutils literal notranslate"><span class="pre">N</span></code> 
+intersection points and distances.</p></li>
+</ul>
+<p>** this last one should be an option, default behavior would be to 
+test self[i] against line[i]
+** maybe different function</p>
 <p>For two sets of lines, of equal size, return an array of closest points
 and distances.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
-<span class="go">NameError: name &#39;Plucker&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;Plucker&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;line1&#39; is not defined</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">runblock</span><span class="p">::</span> <span class="n">pycon</span>
+
+    <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Plucker</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">line1</span> <span class="o">=</span> <span class="n">Plucker</span><span class="o">.</span><span class="n">TwoPoints</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">line2</span> <span class="o">=</span> <span class="n">Plucker</span><span class="o">.</span><span class="n">TwoPoints</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+    <span class="o">&gt;&gt;&gt;</span> <span class="n">line1</span><span class="o">.</span><span class="n">closest_to_line</span><span class="p">(</span><span class="n">line2</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Reference</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf">Plucker coordinates</a></p>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.distance" title="spatialmath.geom3d.Line3.distance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">distance()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -784,10 +786,7 @@ and distances.</p>
 <dd><p>Point on line closest to given point</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>line</strong> – A line</p></li>
-<li><p><strong>l2</strong> (<em>3-element array_like</em>) – An arbitrary 3D point</p></li>
-</ul>
+<dd class="field-odd"><p><strong>x</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – An arbitrary 3D point</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Point on the line and distance to line</p>
@@ -808,7 +807,7 @@ at that closest point.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.point</p>
+<dd class="field-odd"><p>meth:<cite>point</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -819,23 +818,20 @@ at that closest point.</p>
 <dd><p>Common perpendicular to two lines</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>l1</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – First line</p></li>
-<li><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Second line</p></li>
-</ul>
+<dd class="field-odd"><p><strong>l2</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><em>Line3</em></a>) – Second line</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Perpendicular line</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a> or None</p>
+<dd class="field-odd"><p>Line3 instance or None</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">l1.commonperp(l2)</span></code> is the common perpendicular line between the two lines.
 Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the lines are parallel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.intersect</p>
+<dd class="field-odd"><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">intersect()</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -847,8 +843,8 @@ Returns <code class="docutils literal notranslate"><span class="pre">None</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>left</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Left operand</p></li>
-<li><p><strong>right</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Right operand</p></li>
+<li><p><strong>left</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><em>Line3</em></a>) – Left operand</p></li>
+<li><p><strong>right</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><em>Line3</em></a>) – Right operand</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -859,16 +855,16 @@ Returns <code class="docutils literal notranslate"><span class="pre">None</span>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">left</span> <span class="pre">*</span> <span class="pre">right</span></code> is the scalar reciprocal product <span class="math notranslate nohighlight">\(\hat{w}_L \dot m_R + \hat{w}_R \dot m_R\)</span>.</p>
-<p>Notes:</p>
-<blockquote>
-<div><ul class="simple">
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
 <li><p>Multiplication or composition of Plucker lines is not defined.</p></li>
 <li><p>Pre-multiplication by an SE3 object is supported, see <code class="docutils literal notranslate"><span class="pre">__rmul__</span></code>.</p></li>
 </ul>
-</div></blockquote>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.__rmul__</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__rmul__" title="spatialmath.geom3d.Line3.__rmul__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__rmul__()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -876,25 +872,25 @@ Returns <code class="docutils literal notranslate"><span class="pre">None</span>
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.__rmul__">
 <span class="sig-name descname"><span class="pre">__rmul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.__rmul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.__rmul__" title="Permalink to this definition"></a></dt>
-<dd><p>Line transformation</p>
+<dd><p>Rigid-body transformation of 3D line</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>left</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a>) – Rigid-body transform</p></li>
-<li><p><strong>right</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – Right operand</p></li>
+<li><p><strong>right</strong> (<em>Line</em>) – 3D line</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transformed line</p>
+<dd class="field-even"><p>transformed 3D line</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker">Plucker</a></p>
+<dd class="field-odd"><p>Line3 instance</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">*</span> <span class="pre">line</span></code> is the line transformed by the rigid body transformation <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.__mul__</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.__mul__" title="spatialmath.geom3d.Line3.__mul__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -905,23 +901,19 @@ Returns <code class="docutils literal notranslate"><span class="pre">None</span>
 <dd><p>Line intersection with a plane</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>line</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
-<li><p><strong>plane</strong> (<em>4-element array_like</em><em> or </em><em>Plane</em>) – A plane</p></li>
-</ul>
+<dd class="field-odd"><p><strong>plane</strong> (<em>array_like</em><em>(</em><em>4</em><em>) or </em><em>Plane</em>) – A plane</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Intersection point</p>
+<dd class="field-even"><p>Intersection point, λ</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>collections.namedtuple</p>
+<dd class="field-odd"><p>ndarray(3), float</p>
 </dd>
 </dl>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">line.intersect_plane(plane).p</span></code> is the point where the line 
-intersects the plane, or None if no intersection.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">line.intersect_plane(plane).lam</span></code> is the <cite>lambda</cite> value for the point on the line
-that intersects the plane.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">P,</span> <span class="pre">λ</span> <span class="pre">=</span> <span class="pre">line.intersect_plane(plane)</span></code> is the point where the line 
+intersects the plane, and the corresponding λ value.
+Return None, None if no intersection.</p></li>
 </ul>
 <p>The plane can be specified as:</p>
 <blockquote>
@@ -937,7 +929,11 @@ that intersects the plane.</p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>
-<p>See also Plucker.point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Sealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.point" title="spatialmath.geom3d.Line3.point"><code class="xref py py-meth docutils literal notranslate"><span class="pre">point()</span></code></a> <code class="xref py py-class docutils literal notranslate"><span class="pre">Plane</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -946,49 +942,37 @@ that intersects the plane.</p></li>
 <dd><p>Line intersection with a volume</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>line</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
-<li><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid</p></li>
-</ul>
+<dd class="field-odd"><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Intersection point</p>
+<dd class="field-even"><p>Intersection point, λ value</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>collections.namedtuple</p>
+<dd class="field-odd"><p>ndarray(3,N), ndarray(N)</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">line.intersect_volume(bounds).p</span></code> is a matrix (3xN) with columns
-that indicate where the line intersects the faces of the volume
-specified by <code class="docutils literal notranslate"><span class="pre">bounds</span></code> = [xmin xmax ymin ymax zmin zmax].  The number of
+<p><code class="docutils literal notranslate"><span class="pre">P,</span> <span class="pre">λ</span> <span class="pre">=</span> <span class="pre">line.intersect_volume(bounds)</span></code> is a matrix (3xN) with columns
+that indicate where the line intersects the faces of the volume and
+the corresponding λ values.</p>
+<p>The volume is specified by <code class="docutils literal notranslate"><span class="pre">bounds</span></code> = [xmin xmax ymin ymax zmin zmax].</p>
+<p>The number of
 columns N is either:</p>
 <ul class="simple">
 <li><p>0, when the line is outside the plot volume or,</p></li>
 <li><p>2 when the line pierces the bounding volume.</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">line.intersect_volume(bounds).lam</span></code> is an array of shape=(N,) where
-N is as above.</p>
-<p>The return value is a named tuple with elements:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">.p</span></code> for the points on the line as a numpy.ndarray, shape=(3,N)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.lam</span></code> for the <cite>lambda</cite> values for the intersection points as a
-numpy.ndarray, shape=(N,).</p></li>
-</ul>
-</div></blockquote>
-<p>See also Plucker.plot, Plucker.point.</p>
+<p>See also <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.plot" title="spatialmath.geom3d.Line3.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a> <a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.point" title="spatialmath.geom3d.Line3.point"><code class="xref py py-meth docutils literal notranslate"><span class="pre">point()</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom3d.Line3.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.plot" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.plot" title="Permalink to this definition"></a></dt>
 <dd><blockquote>
 <div><p>Plot a line</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>line</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Plucker" title="spatialmath.geom3d.Plucker"><em>Plucker</em></a>) – A line</p></li>
 <li><p><strong>bounds</strong> – Bounds of an axis-aligned rectangular cuboid as [xmin xmax ymin ymax zmin zmax], optional</p></li>
 <li><p><strong>**kwargs</strong> – <p>Extra arguents passed to <a class="reference external" href="https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D">Line2D</a></p>
 </p></li>
@@ -998,7 +982,7 @@ numpy.ndarray, shape=(N,).</p></li>
 <dd class="field-even"><p>Plotted line</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Line3D or None</p>
+<dd class="field-odd"><p>Matplotlib artists</p>
 </dd>
 </dl>
 <ul class="simple">
@@ -1016,9 +1000,27 @@ If the line does not intersect the plotting volume None is returned.</p></li>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>Plucker.intersect_volume</p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3.intersect_volume" title="spatialmath.geom3d.Line3.intersect_volume"><code class="xref py py-meth docutils literal notranslate"><span class="pre">intersect_volume()</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom3d.Line3.side">
+<span class="sig-name descname"><span class="pre">side</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom3d.html#Line3.side"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom3d.Line3.side" title="Permalink to this definition"></a></dt>
+<dd><p>Plucker side operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="classes-3d.html#spatialmath.geom3d.Line3" title="spatialmath.geom3d.Line3"><em>Line3</em></a>) – second line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>permuted dot product</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>This permuted dot product operator is zero whenever the lines intersect or are parallel.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1438,7 +1440,7 @@ that the value is a 1D array.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 

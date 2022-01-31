@@ -181,7 +181,7 @@
 <span class="sd">    :type xyt: array_like(3)</span>
 <span class="sd">    :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">    :type unit: str</span>
-<span class="sd">    :return: 3x3 homogeneous transformation matrix</span>
+<span class="sd">    :return: SE(2) matrix</span>
 <span class="sd">    :rtype: ndarray(3,3)</span>
 
 <span class="sd">    - ``xyt2tr([x,y,θ])`` is a homogeneous transformation (3x3) representing a rotation of</span>
@@ -245,8 +245,8 @@
 <span class="sd">    :type x: float</span>
 <span class="sd">    :param y: translation along Y-axis</span>
 <span class="sd">    :type y: float</span>
-<span class="sd">    :return: SE(2) transform matrix or the translation elements of a homogeneous</span>
-<span class="sd">        transform :rtype: ndarray(3,3)</span>
+<span class="sd">    :return: SE(2) matrix</span>
+<span class="sd">    :rtype: ndarray(3,3)</span>
 
 <span class="sd">    - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3)</span>
 <span class="sd">      representing a pure translation.</span>
@@ -659,14 +659,14 @@
 <span class="sd">    :rtype: ndarray(3,3) or ndarray(2,2)</span>
 <span class="sd">    :raises ValueError: bad arguments</span>
 
-<span class="sd">    - ``trinterp2(None, T, S)`` is a homogeneous transform (3x3) interpolated</span>
-<span class="sd">      between identity when S=0 and T (3x3) when S=1.</span>
+<span class="sd">    - ``trinterp2(None, T, S)`` is an SE(2) matrix interpolated</span>
+<span class="sd">      between identity when `S`=0 and `T`  when `S`=1.</span>
 <span class="sd">    - ``trinterp2(T0, T1, S)`` as above but interpolated</span>
-<span class="sd">      between T0 (3x3) when S=0 and T1 (3x3) when S=1.</span>
-<span class="sd">    - ``trinterp2(None, R, S)`` is a rotation matrix (2x2) interpolated</span>
-<span class="sd">      between identity when S=0 and R (2x2) when S=1.</span>
+<span class="sd">      between `T0` when `S`=0 and `T1` when `S`=1.</span>
+<span class="sd">    - ``trinterp2(None, R, S)`` is an SO(2) matrix interpolated</span>
+<span class="sd">      between identity when `S`=0 and `R` when `S`=1.</span>
 <span class="sd">    - ``trinterp2(R0, R1, S)`` as above but interpolated</span>
-<span class="sd">      between R0 (2x2) when S=0 and R1 (2x2) when S=1.</span>
+<span class="sd">      between `R0` when `S`=0 and `R1` when `S`=1.</span>
 
 <span class="sd">    .. note:: Rotation angle is linearly interpolated.</span>
 
@@ -852,6 +852,160 @@
 
     <span class="k">return</span> <span class="n">T</span></div>
 
+<span class="c1"># https://github.com/ClayFlannigan/icp/blob/master/icp.py</span>
+<span class="c1"># https://github.com/1988kramer/intel_dataset/blob/master/scripts/Align2D.py</span>
+<span class="c1"># hack below to use points2tr above</span>
+<span class="c1"># use ClayFlannigan&#39;s improved data association</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">KDTree</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># reference or target 2xN</span>
+<span class="c1"># source  2xN</span>
+
+<span class="c1"># params:</span>
+<span class="c1">#   source_points: numpy array containing points to align to the reference set</span>
+<span class="c1">#                  points should be homogeneous, with one point per row</span>
+<span class="c1">#   reference_points: numpy array containing points to which the source points</span>
+<span class="c1">#                  are to be aligned, points should be homogeneous with one</span>
+<span class="c1">#                  point per row</span>
+<span class="c1">#   initial_T:     initial estimate of the transform between reference and source</span>
+<span class="c1"># def __init__(self, source_points, reference_points, initial_T):</span>
+<span class="c1"># 	self.source = source_points</span>
+<span class="c1"># 	self.reference = reference_points</span>
+<span class="c1"># 	self.init_T = initial_T</span>
+<span class="c1"># 	self.reference_tree = KDTree(reference_points[:,:2])</span>
+<span class="c1"># 	self.transform = self.AlignICP(30, 1.0e-4)</span>
+
+<span class="c1"># uses the iterative closest point algorithm to find the</span>
+<span class="c1"># transformation between the source and reference point clouds</span>
+<span class="c1"># that minimizes the sum of squared errors between nearest </span>
+<span class="c1"># neighbors in the two point clouds</span>
+<span class="c1"># params:</span>
+<span class="c1">#   max_iter: int, max number of iterations</span>
+<span class="c1">#   min_delta_err: float, minimum change in alignment error</span>
+<div class="viewcode-block" id="ICP2d"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ICP2d">[docs]</a><span class="k">def</span> <span class="nf">ICP2d</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_delta_err</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+
+    <span class="n">mean_sq_error</span> <span class="o">=</span> <span class="mf">1.0e6</span> <span class="c1"># initialize error as large number</span>
+    <span class="n">delta_err</span> <span class="o">=</span> <span class="mf">1.0e6</span>    <span class="c1"># change in error (used in stopping condition)</span>
+    <span class="n">num_iter</span> <span class="o">=</span> <span class="mi">0</span>         <span class="c1"># number of iterations</span>
+    <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="n">ref_kdtree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">tf_source</span> <span class="o">=</span> <span class="n">source</span>
+
+    <span class="n">source_hom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">source</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+    <span class="k">while</span> <span class="n">delta_err</span> <span class="o">&gt;</span> <span class="n">min_delta_err</span> <span class="ow">and</span> <span class="n">num_iter</span> <span class="o">&lt;</span> <span class="n">max_iter</span><span class="p">:</span>
+
+        <span class="c1"># find correspondences via nearest-neighbor search</span>
+        <span class="n">matched_ref_pts</span><span class="p">,</span> <span class="n">matched_source</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">_FindCorrespondences</span><span class="p">(</span><span class="n">ref_kdtree</span><span class="p">,</span> <span class="n">tf_source</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
+
+        <span class="c1"># find alingment between source and corresponding reference points via SVD</span>
+        <span class="c1"># note: svd step doesn&#39;t use homogeneous points</span>
+        <span class="n">new_T</span> <span class="o">=</span> <span class="n">_AlignSVD</span><span class="p">(</span><span class="n">matched_source</span><span class="p">,</span> <span class="n">matched_ref_pts</span><span class="p">)</span>
+
+        <span class="c1"># update transformation between point sets</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">new_T</span>
+
+        <span class="c1"># apply transformation to the source points</span>
+        <span class="n">tf_source</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">source_hom</span>
+        <span class="n">tf_source</span> <span class="o">=</span> <span class="n">tf_source</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="c1"># find mean squared error between transformed source points and reference points</span>
+        <span class="c1"># TODO: do this with fancy indexing</span>
+        <span class="n">new_err</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">diff</span> <span class="o">=</span> <span class="n">tf_source</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">reference</span><span class="p">[:,</span> <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                <span class="n">new_err</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span><span class="n">diff</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="n">new_err</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matched_ref_pts</span><span class="p">))</span>
+
+        <span class="c1"># update error and calculate delta error</span>
+        <span class="n">delta_err</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mean_sq_error</span> <span class="o">-</span> <span class="n">new_err</span><span class="p">)</span>
+        <span class="n">mean_sq_error</span> <span class="o">=</span> <span class="n">new_err</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ITER&#39;</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">delta_err</span><span class="p">,</span> <span class="n">mean_sq_error</span><span class="p">)</span>
+
+        <span class="n">num_iter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">T</span></div>
+
+
+<span class="k">def</span> <span class="nf">_FindCorrespondences</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+
+    <span class="c1"># get distances to nearest neighbors and indices of nearest neighbors</span>
+    <span class="n">dist</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c1"># remove multiple associatons from index list</span>
+    <span class="c1"># only retain closest associations</span>
+    <span class="n">unique</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">matched_src</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">unique</span><span class="p">:</span>
+        <span class="n">unique</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idxi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">idxi</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># could do this with np.nonzero</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">idxi</span> <span class="o">==</span> <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                        <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                        <span class="k">break</span>
+    <span class="c1"># build array of nearest neighbor reference points</span>
+    <span class="c1"># and remove unmatched source points</span>
+    <span class="n">point_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">src_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reference</span><span class="p">[:,</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">src_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">matched_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">matched_src</span><span class="p">,</span> <span class="n">src_idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">matched_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point_list</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">matched_ref</span><span class="p">,</span> <span class="n">matched_src</span><span class="p">,</span> <span class="n">indices</span>
+
+<span class="c1"># uses singular value decomposition to find the </span>
+<span class="c1"># transformation from the reference to the source point cloud</span>
+<span class="c1"># assumes source and reference point clounds are ordered such that </span>
+<span class="c1"># corresponding points are at the same indices in each array</span>
+<span class="c1">#</span>
+<span class="c1"># params:</span>
+<span class="c1">#   source: numpy array representing source pointcloud</span>
+<span class="c1">#   reference: numpy array representing reference pointcloud</span>
+<span class="c1"># returns:</span>
+<span class="c1">#   T: transformation between the two point clouds</span>
+
+<span class="c1"># TODO: replace this func with </span>
+<span class="k">def</span> <span class="nf">_AlignSVD</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+
+    <span class="c1"># first find the centroids of both point clouds</span>
+    <span class="n">src_centroid</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ref_centroid</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># get the point clouds in reference to their centroids</span>
+    <span class="n">source_centered</span> <span class="o">=</span> <span class="n">source</span> <span class="o">-</span> <span class="n">src_centroid</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+    <span class="n">reference_centered</span> <span class="o">=</span> <span class="n">reference</span> <span class="o">-</span> <span class="n">ref_centroid</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+    <span class="c1"># compute the moment matrix</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">reference_centered</span> <span class="o">@</span> <span class="n">source_centered</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># do the singular value decomposition</span>
+    <span class="n">U</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">V_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+
+    <span class="c1"># get rotation between the two point clouds</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">U</span> <span class="o">@</span> <span class="n">V_t</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;bad rotation matrix&#39;</span><span class="p">)</span>
+
+    <span class="c1"># translation is the difference between the point clound centroids</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">ref_centroid</span> <span class="o">-</span> <span class="n">R</span> <span class="o">@</span> <span class="n">src_centroid</span>
+
+    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 
 <div class="viewcode-block" id="trplot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trplot2">[docs]</a><span class="k">def</span> <span class="nf">trplot2</span><span class="p">(</span>
     <span class="n">T</span><span class="p">,</span>
@@ -1129,7 +1283,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 

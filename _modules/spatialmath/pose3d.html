@@ -1011,7 +1011,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SE3.delta"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X2</span><span class="p">):</span>
+<div class="viewcode-block" id="SE3.delta"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Infinitesimal difference of SE(3) values</span>
 
@@ -1043,7 +1043,10 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.tr2delta`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">X2</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">X2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2delta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">X2</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Ad"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Ad">[docs]</a>    <span class="k">def</span> <span class="nf">Ad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1535,15 +1538,42 @@
 <span class="sd">        :rtype: SE3 instance</span>
 
 
-<span class="sd">        ``T = delta2tr(d)`` is an SE(3) representing differential </span>
+<span class="sd">        ``SE3.Delta2tr(d)`` is an SE(3) representing differential </span>
 <span class="sd">        motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.</span>
 
 <span class="sd">        :Reference: Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</span>
 
-<span class="sd">        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`</span>
+<span class="sd">        :seealso: :meth:`~delta` :func:`~spatialmath.base.transform3d.delta2tr`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trnorm</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">delta2tr</span><span class="p">(</span><span class="n">d</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="SE3.Trans"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Trans">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Trans</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create SE(3) from translation vector</span>
+
+<span class="sd">        :param x: x-coordinate or translation vector</span>
+<span class="sd">        :type x: float or array_like(3)</span>
+<span class="sd">        :param y: y-coordinate, defaults to None</span>
+<span class="sd">        :type y: float, optional</span>
+<span class="sd">        :param z: z-coordinate, defaults to None</span>
+<span class="sd">        :type z: float, optional</span>
+<span class="sd">        :return: SE(3) matrix</span>
+<span class="sd">        :rtype: SE3 instance</span>
+
+<span class="sd">        ``T = SE3.Trans(x, y, z)`` is an SE(3) representing pure translation.</span>
+
+<span class="sd">        ``T = SE3.Trans([x, y, z])`` as above, but translation is given as an</span>
+<span class="sd">        array.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># single passed value, assume is 3-vector</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Tx"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Tx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -1621,7 +1651,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_z</span><span class="p">)</span> <span class="k">for</span> <span class="n">_z</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">z</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.Rt"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Rt">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Rt</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Rt</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an SE(3) from rotation and translation</span>
 
@@ -1642,6 +1672,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;expecting SO3 or rotation matrix&#39;</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.angdist"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.angdist">[docs]</a>    <span class="k">def</span> <span class="nf">angdist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
@@ -1738,7 +1770,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 

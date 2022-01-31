@@ -228,7 +228,7 @@ account the matrix structure.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.delta">
-<span class="sig-name descname"><span class="pre">delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.delta" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.delta" title="Permalink to this definition"></a></dt>
 <dd><p>Infinitesimal difference of SE(3) values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -949,19 +949,43 @@ vector (the unique elements of the se(3) skew-symmetric matrix)</p></li>
 <dd class="field-odd"><p>SE3 instance</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">delta2tr(d)</span></code> is an SE(3) representing differential 
+<p><code class="docutils literal notranslate"><span class="pre">SE3.Delta2tr(d)</span></code> is an SE(3) representing differential 
 motion <span class="math notranslate nohighlight">\(d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Reference</dt>
 <dd class="field-odd"><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p67.</p>
 </dd>
 <dt class="field-even">Seealso</dt>
-<dd class="field-even"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.delta" title="spatialmath.pose3d.SE3.delta"><code class="xref py py-func docutils literal notranslate"><span class="pre">delta()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">delta2tr()</span></code></p>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.pose3d.SE3.delta" title="spatialmath.pose3d.SE3.delta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">delta()</span></code></a> <code class="xref py py-func docutils literal notranslate"><span class="pre">delta2tr()</span></code></p>
 </dd>
 <dt class="field-odd">SymPy</dt>
 <dd class="field-odd"><p>supported</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.pose3d.SE3.Trans">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Trans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Trans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Trans" title="Permalink to this definition"></a></dt>
+<dd><p>Create SE(3) from translation vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em><em> or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – x-coordinate or translation vector</p></li>
+<li><p><strong>y</strong> (<em>float</em><em>, </em><em>optional</em>) – y-coordinate, defaults to None</p></li>
+<li><p><strong>z</strong> (<em>float</em><em>, </em><em>optional</em>) – z-coordinate, defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SE3 instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">SE3.Trans(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> is an SE(3) representing pure translation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">SE3.Trans([x,</span> <span class="pre">y,</span> <span class="pre">z])</span></code> as above, but translation is given as an
+array.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2611,7 +2635,7 @@ only</p></li>
 <p>Print pose in a compact single line format. If <code class="docutils literal notranslate"><span class="pre">X</span></code> has multiple
 values, print one per line.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1095, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1098, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)</span>
 <span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 167, in trotx</span>
 <span class="go">    T = base.r2t(rotx(theta, unit))</span>
@@ -2792,7 +2816,7 @@ only</p></li>
 <p>Print pose in a compact single line format. If <code class="docutils literal notranslate"><span class="pre">X</span></code> has multiple
 values, print one per line.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1095, in &lt;listcomp&gt;</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/pose3d.py&quot;, line 1098, in &lt;listcomp&gt;</span>
 <span class="go">    return cls([base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)</span>
 <span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 167, in trotx</span>
 <span class="go">    T = base.r2t(rotx(theta, unit))</span>
@@ -2867,7 +2891,7 @@ values, print one per line.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.Rt">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Rt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Rt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Rt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Rt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Rt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Rt" title="Permalink to this definition"></a></dt>
 <dd><p>Create an SE(3) from rotation and translation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2990,7 +3014,7 @@ outside its domain [0, 1].</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Dec-2021.
+      <span class="lastupdated">Last updated on 31-Jan-2022.
       </span></p>
   </div>
 
