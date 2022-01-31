@@ -896,7 +896,7 @@ class Line3(BasePoseList):
         else:
             raise ValueError('bad arguments')
         
-    def __rmul__(self, left):  # pylint: disable=no-self-argument
+    def __rmul__(right, left):  # pylint: disable=no-self-argument
         """
         Line transformation
 
@@ -912,14 +912,11 @@ class Line3(BasePoseList):
 
         :seealso: Plucker.__mul__
         """
-        right = self
         if isinstance(left, SE3):
-            A = np.r_[ np.c_[left.R,          base.skew(-left.t) @ left.R],
-                       np.c_[np.zeros((3,3)), left.R]
-                        ]
-            return self.__class__( A @ right.vec)  # premultiply by SE3
+            A = left.inv().Ad()
+            return right.__class__( A @ right.vec)  # premultiply by SE3.Ad
         else:
-            raise ValueError('bad arguments')
+            raise ValueError('can only premultiply Line3 by SE3')
 
     # ------------------------------------------------------------------------- #
     #  PLUCKER LINE DISTANCE AND INTERSECTION
@@ -1219,10 +1216,43 @@ if __name__ == '__main__':   # pragma: no cover
     import pathlib
     import os.path
 
-    a = Plane3([0.1, -1, -1, 2])
-    base.plotvol3(5)
-    a.plot(color='r', alpha=0.3)
-    plt.show(block=True)
+    from spatialmath import Twist3
+
+    L = Line3.TwoPoints((1,2,0), (1,2,1))
+    print(L)
+    print(L.intersect_plane([0, 0, 1, 0]))
+
+    z = np.eye(6) * L
+
+    L2 = SE3(2, 1, 10) * L
+    print(L2)
+    print(L2.intersect_plane([0, 0, 1, 0]))
+
+    print('rx')
+    L2 = SE3.Rx(np.pi/4) * L
+    print(L2)
+    print(L2.intersect_plane([0, 0, 1, 0]))
+
+    print('ry')
+    L2 = SE3.Ry(np.pi/4) * L
+    print(L2)
+    print(L2.intersect_plane([0, 0, 1, 0]))
+
+    print('rz')
+    L2 = SE3.Rz(np.pi/4) * L
+    print(L2)
+    print(L2.intersect_plane([0, 0, 1, 0]))
+
+    pass
+    # base.plotvol3(10)
+    # S = Twist3.UnitRevolute([0, 0, 1], [2, 3, 2], 0.5);
+    # L = S.line()
+    # L.plot('k:', linewidth=2)
+
+    # a = Plane3([0.1, -1, -1, 2])
+    # base.plotvol3(5)
+    # a.plot(color='r', alpha=0.3)
+    # plt.show(block=True)
     
     # a = SE3.Exp([2,0,0,0,0,0])
 
