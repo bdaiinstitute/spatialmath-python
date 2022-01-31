@@ -300,12 +300,9 @@ class Polygon2:
             >>> p = Polygon2([[1, 3, 2], [2, 2, 4]])
             >>> p.area()
 
-        .. warning:: For a polygon with clockwise ordering of vertices the 
-            area will be negative.
-
         :seealso: :meth:`moment`
         """
-        return self.moment(0, 0)
+        return abs(self.moment(0, 0))
 
     def centroid(self):
         """
@@ -390,6 +387,8 @@ class Polygon2:
             >>> p = Polygon2([[1, 3, 2], [2, 2, 4]])
             >>> p.moment(0, 0)  # area
             >>> p.moment(3, 0)
+
+        Note is negative for clockwise perimeter.
         """
 
         def combin(n, r):
@@ -425,8 +424,6 @@ class Polygon2:
             m += Al * s
 
         return m / (p + q + 2)
-
-
 class Line2:
     """
     Class to represent 2D lines
