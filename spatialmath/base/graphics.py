@@ -280,14 +280,6 @@ def plot_box(
     :type wh: scalar, array_like(2), optional
     :param centre: centre of box, defaults to None
     :type centre: array_like(2), optional
-    :param l: left side of box, minimum x, defaults to None
-    :type l: float, optional
-    :param r: right side of box, minimum x, defaults to None
-    :type r: float, optional
-    :param b: bottom side of box, minimum y, defaults to None
-    :type b: float, optional
-    :param t: top side of box, maximum y, defaults to None
-    :type t: float, optional
     :param w: width of box, defaults to None
     :type w: float, optional
     :param h: height of box, defaults to None
@@ -309,7 +301,7 @@ def plot_box(
 
     The box can be specified in many ways:
 
-    - bounding box which is a 2x2 matrix [xmin, xmax; ymin, ymax]
+    - bounding box which is a 2x2 matrix [xmin, xmax, ymin, ymax]
     - bounding box [xmin, xmax, ymin, ymax]
     - alternative box [xmin, ymin, xmax, ymax]
     - centre and width+height
@@ -337,10 +329,7 @@ def plot_box(
         else:
             w, h = wh
     
-    # l - left side, minimum x
-    # r - right side, maximuim x
-    # b - bottom side, minimum y, top in an image
-    # t - top side, maximum y, bottom in an image
+    # test for various 4-coordinate versions
     if bbox is not None:
         lb = bbox[:2]
         w, h = bbox[2:]
@@ -364,17 +353,34 @@ def plot_box(
         rt = (ltrb[2], ltrb[1])
         w, h = rt[0] - lb[0], rt[1] - lb[1]
 
-    elif centre is not None:
-        lb = (centre[0] - w/2, centre[1] - h/2)
+    elif w is not None and h is not None:
+        # we have width & height, one corner is enough
 
-    elif lt is not None:
-        lb = (lt[0], lt[1] - h)
+        if centre is not None:
+            lb = (centre[0] - w/2, centre[1] - h/2)
 
-    elif rt is not None:
-        lb = (rt[0] - w, rt[1] - h)
+        elif lt is not None:
+            lb = (lt[0], lt[1] - h)
 
-    elif rb is not None:
-        lb = (rb[0] - w, rb[1])
+        elif rt is not None:
+            lb = (rt[0] - w, rt[1] - h)
+
+        elif rb is not None:
+            lb = (rb[0] - w, rb[1])
+
+    else:
+        # we need two opposite corners
+        if lb is not None and rt is not None:
+            w = rt[0] - lb[0]
+            h = rt[1] - lb[1]
+
+        elif lt is not None and rb is not None:
+            lb = (lt[0], rb[1])
+            w = rb[0] - lt[0]
+            h = lt[1] - rb[1]
+
+        else:
+            raise ValueError('cant compute box')
 
     if w < 0:
         raise ValueError("width must be positive")
