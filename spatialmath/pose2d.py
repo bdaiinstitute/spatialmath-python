@@ -512,7 +512,7 @@ class SE2(SO2):
 
         Notes:
 
-            - for elements of SE(2) this takes into account the matrix structure :math:`T^{-1} = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
+            - for elements of SE(2) this takes into account the matrix structure :math:`T = \left[ \begin{array}{cc} R & t \\ 0 & 1 \end{array} \right], T^{-1} = \left[ \begin{array}{cc} R^T & -R^T t \\ 0 & 1 \end{array} \right]`
             - if `x` contains a sequence, returns an `SE2` with a sequence of inverses
 
         """
