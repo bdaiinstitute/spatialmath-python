@@ -207,6 +207,8 @@ class Line3(BasePoseList):
     # w  # direction vector
     # v  # moment vector (normal of plane containing line and origin)
     
+    __array_ufunc__ = None  # allow pose matrices operators with NumPy values
+
     def __init__(self, v=None, w=None):
         """
         Create a Plucker 3D line object
