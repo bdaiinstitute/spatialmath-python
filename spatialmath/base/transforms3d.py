@@ -2607,9 +2607,9 @@ def trplot(
         if not ax.get_xlabel():
             ax.set_xlabel(labels[0])
         if not ax.get_ylabel():
-            ax.set_ylabel(labels[0])
+            ax.set_ylabel(labels[1])
         if not ax.get_zlabel():
-            ax.set_zlabel(labels[0])
+            ax.set_zlabel(labels[2])
     except AttributeError:
         pass  # if axes are an Animate object
 
