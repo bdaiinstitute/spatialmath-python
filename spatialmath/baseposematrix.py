@@ -1535,8 +1535,8 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        assert type(left) == type(right), "operands to == are of different types"
-        return left._op2(right, lambda x, y: np.allclose(x, y))
+        return (left._op2(right, lambda x, y: np.allclose(x, y))
+                if type(left) == type(right) else False)
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
@@ -1563,7 +1563,8 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        return [not x for x in left == right]
+        eq = left == right
+        return (not eq if isinstance(eq, bool) else [not x for x in eq])
 
     def _op2(
         left, right, op
@@ -1581,8 +1582,8 @@ class BasePoseMatrix(BasePoseList):
         :return: list of matrices
         :rtype: list
 
-        Peform a binary operation on a pair of operands.  If either operand
-        contains a sequence the results is a sequence accordinging to this
+        Perform a binary operation on a pair of operands.  If either operand
+        contains a sequence the results is a sequence according to this
         truth table.
 
         =========   ==========   ====  ================================
