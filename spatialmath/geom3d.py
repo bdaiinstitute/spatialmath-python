@@ -716,7 +716,7 @@ class Line3(BasePoseList):
                 l = abs(l1 * l2) / np.linalg.norm(np.cross(l1.w, l2.w))**2
         return l
 
-    def closest_to_line(self, line):
+    def closest_to_line(self, other):
         """
         Closest point between two lines
 
@@ -725,8 +725,21 @@ class Line3(BasePoseList):
         :return: nearest points and distance between lines at those points
         :rtype: ndarray(3,N), ndarray(N)
 
-        Finds the point on the first line closest to the second line, as well
-        as the minimum distance between the lines.
+        There are four cases:
+
+        * ``len(self) == len(line) == 1`` find the point on the first line closest to the second line, as well
+          as the minimum distance between the lines.
+        * ``len(self) == 1, len(line) == N`` find the point of intersection between the first
+          line and the ``N`` other lines, returning ``N`` intersection points and distances.
+        * ``len(self) == N, len(line) == 1`` find the point of intersection between the ``N`` first
+          lines and the other line, returning ``N`` intersection points and distances.
+        * ``len(self) == N, len(line) == M`` for each  of the ``N`` first
+          lines find the closest intersection with each of the ``M`` other lines, returning ``N`` 
+          intersection points and distances.
+
+        ** this last one should be an option, default behavior would be to 
+        test self[i] against line[i]
+        ** maybe different function
 
         For two sets of lines, of equal size, return an array of closest points
         and distances.
@@ -746,26 +759,50 @@ class Line3(BasePoseList):
         # https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
         # but (20) (21) is the negative of correct answer
 
-        p = []
-        dist = []
-        for line1, line2 in product(self, line):
-            v1 = line1.v
-            w1 = line1.w
-            v2 = line2.v
-            w2 = line2.w
+        points = []
+        dists = []
+
+        def intersection(line1, line2):
+
             with np.errstate(divide='ignore', invalid='ignore'):
+                # compute the distance between all pairs of lines
+                v1 = line1.v
+                w1 = line1.w
+                v2 = line2.v
+                w2 = line2.w
+            
                 p1 = (np.cross(v1, np.cross(w2, np.cross(w1, w2))) - np.dot(v2, np.cross(w1, w2)) * w1) \
                         / np.sum(np.cross(w1, w2) ** 2)
                 p2 = (np.cross(-v2, np.cross(w1, np.cross(w1, w2))) + np.dot(v1, np.cross(w1, w2)) * w2) \
                         / np.sum(np.cross(w1, w2) ** 2)
 
-            p.append(p1)
-            dist.append(np.linalg.norm(p1 - p2))
-        
-        if len(p) == 1:
-            return p[0], dist[0]
+            return p1, np.linalg.norm(p1 - p2)
+
+
+        if len(self) == len(other):
+            # two sets of lines of equal length
+            for line1, line2 in zip(self, other):
+                point, dist = intersection(line1, line2)
+                points.append(point)
+                dists.append(dist)
+
+        elif len(self) == 1 and len(other) > 1:
+            for line in other:
+                point, dist = intersection(self, line)
+                points.append(point)
+                dists.append(dist)
+
+        elif len(self) > 1 and  len(other) == 1:
+            for line in self:
+                point, dist = intersection(line, other)
+                points.append(point)
+                dists.append(dist)
+
+        if len(points) == 1:
+            # 1D case for self or line
+            return points[0], dists[0]
         else:
-            return np.array(p).T, np.array(dist)
+            return np.array(points).T, np.array(dists)
 
     def closest_to_point(self, x):
         """
