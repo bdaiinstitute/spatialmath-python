@@ -426,7 +426,6 @@ class Line3(BasePoseList):
         """
         return np.r_[self.v, self.w]
     
-    @property
     def skew(self):
         r"""
         Line as a Plucker skew-matrix
