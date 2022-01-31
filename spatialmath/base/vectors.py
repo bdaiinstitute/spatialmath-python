@@ -501,7 +501,7 @@ def unittwist2_norm(S):
 
 def wrap_0_pi(theta):
     r"""
-    Wrap angle to range [0, pi]
+    Wrap angle to range :math:`[0, \pi]`
 
     :param theta: input angle
     :type theta: scalar or ndarray
@@ -513,7 +513,7 @@ def wrap_0_pi(theta):
     """
     n = (theta / np.pi)
     if isinstance(n, np.ndarray):
-        n = astype(int)
+        n = n.astype(int)
     else:
         n = int(n)
     
@@ -522,7 +522,7 @@ def wrap_0_pi(theta):
 
 def wrap_0_2pi(theta):
     r"""
-    Wrap angle to range [0, 2pi)
+    Wrap angle to range :math:`[0, 2\pi)`
 
     :param theta: input angle
     :type theta: scalar or ndarray
@@ -533,7 +533,7 @@ def wrap_0_2pi(theta):
 
 def wrap_mpi_pi(angle):
     r"""
-    Wrap angle to range [-pi, pi)
+    Wrap angle to range :math:`[\-pi, \pi)`
 
     :param theta: input angle
     :type theta: scalar or ndarray

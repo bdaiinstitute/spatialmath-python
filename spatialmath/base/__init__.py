@@ -183,6 +183,7 @@ __all__ = [
     "getunit",
     "isnumberlist",
     "isvectorlist",
+
     # spatialmath.base.quaternions
     "pure",
     "qnorm",
@@ -206,6 +207,7 @@ __all__ = [
     "dotb",
     "angle",
     "qprint",
+
     # spatialmath.base.transforms2d
     "rot2",
     "trot2",
@@ -222,6 +224,7 @@ __all__ = [
     "xyt2tr",
     "tr2xyt",
     "trinv2",
+
     # spatialmath.base.transforms3d
     "rotx",
     "roty",
@@ -282,6 +285,7 @@ __all__ = [
     "e2h",
     "homtrans",
     "rodrigues",
+
     # spatialmath.base.vectors
     "colvec",
     "unitvec",
@@ -301,9 +305,11 @@ __all__ = [
     "iszero",
     "wrap_0_2pi",
     "wrap_mpi_pi",
+    "wrap_0_pi",
     # spatialmath.base.animate
     "Animate",
     "Animate2",
+
     # spatial.base.graphics
     "plotvol2",
     "plotvol3",
