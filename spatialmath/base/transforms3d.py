@@ -2256,20 +2256,24 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
         skd = base.skew(vd)
         theta_dot = np.inner(𝚪, 𝚪d) / base.norm(𝚪)
         theta = base.norm(𝚪)
-        Theta = 1 - theta / 2 * np.sin(theta) / (1 - np.cos(theta))
-        Theta_dot = (
-            -0.5 * theta * theta_dot * math.cos(theta) / (1 - math.cos(theta))
-            + 0.5
-            * theta
-            * theta_dot
-            * math.sin(theta) ** 2
-            / (1 - math.cos(theta)) ** 2
-            - 0.5 * theta_dot * math.sin(theta) / (1 - math.cos(theta))
-        ) / theta ** 2 - 2 * theta_dot * (
-            -1 / 2 * theta * math.sin(theta) / (1 - math.cos(theta)) + 1
-        ) / theta ** 3
+        Theta = (1.0 - theta / 2.0 * np.sin(theta) / (1.0 - np.cos(theta))) / theta**2
 
-        Ad = -0.5 * skd + 2 * sk @ skd * Theta + sk @ sk * Theta_dot
+        # hand optimized version of code from notebook
+        # TODO:
+        #   results are close but different to numerical cross check
+        #   something wrong in the derivation
+        Theta_dot = (
+                (
+                -theta * math.cos(theta) 
+                -math.sin(theta) +
+                 theta * math.sin(theta)**2 / (1 - math.cos(theta)) 
+                ) * theta_dot / 2  / (1 - math.cos(theta)) / theta**2
+                - (
+                    2 - theta * math.sin(theta) / (1 - math.cos(theta))
+                  ) * theta_dot / theta**3
+                ) 
+
+        Ad = -0.5 * skd + 2.0 * sk @ skd * Theta + sk @ sk * Theta_dot
     else:
         raise ValueError("bad representation specified")
 
