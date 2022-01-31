@@ -157,7 +157,7 @@ class Line3Test(unittest.TestCase):
         P = [2, 3, 7]; Q = [2, 1, 0]
         L = Line3.TwoPoints(P, Q)
         
-        m = L.skew
+        m = L.skew()
         
         self.assertEqual(m.shape, (4,4))
         nt.assert_array_almost_equal(m + m.T, np.zeros((4,4)))
@@ -283,7 +283,7 @@ class Line3Test(unittest.TestCase):
         nt.assert_array_almost_equal(L.point(lam).flatten(), np.r_[6, 2, 3])
         
 
-        x6s = Plane3.PN(n=[1, 0, 0], p=[6, 0, 0])
+        x6s = Plane3.PointNormal(n=[1, 0, 0], p=[6, 0, 0])
         p, lam = L.intersect_plane(x6s)
         nt.assert_array_almost_equal(p, np.r_[6, 2, 3])
         

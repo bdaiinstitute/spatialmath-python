@@ -28,22 +28,22 @@ class Plane3:
     the plane :math:`\pi: ax + by + cz + d=0`.
     """
     def __init__(self, c):
-
         self.plane = base.getvector(c, 4)
     
     # point and normal
     @classmethod
-    def PN(cls, p, n):
+    def PointNormal(cls, p, n):
         """
         Create a plane object from point and normal
         
         :param p: Point in the plane
-        :type p: 3-element array_like
-        :param n: Normal to the plane
-        :type n: 3-element array_like
+        :type p: array_like(3)
+        :param n: Normal vector to the plane
+        :type n: array_like(3)
         :return: a Plane object
         :rtype: Plane
 
+        :seealso: :meth:`ThreePoints` :meth:`LinePoint`
         """
         n = base.getvector(n, 3)  # normal to the plane
         p = base.getvector(p, 3)  # point on the plane
@@ -51,14 +51,18 @@ class Plane3:
     
     # point and normal
     @classmethod
-    def P3(cls, p):
+    def ThreePoints(cls, p):
         """
         Create a plane object from three points
         
         :param p: Three points in the plane
-        :type p: numpy.ndarray, shape=(3,3)
+        :type p: ndarray(3,3)
         :return: a Plane object
         :rtype: Plane
+
+        The points in ``p`` are arranged as columns.
+
+        :seealso: :meth:`PointNormal`  :meth:`LinePoint`
         """
         
         p = base.ismatrix(p, (3,3))
@@ -70,9 +74,25 @@ class Plane3:
         n = np.cross(v2-v1, v3-v1)
         
         return cls(n, v1)
+
+    @classmethod
+    def LinePoint(cls, l, p):
+        """
+        Create a plane object from a line and point
         
-    # line and point
-    # 3 points
+        :param l: 3D line
+        :type l: Line3
+        :param p: Points in the plane
+        :type p: ndarray(3)
+        :return: a Plane object
+        :rtype: Plane
+
+        :seealso: :meth:`PointNormal`  :meth:`ThreePoints`
+        """
+        n = np.cross(l.w, p)
+        d = np.dot(l.v, p) 
+        
+        return cls(n, d)
         
     @property
     def n(self):
@@ -80,11 +100,12 @@ class Plane3:
         Normal to the plane
         
         :return: Normal to the plane
-        :rtype: 3-element array_like
+        :rtype: ndarray(3)
         
         For a plane :math:`\pi: ax + by + cz + d=0` this is the vector
         :math:`[a,b,c]`.
 
+        :seealso: :meth:`d`
         """
         # normal
         return self.plane[:3]
@@ -100,23 +121,42 @@ class Plane3:
         For a plane :math:`\pi: ax + by + cz + d=0` this is the scalar
         :math:`d`.
 
+
+        :seealso: :meth:`n`
         """
         return self.plane[3]
     
     def contains(self, p, tol=10*_eps):
         """
-        
+        Test if point in plane
+
         :param p: A 3D point
-        :type p: 3-element array_like
+        :type p: array_like(3)
         :param tol: Tolerance, defaults to 10*_eps
         :type tol: float, optional
         :return: if the point is in the plane
         :rtype: bool
-
         """
         return abs(np.dot(self.n, p) - self.d) < tol
     
     def plot(self, bounds=None, ax=None, **kwargs):
+        """
+        Plot plane
+
+        :param bounds: bounds of plot volume, defaults to None
+        :type bounds: array_like(2|4|6), optional
+        :param ax: 3D axes to plot into, defaults to None
+        :type ax: Axes, optional
+        :param kwargs: optional arguments passed to ``plot_surface``
+
+        The ``bounds`` of the 3D plot volume is [xmin, xmax, ymin, ymax, zmin, zmax] 
+        and a 3D plot is created if not already existing.  If ``bounds`` is not
+        provided it is taken from current 3D axes.
+
+        The plane is drawn using ``plot_surface``.
+
+        :seealso: :func:`axes_logic`
+        """
         ax = base.axes_logic(ax, 3)
         if bounds is None:
             bounds = np.r_[ax.get_xlim(), ax.get_ylim(), ax.get_zlim()]
@@ -133,115 +173,65 @@ class Plane3:
 
     def __str__(self):
         """
+        Convert plane to string representation
         
-        :return: String representation of plane
+        :return: Compact string representation of plane
         :rtype: str
-
         """
         return str(self.plane)
+
+    def __repr__(self):
+        """
+        Display parameters of plane
+        
+        :return: Compact string representation of plane
+        :rtype: str
+        """
+        return str(self)
 
 # ======================================================================== #
 
 
 class Line3(BasePoseList):
-    """
-    Plucker coordinate class
-    
-    Concrete class to represent a 3D line using Plucker coordinates.
-    
-    Methods:
-        
-    Plucker            Contructor from points
-    Plucker.planes     Constructor from planes
-    Plucker.pointdir   Constructor from point and direction
-    
-    Information and test methods::
-    closest            closest point on line
-    commonperp         common perpendicular for two lines
-    contains           test if point is on line
-    distance           minimum distance between two lines
-    intersects         intersection point for two lines
-    intersect_plane    intersection points with a plane
-    intersect_volume   intersection points with a volume
-    pp                 principal point
-    ppd                principal point distance from origin
-    point              generate point on line
-    
-    Conversion methods::
-    char               convert to human readable string
-    double             convert to 6-vector
-    skew               convert to 4x4 skew symmetric matrix
-    
-    Display and print methods::
-    display            display in human readable form
-    plot               plot line
-    
-    Operators:
-    *                  multiply Plucker matrix by a general matrix
-    |                  test if lines are parallel
-    ^                  test if lines intersect
-    ==                 test if two lines are equivalent
-    ~=                 test if lines are not equivalent
 
-    Notes:
-        
-     - This is reference (handle) class object
-     - Plucker objects can be used in vectors and arrays
-    
-    References:
-        
-     - Ken Shoemake, "Ray Tracing News", Volume 11, Number 1
-       http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3
-     - Matt Mason lecture notes http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf
-     - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p596-7.
-    
-    Implementation notes:
-        
-     - The internal representation is a 6-vector [v, w] where v (moment), w (direction).
-     - There is a huge variety of notation used across the literature, as well as the ordering
-       of the direction and moment components in the 6-vector.
-    
-    Copyright (C) 1993-2019 Peter I. Corke
-    """
-
-    # w  # direction vector
-    # v  # moment vector (normal of plane containing line and origin)
     
     __array_ufunc__ = None  # allow pose matrices operators with NumPy values
 
     def __init__(self, v=None, w=None):
         """
-        Create a Plucker 3D line object
+        Create a Line3 object
         
-        :param v: Plucker vector, Plucker object, Plucker moment
-        :type v: 6-element array_like, Plucker instance, 3-element array_like
-        :param w: Plucker direction, optional
-        :type w: 3-element array_like, optional
+        :param v: Plucker coordinate vector, or Plucker moment vector
+        :type v: array_like(6) or array_like(3)
+        :param w: Plucker direction vector, optional
+        :type w: array_like(3), optional
         :raises ValueError: bad arguments
-        :return: Plucker line
-        :rtype: Plucker
+        :return: 3D line
+        :rtype: ``Line3`` instance
 
-        - ``L = Plucker(X)`` creates a Plucker object from the Plucker coordinate vector
-          ``X`` = [V,W] where V (3-vector) is the moment and W (3-vector) is the line direction.
+        A representation of a 3D line using Plucker coordinates.
 
-        - ``L = Plucker(L)`` creates a copy of the Plucker object ``L``.
+        - ``Line3(P)`` creates a 3D line from a Plucker coordinate vector ``[v, w]``
+           where ``v`` (3,) is the moment and ``w`` (3,) is the line direction.
         
-        - ``L = Plucker(V, W)`` creates a Plucker object from moment ``V`` (3-vector) and
-          line direction ``W`` (3-vector).
+        - ``Line3(v, w)`` as above but the components ``v`` and ``w`` are
+          provided separately.
           
-        Notes:
+        - ``Line3(L)`` creates a copy of the ``Line3`` object ``L``.
+
+        .. note::
             
-        - The Plucker object inherits from ``collections.UserList`` and has list-like
-          behaviours.
-        - A single Plucker object contains a 1D array of Plucker coordinates.
-        - The elements of the array are guaranteed to be Plucker coordinates.
-        - The number of elements is given by ``len(L)``
-        - The elements can be accessed using index and slice notation, eg. ``L[1]`` or
-          ``L[2:3]``
-        - The Plucker instance can be used as an iterator in a for loop or list comprehension.
-        - Some methods support operations on the internal list.
+            - The ``Line3`` object inherits from ``collections.UserList`` and has list-like
+              behaviours.
+            - A single ``Line3`` object contains a 1D array of Plucker coordinates.
+            - The elements of the array are guaranteed to be Plucker coordinates.
+            - The number of elements is given by ``len(L)``
+            - The elements can be accessed using index and slice notation, eg. ``L[1]`` or
+              ``L[2:3]``
+            - The ``Line3`` instance can be used as an iterator in a for loop or list comprehension.
+            - Some methods support operations on the internal list.
           
-        :seealso: Plucker.PQ, Plucker.Planes, Plucker.PointDir
+        :seealso: :meth:`TwoPoints` :meth:`Planes` :meth:`PointDir`
         """
         super().__init__()  # enable list powers
 
@@ -273,20 +263,20 @@ class Line3(BasePoseList):
     @classmethod
     def TwoPoints(cls, P=None, Q=None):
         """
-        Create Plucker line object from two 3D points
+        Create 3D line from two 3D points
         
         :param P: First 3D point
-        :type P: 3-element array_like
+        :type P: array_like(3)
         :param Q: Second 3D point
-        :type Q: 3-element array_like
-        :return: Plucker line
-        :rtype: Plucker
+        :type Q: array_like(3)
+        :return: 3D line
+        :rtype: ``Line3`` instance
 
-        ``L = Plucker(P, Q)`` create a Plucker object that represents
-        the line joining the 3D points ``P`` (3-vector) and ``Q`` (3-vector). The direction
+        ``Line3(P, Q)`` create a ``Line3`` object that represents
+        the line joining the 3D points ``P`` (3,) and ``Q`` (3,). The direction
         is from ``Q`` to ``P``.
 
-        :seealso: Plucker, Plucker.Planes, Plucker.PointDir
+        :seealso: :meth:`Line3` :meth:`PointDir`
         """
         P = base.getvector(P, 3)
         Q = base.getvector(Q, 3)
@@ -298,14 +288,14 @@ class Line3(BasePoseList):
     @classmethod
     def TwoPlanes(cls, pi1, pi2):
         r"""
-        Create Plucker line from two planes
+        Create 3D line from intersection of two planes
                 
         :param pi1: First plane
-        :type pi1: 4-element array_like, or Plane
+        :type pi1: array_like(4), or ``Plane``
         :param pi2: Second plane
-        :type pi2: 4-element array_like, or Plane
-        :return: Plucker line
-        :rtype: Plucker
+        :type pi2: array_like(4), or ``Plane``
+        :return: 3D line
+        :rtype: ``Line3`` instance
 
         ``L = Plucker.planes(PI1, PI2)`` is a Plucker object that represents
         the line formed by the intersection of two planes ``PI1`` and ``PI2``.
@@ -313,7 +303,7 @@ class Line3(BasePoseList):
         Planes are represented by the 4-vector :math:`[a, b, c, d]` which describes
         the plane :math:`\pi: ax + by + cz + d=0`.
            
-        :seealso: Plucker, Plucker.PQ, Plucker.PointDir
+        :seealso: :meth:`TwoPoints` :meth:`PointDir`
         """
 
         # TODO inefficient to create 2 temporary planes
@@ -330,19 +320,19 @@ class Line3(BasePoseList):
     @classmethod
     def PointDir(cls, point, dir):
         """
-        Create Plucker line from point and direction
+        Create 3D line from a point and direction
         
         :param point: A 3D point
-        :type point: 3-element array_like
+        :type point: array_like(3)
         :param dir: Direction vector
-        :type dir: 3-element array_like
-        :return: Plucker line
-        :rtype: Plucker
+        :type dir: array_like(3)
+        :return: 3D line
+        :rtype: ``Line3`` instance
         
-        ``L = Plucker.pointdir(P, W)`` is a Plucker object that represents the
+        ``Line3.pointdir(P, W)`` is a Plucker object that represents the
         line containing the point ``P`` and parallel to the direction vector ``W``.
 
-        :seealso: Plucker, Plucker.Planes, Plucker.PQ
+        :seealso: :meth:`TwoPoints` :meth:`TwoPlanes`
         """
 
         p = base.getvector(point, 3)
@@ -357,7 +347,7 @@ class Line3(BasePoseList):
         :type x: Plucker
         :raises ValueError: Attempt to append a non Plucker object
         :return: Plucker object with new Plucker line appended
-        :rtype: Plucker
+        :rtype: Line3 instance
 
         """
         #print('in append method')
@@ -381,25 +371,29 @@ class Line3(BasePoseList):
     
     @property
     def v(self):
-        """
+        r"""
         Moment vector
         
         :return: the moment vector
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3)
 
+        The line is represented by a vector :math:`(\vec{v}, \vec{w}) \in \mathbb{R}^6`.
+
+        :seealso: :meth:`w`
         """
         return self.data[0][0:3]
     
     @property
     def w(self):
-        """
+        r"""
         Direction vector
         
         :return: the direction vector
-        :rtype: numpy.ndarray, shape=(3,)
-        
-        :seealso: Plucker.uw
+        :rtype: ndarray(3)
 
+        The line is represented by a vector :math:`(\vec{v}, \vec{w}) \in \mathbb{R}^6`.
+
+        :seealso: :meth:`v` :meth:`uw`
         """
         return self.data[0][3:6]
     
@@ -408,10 +402,14 @@ class Line3(BasePoseList):
         """
         Line direction as a unit vector
         
-        :return: Line direction
-        :rtype: numpy.ndarray, shape=(3,)
+        :return: Line direction as a unit vector
+        :rtype: ndarray(3,)
 
         ``line.uw`` is a unit-vector parallel to the line.
+
+        The line is represented by a vector :math:`(\vec{v}, \vec{w}) \in \mathbb{R}^6`.
+
+        :seealso: :meth:`w`
         """
         return base.unitvec(self.w)
     
@@ -420,23 +418,24 @@ class Line3(BasePoseList):
         """
         Line as a Plucker coordinate vector
         
-        :return: Coordinate vector
-        :rtype: numpy.ndarray, shape=(6,)
+        :return: Plucker coordinate vector
+        :rtype: ndarray(6,)
         
-        ``line.vec`` is the  Plucker coordinate vector ``X`` = [V,W] where V (3-vector)
-        is the moment and W (3-vector) is the line direction.
+        ``line.vec`` is the  Plucker coordinate vector :math:`(\vec{v}, \vec{w}) \in \mathbb{R}^6`.
+
         """
         return np.r_[self.v, self.w]
     
     def skew(self):
         r"""
-        Line as a Plucker skew-matrix
+        Line as a Plucker skew-symmetric matrix
         
         :return: Skew-symmetric matrix form of Plucker coordinates
-        :rtype: numpy.ndarray, shape=(4,4)
+        :rtype: ndarray(4,4)
 
-        ``M = line.skew()`` is the Plucker matrix, a 4x4 skew-symmetric matrix
-        representation of the line.
+        ``line.skew()`` is the Plucker matrix, a 4x4 skew-symmetric matrix
+        representation of the line whose six unique elements are the
+        Plucker coordinates of the line.
 
         .. math::
 
@@ -447,11 +446,11 @@ class Line3(BasePoseList):
 
         .. note::
             
-         - For two homogeneous points P and Q on the line, :math:`PQ^T-QP^T` is
-           also skew symmetric.
-         - The projection of Plucker line by a perspective camera is a
-           homogeneous line (3x1) given by :math:`\vee C M C^T` where :math:`C
-           \in \mathbf{R}^{3 \times 4}` is the camera matrix.
+            - For two homogeneous points P and Q on the line, :math:`PQ^T-QP^T` is
+            also skew symmetric.
+            - The projection of Plucker line by a perspective camera is a
+            homogeneous line (3x1) given by :math:`\vee C M C^T` where :math:`C
+            \in \mathbf{R}^{3 \times 4}` is the camera matrix.
         """
         
         v = self.v
@@ -468,7 +467,10 @@ class Line3(BasePoseList):
     @property
     def pp(self):
         """
-        Principal point of the line
+        Principal point of the 3D line
+
+        :return: Principal point of the line
+        :rtype: ndarray(3)
 
         ``line.pp`` is the point on the line that is closest to the origin.
 
@@ -476,9 +478,8 @@ class Line3(BasePoseList):
             
          - Same as Plucker.point(0)
 
-        :seealso: Plucker.ppd, Plucker.point
+        :seealso: :meth:`ppd` :meth`point`
         """
-        
         return np.cross(self.v, self.w) / np.dot(self.w, self.w)
 
     @property
@@ -493,7 +494,7 @@ class Line3(BasePoseList):
         This is the smallest distance of any point on the line
         to the origin.
 
-        :seealso: Plucker.pp
+        :seealso: :meth:`pp`
         """
         return math.sqrt(np.dot(self.v, self.v) / np.dot(self.w, self.w) )
 
@@ -506,17 +507,31 @@ class Line3(BasePoseList):
         :return: Distance from principal point to the origin
         :rtype: float
 
-        ``line.point(LAMBDA)`` is a point on the line, where ``LAMBDA`` is the parametric
+        ``line.point(λ)`` is a point on the line, where ``λ`` is the parametric
         distance along the line from the principal point of the line such
         that :math:`P = P_p + \lambda \hat{d}` and :math:`\hat{d}` is the line
         direction given by ``line.uw``.
 
-        :seealso: Plucker.pp, Plucker.closest, Plucker.uw
+        :seealso: :meth:`pp` :meth:`closest` :meth:`uw` :meth:`lam`
         """
         lam = base.getvector(lam, out='row')
         return self.pp.reshape((3,1)) + self.uw.reshape((3,1)) * lam
 
     def lam(self, point):
+        """
+        Parametric distance from principal point
+
+        :param point: 3D point
+        :type point: array_like(3)
+        :return: parametric distance λ
+        :rtype: float
+
+        ``line.lam(P)`` is the value of :math:`\lambda` such that 
+        :math:`Q = P_p + \lambda \hat{d}` is closest to ``P``.
+
+        :seealso: :meth:`point`
+        """
+
         return np.dot( point.flatten() - self.pp, self.uw)
 
     # ------------------------------------------------------------------------- #
@@ -549,51 +564,46 @@ class Line3(BasePoseList):
         else:
             raise ValueError('bad argument')
 
-    def __eq__(self, l2):  # pylint: disable=no-self-argument
+    def __eq__(l1, l2):  # pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
-        :return: Plucker
-        :return: line equivalence
+        :type l2: ``Line3``
+        :return: lines are equivalent
         :rtype: bool
 
-        ``L1 == L2`` is true if the Plucker objects describe the same line in
+        ``L1 == L2`` is True if the ``Line3`` objects describe the same line in
         space.  Note that because of the over parameterization, lines can be
         equivalent even if their coordinate vectors are different.
+
+        :seealso: :meth:`__ne__`
         """
-        l1 = self
         return abs( 1 - np.dot(base.unitvec(l1.vec), base.unitvec(l2.vec))) < 10*_eps
     
-    def __ne__(self, l2):  # pylint: disable=no-self-argument
+    def __ne__(l1, l2):  # pylint: disable=no-self-argument
         """
         Test if two lines are not equivalent
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
-        :return: line inequivalence
+        :type l2: ``Line3``
+        :return: lines are not equivalent
         :rtype: bool
 
-        ``L1 != L2`` is true if the Plucker objects describe different lines in
+        ``L1 != L2`` is True if the Plucker objects describe different lines in
         space.  Note that because of the over parameterization, lines can be
         equivalent even if their coordinate vectors are different.
+
+        :seealso: :meth:`__ne__`
         """
-        l1 = self
         return not l1.__eq__(l2)
     
-    def isparallel(self, l2, tol=10*_eps):  # pylint: disable=no-self-argument
+    def isparallel(l1, l2, tol=10*_eps):  # pylint: disable=no-self-argument
         """
         Test if lines are parallel
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
+        :type l2: ``Line3``
         :return: lines are parallel
         :rtype: bool
 
@@ -601,46 +611,39 @@ class Line3(BasePoseList):
         
         ``l1 | l2`` as above but in binary operator form
 
-        :seealso: Plucker.or, Plucker.intersects
+        :seealso: :meth:`__or__` :meth:`intersects`
         """
-        l1 = self
         return np.linalg.norm(np.cross(l1.w, l2.w) ) < tol
 
     
-    def __or__(self, l2):  # pylint: disable=no-self-argument
+    def __or__(l1, l2):  # pylint: disable=no-self-argument
         """
         Overloaded ``|`` operator tests for parallelism
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
+        :type l2: ``Line3``
         :return: lines are parallel
         :rtype: bool
 
         ``l1 | l2`` is an operator which is true if the two lines are parallel.
 
-
         .. note:: The ``|`` operator has low precendence.
 
-        :seealso: Plucker.isparallel, Plucker.__xor__
+        :seealso: :meth:`isparallel` :meth:`__xor__`
         """
-        l1 = self
         return l1.isparallel(l2)
 
-    def __xor__(self, l2):  # pylint: disable=no-self-argument
+    def __xor__(l1, l2):  # pylint: disable=no-self-argument
         
         """
         Overloaded ``^`` operator tests for intersection
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
         :type l2: Plucker
         :return: lines intersect
         :rtype: bool
 
-        ``l1 ^ l2`` is an operator which is true if the two lines intersect at a point.
+        ``l1 ^ l2`` is an operator which is true if the two lines intersect.
 
         .. note:: 
         
@@ -648,9 +651,8 @@ class Line3(BasePoseList):
             - Is ``False`` if the lines are equivalent since they would intersect at
               an infinite number of points.
 
-        :seealso: Plucker.intersects, Plucker.parallel
+        :seealso: :meth:`intersects` :meth:`parallel`
         """
-        l1 = self
         return not l1.isparallel(l2) and (abs(l1 * l2) < 10*_eps )
     
     # ------------------------------------------------------------------------- #
@@ -658,24 +660,20 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #       
    
             
-    def intersects(self, l2):  # pylint: disable=no-self-argument
+    def intersects(l1, l2):  # pylint: disable=no-self-argument
         """
         Intersection point of two lines
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
+        :type l2: ``Line3``
         :return: 3D intersection point
-        :rtype: numpy.ndarray, shape=(3,) or None
+        :rtype: ndarray(3) or None
 
         ``l1.intersects(l2)`` is the point of intersection of the two lines, or
         ``None`` if the lines do not intersect or are equivalent.
 
-
-        :seealso: Plucker.commonperp, Plucker.eq, Plucker.__xor__
+        :seealso: :meth:`commonperp :meth:`eq` :meth:`__xor__`
         """
-        l1 = self
         if l1^l2:
             # lines do intersect
             return -(np.dot(l1.v, l2.w) * np.eye(3, 3) + \
@@ -685,24 +683,21 @@ class Line3(BasePoseList):
             # lines don't intersect
             return None
     
-    def distance(self, l2):  # pylint: disable=no-self-argument
+    def distance(l1, l2):  # pylint: disable=no-self-argument
         """
         Minimum distance between lines
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
-        :return: Closest distance
+        :type l2: ``Line3``
+        :return: Closest distance between lines
         :rtype: float
 
         ``l1.distance(l2) is the minimum distance between two lines.
         
-        Notes:
-            
-         - Works for parallel, skew and intersecting lines.
+        .. notes:: Works for parallel, skew and intersecting lines.
+
+        :seealso: :meth:`closest_to_line`
         """
-        l1 = self
         if l1 | l2:
             # lines are parallel
             l = np.cross(l1.w, l1.v - l2.v * np.dot(l1.w, l2.w) / dot(l2.w, l2.w)) / np.linalg.norm(l1.w)
@@ -718,22 +713,22 @@ class Line3(BasePoseList):
 
     def closest_to_line(self, other):
         """
-        Closest point between two lines
+        Closest point between lines
 
-        :param line: second line
-        :type line: Plucker
+        :param other: second line
+        :type other: Line3
         :return: nearest points and distance between lines at those points
         :rtype: ndarray(3,N), ndarray(N)
 
         There are four cases:
 
-        * ``len(self) == len(line) == 1`` find the point on the first line closest to the second line, as well
+        * ``len(self) == len(other) == 1`` find the point on the first line closest to the second line, as well
           as the minimum distance between the lines.
-        * ``len(self) == 1, len(line) == N`` find the point of intersection between the first
+        * ``len(self) == 1, len(other) == N`` find the point of intersection between the first
           line and the ``N`` other lines, returning ``N`` intersection points and distances.
-        * ``len(self) == N, len(line) == 1`` find the point of intersection between the ``N`` first
+        * ``len(self) == N, len(other) == 1`` find the point of intersection between the ``N`` first
           lines and the other line, returning ``N`` intersection points and distances.
-        * ``len(self) == N, len(line) == M`` for each  of the ``N`` first
+        * ``len(self) == N, len(other) == M`` for each  of the ``N`` first
           lines find the closest intersection with each of the ``M`` other lines, returning ``N`` 
           intersection points and distances.
 
@@ -744,16 +739,19 @@ class Line3(BasePoseList):
         For two sets of lines, of equal size, return an array of closest points
         and distances.
 
-        Example:
+        Example::
 
-        .. runblock:: pycon
+            .. runblock:: pycon
 
-            >>> from spatialmath import Plucker
-            >>> line1 = Plucker.TwoPoints([1, 1, 0], [1, 1, 1])
-            >>> line2 = Plucker.TwoPoints([0, 0, 0], [2, 3, 5])
-            >>> line1.closest_to_line(line2)
+                >>> from spatialmath import Plucker
+                >>> line1 = Plucker.TwoPoints([1, 1, 0], [1, 1, 1])
+                >>> line2 = Plucker.TwoPoints([0, 0, 0], [2, 3, 5])
+                >>> line1.closest_to_line(line2)
 
         :reference: `Plucker coordinates <https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf>`_
+        
+        
+        :seealso: :meth:`distance`
         """
         # point on line closest to another line
         # https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
@@ -808,10 +806,8 @@ class Line3(BasePoseList):
         """
         Point on line closest to given point
         
-        :param line: A line
-        :type l1: Plucker
-        :param l2: An arbitrary 3D point
-        :type l2: 3-element array_like
+        :param x: An arbitrary 3D point
+        :type x: array_like(3)
         :return: Point on the line and distance to line
         :rtype: ndarray(3), float
 
@@ -826,7 +822,7 @@ class Line3(BasePoseList):
             >>> line1 = Plucker.TwoPoints([0, 0, 0], [2, 2, 3])
             >>> line1.closest_to_point([1, 1, 1])
 
-        :seealso: Plucker.point
+        :seealso: meth:`point`
         """
         # http://www.ahinson.com/algorithms_general/Sections/Geometry/PluckerLine.pdf
         # has different equation for moment, the negative
@@ -840,23 +836,20 @@ class Line3(BasePoseList):
         return p, d
     
     
-    def commonperp(self, l2):  # pylint: disable=no-self-argument
+    def commonperp(l1, l2):  # pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
         
-        :param l1: First line
-        :type l1: Plucker
         :param l2: Second line
-        :type l2: Plucker
+        :type l2: Line3
         :return: Perpendicular line
-        :rtype: Plucker or None
+        :rtype: Line3 instance or None
 
         ``l1.commonperp(l2)`` is the common perpendicular line between the two lines.
         Returns ``None`` if the lines are parallel.
 
-        :seealso: Plucker.intersect
+        :seealso: :meth:`intersect`
         """
-        l1 = self
         if l1 | l2:
             # no common perpendicular if lines are parallel
             return None
@@ -866,30 +859,29 @@ class Line3(BasePoseList):
             v = np.cross(l1.v, l2.w) - np.cross(l2.v, l1.w) + \
                 (l1 * l2) * np.dot(l1.w, l2.w) * base.unitvec(np.cross(l1.w, l2.w))
             
-        return self.__class__(v, w)
+        return l1.__class__(v, w)
 
 
-    def __mul__(self, right):  # pylint: disable=no-self-argument
+    def __mul__(left, right):  # pylint: disable=no-self-argument
         r"""
         Reciprocal product
         
         :param left: Left operand
-        :type left: Plucker
+        :type left: Line3
         :param right: Right operand
-        :type right: Plucker
+        :type right: Line3
         :return: reciprocal product
         :rtype: float
 
         ``left * right`` is the scalar reciprocal product :math:`\hat{w}_L \dot m_R + \hat{w}_R \dot m_R`.
 
-        Notes:
+        .. note::
             
-         - Multiplication or composition of Plucker lines is not defined.
-         - Pre-multiplication by an SE3 object is supported, see ``__rmul__``.
+            - Multiplication or composition of Plucker lines is not defined.
+            - Pre-multiplication by an SE3 object is supported, see ``__rmul__``.
 
-        :seealso: Plucker.__rmul__
+        :seealso: :meth:`__rmul__`
         """
-        left = self
         if isinstance(right, Line3):
             # reciprocal product
             return np.dot(left.uw, right.v) + np.dot(right.uw, left.v)
@@ -898,19 +890,18 @@ class Line3(BasePoseList):
         
     def __rmul__(right, left):  # pylint: disable=no-self-argument
         """
-        Line transformation
+        Rigid-body transformation of 3D line
 
         :param left: Rigid-body transform
         :type left: SE3
-        :param right: Right operand
-        :type right: Plucker
-        :return: transformed line
-        :rtype: Plucker
+        :param right: 3D line
+        :type right: Line
+        :return: transformed 3D line
+        :rtype: Line3 instance
         
         ``T * line`` is the line transformed by the rigid body transformation ``T``.
 
-
-        :seealso: Plucker.__mul__
+        :seealso: :meth:`__mul__`
         """
         if isinstance(left, SE3):
             A = left.inv().Ad()
@@ -922,24 +913,19 @@ class Line3(BasePoseList):
     #  PLUCKER LINE DISTANCE AND INTERSECTION
     # ------------------------------------------------------------------------- #       
 
-
     def intersect_plane(self, plane):  # pylint: disable=no-self-argument
         r"""
         Line intersection with a plane
         
-        :param line: A line
-        :type line: Plucker
         :param plane: A plane
-        :type plane: 4-element array_like or Plane
-        :return: Intersection point
-        :rtype: collections.namedtuple
+        :type plane: array_like(4) or Plane
+        :return: Intersection point, λ
+        :rtype: ndarray(3), float
 
-        - ``line.intersect_plane(plane).p`` is the point where the line 
-          intersects the plane, or None if no intersection.
+        - ``P, λ = line.intersect_plane(plane)`` is the point where the line 
+          intersects the plane, and the corresponding λ value.
+          Return None, None if no intersection.
          
-        - ``line.intersect_plane(plane).lam`` is the `lambda` value for the point on the line
-          that intersects the plane.
-
         The plane can be specified as:
             
          - a 4-vector :math:`[a, b, c, d]` which describes the plane :math:`\pi: ax + by + cz + d=0`.
@@ -950,7 +936,7 @@ class Line3(BasePoseList):
             - ``.p`` for the point on the line as a numpy.ndarray, shape=(3,)
             - ``.lam`` the `lambda` value for the point on the line.
 
-        See also Plucker.point.
+        :sealso: :meth:`point` :class:`Plane`
         """
         
         # Line U, V
@@ -977,31 +963,25 @@ class Line3(BasePoseList):
         """
         Line intersection with a volume
         
-        :param line: A line
-        :type line: Plucker
         :param bounds: Bounds of an axis-aligned rectangular cuboid
-        :type plane: 6-element array_like
-        :return: Intersection point
-        :rtype: collections.namedtuple
+        :type plane: array_like(6)
+        :return: Intersection point, λ value
+        :rtype: ndarray(3,N), ndarray(N)
         
-        ``line.intersect_volume(bounds).p`` is a matrix (3xN) with columns
-        that indicate where the line intersects the faces of the volume
-        specified by ``bounds`` = [xmin xmax ymin ymax zmin zmax].  The number of
+        ``P, λ = line.intersect_volume(bounds)`` is a matrix (3xN) with columns
+        that indicate where the line intersects the faces of the volume and
+        the corresponding λ values.
+
+        The volume is specified by ``bounds`` = [xmin xmax ymin ymax zmin zmax].  
+        
+        The number of
         columns N is either:
             
         - 0, when the line is outside the plot volume or,
         - 2 when the line pierces the bounding volume.
+
         
-        ``line.intersect_volume(bounds).lam`` is an array of shape=(N,) where
-        N is as above.
-            
-        The return value is a named tuple with elements:
-            
-            - ``.p`` for the points on the line as a numpy.ndarray, shape=(3,N)
-            - ``.lam`` for the `lambda` values for the intersection points as a
-              numpy.ndarray, shape=(N,).
-        
-        See also Plucker.plot, Plucker.point.
+        See also :meth:`plot` :meth:`point`
         """
         
         intersections = []
@@ -1025,7 +1005,7 @@ class Line3(BasePoseList):
             I = np.eye(3,3)
             p = [0, 0, 0]
             p[i] = bounds[face]
-            plane = Plane3.PN(n=I[:,i], p=p)
+            plane = Plane3.PointNormal(n=I[:,i], p=p)
             
             # find where line pierces the plane
             try:
@@ -1063,13 +1043,11 @@ class Line3(BasePoseList):
         """
          Plot a line
          
-        :param line: A line
-        :type line: Plucker
         :param bounds: Bounds of an axis-aligned rectangular cuboid as [xmin xmax ymin ymax zmin zmax], optional
         :type plane: 6-element array_like
         :param **kwargs: Extra arguents passed to `Line2D <https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D>`_
         :return: Plotted line
-        :rtype: Line3D or None
+        :rtype: Matplotlib artists
 
         - ``line.plot(bounds)`` adds a line segment to the current axes, and the handle of the line is returned.  
           The line segment is defined by the intersection of the line and the given rectangular cuboid. 
@@ -1082,7 +1060,7 @@ class Line3(BasePoseList):
             - a  MATLAB-style linestyle like 'k--'
             - additional arguments passed to `Line2D <https://matplotlib.org/3.2.2/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D>`_
             
-        :seealso: Plucker.intersect_volume
+        :seealso: :meth:`intersect_volume`
         """
         if ax is None:
             ax = plt.gca()
@@ -1107,7 +1085,7 @@ class Line3(BasePoseList):
 
     def __str__(self):
         """
-        Convert to a string
+        Convert Line3 to a string
         
         :return: String representation of line parameters
         :rtype: str
@@ -1120,23 +1098,22 @@ class Line3(BasePoseList):
         where the first three numbers are the moment, and the last three are the 
         direction vector.
 
+        For a multi-valued ``Line3``, one line per value in ``Line3``.
+
         """
         
         return '\n'.join(['{{ {:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}}}'.format(*list(base.removesmall(x.vec))) for x in self])
 
     def __repr__(self):
         """
-        %Twist.display Display parameters
-        %
-L.display() displays the twist parameters in compact single line format.  If L is a
-vector of Twist objects displays one line per element.
-        %
-Notes::
-- This method is invoked implicitly at the command line when the result
-  of an expression is a Twist object and the command has no trailing
-  semicolon.
-        %
-See also Twist.char.
+        Display Line3
+
+        :return: String representation of line parameters
+        :rtype: str
+
+        Displays the line parameters in compact single line format.
+
+        For a multi-valued ``Line3``, one line per value in ``Line3``.
         """
         
         if len(self) == 1:
