@@ -608,6 +608,7 @@ class BasePoseMatrix(BasePoseList):
         :param file: file to write formatted string to. [default, stdout]
         :type file: file object
 
+
         Print pose in a compact single line format. If ``X`` has multiple
         values, print one per line.
 
@@ -1121,12 +1122,15 @@ class BasePoseMatrix(BasePoseList):
                     else:
                         # SO(n) x vector
                         return left.A @ v
+                elif left.isSE and right.shape == left.shape:
+                    # SE x conforming matrix
+                    return left.A @ right
                 else:
                     if left.isSE:
-                        # SE(n) x array
+                        # SE(n) x [set of vectors]
                         return base.h2e(left.A @ base.e2h(right))
                     else:
-                        # SO(n) x array
+                        # SO(n) x [set of vectors]
                         return left.A @ right
 
             elif len(left) > 1 and base.isvector(right, left.N):
