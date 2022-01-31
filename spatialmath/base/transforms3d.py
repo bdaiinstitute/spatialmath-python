@@ -2700,6 +2700,7 @@ def trplot(
                 d2=d2,
                 flo=flo,
                 anaglyph=anaglyph,
+                axislabel=axislabel,
                 **kwargs
             )
         return
