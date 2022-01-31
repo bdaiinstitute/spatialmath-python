@@ -1062,7 +1062,7 @@ class Line3(BasePoseList):
     #  PLOT AND DISPLAY
     # ------------------------------------------------------------------------- #   
     
-    def plot(self, *pos, bounds=None, axis=None, **kwargs):
+    def plot(self, *pos, bounds=None, ax=None, **kwargs):
         """
          Plot a line
          
@@ -1087,11 +1087,10 @@ class Line3(BasePoseList):
             
         :seealso: Plucker.intersect_volume
         """
-        if axis is None:
+        if ax is None:
             ax = plt.gca()
-        else:
-            ax = axis
 
+        print(ax)
         if bounds is None:
             bounds = np.r_[ax.get_xlim(), ax.get_ylim(), ax.get_zlim()]
         else:
@@ -1099,11 +1098,6 @@ class Line3(BasePoseList):
             ax.set_xlim(bounds[:2])
             ax.set_ylim(bounds[2:4])
             ax.set_zlim(bounds[4:6])
-
-        # print(bounds)
-        
-        #U = self.Q - self.P;
-        #line.p = self.P; line.v = unit(U);
         
         lines = []
         for line in self:
@@ -1194,21 +1188,21 @@ See also Twist.char.
 #             z = L1([1 5 2 6 3 4]) * L2([5 1 6 2 4 3])';
 #         end
 
-#         
-#         function z = intersect(self1, pl2)
-#             Plucker.intersect  Line intersection
-#             
-#             PL1.intersect(self2) is zero if the lines intersect.  It is positive if PL2
-#             passes counterclockwise and negative if PL2 passes clockwise.  Defined as
-#             looking in direction of PL1
-#             
-#                                        ---------->
-#                            o                o
-#                       ---------->
-#                      counterclockwise    clockwise
-#             
-#             z = dot(self1.w, pl1.v) + dot(self2.w, pl2.v);
-#         end
+    def side(self, other):
+        """
+        Plucker side operator
+
+        :param other: second line
+        :type other: Line3
+        :return: permuted dot product
+        :rtype: float
+
+        This permuted dot product operator is zero whenever the lines intersect or are parallel.
+        """
+        if not isinstance(other, Line3):
+            raise ValueError('argument must be a Line3')
+        
+        return np.dot(self.A[[0, 4, 1, 5, 2, 3]], other.A[4, 0, 5, 1, 3, 2])
         
     # Static factory methods for constructors from exotic representations
 
