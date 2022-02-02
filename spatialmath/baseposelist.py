@@ -256,7 +256,7 @@ class BasePoseList(UserList, ABC):
             return self.data
 
     @property
-    def A(self):
+    def A(self) -> np.ndarray:
         """
         Array value of an instance (BasePoseList superclass method)
 
