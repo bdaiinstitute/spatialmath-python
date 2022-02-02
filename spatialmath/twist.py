@@ -554,7 +554,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.trotx`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,0,x,0,0] for x in base.getvector(base.getunit(theta, unit=unit)_])
+        return cls([np.r_[0,0,0,x,0,0] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
     def Ry(cls, theta, unit='rad', t=None):
@@ -585,7 +585,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.troty`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,0,0,x,0] for x in base.getvector(base.getunit(theta, unit=unit))])
+        return cls([np.r_[0,0,0,0,x,0] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
     def Rz(cls, theta, unit='rad', t=None):
@@ -616,7 +616,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.trotz`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,0,0,0,x] for x in base.getvector(base.getunit(theta, unit=unit))])
+        return cls([np.r_[0,0,0,0,0,x] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
     def Tx(cls, x):
