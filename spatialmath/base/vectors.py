@@ -499,9 +499,30 @@ def unittwist2_norm(S):
 
     return (S / th, th)
 
+def wrap_0_pi(theta):
+    r"""
+    Wrap angle to range :math:`[0, \pi]`
+
+    :param theta: input angle
+    :type theta: scalar or ndarray
+    :return: angle wrapped into range :math:`[0, \pi)`
+
+    This is used to fold angles of colatitude.  If zero is the angle of the
+    north pole, colatitude increases to :math:`\pi` at the south pole then
+    decreases to :math:`0` as we head back to the north pole.
+    """
+    n = (theta / np.pi)
+    if isinstance(n, np.ndarray):
+        n = n.astype(int)
+    else:
+        n = int(n)
+    
+    return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
+
+
 def wrap_0_2pi(theta):
     r"""
-    Wrap angle to range [0, 2pi)
+    Wrap angle to range :math:`[0, 2\pi)`
 
     :param theta: input angle
     :type theta: scalar or ndarray
@@ -512,7 +533,7 @@ def wrap_0_2pi(theta):
 
 def wrap_mpi_pi(angle):
     r"""
-    Wrap angle to range [-pi, pi)
+    Wrap angle to range :math:`[\-pi, \pi)`
 
     :param theta: input angle
     :type theta: scalar or ndarray

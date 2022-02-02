@@ -1,15 +1,12 @@
 import math
 from itertools import product
-from collections import Iterable
+from collections.abc import Iterable
 import warnings
 import numpy as np
 import scipy as sp
+from matplotlib import colors
 
-from spatialmath import base
-
-# Only import chi2 from scipy.stats.distributions when used
-_chi2 = None
-
+from spatialmath import base as smbase
 
 try:
     import matplotlib.pyplot as plt
@@ -79,7 +76,7 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     return [handle]
 
 
-def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
+def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=None, **kwargs):
     """
     Plot a point using matplotlib
 
@@ -146,10 +143,10 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
         # [(x,y), (x,y), ...]
         # [xlist, ylist]
         # [xarray, yarray]
-        if base.islistof(pos, (tuple, list)):
+        if smbase.islistof(pos, (tuple, list)):
             x = [z[0] for z in pos]
             y = [z[1] for z in pos]
-        elif base.islistof(pos, np.ndarray):
+        elif smbase.islistof(pos, np.ndarray):
             x = pos[0]
             y = pos[1]
         else:
@@ -163,6 +160,8 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
     }
     if textargs is not None:
         textopts = {**textopts, **textargs}
+    if textcolor is not None and "color" not in textopts:
+        textopts["color"] = textcolor
 
     if ax is None:
         ax = plt.gca()
@@ -196,7 +195,7 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, **kwargs):
 
 
 def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
-    """
+    r"""
     Plot a homogeneous line using matplotlib
 
     :param lines: homgeneous lines
@@ -231,10 +230,12 @@ def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
     if ylim is None:
         ylim = np.r_[ax.get_ylim()]
 
-    lines = base.getmatrix(lines, (None, 3))
+    # if lines.ndim == 1:
+    #     lines = lines.
+    lines = smbase.getmatrix(lines, (3, None))
 
     handles = []
-    for line in lines:
+    for line in lines.T:  # for each column
         if abs(line[1]) > abs(line[0]):
             y = (-line[2] - line[0] * xlim) / line[1]
             ax.plot(xlim, y, *args, **kwargs)
@@ -247,21 +248,20 @@ def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
 
 def plot_box(
     *fmt,
+    lbrt=None,
+    lrbt=None,
+    lbwh=None,
+    bbox=None,
+    ltrb=None,
     lb=None,
     lt=None,
     rb=None,
     rt=None,
     wh=None,
     centre=None,
-    l=None,
-    r=None,
-    t=None,
-    b=None,
     w=None,
     h=None,
     ax=None,
-    bbox=None,
-    ltrb=None,
     filled=False,
     **kwargs
 ):
@@ -280,14 +280,6 @@ def plot_box(
     :type wh: scalar, array_like(2), optional
     :param centre: centre of box, defaults to None
     :type centre: array_like(2), optional
-    :param l: left side of box, minimum x, defaults to None
-    :type l: float, optional
-    :param r: right side of box, minimum x, defaults to None
-    :type r: float, optional
-    :param b: bottom side of box, minimum y, defaults to None
-    :type b: float, optional
-    :param t: top side of box, maximum y, defaults to None
-    :type t: float, optional
     :param w: width of box, defaults to None
     :type w: float, optional
     :param h: height of box, defaults to None
@@ -309,7 +301,7 @@ def plot_box(
 
     The box can be specified in many ways:
 
-    - bounding box which is a 2x2 matrix [xmin, xmax; ymin, ymax]
+    - bounding box which is a 2x2 matrix [xmin, xmax, ymin, ymax]
     - bounding box [xmin, xmax, ymin, ymax]
     - alternative box [xmin, ymin, xmax, ymax]
     - centre and width+height
@@ -331,100 +323,87 @@ def plot_box(
         >>> plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
     """
 
+    if wh is not None:
+        if smbase.isscalar(wh):
+            w, h = wh, wh
+        else:
+            w, h = wh
+    
+    # test for various 4-coordinate versions
     if bbox is not None:
-        if isinstance(bbox, ndarray) and bbox.ndims > 1:
-            # case of [l r; t b]
-            bbox = bbox.ravel()
-        l, r, t, b = bbox
+        lb = bbox[:2]
+        w, h = bbox[2:]
+
+    elif lbwh is not None:
+        lb = lbwh[:2]
+        w, h = lbwh[2:]
+
+    elif lbrt is not None:
+        lb = lbrt[:2]
+        rt = lbrt[2:]
+        w, h = rt[0] - lb[0], rt[1] - lb[1]
+
+    elif lrbt is not None:
+        lb = (lrbt[0], lrbt[2])
+        rt = (lrbt[1], lrbt[3])
+        w, h = rt[0] - lb[0], rt[1] - lb[1]
+
     elif ltrb is not None:
-        l, t, r, b = ltrb
-    else:
-        if lt is not None:
-            l, t = lt
-        if rt is not None:
-            r, t = rt
-        if lb is not None:
-            l, b = lb
-        if rb is not None:
-            r, b = rb
-        if wh is not None:
-            if isinstance(wh, Iterable):
-                w, h = wh
-            else:
-                w = wh
-                h = wh
+        lb = (ltrb[0], ltrb[3])
+        rt = (ltrb[2], ltrb[1])
+        w, h = rt[0] - lb[0], rt[1] - lb[1]
+
+    elif w is not None and h is not None:
+        # we have width & height, one corner is enough
+
         if centre is not None:
-            cx, cy = centre
-        if l is None:
-            try:
-                l = r - w
-            except:
-                pass
-        if l is None:
-            try:
-                l = cx - w / 2
-            except:
-                pass
-        if b is None:
-            try:
-                t = b + h
-            except:
-                pass
-        if b is None:
-            try:
-                t = cy - h / 2
-            except:
-                pass
+            lb = (centre[0] - w/2, centre[1] - h/2)
 
-    ax = axes_logic(ax, 2)
+        elif lt is not None:
+            lb = (lt[0], lt[1] - h)
 
-    if ax.yaxis_inverted():
-        # if y-axis is flipped, switch top and bottom
-        t, b = b, t
+        elif rt is not None:
+            lb = (rt[0] - w, rt[1] - h)
 
-    if l >= r:
-        raise ValueError("left must be less than right")
-    if b >= t:
-        raise ValueError("bottom must be less than top")
+        elif rb is not None:
+            lb = (rb[0] - w, rb[1])
 
-    if filled:
-        if w is None:
-            try:
-                w = r - l
-            except:
-                pass
-        if h is None:
-            try:
-                h = t - b
-            except:
-                pass
-        r = plt.Rectangle((l, b), w, h, clip_on=True, **kwargs)
-        ax.add_patch(r)
     else:
-        if r is None:
-            try:
-                r = l + w
-            except:
-                pass
-        if r is None:
-            try:
-                l = cx + w / 2
-            except:
-                pass
-        if t is None:
-            try:
-                t = b + h
-            except:
-                pass
-        if t is None:
-            try:
-                t = cy + h / 2
-            except:
-                pass
-        r = plt.plot([l, l, r, r, l], [b, t, t, b, b], *fmt, **kwargs)[0]
+        # we need two opposite corners
+        if lb is not None and rt is not None:
+            w = rt[0] - lb[0]
+            h = rt[1] - lb[1]
+
+        elif lt is not None and rb is not None:
+            lb = (lt[0], rb[1])
+            w = rb[0] - lt[0]
+            h = lt[1] - rb[1]
+
+        else:
+            raise ValueError('cant compute box')
+
+    if w < 0:
+        raise ValueError("width must be positive")
+    if h < 0:
+        raise ValueError("height must be positive")
+
+    # we only need lb, wh
+    ax = axes_logic(ax, 2)
+    if filled:
+        r = plt.Rectangle(lb, w, h, clip_on=True, **kwargs)
+    else:
+        if 'color' in kwargs:
+            kwargs['edgecolor'] = kwargs['color']
+            del kwargs['color']
+        r = plt.Rectangle(lb, w, h, clip_on=True, facecolor='None', **kwargs)
+    ax.add_patch(r)
 
     return r
 
+def plot_arrow(start, end, ax=None, **kwargs):
+    ax = axes_logic(ax, 2)
+
+    ax.arrow(start[0], start[1], end[0] - start[0], end[1] - start[1], length_includes_head=True, **kwargs)
 
 def plot_poly(vertices, *fmt, close=False, **kwargs):
 
@@ -433,21 +412,24 @@ def plot_poly(vertices, *fmt, close=False, **kwargs):
     return _render2D(vertices, fmt=fmt, **kwargs)
 
 
-def _render2D(vertices, pose=None, filled=False, ax=None, fmt=(), **kwargs):
+def _render2D(vertices, pose=None, filled=False, color=None, ax=None, fmt=(), **kwargs):
 
     ax = axes_logic(ax, 2)
     if pose is not None:
         vertices = pose * vertices
 
     if filled:
+        if color is not None:
+            kwargs['facecolor'] = color
+            kwargs['edgecolor'] = color
         r = plt.Polygon(vertices.T, closed=True, **kwargs)
         ax.add_patch(r)
     else:
-        r = plt.plot(vertices[0, :], vertices[1, :], *fmt, **kwargs)
+        r = plt.plot(vertices[0, :], vertices[1, :], *fmt, color=color, **kwargs)
     return r
 
 
-def circle(centre=(0, 0), radius=1, resolution=50):
+def circle(centre=(0, 0), radius=1, resolution=50, closed=False):
     """
     Points on a circle
 
@@ -458,20 +440,28 @@ def circle(centre=(0, 0), radius=1, resolution=50):
     :param resolution: number of points on circumferece, defaults to 50
     :type resolution: int, optional
     :return: points on circumference
-    :rtype: ndarray(2,N)
+    :rtype: ndarray(2,N) or ndarray(3,N)
 
     Returns a set of ``resolution`` that lie on the circumference of a circle
     of given ``center`` and ``radius``.
+
+    If ``len(centre)==3`` then the 3D coordinates are returned, where the
+    circle lies in the xy-plane and the z-coordinate comes from ``centre[2]``.
     """
-    u = np.linspace(0.0, 2.0 * np.pi, resolution)
+    if closed:
+        resolution += 1
+    u = np.linspace(0.0, 2.0 * np.pi, resolution, endpoint=closed)
     x = radius * np.cos(u) + centre[0]
     y = radius * np.sin(u) + centre[1]
-
-    return np.array((x, y))
+    if len(centre) == 3:
+        z = np.full(x.shape, centre[2])
+        return np.array((x, y, z))
+    else:
+        return np.array((x, y))
 
 
 def plot_circle(
-    radius, centre=(0, 0), *fmt, resolution=50, ax=None, filled=False, **kwargs
+    radius, centre, *fmt, resolution=50, ax=None, filled=False, **kwargs
 ):
     """
     Plot a circle using matplotlib
@@ -500,12 +490,12 @@ def plot_circle(
         >>> plot_circle(2, 'b--')  # blue dashed circle
         >>> plot_circle(0.5, filled=True, facecolor='y')  # yellow filled circle
     """
-    centres = base.getmatrix(centre, (2, None))
+    centres = smbase.getmatrix(centre, (2, None))
 
     ax = axes_logic(ax, 2)
     handles = []
     for centre in centres.T:
-        xy = circle(centre, radius, resolution)
+        xy = circle(centre, radius, resolution, closed=not filled)
         if filled:
             patch = plt.Polygon(xy.T, **kwargs)
             handles.append(ax.add_patch(patch))
@@ -514,8 +504,8 @@ def plot_circle(
     return handles
 
 
-def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=False):
-    """
+def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=False, closed=False):
+    r"""
     Points on ellipse
 
     :param E: ellipse
@@ -550,16 +540,14 @@ def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=
         raise ValueError("ellipse is defined by a 2x2 matrix")
 
     if confidence:
-        # Import chi2 if first time used
-        if _chi2 is None:
-            from scipy.stats.distributions import chi2
+        from scipy.stats.distributions import chi2
 
         # process the probability
         s = math.sqrt(chi2.ppf(confidence, df=2)) * scale
     else:
         s = scale
 
-    xy = circle(resolution=resolution)  # unit circle
+    xy = circle(resolution=resolution, closed=closed)  # unit circle
 
     if not inverted:
         E = np.linalg.inv(E)
@@ -580,7 +568,7 @@ def plot_ellipse(
     filled=False,
     **kwargs
 ):
-    """
+    r"""
     Plot an ellipse using matplotlib
 
     :param E: matrix describing ellipse
@@ -621,7 +609,7 @@ def plot_ellipse(
     """
     # allow for centre[2] to plot ellipse in a plane in a 3D plot
 
-    xy = ellipse(E, centre, scale, confidence, resolution, inverted)
+    xy = ellipse(E, centre, scale, confidence, resolution, inverted, closed=True)
     ax = axes_logic(ax, 2)
     if filled:
         patch = plt.Polygon(xy.T, **kwargs)
@@ -698,7 +686,7 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
     """
     ax = axes_logic(ax, 3)
 
-    centre = base.getmatrix(centre, (3, None))
+    centre = smbase.getmatrix(centre, (3, None))
 
     handles = []
     for c in centre.T:
@@ -711,8 +699,8 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
 def ellipsoid(
     E, centre=(0, 0, 0), scale=1, confidence=None, resolution=40, inverted=False
 ):
-    """
-    Points on an ellipsoid
+    r"""
+    rPoints on an ellipsoid
 
     :param centre: centre of ellipsoid, defaults to (0, 0, 0)
     :type centre: array_like(3), optional
@@ -772,7 +760,7 @@ def plot_ellipsoid(
     ax=None,
     **kwargs
 ):
-    """
+    r"""
     Draw an ellipsoid using matplotlib
 
     :param E: ellipsoid
@@ -817,7 +805,17 @@ def plot_ellipsoid(
     handle = _render3D(ax, X, Y, Z, **kwargs)
     return [handle]
 
+# TODO, get cylinder, cuboid, cone working
+def cylinder(center_x, center_y, radius, height_z, resolution=50):
+    Z = np.linspace(0, height_z, radius)
+    theta = np.linspace(0, 2 * np.pi, radius)
+    theta_grid, z_grid = np.meshgrid(theta, z)
+    X = radius * np.cos(theta_grid) + center_x
+    Y = radius * np.sin(theta_grid) + center_y
+    return X, Y, Z
 
+# https://stackoverflow.com/questions/30715083/python-plotting-a-wireframe-3d-cuboid
+# https://stackoverflow.com/questions/26874791/disconnected-surfaces-when-plotting-cones
 def plot_cylinder(
     radius,
     height,
@@ -857,7 +855,7 @@ def plot_cylinder(
 
     :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
-    if base.isscalar(height):
+    if smbase.isscalar(height):
         height = [0, height]
 
     ax = axes_logic(ax, 3)
@@ -1023,6 +1021,14 @@ def plot_cuboid(
             E = vertices[:, edge]
             # ax.plot(E[0], E[1], E[2], **kwargs)
             lines.append(E.T)
+        if 'color' in kwargs:
+            if 'alpha' in kwargs:
+                alpha = kwargs['alpha']
+                del kwargs['alpha']
+            else:
+                alpha = 1
+            kwargs['colors'] = colors.to_rgba(kwargs['color'], alpha)
+            del kwargs['color']
         collection = Line3DCollection(lines, **kwargs)
         ax.add_collection3d(collection)
         return collection
@@ -1142,6 +1148,10 @@ def axes_logic(ax, dimensions, projection="ortho", autoscale=True):
             ax.autoscale()
     else:
         ax = plt.axes(projection="3d", proj_type=projection)
+
+    plt.sca(ax)
+    plt.axes(ax)
+
     return ax
 
 
@@ -1271,7 +1281,7 @@ def expand_dims(dim=None, nd=2):
         * [A,B] -> [A, B, A, B, A, B]
         * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
     """
-    dim = base.getvector(dim)
+    dim = smbase.getvector(dim)
 
     if nd == 2:
         if len(dim) == 1:
@@ -1285,8 +1295,8 @@ def expand_dims(dim=None, nd=2):
     elif nd == 3:
         if len(dim) == 1:
             return np.r_[-dim, dim, -dim, dim, -dim, dim]
-        elif len(dim) == 3:
-            return np.r_[-dim[0], dim[0], -dim[1], dim[1], -dim[2], dim[2]]
+        elif len(dim) == 2:
+            return np.r_[dim[0], dim[1], dim[0], dim[1], dim[0], dim[1]]
         elif len(dim) == 6:
             return dim
         else:
@@ -1319,6 +1329,23 @@ def isnotebook():
 if __name__ == "__main__":
     import pathlib
 
+
+    plotvol2(5)
+    # plot_box(ltrb=[-1, 4, 2, 2], color='r', linewidth=2)
+    # plot_box(lbrt=[-1, 2, 2, 4], color='k', linestyle='--', linewidth=4)
+    # plot_box(lbwh=[2, -2, 2, 3], color='k', linewidth=2)
+    # plot_box(centre=(-2, -1), wh=2, color='b', linewidth=2)
+    # plot_box(centre=(-2, -1), wh=(1,3), color='g', linewidth=2)
+    # plt.grid(True)
+    # plt.show(block=True)
+
+    # plt.imshow(np.eye(200))
+    # umin, umax, vmin, vmax = 23, 166, 110, 212
+    # plot_box(l=umin, r=umax, t=vmin, b=vmax, color="g")
+
+    plot_circle(1, (2,3), resolution=3, filled=False)
+    plt.show(block=True)
+    
     exec(
         open(
             pathlib.Path(__file__).parent.parent.parent.absolute()

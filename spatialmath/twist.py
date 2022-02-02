@@ -138,7 +138,7 @@ class BaseTwist(BasePoseList):
 
     @property
     def isunit(self):
-        """
+        r"""
         Test for unit twist (superclass property)
 
         :return: Whether twist is a unit-twist
@@ -282,7 +282,7 @@ class BaseTwist(BasePoseList):
 
     def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         if base.isscalar(right):
-            return Twist3(left.S / right)
+            return type(left)(left.S / right)
         else:
             raise ValueError('Twist /, incorrect right operand')
 

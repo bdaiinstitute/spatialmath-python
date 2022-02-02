@@ -15,12 +15,12 @@ class TestGraphics(unittest.TestCase):
 
     def test_plot_box(self):
         plot_box("r--", centre=(-2, -3), wh=(1, 1))
-        plot_box(tl=(1, 1), br=(0, 2), filled=True, color="b")
+        plot_box(lt=(1, 1), rb=(2, 0), filled=True, color="b")
 
     def test_plot_circle(self):
-        plot_circle(1, "r")  # red circle
-        plot_circle(2, "b--")  # blue dashed circle
-        plot_circle(0.5, filled=True, color="y")  # yellow filled circle
+        plot_circle(1, (0, 0), "r")  # red circle
+        plot_circle(2, (0, 0), "b--")  # blue dashed circle
+        plot_circle(0.5, (0, 0), filled=True, color="y")  # yellow filled circle
 
     def test_ellipse(self):
         plot_ellipse(np.diag((1, 2)), "r")  # red ellipse

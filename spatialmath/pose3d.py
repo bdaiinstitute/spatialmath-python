@@ -936,7 +936,7 @@ class SE3(SO3):
         else:
             return SE3([base.trinv(x) for x in self.A], check=False)
 
-    def delta(self, X2):
+    def delta(self, X2=None):
         r"""
         Infinitesimal difference of SE(3) values
 
@@ -968,10 +968,13 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.base.transforms3d.tr2delta`
         """
-        return base.tr2delta(self.A, X2.A)
+        if X2 is None:
+            return base.tr2delta(self.A)
+        else:
+            return base.tr2delta(self.A, X2.A)
 
     def Ad(self):
-        """
+        r"""
         Adjoint of SE(3)
 
         :return: adjoint matrix
@@ -997,7 +1000,7 @@ class SE3(SO3):
         return base.tr2adjoint(self.A)
 
     def jacob(self):
-        """
+        r"""
         Velocity transform for SE(3)
 
         :return: Jacobian matrix
@@ -1460,15 +1463,42 @@ class SE3(SO3):
         :rtype: SE3 instance
 
 
-        ``T = delta2tr(d)`` is an SE(3) representing differential 
+        ``SE3.Delta2tr(d)`` is an SE(3) representing differential 
         motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
 
         :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
 
-        :seealso: :func:`~delta`, :func:`~spatialmath.base.transform3d.delta2tr`
+        :seealso: :meth:`~delta` :func:`~spatialmath.base.transform3d.delta2tr`
         :SymPy: supported
         """
         return cls(base.trnorm(base.delta2tr(d)))
+
+    @classmethod
+    def Trans(cls, x, y=None, z=None):
+        """
+        Create SE(3) from translation vector
+
+        :param x: x-coordinate or translation vector
+        :type x: float or array_like(3)
+        :param y: y-coordinate, defaults to None
+        :type y: float, optional
+        :param z: z-coordinate, defaults to None
+        :type z: float, optional
+        :return: SE(3) matrix
+        :rtype: SE3 instance
+
+        ``T = SE3.Trans(x, y, z)`` is an SE(3) representing pure translation.
+
+        ``T = SE3.Trans([x, y, z])`` as above, but translation is given as an
+        array.
+
+        """
+        if y is None and z is None:
+            # single passed value, assume is 3-vector
+            t = base.getvector(x, 3)
+        else:
+            t = np.array([x, y, z])
+        return cls(t)
 
     @classmethod
     def Tx(cls, x):
@@ -1546,7 +1576,7 @@ class SE3(SO3):
         return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
     @classmethod
-    def Rt(cls, R, t, check=True):
+    def Rt(cls, R, t=None, check=True):
         """
         Create an SE(3) from rotation and translation
 
@@ -1567,7 +1597,9 @@ class SE3(SO3):
         else:
             raise ValueError('expecting SO3 or rotation matrix')
 
-        return cls(base.rt2tr(R, t))
+        if t is None:
+            t = np.zeros((3,))
+        return cls(base.rt2tr(R, t, check=check), check=check)
 
     def angdist(self, other, metric=6):
         r"""

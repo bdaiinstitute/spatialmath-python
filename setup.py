@@ -11,7 +11,17 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 with open(path.join(here, "RELEASE"), encoding="utf-8") as f:
     release = f.read()
 
-docs_req = ["sphinx", "sphinx_rtd_theme", "sphinx-autorun", "sphinxcontrib-jsmath"]
+docs_req = ["sphinx", "sphinx_rtd_theme", "sphinx-autorun", "sphinxcontrib-jsmath", "sphinx_markdown_tables"]
+
+dev_req = [
+    "sympy",
+    "pytest",
+    "pytest-cov",
+    "coverage",
+    "codecov",
+    "recommonmark",
+    "flake8"
+]
 
 setup(
     name="spatialmath-python",
@@ -53,5 +63,6 @@ setup(
     install_requires=["numpy", "scipy", "matplotlib", "colored", "ansitable"],
     extras_require={
         "docs": docs_req,
+        "dev": dev_req
     },
 )

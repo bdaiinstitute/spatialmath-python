@@ -688,7 +688,7 @@ def angvec2tr(theta, v, unit="rad"):
 
 
 def exp2r(w):
-    """
+    r"""
     Create an SO(3) rotation matrix from exponential coordinates
 
     :param w: exponential coordinate vector
@@ -730,7 +730,7 @@ def exp2r(w):
 
 
 def exp2tr(w):
-    """
+    r"""
     Create an SE(3) pure rotation matrix from exponential coordinates
 
     :param w: exponential coordinate vector
@@ -1891,7 +1891,7 @@ def x2tr(x, representation="rpy/xyz"):
 
 
 def rot2jac(R, representation="rpy/xyz"):
-    """
+    r"""
     Velocity transform for analytical Jacobian
 
     :param R: SO(3) rotation matrix
@@ -1951,7 +1951,7 @@ def rot2jac(R, representation="rpy/xyz"):
 
 
 def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
-    """
+    r"""
     Angular velocity transformation
 
     :param 𝚪: angular representation
@@ -2101,7 +2101,7 @@ def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
 
 
 def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
-    """
+    r"""
     Angular acceleration transformation
 
     :param 𝚪: angular representation
@@ -2256,20 +2256,24 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
         skd = base.skew(vd)
         theta_dot = np.inner(𝚪, 𝚪d) / base.norm(𝚪)
         theta = base.norm(𝚪)
-        Theta = 1 - theta / 2 * np.sin(theta) / (1 - np.cos(theta))
-        Theta_dot = (
-            -0.5 * theta * theta_dot * math.cos(theta) / (1 - math.cos(theta))
-            + 0.5
-            * theta
-            * theta_dot
-            * math.sin(theta) ** 2
-            / (1 - math.cos(theta)) ** 2
-            - 0.5 * theta_dot * math.sin(theta) / (1 - math.cos(theta))
-        ) / theta ** 2 - 2 * theta_dot * (
-            -1 / 2 * theta * math.sin(theta) / (1 - math.cos(theta)) + 1
-        ) / theta ** 3
+        Theta = (1.0 - theta / 2.0 * np.sin(theta) / (1.0 - np.cos(theta))) / theta**2
 
-        Ad = -0.5 * skd + 2 * sk @ skd * Theta + sk @ sk * Theta_dot
+        # hand optimized version of code from notebook
+        # TODO:
+        #   results are close but different to numerical cross check
+        #   something wrong in the derivation
+        Theta_dot = (
+                (
+                -theta * math.cos(theta) 
+                -math.sin(theta) +
+                 theta * math.sin(theta)**2 / (1 - math.cos(theta)) 
+                ) * theta_dot / 2  / (1 - math.cos(theta)) / theta**2
+                - (
+                    2 - theta * math.sin(theta) / (1 - math.cos(theta))
+                  ) * theta_dot / theta**3
+                ) 
+
+        Ad = -0.5 * skd + 2.0 * sk @ skd * Theta + sk @ sk * Theta_dot
     else:
         raise ValueError("bad representation specified")
 
@@ -2415,6 +2419,15 @@ def trprint(
         s += "t = {};".format(_vec2s(fmt, transl(T)))
 
     # print the angular part in various representations
+
+    # define some aliases for rpy conventions for arms, vehicles and cameras
+    aliases = {
+        'arm': 'rpy/xyz',
+        'vehicle': 'rpy/zyx',
+        'camera': 'rpy/yxz'
+    }
+    if orient in aliases:
+        orient = aliases[orient]
 
     a = orient.split("/")
     if a[0] == "rpy":
@@ -2607,9 +2620,9 @@ def trplot(
         if not ax.get_xlabel():
             ax.set_xlabel(labels[0])
         if not ax.get_ylabel():
-            ax.set_ylabel(labels[0])
+            ax.set_ylabel(labels[1])
         if not ax.get_zlabel():
-            ax.set_zlabel(labels[0])
+            ax.set_zlabel(labels[2])
     except AttributeError:
         pass  # if axes are an Animate object
 
@@ -2691,6 +2704,7 @@ def trplot(
                 d2=d2,
                 flo=flo,
                 anaglyph=anaglyph,
+                axislabel=axislabel,
                 **kwargs
             )
         return

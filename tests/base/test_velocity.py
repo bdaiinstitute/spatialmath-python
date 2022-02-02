@@ -127,6 +127,8 @@ class TestVelocity(unittest.TestCase):
         nt.assert_array_almost_equal(A3, exp2jac(gamma))
 
     def test_angvelxform(self):
+        # compare inverse result against rpy/eul/exp2jac
+        # compare forward and inverse results
 
         gamma = [0.1, 0.2, 0.3]
         A = angvelxform(gamma, full=False, representation="rpy/zyx")
@@ -151,6 +153,73 @@ class TestVelocity(unittest.TestCase):
         Ai = angvelxform(gamma, full=False, inverse=True, representation="exp")
         nt.assert_array_almost_equal(Ai, exp2jac(gamma))
         nt.assert_array_almost_equal(A @ Ai, np.eye(3))
+
+
+    def test_angvelxform_dot_eul(self):
+        rep = 'eul'
+        gamma = [0.1, 0.2, 0.3]
+        gamma_d = [2, 3, 4]
+        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        Adot = np.zeros((3,3))
+        for i in range(3):
+            Adot += H[:, :, i] * gamma_d[i]
+        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        nt.assert_array_almost_equal(Adot, res, decimal=4)
+
+    def test_angvelxform_dot_rpy_xyz(self):
+        rep = 'rpy/xyz'
+        gamma = [0.1, 0.2, 0.3]
+        gamma_d = [2, 3, 4]
+        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        Adot = np.zeros((3,3))
+        for i in range(3):
+            Adot += H[:, :, i] * gamma_d[i]
+        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        nt.assert_array_almost_equal(Adot, res, decimal=4)
+
+    def test_angvelxform_dot_rpy_zyx(self):
+        rep = 'rpy/zyx'
+        gamma = [0.1, 0.2, 0.3]
+        gamma_d = [2, 3, 4]
+        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        Adot = np.zeros((3,3))
+        for i in range(3):
+            Adot += H[:, :, i] * gamma_d[i]
+        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        nt.assert_array_almost_equal(Adot, res, decimal=4)
+
+    @unittest.skip("bug in angvelxform_dot for exponential coordinates")
+    def test_angvelxform_dot_exp(self):
+        rep = 'exp'
+        gamma = [0.1, 0.2, 0.3]
+        gamma_d = [2, 3, 4]
+        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        Adot = np.zeros((3,3))
+        for i in range(3):
+            Adot += H[:, :, i] * gamma_d[i]
+        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        nt.assert_array_almost_equal(Adot, res, decimal=4)
+
+    def test_x_tr(self):
+        # test transformation between pose and task-space vector representation
+
+        T = transl(1, 2, 3) @ eul2tr((0.2, 0.3, 0.4))
+
+        x = tr2x(T)
+        nt.assert_array_almost_equal(x2tr(x), T)
+
+        x = tr2x(T, representation='eul')
+        nt.assert_array_almost_equal(x2tr(x, representation='eul'), T)
+
+        x = tr2x(T, representation='rpy/xyz')
+        nt.assert_array_almost_equal(x2tr(x, representation='rpy/xyz'), T)
+
+        x = tr2x(T, representation='rpy/zyx')
+        nt.assert_array_almost_equal(x2tr(x, representation='rpy/zyx'), T)
+
+        x = tr2x(T, representation='exp')
+        nt.assert_array_almost_equal(x2tr(x, representation='exp'), T)
+
 
     # def test_angvelxform_dot(self):
 

@@ -470,7 +470,7 @@ def conj(q):
     return np.r_[q[0], -q[1:4]]
 
 
-def q2r(q):
+def q2r(q, order="sxyz"):
     """
     Convert unit-quaternion to SO(3) rotation matrix
 
@@ -493,10 +493,13 @@ def q2r(q):
 
     """
     q = base.getvector(q, 4)
-    s = q[0]
-    x = q[1]
-    y = q[2]
-    z = q[3]
+    if order == "sxyz":
+        s, x, y, z = q
+    elif order == "xyzs":
+        x, y, z, s = q
+    else:
+        raise ValueError("order is invalid, must be 'sxyz' or 'xyzs'")
+        
     return np.array(
         [
             [1 - 2 * (y ** 2 + z ** 2), 2 * (x * y - s * z), 2 * (x * z + s * y)],
