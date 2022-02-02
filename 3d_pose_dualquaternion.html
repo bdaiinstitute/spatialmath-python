@@ -138,9 +138,21 @@ real and dual parts as specified.</p></li>
 the rigid-body motion described by the SE3 value <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/spatialmath/base/symbolic.py&quot;, line 159, in sqrt</span>
-<span class="go">    return math.sqrt(v)</span>
-<span class="go">ValueError: math domain error</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitDualQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">   0.9291    0.2717   -0.2508    0.1533    </span>
+<span class="go">  -0.369     0.7238   -0.583     0.2321    </span>
+<span class="go">   0.02314   0.6343    0.7728    0.09495   </span>
+<span class="go">   0         0         0         1         </span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go"> 0.9254 &lt;&lt;  0.3289, -0.0740, -0.1731 &gt;&gt; + ε -0.0084 &lt;  0.0544,  0.1363,  0.0001 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&lt;class &#39;spatialmath.DualQuaternion.UnitDualQuaternion&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">norm</span><span class="p">())</span>  <span class="c1"># norm is (1, 0)</span>
+<span class="go">(1.0, 1.3170890159654386e-09)</span>
 </pre></div>
 </div>
 <p>The dual number is stored internally as two quaternion, respectively
@@ -360,7 +372,7 @@ number (1,0).</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 31-Jan-2022.
+      <span class="lastupdated">Last updated on 02-Feb-2022.
       </span></p>
   </div>
 

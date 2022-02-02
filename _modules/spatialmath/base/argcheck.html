@@ -87,12 +87,14 @@
 <span class="c1"># pylint: disable=invalid-name</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">symbolic</span> <span class="k">as</span> <span class="n">sym</span>
 
 <span class="c1"># valid scalar types</span>
 <span class="n">_scalartypes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span> <span class="o">+</span> <span class="n">sym</span><span class="o">.</span><span class="n">symtype</span>
 
+<span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">]</span>
 
 <div class="viewcode-block" id="isscalar"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.isscalar">[docs]</a><span class="k">def</span> <span class="nf">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -331,7 +333,7 @@
 <span class="c1"># and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive</span>
 
 
-<div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+<div class="viewcode-block" id="getvector"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getvector">[docs]</a><span class="k">def</span> <span class="nf">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a vector value</span>
 
@@ -526,7 +528,7 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="getunit"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getunit">[docs]</a><span class="k">def</span> <span class="nf">getunit</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="getunit"><a class="viewcode-back" href="../../../func_args.html#spatialmath.base.argcheck.getunit">[docs]</a><span class="k">def</span> <span class="nf">getunit</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert value according to angular units</span>
 
@@ -679,7 +681,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020, Peter Corke.
-      <span class="lastupdated">Last updated on 31-Jan-2022.
+      <span class="lastupdated">Last updated on 02-Feb-2022.
       </span></p>
   </div>
 
