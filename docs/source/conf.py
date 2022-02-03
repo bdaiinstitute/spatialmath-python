@@ -20,7 +20,7 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'Spatial Maths package'
-copyright = '2020, Peter Corke'
+copyright = '2022, Peter Corke'
 author = 'Peter Corke'
 version = '0.9'
 
@@ -133,6 +133,7 @@ mathjax_config = {
             "norm": [r"\Vert #1 \Vert", 1],
             # matrices
             "mat": [r"\mathbf{#1}", 1],
+            "dmat": [r"\dot{\mathbf{#1}}", 1],
             "fmat": [r"\presup{#1}\mathbf{#2}", 2],
             # skew matrices
             "sk": [r"\left[#1\right]", 1],
