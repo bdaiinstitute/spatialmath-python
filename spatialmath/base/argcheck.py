@@ -12,12 +12,14 @@ that can be passed.
 # pylint: disable=invalid-name
 
 import math
+from typing import Union
 import numpy as np
 from spatialmath.base import symbolic as sym
 
 # valid scalar types
 _scalartypes = (int, np.integer, float, np.floating) + sym.symtype
 
+ArrayLike = Union[list, np.ndarray, tuple, set]
 
 def isscalar(x):
     """
@@ -256,7 +258,7 @@ def verifymatrix(m, shape):
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 
-def getvector(v, dim=None, out="array", dtype=np.float64):
+def getvector(v, dim=None, out="array", dtype=np.float64) -> ArrayLike:
     """
     Return a vector value
 
@@ -451,7 +453,7 @@ def isvector(v, dim=None):
     return False
 
 
-def getunit(v, unit="rad"):
+def getunit(v, unit="rad") -> ArrayLike:
     """
     Convert value according to angular units
 

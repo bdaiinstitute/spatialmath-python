@@ -12,19 +12,20 @@ import copy
 
 _numtypes = (int, np.int64, float, np.float64)
 
+
 class BasePoseList(UserList, ABC):
     """
     List properties for spatial math classes
 
     Each of the spatial math classes behaves like a regular Python object and
-    an instance contains a value of a particular type, for example an SE(3) 
+    an instance contains a value of a particular type, for example an SE(3)
     matrix, a unit quaternion, a twist etc.
 
     This class adds list-like capabilities to each of spatial math classes.  This
-    means that an instance is not limited to holding just a single value (a 
-    singleton instance), it can hold a list of values.  That list can contain 
+    means that an instance is not limited to holding just a single value (a
+    singleton instance), it can hold a list of values.  That list can contain
     zero or more items.  This is helpful for:
-    
+
     - storing sequences (trajectories) where it is important to know that all
       elements in the sequence are of the same time and have valid values
     - arrays of the same type to enable C++ like programming patterns
@@ -86,7 +87,7 @@ class BasePoseList(UserList, ABC):
     def Empty(cls):
         """
         Construct an empty instance (BasePoseList superclass method)
-        
+
         :return: pose instance with zero values
 
         Example::
@@ -117,7 +118,7 @@ class BasePoseList(UserList, ABC):
         can be referenced ``X[i]`` or assigned to ``X[i] = ...``.
 
         .. note:: The default value depends on the pose class and is the result
-                  of the empty constructor. For ``SO2``, 
+                  of the empty constructor. For ``SO2``,
                   ``SE2``, ``SO3``, ``SE3`` it is an identity matrix, for a
                   twist class ``Twist2`` or ``Twist3`` it is a zero vector,
                   for a ``UnitQuaternion`` or ``Quaternion`` it is a zero
@@ -195,10 +196,16 @@ class BasePoseList(UserList, ABC):
 
             elif type(arg[0]) == type(self):
                 # possibly a list of objects of same type
-                assert all(map(lambda x: type(x) == type(self), arg)), 'elements of list are incorrect type'
+                assert all(
+                    map(lambda x: type(x) == type(self), arg)
+                ), "elements of list are incorrect type"
                 self.data = [x.A for x in arg]
 
-            elif argcheck.isnumberlist(arg) and len(self.shape) == 1 and len(arg) == self.shape[0]:
+            elif (
+                argcheck.isnumberlist(arg)
+                and len(self.shape) == 1
+                and len(arg) == self.shape[0]
+            ):
                 self.data = [np.array(arg)]
 
             else:
@@ -215,7 +222,9 @@ class BasePoseList(UserList, ABC):
                 # get method to convert from arg to self types
                 converter = getattr(arg.__class__, type(self).__name__)
             except AttributeError:
-                raise ValueError('argument has no conversion method to this type') from None
+                raise ValueError(
+                    "argument has no conversion method to this type"
+                ) from None
             self.data = [converter(arg).A]
 
         else:
@@ -223,6 +232,15 @@ class BasePoseList(UserList, ABC):
             return False
 
         return True
+
+    @property
+    def __array_interface__(self):
+        """
+        Copies the numpy array interface from the first numpy array
+        so that C extenstions with this spatial math class have direct
+        access to the underlying numpy array
+        """
+        return self.data[0].__array_interface__
 
     @property
     def _A(self):
@@ -238,18 +256,18 @@ class BasePoseList(UserList, ABC):
             return self.data
 
     @property
-    def A(self):
+    def A(self) -> np.ndarray:
         """
         Array value of an instance (BasePoseList superclass method)
 
         :return: NumPy array value of this instance
         :rtype: ndarray
 
-        - ``X.A`` is a NumPy array that represents the value of this instance, 
+        - ``X.A`` is a NumPy array that represents the value of this instance,
           and has a shape given by ``X.shape``.
 
         .. note:: This assumes that ``len(X)`` == 1, ie. it is a single-valued
-            instance. 
+            instance.
         """
 
         if len(self.data) == 1:
@@ -270,9 +288,9 @@ class BasePoseList(UserList, ABC):
         :raises IndexError: if the element is out of bounds
 
         Note that only a single index is supported, slices are not.
-        
+
         Example::
-            
+
             >>> x = X.Alloc(10)
             >>> len(x)
             10
@@ -296,14 +314,19 @@ class BasePoseList(UserList, ABC):
             else:
                 # stop is positive, use it directly
                 end = i.stop
-            return self.__class__([self.data[k] for k in range(i.start or 0, end, i.step or 1)])
+            return self.__class__(
+                [self.data[k] for k in range(i.start or 0, end, i.step or 1)]
+            )
         else:
-            return self.__class__(self.data[i], check=False)
-        
+            ret = self.__class__(self.data[i], check=False)
+            # ret.__array_interface__ = self.data[i].__array_interface__
+            return ret
+            # return self.__class__(self.data[i], check=False)
+
     def __setitem__(self, i, value):
         """
         Assign a value to an instance (BasePoseList superclass method)
-        
+
         :param i: index of element to assign to
         :type i: int
         :param value: the value to insert
@@ -312,7 +335,7 @@ class BasePoseList(UserList, ABC):
 
         Assign the argument to an element of the object's internal list of values.
         This supports the assignement operator, for example::
-            
+
             >>> x = X.Alloc(10)
             >>> len(x)
             10
@@ -324,7 +347,9 @@ class BasePoseList(UserList, ABC):
         if not type(self) == type(value):
             raise ValueError("can't insert different type of object")
         if len(value) > 1:
-            raise ValueError("can't insert a multivalued element - must have len() == 1")
+            raise ValueError(
+                "can't insert a multivalued element - must have len() == 1"
+            )
         self.data[i] = value.A
 
     # flag these binary operators as being not supported
@@ -343,7 +368,7 @@ class BasePoseList(UserList, ABC):
     def append(self, item):
         """
         Append a value to an instance (BasePoseList superclass method)
-        
+
         :param x: the value to append
         :type x: Quaternion or UnitQuaternion instance
         :raises ValueError: incorrect type of appended object
@@ -361,18 +386,17 @@ class BasePoseList(UserList, ABC):
 
         where ``X`` is any of the SMTB classes.
         """
-        #print('in append method')
+        # print('in append method')
         if not type(self) == type(item):
             raise ValueError("can't append different type of object")
         if len(item) > 1:
             raise ValueError("can't append a multivalued instance - use extend")
         super().append(item.A)
-        
 
     def extend(self, iterable):
         """
         Extend sequence of values in an instance (BasePoseList superclass method)
-        
+
         :param x: the value to extend
         :type x: instance of same type
         :raises ValueError: incorrect type of appended object
@@ -390,7 +414,7 @@ class BasePoseList(UserList, ABC):
 
         where ``X`` is any of the SMTB classes.
         """
-        #print('in extend method')
+        # print('in extend method')
         if not type(self) == type(iterable):
             raise ValueError("can't append different type of object")
         super().extend(iterable._A)
@@ -427,9 +451,11 @@ class BasePoseList(UserList, ABC):
         if not type(self) == type(item):
             raise ValueError("can't insert different type of object")
         if len(item) > 1:
-            raise ValueError("can't insert a multivalued instance - must have len() == 1")
+            raise ValueError(
+                "can't insert a multivalued instance - must have len() == 1"
+            )
         super().insert(i, item._A)
-        
+
     def pop(self, i=-1):
         """
         Pop value from an instance (BasePoseList superclass method)
@@ -442,7 +468,7 @@ class BasePoseList(UserList, ABC):
 
         Removes a value from the value list and returns it.  The original
         instance is modified.
-        
+
         Example::
 
             >>> x = X.Alloc(10)
@@ -462,7 +488,7 @@ class BasePoseList(UserList, ABC):
     def binop(self, right, op, op2=None, list1=True):
         """
         Perform binary operation
-        
+
         :param left: left operand
         :type left: BasePoseList subclass
         :param right: right operand
@@ -523,7 +549,7 @@ class BasePoseList(UserList, ABC):
 
         # class * class
         if len(left) == 1:
-            # singleton * 
+            # singleton *
             if argcheck.isscalar(right):
                 if list1:
                     return [op(left._A, right)]
@@ -539,7 +565,7 @@ class BasePoseList(UserList, ABC):
                 # singleton * non-singleton
                 return [op(left.A, x) for x in right.A]
         else:
-            # non-singleton * 
+            # non-singleton *
             if argcheck.isscalar(right):
                 return [op(x, right) for x in left.A]
             elif len(right) == 1:
@@ -549,12 +575,12 @@ class BasePoseList(UserList, ABC):
                 # non-singleton * non-singleton
                 return [op(x, y) for (x, y) in zip(left.A, right.A)]
             else:
-                raise ValueError('length of lists to == must be same length')
+                raise ValueError("length of lists to == must be same length")
 
         # if isinstance(right, left.__class__):
         #     # class * class
         #     if len(left) == 1:
-        #         # singleton * 
+        #         # singleton *
         #         if len(right) == 1:
         #             # singleton * singleton
         #             if list1:
@@ -565,7 +591,7 @@ class BasePoseList(UserList, ABC):
         #             # singleton * non-singleton
         #             return [op(left.A, x) for x in right.A]
         #     else:
-        #         # non-singleton * 
+        #         # non-singleton *
         #         if len(right) == 1:
         #             # non-singleton * singleton
         #             return [op(x, right.A) for x in left.A]
@@ -587,7 +613,7 @@ class BasePoseList(UserList, ABC):
     def unop(self, op, matrix=False):
         """
         Perform unary operation
-        
+
         :param self: operand
         :type self: BasePoseList subclass
         :param op: unnary operation
@@ -598,7 +624,7 @@ class BasePoseList(UserList, ABC):
         :rtype: list or NumPy array
 
         The is a helper method for implementing unary operations where the
-        operand has multiple value. This method computes the value of 
+        operand has multiple value. This method computes the value of
         the operation for all input values and returns the result as either
         a list or as a matrix which vertically stacks the results.
 
@@ -613,7 +639,7 @@ class BasePoseList(UserList, ABC):
         =========   ====  ===================================
 
         The result is:
-        
+
         - a list of values if ``matrix==False``, or
         - a 2D NumPy stack of values if ``matrix==True``, it is assumed
           that the value is a 1D array.
@@ -623,4 +649,3 @@ class BasePoseList(UserList, ABC):
             return np.vstack([op(x) for x in self.data])
         else:
             return [op(x) for x in self.data]
-
