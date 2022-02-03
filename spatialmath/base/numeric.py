@@ -75,7 +75,13 @@ def numhess(J, x, dx=1e-8):
     :rtype: ndarray(m,n,n)
 
     Computes a numerical approximation to the Hessian for ``J(x)`` where 
-    :math:`f: \mathbb{R}^n  \mapsto \mathbb{R}^{m \times n}`
+    :math:`f: \mathbb{R}^n  \mapsto \mathbb{R}^{m \times n}`.
+
+    The result is a 3D array where
+
+    .. math::
+
+        H_{i,j,k} = \frac{\partial J_{j,k}}{\partial x_i}
 
     Uses first-order difference :math:`H[:,:,i] = (J(x + dx) - J(x)) / dx`.
     """
@@ -90,7 +96,7 @@ def numhess(J, x, dx=1e-8):
 
         Hcol.append(Hi)
         
-    return np.stack(Hcol, axis=2)
+    return np.stack(Hcol, axis=0)
 
 def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}", 
     brackets=("[ ", " ]"), suppress_small=True):
