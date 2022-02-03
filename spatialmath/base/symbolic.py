@@ -134,6 +134,28 @@ def cos(theta):
     else:
         return math.cos(theta)
 
+def tan(theta):
+    """
+    Generalized tangent function
+
+    :param θ: argument
+    :type θ: float or symbolic
+    :return: tan(θ)
+    :rtype: float or symbolic
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base.symbolic import *
+        >>> theta = symbol('theta')
+        >>> tan(theta)
+        >>> tan(0.5)
+
+    :seealso: :func:`sympy.cos`
+    """
+    if issymbol(theta):
+        return sympy.tan(theta)
+    else:
+        return math.tan(theta)
 
 def sqrt(v):
     """
