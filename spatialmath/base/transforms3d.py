@@ -15,11 +15,12 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 import sys
 import math
-from math import sin, cos
 import numpy as np
 import scipy as sp
-from spatialmath import base
 from collections.abc import Iterable
+
+from spatialmath import base as smb
+import spatialmath.base.symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
@@ -43,7 +44,7 @@ def rotx(theta, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> rotx(0.3)
         >>> rotx(45, 'deg')
 
@@ -51,9 +52,9 @@ def rotx(theta, unit="rad"):
     :SymPy: supported
     """
 
-    theta = base.getunit(theta, unit)
-    ct = base.sym.cos(theta)
-    st = base.sym.sin(theta)
+    theta = smb.getunit(theta, unit)
+    ct = smb.sym.cos(theta)
+    st = smb.sym.sin(theta)
     # fmt: off
     R = np.array([
         [1, 0, 0],
@@ -81,7 +82,7 @@ def roty(theta, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> roty(0.3)
         >>> roty(45, 'deg')
 
@@ -89,9 +90,9 @@ def roty(theta, unit="rad"):
     :SymPy: supported
     """
 
-    theta = base.getunit(theta, unit)
-    ct = base.sym.cos(theta)
-    st = base.sym.sin(theta)
+    theta = smb.getunit(theta, unit)
+    ct = smb.sym.cos(theta)
+    st = smb.sym.sin(theta)
     # fmt: off
     return np.array([
         [ct, 0, st],
@@ -118,16 +119,16 @@ def rotz(theta, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> rotz(0.3)
         >>> rotz(45, 'deg')
 
     :seealso: :func:`~yrotz`
     :SymPy: supported
     """
-    theta = base.getunit(theta, unit)
-    ct = base.sym.cos(theta)
-    st = base.sym.sin(theta)
+    theta = smb.getunit(theta, unit)
+    ct = smb.sym.cos(theta)
+    st = smb.sym.sin(theta)
     # fmt: off
     return np.array([
         [ct, -st, 0],
@@ -157,16 +158,16 @@ def trotx(theta, unit="rad", t=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> trotx(0.3)
         >>> trotx(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~rotx`
     :SymPy: supported
     """
-    T = base.r2t(rotx(theta, unit))
+    T = smb.r2t(rotx(theta, unit))
     if t is not None:
-        T[:3, 3] = base.getvector(t, 3, "array")
+        T[:3, 3] = smb.getvector(t, 3, "array")
     return T
 
 
@@ -191,16 +192,16 @@ def troty(theta, unit="rad", t=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> troty(0.3)
         >>> troty(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~roty`
     :SymPy: supported
     """
-    T = base.r2t(roty(theta, unit))
+    T = smb.r2t(roty(theta, unit))
     if t is not None:
-        T[:3, 3] = base.getvector(t, 3, "array")
+        T[:3, 3] = smb.getvector(t, 3, "array")
     return T
 
 
@@ -225,16 +226,16 @@ def trotz(theta, unit="rad", t=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> trotz(0.3)
         >>> trotz(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~rotz`
     :SymPy: supported
     """
-    T = base.r2t(rotz(theta, unit))
+    T = smb.r2t(rotz(theta, unit))
     if t is not None:
-        T[:3, 3] = base.getvector(t, 3, "array")
+        T[:3, 3] = smb.getvector(t, 3, "array")
     return T
 
 
@@ -265,7 +266,7 @@ def transl(x, y=None, z=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> import numpy as np
         >>> transl(3, 4, 5)
         >>> transl([3, 4, 5])
@@ -284,7 +285,7 @@ def transl(x, y=None, z=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> transl(T)
@@ -292,15 +293,15 @@ def transl(x, y=None, z=None):
     .. note:: This function is compatible with the MATLAB version of the
         Toolbox.  It is unusual/weird in doing two completely different things
         inside the one function.
-    :seealso: :func:`~spatialmath.base.transforms2d.transl2`
+    :seealso: :func:`~spatialmath.smb.transforms2d.transl2`
     :SymPy: supported
     """
 
-    if base.isscalar(x) and y is not None and z is not None:
+    if smb.isscalar(x) and y is not None and z is not None:
         t = np.r_[x, y, z]
-    elif base.isvector(x, 3):
-        t = base.getvector(x, 3, out="array")
-    elif base.ismatrix(x, (4, 4)):
+    elif smb.isvector(x, 3):
+        t = smb.getvector(x, 3, out="array")
+    elif smb.ismatrix(x, (4, 4)):
         # SE(3) -> R3
         return x[:3, 3]
     else:
@@ -331,7 +332,7 @@ def ishom(T, check=False, tol=100):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> ishom(T)
@@ -341,7 +342,7 @@ def ishom(T, check=False, tol=100):
         >>> R = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
         >>> ishom(R)
 
-    :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~isrot`, :func:`~spatialmath.base.transforms2d.ishom2`
+    :seealso: :func:`~spatialmath.smb.transformsNd.isR` :func:`~isrot` :func:`~spatialmath.smb.transforms2d.ishom2`
     """
     return (
         isinstance(T, np.ndarray)
@@ -349,7 +350,7 @@ def ishom(T, check=False, tol=100):
         and (
             not check
             or (
-                base.isR(T[:3, :3], tol=tol)
+                smb.isR(T[:3, :3], tol=tol)
                 and np.all(T[3, :] == np.array([0, 0, 0, 1]))
             )
         )
@@ -373,7 +374,7 @@ def isrot(R, check=False, tol=100):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> isrot(T)
@@ -383,12 +384,12 @@ def isrot(R, check=False, tol=100):
         >>> isrot(R)  # a quick check says it is an SO(3)
         >>> isrot(R, check=True) # but if we check more carefully...
 
-    :seealso: :func:`~spatialmath.base.transformsNd.isR`, :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
+    :seealso: :func:`~spatialmath.smb.transformsNd.isR` :func:`~spatialmath.smb.transforms2d.isrot2`,  :func:`~ishom`
     """
     return (
         isinstance(R, np.ndarray)
         and R.shape == (3, 3)
-        and (not check or base.isR(R, tol=tol))
+        and (not check or smb.isR(R, tol=tol))
     )
 
 
@@ -431,26 +432,26 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit="rad", order="zyx"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> rpy2r(0.1, 0.2, 0.3)
         >>> rpy2r([0.1, 0.2, 0.3])
         >>> rpy2r([10, 20, 30], unit='deg')
 
-    :seealso: :func:`~eul2r`, :func:`~rpy2tr`, :func:`~tr2rpy`
+    :seealso: :func:`~eul2r` :func:`~rpy2tr` :func:`~tr2rpy`
     """
 
-    if base.isscalar(roll):
+    if smb.isscalar(roll):
         angles = [roll, pitch, yaw]
     else:
-        angles = base.getvector(roll, 3)
+        angles = smb.getvector(roll, 3)
 
-    angles = base.getunit(angles, unit)
+    angles = smb.getunit(angles, unit)
 
-    if order == "xyz" or order == "arm":
+    if order in ("xyz", "arm"):
         R = rotx(angles[2]) @ roty(angles[1]) @ rotz(angles[0])
-    elif order == "zyx" or order == "vehicle":
+    elif order in ("zyx", "vehicle"):
         R = rotz(angles[2]) @ roty(angles[1]) @ rotx(angles[0])
-    elif order == "yxz" or order == "camera":
+    elif order in ("yxz", "camera"):
         R = roty(angles[2]) @ rotx(angles[1]) @ rotz(angles[0])
     else:
         raise ValueError("Invalid angle order")
@@ -495,7 +496,7 @@ def rpy2tr(roll, pitch=None, yaw=None, unit="rad", order="zyx"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> rpy2tr(0.1, 0.2, 0.3)
         >>> rpy2tr([0.1, 0.2, 0.3])
         >>> rpy2tr([10, 20, 30], unit='deg')
@@ -503,11 +504,11 @@ def rpy2tr(roll, pitch=None, yaw=None, unit="rad", order="zyx"):
     .. note:: By default, the translational component is zero but it can be
         set to a non-zero value.
 
-    :seealso: :func:`~eul2tr`, :func:`~rpy2r`, :func:`~tr2rpy`
+    :seealso: :func:`~eul2tr` :func:`~rpy2r` :func:`~tr2rpy`
     """
 
     R = rpy2r(roll, pitch, yaw, order=order, unit=unit)
-    return base.r2t(R)
+    return smb.r2t(R)
 
 
 # ---------------------------------------------------------------------------------------#
@@ -536,12 +537,12 @@ def eul2r(phi, theta=None, psi=None, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> eul2r(0.1, 0.2, 0.3)
         >>> eul2r([0.1, 0.2, 0.3])
         >>> eul2r([10, 20, 30], unit='deg')
 
-    :seealso: :func:`~rpy2r`, :func:`~eul2tr`, :func:`~tr2eul`
+    :seealso: :func:`~rpy2r` :func:`~eul2tr` :func:`~tr2eul`
 
     :SymPy: supported
     """
@@ -549,9 +550,9 @@ def eul2r(phi, theta=None, psi=None, unit="rad"):
     if np.isscalar(phi):
         angles = [phi, theta, psi]
     else:
-        angles = base.getvector(phi, 3)
+        angles = smb.getvector(phi, 3)
 
-    angles = base.getunit(angles, unit)
+    angles = smb.getunit(angles, unit)
 
     return rotz(angles[0]) @ roty(angles[1]) @ rotz(angles[2])
 
@@ -582,7 +583,7 @@ def eul2tr(phi, theta=None, psi=None, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> eul2tr(0.1, 0.2, 0.3)
         >>> eul2tr([0.1, 0.2, 0.3])
         >>> eul2tr([10, 20, 30], unit='deg')
@@ -590,13 +591,13 @@ def eul2tr(phi, theta=None, psi=None, unit="rad"):
     .. note:: By default, the translational component is zero but it can be
         set to a non-zero value.
 
-    :seealso: :func:`~rpy2tr`, :func:`~eul2r`, :func:`~tr2eul`
+    :seealso: :func:`~rpy2tr` :func:`~eul2r` :func:`~tr2eul`
 
     :SymPy: supported
     """
 
     R = eul2r(phi, theta, psi, unit=unit)
-    return base.r2t(R)
+    return smb.r2t(R)
 
 
 # ---------------------------------------------------------------------------------------#
@@ -621,7 +622,7 @@ def angvec2r(theta, v, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> angvec2r(0.3, [1, 0, 0])  # rotx(0.3)
         >>> angvec2r(0, [1, 0, 0])    # rotx(0)
 
@@ -630,21 +631,21 @@ def angvec2r(theta, v, unit="rad"):
         - If ``θ == 0`` then return identity matrix.
         - If ``θ ~= 0`` then ``V`` must have a finite length.
 
-    :seealso: :func:`~angvec2tr`, :func:`~tr2angvec`
+    :seealso: :func:`~angvec2tr` :func:`~tr2angvec`
 
     :SymPy: not supported
     """
-    if not np.isscalar(theta) or not base.isvector(v, 3):
+    if not np.isscalar(theta) or not smb.isvector(v, 3):
         raise ValueError("Arguments must be theta and vector")
 
     if np.linalg.norm(v) < 10 * _eps:
         return np.eye(3)
 
-    theta = base.getunit(theta, unit)
+    theta = smb.getunit(theta, unit)
 
     # Rodrigue's equation
 
-    sk = base.skew(base.unitvec(v))
+    sk = smb.skew(smb.unitvec(v))
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
@@ -668,7 +669,7 @@ def angvec2tr(theta, v, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> angvec2tr(0.3, [1, 0, 0])  # rtotx(0.3)
 
     .. note::
@@ -677,11 +678,11 @@ def angvec2tr(theta, v, unit="rad"):
         - If ``θ ~= 0`` then ``V`` must have a finite length.
         - The translational part is zero.
 
-    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
+    :seealso: :func:`~angvec2r` :func:`~tr2angvec`
 
     :SymPy: not supported
     """
-    return base.r2t(angvec2r(theta, v, unit=unit))
+    return smb.r2t(angvec2r(theta, v, unit=unit))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -704,27 +705,27 @@ def exp2r(w):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
         >>> angvec2r([0, 0, 0])      # rotx(0)
 
     .. note:: Exponential coordinates are also known as an Euler vector
 
-    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
+    :seealso: :func:`~angvec2r` :func:`~tr2angvec`
 
     :SymPy: not supported
     """
-    if not base.isvector(w, 3):
+    if not smb.isvector(w, 3):
         raise ValueError("Arguments must be a 3-vector")
 
-    v, theta = base.unitvec_norm(w)
+    v, theta = smb.unitvec_norm(w)
 
     if theta is None:
         return np.eye(3)
 
     # Rodrigue's equation
 
-    sk = base.skew(v)
+    sk = smb.skew(v)
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
@@ -746,29 +747,29 @@ def exp2tr(w):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
         >>> angvec2r([0, 0, 0])      # rotx(0)
 
     .. note:: Exponential coordinates are also known as an Euler vector
 
-    :seealso: :func:`~angvec2r`, :func:`~tr2angvec`
+    :seealso: :func:`~angvec2r` :func:`~tr2angvec`
 
     :SymPy: not supported
     """
-    if not base.isvector(w, 3):
+    if not smb.isvector(w, 3):
         raise ValueError("Arguments must be a 3-vector")
 
-    v, theta = base.unitvec_norm(w)
+    v, theta = smb.unitvec_norm(w)
 
     if theta is None:
         return np.eye(4)
 
     # Rodrigue's equation
 
-    sk = base.skew(v)
+    sk = smb.skew(v)
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
-    return base.r2t(R)
+    return smb.r2t(R)
 
 
 # ---------------------------------------------------------------------------------------#
@@ -798,7 +799,7 @@ def oa2r(o, a=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> oa2r([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
 
     .. note::
@@ -814,11 +815,11 @@ def oa2r(o, a=None):
 
     :SymPy: not supported
     """
-    o = base.getvector(o, 3, out="array")
-    a = base.getvector(a, 3, out="array")
+    o = smb.getvector(o, 3, out="array")
+    a = smb.getvector(a, 3, out="array")
     n = np.cross(o, a)
     o = np.cross(a, n)
-    R = np.stack((base.unitvec(n), base.unitvec(o), base.unitvec(a)), axis=1)
+    R = np.stack((smb.unitvec(n), smb.unitvec(o), smb.unitvec(a)), axis=1)
     return R
 
 
@@ -849,7 +850,7 @@ def oa2tr(o, a=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> oa2tr([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
 
     .. note:
@@ -866,7 +867,7 @@ def oa2tr(o, a=None):
 
     :SymPy: not supported
     """
-    return base.r2t(oa2r(o, a))
+    return smb.r2t(oa2r(o, a))
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
@@ -891,7 +892,7 @@ def tr2angvec(T, unit="rad", check=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T = troty(45, 'deg')
         >>> v, theta = tr2angvec(T)
         >>> print(v, theta)
@@ -900,24 +901,24 @@ def tr2angvec(T, unit="rad", check=False):
 
         - If the input is SE(3) the translation component is ignored.
 
-    :seealso: :func:`~angvec2r`, :func:`~angvec2tr`, :func:`~tr2rpy`, :func:`~tr2eul`
+    :seealso: :func:`~angvec2r` :func:`~angvec2tr` :func:`~tr2rpy` :func:`~tr2eul`
     """
 
-    if base.ismatrix(T, (4, 4)):
-        R = base.t2r(T)
+    if smb.ismatrix(T, (4, 4)):
+        R = smb.t2r(T)
     else:
         R = T
     if not isrot(R, check=check):
         raise ValueError("argument is not SO(3)")
 
-    v = base.vex(trlog(R))
+    v = smb.vex(trlog(R))
 
-    if base.iszerovec(v):
+    if smb.iszerovec(v):
         theta = 0
         v = np.r_[0, 0, 0]
     else:
-        theta = base.norm(v)
-        v = base.unitvec(v)
+        theta = smb.norm(v)
+        v = smb.unitvec(v)
 
     if unit == "deg":
         theta *= 180 / math.pi
@@ -951,7 +952,7 @@ def tr2eul(T, unit="rad", flip=False, check=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T = eul2tr(0.2, 0.3, 0.5)
         >>> print(T)
         >>> tr2eul(T)
@@ -963,13 +964,13 @@ def tr2eul(T, unit="rad", flip=False, check=False):
           :math:`\phi+\psi`.
         - If the input is SE(3) the translation component is ignored.
 
-    :seealso: :func:`~eul2r`, :func:`~eul2tr`, :func:`~tr2rpy`, :func:`~tr2angvec`
+    :seealso: :func:`~eul2r` :func:`~eul2tr` :func:`~tr2rpy` :func:`~tr2angvec`
     :SymPy: not supported
 
     """
 
-    if base.ismatrix(T, (4, 4)):
-        R = base.t2r(T)
+    if smb.ismatrix(T, (4, 4)):
+        R = smb.t2r(T)
     else:
         R = T
     if not isrot(R, check=check):
@@ -1032,7 +1033,7 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T = rpy2tr(0.2, 0.3, 0.5)
         >>> print(T)
         >>> tr2rpy(T)
@@ -1044,20 +1045,20 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
           :math:`\theta_Y = \theta_R + \theta_Y`.
         - If the input is SE(3) the translation component is ignored.
 
-    :seealso: :func:`~rpy2r`, :func:`~rpy2tr`, :func:`~tr2eul`,
+    :seealso: :func:`~rpy2r` :func:`~rpy2tr` :func:`~tr2eul`,
               :func:`~tr2angvec`
     :SymPy: not supported
     """
 
-    if base.ismatrix(T, (4, 4)):
-        R = base.t2r(T)
+    if smb.ismatrix(T, (4, 4)):
+        R = smb.t2r(T)
     else:
         R = T
     if not isrot(R, check=check):
         raise ValueError("not a valid SO(3) matrix")
 
     rpy = np.zeros((3,))
-    if order == "xyz" or order == "arm":
+    if order in ("xyz", "arm"):
 
         # XYZ order
         if abs(abs(R[0, 2]) - 1) < 10 * _eps:  # when |R13| == 1
@@ -1082,7 +1083,7 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
             elif k == 3:
                 rpy[1] = math.atan(R[0, 2] * math.cos(rpy[2]) / R[2, 2])
 
-    elif order == "zyx" or order == "vehicle":
+    elif order in ("zyx", "vehicle"):
 
         # old ZYX order (as per Paul book)
         if abs(abs(R[2, 0]) - 1) < 10 * _eps:  # when |R31| == 1
@@ -1107,7 +1108,7 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
             elif k == 3:
                 rpy[1] = -math.atan(R[2, 0] * math.cos(rpy[0]) / R[2, 2])
 
-    elif order == "yxz" or order == "camera":
+    elif order in ("yxz", "camera"):
 
         if abs(abs(R[1, 2]) - 1) < 10 * _eps:  # when |R23| == 1
             # singularity
@@ -1169,37 +1170,37 @@ def trlog(T, check=True, twist=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> trlog(trotx(0.3))
         >>> trlog(trotx(0.3), twist=True)
         >>> trlog(rotx(0.3))
         >>> trlog(rotx(0.3), twist=True)
 
-    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`, :func:`~spatialmath.base.transformsNd.vexa`
+    :seealso: :func:`~trexp` :func:`~spatialmath.smb.transformsNd.vex` :func:`~spatialmath.smb.transformsNd.vexa`
     """
 
     if ishom(T, check=check):
         # SE(3) matrix
 
-        if base.iseye(T):
+        if smb.iseye(T):
             # is identity matrix
             if twist:
                 return np.zeros((6,))
             else:
                 return np.zeros((4, 4))
         else:
-            [R, t] = base.tr2rt(T)
+            [R, t] = smb.tr2rt(T)
 
-            if base.iseye(R):
+            if smb.iseye(R):
                 # rotation matrix is identity
                 if twist:
                     return np.r_[t, 0, 0, 0]
                 else:
-                    return base.Ab2M(np.zeros((3, 3)), t)
+                    return smb.Ab2M(np.zeros((3, 3)), t)
             else:
                 S = trlog(R, check=False)  # recurse
-                w = base.vex(S)
-                theta = base.norm(w)
+                w = smb.vex(S)
+                theta = smb.norm(w)
                 Ginv = (
                     np.eye(3)
                     - S / 2
@@ -1209,12 +1210,12 @@ def trlog(T, check=True, twist=False):
                 if twist:
                     return np.r_[v, w]
                 else:
-                    return base.Ab2M(S, v)
+                    return smb.Ab2M(S, v)
 
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
-        if base.iseye(R):
+        if smb.iseye(R):
             # matrix is identity
             if twist:
                 return np.zeros((3,))
@@ -1233,13 +1234,13 @@ def trlog(T, check=True, twist=False):
             if twist:
                 return w * theta
             else:
-                return base.skew(w * theta)
+                return smb.skew(w * theta)
         else:
             # general case
             theta = math.acos((np.trace(R) - 1) / 2)
             skw = (R - R.T) / 2 / math.sin(theta)
             if twist:
-                return base.vex(skw * theta)
+                return smb.vex(skw * theta)
             else:
                 return skw * theta
     else:
@@ -1279,7 +1280,7 @@ def trexp(S, theta=None, check=True):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> trexp(skew([1, 2, 3]))
         >>> trexp(skew([1, 0, 0]), 2)  # revolute unit twist
         >>> trexp([1, 2, 3])
@@ -1300,68 +1301,68 @@ def trexp(S, theta=None, check=True):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> trexp(skewa([1, 2, 3, 4, 5, 6]))
         >>> trexp(skewa([1, 0, 0, 0, 0, 0]), 2)  # prismatic unit twist
         >>> trexp([1, 2, 3, 4, 5, 6])
         >>> trexp([1, 0, 0, 0, 0, 0], 2)
 
-    :seealso: :func:`~trlog, :func:`~spatialmath.base.transforms2d.trexp2`
+    :seealso: :func:`~trlog :func:`~spatialmath.smb.transforms2d.trexp2`
     """
 
-    if base.ismatrix(S, (4, 4)) or base.isvector(S, 6):
+    if smb.ismatrix(S, (4, 4)) or smb.isvector(S, 6):
         # se(3) case
-        if base.ismatrix(S, (4, 4)):
+        if smb.ismatrix(S, (4, 4)):
             # augmentented skew matrix
-            if check and not base.isskewa(S):
+            if check and not smb.isskewa(S):
                 raise ValueError("argument must be a valid se(3) element")
-            tw = base.vexa(S)
+            tw = smb.vexa(S)
         else:
             # 6 vector
-            tw = base.getvector(S)
+            tw = smb.getvector(S)
 
-        if base.iszerovec(tw):
+        if smb.iszerovec(tw):
             return np.eye(4)
 
         if theta is None:
-            (tw, theta) = base.unittwist_norm(tw)
+            (tw, theta) = smb.unittwist_norm(tw)
         else:
             if theta == 0:
                 return np.eye(4)
-            elif not base.isunittwist(tw):
+            elif not smb.isunittwist(tw):
                 raise ValueError("If theta is specified S must be a unit twist")
 
         # tw is a unit twist, th is its magnitude
         t = tw[0:3]
         w = tw[3:6]
 
-        R = base.rodrigues(w, theta)
+        R = smb.rodrigues(w, theta)
 
-        skw = base.skew(w)
+        skw = smb.skew(w)
         V = (
             np.eye(3) * theta
             + (1.0 - math.cos(theta)) * skw
             + (theta - math.sin(theta)) * skw @ skw
         )
 
-        return base.rt2tr(R, V @ t)
+        return smb.rt2tr(R, V @ t)
 
-    elif base.ismatrix(S, (3, 3)) or base.isvector(S, 3):
+    elif smb.ismatrix(S, (3, 3)) or smb.isvector(S, 3):
         # so(3) case
-        if base.ismatrix(S, (3, 3)):
+        if smb.ismatrix(S, (3, 3)):
             # skew symmetric matrix
-            if check and not base.isskew(S):
+            if check and not smb.isskew(S):
                 raise ValueError("argument must be a valid so(3) element")
-            w = base.vex(S)
+            w = smb.vex(S)
         else:
             # 3 vector
-            w = base.getvector(S)
+            w = smb.getvector(S)
 
-        if theta is not None and not base.isunitvec(w):
+        if theta is not None and not smb.isunitvec(w):
             raise ValueError("If theta is specified S must be a unit twist")
 
         # do Rodrigues' formula for rotation
-        return base.rodrigues(w, theta)
+        return smb.rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
@@ -1393,7 +1394,7 @@ def trnorm(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> from numpy import linalg
         >>> T = troty(45, 'deg', t=[3, 4, 5])
         >>> linalg.det(T[:3,:3]) - 1 # is a valid SO(3)
@@ -1417,10 +1418,10 @@ def trnorm(T):
 
     n = np.cross(o, a)  # N = O x A
     o = np.cross(a, n)  # (a)];
-    R = np.stack((base.unitvec(n), base.unitvec(o), base.unitvec(a)), axis=1)
+    R = np.stack((smb.unitvec(n), smb.unitvec(o), smb.unitvec(a)), axis=1)
 
     if ishom(T):
-        return base.rt2tr(R, T[:3, 3])
+        return smb.rt2tr(R, T[:3, 3])
     else:
         return R
 
@@ -1450,7 +1451,7 @@ def trinterp(start, end, s=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T1 = transl(1, 2, 3)
         >>> T2 = transl(4, 5, 6)
         >>> trinterp(T1, T2, 0)
@@ -1462,48 +1463,48 @@ def trinterp(start, end, s=None):
 
     .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-    :seealso: :func:`spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms3d.trinterp2`
+    :seealso: :func:`spatialmath.smb.quaternions.slerp` :func:`~spatialmath.smb.transforms3d.trinterp2`
     """
 
     if not 0 <= s <= 1:
         raise ValueError("s outside interval [0,1]")
 
-    if base.ismatrix(end, (3, 3)):
+    if smb.ismatrix(end, (3, 3)):
         # SO(3) case
 
         if start is None:
             # 	TRINTERP(T, s)
-            q0 = base.r2q(base.t2r(end))
-            qr = base.slerp(base.eye(), q0, s)
+            q0 = smb.r2q(smb.t2r(end))
+            qr = smb.slerp(smb.eye(), q0, s)
         else:
             # 	TRINTERP(T0, T1, s)
-            q0 = base.r2q(base.t2r(start))
-            q1 = base.r2q(base.t2r(end))
-            qr = base.slerp(q0, q1, s)
+            q0 = smb.r2q(smb.t2r(start))
+            q1 = smb.r2q(smb.t2r(end))
+            qr = smb.slerp(q0, q1, s)
 
-        return base.q2r(qr)
+        return smb.q2r(qr)
 
-    elif base.ismatrix(end, (4, 4)):
+    elif smb.ismatrix(end, (4, 4)):
         # SE(3) case
         if start is None:
             # 	TRINTERP(T, s)
-            q0 = base.r2q(base.t2r(end))
+            q0 = smb.r2q(smb.t2r(end))
             p0 = transl(end)
 
-            qr = base.slerp(base.eye(), q0, s)
+            qr = smb.slerp(smb.eye(), q0, s)
             pr = s * p0
         else:
             # 	TRINTERP(T0, T1, s)
-            q0 = base.r2q(base.t2r(start))
-            q1 = base.r2q(base.t2r(end))
+            q0 = smb.r2q(smb.t2r(start))
+            q1 = smb.r2q(smb.t2r(end))
 
             p0 = transl(start)
             p1 = transl(end)
 
-            qr = base.slerp(q0, q1, s)
+            qr = smb.slerp(q0, q1, s)
             pr = p0 * (1 - s) + s * p1
 
-        return base.rt2tr(base.q2r(qr), pr)
+        return smb.rt2tr(smb.q2r(qr), pr)
     else:
         return ValueError("Argument must be SO(3) or SE(3)")
 
@@ -1522,7 +1523,7 @@ def delta2tr(d):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> delta2tr([0.001, 0, 0, 0, 0.002, 0])
 
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
@@ -1531,7 +1532,7 @@ def delta2tr(d):
     :SymPy: supported
     """
 
-    return np.eye(4, 4) + base.skewa(d)
+    return np.eye(4, 4) + smb.skewa(d)
 
 
 def trinv(T):
@@ -1550,7 +1551,7 @@ def trinv(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> trinv(T)
         >>> T @ trinv(T)
@@ -1595,7 +1596,7 @@ def tr2delta(T0, T1=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T1 = trotx(0.3, t=[4,5,6])
         >>> T2 = trotx(0.31, t=[4,5.02,6])
         >>> tr2delta(T1, T2)
@@ -1624,7 +1625,7 @@ def tr2delta(T0, T1=None):
         #  incremental transformation from T0 to T1 in the T0 frame
         Td = trinv(T0) @ T1
 
-    return np.r_[transl(Td), base.vex(base.t2r(Td) - np.eye(3))]
+    return np.r_[transl(Td), smb.vex(smb.t2r(Td) - np.eye(3))]
 
 
 def tr2jac(T):
@@ -1646,7 +1647,7 @@ def tr2jac(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2jac(T)
 
@@ -1658,7 +1659,7 @@ def tr2jac(T):
         raise ValueError("expecting an SE(3) matrix")
 
     Z = np.zeros((3, 3), dtype=T.dtype)
-    R = base.t2r(T)
+    R = smb.t2r(T)
     return np.block([[R, Z], [Z, R]])
 
 
@@ -1681,7 +1682,7 @@ def eul2jac(angles):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> eul2jac(0.1, 0.2, 0.3)
 
     .. note::
@@ -1693,7 +1694,7 @@ def eul2jac(angles):
 
     :SymPy: supported
 
-    :seealso: :func:`rpy2jac`, :func:`exp2jac`, :func:`rot2jac`
+    :seealso: :func:`angvelxform` :func:`rpy2jac` :func:`exp2jac`
     """
 
     if len(angles) == 1:
@@ -1702,10 +1703,10 @@ def eul2jac(angles):
     phi = angles[0]
     theta = angles[1]
 
-    ctheta = base.sym.cos(theta)
-    stheta = base.sym.sin(theta)
-    cphi = base.sym.cos(phi)
-    sphi = base.sym.sin(phi)
+    ctheta = smb.sym.cos(theta)
+    stheta = smb.sym.sin(theta)
+    cphi = smb.sym.cos(phi)
+    sphi = smb.sym.sin(phi)
 
     # fmt: off
     return np.array([
@@ -1747,7 +1748,7 @@ def rpy2jac(angles, order="zyx"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> rpy2jac(0.1, 0.2, 0.3)
 
     .. note::
@@ -1759,16 +1760,16 @@ def rpy2jac(angles, order="zyx"):
 
     :SymPy: supported
 
-    :seealso: :func:`eul2jac`, :func:`exp2jac`, :func:`rot2jac`
+    :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`exp2jac`
     """
 
     pitch = angles[1]
     yaw = angles[2]
 
-    cp = base.sym.cos(pitch)
-    sp = base.sym.sin(pitch)
-    cy = base.sym.cos(yaw)
-    sy = base.sym.sin(yaw)
+    cp = smb.sym.cos(pitch)
+    sp = smb.sym.sin(pitch)
+    cy = smb.sym.cos(yaw)
+    sy = smb.sym.sin(yaw)
 
     if order == "xyz":
         # fmt: off
@@ -1811,7 +1812,7 @@ def exp2jac(v):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> expjac(0.3 * np.r_[1, 0, 0])
 
     .. note::
@@ -1829,10 +1830,10 @@ def exp2jac(v):
 
     :SymPy: supported
 
-    :seealso: :func:`eul2jac`, :func:`rpy2jac`, :func:`rot2jac`
+    :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2jac`
     """
 
-    vn, theta = base.unitvec_norm(v)
+    vn, theta = smb.unitvec_norm(v)
     if theta is None:
         return np.eye(3)
 
@@ -1842,14 +1843,14 @@ def exp2jac(v):
     # A = []
     # for i in range(3):
     #     # (III.7)
-    #     dRdvi = vn[i] * base.skew(vn) + base.skew(np.cross(vn, z[:,i])) / theta
-    #     x = base.vex(dRdvi)
+    #     dRdvi = vn[i] * smb.skew(vn) + smb.skew(np.cross(vn, z[:,i])) / theta
+    #     x = smb.vex(dRdvi)
     #     A.append(x)
     # return np.c_[A].T
 
     # from ETH paper
-    theta = base.norm(v)
-    sk = base.skew(v)
+    theta = smb.norm(v)
+    sk = smb.skew(v)
 
     # (2.106)
     E = (
@@ -1859,226 +1860,354 @@ def exp2jac(v):
     )
     return E
 
-def tr2x(T, representation="rpy/xyz"):
-    t = transl(T)
-    R = base.t2r(T)
-    if representation == "rpy/xyz":
-        r = tr2rpy(R, order="xyz")
-    elif representation == "rpy/zyx":
-        r = tr2rpy(R, order="zyx")
-    elif representation == "eul":
+def r2x(R, representation="rpy/xyz"):
+    r"""
+    Convert SO(3) matrix to angular representation
+
+    :param R: SO(3) rotation matrix
+    :type R: ndarray(3,3)
+    :param representation: rotational representation, defaults to "rpy/xyz"
+    :type representation: str, optional
+    :return: angular representation
+    :rtype: ndarray(3)
+
+    Convert an SO(3) rotation matrix to a minimal rotational representation
+    :math:`\vec{\Gamma} \in \mathbb{R}^3`.
+
+    ============================  ========================================
+    ``representation``            Rotational representation
+    ============================  ========================================
+    ``"rpy/xyz"`` ``"arm"``       RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``   RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``    RPY angular rates in YXZ order
+    ``"eul"``                     Euler angular rates in ZYZ order
+    ``"exp"``                     exponential coordinate rates
+    ============================  ========================================
+
+    :SymPy: supported
+
+    :seealso: :func:`x2r` :func:`tr2rpy` :func:`tr2eul` :func:`trlog`
+    """
+    if representation == "eul":
         r = tr2eul(R)
+    elif representation.startswith("rpy/"):
+        r = tr2rpy(R, order=representation[4:])
+    elif representation in ('arm', 'vehicle', 'camera'):
+        r = tr2rpy(R, order=representation)
     elif representation == "exp":
         r = trlog(R, twist=True)
     else:
         raise ValueError(f"unknown representation: {representation}")
-    return np.r_[t, r]
+    return r
 
-def x2tr(x, representation="rpy/xyz"):
-    t = x[:3]
-    r = x[3:]
-    if representation == "rpy/xyz":
-        R = rpy2r(r, order="xyz")
-    elif representation == "rpy/zyx":
-        R = rpy2r(r, order="zyx")
-    elif representation == "eul":
+def x2r(r, representation="rpy/xyz"):
+    r"""
+    Convert angular representation to SO(3) matrix
+
+    :param r: angular representation
+    :type r: array_like(3)
+    :param representation: rotational representation, defaults to "rpy/xyz"
+    :type representation: str, optional
+    :return: SO(3) rotation matrix
+    :rtype: ndarray(3,3)
+
+    Convert a minimal rotational representation :math:`\vec{\Gamma} \in
+    \mathbb{R}^3` to an SO(3) rotation matrix.
+
+    ============================  ========================================
+    ``representation``            Rotational representation
+    ============================  ========================================
+    ``"rpy/xyz"`` ``"arm"``       RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``   RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``    RPY angular rates in YXZ order
+    ``"eul"``                     Euler angular rates in ZYZ order
+    ``"exp"``                     exponential coordinate rates
+    ============================  ========================================
+
+    :SymPy: supported
+
+    :seealso: :func:`r2x` :func:`rpy2r` :func:`eul2r` :func:`trexp`
+    """
+    if representation == "eul":
         R = eul2r(r)
+    elif representation.startswith("rpy/"):
+        R = rpy2r(r, order=representation[4:])
+    elif representation in ('arm', 'vehicle', 'camera'):
+        R = rpy2r(r, order=representation)
     elif representation == "exp":
         R = trexp(r)
     else:
         raise ValueError(f"unknown representation: {representation}")
-    return base.rt2tr(R, t)
+    return R
+
+def tr2x(T, representation="rpy/xyz"):
+    r"""
+    Convert SE(3) to an analytic representation
+
+    :param T: pose as an SE(3) matrix
+    :type T: ndarray(4,4)
+    :param representation: angular representation to use, defaults to "rpy/xyz"
+    :type representation: str, optional
+    :return: analytic vector representation
+    :rtype: ndarray(6)
+
+    Convert an SE(3) matrix into an equivalent vector representation
+    :math:`\vec{x}  = (\vec{t},\vec{r}) \in \mathbb{R}^6` where rotation
+    :math:`\vec{r} \in \mathbb{R}^3` is encoded in a minimal representation.
+
+    ============================  ========================================
+    ``representation``            Rotational representation
+    ============================  ========================================
+    ``"rpy/xyz"`` ``"arm"``       RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``   RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``    RPY angular rates in YXZ order
+    ``"eul"``                     Euler angular rates in ZYZ order
+    ``"exp"``                     exponential coordinate rates
+    ============================  ========================================
+
+    :SymPy: supported
+
+    :seealso: :func:`r2x`
+    """
+    t = transl(T)
+    R = smb.t2r(T)
+    r = r2x(R, representation=representation)
+    return np.r_[t, r]
+
+def x2tr(x, representation="rpy/xyz"):
+    r"""
+    Convert analytic representation to SE(3) 
+
+    :param x: analytic vector representation
+    :type x: array_like(6)
+    :param representation: angular representation to use, defaults to "rpy/xyz"
+    :type representation: str, optional
+    :return: pose as an SE(3) matrix
+    :rtype: ndarray(4,4)
+
+    Convert a vector representation of pose :math:`\vec{x} = (\vec{t},\vec{r})
+    \in \mathbb{R}^6` to SE(3), where rotation :math:`\vec{r} \in \mathbb{R}^3` is encoded
+    in a minimal representation to an equivalent SE(3) matrix.
+
+    ============================  ========================================
+    ``representation``            Rotational representation
+    ============================  ========================================
+    ``"rpy/xyz"`` ``"arm"``       RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``   RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``    RPY angular rates in YXZ order
+    ``"eul"``                     Euler angular rates in ZYZ order
+    ``"exp"``                     exponential coordinate rates
+    ============================  ========================================
+
+    :SymPy: supported
+
+    :seealso: :func:`r2x`
+    """
+    t = x[:3]
+    R = x2r(x[3:], representation=representation)
+
+    return smb.rt2tr(R, t)
 
 
 def rot2jac(R, representation="rpy/xyz"):
-    r"""
-    Velocity transform for analytical Jacobian
-
-    :param R: SO(3) rotation matrix
-    :type R: ndarray(3,3)
-    :param representation: defaults to 'rpy/xyz'
-    :type representation: str, optional
-    :return: Jacobian matrix
-    :rtype: ndarray(6,6)
-
-    Computes the transformation from spatial velocity :math:`\nu`, where
-    rotation rate is expressed as angular velocity, to analytical rates
-    :math:`\dvec{x}` where the rotational part is expressed as rate of change in
-    some other representation
-
-    .. math::
-        \dvec{x} = \mat{A} \vec{\nu}
-
-    where :math:`\mat{A}` is a block diagonal 6x6 matrix
-
-    ==================  ========================================
-    ``representation``  Rotational representation
-    ==================  ========================================
-    ``'rpy/xyz'``       RPY angular rates in XYZ order (default)
-    ``'rpy/zyx'``       RPY angular rates in XYZ order
-    ``'eul'``           Euler angular rates in ZYZ order
-    ``'exp'``           exponential coordinate rates
-    =================   ========================================
-
-    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`
-        - This performs the inverse mapping
-        - This maps a 6-vector, the others map a 3-vector
-
-    :seealso: :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
     """
-
-    if ishom(R):
-        R = base.t2r(R)
-
-    # R = R.T
-
-    if representation == "rpy/xyz":
-        rpy = tr2rpy(R, order="xyz")
-        A = rpy2jac(rpy, order="xyz")
-    elif representation == "rpy/zyx":
-        rpy = tr2rpy(R, order="zyx")
-        A = rpy2jac(rpy, order="zyx")
-    elif representation == "eul":
-        eul = tr2eul(R)
-        A = eul2jac(eul)
-    elif representation == "exp":
-        v = trlog(R, twist=True)
-        A = exp2jac(v)
-    else:
-        raise ValueError("bad representation specified")
-
-    return sp.linalg.block_diag(np.eye(3, 3), np.linalg.inv(A))
-
+    DEPRECATED, use :func:`rotvelxform` instead
+    """
+    raise DeprecationWarning('use rotvelxform instead')
 
 def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
-    r"""
-    Angular velocity transformation
+    """
+    DEPRECATED, use :func:`rotvelxform` instead
+    """
+    raise DeprecationWarning('use rotvelxform instead')
 
-    :param 𝚪: angular representation
-    :type 𝚪: ndarray(3)
+def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
+    """
+    DEPRECATED, use :func:`rotvelxform` instead
+    """
+    raise DeprecationWarning('use rotvelxform_inv_dot instead')
+
+def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
+    r"""
+    Rotational velocity transformation
+
+    :param 𝚪: angular representation or rotation matrix
+    :type 𝚪: array_like(3) or ndarray(3,3)
     :param representation: defaults to 'rpy/xyz'
     :type representation: str, optional
     :param inverse: compute mapping from analytical rates to angular velocity
     :type inverse: bool
     :param full: return 6x6 transform for spatial velocity
     :type full: bool
-    :return: angular velocity transformation matrix
-    :rtype: ndarray(6,6) or ndarray(3,3)
+    :return: rotation rate transformation matrix
+    :rtype: ndarray(3,3) or ndarray(6,6)
 
-    Computes the transformation from spatial velocity :math:`\nu`, where
-    rotation rate is expressed as angular velocity, to analytical rates
-    :math:`\dvec{x}` where the rotational part is expressed as rate of change in
-    some other representation
+    Computes the transformation from analytical rates
+    :math:`\dvec{x}` where the rotational part is expressed as the rate of change in
+    some angular representation to spatial velocity :math:`\omega`, where
+    rotation rate is expressed as angular velocity.
 
     .. math::
-        \dvec{x} = \mat{A} \vec{\nu}
+         \vec{\omega} = \mat{A}(\Gamma) \dvec{x}
 
-    where :math:`\mat{A}` is a block diagonal 6x6 matrix
+    where :math:`\mat{A}` is a 3x3 matrix and :math:`\Gamma \in
+    \mathbb{R}^3` is a minimal angular representation.
 
-    ==================  ========================================
-    ``representation``  Rotational representation
-    ==================  ========================================
-    ``'rpy/xyz'``       RPY angular rates in XYZ order (default)
-    ``'rpy/zyx'``       RPY angular rates in XYZ order
-    ``'eul'``           Euler angular rates in ZYZ order
-    ``'exp'``           exponential coordinate rates
-    =================   ========================================
+    :math:`\mat{A}(\Gamma)` is a function of the rotational representation
+    which can be specified by the parameter ``𝚪`` as a 1D array, or by
+    an SO(3) rotation matrix which will be converted to the ``representation``.
 
-    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`
-        - This performs the inverse mapping
-        - This maps a 6-vector, the others map a 3-vector
+    ============================  ========================================
+    ``representation``            Rotational representation
+    ============================  ========================================
+    ``"rpy/xyz"`` ``"arm"``       RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``   RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``    RPY angular rates in YXZ order
+    ``"eul"``                     Euler angular rates in ZYZ order
+    ``"exp"``                     exponential coordinate rates
+    ============================  ========================================
+
+    If ``inverse==True`` return :math:`\mat{A}^{-1}` computed using
+    a closed-form solution rather than matrix inverse. 
+
+    If ``full=True`` a block diagonal 6x6 matrix is returned which transforms analytic
+    velocity to spatial velocity.
+
+    .. note:: Similar to :func:`eul2jac` :func:`rpy2jac` :func:`exp2jac`
+        with ``full=False``.
+
+    The analytical Jacobian is
+    
+    .. math::
+    
+        \mat{J}_a(q) = \mat{A}^{-1}(\Gamma)\, \mat{J}(q)
+
+    where :math:`\mat{A}` is computed with ``inverse==True`` and ``full=True``.
 
     Reference:
 
        - ``symbolic/angvelxform.ipynb`` in this Toolbox
-       - Robot Dynamics Lecture Notes
-          Robotic Systems Lab, ETH Zurich, 2018
-          https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2018/RD_HS2018script.pdf
+       - Robot Dynamics Lecture Notes, Robotic Systems Lab, ETH Zurich, 2018
+         https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/rsl-dam/documents/RobotDynamics2018/RD_HS2018script.pdf
 
-    :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
+    :SymPy: supported
+
+    :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2r` :func:`exp2jac`
     """
 
-    if representation == "rpy/xyz":
-        alpha = 𝚪[0]
-        beta = 𝚪[1]
-        gamma = 𝚪[2]
+    if smb.isrot(𝚪):
+        # passed a rotation matrix
+        # convert to the representation
+        gamma = r2x(𝚪, representation=representation)
+
+    if sym.issymbol(𝚪):
+        C = sym.cos
+        S = sym.sin
+        T = sym.tan
+    else:
+        C = math.cos
+        S = math.sin
+        T = math.tan
+
+    if representation in ("rpy/xyz", "arm"):
+        alpha, beta, gamma = 𝚪
         # autogenerated by symbolic/angvelxform.ipynb
-        if inverse:
+        if not inverse:
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [math.sin(beta), 0, 1], 
-                [-math.sin(gamma)*math.cos(beta), math.cos(gamma), 0], 
-                [math.cos(beta)*math.cos(gamma), math.sin(gamma), 0]
+                [ S(beta),          0,        1], 
+                [-S(gamma)*C(beta), C(gamma), 0], 
+                [ C(beta)*C(gamma), S(gamma), 0]
                 ])
             # fmt: on
         else:
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [0, -math.sin(gamma)/math.cos(beta), math.cos(gamma)/math.cos(beta)], 
-                [0, math.cos(gamma), math.sin(gamma)], 
-                [1, math.sin(gamma)*math.tan(beta), -math.cos(gamma)*math.tan(beta)]
+                [0, -S(gamma)/C(beta),  C(gamma)/C(beta)], 
+                [0,  C(gamma),          S(gamma)], 
+                [1,  S(gamma)*T(beta), -C(gamma)*T(beta)]
                 ])
             # fmt: on
 
-    elif representation == "rpy/zyx":
-        alpha = 𝚪[0]
-        beta = 𝚪[1]
-        gamma = 𝚪[2]
+    elif representation in ("rpy/zyx", "vehicle"):
+        alpha, beta, gamma = 𝚪
         # autogenerated by symbolic/angvelxform.ipynb
-        if inverse:
+        if not inverse:
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [math.cos(beta)*math.cos(gamma), -math.sin(gamma), 0], 
-                [math.sin(gamma)*math.cos(beta), math.cos(gamma), 0], 
-                [-math.sin(beta), 0, 1]
+                [C(beta)*C(gamma), -S(gamma), 0], 
+                [S(gamma)*C(beta),  C(gamma), 0], 
+                [-S(beta),          0,        1]
                 ])
             # fmt: on
         else:
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [math.cos(gamma)/math.cos(beta), math.sin(gamma)/math.cos(beta), 0],
-                [-math.sin(gamma), math.cos(gamma), 0],
-                [math.cos(gamma)*math.tan(beta), math.sin(gamma)*math.tan(beta), 1]
+                [C(gamma)/C(beta), S(gamma)/C(beta), 0],
+                [-S(gamma),        C(gamma),         0],
+                [C(gamma)*T(beta), S(gamma)*T(beta), 1]
                 ])
             # fmt: on
+
+    elif representation in ("rpy/yxz", "camera"):
+        alpha, beta, gamma = 𝚪
+        # autogenerated by symbolic/angvelxform.ipynb
+        if not inverse:
+            # analytical rates -> angular velocity
+            # fmt: off
+            A = np.array([
+                [ S(gamma)*C(beta),  C(gamma), 0],
+                [-S(beta),           0,        1],
+                [ C(beta)*C(gamma), -S(gamma), 0]
+            ])
+            # fmt: on
+        else:
+            # angular velocity -> analytical rates
+            # fmt: off
+            A = np.array([
+                [S(gamma)/C(beta), 0,  C(gamma)/C(beta)], 
+                [C(gamma),         0, -S(gamma)],
+                [S(gamma)*T(beta), 1,  C(gamma)*T(beta)]
+                ])
+            # fmt: on
+
     elif representation == "eul":
-        phi = 𝚪[0]
-        theta = 𝚪[1]
-        psi = 𝚪[2]
+        phi, theta, psi = 𝚪
         # autogenerated by symbolic/angvelxform.ipynb
-        if inverse:
+        if not inverse:
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [0, -math.sin(phi), math.sin(theta)*math.cos(phi)], 
-                [0, math.cos(phi), math.sin(phi)*math.sin(theta)], 
-                [1, 0, math.cos(theta)]
+                [0, -S(phi), S(theta)*C(phi)], 
+                [0,  C(phi), S(phi)*S(theta)], 
+                [1,  0,      C(theta)]
                 ])
             # fmt: on
         else:
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [-math.cos(phi)/math.tan(theta), -math.sin(phi)/math.tan(theta), 1], 
-                [-math.sin(phi), math.cos(phi), 0], 
-                [math.cos(phi)/math.sin(theta), math.sin(phi)/math.sin(theta), 0]
+                [-C(phi)/T(theta), -S(phi)/T(theta),  1], 
+                [-S(phi),           C(phi),           0], 
+                [ C(phi)/S(theta),  S(phi)/S(theta),  0]
                 ])
             # fmt: on
+
     elif representation == "exp":
         # from ETHZ class notes
-        sk = base.skew(𝚪)
-        theta = base.norm(𝚪)
-        if inverse:
+        sk = smb.skew(𝚪)
+        theta = smb.norm(𝚪)
+        if not inverse:
             # analytical rates -> angular velocity
             # (2.106)
             A = (
                 np.eye(3)
-                + sk * (1 - np.cos(theta)) / theta ** 2
-                + sk @ sk * (theta - np.sin(theta)) / theta ** 3
+                + sk * (1 - C(theta)) / theta ** 2
+                + sk @ sk * (theta - S(theta)) / theta ** 3
             )
         else:
             # angular velocity -> analytical rates
@@ -2089,10 +2218,8 @@ def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
                 + sk
                 @ sk
                 / theta ** 2
-                * (1 - (theta / 2) * (np.sin(theta) / (1 - np.cos(theta))))
+                * (1 - (theta / 2) * (S(theta) / (1 - C(theta))))
             )
-    else:
-        raise ValueError("bad representation specified")
 
     if full:
         return sp.linalg.block_diag(np.eye(3, 3), A)
@@ -2100,9 +2227,9 @@ def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
         return A
 
 
-def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
+def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
     r"""
-    Angular acceleration transformation
+    Derivative of angular velocity transformation
 
     :param 𝚪: angular representation
     :type 𝚪: ndarray(3)
@@ -2112,137 +2239,174 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     :type representation: str, optional
     :param full: return 6x6 transform for spatial velocity
     :type full: bool
-    :return: angular velocity transformation matrix
+    :return: derivative of inverse angular velocity transformation matrix
     :rtype: ndarray(6,6) or ndarray(3,3)
 
-    Computes the transformation from spatial acceleration :math:`\dot{\nu}`,
-    where the rotational part is expressed as angular acceleration, to
-    analytical rates :math:`\ddvec{x}` where the rotational part is expressed as
-    acceleration in some other representation
+    The angular rate transformation matrix :math:`\mat{A}` is such that
 
     .. math::
-        \ddvec{x} = \mat{A}_d \dvec{\nu}
 
-    where :math:`\mat{A}_d` is a block diagonal 6x6 matrix
+        \dvec{x} = \mat{A}^{-1}(\Gamma) \vec{\nu}
 
-    ==================  ========================================
-    ``representation``  Rotational representation
-    ==================  ========================================
-    ``'rpy/xyz'``       RPY angular rates in XYZ order (default)
-    ``'rpy/zyx'``       RPY angular rates in XYZ order
-    ``'eul'``           Euler angular rates in ZYZ order
-    ``'exp'``           exponential coordinate rates
-    =================   ========================================
+    where :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational 
+    representation and is used to transform a geometric Jacobian to an analytic Jacobians.
 
-    .. note:: Compared to :func:`eul2jac`, :func:`rpy2jac`, :func:`exp2jac`
-        - This performs the inverse mapping
-        - This maps a 6-vector, the others map a 3-vector
+    The relationship between spatial and analytic acceleration is
+
+    .. math::
+
+        \ddvec{x} = \dmat{A}^{-1}(\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}
+
+    which requires
+    
+    .. math::
+    
+        \frac{d}{dt} \mat{A}^{-1}(\Gamma) = \mat{A}^{-1}(\Gamma, \dot{\Gamma})
+
+    This matrix is a function of :math:`\vec{\Gamma}` and :math:`\dvec{\Gamma}`,
+    and is also required to compute the derivative of an analytic Jacobian.
+        
+    ============================  ========================================
+    ``representation``            Rotational representation
+    ============================  ========================================
+    ``"rpy/xyz"`` ``"arm"``      RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``  RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``   RPY angular rates in YXZ order
+    ``"eul"``                     Euler angular rates in ZYZ order
+    ``"exp"``                     exponential coordinate rates
+    ============================  ========================================
+
+    If ``full=False`` the lower-right 3x3 matrix is returned which transforms
+    analytic rotational acceleration to angular acceleration.
 
     Reference:
 
        - ``symbolic/angvelxform.ipynb`` in this Toolbox
        - ``symbolic/angvelxform_dot.ipynb`` in this Toolbox
 
-    :seealso: :func:`rot2jac`, :func:`eul2jac`, :func:`rpy2r`, :func:`exp2jac`
+    :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2r` :func:`exp2jac`
     """
 
-    if representation == "rpy/xyz":
+    if sym.issymbol(𝚪):
+        C = sym.cos
+        S = sym.sin
+    else:
+        C = math.cos
+        S = math.sin
+
+    if representation in ("rpy/xyz", "arm"):
         # autogenerated by symbolic/angvelxform.ipynb
-        alpha = 𝚪[0]
-        beta = 𝚪[1]
-        gamma = 𝚪[2]
-        alpha_dot = 𝚪d[0]
-        beta_dot = 𝚪d[1]
-        gamma_dot = 𝚪d[2]
-        Ad = np.array(
+        alpha, beta, gamma = 𝚪
+        alpha_dot, beta_dot, gamma_dot = 𝚪d
+
+        Ainv_dot = np.array(
             [
                 [
                     0,
                     -(
-                        beta_dot * math.sin(beta) * math.sin(gamma) / math.cos(beta)
-                        + gamma_dot * math.cos(gamma)
-                    )
-                    / math.cos(beta),
+                        beta_dot * math.sin(beta) * S(gamma) / C(beta)
+                        + gamma_dot * C(gamma)
+                    ) / C(beta),
                     (
-                        beta_dot * math.sin(beta) * math.cos(gamma) / math.cos(beta)
-                        - gamma_dot * math.sin(gamma)
-                    )
-                    / math.cos(beta),
+                        beta_dot * S(beta) * C(gamma) / C(beta)
+                        - gamma_dot * S(gamma)
+                    ) / C(beta),
                 ],
-                [0, -gamma_dot * math.sin(gamma), gamma_dot * math.cos(gamma)],
+                [0, -gamma_dot * S(gamma), gamma_dot * C(gamma)],
                 [
                     0,
-                    beta_dot * math.sin(gamma) / math.cos(beta) ** 2
-                    + gamma_dot * math.cos(gamma) * math.tan(beta),
-                    -beta_dot * math.cos(gamma) / math.cos(beta) ** 2
-                    + gamma_dot * math.sin(gamma) * math.tan(beta),
+                    beta_dot * S(gamma) / C(beta) ** 2
+                    + gamma_dot * C(gamma) * math.tan(beta),
+                    -beta_dot * C(gamma) / C(beta) ** 2
+                    + gamma_dot * S(gamma) * math.tan(beta),
                 ],
             ]
         )
 
-    elif representation == "rpy/zyx":
+    elif representation in ("rpy/zyx", "vehicle"):
         # autogenerated by symbolic/angvelxform.ipynb
-        alpha = 𝚪[0]
-        beta = 𝚪[1]
-        gamma = 𝚪[2]
-        alpha_dot = 𝚪d[0]
-        beta_dot = 𝚪d[1]
-        gamma_dot = 𝚪d[2]
-        Ad = np.array(
+        alpha, beta, gamma = 𝚪
+        alpha_dot, beta_dot, gamma_dot = 𝚪d
+
+        Ainv_dot = np.array(
             [
                 [
                     (
-                        beta_dot * math.sin(beta) * math.cos(gamma) / math.cos(beta)
-                        - gamma_dot * math.sin(gamma)
-                    )
-                    / math.cos(beta),
+                        beta_dot * S(beta) * C(gamma) / C(beta)
+                        - gamma_dot * S(gamma)
+                    ) / C(beta),
                     (
-                        beta_dot * math.sin(beta) * math.sin(gamma) / math.cos(beta)
-                        + gamma_dot * math.cos(gamma)
-                    )
-                    / math.cos(beta),
+                        beta_dot * S(beta) * S(gamma) / C(beta)
+                        + gamma_dot * C(gamma)
+                    ) / C(beta),
                     0,
                 ],
-                [-gamma_dot * math.cos(gamma), -gamma_dot * math.sin(gamma), 0],
+                [-gamma_dot * C(gamma), -gamma_dot * S(gamma), 0],
                 [
-                    beta_dot * math.cos(gamma) / math.cos(beta) ** 2
-                    - gamma_dot * math.sin(gamma) * math.tan(beta),
-                    beta_dot * math.sin(gamma) / math.cos(beta) ** 2
-                    + gamma_dot * math.cos(gamma) * math.tan(beta),
+                    beta_dot * C(gamma) / C(beta) ** 2
+                    - gamma_dot * S(gamma) * math.tan(beta),
+                    beta_dot * S(gamma) / C(beta) ** 2
+                    + gamma_dot * C(gamma) * math.tan(beta),
                     0,
                 ],
             ]
         )
+
+    elif representation in ("rpy/yxz", "camera"):
+        # autogenerated by symbolic/angvelxform.ipynb
+        alpha, beta, gamma = 𝚪
+        alpha_dot, beta_dot, gamma_dot = 𝚪d
+
+        Ainv_dot = np.array(
+            [
+                [
+                    (beta_dot * S(beta) * S(gamma) / C(beta)
+                    + gamma_dot * C(gamma)) / C(beta),
+                    0,
+                    (beta_dot * S(beta) * C(gamma) / C(beta) 
+                    - gamma_dot * S(gamma)) / C(beta)
+                ],
+                [
+                    -gamma_dot * S(gamma),
+                    0,
+                    -gamma_dot * C(gamma)
+                ],
+                [
+                    beta_dot * S(gamma) / C(beta)**2 
+                    + gamma_dot * C(gamma) * T(beta), 
+                    0,
+                    beta_dot * C(gamma) / C(beta)**2 
+                    - gamma_dot * S(gamma) * T(beta)
+                ]
+            ]
+            )
 
     elif representation == "eul":
         # autogenerated by symbolic/angvelxform.ipynb
-        phi = 𝚪[0]
-        theta = 𝚪[1]
-        psi = 𝚪[2]
-        phi_dot = 𝚪d[0]
-        theta_dot = 𝚪d[1]
-        psi_dot = 𝚪d[2]
-        Ad = np.array(
+        phi, theta, psi = 𝚪
+        phi_dot, theta_dot, psi_dot = 𝚪d
+
+        Ainv_dot = np.array(
             [
                 [
-                    phi_dot * math.sin(phi) / math.tan(theta)
-                    + theta_dot * math.cos(phi) / math.sin(theta) ** 2,
-                    -phi_dot * math.cos(phi) / math.tan(theta)
-                    + theta_dot * math.sin(phi) / math.sin(theta) ** 2,
+                    phi_dot * S(phi) / math.tan(theta)
+                    + theta_dot * C(phi) / S(theta) ** 2,
+                    -phi_dot * C(phi) / math.tan(theta)
+                    + theta_dot * S(phi) / S(theta) ** 2,
                     0,
                 ],
-                [-phi_dot * math.cos(phi), -phi_dot * math.sin(phi), 0],
+                [-phi_dot * C(phi), -phi_dot * S(phi), 0],
                 [
                     -(
-                        phi_dot * math.sin(phi)
-                        + theta_dot * math.cos(phi) * math.cos(theta) / math.sin(theta)
+                        phi_dot * S(phi)
+                        + theta_dot * C(phi) * C(theta) / S(theta)
                     )
-                    / math.sin(theta),
+                    / S(theta),
                     (
-                        phi_dot * math.cos(phi)
-                        - theta_dot * math.sin(phi) * math.cos(theta) / math.sin(theta)
+                        phi_dot * C(phi)
+                        - theta_dot * S(phi) * C(theta) / S(theta)
                     )
-                    / math.sin(theta),
+                    / S(theta),
                     0,
                 ],
             ]
@@ -2252,10 +2416,10 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
         # autogenerated by symbolic/angvelxform_dot.ipynb
         v = 𝚪
         vd = 𝚪d
-        sk = base.skew(v)
-        skd = base.skew(vd)
-        theta_dot = np.inner(𝚪, 𝚪d) / base.norm(𝚪)
-        theta = base.norm(𝚪)
+        sk = smb.skew(v)
+        skd = smb.skew(vd)
+        theta_dot = np.inner(𝚪, 𝚪d) / smb.norm(𝚪)
+        theta = smb.norm(𝚪)
         Theta = (1.0 - theta / 2.0 * np.sin(theta) / (1.0 - np.cos(theta))) / theta**2
 
         # hand optimized version of code from notebook
@@ -2264,31 +2428,31 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
         #   something wrong in the derivation
         Theta_dot = (
                 (
-                -theta * math.cos(theta) 
-                -math.sin(theta) +
-                 theta * math.sin(theta)**2 / (1 - math.cos(theta)) 
-                ) * theta_dot / 2  / (1 - math.cos(theta)) / theta**2
+                -theta * C(theta) 
+                -S(theta) +
+                 theta * S(theta)**2 / (1 - C(theta)) 
+                ) * theta_dot / 2  / (1 - C(theta)) / theta**2
                 - (
-                    2 - theta * math.sin(theta) / (1 - math.cos(theta))
+                    2 - theta * S(theta) / (1 - C(theta))
                   ) * theta_dot / theta**3
                 ) 
 
-        Ad = -0.5 * skd + 2.0 * sk @ skd * Theta + sk @ sk * Theta_dot
+        Ainv_dot = -0.5 * skd + 2.0 * sk @ skd * Theta + sk @ sk * Theta_dot
     else:
         raise ValueError("bad representation specified")
 
     if full:
-        return sp.linalg.block_diag(np.eye(3, 3), Ad)
+        return sp.linalg.block_diag(np.eye(3, 3), Ainv_dot)
     else:
-        return Ad
+        return Ainv_dot
 
 
 def tr2adjoint(T):
     r"""
-    SE(3) adjoint matrix
+    Adjoint matrix
 
-    :param T: SE(3) matrix
-    :type T: ndarray(4,4)
+    :param T: SO(3) or SE(3) matrix
+    :type T: ndarray(3,3) or ndarray(4,4)
     :return: adjoint matrix
     :rtype: ndarray(6,6)
 
@@ -2302,7 +2466,7 @@ def tr2adjoint(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import *
+        >>> from spatialmath.smb import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2adjoint(T)
 
@@ -2316,6 +2480,7 @@ def tr2adjoint(T):
     Z = np.zeros((3, 3), dtype=T.dtype)
     if T.shape == (3, 3):
         # SO(3) adjoint
+        R = T
         # fmt: off
         return np.block([
                     [R, Z],
@@ -2324,10 +2489,10 @@ def tr2adjoint(T):
         # fmt: on
     elif T.shape == (4, 4):
         # SE(3) adjoint
-        (R, t) = base.tr2rt(T)
+        (R, t) = smb.tr2rt(T)
         # fmt: off
         return np.block([
-                    [R, base.skew(t) @ R], 
+                    [R, smb.skew(t) @ R], 
                     [Z, R]
                 ])
         # fmt: on
@@ -2390,7 +2555,7 @@ def trprint(
 
      .. runblock:: pycon
 
-         >>> from spatialmath.base import transl, rpy2tr, trprint
+         >>> from spatialmath.smb import transl, rpy2tr, trprint
          >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
          >>> trprint(T, file=None)
          >>> trprint(T, file=None, label='T', orient='angvec')
@@ -2405,7 +2570,7 @@ def trprint(
          - For tabular data set ``fmt`` to a fixed width format such as
            ``fmt='{:.3g}'``
 
-     :seealso: :func:`~spatialmath.base.transforms2d.trprint2`, :func:`~tr2eul`, :func:`~tr2rpy`, :func:`~tr2angvec`
+     :seealso: :func:`~spatialmath.smb.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`
      :SymPy: not supported
     """
 
@@ -2612,9 +2777,9 @@ def trplot(
     # anaglyph
 
     if dims is None:
-        ax = base.axes_logic(ax, 3, projection)
+        ax = smb.axes_logic(ax, 3, projection)
     else:
-        ax = base.plotvol3(dims, ax=ax)
+        ax = smb.plotvol3(dims, ax=ax)
 
     try:
         if not ax.get_xlabel():
@@ -2657,8 +2822,8 @@ def trplot(
         trplot(T, color=colors[0], **args)
 
         # the right eye sees a from a viewpoint in shifted in the X direction
-        if base.isrot(T):
-            T = base.r2t(T)
+        if smb.isrot(T):
+            T = smb.r2t(T)
         trplot(transl(shift, 0, 0) @ T, color=colors[1], **args)
 
         return
@@ -2679,7 +2844,7 @@ def trplot(
 
     # check input types
     if isrot(T, check=True):
-        T = base.r2t(T)
+        T = smb.r2t(T)
     elif ishom(T, check=True):
         pass
     else:
@@ -2915,7 +3080,7 @@ def tranimate(T, **kwargs):
     block = kwargs.get("block", False)
     kwargs["block"] = False
 
-    anim = base.animate.Animate(**kwargs)
+    anim = smb.animate.Animate(**kwargs)
     try:
         del kwargs['dims']
     except KeyError:
@@ -2929,13 +3094,30 @@ def tranimate(T, **kwargs):
 
 if __name__ == "__main__":  # pragma: no cover
 
+    # import sympy
+    # from spatialmath.base.symbolic import *
+
+    # p, q, r = symbol('phi theta psi')
+    # print(p)
+
+    # print(angvelxform([p, q, r], representation='eul'))
+
     import pathlib
 
     exec(
         open(
             pathlib.Path(__file__).parent.parent.parent.absolute()
             / "tests"
-            / "base"
+            / "smb"
             / "test_transforms3d.py"
+        ).read()
+    )  # pylint: disable=exec-used
+
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "smb"
+            / "test_transforms3d_plot.py"
         ).read()
     )  # pylint: disable=exec-used

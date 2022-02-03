@@ -260,13 +260,19 @@ __all__ = [
     "eul2jac",
     "exp2jac",
     "rot2jac",
-    "angvelxform",
-    "angvelxform_dot",
     "trprint",
     "trplot",
     "tranimate",
     "tr2x",
     "x2tr",
+    "r2x",
+    "x2r",
+    "rotvelxform",
+    "rotvelxform_inv_dot",
+
+    # deprecated
+    "angvelxform",
+    "angvelxform_dot",
 
     # spatialmath.base.transformsNd
     "t2r",

@@ -96,96 +96,120 @@ class TestVelocity(unittest.TestCase):
         gamma = np.r_[0, 0, 0]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
 
-    def test_rot2jac(self):
+    # def test_rotvelxform(self):
 
-        gamma = [0.1, 0.2, 0.3]
-        R = rpy2r(gamma, order="zyx")
-        A = rot2jac(R, representation="rpy/zyx")
-        self.assertEqual(A.shape, (6, 6))
-        A3 = np.linalg.inv(A[3:6, 3:6])
-        nt.assert_array_almost_equal(A3, rpy2jac(gamma, order="zyx"))
+    #     gamma = [0.1, 0.2, 0.3]
+    #     R = rpy2r(gamma, order="zyx")
+    #     A = rotvelxform(R, representation="rpy/zyx")
+    #     self.assertEqual(A.shape, (6, 6))
+    #     A3 = np.linalg.inv(A[3:6, 3:6])
+    #     nt.assert_array_almost_equal(A3, rpy2jac(gamma, order="zyx"))
 
-        gamma = [0.1, 0.2, 0.3]
-        R = rpy2r(gamma, order="xyz")
-        A = rot2jac(R, representation="rpy/xyz")
-        self.assertEqual(A.shape, (6, 6))
-        A3 = np.linalg.inv(A[3:6, 3:6])
-        nt.assert_array_almost_equal(A3, rpy2jac(gamma, order="xyz"))
+    #     gamma = [0.1, 0.2, 0.3]
+    #     R = rpy2r(gamma, order="xyz")
+    #     A = rot2jac(R, representation="rpy/xyz")
+    #     self.assertEqual(A.shape, (6, 6))
+    #     A3 = np.linalg.inv(A[3:6, 3:6])
+    #     nt.assert_array_almost_equal(A3, rpy2jac(gamma, order="xyz"))
 
-        gamma = [0.1, 0.2, 0.3]
-        R = eul2r(gamma)
-        A = rot2jac(R, representation="eul")
-        self.assertEqual(A.shape, (6, 6))
-        A3 = np.linalg.inv(A[3:6, 3:6])
-        nt.assert_array_almost_equal(A3, eul2jac(gamma))
+    #     gamma = [0.1, 0.2, 0.3]
+    #     R = eul2r(gamma)
+    #     A = rot2jac(R, representation="eul")
+    #     self.assertEqual(A.shape, (6, 6))
+    #     A3 = np.linalg.inv(A[3:6, 3:6])
+    #     nt.assert_array_almost_equal(A3, eul2jac(gamma))
 
-        gamma = [0.1, 0.2, 0.3]
-        R = trexp(gamma)
-        A = rot2jac(R, representation="exp")
-        self.assertEqual(A.shape, (6, 6))
-        A3 = np.linalg.inv(A[3:6, 3:6])
-        nt.assert_array_almost_equal(A3, exp2jac(gamma))
+    #     gamma = [0.1, 0.2, 0.3]
+    #     R = trexp(gamma)
+    #     A = rot2jac(R, representation="exp")
+    #     self.assertEqual(A.shape, (6, 6))
+    #     A3 = np.linalg.inv(A[3:6, 3:6])
+    #     nt.assert_array_almost_equal(A3, exp2jac(gamma))
 
-    def test_angvelxform(self):
+    def test_rotvelxform(self):
         # compare inverse result against rpy/eul/exp2jac
         # compare forward and inverse results
 
         gamma = [0.1, 0.2, 0.3]
-        A = angvelxform(gamma, full=False, representation="rpy/zyx")
-        Ai = angvelxform(gamma, full=False, inverse=True, representation="rpy/zyx")
-        nt.assert_array_almost_equal(Ai, rpy2jac(gamma, order="zyx"))
-        nt.assert_array_almost_equal(A @ Ai, np.eye(3))
+        A = rotvelxform(gamma, full=False, representation="rpy/zyx")
+        Ai = rotvelxform(gamma, full=False, inverse=True, representation="rpy/zyx")
+        nt.assert_array_almost_equal(A, rpy2jac(gamma, order="zyx"))
+        nt.assert_array_almost_equal(Ai @ A, np.eye(3))
 
         gamma = [0.1, 0.2, 0.3]
-        A = angvelxform(gamma, full=False, representation="rpy/xyz")
-        Ai = angvelxform(gamma, full=False, inverse=True, representation="rpy/xyz")
-        nt.assert_array_almost_equal(Ai, rpy2jac(gamma, order="xyz"))
-        nt.assert_array_almost_equal(A @ Ai, np.eye(3))
+        A = rotvelxform(gamma, full=False, representation="rpy/xyz")
+        Ai = rotvelxform(gamma, full=False, inverse=True, representation="rpy/xyz")
+        nt.assert_array_almost_equal(A, rpy2jac(gamma, order="xyz"))
+        nt.assert_array_almost_equal(Ai @ A, np.eye(3))
 
         gamma = [0.1, 0.2, 0.3]
-        A = angvelxform(gamma, full=False, representation="eul")
-        Ai = angvelxform(gamma, full=False, inverse=True, representation="eul")
-        nt.assert_array_almost_equal(Ai, eul2jac(gamma))
-        nt.assert_array_almost_equal(A @ Ai, np.eye(3))
+        A = rotvelxform(gamma, full=False, representation="eul")
+        Ai = rotvelxform(gamma, full=False, inverse=True, representation="eul")
+        nt.assert_array_almost_equal(A, eul2jac(gamma))
+        nt.assert_array_almost_equal(Ai @ A, np.eye(3))
 
         gamma = [0.1, 0.2, 0.3]
-        A = angvelxform(gamma, full=False, representation="exp")
-        Ai = angvelxform(gamma, full=False, inverse=True, representation="exp")
-        nt.assert_array_almost_equal(Ai, exp2jac(gamma))
-        nt.assert_array_almost_equal(A @ Ai, np.eye(3))
+        A = rotvelxform(gamma, full=False, representation="exp")
+        Ai = rotvelxform(gamma, full=False, inverse=True, representation="exp")
+        nt.assert_array_almost_equal(A, exp2jac(gamma))
+        nt.assert_array_almost_equal(Ai @ A, np.eye(3))
 
+    def test_rotvelxform_full(self):
+        # compare inverse result against rpy/eul/exp2jac
+        # compare forward and inverse results
 
-    def test_angvelxform_dot_eul(self):
+        gamma = [0.1, 0.2, 0.3]
+        A = rotvelxform(gamma, full=True, representation="rpy/zyx")
+        Ai = rotvelxform(gamma, full=True, inverse=True, representation="rpy/zyx")
+        nt.assert_array_almost_equal(A[3:,3:], rpy2jac(gamma, order="zyx"))
+        nt.assert_array_almost_equal(A @ Ai, np.eye(6))
+
+        gamma = [0.1, 0.2, 0.3]
+        A = rotvelxform(gamma, full=True, representation="rpy/xyz")
+        Ai = rotvelxform(gamma, full=True, inverse=True, representation="rpy/xyz")
+        nt.assert_array_almost_equal(A[3:,3:], rpy2jac(gamma, order="xyz"))
+        nt.assert_array_almost_equal(A @ Ai, np.eye(6))
+
+        gamma = [0.1, 0.2, 0.3]
+        A = rotvelxform(gamma, full=True, representation="eul")
+        Ai = rotvelxform(gamma, full=True, inverse=True, representation="eul")
+        nt.assert_array_almost_equal(A[3:,3:], eul2jac(gamma))
+        nt.assert_array_almost_equal(A @ Ai, np.eye(6))
+
+        gamma = [0.1, 0.2, 0.3]
+        A = rotvelxform(gamma, full=True, representation="exp")
+        Ai = rotvelxform(gamma, full=True, inverse=True, representation="exp")
+        nt.assert_array_almost_equal(A[3:,3:], exp2jac(gamma))
+        nt.assert_array_almost_equal(A @ Ai, np.eye(6))
+
+    def test_angvelxform_inv_dot_eul(self):
         rep = 'eul'
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
-        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.zeros((3,3))
-        for i in range(3):
-            Adot += H[:, :, i] * gamma_d[i]
-        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        Adot = np.tensordot(H, gamma_d, (0, 0))
+        res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     def test_angvelxform_dot_rpy_xyz(self):
         rep = 'rpy/xyz'
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
-        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.zeros((3,3))
-        for i in range(3):
-            Adot += H[:, :, i] * gamma_d[i]
-        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        Adot = np.tensordot(H, gamma_d, (0, 0))
+        res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     def test_angvelxform_dot_rpy_zyx(self):
         rep = 'rpy/zyx'
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
-        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.zeros((3,3))
-        for i in range(3):
-            Adot += H[:, :, i] * gamma_d[i]
-        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        Adot = np.tensordot(H, gamma_d, (0, 0))
+        res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     @unittest.skip("bug in angvelxform_dot for exponential coordinates")
@@ -193,11 +217,10 @@ class TestVelocity(unittest.TestCase):
         rep = 'exp'
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
-        H = numhess(lambda g: angvelxform(g, representation=rep, full=False), gamma)
+        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.zeros((3,3))
-        for i in range(3):
-            Adot += H[:, :, i] * gamma_d[i]
-        res = angvelxform_dot(gamma, gamma_d, representation=rep, full=False)
+        Adot = np.tensordot(H, gamma_d, (0, 0))
+        res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     def test_x_tr(self):
@@ -215,6 +238,18 @@ class TestVelocity(unittest.TestCase):
         nt.assert_array_almost_equal(x2tr(x, representation='rpy/xyz'), T)
 
         x = tr2x(T, representation='rpy/zyx')
+        nt.assert_array_almost_equal(x2tr(x, representation='rpy/zyx'), T)
+
+        x = tr2x(T, representation='exp')
+        nt.assert_array_almost_equal(x2tr(x, representation='exp'), T)
+
+        x = tr2x(T, representation='eul')
+        nt.assert_array_almost_equal(x2tr(x, representation='eul'), T)
+
+        x = tr2x(T, representation='arm')
+        nt.assert_array_almost_equal(x2tr(x, representation='rpy/xyz'), T)
+
+        x = tr2x(T, representation='vehicle')
         nt.assert_array_almost_equal(x2tr(x, representation='rpy/zyx'), T)
 
         x = tr2x(T, representation='exp')
