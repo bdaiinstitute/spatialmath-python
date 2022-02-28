@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.base.graphics &mdash; Spatial Maths package 0.11.0
+  <title>spatialmath.base.graphics &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -476,11 +476,50 @@
     <span class="k">return</span> <span class="n">r</span></div>
 
 <span class="k">def</span> <span class="nf">plot_arrow</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot 2D arrow</span>
+
+<span class="sd">    :param start: start point, arrow tail</span>
+<span class="sd">    :type start: array_like(2)</span>
+<span class="sd">    :param end: end point, arrow head</span>
+<span class="sd">    :type end: array_like(2)</span>
+<span class="sd">    :param ax: axes to draw into, defaults to None</span>
+<span class="sd">    :type ax: Axes, optional</span>
+<span class="sd">    :param kwargs: argumetns to pass to :class:`matplotlib.patches.Arrow`</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import plotvol2, plot_arrow</span>
+<span class="sd">        &gt;&gt;&gt; plotvol2(5)</span>
+<span class="sd">        &gt;&gt;&gt; plot_arrow((-2, 2), (3, 4), color=&#39;r&#39;, width=0.1)  # red arrow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">plot_poly</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot polygon</span>
+
+<span class="sd">    :param vertices: vertices</span>
+<span class="sd">    :type vertices: ndarray(2,N)</span>
+<span class="sd">    :param close: close the polygon, defaults to False</span>
+<span class="sd">    :type close: bool, optional</span>
+<span class="sd">    :param kwargs: arguments passed to Patch</span>
+<span class="sd">    :return: Matplotlib artist</span>
+<span class="sd">    :rtype: line or patch</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import plotvol2, plot_polygon</span>
+<span class="sd">        &gt;&gt;&gt; plotvol2(5)</span>
+<span class="sd">        &gt;&gt;&gt; vertices = np.array([[-1, 2, -1], [1, 0, -1]])</span>
+<span class="sd">        &gt;&gt;&gt; plot_polygon(vertices, filled=True, facecolor=&#39;g&#39;)  # green filled triangle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">vertices</span><span class="p">,</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]]))</span>
@@ -546,7 +585,7 @@
 <span class="sd">    :param args:</span>
 <span class="sd">    :param radius: radius of circle</span>
 <span class="sd">    :type radius: float</span>
-<span class="sd">    :param resolution: number of points on circumferece, defaults to 50</span>
+<span class="sd">    :param resolution: number of points on circumference, defaults to 50</span>
 <span class="sd">    :type resolution: int, optional</span>
 <span class="sd">    :return: the matplotlib object</span>
 <span class="sd">    :rtype: list of Line2D or Patch.Polygon</span>
@@ -1243,17 +1282,13 @@
 
 <span class="sd">    Initialize axes with dimensions given by ``dim`` which can be:</span>
 
-<span class="sd">        * A (scalar), -A:A x -A:A</span>
-<span class="sd">        * [A,B], A:B x A:B</span>
-<span class="sd">        * [A,B,C,D], A:B x C:D</span>
-
-<span class="sd">    ==================  ======  ======</span>
-<span class="sd">    input               xrange  yrange</span>
-<span class="sd">    ==================  ======  ======</span>
-<span class="sd">    A (scalar)          -A:A    -A:A</span>
-<span class="sd">    [A, B]              A:B     A:B</span>
-<span class="sd">    [A, B, C, D, E, F]  A:B     C:D</span>
-<span class="sd">    ==================  ======  ======</span>
+<span class="sd">    ==============  ======  ======</span>
+<span class="sd">    input           xrange  yrange</span>
+<span class="sd">    ==============  ======  ======</span>
+<span class="sd">    A (scalar)      -A:A    -A:A</span>
+<span class="sd">    [A, B]           A:B     A:B</span>
+<span class="sd">    [A, B, C, D]     A:B     C:D</span>
+<span class="sd">    ==============  ======  ======</span>
 
 <span class="sd">    :seealso: :func:`plotvol3`, :func:`expand_dims`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1334,7 +1369,7 @@
 
 <span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nd</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Expact compact axis dimensions</span>
+<span class="sd">    Expand compact axis dimensions</span>
 
 <span class="sd">    :param dim: dimensions, defaults to None</span>
 <span class="sd">    :type dim: scalar, array_like(2), array_like(4), array_like(6), optional</span>
@@ -1439,7 +1474,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

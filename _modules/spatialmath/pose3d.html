@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.11.0
+  <title>spatialmath.pose3d &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -483,7 +483,7 @@
 
 <span class="sd">        :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rand</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">qrand</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.Eul"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
@@ -818,7 +818,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
-<span class="sd">            &gt;&gt;&gt; from spatialmath import UnitQuaternion</span>
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SO3</span>
 <span class="sd">            &gt;&gt;&gt; R1 = SO3.Rx(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; R2 = SO3.Ry(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; print(R1.angdist(R1))</span>
@@ -950,18 +950,15 @@
 <span class="sd">        ``x.t`` is the translational component of ``x`` as an array with</span>
 <span class="sd">        shape (3,). If ``len(x) &gt; 1``, return an array with shape=(N,3).</span>
 
+<span class="sd">        Example:</span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
-<span class="sd">            &gt;&gt;&gt; from spatialmath import UnitQuaternion</span>
-
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; x = SE3(1,2,3)</span>
 <span class="sd">            &gt;&gt;&gt; x.t</span>
-<span class="sd">            array([1., 2., 3.])</span>
 <span class="sd">            &gt;&gt;&gt; x = SE3([ SE3(1,2,3), SE3(4,5,6)])</span>
 <span class="sd">            &gt;&gt;&gt; x.t</span>
-<span class="sd">            array([[1., 2., 3.],</span>
-<span class="sd">                   [4., 5., 6.]])</span>
-
 <span class="sd">        </span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -993,14 +990,14 @@
 <span class="sd">            T = \left[ \begin{array}{cc} \mat{R} &amp; \vec{t} \\ 0 &amp; 1 \end{array} \right],</span>
 <span class="sd">            \mat{T}^{-1} = \left[ \begin{array}{cc} \mat{R}^T &amp; -\mat{R}^T \vec{t} \\ 0 &amp; 1 \end{array} \right]`</span>
 
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; x = SE3(1,2,3)</span>
 <span class="sd">            &gt;&gt;&gt; x.inv()</span>
-<span class="sd">            SE3(array([[ 1.,  0.,  0., -1.],</span>
-<span class="sd">                       [ 0.,  1.,  0., -2.],</span>
-<span class="sd">                       [ 0.,  0.,  1., -3.],</span>
-<span class="sd">                       [ 0.,  0.,  0.,  1.]]))</span>
+
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trinv`</span>
 
@@ -1024,13 +1021,15 @@
 <span class="sd">        The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`</span>
 <span class="sd">        represents infinitesimal translation and rotation.</span>
 
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; x1 = SE3.Rx(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; x2 = SE3.Rx(0.3001)</span>
 <span class="sd">            &gt;&gt;&gt; x1.delta(x2)</span>
-<span class="sd">            array([0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 9.99999998e-05,</span>
-<span class="sd">                0.00000000e+00, 0.00000000e+00])</span>
+
 
 <span class="sd">        .. note::</span>
 
@@ -1107,11 +1106,13 @@
 <span class="sd">        :return: equivalent rigid-body motion as a twist vector</span>
 <span class="sd">        :rtype: Twist3 instance</span>
 
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; x = SE3(1,2,3)</span>
 <span class="sd">            &gt;&gt;&gt; x.twist()</span>
-<span class="sd">            Twist3([1, 2, 3, 0, 0, 0])</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.twist.Twist3`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1164,6 +1165,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Rx(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Rx([0.3, 0.4])</span>
 
@@ -1199,6 +1201,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Ry(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Ry([0.3, 0.4])</span>
 
@@ -1234,6 +1237,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Rz(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Rz([0.3, 0.4])</span>
 
@@ -1264,18 +1268,13 @@
 <span class="sd">        - ``SE3.Rand(N)`` is an SE3 object containing a sequence of N random</span>
 <span class="sd">          poses.</span>
 
-<span class="sd">        Example::</span>
 
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Rand(2)</span>
-<span class="sd">            SE3([</span>
-<span class="sd">            array([[ 0.58076657,  0.64578702, -0.49565041, -0.78585825],</span>
-<span class="sd">                [-0.57373134, -0.10724881, -0.8119914 ,  0.72069253],</span>
-<span class="sd">                [-0.57753142,  0.75594763,  0.30822173,  0.12291999],</span>
-<span class="sd">                [ 0.        ,  0.        ,  0.        ,  1.        ]]),</span>
-<span class="sd">            array([[ 0.96481299, -0.26267256, -0.01179066,  0.80294729],</span>
-<span class="sd">                [ 0.06421463,  0.19190584,  0.97931028, -0.15021311],</span>
-<span class="sd">                [-0.25497525, -0.94560841,  0.20202067,  0.02684599],</span>
-<span class="sd">                [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.quaternions.UnitQuaternion.Rand`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1408,13 +1407,12 @@
 <span class="sd">            - ``o`` and ``a`` do not have to be orthogonal, so long as they are not parallel</span>
 <span class="sd">              ``o`` is adjusted to be orthogonal to ``a``.</span>
 
-<span class="sd">        Example::</span>
+<span class="sd">        Example:</span>
 
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.OA([1, 0, 0], [0, 0, -1])</span>
-<span class="sd">            SE3(array([[-0.,  1.,  0.,  0.],</span>
-<span class="sd">                    [ 1.,  0.,  0.,  0.],</span>
-<span class="sd">                    [ 0.,  0., -1.,  0.],</span>
-<span class="sd">                    [ 0.,  0.,  0.,  1.]]))</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.oa2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1562,18 +1560,21 @@
 <span class="sd">        :return: SE(3) matrix</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
-<span class="sd">        ``T = SE3.Trans(x, y, z)`` is an SE(3) representing pure translation.</span>
+<span class="sd">        - ``SE3.Trans(x, y, z)`` is an SE(3) representing pure translation.</span>
 
-<span class="sd">        ``T = SE3.Trans([x, y, z])`` as above, but translation is given as an</span>
-<span class="sd">        array.</span>
+<span class="sd">        - ``SE3.Trans([x, y, z])`` as above, but translation is given as an</span>
+<span class="sd">          array.</span>
+
+<span class="sd">        - ``SE3.Trans(t)`` where ``t`` is Nx3 then create an SE3 object with</span>
+<span class="sd">          N elements whose translation is defined by the rows of ``t``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># single passed value, assume is 3-vector</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="c1"># single passed value, assume is 3-vector or Nx3</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">_t</span><span class="p">)</span> <span class="k">for</span> <span class="n">_t</span> <span class="ow">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="SE3.Tx"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Tx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -1591,6 +1592,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Tx(2)</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Tx([2,3])</span>
 
@@ -1617,6 +1619,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Ty(2)</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Ty([2,3])</span>
 
@@ -1642,6 +1645,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Tz(2)</span>
 <span class="sd">            &gt;&gt;&gt; SE3.Tz([2,3])</span>
 
@@ -1710,7 +1714,7 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
-<span class="sd">            &gt;&gt;&gt; from spatialmath import UnitQuaternion</span>
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; T1 = SE3.Rx(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; T2 = SE3.Ry(0.3)</span>
 <span class="sd">            &gt;&gt;&gt; print(T1.angdist(T1))</span>
@@ -1770,7 +1774,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

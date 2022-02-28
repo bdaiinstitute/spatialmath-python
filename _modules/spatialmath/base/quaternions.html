@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.base.quaternions &mdash; Spatial Maths package 0.11.0
+  <title>spatialmath.base.quaternions &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -77,6 +77,12 @@
 <span class="c1"># Copyright (c) 2000 Peter Corke</span>
 <span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">These functions create and manipulate quaternions or unit quaternions.</span>
+<span class="sd">The quaternion is represented</span>
+<span class="sd">by a 1D NumPy array with 4 elements: s, x, y, z.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># pylint: disable=invalid-name</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -87,7 +93,7 @@
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
 
-<div class="viewcode-block" id="eye"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.eye">[docs]</a><span class="k">def</span> <span class="nf">eye</span><span class="p">():</span>
+<div class="viewcode-block" id="qeye"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qeye">[docs]</a><span class="k">def</span> <span class="nf">qeye</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an identity quaternion</span>
 
@@ -99,15 +105,15 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import eye, qprint</span>
-<span class="sd">        &gt;&gt;&gt; q = eye()</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qeye, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = qeye()</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="pure"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.pure">[docs]</a><span class="k">def</span> <span class="nf">pure</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="qpure"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qpure">[docs]</a><span class="k">def</span> <span class="nf">qpure</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a pure quaternion</span>
 
@@ -122,7 +128,7 @@
 <span class="sd">    .. runblock:: pycon</span>
 
 <span class="sd">        &gt;&gt;&gt; from spatialmath.base import pure, qprint</span>
-<span class="sd">        &gt;&gt;&gt; q = pure([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; q = qpure([1, 2, 3])</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -155,8 +161,11 @@
 <span class="sd">    :return: norm of the quaternion</span>
 <span class="sd">    :rtype: float</span>
 
-<span class="sd">    Returns the norm, length or magnitude of the input quaternion which is</span>
-<span class="sd">    :math:`(s^2 + v_x^2 + v_y^2 + v_z^2}^{1/2}`</span>
+<span class="sd">    Returns the norm (length or magnitude) of the input quaternion which is</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">        (s^2 + v_x^2 + v_y^2 + v_z^2)^{1/2}</span>
 
 <span class="sd">    .. runblock:: pycon</span>
 
@@ -164,14 +173,14 @@
 <span class="sd">        &gt;&gt;&gt; q = qnorm([1, 2, 3, 4])</span>
 <span class="sd">        &gt;&gt;&gt; print(q)</span>
 
-<span class="sd">    :seealso: unit</span>
+<span class="sd">    :seealso: :func:`qunit`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unit"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.unit">[docs]</a><span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="qunit"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qunit">[docs]</a><span class="k">def</span> <span class="nf">qunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a unit quaternion</span>
 
@@ -185,8 +194,8 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import unit, qprint</span>
-<span class="sd">        &gt;&gt;&gt; q = unit([1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qunit, qprint</span>
+<span class="sd">        &gt;&gt;&gt; q = qunit([1, 2, 3, 4])</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q)</span>
 
 <span class="sd">    .. note:: Scalar part is always positive.</span>
@@ -194,7 +203,7 @@
 <span class="sd">    .. note:: If the quaternion norm is less than ``tol * eps`` an exception is</span>
 <span class="sd">              raised.</span>
 
-<span class="sd">    :seealso: norm</span>
+<span class="sd">    :seealso: :func:`qnorm`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">nm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
@@ -210,7 +219,7 @@
     <span class="c1"># return q</span>
 
 
-<div class="viewcode-block" id="isunit"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.isunit">[docs]</a><span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="qisunit"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qisunit">[docs]</a><span class="k">def</span> <span class="nf">qisunit</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if quaternion has unit length</span>
 
@@ -223,18 +232,18 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import eye, pure, isunit</span>
-<span class="sd">        &gt;&gt;&gt; q = eye()</span>
-<span class="sd">        &gt;&gt;&gt; isunit(q)</span>
-<span class="sd">        &gt;&gt;&gt; q = pure([1, 2, 3])</span>
-<span class="sd">        &gt;&gt;&gt; isunit(q)</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qeye, qpure, qisunit</span>
+<span class="sd">        &gt;&gt;&gt; q = qeye()</span>
+<span class="sd">        &gt;&gt;&gt; qisunit(q)</span>
+<span class="sd">        &gt;&gt;&gt; q = qpure([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; qisunit(q)</span>
 
-<span class="sd">    :seealso: unit</span>
+<span class="sd">    :seealso: :func:`qunit`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isequal"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.isequal">[docs]</a><span class="k">def</span> <span class="nf">isequal</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="qisequal"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qisequal">[docs]</a><span class="k">def</span> <span class="nf">qisequal</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if quaternions are equal</span>
 
@@ -257,11 +266,11 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import isequal</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qisequal</span>
 <span class="sd">        &gt;&gt;&gt; q1 = [1, 2, 3, 4]</span>
 <span class="sd">        &gt;&gt;&gt; q2 = [-1, -2, -3, -4]</span>
-<span class="sd">        &gt;&gt;&gt; isequal(q1, q2)</span>
-<span class="sd">        &gt;&gt;&gt; isequal(q1, q2, unitq=True)</span>
+<span class="sd">        &gt;&gt;&gt; qisequal(q1, q2)</span>
+<span class="sd">        &gt;&gt;&gt; qisequal(q1, q2, unitq=True)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">q2</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -298,7 +307,7 @@
 
 <span class="sd">    .. warning:: There is no check that the passed value is a unit-quaternion.</span>
 
-<span class="sd">    :seealso: :func:`~v2q`</span>
+<span class="sd">    :seealso: :func:`v2q`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -360,7 +369,7 @@
 <span class="sd">        &gt;&gt;&gt; q2 = [5, 6, 7, 8]</span>
 <span class="sd">        &gt;&gt;&gt; qqmul(q1, q2)    # conventional Hamilton product</span>
 
-<span class="sd">    :seealso: qvmul, inner, vvmul</span>
+<span class="sd">    :seealso: qvmul, qinner, vvmul</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -373,7 +382,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s1</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">),</span> <span class="n">s1</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">s2</span> <span class="o">*</span> <span class="n">v1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="inner"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.inner">[docs]</a><span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
+<div class="viewcode-block" id="qinner"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qinner">[docs]</a><span class="k">def</span> <span class="nf">qinner</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Quaternion inner product</span>
 
@@ -393,13 +402,13 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import inner</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qinner</span>
 <span class="sd">        &gt;&gt;&gt; from math import sqrt, acos, pi</span>
 <span class="sd">        &gt;&gt;&gt; q1 = [1, 2, 3, 4]</span>
-<span class="sd">        &gt;&gt;&gt; inner(q1, q1)                      # square of the norm</span>
+<span class="sd">        &gt;&gt;&gt; qinner(q1, q1)                     # square of the norm</span>
 <span class="sd">        &gt;&gt;&gt; q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis</span>
 <span class="sd">        &gt;&gt;&gt; q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis</span>
-<span class="sd">        &gt;&gt;&gt; acos(inner(q1, q2)) * 180 / pi     # angle between q1 and q2</span>
+<span class="sd">        &gt;&gt;&gt; acos(qinner(q1, q2)) * 180 / pi    # angle between q1 and q2</span>
 
 <span class="sd">    :seealso: qvmul</span>
 
@@ -437,7 +446,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">qv</span> <span class="o">=</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">pure</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">conj</span><span class="p">(</span><span class="n">q</span><span class="p">)))</span>
+    <span class="n">qv</span> <span class="o">=</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">qpure</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">qconj</span><span class="p">(</span><span class="n">q</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">qv</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span></div>
 
 
@@ -512,17 +521,17 @@
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Power must be an integer&quot;</span><span class="p">)</span>
-    <span class="n">qr</span> <span class="o">=</span> <span class="n">eye</span><span class="p">()</span>
+    <span class="n">qr</span> <span class="o">=</span> <span class="n">qeye</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">power</span><span class="p">)):</span>
         <span class="n">qr</span> <span class="o">=</span> <span class="n">qqmul</span><span class="p">(</span><span class="n">qr</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">power</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">qr</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
+        <span class="n">qr</span> <span class="o">=</span> <span class="n">qconj</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">qr</span></div>
 
 
-<div class="viewcode-block" id="conj"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.conj">[docs]</a><span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="qconj"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qconj">[docs]</a><span class="k">def</span> <span class="nf">qconj</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Quaternion conjugate</span>
 
@@ -535,9 +544,9 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import conj, qprint</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qconj, qprint</span>
 <span class="sd">        &gt;&gt;&gt; q = [1, 2, 3, 4]</span>
-<span class="sd">        &gt;&gt;&gt; qprint(conj(q))</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qconj(q))</span>
 
 <span class="sd">    :SymPy: supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -551,6 +560,9 @@
 
 <span class="sd">    :arg q: unit-quaternion</span>
 <span class="sd">    :type v: array_like(4)</span>
+<span class="sd">    :param order: the order of the quaternion elements. Must be &#39;sxyz&#39; or</span>
+<span class="sd">        &#39;xyzs&#39;. Defaults to &#39;sxyz&#39;.</span>
+<span class="sd">    :type order: str</span>
 <span class="sd">    :return: corresponding SO(3) rotation matrix</span>
 <span class="sd">    :rtype: ndarray(3,3)</span>
 
@@ -594,7 +606,7 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :param tol: tolerance in units of eps</span>
 <span class="sd">    :type tol: float</span>
-<span class="sd">    :param order: the order of the returned quaternion. Must be &#39;sxyz&#39; or</span>
+<span class="sd">    :param order: the order of the returned quaternion elements. Must be &#39;sxyz&#39; or</span>
 <span class="sd">        &#39;xyzs&#39;. Defaults to &#39;sxyz&#39;.</span>
 <span class="sd">    :type order: str</span>
 <span class="sd">    :return: unit-quaternion as Euler parameters</span>
@@ -731,7 +743,7 @@
 <span class="c1">#         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]</span>
 
 
-<div class="viewcode-block" id="slerp"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.slerp">[docs]</a><span class="k">def</span> <span class="nf">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="qslerp"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qslerp">[docs]</a><span class="k">def</span> <span class="nf">qslerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Quaternion conjugate</span>
 
@@ -758,13 +770,13 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import slerp, qprint</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qslerp, qprint</span>
 <span class="sd">        &gt;&gt;&gt; from math import sqrt</span>
 <span class="sd">        &gt;&gt;&gt; q0 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis</span>
 <span class="sd">        &gt;&gt;&gt; q1 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis</span>
-<span class="sd">        &gt;&gt;&gt; qprint(slerp(q0, q1, 0))           # this is q0</span>
-<span class="sd">        &gt;&gt;&gt; qprint(slerp(q0, q1, 1))           # this is q1</span>
-<span class="sd">        &gt;&gt;&gt; qprint(slerp(q0, q1, 0.5))         # this is in &quot;half way&quot; between</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qslerp(q0, q1, 0))           # this is q0</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qslerp(q0, q1, 1))           # this is q1</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qslerp(q0, q1, 0.5))         # this is in &quot;half way&quot; between</span>
 
 <span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
 
@@ -800,7 +812,7 @@
         <span class="k">return</span> <span class="n">q0</span></div>
 
 
-<div class="viewcode-block" id="rand"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.rand">[docs]</a><span class="k">def</span> <span class="nf">rand</span><span class="p">():</span>
+<div class="viewcode-block" id="qrand"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qrand">[docs]</a><span class="k">def</span> <span class="nf">qrand</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Random unit-quaternion</span>
 
@@ -812,8 +824,8 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import rand, qprint</span>
-<span class="sd">        &gt;&gt;&gt; qprint(rand())</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qrand, qprint</span>
+<span class="sd">        &gt;&gt;&gt; qprint(qrand())</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># get 3 random numbers in [0,1]</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span>
@@ -824,9 +836,9 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="matrix"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.matrix">[docs]</a><span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="qmatrix"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qmatrix">[docs]</a><span class="k">def</span> <span class="nf">qmatrix</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert to 4x4 matrix equivalent</span>
+<span class="sd">    Convert quaternion to 4x4 matrix equivalent</span>
 
 <span class="sd">    :arg q: quaternion</span>
 <span class="sd">    :type v: array_like(4)</span>
@@ -839,11 +851,11 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import matrix, qqmul, qprint</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qmatrix, qqmul, qprint</span>
 <span class="sd">        &gt;&gt;&gt; q1 = [1, 2, 3, 4]</span>
 <span class="sd">        &gt;&gt;&gt; q2 = [5, 6, 7, 8]</span>
 <span class="sd">        &gt;&gt;&gt; qqmul(q1, q2)    # conventional Hamilton product</span>
-<span class="sd">        &gt;&gt;&gt; m = matrix(q1)</span>
+<span class="sd">        &gt;&gt;&gt; m = qmatrix(q1)</span>
 <span class="sd">        &gt;&gt;&gt; print(m)</span>
 <span class="sd">        &gt;&gt;&gt; v = m @ np.array(q2)</span>
 <span class="sd">        &gt;&gt;&gt; print(v)</span>
@@ -859,7 +871,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="n">z</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="n">x</span><span class="p">],</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">]])</span></div>
 
 
-<div class="viewcode-block" id="dot"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.dot">[docs]</a><span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<div class="viewcode-block" id="qdot"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qdot">[docs]</a><span class="k">def</span> <span class="nf">qdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rate of change of unit-quaternion</span>
 
@@ -876,10 +888,10 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import dot, qprint</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qdot, qprint</span>
 <span class="sd">        &gt;&gt;&gt; from math import sqrt</span>
 <span class="sd">        &gt;&gt;&gt; q = [1/sqrt(2), 1/sqrt(2), 0, 0]   # 90deg rotation about x-axis</span>
-<span class="sd">        &gt;&gt;&gt; dot(q, [1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; qdot(q, [1, 2, 3])</span>
 
 <span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
 
@@ -890,7 +902,7 @@
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">w</span><span class="p">),</span> <span class="n">E</span> <span class="o">@</span> <span class="n">w</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="dotb"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.dotb">[docs]</a><span class="k">def</span> <span class="nf">dotb</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<div class="viewcode-block" id="qdotb"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qdotb">[docs]</a><span class="k">def</span> <span class="nf">qdotb</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rate of change of unit-quaternion</span>
 
@@ -907,10 +919,10 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import dotb, qprint</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qdotb, qprint</span>
 <span class="sd">        &gt;&gt;&gt; from math import sqrt</span>
 <span class="sd">        &gt;&gt;&gt; q = [1/sqrt(2), 1/sqrt(2), 0, 0]   # 90deg rotation about x-axis</span>
-<span class="sd">        &gt;&gt;&gt; dotb(q, [1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; qdotb(q, [1, 2, 3])</span>
 
 <span class="sd">    .. warning:: There is no check that the passed values are unit-quaternions.</span>
 
@@ -921,7 +933,7 @@
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">w</span><span class="p">),</span> <span class="n">E</span> <span class="o">@</span> <span class="n">w</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
+<div class="viewcode-block" id="qangle"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qangle">[docs]</a><span class="k">def</span> <span class="nf">qangle</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Angle between two unit-quaternions</span>
 
@@ -938,11 +950,11 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import angle</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qangle</span>
 <span class="sd">        &gt;&gt;&gt; from math import sqrt</span>
 <span class="sd">        &gt;&gt;&gt; q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]    # 90deg rotation about x-axis</span>
 <span class="sd">        &gt;&gt;&gt; q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]    # 90deg rotation about y-axis</span>
-<span class="sd">        &gt;&gt;&gt; angle(q1, q2)</span>
+<span class="sd">        &gt;&gt;&gt; qangle(q1, q2)</span>
 
 <span class="sd">    :References:</span>
 
@@ -987,10 +999,10 @@
 
 <span class="sd">    .. runblock:: pycon</span>
 
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qprint, rand</span>
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import qprint, qrand</span>
 <span class="sd">        &gt;&gt;&gt; q = [1, 2, 3, 4]</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q)</span>
-<span class="sd">        &gt;&gt;&gt; q = rand()   # a unit quaternion</span>
+<span class="sd">        &gt;&gt;&gt; q = qrand()   # a unit quaternion</span>
 <span class="sd">        &gt;&gt;&gt; qprint(q, delim=(&#39;&lt;&lt;&#39;, &#39;&gt;&gt;&#39;))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -1023,7 +1035,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

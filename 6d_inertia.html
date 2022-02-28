@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spatial inertia &mdash; Spatial Maths package 0.11.0
+  <title>Spatial inertia &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -34,7 +34,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -133,6 +133,75 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.Alloc">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.Alloc" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
+can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default value depends on the pose class and is the result
+of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
+twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
+for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
+vector.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.Empty">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.Empty" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pose instance with zero values</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.__add__">
+<span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.__add__" title="Permalink to this definition"></a></dt>
+<dd><p>Spatial inertia addition
+:param left:
+:param right:
+:return:
+:raises TypeError: attempting to add invalid type to SpatialInertia</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">SI1</span> <span class="pre">+</span> <span class="pre">SI2</span></code> is the SpatialInertia of a composite body when bodies with</dt><dd><p>SpatialInertia <code class="docutils literal notranslate"><span class="pre">SI1</span></code> and <code class="docutils literal notranslate"><span class="pre">SI2</span></code> are connected.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Create a new spatial inertia</p>
@@ -157,57 +226,6 @@ to <code class="docutils literal notranslate"><span class="pre">I</span></code> 
 <dd class="field-odd"><p>supported</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.isvalid">
-<span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.isvalid" title="Permalink to this definition"></a></dt>
-<dd><p>Test if matrix is valid spatial inertia</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – matrix to test</p></li>
-<li><p><strong>check</strong> (<em>bool</em>) – ignored</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the matrix has shape (6,6).</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.shape">
-<span class="sig-name descname"><span class="pre">shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.shape" title="Permalink to this definition"></a></dt>
-<dd><p>Shape of the object’s interal matrix representation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(6,6)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.__add__">
-<span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.__add__" title="Permalink to this definition"></a></dt>
-<dd><p>Spatial inertia addition
-:param left:
-:param right:
-:return:
-:raises TypeError: attempting to add invalid type to SpatialInertia</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">SI1</span> <span class="pre">+</span> <span class="pre">SI2</span></code> is the SpatialInertia of a composite body when bodies with</dt><dd><p>SpatialInertia <code class="docutils literal notranslate"><span class="pre">SI1</span></code> and <code class="docutils literal notranslate"><span class="pre">SI2</span></code> are connected.</p>
-</dd>
-</dl>
-</li>
-</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -258,81 +276,6 @@ the SpatialAcceleration <code class="docutils literal notranslate"><span class="
 the SpatialAcceleration <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">*</span> <span class="pre">I</span></code> is the SpatialMomemtum of a body with SpatialInertia <code class="docutils literal notranslate"><span class="pre">I</span></code> and SpatialVelocity <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
 </ul>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.A">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.A" title="Permalink to this definition"></a></dt>
-<dd><p>Array value of an instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>NumPy array value of this instance</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance,
-and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
-instance.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.Alloc">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.Alloc" title="Permalink to this definition"></a></dt>
-<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
-default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
-can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default value depends on the pose class and is the result
-of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>,
-<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
-twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
-for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
-vector.</p>
-</div>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">10</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.Empty">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.Empty" title="Permalink to this definition"></a></dt>
-<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pose instance with zero values</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">0</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -427,6 +370,26 @@ to the list</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.isvalid">
+<span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.isvalid" title="Permalink to this definition"></a></dt>
+<dd><p>Test if matrix is valid spatial inertia</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – matrix to test</p></li>
+<li><p><strong>check</strong> (<em>bool</em>) – ignored</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the matrix has shape (6,6).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.pop">
 <span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.pop" title="Permalink to this definition"></a></dt>
 <dd><p>Pop value from an instance (BasePoseList superclass method)</p>
@@ -467,6 +430,43 @@ instance is modified.</p>
 <dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/spatialvector.html#SpatialInertia.shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Shape of the object’s interal matrix representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(6,6)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.spatialvector.SpatialInertia.A">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#spatialmath.spatialvector.SpatialInertia.A" title="Permalink to this definition"></a></dt>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>NumPy array value of this instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance,
+and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
+instance.</p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -483,7 +483,7 @@ instance is modified.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

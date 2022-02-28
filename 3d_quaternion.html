@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quaternion &mdash; Spatial Maths package 0.11.0
+  <title>Quaternion &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -112,46 +112,55 @@ is the <em>vector</em> part and is often written as</p>
 <map id="inheritancefc2bec1728" name="inheritancefc2bec1728">
 <area shape="rect" id="node4" href="#spatialmath.quaternion.Quaternion" target="_top" title="Quaternion class" alt="" coords="284,31,379,56"/>
 </map><dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Construct a new quaternion</p>
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.Alloc">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.Alloc" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<em>float</em>) – scalar</p></li>
-<li><p><strong>v</strong> (<em>3-element array_like</em>) – vector</p></li>
-</ul>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
 </dd>
 </dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion()</span></code> constructs a zero quaternion</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion(s,</span> <span class="pre">v)</span></code> construct a new quaternion from the scalar <code class="docutils literal notranslate"><span class="pre">s</span></code>
-and the vector <code class="docutils literal notranslate"><span class="pre">v</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion(q)</span></code> construct a new quaternion from the 4-vector
-<code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">=</span> <span class="pre">[s,</span> <span class="pre">v]</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion([q1,</span> <span class="pre">q2</span> <span class="pre">..</span> <span class="pre">qN])</span></code> construct a new quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code>
-values where each element is a 4-vector</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion([Q1,</span> <span class="pre">Q2</span> <span class="pre">..</span> <span class="pre">QN])</span></code> construct a new quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code>
-values where each element is a Quaternion instance</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion(M)</span></code> construct a new quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where
-<code class="docutils literal notranslate"><span class="pre">Q</span></code> is a 4xN NumPy array.</p></li>
-</ul>
+<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
+can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default value depends on the pose class and is the result
+of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
+twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
+for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
+vector.</p>
+</div>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">()</span>
-<span class="go">Quaternion(array([0., 0., 0., 0.]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
-<span class="go">Quaternion(array([1., 2., 3., 4.]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
-<span class="go">Quaternion(array([1, 2, 3, 4]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">=</span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-<span class="go">2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-<span class="go"> 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;</span>
-<span class="go"> 5.0000 &lt;  6.0000,  7.0000,  8.0000 &gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
 </pre></div>
 </div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.Empty">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.Empty" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pose instance with zero values</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -173,629 +182,6 @@ ie. <span class="math notranslate nohighlight">\(q = 0 \langle v_x, v_y, v_z \ra
 </pre></div>
 </div>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.shape" title="Permalink to this definition"></a></dt>
-<dd><p>Shape of the object’s interal matrix representation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(4,)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.isvalid">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.isvalid" title="Permalink to this definition"></a></dt>
-<dd><p>Test if vector is valid quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – vector to test</p></li>
-<li><p><strong>check</strong> (<em>bool</em>) – explicitly check vector is unit length [default True]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the matrix has shape (4,).</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.s">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">s</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.s" title="Permalink to this definition"></a></dt>
-<dd><p>Scalar part of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>scalar part of quaternion</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float or numpy.ndarray</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.s</span></code> is the scalar part.  If <cite>len(q)</cite> is:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>1, return a scalar float</p></li>
-<li><p>N&gt;1, return a NumPy array shape=(N,) is returned.</p></li>
-</ul>
-</div></blockquote>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">s</span>
-<span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">s</span>
-<span class="go">array([1, 5])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.v">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.v" title="Permalink to this definition"></a></dt>
-<dd><p>Vector part of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>vector part of quaternion</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>NumPy ndarray</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.v</span></code> is the vector part.  If <cite>len(q)</cite> is:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>1, return a NumPy array shape=(3,)</p></li>
-<li><p>N&gt;1, return a NumPy array shape=(N,3).</p></li>
-</ul>
-</div></blockquote>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">v</span>
-<span class="go">array([2, 3, 4])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">v</span>
-<span class="go">array([[2, 3, 4],</span>
-<span class="go">       [6, 7, 8]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.vec">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vec</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.vec" title="Permalink to this definition"></a></dt>
-<dd><p>Quaternion as a vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>quaternion expressed as a 4-vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy ndarray, shape=(4,)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.vec</span></code> is the quaternion as a vector.  If <cite>len(q)</cite> is:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>1, return a NumPy array shape=(4,)</p></li>
-<li><p>N&gt;1, return a NumPy array shape=(N,4).</p></li>
-</ul>
-</div></blockquote>
-<p>The quaternion coefficients are in the order (s, vx, vy, vz), ie. with
-the scalar (real part) first.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vec</span>
-<span class="go">array([1, 2, 3, 4])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">vec</span>
-<span class="go">array([[1, 2, 3, 4],</span>
-<span class="go">       [5, 6, 7, 8]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.vec_xyzs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vec_xyzs</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.vec_xyzs" title="Permalink to this definition"></a></dt>
-<dd><p>Quaternion as a vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>quaternion expressed as a 4-vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy ndarray, shape=(4,)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.vec_xyzs</span></code> is the quaternion as a vector.  If <cite>len(q)</cite> is:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>1, return a NumPy array shape=(4,)</p></li>
-<li><p>N&gt;1, return a NumPy array shape=(N,4).</p></li>
-</ul>
-</div></blockquote>
-<p>The quaternion coefficients are in the order (vx, vy, vz, s), ie. with
-the scalar (real part) last. This is useful when exporting to other
-packages like three.js or pybullet.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vec_xyzs</span>
-<span class="go">array([2, 3, 4, 1])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">vec_xyzs</span>
-<span class="go">array([[2, 3, 4, 1],</span>
-<span class="go">       [6, 7, 8, 5]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.matrix">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.matrix" title="Permalink to this definition"></a></dt>
-<dd><p>Matrix equivalent of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Numpy array, shape=(4,4)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.matrix</span></code> is a 4x4 matrix which encodes the arithmetic rules of Hamilton multiplication.
-This matrix, multiplied by the 4-vector equivalent of a second quaternion, results in the 4-vector
-equivalent of the Hamilton product.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">matrix</span>
-<span class="go">array([[ 1., -2., -3., -4.],</span>
-<span class="go">       [ 2.,  1., -4.,  3.],</span>
-<span class="go">       [ 3.,  4.,  1., -2.],</span>
-<span class="go">       [ 4., -3.,  2.,  1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>   <span class="c1"># Hamilton product</span>
-<span class="go">Quaternion(array([-60.,  12.,  30.,  24.]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">vec</span>  <span class="c1"># matrix-vector product</span>
-<span class="go">array([-60.,  12.,  30.,  24.])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.matrix" title="spatialmath.base.quaternions.matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">matrix()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.conj">
-<span class="sig-name descname"><span class="pre">conj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.conj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.conj" title="Permalink to this definition"></a></dt>
-<dd><p>Conjugate of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Quaternion instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.conj()</span></code> is the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code> with the vector part negated, ie.
-<span class="math notranslate nohighlight">\(q = s \langle -v_x, -v_y, -v_z \rangle\)</span></p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-<span class="go"> 0.0000 &lt; -1.0000, -2.0000, -3.0000 &gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.conj" title="spatialmath.base.quaternions.conj"><code class="xref py py-func docutils literal notranslate"><span class="pre">conj()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.norm">
-<span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.norm" title="Permalink to this definition"></a></dt>
-<dd><p>Norm of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.norm()</span></code> is the norm or length of the quaternion 
-<span class="math notranslate nohighlight">\(\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}\)</span></p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
-<span class="go">5.477225575051661</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
-<span class="go">array([ 5.4772, 13.1909])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qnorm" title="spatialmath.base.quaternions.qnorm"><code class="xref py py-func docutils literal notranslate"><span class="pre">qnorm()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.unit">
-<span class="sig-name descname"><span class="pre">unit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.unit" title="Permalink to this definition"></a></dt>
-<dd><p>Unit quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>UnitQuaternion instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.unit()</span></code> is the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code> normalized to have a unit length.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-<span class="go"> 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">unit</span><span class="p">())</span>
-<span class="go"> 0.1826 &lt;&lt;  0.3651,  0.5477,  0.7303 &gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">unit</span><span class="p">())</span>
-<span class="go"> 0.1826 &lt;&lt;  0.3651,  0.5477,  0.7303 &gt;&gt;</span>
-<span class="go"> 0.3790 &lt;&lt;  0.4549,  0.5307,  0.6065 &gt;&gt;</span>
-</pre></div>
-</div>
-<p>Note that the return type is different, a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code>, which is
-distinguished by the use of double angle brackets to delimit the 
-vector part.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qnorm" title="spatialmath.base.quaternions.qnorm"><code class="xref py py-func docutils literal notranslate"><span class="pre">qnorm()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.log">
-<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.log" title="Permalink to this definition"></a></dt>
-<dd><p>Logarithm of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Quaternion instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.log()</span></code> is the logarithm of the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code>, ie.</p>
-<div class="math notranslate nohighlight">
-\[\ln \| q \|,  \langle \frac{\vec{v}}{\| \vec{v} \|} \cos^{-1} \frac{s}{\| q \|} \rangle\]</div>
-<p>For a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> the logarithm is a pure quaternion whose vector
-part <span class="math notranslate nohighlight">\(\vec{v}\)</span> and <span class="math notranslate nohighlight">\(\vec{v}/2\)</span> is a Euler vector: parallel
-to the axis of rotation and whose norm is the magnitude of rotation.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">UnitQuaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
-<span class="go"> 1.7006 &lt;  0.5152,  0.7728,  1.0304 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
-<span class="go"> 0.0000 &lt;  0.7854,  0.0000,  0.0000 &gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Reference</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions">Wikipedia</a></p>
-</dd>
-<dt class="field-even">Seealso</dt>
-<dd class="field-even"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.exp" title="spatialmath.quaternion.Quaternion.exp"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp()</span></code></a>, <a class="reference internal" href="#spatialmath.quaternion.Quaternion.log" title="spatialmath.quaternion.Quaternion.log"><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a>, <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.angvec" title="spatialmath.quaternion.UnitQuaternion.angvec"><code class="xref py py-func docutils literal notranslate"><span class="pre">angvec()</span></code></a>,</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.exp">
-<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.exp" title="Permalink to this definition"></a></dt>
-<dd><p>Exponential of quaternion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Quaternion instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q.exp()</span></code> is the exponential of the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code>, ie.</p>
-<div class="math notranslate nohighlight">
-\[e^s \cos \| v \|,  \langle e^s \frac{\vec{v}}{\| \vec{v} \|} \sin \| \vec{v} \| \rangle\]</div>
-<p>For a pure quaternion with vector value <span class="math notranslate nohighlight">\(\vec{v}\)</span> the the result
-is a unit quaternion equivalent to a rotation defined by
-<span class="math notranslate nohighlight">\(2\vec{v}\)</span> intepretted as an Euler vector, that is, parallel to
-the axis of rotation and whose norm is the magnitude of rotation.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>
-<span class="go"> 1.6939 &lt; -0.7896, -1.1843, -1.5791 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">([</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>  <span class="c1"># result is a UnitQuaternion</span>
-<span class="go"> 0.7071 &lt;&lt;  0.7071,  0.0000,  0.0000 &gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">angvec</span><span class="p">())</span>
-<span class="go">(1.5707963267948963, array([1., 0., 0.]))</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Reference</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions">Wikipedia</a></p>
-</dd>
-<dt class="field-even">Seealso</dt>
-<dd class="field-even"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.log" title="spatialmath.quaternion.Quaternion.log"><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a>, <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.log" title="spatialmath.quaternion.UnitQuaternion.log"><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a>, <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.AngVec" title="spatialmath.quaternion.UnitQuaternion.AngVec"><code class="xref py py-func docutils literal notranslate"><span class="pre">AngVec()</span></code></a>, <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.EulerVec" title="spatialmath.quaternion.UnitQuaternion.EulerVec"><code class="xref py py-func docutils literal notranslate"><span class="pre">EulerVec()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.inner">
-<span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.inner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.inner" title="Permalink to this definition"></a></dt>
-<dd><p>Inner product of quaternions</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q1.inner(q2)</span></code> is the dot product of the equivalent vectors, 
-ie. <code class="docutils literal notranslate"><span class="pre">numpy.dot(q1.vec,</span> <span class="pre">q2.vec)</span></code>.
-The value of <code class="docutils literal notranslate"><span class="pre">q.inner(q)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">q.norm</span> <span class="pre">**</span> <span class="pre">2</span></code>.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.inner" title="spatialmath.base.quaternions.inner"><code class="xref py py-func docutils literal notranslate"><span class="pre">inner()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__eq__" title="Permalink to this definition"></a></dt>
-<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">==</span></code> operator</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Equality of two operands</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool or list of bool</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">==</span> <span class="pre">q2</span></code> is True if <code class="docutils literal notranslate"><span class="pre">q1`</span> <span class="pre">is</span> <span class="pre">elementwise</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">``q2</span></code>.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">==</span> <span class="n">q1</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">==</span> <span class="n">q2</span>
-<span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">==</span> <span class="n">q1</span>
-<span class="go">[True, False]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">==</span> <span class="n">q2</span>
-<span class="go">[False, True]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">==</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
-<span class="go">[True, True]</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.__ne__" title="spatialmath.quaternion.Quaternion.__ne__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__ne__()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.isequal" title="spatialmath.base.quaternions.isequal"><code class="xref py py-func docutils literal notranslate"><span class="pre">isequal()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__ne__">
-<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__ne__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__ne__" title="Permalink to this definition"></a></dt>
-<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">!=</span></code> operator</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">!=</span> <span class="pre">q2</span></code> is True if <code class="docutils literal notranslate"><span class="pre">q`</span> <span class="pre">is</span> <span class="pre">elementwise</span> <span class="pre">not</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">``q2</span></code>.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">    se, True]</span>
-<span class="go">            ^</span>
-<span class="go">SyntaxError: invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="n">e</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
-            <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.__ne__" title="spatialmath.quaternion.Quaternion.__ne__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__ne__()</span></code></a>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.isequal" title="spatialmath.base.quaternions.isequal"><code class="xref py py-func docutils literal notranslate"><span class="pre">isequal()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__mul__">
-<span class="sig-name descname"><span class="pre">__mul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__mul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__mul__" title="Permalink to this definition"></a></dt>
-<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">*</span></code> operator</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>product</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion" title="spatialmath.quaternion.Quaternion">Quaternion</a></p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p>ValueError</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">*</span> <span class="pre">q2</span></code> is the Hamilton product of two quaternions</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">*</span> <span class="pre">s</span></code> is the scalar product, where <code class="docutils literal notranslate"><span class="pre">s</span></code> is a scalar</p></li>
-</ul>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 24%" />
-<col style="width: 24%" />
-<col style="width: 24%" />
-<col style="width: 28%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head" colspan="2"><p>Multiplicands</p></th>
-<th class="head" colspan="2"><p>Product</p></th>
-</tr>
-<tr class="row-even"><th class="head"><p>left</p></th>
-<th class="head"><p>right</p></th>
-<th class="head"><p>type</p></th>
-<th class="head"><p>result</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-odd"><td><p>Quaternion</p></td>
-<td><p>Quaternion</p></td>
-<td><p>Quaternion</p></td>
-<td><p>Hamilton product</p></td>
-</tr>
-<tr class="row-even"><td><p>Quaternion</p></td>
-<td><p>UnitQuaternion</p></td>
-<td><p>Quaternion</p></td>
-<td><p>Hamilton product</p></td>
-</tr>
-<tr class="row-odd"><td><p>Quaternion</p></td>
-<td><p>scalar</p></td>
-<td><p>Quaternion</p></td>
-<td><p>scalar product</p></td>
-</tr>
-</tbody>
-</table>
-<p>Any other input combinations result in a ValueError.</p>
-<p>Note that left and right can have a length greater than 1 in which case:</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 9%" />
-<col style="width: 11%" />
-<col style="width: 9%" />
-<col style="width: 71%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>left</p></th>
-<th class="head"><p>right</p></th>
-<th class="head"><p>len</p></th>
-<th class="head"><p>operation</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>1</p></td>
-<td><p>1</p></td>
-<td><p>1</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">prod</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>1</p></td>
-<td><p>N</p></td>
-<td><p>N</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">prod[i]</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right[i]</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>N</p></td>
-<td><p>1</p></td>
-<td><p>N</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">prod[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>N</p></td>
-<td><p>N</p></td>
-<td><p>N</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">prod[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right[i]</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>N</p></td>
-<td><p>M</p></td>
-<td><ul class="simple">
-<li></li>
-</ul>
-</td>
-<td><p><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></p></td>
-</tr>
-</tbody>
-</table>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">00000</span> <span class="o">&lt;</span> <span class="mf">12.000000</span><span class="p">,</span> <span class="mf">14.000000</span><span class="p">,</span> <span class="mf">16.000000</span> <span class="o">&gt;</span>
-                                            <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">000000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                          <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">000000</span> <span class="o">&lt;</span> <span class="mf">20.000000</span><span class="p">,</span> <span class="mf">14.000000</span><span class="p">,</span> <span class="mf">32.000000</span> <span class="o">&gt;</span>
-                                             <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">000000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                          <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">000000</span> <span class="o">&lt;</span> <span class="mf">12.000000</span><span class="p">,</span> <span class="mf">30.000000</span><span class="p">,</span> <span class="mf">24.000000</span> <span class="o">&gt;</span>
-                                             <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">000000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                          <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mf">.000000</span> <span class="o">&lt;</span> <span class="mf">60.000000</span><span class="p">,</span> <span class="mf">70.000000</span><span class="p">,</span> <span class="mf">80.000000</span> <span class="o">&gt;</span>
-                                              <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">__rmul__()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">__imul__()</span></code>, <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qqmul" title="spatialmath.base.quaternions.qqmul"><code class="xref py py-func docutils literal notranslate"><span class="pre">qqmul()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__pow__">
-<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__pow__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__pow__" title="Permalink to this definition"></a></dt>
-<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">**</span></code> operator</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Quaternion instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">**</span> <span class="pre">N</span></code> computes the product of <code class="docutils literal notranslate"><span class="pre">q</span></code> with itself <code class="docutils literal notranslate"><span class="pre">N-1</span></code> times, where <code class="docutils literal notranslate"><span class="pre">N</span></code> must be
-an integer.  If <a href="#id2"><span class="problematic" id="id3">``</span></a>N``&lt;0 the result is conjugated.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">-28.0000 &lt;  4.0000,  6.0000,  8.0000 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="go"> 1.0000 &lt; -2.0000, -3.0000, -4.0000 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">-28.0000 &lt;  4.0000,  6.0000,  8.0000 &gt;</span>
-<span class="go">-124.0000 &lt;  60.0000,  70.0000,  80.0000 &gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qpow" title="spatialmath.base.quaternions.qpow"><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.quaternions.qpow()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__truediv__">
-<span class="sig-name descname"><span class="pre">__truediv__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__truediv__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__truediv__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__add__">
@@ -912,24 +298,290 @@ an integer.  If <a href="#id2"><span class="problematic" id="id3">``</span></a>N
 <p>A scalar of length N is a list, tuple or numpy array.
 A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">8.000000</span><span class="p">,</span> <span class="mf">10.000000</span><span class="p">,</span> <span class="mf">12.000000</span> <span class="o">&gt;</span>
-                                          <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">6.000000</span><span class="p">,</span> <span class="mf">8.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">00000</span> <span class="o">&lt;</span> <span class="mf">12.000000</span><span class="p">,</span> <span class="mf">14.000000</span><span class="p">,</span> <span class="mf">16.000000</span> <span class="o">&gt;</span>
-                                            <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="go">Quaternion(array([ 6,  8, 10, 12]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">+</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([2, 4, 6, 8]),</span>
+<span class="go">  array([ 6,  8, 10, 12]) ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">+</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([2, 4, 6, 8]),</span>
+<span class="go">  array([10, 12, 14, 16]) ])</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__eq__" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">==</span></code> operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Equality of two operands</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool or list of bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">==</span> <span class="pre">q2</span></code> is True if <code class="docutils literal notranslate"><span class="pre">q1`</span> <span class="pre">is</span> <span class="pre">elementwise</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">``q2</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">==</span> <span class="n">q1</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">==</span> <span class="n">q2</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">==</span> <span class="n">q1</span>
+<span class="go">[True, False]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">==</span> <span class="n">q2</span>
+<span class="go">[False, True]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">==</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="go">[True, True]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.__ne__" title="spatialmath.quaternion.Quaternion.__ne__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__ne__()</span></code></a> <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qisequal" title="spatialmath.base.quaternions.qisequal"><code class="xref py py-func docutils literal notranslate"><span class="pre">qisequal()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a new quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>float</em>) – scalar</p></li>
+<li><p><strong>v</strong> (<em>3-element array_like</em>) – vector</p></li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion()</span></code> constructs a zero quaternion</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion(s,</span> <span class="pre">v)</span></code> construct a new quaternion from the scalar <code class="docutils literal notranslate"><span class="pre">s</span></code>
+and the vector <code class="docutils literal notranslate"><span class="pre">v</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion(q)</span></code> construct a new quaternion from the 4-vector
+<code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">=</span> <span class="pre">[s,</span> <span class="pre">v]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion([q1,</span> <span class="pre">q2</span> <span class="pre">..</span> <span class="pre">qN])</span></code> construct a new quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+values where each element is a 4-vector</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion([Q1,</span> <span class="pre">Q2</span> <span class="pre">..</span> <span class="pre">QN])</span></code> construct a new quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+values where each element is a Quaternion instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quaternion(M)</span></code> construct a new quaternion with <code class="docutils literal notranslate"><span class="pre">N</span></code> values where
+<code class="docutils literal notranslate"><span class="pre">Q</span></code> is a 4xN NumPy array.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">()</span>
+<span class="go">Quaternion(array([0., 0., 0., 0.]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">Quaternion(array([1., 2., 3., 4.]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">Quaternion(array([1, 2, 3, 4]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">=</span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go"> 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;</span>
+<span class="go"> 5.0000 &lt;  6.0000,  7.0000,  8.0000 &gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__mul__">
+<span class="sig-name descname"><span class="pre">__mul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__mul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__mul__" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">*</span></code> operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>product</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion" title="spatialmath.quaternion.Quaternion">Quaternion</a></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>ValueError</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">*</span> <span class="pre">q2</span></code> is the Hamilton product of two quaternions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">*</span> <span class="pre">s</span></code> is the scalar product, where <code class="docutils literal notranslate"><span class="pre">s</span></code> is a scalar</p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 24%" />
+<col style="width: 24%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" colspan="2"><p>Multiplicands</p></th>
+<th class="head" colspan="2"><p>Product</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>left</p></th>
+<th class="head"><p>right</p></th>
+<th class="head"><p>type</p></th>
+<th class="head"><p>result</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>Quaternion</p></td>
+<td><p>Quaternion</p></td>
+<td><p>Quaternion</p></td>
+<td><p>Hamilton product</p></td>
+</tr>
+<tr class="row-even"><td><p>Quaternion</p></td>
+<td><p>UnitQuaternion</p></td>
+<td><p>Quaternion</p></td>
+<td><p>Hamilton product</p></td>
+</tr>
+<tr class="row-odd"><td><p>Quaternion</p></td>
+<td><p>scalar</p></td>
+<td><p>Quaternion</p></td>
+<td><p>scalar product</p></td>
+</tr>
+</tbody>
+</table>
+<p>Any other input combinations result in a ValueError.</p>
+<p>Note that left and right can have a length greater than 1 in which case:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 11%" />
+<col style="width: 9%" />
+<col style="width: 71%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>left</p></th>
+<th class="head"><p>right</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prod</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>N</p></td>
+<td><p>N</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prod[i]</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right[i]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>N</p></td>
+<td><p>1</p></td>
+<td><p>N</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prod[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>N</p></td>
+<td><p>N</p></td>
+<td><p>N</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">prod[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right[i]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>N</p></td>
+<td><p>M</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ValueError</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="go">Quaternion(array([-60.,  12.,  30.,  24.]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="go">Quaternion(array([2, 4, 6, 8]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([2, 4, 6, 8]),</span>
+<span class="go">  array([10, 12, 14, 16]) ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([-28.,   4.,   6.,   8.]),</span>
+<span class="go">  array([-60.,  20.,  14.,  32.]) ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([-28.,   4.,   6.,   8.]),</span>
+<span class="go">  array([-60.,  12.,  30.,  24.]) ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([-28.,   4.,   6.,   8.]),</span>
+<span class="go">  array([-124.,   60.,   70.,   80.]) ])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">__rmul__()</span></code> <code class="xref py py-func docutils literal notranslate"><span class="pre">__imul__()</span></code> <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qqmul" title="spatialmath.base.quaternions.qqmul"><code class="xref py py-func docutils literal notranslate"><span class="pre">qqmul()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__ne__">
+<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__ne__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__ne__" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">!=</span></code> operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q1</span> <span class="pre">!=</span> <span class="pre">q2</span></code> is True if <code class="docutils literal notranslate"><span class="pre">q`</span> <span class="pre">is</span> <span class="pre">elementwise</span> <span class="pre">not</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">``q2</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">!=</span> <span class="n">q1</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">!=</span> <span class="n">q2</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">!=</span> <span class="n">q1</span>
+<span class="go">[False, True]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">!=</span> <span class="n">q2</span>
+<span class="go">[True, False]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.__ne__" title="spatialmath.quaternion.Quaternion.__ne__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__ne__()</span></code></a> <a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qisequal" title="spatialmath.base.quaternions.qisequal"><code class="xref py py-func docutils literal notranslate"><span class="pre">qisequal()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__pow__">
+<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__pow__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__pow__" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">**</span></code> operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Quaternion instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">**</span> <span class="pre">N</span></code> computes the product of <code class="docutils literal notranslate"><span class="pre">q</span></code> with itself <code class="docutils literal notranslate"><span class="pre">N-1</span></code> times, where <code class="docutils literal notranslate"><span class="pre">N</span></code> must be
+an integer.  If <a href="#id1"><span class="problematic" id="id2">``</span></a>N``&lt;0 the result is conjugated.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">-28.0000 &lt;  4.0000,  6.0000,  8.0000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go"> 1.0000 &lt; -2.0000, -3.0000, -4.0000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">-28.0000 &lt;  4.0000,  6.0000,  8.0000 &gt;</span>
+<span class="go">-124.0000 &lt;  60.0000,  70.0000,  80.0000 &gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qpow" title="spatialmath.base.quaternions.qpow"><code class="xref py py-func docutils literal notranslate"><span class="pre">qpow()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1047,100 +699,25 @@ A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.</p
 <p>A scalar of length N is a list, tuple or numpy array.
 A 3-vector of length N is a 3xN numpy array, where each column is a 3-vector.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">4.000000</span><span class="p">,</span> <span class="mf">4.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>
-    <span class="mi">0000</span> <span class="o">&lt;</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span> <span class="o">&gt;</span>
-                                        <span class="p p-Marker">^</span>
-<span class="gr">SyntaxError</span>: <span class="n">invalid syntax</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">-</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="go">Quaternion(array([-4, -4, -4, -4]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">-</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([0, 0, 0, 0]),</span>
+<span class="go">  array([4, 4, 4, 4]) ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span> <span class="o">-</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span>
+<span class="go">Quaternion([</span>
+<span class="go">  array([0, 0, 0, 0]),</span>
+<span class="go">  array([0, 0, 0, 0]) ])</span>
 </pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.A">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#spatialmath.quaternion.Quaternion.A" title="Permalink to this definition"></a></dt>
-<dd><p>Array value of an instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>NumPy array value of this instance</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance,
-and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
-instance.</p>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.Alloc">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.Alloc" title="Permalink to this definition"></a></dt>
-<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
-default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
-can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default value depends on the pose class and is the result
-of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>,
-<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
-twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
-for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
-vector.</p>
-</div>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">10</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.Empty">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.Empty" title="Permalink to this definition"></a></dt>
-<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pose instance with zero values</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">0</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.__truediv__">
+<span class="sig-name descname"><span class="pre">__truediv__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.__truediv__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.__truediv__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.append">
@@ -1324,6 +901,69 @@ The result is always a list, except for the first case above and
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.conj">
+<span class="sig-name descname"><span class="pre">conj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.conj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.conj" title="Permalink to this definition"></a></dt>
+<dd><p>Conjugate of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Quaternion instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.conj()</span></code> is the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code> with the vector part negated, ie.
+<span class="math notranslate nohighlight">\(q = s \langle -v_x, -v_y, -v_z \rangle\)</span></p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+<span class="go"> 0.0000 &lt; -1.0000, -2.0000, -3.0000 &gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qconj" title="spatialmath.base.quaternions.qconj"><code class="xref py py-func docutils literal notranslate"><span class="pre">qconj()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.exp">
+<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.exp" title="Permalink to this definition"></a></dt>
+<dd><p>Exponential of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Quaternion instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.exp()</span></code> is the exponential of the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code>, ie.</p>
+<div class="math notranslate nohighlight">
+\[e^s \cos \| v \|,  \langle e^s \frac{\vec{v}}{\| \vec{v} \|} \sin \| \vec{v} \| \rangle\]</div>
+<p>For a pure quaternion with vector value <span class="math notranslate nohighlight">\(\vec{v}\)</span> the the result
+is a unit quaternion equivalent to a rotation defined by
+<span class="math notranslate nohighlight">\(2\vec{v}\)</span> intepretted as an Euler vector, that is, parallel to
+the axis of rotation and whose norm is the magnitude of rotation.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>
+<span class="go"> 1.6939 &lt; -0.7896, -1.1843, -1.5791 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">([</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">exp</span><span class="p">())</span>  <span class="c1"># result is a UnitQuaternion</span>
+<span class="go"> 0.7071 &lt;&lt;  0.7071,  0.0000,  0.0000 &gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">angvec</span><span class="p">())</span>
+<span class="go">(1.5707963267948963, array([1., 0., 0.]))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions">Wikipedia</a></p>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.log" title="spatialmath.quaternion.Quaternion.log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Quaternion.log()</span></code></a> <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.log" title="spatialmath.quaternion.UnitQuaternion.log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">UnitQuaternion.log()</span></code></a> <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.AngVec" title="spatialmath.quaternion.UnitQuaternion.AngVec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">UnitQuaternion.AngVec()</span></code></a> <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.EulerVec" title="spatialmath.quaternion.UnitQuaternion.EulerVec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">UnitQuaternion.EulerVec()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.extend">
 <span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.extend" title="Permalink to this definition"></a></dt>
 <dd><p>Extend sequence of values in an instance (BasePoseList superclass method)</p>
@@ -1346,6 +986,29 @@ The result is always a list, except for the first case above and
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.inner">
+<span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.inner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.inner" title="Permalink to this definition"></a></dt>
+<dd><p>Inner product of quaternions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q1.inner(q2)</span></code> is the dot product of the equivalent vectors, 
+ie. <code class="docutils literal notranslate"><span class="pre">numpy.dot(q1.vec,</span> <span class="pre">q2.vec)</span></code>.
+The value of <code class="docutils literal notranslate"><span class="pre">q.inner(q)</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">q.norm</span> <span class="pre">**</span> <span class="pre">2</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qinner" title="spatialmath.base.quaternions.qinner"><code class="xref py py-func docutils literal notranslate"><span class="pre">qinner()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1382,6 +1045,97 @@ The result is always a list, except for the first case above and
 <p>If <code class="docutils literal notranslate"><span class="pre">i</span></code> is beyond the end of the list, the item is appended
 to the list</p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.isvalid">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.isvalid" title="Permalink to this definition"></a></dt>
+<dd><p>Test if vector is valid quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – vector to test</p></li>
+<li><p><strong>check</strong> (<em>bool</em>) – explicitly check vector is unit length [default True]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the matrix has shape (4,).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.log" title="Permalink to this definition"></a></dt>
+<dd><p>Logarithm of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Quaternion instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.log()</span></code> is the logarithm of the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code>, ie.</p>
+<div class="math notranslate nohighlight">
+\[\ln \| q \|,  \langle \frac{\vec{v}}{\| \vec{v} \|} \cos^{-1} \frac{s}{\| q \|} \rangle\]</div>
+<p>For a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> the logarithm is a pure quaternion whose vector
+part <span class="math notranslate nohighlight">\(\vec{v}\)</span> and <span class="math notranslate nohighlight">\(\vec{v}/2\)</span> is a Euler vector: parallel
+to the axis of rotation and whose norm is the magnitude of rotation.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">UnitQuaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
+<span class="go"> 1.7006 &lt;  0.5152,  0.7728,  1.0304 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
+<span class="go"> 0.0000 &lt;  0.7854,  0.0000,  0.0000 &gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions">Wikipedia</a></p>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.quaternion.Quaternion.exp" title="spatialmath.quaternion.Quaternion.exp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Quaternion.exp()</span></code></a> <a class="reference internal" href="#spatialmath.quaternion.Quaternion.log" title="spatialmath.quaternion.Quaternion.log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Quaternion.log()</span></code></a> <a class="reference internal" href="3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.angvec" title="spatialmath.quaternion.UnitQuaternion.angvec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">UnitQuaternion.angvec()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.norm">
+<span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.norm" title="Permalink to this definition"></a></dt>
+<dd><p>Norm of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.norm()</span></code> is the norm or length of the quaternion 
+<span class="math notranslate nohighlight">\(\sqrt{s^2 + v_x^2 + v_y^2 + v_z^2}\)</span></p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="go">5.477225575051661</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="go">array([ 5.4772, 13.1909])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qnorm" title="spatialmath.base.quaternions.qnorm"><code class="xref py py-func docutils literal notranslate"><span class="pre">qnorm()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1423,6 +1177,38 @@ instance is modified.</p>
 <dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.reverse">
 <span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.reverse" title="Permalink to this definition"></a></dt>
 <dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.unit">
+<span class="sig-name descname"><span class="pre">unit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/quaternion.html#Quaternion.unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.quaternion.Quaternion.unit" title="Permalink to this definition"></a></dt>
+<dd><p>Unit quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>UnitQuaternion instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.unit()</span></code> is the quaternion <code class="docutils literal notranslate"><span class="pre">q</span></code> normalized to have a unit length.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go"> 1.0000 &lt;  2.0000,  3.0000,  4.0000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">unit</span><span class="p">())</span>
+<span class="go"> 0.1826 &lt;&lt;  0.3651,  0.5477,  0.7303 &gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">unit</span><span class="p">())</span>
+<span class="go"> 0.1826 &lt;&lt;  0.3651,  0.5477,  0.7303 &gt;&gt;</span>
+<span class="go"> 0.3790 &lt;&lt;  0.4549,  0.5307,  0.6065 &gt;&gt;</span>
+</pre></div>
+</div>
+<p>Note that the return type is different, a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code>, which is
+distinguished by the use of double angle brackets to delimit the 
+vector part.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qnorm" title="spatialmath.base.quaternions.qnorm"><code class="xref py py-func docutils literal notranslate"><span class="pre">qnorm()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1486,6 +1272,199 @@ that the value is a 1D array.</p></li>
 </ul>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.A">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#spatialmath.quaternion.Quaternion.A" title="Permalink to this definition"></a></dt>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>NumPy array value of this instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance,
+and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
+instance.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.matrix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Matrix equivalent of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Numpy array, shape=(4,4)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.matrix</span></code> is a 4x4 matrix which encodes the arithmetic rules of Hamilton multiplication.
+This matrix, multiplied by the 4-vector equivalent of a second quaternion, results in the 4-vector
+equivalent of the Hamilton product.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">matrix</span>
+<span class="go">array([[ 1., -2., -3., -4.],</span>
+<span class="go">       [ 2.,  1., -4.,  3.],</span>
+<span class="go">       [ 3.,  4.,  1., -2.],</span>
+<span class="go">       [ 4., -3.,  2.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>   <span class="c1"># Hamilton product</span>
+<span class="go">Quaternion(array([-60.,  12.,  30.,  24.]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">matrix</span> <span class="o">@</span> <span class="n">Quaternion</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">vec</span>  <span class="c1"># matrix-vector product</span>
+<span class="go">array([-60.,  12.,  30.,  24.])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_quat.html#spatialmath.base.quaternions.qmatrix" title="spatialmath.base.quaternions.qmatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">qmatrix()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.s">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">s</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.s" title="Permalink to this definition"></a></dt>
+<dd><p>Scalar part of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>scalar part of quaternion</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float or numpy.ndarray</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.s</span></code> is the scalar part.  If <cite>len(q)</cite> is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1, return a scalar float</p></li>
+<li><p>N&gt;1, return a NumPy array shape=(N,) is returned.</p></li>
+</ul>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">s</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">s</span>
+<span class="go">array([1, 5])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Shape of the object’s interal matrix representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(4,)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.v">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.v" title="Permalink to this definition"></a></dt>
+<dd><p>Vector part of quaternion</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>vector part of quaternion</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>NumPy ndarray</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.v</span></code> is the vector part.  If <cite>len(q)</cite> is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1, return a NumPy array shape=(3,)</p></li>
+<li><p>N&gt;1, return a NumPy array shape=(N,3).</p></li>
+</ul>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">v</span>
+<span class="go">array([2, 3, 4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">v</span>
+<span class="go">array([[2, 3, 4],</span>
+<span class="go">       [6, 7, 8]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.vec">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vec</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.vec" title="Permalink to this definition"></a></dt>
+<dd><p>Quaternion as a vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>quaternion expressed as a 4-vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy ndarray, shape=(4,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.vec</span></code> is the quaternion as a vector.  If <cite>len(q)</cite> is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1, return a NumPy array shape=(4,)</p></li>
+<li><p>N&gt;1, return a NumPy array shape=(N,4).</p></li>
+</ul>
+</div></blockquote>
+<p>The quaternion coefficients are in the order (s, vx, vy, vz), ie. with
+the scalar (real part) first.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vec</span>
+<span class="go">array([1, 2, 3, 4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">vec</span>
+<span class="go">array([[1, 2, 3, 4],</span>
+<span class="go">       [5, 6, 7, 8]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.quaternion.Quaternion.vec_xyzs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vec_xyzs</span></span><a class="headerlink" href="#spatialmath.quaternion.Quaternion.vec_xyzs" title="Permalink to this definition"></a></dt>
+<dd><p>Quaternion as a vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>quaternion expressed as a 4-vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy ndarray, shape=(4,)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">q.vec_xyzs</span></code> is the quaternion as a vector.  If <cite>len(q)</cite> is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1, return a NumPy array shape=(4,)</p></li>
+<li><p>N&gt;1, return a NumPy array shape=(N,4).</p></li>
+</ul>
+</div></blockquote>
+<p>The quaternion coefficients are in the order (vx, vy, vz, s), ie. with
+the scalar (real part) last. This is useful when exporting to other
+packages like three.js or pybullet.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">vec_xyzs</span>
+<span class="go">array([2, 3, 4, 1])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Quaternion</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]])</span><span class="o">.</span><span class="n">vec_xyzs</span>
+<span class="go">array([[2, 3, 4, 1],</span>
+<span class="go">       [6, 7, 8, 5]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1502,7 +1481,7 @@ that the value is a 1D array.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

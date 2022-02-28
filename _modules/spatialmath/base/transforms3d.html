@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.base.transforms3d &mdash; Spatial Maths package 0.11.0
+  <title>spatialmath.base.transforms3d &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -78,8 +78,9 @@
 <span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This modules contains functions to create and transform SO(3) and SE(3) matrices,</span>
-<span class="sd">respectively 3D rotation matrices and homogeneous tranformation matrices.</span>
+<span class="sd">These functions create and manipulate 3D rotation matrices and rigid-body</span>
+<span class="sd">transformations as 3x3 SO(3) matrices and 4x4 SE(3) matrices respectively.</span>
+<span class="sd">These matrices are represented as 2D NumPy arrays.</span>
 
 <span class="sd">Vector arguments are what numpy refers to as ``array_like`` and can be a list,</span>
 <span class="sd">tuple, numpy array, numpy row vector or numpy column vector.</span>
@@ -1538,7 +1539,7 @@
 
 <span class="sd">    .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).</span>
 
-<span class="sd">    :seealso: :func:`spatialmath.smb.quaternions.slerp` :func:`~spatialmath.smb.transforms3d.trinterp2`</span>
+<span class="sd">    :seealso: :func:`spatialmath.smb.quaternions.qlerp` :func:`~spatialmath.smb.transforms3d.trinterp2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1550,12 +1551,12 @@
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># 	TRINTERP(T, s)</span>
             <span class="n">q0</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qslerp</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 	TRINTERP(T0, T1, s)</span>
             <span class="n">q0</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
             <span class="n">q1</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qslerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
 
@@ -1566,7 +1567,7 @@
             <span class="n">q0</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
             <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
 
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qslerp</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">eye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
             <span class="n">pr</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 	TRINTERP(T0, T1, s)</span>
@@ -1576,7 +1577,7 @@
             <span class="n">p0</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="n">p1</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
 
-            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">slerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">qr</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qslerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
             <span class="n">pr</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">p1</span>
 
         <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span>
@@ -2317,29 +2318,25 @@
 <span class="sd">    :return: derivative of inverse angular velocity transformation matrix</span>
 <span class="sd">    :rtype: ndarray(6,6) or ndarray(3,3)</span>
 
-<span class="sd">    The angular rate transformation matrix :math:`\mat{A}` is such that</span>
+<span class="sd">    The angular rate transformation matrix :math:`\mat{A} \in \mathbb{R}^{6 \times 6}` is such that</span>
 
 <span class="sd">    .. math::</span>
 
 <span class="sd">        \dvec{x} = \mat{A}^{-1}(\Gamma) \vec{\nu}</span>
 
-<span class="sd">    where :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational </span>
-<span class="sd">    representation and is used to transform a geometric Jacobian to an analytic Jacobians.</span>
+<span class="sd">    where :math:`\dvec{x} \in \mathbb{R}^6` is analytic velocity :math:`(\vec{v}, \dvec{\Gamma})`, </span>
+<span class="sd">    :math:`\vec{\nu} \in \mathbb{R}^6` is spatial velocity :math:`(\vec{v}, \vec{\omega})`, and</span>
+<span class="sd">    :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational </span>
+<span class="sd">    representation.</span>
 
 <span class="sd">    The relationship between spatial and analytic acceleration is</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        \ddvec{x} = \dmat{A}^{-1}(\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}</span>
+<span class="sd">        \ddvec{x} = \dmat{A}^{-1}(\Gamma, \dot{\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}</span>
 
-<span class="sd">    which requires</span>
+<span class="sd">    and :math:`\dmat{A}^{-1}(\Gamma, \dot{\Gamma)` is computed by this function.</span>
 <span class="sd">    </span>
-<span class="sd">    .. math::</span>
-<span class="sd">    </span>
-<span class="sd">        \frac{d}{dt} \mat{A}^{-1}(\Gamma) = \mat{A}^{-1}(\Gamma, \dot{\Gamma})</span>
-
-<span class="sd">    This matrix is a function of :math:`\vec{\Gamma}` and :math:`\dvec{\Gamma}`,</span>
-<span class="sd">    and is also required to compute the derivative of an analytic Jacobian.</span>
 <span class="sd">        </span>
 <span class="sd">    ============================  ========================================</span>
 <span class="sd">    ``representation``            Rotational representation</span>
@@ -2351,7 +2348,7 @@
 <span class="sd">    ``&quot;exp&quot;``                     exponential coordinate rates</span>
 <span class="sd">    ============================  ========================================</span>
 
-<span class="sd">    If ``full=False`` the lower-right 3x3 matrix is returned which transforms</span>
+<span class="sd">    If ``full=True`` a block diagonal 6x6 matrix is returned which transforms analytic</span>
 <span class="sd">    analytic rotational acceleration to angular acceleration.</span>
 
 <span class="sd">    Reference:</span>
@@ -3206,7 +3203,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

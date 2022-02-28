@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D graphics &mdash; Spatial Maths package 0.11.0
+  <title>3D graphics &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -101,124 +101,6 @@
 <h1>3D graphics<a class="headerlink" href="#d-graphics" title="Permalink to this headline"></a></h1>
 <p>3d graphical primitives which build on Matplotlib <code class="docutils literal notranslate"><span class="pre">plot_wireframe</span></code> and <code class="docutils literal notranslate"><span class="pre">plot_surface</span></code>.</p>
 <span class="target" id="module-spatialmath.base.graphics"></span><dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.graphics.plot_sphere">
-<span class="sig-name descname"><span class="pre">plot_sphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_sphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_sphere" title="Permalink to this definition"></a></dt>
-<dd><p>Plot a sphere using matplotlib</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>centre</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>N</em><em>)</em><em>, </em><em>optional</em>) – centre of sphere, defaults to (0, 0, 0)</p></li>
-<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>optional</em>) – radius of sphere, defaults to 1</p></li>
-<li><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points on circumferece, defaults to 50</p></li>
-<li><p><strong>pose</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a><em>, </em><em>optional</em>) – pose of sphere, defaults to None</p></li>
-<li><p><strong>ax</strong> (<em>Axes3D</em><em>, </em><em>optional</em>) – axes to draw into, defaults to None</p></li>
-<li><p><strong>filled</strong> (<em>bool</em><em>, </em><em>optional</em>) – draw filled polygon, else wireframe, defaults to False</p></li>
-<li><p><strong>kwargs</strong> – arguments passed to <code class="docutils literal notranslate"><span class="pre">plot_wireframe</span></code> or <code class="docutils literal notranslate"><span class="pre">plot_surface</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>matplotlib collection</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of Line3DCollection or Poly3DCollection</p>
-</dd>
-</dl>
-<p>Plot one or more spheres. If <code class="docutils literal notranslate"><span class="pre">centre</span></code> is a 3xN array, then each column is
-taken as the centre of a sphere.  All spheres have the same radius, color
-etc.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">plot_sphere</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>   <span class="c1"># red sphere wireframe</span>
-<span class="go">[None]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
-<span class="go">[None]</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.graphics.plot_ellipsoid">
-<span class="sig-name descname"><span class="pre">plot_ellipsoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_ellipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_ellipsoid" title="Permalink to this definition"></a></dt>
-<dd><p>Draw an ellipsoid using matplotlib</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – ellipsoid</p></li>
-<li><p><strong>centre</strong> (<em>tuple</em><em>, </em><em>optional</em>) – [description], defaults to (0,0,0)</p></li>
-<li><p><strong>scale</strong> – </p></li>
-<li><p><strong>confidence</strong> (<em>float</em>) – confidence interval, range 0 to 1</p></li>
-<li><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points on circumferece, defaults to 40</p></li>
-<li><p><strong>inverted</strong> (<em>bool</em><em>, </em><em>optional</em>) – <span class="math notranslate nohighlight">\(E^{-1}\)</span> rather than <span class="math notranslate nohighlight">\(E\)</span> provided, defaults to False</p></li>
-<li><p><strong>ax</strong> (<em>[</em><em>type</em><em>]</em><em>, </em><em>optional</em>) – [description], defaults to None</p></li>
-<li><p><strong>wireframe</strong> (<em>bool</em><em>, </em><em>optional</em>) – [description], defaults to False</p></li>
-<li><p><strong>stride</strong> (<em>int</em><em>, </em><em>optional</em>) – [description], defaults to 1</p></li>
-</ul>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">plot_ellipse(E)</span></code> draws the ellipsoid defined by <span class="math notranslate nohighlight">\(x^T \mat{E} x = 0\)</span>
-on the current plot.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">plot_ellipse</span><span class="p">(</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">3</span> <span class="mi">4</span><span class="p">]</span><span class="s1">&#39;, &#39;</span><span class="sa">r</span><span class="s1">&#39;); </span><span class="si">% d</span><span class="s1">raw red ellipse</span>
-<span class="n">plot_ellipse</span><span class="p">(</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">6</span><span class="p">]</span><span class="s1">&#39;, &#39;</span><span class="n">alter</span><span class="s1">&#39;, H); % move the ellipse</span>
-<span class="n">plot_ellipse</span><span class="p">(</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">6</span><span class="p">]</span><span class="s1">&#39;, &#39;</span><span class="n">alter</span><span class="s1">&#39;, H, &#39;</span><span class="n">LineColor</span><span class="s1">&#39;, &#39;</span><span class="n">k</span><span class="s1">&#39;); </span><span class="si">% c</span><span class="s1">hange color</span>
-
-<span class="n">plot_ellipse</span><span class="p">(</span><span class="n">COVAR</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">);</span> <span class="o">%</span> <span class="n">draw</span> <span class="mi">95</span><span class="o">%</span> <span class="n">confidence</span> <span class="n">ellipse</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>If a confidence interval is given then <code class="docutils literal notranslate"><span class="pre">E</span></code> is interpretted as a covariance
-matrix and the ellipse size is computed using an inverse chi-squared function.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.graphics.plot_cylinder">
-<span class="sig-name descname"><span class="pre">plot_cylinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_cylinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_cylinder" title="Permalink to this definition"></a></dt>
-<dd><p>Plot a cylinder using matplotlib</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>radius</strong> (<em>float</em>) – radius of sphere</p></li>
-<li><p><strong>height</strong> (<em>float</em><em> or </em><em>array_like</em><em>(</em><em>2</em><em>)</em>) – height of cylinder in the z-direction</p></li>
-<li><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points on circumferece, defaults to 50</p></li>
-<li><p><strong>pose</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a><em>, </em><em>optional</em>) – pose of sphere, defaults to None</p></li>
-<li><p><strong>ax</strong> (<em>Axes3D</em><em>, </em><em>optional</em>) – axes to draw into, defaults to None</p></li>
-<li><p><strong>filled</strong> (<em>bool</em><em>, </em><em>optional</em>) – draw filled polygon, else wireframe, defaults to False</p></li>
-<li><p><strong>kwargs</strong> – arguments passed to <code class="docutils literal notranslate"><span class="pre">plot_wireframe</span></code> or <code class="docutils literal notranslate"><span class="pre">plot_surface</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>matplotlib objects</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of matplotlib object types</p>
-</dd>
-</dl>
-<p>The axis of the cylinder is parallel to the z-axis and extends from z=0
-to z=height, or z=height[0] to z=height[1].</p>
-<p>The cylinder can be positioned by setting <code class="docutils literal notranslate"><span class="pre">centre</span></code>, or positioned
-and orientated by setting <code class="docutils literal notranslate"><span class="pre">pose</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.graphics.plot_cone">
 <span class="sig-name descname"><span class="pre">plot_cone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_cone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_cone" title="Permalink to this definition"></a></dt>
 <dd><p>Plot a cone using matplotlib</p>
@@ -278,6 +160,124 @@ and orientated by setting <code class="docutils literal notranslate"><span class
 </dd>
 <dt class="field-even">Seealso</dt>
 <dd class="field-even"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.graphics.plot_cylinder">
+<span class="sig-name descname"><span class="pre">plot_cylinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ends</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_cylinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_cylinder" title="Permalink to this definition"></a></dt>
+<dd><p>Plot a cylinder using matplotlib</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> (<em>float</em>) – radius of sphere</p></li>
+<li><p><strong>height</strong> (<em>float</em><em> or </em><em>array_like</em><em>(</em><em>2</em><em>)</em>) – height of cylinder in the z-direction</p></li>
+<li><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points on circumferece, defaults to 50</p></li>
+<li><p><strong>pose</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a><em>, </em><em>optional</em>) – pose of sphere, defaults to None</p></li>
+<li><p><strong>ax</strong> (<em>Axes3D</em><em>, </em><em>optional</em>) – axes to draw into, defaults to None</p></li>
+<li><p><strong>filled</strong> (<em>bool</em><em>, </em><em>optional</em>) – draw filled polygon, else wireframe, defaults to False</p></li>
+<li><p><strong>kwargs</strong> – arguments passed to <code class="docutils literal notranslate"><span class="pre">plot_wireframe</span></code> or <code class="docutils literal notranslate"><span class="pre">plot_surface</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matplotlib objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of matplotlib object types</p>
+</dd>
+</dl>
+<p>The axis of the cylinder is parallel to the z-axis and extends from z=0
+to z=height, or z=height[0] to z=height[1].</p>
+<p>The cylinder can be positioned by setting <code class="docutils literal notranslate"><span class="pre">centre</span></code>, or positioned
+and orientated by setting <code class="docutils literal notranslate"><span class="pre">pose</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.graphics.plot_ellipsoid">
+<span class="sig-name descname"><span class="pre">plot_ellipsoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inverted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_ellipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_ellipsoid" title="Permalink to this definition"></a></dt>
+<dd><p>Draw an ellipsoid using matplotlib</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – ellipsoid</p></li>
+<li><p><strong>centre</strong> (<em>tuple</em><em>, </em><em>optional</em>) – [description], defaults to (0,0,0)</p></li>
+<li><p><strong>scale</strong> – </p></li>
+<li><p><strong>confidence</strong> (<em>float</em>) – confidence interval, range 0 to 1</p></li>
+<li><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points on circumferece, defaults to 40</p></li>
+<li><p><strong>inverted</strong> (<em>bool</em><em>, </em><em>optional</em>) – <span class="math notranslate nohighlight">\(E^{-1}\)</span> rather than <span class="math notranslate nohighlight">\(E\)</span> provided, defaults to False</p></li>
+<li><p><strong>ax</strong> (<em>[</em><em>type</em><em>]</em><em>, </em><em>optional</em>) – [description], defaults to None</p></li>
+<li><p><strong>wireframe</strong> (<em>bool</em><em>, </em><em>optional</em>) – [description], defaults to False</p></li>
+<li><p><strong>stride</strong> (<em>int</em><em>, </em><em>optional</em>) – [description], defaults to 1</p></li>
+</ul>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">plot_ellipse(E)</span></code> draws the ellipsoid defined by <span class="math notranslate nohighlight">\(x^T \mat{E} x = 0\)</span>
+on the current plot.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span> <span class="o">=</span> <span class="n">plot_ellipse</span><span class="p">(</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">3</span> <span class="mi">4</span><span class="p">]</span><span class="s1">&#39;, &#39;</span><span class="sa">r</span><span class="s1">&#39;); </span><span class="si">% d</span><span class="s1">raw red ellipse</span>
+<span class="n">plot_ellipse</span><span class="p">(</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">6</span><span class="p">]</span><span class="s1">&#39;, &#39;</span><span class="n">alter</span><span class="s1">&#39;, H); % move the ellipse</span>
+<span class="n">plot_ellipse</span><span class="p">(</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span> <span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">6</span><span class="p">]</span><span class="s1">&#39;, &#39;</span><span class="n">alter</span><span class="s1">&#39;, H, &#39;</span><span class="n">LineColor</span><span class="s1">&#39;, &#39;</span><span class="n">k</span><span class="s1">&#39;); </span><span class="si">% c</span><span class="s1">hange color</span>
+
+<span class="n">plot_ellipse</span><span class="p">(</span><span class="n">COVAR</span><span class="p">,</span> <span class="s1">&#39;confidence&#39;</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">);</span> <span class="o">%</span> <span class="n">draw</span> <span class="mi">95</span><span class="o">%</span> <span class="n">confidence</span> <span class="n">ellipse</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If a confidence interval is given then <code class="docutils literal notranslate"><span class="pre">E</span></code> is interpretted as a covariance
+matrix and the ellipse size is computed using an inverse chi-squared function.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.graphics.plot_sphere">
+<span class="sig-name descname"><span class="pre">plot_sphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centre</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/graphics.html#plot_sphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.graphics.plot_sphere" title="Permalink to this definition"></a></dt>
+<dd><p>Plot a sphere using matplotlib</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>centre</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>N</em><em>)</em><em>, </em><em>optional</em>) – centre of sphere, defaults to (0, 0, 0)</p></li>
+<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>optional</em>) – radius of sphere, defaults to 1</p></li>
+<li><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points on circumferece, defaults to 50</p></li>
+<li><p><strong>pose</strong> (<a class="reference internal" href="3d_pose_SE3.html#spatialmath.pose3d.SE3" title="spatialmath.pose3d.SE3"><em>SE3</em></a><em>, </em><em>optional</em>) – pose of sphere, defaults to None</p></li>
+<li><p><strong>ax</strong> (<em>Axes3D</em><em>, </em><em>optional</em>) – axes to draw into, defaults to None</p></li>
+<li><p><strong>filled</strong> (<em>bool</em><em>, </em><em>optional</em>) – draw filled polygon, else wireframe, defaults to False</p></li>
+<li><p><strong>kwargs</strong> – arguments passed to <code class="docutils literal notranslate"><span class="pre">plot_wireframe</span></code> or <code class="docutils literal notranslate"><span class="pre">plot_surface</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matplotlib collection</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of Line3DCollection or Poly3DCollection</p>
+</dd>
+</dl>
+<p>Plot one or more spheres. If <code class="docutils literal notranslate"><span class="pre">centre</span></code> is a 3xN array, then each column is
+taken as the centre of a sphere.  All spheres have the same radius, color
+etc.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">plot_sphere</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>   <span class="c1"># red sphere wireframe</span>
+<span class="go">[None]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="go">[None]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_surface()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">plot_wireframe()</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -354,7 +354,7 @@ and orientated by setting <code class="docutils literal notranslate"><span class
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>se(3) twist &mdash; Spatial Maths package 0.11.0
+  <title>se(3) twist &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -122,185 +122,132 @@ with the translational components first, followed by rotational
 components, ie. <span class="math notranslate nohighlight">\([\omega, \vec{v}]\)</span>.</p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Construct a new 3D twist object</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3()</span></code> is a Twist3 instance representing null motion – the
-identity twist</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3(S)</span></code> is a Twist3 instance from an array-like (6,)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3(v,</span> <span class="pre">w)</span></code> is a Twist3 instance from a moment <code class="docutils literal notranslate"><span class="pre">v</span></code> (3,) and
-direction <code class="docutils literal notranslate"><span class="pre">w</span></code> (3,)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3([S1,</span> <span class="pre">S2,</span> <span class="pre">...</span> <span class="pre">SN])</span></code> where each <code class="docutils literal notranslate"><span class="pre">Si</span></code> is a numpy array (6,)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3(X)</span></code> is a Twist3 instance with the same value as <code class="docutils literal notranslate"><span class="pre">X</span></code>, ie.
-a copy</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Twist3([X1,</span> <span class="pre">X2,</span> <span class="pre">...</span> <span class="pre">XN])</span></code> where each Xi is a Twist3 instance, is a
-Twist3 instance containing N motions</p></li>
-</ul>
+<dt class="sig sig-object py" id="spatialmath.Twist3.Ad">
+<span class="sig-name descname"><span class="pre">Ad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.Ad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.Ad" title="Permalink to this definition"></a></dt>
+<dd><p>Adjoint of 3D twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>adjoint matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(6,6)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">S.Ad()</span></code> is the 6x6 adjoint matrix of the corresponding
+homogeneous transformation.</p>
+<p>For a twist representing motion from frame {B} to {A}, the adjoint will
+transform a twist relative to frame {A} to one relative to frame {B}.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method computes the equivalent SE(3) matrix, then the adjoint
+of that.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.ad" title="spatialmath.Twist3.ad"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.ad()</span></code></a>, <a class="reference internal" href="#spatialmath.Twist3.SE3" title="spatialmath.Twist3.SE3"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.SE3()</span></code></a>, <a class="reference internal" href="#spatialmath.Twist3.exp" title="spatialmath.Twist3.exp"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.exp()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.isvalid">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.isvalid" title="Permalink to this definition"></a></dt>
-<dd><p>Test if matrix is valid twist</p>
+<dt class="sig sig-object py" id="spatialmath.Twist3.Alloc">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.Alloc" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – array to test</p>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Whether the value is a 6-vector or a valid 4x4 se(3) element</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
 </dd>
 </dl>
-<p>A twist can be represented by a 6-vector or a 4x4 skew symmetric matrix,
-for example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span><span class="p">,</span> <span class="n">base</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">isvalid</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
-<span class="go">array([[ 0., -6.,  5.,  1.],</span>
-<span class="go">       [ 6.,  0., -4.,  2.],</span>
-<span class="go">       [-5.,  4.,  0.,  3.],</span>
-<span class="go">       [ 0.,  0.,  0.,  0.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-<span class="go">False</span>
-</pre></div>
+<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
+default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
+can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default value depends on the pose class and is the result
+of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
+twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
+for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
+vector.</p>
 </div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spatialmath.Twist3.shape" title="Permalink to this definition"></a></dt>
-<dd><p>Shape of the object’s internal array representation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(6,)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.N">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#spatialmath.Twist3.N" title="Permalink to this definition"></a></dt>
-<dd><p>Dimension of the object’s group</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>dimension</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-<p>Dimension of the group is 3 for <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> and corresponds to the 
-dimension of the space (3D in this case) to which these
-rigid-body motions apply.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">N</span>
-<span class="go">3</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.v">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#spatialmath.Twist3.v" title="Permalink to this definition"></a></dt>
-<dd><p>Moment vector of twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Moment vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(3)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.v</span></code> is a 3-vector representing the moment vector of the twist.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">v</span>
-<span class="go">array([1, 2, 3])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.w">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#spatialmath.Twist3.w" title="Permalink to this definition"></a></dt>
-<dd><p>Direction vector of twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Direction vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(3)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.w</span></code> is a 3-vector representing the direction vector of the twist.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">w</span>
-<span class="go">array([4, 5, 6])</span>
-</pre></div>
-</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.UnitRevolute">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UnitRevolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.UnitRevolute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.UnitRevolute" title="Permalink to this definition"></a></dt>
-<dd><p>Construct a new 3D rotational unit twist</p>
+<dt class="sig sig-object py" id="spatialmath.Twist3.Empty">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.Empty" title="Permalink to this definition"></a></dt>
+<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pose instance with zero values</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.Rand">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.Rand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.Rand" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new random 3D twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Twist axis or line of action</p></li>
-<li><p><strong>q</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Point on the line of action</p></li>
-<li><p><strong>p</strong> (<em>float</em><em>, </em><em>optional</em>) – pitch, defaults to None</p></li>
+<li><p><strong>xrange</strong> (<em>2-element sequence</em><em>, </em><em>optional</em>) – x-axis range [min,max], defaults to [-1, 1]</p></li>
+<li><p><strong>yrange</strong> (<em>2-element sequence</em><em>, </em><em>optional</em>) – y-axis range [min,max], defaults to [-1, 1]</p></li>
+<li><p><strong>zrange</strong> (<em>2-element sequence</em><em>, </em><em>optional</em>) – z-axis range [min,max], defaults to [-1, 1]</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – number of random transforms</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a rotational or helical twist</p>
+<dd class="field-even"><p>SE(3) matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Twist instance</p>
+<dd class="field-odd"><p>SE3 instance</p>
 </dd>
 </dl>
-<p>A revolute twist with a line of action in the z-direction and passing
-through (1, 2, 0) would be:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<p>Return an SE3 instance with random rotation and translation.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3.Rand()</span></code> is a random SE(3) translation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SE3.Rand(N=N)</span></code> is an SE3 object containing a sequence of N random
+poses.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">Twist3([</span>
+<span class="go">  [0.22138, -0.20241, -1.0033, -2.4157, -0.16389, -0.64601],</span>
+<span class="go">  [0.29643, 0.059354, 1.1982, -2.1584, -1.9134, 0.52284]</span>
+<span class="go">])</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.UnitPrismatic">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UnitPrismatic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.UnitPrismatic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.UnitPrismatic" title="Permalink to this definition"></a></dt>
-<dd><p>Construct a new 3D unit prismatic twist</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>a</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Twist axis or line of action</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a prismatic twist</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Twist instance</p>
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">Rand()</span></code></p>
 </dd>
 </dl>
-<p>A prismatic twist with a line of action in the z-direction would be:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -418,6 +365,34 @@ by consecutive elements.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.SE3">
+<span class="sig-name descname"><span class="pre">SE3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.SE3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.SE3" title="Permalink to this definition"></a></dt>
+<dd><p>Convert 3D twist to SE(3) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>an SE(3) representation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>SE3 instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">S.SE3()</span></code> is an SE3 object representing the homogeneous transformation 
+equivalent to the Twist3. This is the exponentiation of the twist vector.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.exp" title="spatialmath.Twist3.exp"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.exp()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist3.Tx">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.Tx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.Tx" title="Permalink to this definition"></a></dt>
 <dd><p>Create a new 3D twist for pure translation along the X-axis</p>
@@ -511,312 +486,102 @@ by consecutive elements.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.Rand">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.Rand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.Rand" title="Permalink to this definition"></a></dt>
-<dd><p>Create a new random 3D twist</p>
+<dt class="sig sig-object py" id="spatialmath.Twist3.UnitPrismatic">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UnitPrismatic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.UnitPrismatic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.UnitPrismatic" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a new 3D unit prismatic twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Twist axis or line of action</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a prismatic twist</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Twist instance</p>
+</dd>
+</dl>
+<p>A prismatic twist with a line of action in the z-direction would be:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.UnitRevolute">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UnitRevolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.UnitRevolute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.UnitRevolute" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a new 3D rotational unit twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xrange</strong> (<em>2-element sequence</em><em>, </em><em>optional</em>) – x-axis range [min,max], defaults to [-1, 1]</p></li>
-<li><p><strong>yrange</strong> (<em>2-element sequence</em><em>, </em><em>optional</em>) – y-axis range [min,max], defaults to [-1, 1]</p></li>
-<li><p><strong>zrange</strong> (<em>2-element sequence</em><em>, </em><em>optional</em>) – z-axis range [min,max], defaults to [-1, 1]</p></li>
-<li><p><strong>N</strong> (<em>int</em>) – number of random transforms</p></li>
+<li><p><strong>a</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Twist axis or line of action</p></li>
+<li><p><strong>q</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – Point on the line of action</p></li>
+<li><p><strong>p</strong> (<em>float</em><em>, </em><em>optional</em>) – pitch, defaults to None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SE(3) matrix</p>
+<dd class="field-even"><p>a rotational or helical twist</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>SE3 instance</p>
+<dd class="field-odd"><p>Twist instance</p>
 </dd>
 </dl>
-<p>Return an SE3 instance with random rotation and translation.</p>
+<p>A revolute twist with a line of action in the z-direction and passing
+through (1, 2, 0) would be:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.__eq__" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">==</span></code> operator (superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Equality of two operands</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool or list of bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">S1</span> <span class="pre">==</span> <span class="pre">S2</span></code> is True if <code class="docutils literal notranslate"><span class="pre">S1`</span> <span class="pre">is</span> <span class="pre">elementwise</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">``S2</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist3&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S1&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;Twist3&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S1&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.__ne__" title="spatialmath.Twist3.__ne__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__ne__()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a new 3D twist object</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3.Rand()</span></code> is a random SE(3) translation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SE3.Rand(N=N)</span></code> is an SE3 object containing a sequence of N random
-poses.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3()</span></code> is a Twist3 instance representing null motion – the
+identity twist</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3(S)</span></code> is a Twist3 instance from an array-like (6,)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3(v,</span> <span class="pre">w)</span></code> is a Twist3 instance from a moment <code class="docutils literal notranslate"><span class="pre">v</span></code> (3,) and
+direction <code class="docutils literal notranslate"><span class="pre">w</span></code> (3,)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3([S1,</span> <span class="pre">S2,</span> <span class="pre">...</span> <span class="pre">SN])</span></code> where each <code class="docutils literal notranslate"><span class="pre">Si</span></code> is a numpy array (6,)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3(X)</span></code> is a Twist3 instance with the same value as <code class="docutils literal notranslate"><span class="pre">X</span></code>, ie.
+a copy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3([X1,</span> <span class="pre">X2,</span> <span class="pre">...</span> <span class="pre">XN])</span></code> where each Xi is a Twist3 instance, is a
+Twist3 instance containing N motions</p></li>
 </ul>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="go">Twist3([</span>
-<span class="go">  [0.45503, 0.028522, -1.2931, 2.716, -0.19673, -1.206],</span>
-<span class="go">  [0.43075, -0.5215, -0.87027, -0.41743, 1.8651, 0.5886]</span>
-<span class="go">])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">Rand()</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.printline">
-<span class="sig-name descname"><span class="pre">printline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.printline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.printline" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.unit">
-<span class="sig-name descname"><span class="pre">unit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.unit" title="Permalink to this definition"></a></dt>
-<dd><p>Unit twist</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">S.unit()</span></code> is a Twist2 objec3 representing a unit twist aligned with the
-Twist <code class="docutils literal notranslate"><span class="pre">S</span></code>.</p></li>
-</ul>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">NameError: name &#39;S&#39; is not defined</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.ad">
-<span class="sig-name descname"><span class="pre">ad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.ad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.ad" title="Permalink to this definition"></a></dt>
-<dd><p>Logarithm of adjoint of 3D twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>logarithm of adjoint matrix</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(6,6)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">S.ad()</span></code> is the 6x6 logarithm of the adjoint matrix of the
-corresponding homogeneous transformation.</p>
-<p>For a twist representing motion from frame {B} to {A}, the adjoint will
-transform a twist relative to frame {A} to one relative to frame {B}.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>An alternative approach to computing the adjoint is to exponentiate this 6x6
-matrix.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.Ad" title="spatialmath.Twist3.Ad"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.Ad()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.Ad">
-<span class="sig-name descname"><span class="pre">Ad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.Ad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.Ad" title="Permalink to this definition"></a></dt>
-<dd><p>Adjoint of 3D twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>adjoint matrix</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(6,6)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">S.Ad()</span></code> is the 6x6 adjoint matrix of the corresponding
-homogeneous transformation.</p>
-<p>For a twist representing motion from frame {B} to {A}, the adjoint will
-transform a twist relative to frame {A} to one relative to frame {B}.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method computes the equivalent SE(3) matrix, then the adjoint
-of that.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.ad" title="spatialmath.Twist3.ad"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.ad()</span></code></a>, <a class="reference internal" href="#spatialmath.Twist3.SE3" title="spatialmath.Twist3.SE3"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.SE3()</span></code></a>, <a class="reference internal" href="#spatialmath.Twist3.exp" title="spatialmath.Twist3.exp"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.exp()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.se3">
-<span class="sig-name descname"><span class="pre">se3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.se3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.se3" title="Permalink to this definition"></a></dt>
-<dd><p>Convert 3D twist to se(3)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>An se(3) matrix</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(4,4)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.se3()</span></code> is the twist as an se(3) matrix, which is an augmented
-skew-symmetric 4x4 matrix.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;se&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;se&#39; is not defined</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.pitch">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pitch</span></span><a class="headerlink" href="#spatialmath.Twist3.pitch" title="Permalink to this definition"></a></dt>
-<dd><p>Pitch of a 3D twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the pitch of the twist</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.pitch()</span></code> is the pitch of the twist as a scalar in units of distance
-per radian.</p>
-<p>If we consider the twist as a screw, this is the distance of
-translation along the screw axis for a one radian rotation about the
-screw axis.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">pitch</span>
-<span class="go">0.3</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.line">
-<span class="sig-name descname"><span class="pre">line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.line" title="Permalink to this definition"></a></dt>
-<dd><p>Line of action of 3D twist as a Plucker line</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the 3D line of action</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Line instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.line()</span></code> is a Plucker object representing the line of the twist axis.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>
-<span class="go">Plucker([-1.09, -2.435, -2.6775, 0.3, 0, 0])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.pole">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pole</span></span><a class="headerlink" href="#spatialmath.Twist3.pole" title="Permalink to this definition"></a></dt>
-<dd><p>Pole of a 3D twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the pole of the twist</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(3)</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.pole()</span></code> is a point on the twist axis. For a pure translation 
-this point is at infinity.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">pole</span>
-<span class="go">array([ 0.    , -2.6775,  2.435 ])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.SE3">
-<span class="sig-name descname"><span class="pre">SE3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.SE3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.SE3" title="Permalink to this definition"></a></dt>
-<dd><p>Convert 3D twist to SE(3) matrix</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>an SE(3) representation</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>SE3 instance</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">S.SE3()</span></code> is an SE3 object representing the homogeneous transformation 
-equivalent to the Twist3. This is the exponentiation of the twist vector.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.exp" title="spatialmath.Twist3.exp"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.exp()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.exp">
-<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.exp" title="Permalink to this definition"></a></dt>
-<dd><p>Exponentiate a 3D twist</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> (<em>float</em><em>, </em><em>optional</em>) – rotation magnitude, defaults to None</p></li>
-<li><p><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – rotational units, defaults to ‘rad’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SE(3) matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>SE3 instance</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.exp()</span></code> is the homogeneous transformation equivalent to the twist,
-<span class="math notranslate nohighlight">\(e^{[S]}\)</span></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">X.exp(θ)</span> <span class="pre">as</span> <span class="pre">above</span> <span class="pre">but</span> <span class="pre">with</span> <span class="pre">a</span> <span class="pre">rotation</span> <span class="pre">of</span> <span class="pre">``θ</span></code> about the twist axis,
-<span class="math notranslate nohighlight">\(e^{    heta[S]}\)</span></p></li>
-</ul>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">array([[1., 0., 0., 0.],</span>
-<span class="go">       [0., 1., 0., 0.],</span>
-<span class="go">       [0., 0., 1., 0.],</span>
-<span class="go">       [0., 0., 0., 1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">array([[ 1.    ,  0.    ,  0.    ,  1.    ],</span>
-<span class="go">       [ 0.    ,  0.9553, -0.2955,  2.    ],</span>
-<span class="go">       [ 0.    ,  0.2955,  0.9553,  3.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.trexp()</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -932,141 +697,6 @@ operation so the result will be a matrix
 </table>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.A">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#spatialmath.Twist3.A" title="Permalink to this definition"></a></dt>
-<dd><p>Array value of an instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>NumPy array value of this instance</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance,
-and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
-instance.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.Alloc">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.Alloc" title="Permalink to this definition"></a></dt>
-<dd><p>Construct an instance with N default values (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of values, defaults to 1</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>pose instance with <code class="docutils literal notranslate"><span class="pre">n</span></code> default values</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.Alloc(N)</span></code> creates an instance of the pose class <code class="docutils literal notranslate"><span class="pre">X</span></code> with <code class="docutils literal notranslate"><span class="pre">N</span></code>
-default values, ie. <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> will be <code class="docutils literal notranslate"><span class="pre">N</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">X</span></code> can be considered a vector of pose objects, and those elements
-can be referenced <code class="docutils literal notranslate"><span class="pre">X[i]</span></code> or assigned to <code class="docutils literal notranslate"><span class="pre">X[i]</span> <span class="pre">=</span> <span class="pre">...</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default value depends on the pose class and is the result
-of the empty constructor. For <code class="docutils literal notranslate"><span class="pre">SO2</span></code>,
-<code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE3</span></code> it is an identity matrix, for a
-twist class <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> or <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> it is a zero vector,
-for a <code class="docutils literal notranslate"><span class="pre">UnitQuaternion</span></code> or <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> it is a zero
-vector.</p>
-</div>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">10</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.Empty">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.Empty" title="Permalink to this definition"></a></dt>
-<dd><p>Construct an empty instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pose instance with zero values</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Empty</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">0</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="spatialmath.Twist3.S">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">S</span></span><a class="headerlink" href="#spatialmath.Twist3.S" title="Permalink to this definition"></a></dt>
-<dd><p>Twist as a vector (superclass property)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Twist vector</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(N)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">X.S</span></code> is a 3-vector if X is a <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> instance, and a 6-vector if
-X is a <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> instance.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>the vector is the unique elements of the se(N) representation.</p></li>
-<li><p>the vector is sometimes referred to as the twist coordinate vector.</p></li>
-<li><p>if <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> &gt; 1 then return a list of vectors.</p></li>
-</ul>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.__eq__" title="Permalink to this definition"></a></dt>
-<dd><p>Overloaded <code class="docutils literal notranslate"><span class="pre">==</span></code> operator (superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Equality of two operands</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool or list of bool</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">S1</span> <span class="pre">==</span> <span class="pre">S2</span></code> is True if <code class="docutils literal notranslate"><span class="pre">S1`</span> <span class="pre">is</span> <span class="pre">elementwise</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">``S2</span></code>.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
-<span class="go">NameError: name &#39;Twist3&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S1&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;Twist3&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S1&#39; is not defined</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.__ne__" title="spatialmath.Twist3.__ne__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__ne__()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist3.__ne__">
 <span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.__ne__" title="Permalink to this definition"></a></dt>
@@ -1104,6 +734,41 @@ X is a <code class="docutils literal notranslate"><span class="pre">Twist3</span
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.ad">
+<span class="sig-name descname"><span class="pre">ad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.ad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.ad" title="Permalink to this definition"></a></dt>
+<dd><p>Logarithm of adjoint of 3D twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>logarithm of adjoint matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(6,6)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">S.ad()</span></code> is the 6x6 logarithm of the adjoint matrix of the
+corresponding homogeneous transformation.</p>
+<p>For a twist representing motion from frame {B} to {A}, the adjoint will
+transform a twist relative to frame {A} to one relative to frame {B}.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An alternative approach to computing the adjoint is to exponentiate this 6x6
+matrix.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.Twist3.Ad" title="spatialmath.Twist3.Ad"><code class="xref py py-func docutils literal notranslate"><span class="pre">Twist3.Ad()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist3.append">
 <span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.append" title="Permalink to this definition"></a></dt>
 <dd><p>Append a value to an instance (BasePoseList superclass method)</p>
@@ -1132,6 +797,59 @@ X is a <code class="docutils literal notranslate"><span class="pre">Twist3</span
 <dt class="sig sig-object py" id="spatialmath.Twist3.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">--</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#spatialmath.Twist3.clear" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.exp">
+<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.exp" title="Permalink to this definition"></a></dt>
+<dd><p>Exponentiate a 3D twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theta</strong> (<em>float</em><em>, </em><em>optional</em>) – rotation magnitude, defaults to None</p></li>
+<li><p><strong>units</strong> (<em>str</em><em>, </em><em>optional</em>) – rotational units, defaults to ‘rad’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SE3 instance</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.exp()</span></code> is the homogeneous transformation equivalent to the twist,
+<span class="math notranslate nohighlight">\(e^{[S]}\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X.exp(θ)</span> <span class="pre">as</span> <span class="pre">above</span> <span class="pre">but</span> <span class="pre">with</span> <span class="pre">a</span> <span class="pre">rotation</span> <span class="pre">of</span> <span class="pre">``θ</span></code> about the twist axis,
+<span class="math notranslate nohighlight">\(e^{    heta[S]}\)</span></p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">len(X)==1</span></code> and <code class="docutils literal notranslate"><span class="pre">len(θ)==N</span></code> then the resulting SE3 object has
+<code class="docutils literal notranslate"><span class="pre">N</span></code> values equivalent to the twist <span class="math notranslate nohighlight">\(e^{ heta_i[S]}\)</span>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">len(X)==N</span></code> and <code class="docutils literal notranslate"><span class="pre">len(θ)==1</span></code> then the resulting SE3 object has
+<code class="docutils literal notranslate"><span class="pre">N</span></code> values equivalent to the twist <span class="math notranslate nohighlight">\(e^{ heta[S_i]}\)</span>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">len(X)==N</span></code> and <code class="docutils literal notranslate"><span class="pre">len(θ)==N</span></code> then the resulting SE3 object has
+<code class="docutils literal notranslate"><span class="pre">N</span></code> values equivalent to the twist <span class="math notranslate nohighlight">\(e^{ heta_i[S_i]}\)</span>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">SE3(array([[1., 0., 0., 0.],</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">SE3(array([[ 1.    ,  0.    ,  0.    ,  1.    ],</span>
+<span class="go">           [ 0.    ,  0.9553, -0.2955,  2.    ],</span>
+<span class="go">           [ 0.    ,  0.2955,  0.9553,  3.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">spatialmath.base.trexp()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist3.extend">
@@ -1212,12 +930,252 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([-0.086675, -0.26581, -0.9084, -0.97648, 0.43168, -2.9271])</span>
+<span class="go">Twist3([-0.30985, 0.63149, 0.79859, 1.5533, 0.63714, 0.41745])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([0.086675, 0.26581, 0.9084, 0.97648, -0.43168, 2.9271])</span>
+<span class="go">Twist3([0.30985, -0.63149, -0.79859, -1.5533, -0.63714, -0.41745])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
 <span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
 </pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.isvalid">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isvalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.isvalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.isvalid" title="Permalink to this definition"></a></dt>
+<dd><p>Test if matrix is valid twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em>) – array to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the value is a 6-vector or a valid 4x4 se(3) element</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>A twist can be represented by a 6-vector or a 4x4 skew symmetric matrix,
+for example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span><span class="p">,</span> <span class="n">base</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">isvalid</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([[ 0., -6.,  5.,  1.],</span>
+<span class="go">       [ 6.,  0., -4.,  2.],</span>
+<span class="go">       [-5.,  4.,  0.,  3.],</span>
+<span class="go">       [ 0.,  0.,  0.,  0.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.line">
+<span class="sig-name descname"><span class="pre">line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.line" title="Permalink to this definition"></a></dt>
+<dd><p>Line of action of 3D twist as a Plucker line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the 3D line of action</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Line instance</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.line()</span></code> is a Plucker object representing the line of the twist axis.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>
+<span class="go">Plucker([-1.09, -2.435, -2.6775, 0.3, 0, 0])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.pop" title="Permalink to this definition"></a></dt>
+<dd><p>Pop value from an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – item in the list to pop, default is last</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the popped value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>instance of same type</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>IndexError</strong> – if there are no values to pop</p>
+</dd>
+</dl>
+<p>Removes a value from the value list and returns it.  The original
+instance is modified.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>  <span class="c1"># pop the last value x[9]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># pop the first value x[0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">8</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.printline">
+<span class="sig-name descname"><span class="pre">printline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.printline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.printline" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.prod">
+<span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.prod" title="Permalink to this definition"></a></dt>
+<dd><p>Product of twists (superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Product of elements</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="2d_pose_twist.html#spatialmath.Twist2" title="spatialmath.Twist2">Twist2</a> or <a class="reference internal" href="#spatialmath.Twist3" title="spatialmath.Twist3">Twist3</a></p>
+</dd>
+</dl>
+<p>For a twist instance with N values return the matrix product of those
+elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</span>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.reverse" title="Permalink to this definition"></a></dt>
+<dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.se3">
+<span class="sig-name descname"><span class="pre">se3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.se3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.se3" title="Permalink to this definition"></a></dt>
+<dd><p>Convert 3D twist to se(3)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An se(3) matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(4,4)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.se3()</span></code> is the twist as an se(3) matrix, which is an augmented
+skew-symmetric 4x4 matrix.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;se&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;se&#39; is not defined</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.unit">
+<span class="sig-name descname"><span class="pre">unit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.unit" title="Permalink to this definition"></a></dt>
+<dd><p>Unit twist</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">S.unit()</span></code> is a Twist2 objec3 representing a unit twist aligned with the
+Twist <code class="docutils literal notranslate"><span class="pre">S</span></code>.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">NameError: name &#39;S&#39; is not defined</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.A">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#spatialmath.Twist3.A" title="Permalink to this definition"></a></dt>
+<dd><p>Array value of an instance (BasePoseList superclass method)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>NumPy array value of this instance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.A</span></code> is a NumPy array that represents the value of this instance,
+and has a shape given by <code class="docutils literal notranslate"><span class="pre">X.shape</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This assumes that <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> == 1, ie. it is a single-valued
+instance.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.N">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#spatialmath.Twist3.N" title="Permalink to this definition"></a></dt>
+<dd><p>Dimension of the object’s group</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dimension</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p>Dimension of the group is 3 for <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> and corresponds to the 
+dimension of the space (3D in this case) to which these
+rigid-body motions apply.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">N</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.S">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">S</span></span><a class="headerlink" href="#spatialmath.Twist3.S" title="Permalink to this definition"></a></dt>
+<dd><p>Twist as a vector (superclass property)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Twist vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(N)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X.S</span></code> is a 3-vector if X is a <code class="docutils literal notranslate"><span class="pre">Twist2</span></code> instance, and a 6-vector if
+X is a <code class="docutils literal notranslate"><span class="pre">Twist3</span></code> instance.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>the vector is the unique elements of the se(N) representation.</p></li>
+<li><p>the vector is sometimes referred to as the twist coordinate vector.</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> &gt; 1 then return a list of vectors.</p></li>
+</ul>
 </div>
 </dd></dl>
 
@@ -1296,65 +1254,69 @@ The inverse is the negative of the twist vector.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.pop">
-<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.pop" title="Permalink to this definition"></a></dt>
-<dd><p>Pop value from an instance (BasePoseList superclass method)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>i</strong> (<em>int</em>) – item in the list to pop, default is last</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the popped value</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>instance of same type</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>IndexError</strong> – if there are no values to pop</p>
-</dd>
-</dl>
-<p>Removes a value from the value list and returns it.  The original
-instance is modified.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">Alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>  <span class="c1"># pop the last value x[9]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">9</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># pop the first value x[0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">8</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">X</span></code> is any of the SMTB classes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.prod">
-<span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.prod" title="Permalink to this definition"></a></dt>
-<dd><p>Product of twists (superclass method)</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.pitch">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pitch</span></span><a class="headerlink" href="#spatialmath.Twist3.pitch" title="Permalink to this definition"></a></dt>
+<dd><p>Pitch of a 3D twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Product of elements</p>
+<dd class="field-odd"><p>the pitch of the twist</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="2d_pose_twist.html#spatialmath.Twist2" title="spatialmath.Twist2">Twist2</a> or <a class="reference internal" href="#spatialmath.Twist3" title="spatialmath.Twist3">Twist3</a></p>
+<dd class="field-even"><p>float</p>
 </dd>
 </dl>
-<p>For a twist instance with N values return the matrix product of those
-elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X.pitch()</span></code> is the pitch of the twist as a scalar in units of distance
+per radian.</p>
+<p>If we consider the twist as a screw, this is the distance of
+translation along the screw axis for a one radian rotation about the
+screw axis.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">pitch</span>
+<span class="go">0.3</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.reverse">
-<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.Twist3.reverse" title="Permalink to this definition"></a></dt>
-<dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.pole">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pole</span></span><a class="headerlink" href="#spatialmath.Twist3.pole" title="Permalink to this definition"></a></dt>
+<dd><p>Pole of a 3D twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the pole of the twist</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.pole()</span></code> is a point on the twist axis. For a pure translation 
+this point is at infinity.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">pole</span>
+<span class="go">array([ 0.    , -2.6775,  2.435 ])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#spatialmath.Twist3.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Shape of the object’s internal array representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(6,)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1369,6 +1331,50 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
 <dd class="field-even"><p>float</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.v">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">v</span></span><a class="headerlink" href="#spatialmath.Twist3.v" title="Permalink to this definition"></a></dt>
+<dd><p>Moment vector of twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Moment vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.v</span></code> is a 3-vector representing the moment vector of the twist.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">v</span>
+<span class="go">array([1, 2, 3])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="spatialmath.Twist3.w">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#spatialmath.Twist3.w" title="Permalink to this definition"></a></dt>
+<dd><p>Direction vector of twist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Direction vector</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(3)</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">X.w</span></code> is a 3-vector representing the direction vector of the twist.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">w</span>
+<span class="go">array([4, 5, 6])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -1387,7 +1393,7 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

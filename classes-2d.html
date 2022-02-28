@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geometry &mdash; Spatial Maths package 0.11.0
+  <title>Geometry &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -34,7 +34,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -80,383 +80,6 @@
 <p>Created on Sun Jul  5 09:42:30 2020</p>
 <p>&#64;author: corkep</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Polygon2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class to represent 2D (planar) polygons</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Uses Matplotlib primitives to perform transformations and 
-intersections.</p>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Create planar polygon from vertices</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>vertices</strong> (<em>ndarray</em><em>(</em><em>2</em><em>, </em><em>N</em><em>)</em><em>, </em><em>optional</em>) – vertices of polygon, defaults to None</p>
-</dd>
-</dl>
-<p>Create a polygon from a set of points provided as columns of the 2D
-array <code class="docutils literal notranslate"><span class="pre">vertices</span></code>.
-A closed polygon is created so the last vertex should not equal the
-first.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The points must be sequential around the perimeter and
-counter clockwise.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The polygon is represented by a Matplotlib <code class="docutils literal notranslate"><span class="pre">Path</span></code></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.plot" title="Permalink to this definition"></a></dt>
-<dd><p>Plot polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ax</strong> (<em>Axes</em><em>, </em><em>optional</em>) – axes in which to draw the polygon, defaults to None</p></li>
-<li><p><strong>kwargs</strong> – options passed to Matplotlib <code class="docutils literal notranslate"><span class="pre">Patch</span></code></p></li>
-</ul>
-</dd>
-</dl>
-<p>A Matplotlib Patch is created with the passed options <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> and
-added to the axes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.animate" title="spatialmath.geom2d.Polygon2.animate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">animate()</span></code></a> <code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.PathPatch()</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.animate">
-<span class="sig-name descname"><span class="pre">animate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.animate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.animate" title="Permalink to this definition"></a></dt>
-<dd><p>Animate a polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> (<a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a>) – new pose of Polygon</p></li>
-<li><p><strong>kwargs</strong> – options passed to Matplotlib <code class="docutils literal notranslate"><span class="pre">Patch</span></code></p></li>
-</ul>
-</dd>
-</dl>
-<p>The plotted polygon is moved to the pose given by <code class="docutils literal notranslate"><span class="pre">T</span></code>. The pose is
-always with respect to the initial vertices when the polygon was
-constructed.  The vertices of the polygon will be updated to reflect
-what is plotted.</p>
-<p>If the polygon has already plotted, it will keep the same graphical
-attributes.  If new attributes are given they will replace those
-given at construction time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.plot" title="spatialmath.geom2d.Polygon2.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.contains">
-<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.contains" title="Permalink to this definition"></a></dt>
-<dd><p>Test if point is inside polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>p</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em>) – point</p></li>
-<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>optional</em>) – Add an additional margin to the polygon boundary, defaults to 0.0</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if point is contained by polygon</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">radius</span></code> can be used to inflate the polygon, or if negative, to 
-deflated it.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Returns True if the point is on the edge of the polygon
-but False if the point is one of the vertices.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>For a polygon with clockwise ordering of vertices the 
-sign of <code class="docutils literal notranslate"><span class="pre">radius</span></code> is flipped.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.contains_point()</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.bbox">
-<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.bbox" title="Permalink to this definition"></a></dt>
-<dd><p>Bounding box of polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>bounding box as [xmin, xmax, ymin, ymax]</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(4)</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.radius">
-<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.radius" title="Permalink to this definition"></a></dt>
-<dd><p>Radius of smallest enclosing circle</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>radius</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-<p>This is the radius of the smalleset circle, centred at the centroid,
-that encloses all vertices.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.intersects">
-<span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.intersects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.intersects" title="Permalink to this definition"></a></dt>
-<dd><p>Test for intersection</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#spatialmath.geom2d.Polygon2" title="spatialmath.geom2d.Polygon2"><em>Polygon2</em></a><em> or </em><a class="reference internal" href="#spatialmath.geom2d.Line2" title="spatialmath.geom2d.Line2"><em>Line2</em></a>) – object to test for intersection</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if the polygon intersects <code class="docutils literal notranslate"><span class="pre">other</span></code></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.transformed">
-<span class="sig-name descname"><span class="pre">transformed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.transformed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.transformed" title="Permalink to this definition"></a></dt>
-<dd><p>A transformed copy of polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>T</strong> (<a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a>) – planar transformation</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transformed polygon</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2" title="spatialmath.geom2d.Polygon2">Polygon2</a></p>
-</dd>
-</dl>
-<p>Returns a new polgyon whose vertices have been transformed by <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.area">
-<span class="sig-name descname"><span class="pre">area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.area" title="Permalink to this definition"></a></dt>
-<dd><p>Area of polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>area</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.moment" title="spatialmath.geom2d.Polygon2.moment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">moment()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.centroid">
-<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.centroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.centroid" title="Permalink to this definition"></a></dt>
-<dd><p>Centroid of polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>centroid</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray(2)</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.moment" title="spatialmath.geom2d.Polygon2.moment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">moment()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.vertices">
-<span class="sig-name descname"><span class="pre">vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.vertices" title="Permalink to this definition"></a></dt>
-<dd><p>Vertices of polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>closed</strong> (<em>bool</em><em>, </em><em>optional</em>) – include first vertex twice, defaults to False</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>vertices</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(2,n)</p>
-</dd>
-</dl>
-<p>Returns the set of vertices.  If <code class="docutils literal notranslate"><span class="pre">closed</span></code> is True then the last
-column is the same as the first, that is, the polygon is explicitly
-closed.</p>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.edges">
-<span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.edges" title="Permalink to this definition"></a></dt>
-<dd><p>Iterate over polygon edge segments</p>
-<p>Creates an iterator that returns pairs of points representing the
-end points of each segment.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.moment">
-<span class="sig-name descname"><span class="pre">moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.moment" title="Permalink to this definition"></a></dt>
-<dd><p>Moments of polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>p</strong> (<em>int</em>) – moment order x</p></li>
-<li><p><strong>q</strong> (<em>int</em>) – moment order y</p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns the pq’th moment of the polygon</p>
-<div class="math notranslate nohighlight">
-\[M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q\]</div>
-<p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
-<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
-<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
-<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
-</pre></div>
-</div>
-<p>Note is negative for clockwise perimeter.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="spatialmath.geom2d.Line2">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Line2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -464,26 +87,6 @@ end points of each segment.</p>
 <p>The internal representation is in homogeneous format</p>
 <div class="math notranslate nohighlight">
 \[ax + by + c = 0\]</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.TwoPoints">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TwoPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.TwoPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.TwoPoints" title="Permalink to this definition"></a></dt>
-<dd><p>Create 2D line from two points</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – point on the line</p></li>
-<li><p><strong>p2</strong> (<em>array_like</em><em>(</em><em>2</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – another point on the line</p></li>
-</ul>
-</dd>
-</dl>
-<p>The points can be given in Euclidean or homogeneous form.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom2d.Line2.General">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">General</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.General"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.General" title="Permalink to this definition"></a></dt>
@@ -510,6 +113,58 @@ end points of each segment.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.TwoPoints">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TwoPoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.TwoPoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.TwoPoints" title="Permalink to this definition"></a></dt>
+<dd><p>Create 2D line from two points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – point on the line</p></li>
+<li><p><strong>p2</strong> (<em>array_like</em><em>(</em><em>2</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – another point on the line</p></li>
+</ul>
+</dd>
+</dl>
+<p>The points can be given in Euclidean or homogeneous form.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.contains" title="Permalink to this definition"></a></dt>
+<dd><p>Test if point is in line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – point to test</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if point lies in the line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.contains_polygon_point">
+<span class="sig-name descname"><span class="pre">contains_polygon_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.contains_polygon_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.contains_polygon_point" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.distance_line_line">
+<span class="sig-name descname"><span class="pre">distance_line_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.distance_line_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.distance_line_line" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.distance_line_point">
+<span class="sig-name descname"><span class="pre">distance_line_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.distance_line_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.distance_line_point" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom2d.Line2.general">
 <span class="sig-name descname"><span class="pre">general</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.general"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.general" title="Permalink to this definition"></a></dt>
 <dd><p>Parameters of general line</p>
@@ -522,17 +177,6 @@ end points of each segment.</p>
 </dd>
 </dl>
 <p>Return the parameters of a general line <span class="math notranslate nohighlight">\(y = mx + c\)</span>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.plot" title="Permalink to this definition"></a></dt>
-<dd><p>Plot the line using matplotlib</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – arguments passed to Matplotlib <code class="docutils literal notranslate"><span class="pre">pyplot.plot</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -555,21 +199,9 @@ homogeneous point will be zero (an ideal point).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.contains">
-<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.contains" title="Permalink to this definition"></a></dt>
-<dd><p>Test if point is in line</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – point to test</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True if point lies in the line</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.intersect_polygon___line">
+<span class="sig-name descname"><span class="pre">intersect_polygon___line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.intersect_polygon___line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.intersect_polygon___line" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom2d.Line2.intersect_segment">
@@ -594,28 +226,19 @@ homogeneous point will be zero (an ideal point).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.distance_line_line">
-<span class="sig-name descname"><span class="pre">distance_line_line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.distance_line_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.distance_line_line" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.distance_line_point">
-<span class="sig-name descname"><span class="pre">distance_line_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.distance_line_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.distance_line_point" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the line using matplotlib</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – arguments passed to Matplotlib <code class="docutils literal notranslate"><span class="pre">pyplot.plot</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom2d.Line2.points_join">
 <span class="sig-name descname"><span class="pre">points_join</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.points_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.points_join" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.intersect_polygon___line">
-<span class="sig-name descname"><span class="pre">intersect_polygon___line</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.intersect_polygon___line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.intersect_polygon___line" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.geom2d.Line2.contains_polygon_point">
-<span class="sig-name descname"><span class="pre">contains_polygon_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Line2.contains_polygon_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Line2.contains_polygon_point" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -780,6 +403,383 @@ homogeneous point will be zero (an ideal point).</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Polygon2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to represent 2D (planar) polygons</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Uses Matplotlib primitives to perform transformations and 
+intersections.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create planar polygon from vertices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vertices</strong> (<em>ndarray</em><em>(</em><em>2</em><em>, </em><em>N</em><em>)</em><em>, </em><em>optional</em>) – vertices of polygon, defaults to None</p>
+</dd>
+</dl>
+<p>Create a polygon from a set of points provided as columns of the 2D
+array <code class="docutils literal notranslate"><span class="pre">vertices</span></code>.
+A closed polygon is created so the last vertex should not equal the
+first.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The points must be sequential around the perimeter and
+counter clockwise.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The polygon is represented by a Matplotlib <code class="docutils literal notranslate"><span class="pre">Path</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.animate">
+<span class="sig-name descname"><span class="pre">animate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.animate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.animate" title="Permalink to this definition"></a></dt>
+<dd><p>Animate a polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a>) – new pose of Polygon</p></li>
+<li><p><strong>kwargs</strong> – options passed to Matplotlib <code class="docutils literal notranslate"><span class="pre">Patch</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>The plotted polygon is moved to the pose given by <code class="docutils literal notranslate"><span class="pre">T</span></code>. The pose is
+always with respect to the initial vertices when the polygon was
+constructed.  The vertices of the polygon will be updated to reflect
+what is plotted.</p>
+<p>If the polygon has already plotted, it will keep the same graphical
+attributes.  If new attributes are given they will replace those
+given at construction time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.plot" title="spatialmath.geom2d.Polygon2.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.area">
+<span class="sig-name descname"><span class="pre">area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.area" title="Permalink to this definition"></a></dt>
+<dd><p>Area of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>area</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.moment" title="spatialmath.geom2d.Polygon2.moment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">moment()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.bbox">
+<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.bbox" title="Permalink to this definition"></a></dt>
+<dd><p>Bounding box of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bounding box as [xmin, xmax, ymin, ymax]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(4)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.centroid">
+<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.centroid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.centroid" title="Permalink to this definition"></a></dt>
+<dd><p>Centroid of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>centroid</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(2)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.moment" title="spatialmath.geom2d.Polygon2.moment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">moment()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.contains" title="Permalink to this definition"></a></dt>
+<dd><p>Test if point is inside polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em>) – point</p></li>
+<li><p><strong>radius</strong> (<em>float</em><em>, </em><em>optional</em>) – Add an additional margin to the polygon boundary, defaults to 0.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if point is contained by polygon</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">radius</span></code> can be used to inflate the polygon, or if negative, to 
+deflated it.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Returns True if the point is on the edge of the polygon
+but False if the point is one of the vertices.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For a polygon with clockwise ordering of vertices the 
+sign of <code class="docutils literal notranslate"><span class="pre">radius</span></code> is flipped.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.contains_point()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.edges">
+<span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.edges" title="Permalink to this definition"></a></dt>
+<dd><p>Iterate over polygon edge segments</p>
+<p>Creates an iterator that returns pairs of points representing the
+end points of each segment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.intersects">
+<span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.intersects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.intersects" title="Permalink to this definition"></a></dt>
+<dd><p>Test for intersection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#spatialmath.geom2d.Polygon2" title="spatialmath.geom2d.Polygon2"><em>Polygon2</em></a><em> or </em><a class="reference internal" href="#spatialmath.geom2d.Line2" title="spatialmath.geom2d.Line2"><em>Line2</em></a>) – object to test for intersection</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the polygon intersects <code class="docutils literal notranslate"><span class="pre">other</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.moment">
+<span class="sig-name descname"><span class="pre">moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.moment" title="Permalink to this definition"></a></dt>
+<dd><p>Moments of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>int</em>) – moment order x</p></li>
+<li><p><strong>q</strong> (<em>int</em>) – moment order y</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns the pq’th moment of the polygon</p>
+<div class="math notranslate nohighlight">
+\[M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q\]</div>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+<p>Note is negative for clockwise perimeter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ax</strong> (<em>Axes</em><em>, </em><em>optional</em>) – axes in which to draw the polygon, defaults to None</p></li>
+<li><p><strong>kwargs</strong> – options passed to Matplotlib <code class="docutils literal notranslate"><span class="pre">Patch</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>A Matplotlib Patch is created with the passed options <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> and
+added to the axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2.animate" title="spatialmath.geom2d.Polygon2.animate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">animate()</span></code></a> <code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.PathPatch()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.radius" title="Permalink to this definition"></a></dt>
+<dd><p>Radius of smallest enclosing circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>radius</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p>This is the radius of the smalleset circle, centred at the centroid,
+that encloses all vertices.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.transformed">
+<span class="sig-name descname"><span class="pre">transformed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.transformed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.transformed" title="Permalink to this definition"></a></dt>
+<dd><p>A transformed copy of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<a class="reference internal" href="2d_pose_SE2.html#spatialmath.pose2d.SE2" title="spatialmath.pose2d.SE2"><em>SE2</em></a>) – planar transformation</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transformed polygon</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.geom2d.Polygon2" title="spatialmath.geom2d.Polygon2">Polygon2</a></p>
+</dd>
+</dl>
+<p>Returns a new polgyon whose vertices have been transformed by <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Polygon2.vertices">
+<span class="sig-name descname"><span class="pre">vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Polygon2.vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Polygon2.vertices" title="Permalink to this definition"></a></dt>
+<dd><p>Vertices of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>closed</strong> (<em>bool</em><em>, </em><em>optional</em>) – include first vertex twice, defaults to False</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>vertices</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2,n)</p>
+</dd>
+</dl>
+<p>Returns the set of vertices.  If <code class="docutils literal notranslate"><span class="pre">closed</span></code> is True then the last
+column is the same as the first, that is, the polygon is explicitly
+closed.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/path.py&quot;, line 130, in __init__</span>
+<span class="go">    _api.check_shape((None, 2), vertices=vertices)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.12/x64/lib/python3.7/site-packages/matplotlib/_api/__init__.py&quot;, line 165, in check_shape</span>
+<span class="go">    f&quot;{k!r} must be {len(target_shape)}D &quot;</span>
+<span class="go">ValueError: &#39;vertices&#39; must be 2D with shape (M, 2). Your input has shape (3, 3).</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;p&#39; is not defined</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -791,7 +791,7 @@ homogeneous point will be zero (an ideal point).</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

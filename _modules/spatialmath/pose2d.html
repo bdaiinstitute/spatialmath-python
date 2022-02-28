@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.pose2d &mdash; Spatial Maths package 0.11.0
+  <title>spatialmath.pose2d &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -326,10 +326,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct new SE(2) object</span>
 
-<span class="sd">        :param unit: angular units &#39;deg&#39; or &#39;rad&#39; [default] if applicable :type</span>
-<span class="sd">        unit: str, optional :param check: check for valid SE(2) elements if</span>
-<span class="sd">        applicable, default to True :type check: bool :return: homogeneous</span>
-<span class="sd">        rigid-body transformation matrix :rtype: SE2 instance</span>
+<span class="sd">        :param unit: angular units &#39;deg&#39; or &#39;rad&#39; [default] if applicable </span>
+<span class="sd">        :type unit: str, optional </span>
+<span class="sd">        :param check: check for valid SE(2) elements if applicable, default to True </span>
+<span class="sd">        :type check: bool </span>
+<span class="sd">        :return: SE(2) matrix </span>
+<span class="sd">        :rtype: SE2 instance</span>
 
 <span class="sd">        - ``SE2()`` is an SE2 instance representing a null motion -- the</span>
 <span class="sd">          identity matrix</span>
@@ -472,6 +474,33 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SE2.Rot"><a class="viewcode-back" href="../../2d_pose_SE2.html#spatialmath.pose2d.SE2.Rot">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Rot</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an SE(2) rotation</span>
+
+<span class="sd">        :param theta: rotation angle in radians</span>
+<span class="sd">        :type theta: float</span>
+<span class="sd">        :param unit: angular units: &quot;rad&quot; [default] or &quot;deg&quot;</span>
+<span class="sd">        :type unit: str</span>
+<span class="sd">        :return: SE(2) matrix</span>
+<span class="sd">        :rtype: SE2 instance</span>
+
+<span class="sd">        `SE2.Rot(theta)` is an SE(2) rotation of ``theta``</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; SE2.Rot(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; SE2.Rot([0.2, 0.3])</span>
+
+
+<span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.transl`</span>
+<span class="sd">        :SymPy: supported</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trot2</span><span class="p">(</span><span class="n">_th</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">_th</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE2.Tx"><a class="viewcode-back" href="../../2d_pose_SE2.html#spatialmath.pose2d.SE2.Tx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -637,7 +666,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

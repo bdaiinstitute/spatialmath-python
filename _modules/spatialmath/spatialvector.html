@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.spatialvector &mdash; Spatial Maths package 0.11.0
+  <title>spatialmath.spatialvector &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -114,10 +114,27 @@
 <span class="sd">    ``+``      addition of spatial vectors of the same subclass</span>
 <span class="sd">    ``-``      subtraction of spatial vectors of the same subclass</span>
 <span class="sd">    ``-``      unary minus</span>
-<span class="sd">    ``*``      premultiplication by Twist3 is transformation to new frame</span>
+<span class="sd">    ``*``      see table below</span>
 <span class="sd">    ``^``      cross product x or x*</span>
 <span class="sd">    ========   ===========================================================</span>
 
+
+<span class="sd">    Certain subtypes can be multiplied</span>
+
+<span class="sd">    ===================   ====================  ===================  =========================</span>
+<span class="sd">                Multiplicands                   Product</span>
+<span class="sd">    ------------------------------------------  ----------------------------------------------</span>
+<span class="sd">    left                  right                 type                 operation</span>
+<span class="sd">    ===================   ====================  ===================  =========================</span>
+<span class="sd">    SE3, Twist3           SpatialVelocity       SpatialVelocity      adjoint product</span>
+<span class="sd">    SE3, Twist3           SpatialAcceleration   SpatialAcceleration  adjoint product</span>
+<span class="sd">    SE3, Twist3           SpatialMomentum       SpatialMomentum      adjoint transpose product</span>
+<span class="sd">    SE3, Twist3           SpatialForce          SpatialForce         adjoint transpose product</span>
+<span class="sd">    SpatialAcceleration   SpatialInertia        SpatialForce         matrix-vector product**</span>
+<span class="sd">    SpatialVelocity       SpatialInertia        SpatialMomentum      matrix-vector product**</span>
+<span class="sd">    ===================   ====================  ===================  =========================</span>
+
+<span class="sd">    ** indicates commutative operator.</span>
 
 <span class="sd">    .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity spatialmath.spatialvector.SpatialAcceleration spatialmath.spatialvector.SpatialForce spatialmath.spatialvector.SpatialMomentum</span>
 <span class="sd">       :top-classes: spatialmath.spatialvector.SpatialVector</span>
@@ -517,7 +534,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 <span class="c1"># n = SpatialForce(val);</span>
 
-    <span class="k">def</span> <span class="nf">__rmul</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="c1"># Twist * SpatialForce -&gt; SpatialForce</span>
         <span class="k">return</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">Ad</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
 
@@ -762,7 +779,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

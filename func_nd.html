@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transforms in ND &mdash; Spatial Maths package 0.11.0
+  <title>Transforms in ND &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -98,6 +98,380 @@ example SE(n), SO(n), se(n) and so(n) where n is 2 or 3.</p>
 <p>Vector arguments are what numpy refers to as <code class="docutils literal notranslate"><span class="pre">array_like</span></code> and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.Ab2M">
+<span class="sig-name descname"><span class="pre">Ab2M</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#Ab2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.Ab2M" title="Permalink to this definition"></a></dt>
+<dd><p>Pack matrix and vector to matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – square matrix</p></li>
+<li><p><strong>b</strong> (<em>ndarray</em><em>(</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>)</em>) – translation vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(4,4) or ndarray(3,3)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">Ab2M(A,</span> <span class="pre">b)</span></code> is a matrix (N+1xN+1) formed from a matrix <code class="docutils literal notranslate"><span class="pre">R</span></code> (NxN) and a vector <code class="docutils literal notranslate"><span class="pre">t</span></code>
+(Nx1).  The bottom row is all zeros.</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">A</span></code> is 2x2 and <code class="docutils literal notranslate"><span class="pre">b</span></code> is 2x1, then <code class="docutils literal notranslate"><span class="pre">M</span></code> is 3x3</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">A</span></code> is 3x3 and <code class="docutils literal notranslate"><span class="pre">b</span></code> is 3x1, then <code class="docutils literal notranslate"><span class="pre">M</span></code> is 4x4</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ab2M</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">array([[1., 2., 5.],</span>
+<span class="go">       [3., 4., 6.],</span>
+<span class="go">       [0., 0., 0.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>rt2tr, tr2rt, r2t</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.det">
+<span class="sig-name descname"><span class="pre">det</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.det" title="Permalink to this definition"></a></dt>
+<dd><p>Determinant of matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> – any square matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>determinant</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">det(v)</span></code> is the determinant of the matrix <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">5.0</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">det()</span></code></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.e2h">
+<span class="sig-name descname"><span class="pre">e2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#e2h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.e2h" title="Permalink to this definition"></a></dt>
+<dd><p>Convert from Euclidean to homogeneous form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – Euclidean vector or matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>homogeneous vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(n+1,m)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N+1)-column vector where a value of 1 has
+been appended as the last element.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is a matrix (NxM), return a matrix (N+1xM), where each column has
+been appended with a value of 1, ie. a row of ones has been appended to the matrix.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e2h</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="go">array([[2.],</span>
+<span class="go">       [4.],</span>
+<span class="go">       [6.],</span>
+<span class="go">       [1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span>
+<span class="go">array([[1, 3, 5],</span>
+<span class="go">       [2, 4, 6]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e2h</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="go">array([[1., 3., 5.],</span>
+<span class="go">       [2., 4., 6.],</span>
+<span class="go">       [1., 1., 1.]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The result is always a 2D array, a 1D input results in a column vector.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>e2h</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.h2e">
+<span class="sig-name descname"><span class="pre">h2e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#h2e"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.h2e" title="Permalink to this definition"></a></dt>
+<dd><p>Convert from homogeneous to Euclidean form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – homogeneous vector or matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Euclidean vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(n-1), ndarray(n-1,m)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N-1)-column vector where the elements have
+all been scaled by the last element of <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is a matrix (NxM), return a matrix (N-1xM), where each column has
+been scaled by its last element.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">array([[2.],</span>
+<span class="go">       [4.],</span>
+<span class="go">       [6.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">array([[1.],</span>
+<span class="go">       [2.],</span>
+<span class="go">       [3.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span>
+<span class="go">array([[1, 3, 5],</span>
+<span class="go">       [2, 4, 6],</span>
+<span class="go">       [1, 2, 1]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="go">array([[1. , 1.5, 5. ],</span>
+<span class="go">       [2. , 2. , 6. ]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The result is always a 2D array, a 1D input results in a column vector.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>e2h</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.homtrans">
+<span class="sig-name descname"><span class="pre">homtrans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#homtrans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.homtrans" title="Permalink to this definition"></a></dt>
+<dd><p>Apply a homogeneous transformation to a Euclidean vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>Numpy array</em><em> (</em><em>n</em><em>,</em><em>n</em><em>)</em>) – homogeneous transformation</p></li>
+<li><p><strong>p</strong> (<em>array_like</em><em>(</em><em>n-1</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n-1</em><em>,</em><em>m</em><em>)</em>) – Vector(s) to be transformed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transformed Euclidean vector(s)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(n-1,m)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">p)</span></code> applies the homogeneous transformation <code class="docutils literal notranslate"><span class="pre">T</span></code> to the Euclidean points
+stored columnwise in the array <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">v)</span></code> as above but <code class="docutils literal notranslate"><span class="pre">v</span></code> is a 1D array considered to be a column vector, and the
+retured value will be a column vector.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="go">array([[1.    ],</span>
+<span class="go">       [1.0241],</span>
+<span class="go">       [3.457 ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="go">array([[1.    ],</span>
+<span class="go">       [1.0241],</span>
+<span class="go">       [3.457 ]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If T is a homogeneous transformation defining the pose of {B} with respect to {A},
+then the points are defined with respect to frame {B} and are transformed to be
+with respect to frame {A}.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.e2h" title="spatialmath.base.transformsNd.e2h"><code class="xref py py-func docutils literal notranslate"><span class="pre">e2h()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.h2e" title="spatialmath.base.transformsNd.h2e"><code class="xref py py-func docutils literal notranslate"><span class="pre">h2e()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.isR">
+<span class="sig-name descname"><span class="pre">isR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#isR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.isR" title="Permalink to this definition"></a></dt>
+<dd><p>Test if matrix belongs to SO(n)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – matrix to test</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether matrix is a proper orthonormal rotation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Checks orthogonality, ie. <span class="math notranslate nohighlight">\({\bf R} {\bf R}^T = {\bf I}\)</span> and <span class="math notranslate nohighlight">\(\det({\bf R}) &gt; 0\)</span>.
+For the first test we check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isR</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isR</span><span class="p">(</span><span class="n">rot2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isR</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>isrot2, isrot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.iseye">
+<span class="sig-name descname"><span class="pre">iseye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#iseye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.iseye" title="Permalink to this definition"></a></dt>
+<dd><p>Test if matrix is identity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>ndarray</em><em>(</em><em>n</em><em>,</em><em>n</em><em>)</em>) – matrix to test</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether matrix is a proper skew-symmetric matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Check if matrix is an identity matrix. We test that the trace tom row is zero
+We check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iseye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iseye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>isskew, isskewa</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.isskew">
+<span class="sig-name descname"><span class="pre">isskew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#isskew"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.isskew" title="Permalink to this definition"></a></dt>
+<dd><p>Test if matrix belongs to so(n)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – matrix to test</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether matrix is a proper skew-symmetric matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Checks skew-symmetry, ie. <span class="math notranslate nohighlight">\({\bf S} + {\bf S}^T = {\bf 0}\)</span>.
+We check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isskew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isskew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isskew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>isskewa</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.isskewa">
+<span class="sig-name descname"><span class="pre">isskewa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#isskewa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.isskewa" title="Permalink to this definition"></a></dt>
+<dd><p>Test if matrix belongs to se(n)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – matrix to test</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether matrix is a proper skew-symmetric matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Check if matrix is augmented skew-symmetric, ie. the top left (n-1xn-1) partition <code class="docutils literal notranslate"><span class="pre">S</span></code> is
+skew-symmetric <span class="math notranslate nohighlight">\({\bf S} + {\bf S}^T = {\bf 0}\)</span>, and the bottom row is zero
+We check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isskewa</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isskewa</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span> <span class="c1"># this matrix is skew but not skewa</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isskewa</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>isskew</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transformsNd.r2t">
 <span class="sig-name descname"><span class="pre">r2t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#r2t"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.r2t" title="Permalink to this definition"></a></dt>
 <dd><p>Convert SO(n) to SE(n)</p>
@@ -139,6 +513,192 @@ component</p>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p>t2r, rt2tr</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.rodrigues">
+<span class="sig-name descname"><span class="pre">rodrigues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#rodrigues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.rodrigues" title="Permalink to this definition"></a></dt>
+<dd><p>Rodrigues’ formula for rotation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> (<em>array_like</em><em>(</em><em>3</em><em>) or </em><em>array_like</em><em>(</em><em>1</em><em>)</em>) – rotation vector</p></li>
+<li><p><strong>θ</strong> (<em>float</em><em> or </em><em>None</em>) – rotation angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SO(n) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2,2) or ndarray(3,3)</p>
+</dd>
+</dl>
+<p>Compute Rodrigues’ formula for a rotation matrix given a rotation axis
+and angle.</p>
+<div class="math notranslate nohighlight">
+\[\mat{R} = \mat{I}_{3 \times 3} + \sin \theta \skx{\hat{\vec{v}}} + (1 - \cos \theta) \skx{\hat{\vec{v}}}^2\]</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rodrigues</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="go">array([[ 1.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9553, -0.2955],</span>
+<span class="go">       [ 0.    ,  0.2955,  0.9553]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rodrigues</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">array([[ 1.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9553, -0.2955],</span>
+<span class="go">       [ 0.    ,  0.2955,  0.9553]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rodrigues</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>   <span class="c1"># 2D version</span>
+<span class="go">array([[ 0.9553, -0.2955],</span>
+<span class="go">       [ 0.2955,  0.9553]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.rt2tr">
+<span class="sig-name descname"><span class="pre">rt2tr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#rt2tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.rt2tr" title="Permalink to this definition"></a></dt>
+<dd><p>Convert SO(n) and translation to SE(n)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>2</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>)</em>) – SO(n) matrix</p></li>
+<li><p><strong>t</strong> – translation vector</p></li>
+<li><p><strong>check</strong> (<em>bool</em>) – check if SO(3) matrix is valid (default False, no check)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(3) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(4,4) or (3,3)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">rt2tr(R,</span> <span class="pre">t)</span></code> is a homogeneous transformation matrix (N+1xN+1) formed from an
+orthonormal rotation matrix <code class="docutils literal notranslate"><span class="pre">R</span></code> (NxN) and a translation vector <code class="docutils literal notranslate"><span class="pre">t</span></code>
+(Nx1).</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">R</span></code> is 2x2 and <code class="docutils literal notranslate"><span class="pre">t</span></code> is 2x1, then <code class="docutils literal notranslate"><span class="pre">T</span></code> is 3x3</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">R</span></code> is 3x3 and <code class="docutils literal notranslate"><span class="pre">t</span></code> is 3x1, then <code class="docutils literal notranslate"><span class="pre">T</span></code> is 4x4</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>rt2m, tr2rt, r2t</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.skew">
+<span class="sig-name descname"><span class="pre">skew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#skew"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.skew" title="Permalink to this definition"></a></dt>
+<dd><p>Create skew-symmetric metrix from vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>1</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>skew-symmetric matrix in so(2) or so(3)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2,2) or ndarray(3,3)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">skew(V)</span></code> is a skew-symmetric matrix formed from the elements of <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code>  is 1 then <code class="docutils literal notranslate"><span class="pre">S</span></code> = <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 0 &amp; -v \\ v &amp; 0 \end{array} \right]\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code> is 3 then <code class="docutils literal notranslate"><span class="pre">S</span></code> = <span class="math notranslate nohighlight">\(\left[ \begin{array}{ccc} 0 &amp; -v_z &amp; v_y \\ v_z &amp; 0 &amp; -v_x \\ -v_y &amp; v_x &amp; 0\end{array} \right]\)</span></p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skew</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([[ 0, -2],</span>
+<span class="go">       [ 2,  0]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skew</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">array([[ 0, -3,  2],</span>
+<span class="go">       [ 3,  0, -1],</span>
+<span class="go">       [-2,  1,  0]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>This is the inverse of the function <code class="docutils literal notranslate"><span class="pre">vex()</span></code>.</p></li>
+<li><p>These are the generator matrices for the Lie algebras so(2) and so(3).</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.vex" title="spatialmath.base.transformsNd.vex"><code class="xref py py-func docutils literal notranslate"><span class="pre">vex()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.skewa" title="spatialmath.base.transformsNd.skewa"><code class="xref py py-func docutils literal notranslate"><span class="pre">skewa()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transformsNd.skewa">
+<span class="sig-name descname"><span class="pre">skewa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#skewa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.skewa" title="Permalink to this definition"></a></dt>
+<dd><p>Create augmented skew-symmetric metrix from vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em><em>, </em><em>array_like</em><em>(</em><em>6</em><em>)</em>) – vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>augmented skew-symmetric matrix in se(2) or se(3)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3) or ndarray(4,4)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">skewa(V)</span></code> is an augmented skew-symmetric matrix formed from the elements of <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code> is 3 then S = <span class="math notranslate nohighlight">\(\left[ \begin{array}{ccc} 0 &amp; -v_3 &amp; v_1 \\ v_3 &amp; 0 &amp; v_2 \\ 0 &amp; 0 &amp; 0 \end{array} \right]\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code> is 6 then S = <span class="math notranslate nohighlight">\(\left[ \begin{array}{cccc} 0 &amp; -v_6 &amp; v_5 &amp; v_1 \\ v_6 &amp; 0 &amp; -v_4 &amp; v_2 \\ -v_5 &amp; v_4 &amp; 0 &amp; v_3 \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{array} \right]\)</span></p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">array([[ 0., -3.,  1.],</span>
+<span class="go">       [ 3.,  0.,  2.],</span>
+<span class="go">       [ 0.,  0.,  0.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="go">array([[ 0., -6.,  5.,  1.],</span>
+<span class="go">       [ 6.,  0., -4.,  2.],</span>
+<span class="go">       [-5.,  4.,  0.,  3.],</span>
+<span class="go">       [ 0.,  0.,  0.,  0.]])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>This is the inverse of the function <code class="docutils literal notranslate"><span class="pre">vexa()</span></code>.</p></li>
+<li><p>These are the generator matrices for the Lie algebras se(2) and se(3).</p></li>
+<li><p>Map twist vectors in 2D and 3D space to se(2) and se(3).</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.vexa" title="spatialmath.base.transformsNd.vexa"><code class="xref py py-func docutils literal notranslate"><span class="pre">vexa()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.skew" title="spatialmath.base.transformsNd.skew"><code class="xref py py-func docutils literal notranslate"><span class="pre">skew()</span></code></a></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
 </dd>
 </dl>
 </dd></dl>
@@ -241,290 +801,6 @@ rotation matrix R (MxM) and a translation vector T (Mx1), where N=M+1.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.rt2tr">
-<span class="sig-name descname"><span class="pre">rt2tr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#rt2tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.rt2tr" title="Permalink to this definition"></a></dt>
-<dd><p>Convert SO(n) and translation to SE(n)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>2</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>)</em>) – SO(n) matrix</p></li>
-<li><p><strong>t</strong> – translation vector</p></li>
-<li><p><strong>check</strong> (<em>bool</em>) – check if SO(3) matrix is valid (default False, no check)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SE(3) matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(4,4) or (3,3)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">rt2tr(R,</span> <span class="pre">t)</span></code> is a homogeneous transformation matrix (N+1xN+1) formed from an
-orthonormal rotation matrix <code class="docutils literal notranslate"><span class="pre">R</span></code> (NxN) and a translation vector <code class="docutils literal notranslate"><span class="pre">t</span></code>
-(Nx1).</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">R</span></code> is 2x2 and <code class="docutils literal notranslate"><span class="pre">t</span></code> is 2x1, then <code class="docutils literal notranslate"><span class="pre">T</span></code> is 3x3</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">R</span></code> is 3x3 and <code class="docutils literal notranslate"><span class="pre">t</span></code> is 3x1, then <code class="docutils literal notranslate"><span class="pre">T</span></code> is 4x4</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
-<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>rt2m, tr2rt, r2t</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.Ab2M">
-<span class="sig-name descname"><span class="pre">Ab2M</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#Ab2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.Ab2M" title="Permalink to this definition"></a></dt>
-<dd><p>Pack matrix and vector to matrix</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>A</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – square matrix</p></li>
-<li><p><strong>b</strong> (<em>ndarray</em><em>(</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>)</em>) – translation vector</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(4,4) or ndarray(3,3)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">Ab2M(A,</span> <span class="pre">b)</span></code> is a matrix (N+1xN+1) formed from a matrix <code class="docutils literal notranslate"><span class="pre">R</span></code> (NxN) and a vector <code class="docutils literal notranslate"><span class="pre">t</span></code>
-(Nx1).  The bottom row is all zeros.</p>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">A</span></code> is 2x2 and <code class="docutils literal notranslate"><span class="pre">b</span></code> is 2x1, then <code class="docutils literal notranslate"><span class="pre">M</span></code> is 3x3</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">A</span></code> is 3x3 and <code class="docutils literal notranslate"><span class="pre">b</span></code> is 3x1, then <code class="docutils literal notranslate"><span class="pre">M</span></code> is 4x4</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Ab2M</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="go">array([[1., 2., 5.],</span>
-<span class="go">       [3., 4., 6.],</span>
-<span class="go">       [0., 0., 0.]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>rt2tr, tr2rt, r2t</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.isR">
-<span class="sig-name descname"><span class="pre">isR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#isR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.isR" title="Permalink to this definition"></a></dt>
-<dd><p>Test if matrix belongs to SO(n)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – matrix to test</p></li>
-<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whether matrix is a proper orthonormal rotation matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p>Checks orthogonality, ie. <span class="math notranslate nohighlight">\({\bf R} {\bf R}^T = {\bf I}\)</span> and <span class="math notranslate nohighlight">\(\det({\bf R}) &gt; 0\)</span>.
-For the first test we check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isR</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isR</span><span class="p">(</span><span class="n">rot2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isR</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>isrot2, isrot</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.isskew">
-<span class="sig-name descname"><span class="pre">isskew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#isskew"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.isskew" title="Permalink to this definition"></a></dt>
-<dd><p>Test if matrix belongs to so(n)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>S</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – matrix to test</p></li>
-<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whether matrix is a proper skew-symmetric matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p>Checks skew-symmetry, ie. <span class="math notranslate nohighlight">\({\bf S} + {\bf S}^T = {\bf 0}\)</span>.
-We check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isskew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isskew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isskew</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>isskewa</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.isskewa">
-<span class="sig-name descname"><span class="pre">isskewa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#isskewa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.isskewa" title="Permalink to this definition"></a></dt>
-<dd><p>Test if matrix belongs to se(n)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>S</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – matrix to test</p></li>
-<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whether matrix is a proper skew-symmetric matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p>Check if matrix is augmented skew-symmetric, ie. the top left (n-1xn-1) partition <code class="docutils literal notranslate"><span class="pre">S</span></code> is
-skew-symmetric <span class="math notranslate nohighlight">\({\bf S} + {\bf S}^T = {\bf 0}\)</span>, and the bottom row is zero
-We check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isskewa</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isskewa</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span> <span class="c1"># this matrix is skew but not skewa</span>
-<span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isskewa</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>isskew</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.iseye">
-<span class="sig-name descname"><span class="pre">iseye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#iseye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.iseye" title="Permalink to this definition"></a></dt>
-<dd><p>Test if matrix is identity</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>S</strong> (<em>ndarray</em><em>(</em><em>n</em><em>,</em><em>n</em><em>)</em>) – matrix to test</p></li>
-<li><p><strong>tol</strong> (<em>float</em>) – tolerance in units of eps</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whether matrix is a proper skew-symmetric matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p>Check if matrix is an identity matrix. We test that the trace tom row is zero
-We check that the norm of the residual is less than <code class="docutils literal notranslate"><span class="pre">tol</span> <span class="pre">*</span> <span class="pre">eps</span></code>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iseye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">iseye</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]))</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>isskew, isskewa</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.skew">
-<span class="sig-name descname"><span class="pre">skew</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#skew"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.skew" title="Permalink to this definition"></a></dt>
-<dd><p>Create skew-symmetric metrix from vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>1</em><em>) or </em><em>array_like</em><em>(</em><em>3</em><em>)</em>) – vector</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>skew-symmetric matrix in so(2) or so(3)</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(2,2) or ndarray(3,3)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">skew(V)</span></code> is a skew-symmetric matrix formed from the elements of <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code>  is 1 then <code class="docutils literal notranslate"><span class="pre">S</span></code> = <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 0 &amp; -v \\ v &amp; 0 \end{array} \right]\)</span></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code> is 3 then <code class="docutils literal notranslate"><span class="pre">S</span></code> = <span class="math notranslate nohighlight">\(\left[ \begin{array}{ccc} 0 &amp; -v_z &amp; v_y \\ v_z &amp; 0 &amp; -v_x \\ -v_y &amp; v_x &amp; 0\end{array} \right]\)</span></p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">skew</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="go">array([[ 0, -2],</span>
-<span class="go">       [ 2,  0]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">skew</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="go">array([[ 0, -3,  2],</span>
-<span class="go">       [ 3,  0, -1],</span>
-<span class="go">       [-2,  1,  0]])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>This is the inverse of the function <code class="docutils literal notranslate"><span class="pre">vex()</span></code>.</p></li>
-<li><p>These are the generator matrices for the Lie algebras so(2) and so(3).</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.vex" title="spatialmath.base.transformsNd.vex"><code class="xref py py-func docutils literal notranslate"><span class="pre">vex()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.skewa" title="spatialmath.base.transformsNd.skewa"><code class="xref py py-func docutils literal notranslate"><span class="pre">skewa()</span></code></a></p>
-</dd>
-<dt class="field-even">SymPy</dt>
-<dd class="field-even"><p>supported</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transformsNd.vex">
 <span class="sig-name descname"><span class="pre">vex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#vex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.vex" title="Permalink to this definition"></a></dt>
 <dd><p>Convert skew-symmetric matrix to vector</p>
@@ -579,59 +855,6 @@ element of the matrix.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.skew" title="spatialmath.base.transformsNd.skew"><code class="xref py py-func docutils literal notranslate"><span class="pre">skew()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.vexa" title="spatialmath.base.transformsNd.vexa"><code class="xref py py-func docutils literal notranslate"><span class="pre">vexa()</span></code></a></p>
-</dd>
-<dt class="field-even">SymPy</dt>
-<dd class="field-even"><p>supported</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.skewa">
-<span class="sig-name descname"><span class="pre">skewa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#skewa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.skewa" title="Permalink to this definition"></a></dt>
-<dd><p>Create augmented skew-symmetric metrix from vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em><em>, </em><em>array_like</em><em>(</em><em>6</em><em>)</em>) – vector</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>augmented skew-symmetric matrix in se(2) or se(3)</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3) or ndarray(4,4)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">skewa(V)</span></code> is an augmented skew-symmetric matrix formed from the elements of <code class="docutils literal notranslate"><span class="pre">V</span></code>.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code> is 3 then S = <span class="math notranslate nohighlight">\(\left[ \begin{array}{ccc} 0 &amp; -v_3 &amp; v_1 \\ v_3 &amp; 0 &amp; v_2 \\ 0 &amp; 0 &amp; 0 \end{array} \right]\)</span></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len(V)</span></code> is 6 then S = <span class="math notranslate nohighlight">\(\left[ \begin{array}{cccc} 0 &amp; -v_6 &amp; v_5 &amp; v_1 \\ v_6 &amp; 0 &amp; -v_4 &amp; v_2 \\ -v_5 &amp; v_4 &amp; 0 &amp; v_3 \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{array} \right]\)</span></p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="go">array([[ 0., -3.,  1.],</span>
-<span class="go">       [ 3.,  0.,  2.],</span>
-<span class="go">       [ 0.,  0.,  0.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="go">array([[ 0., -6.,  5.,  1.],</span>
-<span class="go">       [ 6.,  0., -4.,  2.],</span>
-<span class="go">       [-5.,  4.,  0.,  3.],</span>
-<span class="go">       [ 0.,  0.,  0.,  0.]])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>This is the inverse of the function <code class="docutils literal notranslate"><span class="pre">vexa()</span></code>.</p></li>
-<li><p>These are the generator matrices for the Lie algebras se(2) and se(3).</p></li>
-<li><p>Map twist vectors in 2D and 3D space to se(2) and se(3).</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.vexa" title="spatialmath.base.transformsNd.vexa"><code class="xref py py-func docutils literal notranslate"><span class="pre">vexa()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.skew" title="spatialmath.base.transformsNd.skew"><code class="xref py py-func docutils literal notranslate"><span class="pre">skew()</span></code></a></p>
 </dd>
 <dt class="field-even">SymPy</dt>
 <dd class="field-even"><p>supported</p>
@@ -703,229 +926,6 @@ element of the matrix.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.rodrigues">
-<span class="sig-name descname"><span class="pre">rodrigues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#rodrigues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.rodrigues" title="Permalink to this definition"></a></dt>
-<dd><p>Rodrigues’ formula for rotation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>w</strong> (<em>array_like</em><em>(</em><em>3</em><em>) or </em><em>array_like</em><em>(</em><em>1</em><em>)</em>) – rotation vector</p></li>
-<li><p><strong>θ</strong> (<em>float</em><em> or </em><em>None</em>) – rotation angle</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SO(n) matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(2,2) or ndarray(3,3)</p>
-</dd>
-</dl>
-<p>Compute Rodrigues’ formula for a rotation matrix given a rotation axis
-and angle.</p>
-<div class="math notranslate nohighlight">
-\[\mat{R} = \mat{I}_{3 \times 3} + \sin \theta \skx{\hat{\vec{v}}} + (1 - \cos \theta) \skx{\hat{\vec{v}}}^2\]</div>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rodrigues</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mf">0.3</span><span class="p">)</span>
-<span class="go">array([[ 1.    ,  0.    ,  0.    ],</span>
-<span class="go">       [ 0.    ,  0.9553, -0.2955],</span>
-<span class="go">       [ 0.    ,  0.2955,  0.9553]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rodrigues</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">array([[ 1.    ,  0.    ,  0.    ],</span>
-<span class="go">       [ 0.    ,  0.9553, -0.2955],</span>
-<span class="go">       [ 0.    ,  0.2955,  0.9553]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rodrigues</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>   <span class="c1"># 2D version</span>
-<span class="go">array([[ 0.9553, -0.2955],</span>
-<span class="go">       [ 0.2955,  0.9553]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.h2e">
-<span class="sig-name descname"><span class="pre">h2e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#h2e"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.h2e" title="Permalink to this definition"></a></dt>
-<dd><p>Convert from homogeneous to Euclidean form</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – homogeneous vector or matrix</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Euclidean vector</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(n-1), ndarray(n-1,m)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N-1)-column vector where the elements have
-all been scaled by the last element of <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is a matrix (NxM), return a matrix (N-1xM), where each column has
-been scaled by its last element.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="go">array([[2.],</span>
-<span class="go">       [4.],</span>
-<span class="go">       [6.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="go">array([[1.],</span>
-<span class="go">       [2.],</span>
-<span class="go">       [3.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span>
-<span class="go">array([[1, 3, 5],</span>
-<span class="go">       [2, 4, 6],</span>
-<span class="go">       [1, 2, 1]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-<span class="go">array([[1. , 1.5, 5. ],</span>
-<span class="go">       [2. , 2. , 6. ]])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The result is always a 2D array, a 1D input results in a column vector.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>e2h</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.e2h">
-<span class="sig-name descname"><span class="pre">e2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#e2h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.e2h" title="Permalink to this definition"></a></dt>
-<dd><p>Convert from Euclidean to homogeneous form</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – Euclidean vector or matrix</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>homogeneous vector</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(n+1,m)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is an N-vector, return an (N+1)-column vector where a value of 1 has
-been appended as the last element.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">v</span></code> is a matrix (NxM), return a matrix (N+1xM), where each column has
-been appended with a value of 1, ie. a row of ones has been appended to the matrix.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e2h</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
-<span class="go">array([[2.],</span>
-<span class="go">       [4.],</span>
-<span class="go">       [6.],</span>
-<span class="go">       [1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span>
-<span class="go">array([[1, 3, 5],</span>
-<span class="go">       [2, 4, 6]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e2h</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<span class="go">array([[1., 3., 5.],</span>
-<span class="go">       [2., 4., 6.],</span>
-<span class="go">       [1., 1., 1.]])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The result is always a 2D array, a 1D input results in a column vector.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>e2h</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.homtrans">
-<span class="sig-name descname"><span class="pre">homtrans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#homtrans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.homtrans" title="Permalink to this definition"></a></dt>
-<dd><p>Apply a homogeneous transformation to a Euclidean vector</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> (<em>Numpy array</em><em> (</em><em>n</em><em>,</em><em>n</em><em>)</em>) – homogeneous transformation</p></li>
-<li><p><strong>p</strong> (<em>array_like</em><em>(</em><em>n-1</em><em>)</em><em>, </em><em>ndarray</em><em>(</em><em>n-1</em><em>,</em><em>m</em><em>)</em>) – Vector(s) to be transformed</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transformed Euclidean vector(s)</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(n-1,m)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">p)</span></code> applies the homogeneous transformation <code class="docutils literal notranslate"><span class="pre">T</span></code> to the Euclidean points
-stored columnwise in the array <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">homtrans(T,</span> <span class="pre">v)</span></code> as above but <code class="docutils literal notranslate"><span class="pre">v</span></code> is a 1D array considered to be a column vector, and the
-retured value will be a column vector.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trotx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">h2e</span><span class="p">(</span> <span class="n">T</span> <span class="o">@</span> <span class="n">e2h</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-<span class="go">array([[1.    ],</span>
-<span class="go">       [1.0241],</span>
-<span class="go">       [3.457 ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">homtrans</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="go">array([[1.    ],</span>
-<span class="go">       [1.0241],</span>
-<span class="go">       [3.457 ]])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>If T is a homogeneous transformation defining the pose of {B} with respect to {A},
-then the points are defined with respect to frame {B} and are transformed to be
-with respect to frame {A}.</p></li>
-</ul>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transformsNd.e2h" title="spatialmath.base.transformsNd.e2h"><code class="xref py py-func docutils literal notranslate"><span class="pre">e2h()</span></code></a>, <a class="reference internal" href="#spatialmath.base.transformsNd.h2e" title="spatialmath.base.transformsNd.h2e"><code class="xref py py-func docutils literal notranslate"><span class="pre">h2e()</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transformsNd.det">
-<span class="sig-name descname"><span class="pre">det</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transformsNd.html#det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transformsNd.det" title="Permalink to this definition"></a></dt>
-<dd><p>Determinant of matrix</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>m</strong> – any square matrix</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>determinant</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">det(v)</span></code> is the determinant of the matrix <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="go">5.0</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">det()</span></code></p>
-</dd>
-<dt class="field-even">SymPy</dt>
-<dd class="field-even"><p>supported</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 
 
@@ -940,7 +940,7 @@ with respect to frame {A}.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 

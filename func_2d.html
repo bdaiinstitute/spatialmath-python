@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transforms in 2D &mdash; Spatial Maths package 0.11.0
+  <title>Transforms in 2D &mdash; Spatial Maths package 0.12.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.9
+                0.12
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -93,240 +93,20 @@
              
   <section id="module-spatialmath.base.transforms2d">
 <span id="transforms-in-2d"></span><h1>Transforms in 2D<a class="headerlink" href="#module-spatialmath.base.transforms2d" title="Permalink to this headline"></a></h1>
-<p>This modules contains functions to create and transform SO(2) and SE(2) matrices,
-respectively 2D rotation matrices and homogeneous tranformation matrices.</p>
+<p>These functions create and manipulate 2D rotation matrices and rigid-body
+transformations as 2x2 SO(2) matrices and 3x3 SE(2) matrices respectively.
+These matrices are represented as 2D NumPy arrays.</p>
 <p>Vector arguments are what numpy refers to as <code class="docutils literal notranslate"><span class="pre">array_like</span></code> and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.rot2">
-<span class="sig-name descname"><span class="pre">rot2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#rot2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.rot2" title="Permalink to this definition"></a></dt>
-<dd><p>Create SO(2) rotation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> (<em>float</em>) – rotation angle</p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SO(2) rotation matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(2,2)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">rot2(θ)</span></code> is an SO(2) rotation matrix (2x2) representing a rotation of θ radians.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">rot2(θ,</span> <span class="pre">'deg')</span></code> as above but θ is in degrees.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="go">array([[ 0.9553, -0.2955],</span>
-<span class="go">       [ 0.2955,  0.9553]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rot2</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
-<span class="go">array([[ 0.7071, -0.7071],</span>
-<span class="go">       [ 0.7071,  0.7071]])</span>
-</pre></div>
-</div>
-</dd></dl>
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.ICP2d">
+<span class="sig-name descname"><span class="pre">ICP2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_delta_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#ICP2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.ICP2d" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trot2">
-<span class="sig-name descname"><span class="pre">trot2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trot2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trot2" title="Permalink to this definition"></a></dt>
-<dd><p>Create SE(2) pure rotation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> – rotation angle about X-axis</p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-<li><p><strong>t</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em>) – 2D translation vector, defaults to [0,0]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>3x3 homogeneous transformation matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">trot2(θ)</span></code> is a homogeneous transformation (3x3) representing a rotation of
-θ radians.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trot2(θ,</span> <span class="pre">'deg')</span></code> as above but θ is in degrees.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="go">array([[ 0.9553, -0.2955,  0.    ],</span>
-<span class="go">       [ 0.2955,  0.9553,  0.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trot2</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
-<span class="go">array([[ 0.7071, -0.7071,  1.    ],</span>
-<span class="go">       [ 0.7071,  0.7071,  2.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the translational component is zero but it can be
-set to a non-zero value.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>xyt2tr</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.xyt2tr">
-<span class="sig-name descname"><span class="pre">xyt2tr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#xyt2tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.xyt2tr" title="Permalink to this definition"></a></dt>
-<dd><p>Create SE(2) pure rotation</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xyt</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – 2d translation and rotation</p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SE(2) matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">xyt2tr([x,y,θ])</span></code> is a homogeneous transformation (3x3) representing a rotation of
-θ radians and a translation of (x,y).</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">])</span>
-<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
-<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">45</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
-<span class="go">array([[ 0.7071, -0.7071,  1.    ],</span>
-<span class="go">       [ 0.7071,  0.7071,  2.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>tr2xyt</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2xyt">
-<span class="sig-name descname"><span class="pre">tr2xyt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2xyt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2xyt" title="Permalink to this definition"></a></dt>
-<dd><p>Convert SE(2) to x, y, theta</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>[x, y, θ]</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">tr2xyt(T)</span></code> is a vector giving the equivalent 2D translation and
-rotation for this SO(2) matrix.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span>
-<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
-<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2xyt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">array([1. , 2. , 0.3])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>trot2</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.transl2">
-<span class="sig-name descname"><span class="pre">transl2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#transl2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.transl2" title="Permalink to this definition"></a></dt>
-<dd><p>Create SE(2) pure translation, or extract translation from SE(2) matrix</p>
-<p><strong>Create a translational SE(2) matrix</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>float</em>) – translation along X-axis</p></li>
-<li><p><strong>y</strong> (<em>float</em>) – translation along Y-axis</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>SE(2) matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2([X,</span> <span class="pre">Y])</span></code> is an SE(2) homogeneous transform (3x3)
-representing a pure translation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2(</span> <span class="pre">V</span> <span class="pre">)</span></code> as above but the translation is given by a 2-element
-list, dict, or a numpy array, row or column vector.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="go">array([[1., 0., 3.],</span>
-<span class="go">       [0., 1., 4.],</span>
-<span class="go">       [0., 0., 1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="go">array([[1., 0., 3.],</span>
-<span class="go">       [0., 1., 4.],</span>
-<span class="go">       [0., 0., 1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
-<span class="go">array([[1., 0., 3.],</span>
-<span class="go">       [0., 1., 4.],</span>
-<span class="go">       [0., 0., 1.]])</span>
-</pre></div>
-</div>
-<p><strong>Extract the translational part of an SE(2) matrix</strong></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) transform matrix</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>translation elements of SE(2) matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(2)</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">transl2(T)</span></code> is the translational part of the SE(3) matrix <code class="docutils literal notranslate"><span class="pre">T</span></code> as a
-2-element NumPy array.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">array([3, 4])</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function is compatible with the MATLAB version of the Toolbox.  It
-is unusual/weird in doing two completely different things inside the one
-function.</p>
-</div>
-</dd></dl>
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.adjoint2">
+<span class="sig-name descname"><span class="pre">adjoint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#adjoint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.adjoint2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.ishom2">
@@ -413,6 +193,403 @@ rotation sub-matrix and validitity of the bottom row.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p>isR, ishom2, isrot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.points2tr2">
+<span class="sig-name descname"><span class="pre">points2tr2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#points2tr2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.points2tr2" title="Permalink to this definition"></a></dt>
+<dd><p>SE(2) transform from corresponding points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em>) – first set of points</p></li>
+<li><p><strong>p2</strong> (<em>array_like</em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em>) – second set of points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transform from <code class="docutils literal notranslate"><span class="pre">p1</span></code> to <code class="docutils literal notranslate"><span class="pre">p2</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<p>Compute an SE(2) matrix that transforms the point set <code class="docutils literal notranslate"><span class="pre">p1</span></code> to <code class="docutils literal notranslate"><span class="pre">p2</span></code>.
+p1 and p2 must have the same number of columns, and columns correspond
+to the same point.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.rot2">
+<span class="sig-name descname"><span class="pre">rot2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#rot2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.rot2" title="Permalink to this definition"></a></dt>
+<dd><p>Create SO(2) rotation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theta</strong> (<em>float</em>) – rotation angle</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SO(2) rotation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2,2)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rot2(θ)</span></code> is an SO(2) rotation matrix (2x2) representing a rotation of θ radians.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rot2(θ,</span> <span class="pre">'deg')</span></code> as above but θ is in degrees.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">array([[ 0.9553, -0.2955],</span>
+<span class="go">       [ 0.2955,  0.9553]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rot2</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">array([[ 0.7071, -0.7071],</span>
+<span class="go">       [ 0.7071,  0.7071]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2jac2">
+<span class="sig-name descname"><span class="pre">tr2jac2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2jac2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2jac2" title="Permalink to this definition"></a></dt>
+<dd><p>SE(2) Jacobian matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<p>Computes an Jacobian matrix that maps spatial velocity between two frames defined by
+an SE(2) matrix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tr2jac2(T)</span></code> is a Jacobian matrix (3x3) that maps spatial velocity or
+differential motion from frame {B} to frame {A} where the pose of {B}
+elative to {A} is represented by the homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2jac2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([[ 0.9553, -0.2955,  0.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2xyt">
+<span class="sig-name descname"><span class="pre">tr2xyt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2xyt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2xyt" title="Permalink to this definition"></a></dt>
+<dd><p>Convert SE(2) to x, y, theta</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[x, y, θ]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tr2xyt(T)</span></code> is a vector giving the equivalent 2D translation and
+rotation for this SO(2) matrix.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span>
+<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2xyt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([1. , 2. , 0.3])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>trot2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tranimate2">
+<span class="sig-name descname"><span class="pre">tranimate2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tranimate2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tranimate2" title="Permalink to this definition"></a></dt>
+<dd><p>Animate a 2D coordinate frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> – an SE(2) or SO(2) pose to be displayed as coordinate frame</p></li>
+<li><p><strong>nframes</strong> (<em>int</em>) – number of steps in the animation [defaault 100]</p></li>
+<li><p><strong>repeat</strong> (<em>bool</em>) – animate in endless loop [default False]</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – number of milliseconds between frames [default 50]</p></li>
+<li><p><strong>movie</strong> (<em>str</em>) – name of file to write MP4 movie into</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>ndarray(3,3) or ndarray(2,2)</p>
+</dd>
+</dl>
+<p>Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.</p>
+<ul class="simple">
+<li><p>If no current figure, one is created</p></li>
+<li><p>If current figure, but no axes, a 3d Axes is created</p></li>
+</ul>
+<p>Examples:</p>
+<blockquote>
+<div><p>tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5])
+tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], movie=’spin.mp4’)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.transl2">
+<span class="sig-name descname"><span class="pre">transl2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#transl2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.transl2" title="Permalink to this definition"></a></dt>
+<dd><p>Create SE(2) pure translation, or extract translation from SE(2) matrix</p>
+<p><strong>Create a translational SE(2) matrix</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – translation along X-axis</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – translation along Y-axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2([X,</span> <span class="pre">Y])</span></code> is an SE(2) homogeneous transform (3x3)
+representing a pure translation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2(</span> <span class="pre">V</span> <span class="pre">)</span></code> as above but the translation is given by a 2-element
+list, dict, or a numpy array, row or column vector.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+</pre></div>
+</div>
+<p><strong>Extract the translational part of an SE(2) matrix</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) transform matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>translation elements of SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">transl2(T)</span></code> is the translational part of the SE(3) matrix <code class="docutils literal notranslate"><span class="pre">T</span></code> as a
+2-element NumPy array.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([3, 4])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function is compatible with the MATLAB version of the Toolbox.  It
+is unusual/weird in doing two completely different things inside the one
+function.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trexp2">
+<span class="sig-name descname"><span class="pre">trexp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trexp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trexp2" title="Permalink to this definition"></a></dt>
+<dd><p>Exponential of so(2) or se(2) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> – se(2), so(2) matrix or equivalent velctor</p></li>
+<li><p><strong>theta</strong> (<em>float</em>) – motion</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matrix exponential in SE(2) or SO(2)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3) or ndarray(2,2)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+</dd>
+</dl>
+<p>An efficient closed-form solution of the matrix exponential for arguments
+that are se(2) or so(2).</p>
+<p>For se(2) the results is an SE(2) homogeneous transformation matrix:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Σ)</span></code> is the matrix exponential of the se(2) element <code class="docutils literal notranslate"><span class="pre">Σ</span></code> which is
+a 3x3 augmented skew-symmetric matrix.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Σ,</span> <span class="pre">θ)</span></code> as above but for an se(3) motion of Σθ, where <code class="docutils literal notranslate"><span class="pre">Σ</span></code>
+must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
+matrix.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S)</span></code> is the matrix exponential of the se(3) element <code class="docutils literal notranslate"><span class="pre">S</span></code> represented as
+a 3-vector which can be considered a screw motion.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S,</span> <span class="pre">θ)</span></code> as above but for an se(2) motion of Sθ, where <code class="docutils literal notranslate"><span class="pre">S</span></code>
+must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
+matrix.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skew</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">array([[ 0.5403, -0.8415],</span>
+<span class="go">       [ 0.8415,  0.5403]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skew</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># revolute unit twist</span>
+<span class="go">array([[-0.4161, -0.9093],</span>
+<span class="go">       [ 0.9093, -0.4161]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 0.5403, -0.8415],</span>
+<span class="go">       [ 0.8415,  0.5403]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># revolute unit twist</span>
+<span class="go">array([[-0.4161, -0.9093],</span>
+<span class="go">       [ 0.9093, -0.4161]])</span>
+</pre></div>
+</div>
+<p>For so(2) the results is an SO(2) rotation matrix:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Ω)</span></code> is the matrix exponential of the so(3) element <code class="docutils literal notranslate"><span class="pre">Ω</span></code> which is a 2x2
+skew-symmetric matrix.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Ω,</span> <span class="pre">θ)</span></code> as above but for an so(3) motion of Ωθ, where <code class="docutils literal notranslate"><span class="pre">Ω</span></code> is
+unit-norm skew-symmetric matrix representing a rotation axis and a rotation magnitude
+given by <code class="docutils literal notranslate"><span class="pre">θ</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(ω)</span></code> is the matrix exponential of the so(2) element <code class="docutils literal notranslate"><span class="pre">ω</span></code> expressed as
+a 1-vector.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(ω,</span> <span class="pre">θ)</span></code> as above but for an so(3) motion of ωθ where <code class="docutils literal notranslate"><span class="pre">ω</span></code> is a
+unit-norm vector representing a rotation axis and a rotation magnitude
+given by <code class="docutils literal notranslate"><span class="pre">θ</span></code>. <code class="docutils literal notranslate"><span class="pre">ω</span></code> is expressed as a 1-vector.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="go">array([[-0.99  , -0.1411, -1.2796],</span>
+<span class="go">       [ 0.1411, -0.99  ,  0.7574],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># prismatic unit twist</span>
+<span class="go">array([[1., 0., 2.],</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="go">array([[-0.99  , -0.1411, -1.2796],</span>
+<span class="go">       [ 0.1411, -0.99  ,  0.7574],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">array([[1., 0., 2.],</span>
+<span class="go">       [0., 1., 0.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>trlog, trexp2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trinterp2">
+<span class="sig-name descname"><span class="pre">trinterp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinterp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinterp2" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolate SE(2) or SO(2) matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>) or </em><em>None</em>) – initial SE(2) or SO(2) matrix value when s=0, if None then identity is used</p></li>
+<li><p><strong>end</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – final SE(2) or SO(2) matrix, value when s=1</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – interpolation coefficient, range 0 to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>interpolated SE(2) or SO(2) matrix value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3) or ndarray(2,2)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(None,</span> <span class="pre">T,</span> <span class="pre">S)</span></code> is an SE(2) matrix interpolated
+between identity when <cite>S`=0 and `T</cite>  when <a href="#id1"><span class="problematic" id="id2">`</span></a>S`=1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(T0,</span> <span class="pre">T1,</span> <span class="pre">S)</span></code> as above but interpolated
+between <cite>T0</cite> when <cite>S`=0 and `T1</cite> when <a href="#id3"><span class="problematic" id="id4">`</span></a>S`=1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(None,</span> <span class="pre">R,</span> <span class="pre">S)</span></code> is an SO(2) matrix interpolated
+between identity when <cite>S`=0 and `R</cite> when <a href="#id5"><span class="problematic" id="id6">`</span></a>S`=1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(R0,</span> <span class="pre">R1,</span> <span class="pre">S)</span></code> as above but interpolated
+between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span class="problematic" id="id8">`</span></a>S`=1.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Rotation angle is linearly interpolated.</p>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T1</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T2</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">array([[ 1., -0.,  1.],</span>
+<span class="go">       [ 0.,  1.,  2.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 1., -0.,  3.],</span>
+<span class="go">       [ 0.,  1.,  4.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="go">array([[ 1., -0.,  2.],</span>
+<span class="go">       [ 0.,  1.,  3.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">array([[ 1., -0.,  0.],</span>
+<span class="go">       [ 0.,  1.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">array([[ 1., -0.,  3.],</span>
+<span class="go">       [ 0.,  1.,  4.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="go">array([[ 1. , -0. ,  1.5],</span>
+<span class="go">       [ 0. ,  1. ,  2. ],</span>
+<span class="go">       [ 0. ,  0. ,  1. ]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -513,289 +690,51 @@ w].</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trexp2">
-<span class="sig-name descname"><span class="pre">trexp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trexp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trexp2" title="Permalink to this definition"></a></dt>
-<dd><p>Exponential of so(2) or se(2) matrix</p>
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trot2">
+<span class="sig-name descname"><span class="pre">trot2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trot2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trot2" title="Permalink to this definition"></a></dt>
+<dd><p>Create SE(2) pure rotation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>S</strong> – se(2), so(2) matrix or equivalent velctor</p></li>
-<li><p><strong>theta</strong> (<em>float</em>) – motion</p></li>
+<li><p><strong>theta</strong> – rotation angle about X-axis</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+<li><p><strong>t</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em>) – 2D translation vector, defaults to [0,0]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>matrix exponential in SE(2) or SO(2)</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3) or ndarray(2,2)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
-</dd>
-</dl>
-<p>An efficient closed-form solution of the matrix exponential for arguments
-that are se(2) or so(2).</p>
-<p>For se(2) the results is an SE(2) homogeneous transformation matrix:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Σ)</span></code> is the matrix exponential of the se(2) element <code class="docutils literal notranslate"><span class="pre">Σ</span></code> which is
-a 3x3 augmented skew-symmetric matrix.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Σ,</span> <span class="pre">θ)</span></code> as above but for an se(3) motion of Σθ, where <code class="docutils literal notranslate"><span class="pre">Σ</span></code>
-must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
-matrix.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S)</span></code> is the matrix exponential of the se(3) element <code class="docutils literal notranslate"><span class="pre">S</span></code> represented as
-a 3-vector which can be considered a screw motion.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S,</span> <span class="pre">θ)</span></code> as above but for an se(2) motion of Sθ, where <code class="docutils literal notranslate"><span class="pre">S</span></code>
-must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
-matrix.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skew</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">array([[ 0.5403, -0.8415],</span>
-<span class="go">       [ 0.8415,  0.5403]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skew</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># revolute unit twist</span>
-<span class="go">array([[-0.4161, -0.9093],</span>
-<span class="go">       [ 0.9093, -0.4161]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">array([[ 0.5403, -0.8415],</span>
-<span class="go">       [ 0.8415,  0.5403]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># revolute unit twist</span>
-<span class="go">array([[-0.4161, -0.9093],</span>
-<span class="go">       [ 0.9093, -0.4161]])</span>
-</pre></div>
-</div>
-<p>For so(2) the results is an SO(2) rotation matrix:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Ω)</span></code> is the matrix exponential of the so(3) element <code class="docutils literal notranslate"><span class="pre">Ω</span></code> which is a 2x2
-skew-symmetric matrix.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Ω,</span> <span class="pre">θ)</span></code> as above but for an so(3) motion of Ωθ, where <code class="docutils literal notranslate"><span class="pre">Ω</span></code> is
-unit-norm skew-symmetric matrix representing a rotation axis and a rotation magnitude
-given by <code class="docutils literal notranslate"><span class="pre">θ</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(ω)</span></code> is the matrix exponential of the so(2) element <code class="docutils literal notranslate"><span class="pre">ω</span></code> expressed as
-a 1-vector.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(ω,</span> <span class="pre">θ)</span></code> as above but for an so(3) motion of ωθ where <code class="docutils literal notranslate"><span class="pre">ω</span></code> is a
-unit-norm vector representing a rotation axis and a rotation magnitude
-given by <code class="docutils literal notranslate"><span class="pre">θ</span></code>. <code class="docutils literal notranslate"><span class="pre">ω</span></code> is expressed as a 1-vector.</p></li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
-<span class="go">array([[-0.99  , -0.1411, -1.2796],</span>
-<span class="go">       [ 0.1411, -0.99  ,  0.7574],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># prismatic unit twist</span>
-<span class="go">array([[1., 0., 2.],</span>
-<span class="go">       [0., 1., 0.],</span>
-<span class="go">       [0., 0., 1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="go">array([[-0.99  , -0.1411, -1.2796],</span>
-<span class="go">       [ 0.1411, -0.99  ,  0.7574],</span>
-<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">array([[1., 0., 2.],</span>
-<span class="go">       [0., 1., 0.],</span>
-<span class="go">       [0., 0., 1.]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>trlog, trexp2</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.adjoint2">
-<span class="sig-name descname"><span class="pre">adjoint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#adjoint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.adjoint2" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2jac2">
-<span class="sig-name descname"><span class="pre">tr2jac2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2jac2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2jac2" title="Permalink to this definition"></a></dt>
-<dd><p>SE(2) Jacobian matrix</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) matrix</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Jacobian matrix</p>
+<dd class="field-even"><p>3x3 homogeneous transformation matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray(3,3)</p>
 </dd>
 </dl>
-<p>Computes an Jacobian matrix that maps spatial velocity between two frames defined by
-an SE(2) matrix.</p>
-<p><code class="docutils literal notranslate"><span class="pre">tr2jac2(T)</span></code> is a Jacobian matrix (3x3) that maps spatial velocity or
-differential motion from frame {B} to frame {A} where the pose of {B}
-elative to {A} is represented by the homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trot2(θ)</span></code> is a homogeneous transformation (3x3) representing a rotation of
+θ radians.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trot2(θ,</span> <span class="pre">'deg')</span></code> as above but θ is in degrees.</p></li>
+</ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tr2jac2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="go">array([[ 0.9553, -0.2955,  0.    ],</span>
 <span class="go">       [ 0.2955,  0.9553,  0.    ],</span>
 <span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trot2</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="go">array([[ 0.7071, -0.7071,  1.    ],</span>
+<span class="go">       [ 0.7071,  0.7071,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Reference</dt>
-<dd class="field-odd"><p>Robotics, Vision &amp; Control: Second Edition, P. Corke, Springer 2016; p65.</p>
-</dd>
-<dt class="field-even">SymPy</dt>
-<dd class="field-even"><p>supported</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trinterp2">
-<span class="sig-name descname"><span class="pre">trinterp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinterp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinterp2" title="Permalink to this definition"></a></dt>
-<dd><p>Interpolate SE(2) or SO(2) matrices</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>) or </em><em>None</em>) – initial SE(2) or SO(2) matrix value when s=0, if None then identity is used</p></li>
-<li><p><strong>end</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – final SE(2) or SO(2) matrix, value when s=1</p></li>
-<li><p><strong>s</strong> (<em>float</em>) – interpolation coefficient, range 0 to 1</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>interpolated SE(2) or SO(2) matrix value</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3) or ndarray(2,2)</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad arguments</p>
-</dd>
-</dl>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(None,</span> <span class="pre">T,</span> <span class="pre">S)</span></code> is an SE(2) matrix interpolated
-between identity when <cite>S`=0 and `T</cite>  when <a href="#id1"><span class="problematic" id="id2">`</span></a>S`=1.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(T0,</span> <span class="pre">T1,</span> <span class="pre">S)</span></code> as above but interpolated
-between <cite>T0</cite> when <cite>S`=0 and `T1</cite> when <a href="#id3"><span class="problematic" id="id4">`</span></a>S`=1.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(None,</span> <span class="pre">R,</span> <span class="pre">S)</span></code> is an SO(2) matrix interpolated
-between identity when <cite>S`=0 and `R</cite> when <a href="#id5"><span class="problematic" id="id6">`</span></a>S`=1.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(R0,</span> <span class="pre">R1,</span> <span class="pre">S)</span></code> as above but interpolated
-between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span class="problematic" id="id8">`</span></a>S`=1.</p></li>
-</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Rotation angle is linearly interpolated.</p>
-</div>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T1</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T2</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="go">array([[ 1., -0.,  1.],</span>
-<span class="go">       [ 0.,  1.,  2.],</span>
-<span class="go">       [ 0.,  0.,  1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="go">array([[ 1., -0.,  3.],</span>
-<span class="go">       [ 0.,  1.,  4.],</span>
-<span class="go">       [ 0.,  0.,  1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-<span class="go">array([[ 1., -0.,  2.],</span>
-<span class="go">       [ 0.,  1.,  3.],</span>
-<span class="go">       [ 0.,  0.,  1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="go">array([[ 1., -0.,  0.],</span>
-<span class="go">       [ 0.,  1.,  0.],</span>
-<span class="go">       [ 0.,  0.,  1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="go">array([[ 1., -0.,  3.],</span>
-<span class="go">       [ 0.,  1.,  4.],</span>
-<span class="go">       [ 0.,  0.,  1.]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trinterp2</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">T2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-<span class="go">array([[ 1. , -0. ,  1.5],</span>
-<span class="go">       [ 0. ,  1. ,  2. ],</span>
-<span class="go">       [ 0. ,  0. ,  1. ]])</span>
-</pre></div>
+<p>By default, the translational component is zero but it can be
+set to a non-zero value.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a></p>
+<dd class="field-odd"><p>xyt2tr</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trprint2">
-<span class="sig-name descname"><span class="pre">trprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt='{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit='deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Permalink to this definition"></a></dt>
-<dd><p>Compact display of SE(2) or SO(2) matrices</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – matrix to format</p></li>
-<li><p><strong>label</strong> (<em>str</em>) – text label to put at start of line</p></li>
-<li><p><strong>file</strong> (<em>file object</em>) – file to write formatted string to</p></li>
-<li><p><strong>fmt</strong> (<em>str</em>) – conversion format for each number</p></li>
-<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>formatted string</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-<p>The matrix is formatted and written to <code class="docutils literal notranslate"><span class="pre">file</span></code> and the
-string is returned.  To suppress writing to a file, set <code class="docutils literal notranslate"><span class="pre">file=None</span></code>.</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">trprint2(R)</span></code> displays the SO(2) rotation matrix in a compact
-single-line format and returns the string:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LABEL</span><span class="p">:]</span> <span class="n">θ</span> <span class="n">UNIT</span>
-</pre></div>
-</div>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trprint2(T)</span></code> displays the SE(2) homogoneous transform in a compact
-single-line format and returns the string:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LABEL</span><span class="p">:]</span> <span class="p">[</span><span class="n">t</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">;]</span> <span class="n">θ</span> <span class="n">UNIT</span>
-</pre></div>
-</div>
-</li>
-</ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
-<span class="go">&#39;T: t = 1, 2; 17.2°&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:8.4g}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="go">&#39;T: t =        1,        2;    17.19°&#39;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p>trprint</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.points2tr2">
-<span class="sig-name descname"><span class="pre">points2tr2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#points2tr2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.points2tr2" title="Permalink to this definition"></a></dt>
-<dd><p>SE(2) transform from corresponding points</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em>) – first set of points</p></li>
-<li><p><strong>p2</strong> (<em>array_like</em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em>) – second set of points</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transform from <code class="docutils literal notranslate"><span class="pre">p1</span></code> to <code class="docutils literal notranslate"><span class="pre">p2</span></code></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3)</p>
-</dd>
-</dl>
-<p>Compute an SE(2) matrix that transforms the point set <code class="docutils literal notranslate"><span class="pre">p1</span></code> to <code class="docutils literal notranslate"><span class="pre">p2</span></code>.
-p1 and p2 must have the same number of columns, and columns correspond
-to the same point.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.ICP2d">
-<span class="sig-name descname"><span class="pre">ICP2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_delta_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#ICP2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.ICP2d" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.trplot2">
@@ -899,33 +838,95 @@ trplot2(T1, ‘labels’, ‘AB’);</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tranimate2">
-<span class="sig-name descname"><span class="pre">tranimate2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tranimate2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tranimate2" title="Permalink to this definition"></a></dt>
-<dd><p>Animate a 2D coordinate frame</p>
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.trprint2">
+<span class="sig-name descname"><span class="pre">trprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt='{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit='deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Permalink to this definition"></a></dt>
+<dd><p>Compact display of SE(2) or SO(2) matrices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> – an SE(2) or SO(2) pose to be displayed as coordinate frame</p></li>
-<li><p><strong>nframes</strong> (<em>int</em>) – number of steps in the animation [defaault 100]</p></li>
-<li><p><strong>repeat</strong> (<em>bool</em>) – animate in endless loop [default False]</p></li>
-<li><p><strong>interval</strong> (<em>int</em>) – number of milliseconds between frames [default 50]</p></li>
-<li><p><strong>movie</strong> (<em>str</em>) – name of file to write MP4 movie into</p></li>
+<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – matrix to format</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – text label to put at start of line</p></li>
+<li><p><strong>file</strong> (<em>file object</em>) – file to write formatted string to</p></li>
+<li><p><strong>fmt</strong> (<em>str</em>) – conversion format for each number</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Type</dt>
-<dd class="field-even"><p>ndarray(3,3) or ndarray(2,2)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>formatted string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
-<p>Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.</p>
-<ul class="simple">
-<li><p>If no current figure, one is created</p></li>
-<li><p>If current figure, but no axes, a 3d Axes is created</p></li>
+<p>The matrix is formatted and written to <code class="docutils literal notranslate"><span class="pre">file</span></code> and the
+string is returned.  To suppress writing to a file, set <code class="docutils literal notranslate"><span class="pre">file=None</span></code>.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">trprint2(R)</span></code> displays the SO(2) rotation matrix in a compact
+single-line format and returns the string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LABEL</span><span class="p">:]</span> <span class="n">θ</span> <span class="n">UNIT</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trprint2(T)</span></code> displays the SE(2) homogoneous transform in a compact
+single-line format and returns the string:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LABEL</span><span class="p">:]</span> <span class="p">[</span><span class="n">t</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">;]</span> <span class="n">θ</span> <span class="n">UNIT</span>
+</pre></div>
+</div>
+</li>
 </ul>
-<p>Examples:</p>
-<blockquote>
-<div><p>tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5])
-tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], movie=’spin.mp4’)</p>
-</div></blockquote>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">@</span> <span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+<span class="go">&#39;T: t = 1, 2; 17.2°&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:8.4g}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="go">&#39;T: t =        1,        2;    17.19°&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>trprint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.xyt2tr">
+<span class="sig-name descname"><span class="pre">xyt2tr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#xyt2tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.xyt2tr" title="Permalink to this definition"></a></dt>
+<dd><p>Create SE(2) pure rotation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyt</strong> (<em>array_like</em><em>(</em><em>3</em><em>)</em>) – 2d translation and rotation</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xyt2tr([x,y,θ])</span></code> is a homogeneous transformation (3x3) representing a rotation of
+θ radians and a translation of (x,y).</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.3</span><span class="p">])</span>
+<span class="go">array([[ 0.9553, -0.2955,  1.    ],</span>
+<span class="go">       [ 0.2955,  0.9553,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyt2tr</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">45</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+<span class="go">array([[ 0.7071, -0.7071,  1.    ],</span>
+<span class="go">       [ 0.7071,  0.7071,  2.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p>tr2xyt</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -942,7 +943,7 @@ tranimate2(transl(1,2)&#64;trot2(1), frame=’A’, arrow=False, dims=[0, 5], mo
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 03-Feb-2022.
+      <span class="lastupdated">Last updated on 28-Feb-2022.
       </span></p>
   </div>
 
