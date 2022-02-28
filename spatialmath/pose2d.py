@@ -401,6 +401,33 @@ class SE2(SO2):
             return cls(base.trexp2(S), check=False)
 
     @classmethod
+    def Rot(cls, theta, unit="rad"):
+        """
+        Create an SE(2) rotation
+
+        :param theta: rotation angle in radians
+        :type theta: float
+        :param unit: angular units: "rad" [default] or "deg"
+        :type unit: str
+        :return: SE(2) matrix
+        :rtype: SE2 instance
+
+        `SE2.Rot(theta)` is an SE(2) rotation of ``theta``
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> SE2.Rot(0.3)
+            >>> SE2.Rot([0.2, 0.3])
+
+
+        :seealso: :func:`~spatialmath.base.transforms3d.transl`
+        :SymPy: supported
+        """
+        return cls([base.trot2(_th, unit=unit) for _th in base.getvector(theta)], check=False)
+
+    @classmethod
     def Tx(cls, x):
         """
         Create an SE(2) translation along the X-axis
