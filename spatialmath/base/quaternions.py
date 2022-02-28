@@ -18,7 +18,7 @@ from spatialmath import base
 _eps = np.finfo(np.float64).eps
 
 
-def eye():
+def qeye():
     """
     Create an identity quaternion
 
@@ -30,15 +30,15 @@ def eye():
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import eye, qprint
-        >>> q = eye()
+        >>> from spatialmath.base import qeye, qprint
+        >>> q = qeye()
         >>> qprint(q)
 
     """
     return np.r_[1, 0, 0, 0]
 
 
-def pure(v):
+def qpure(v):
     """
     Create a pure quaternion
 
@@ -53,7 +53,7 @@ def pure(v):
     .. runblock:: pycon
 
         >>> from spatialmath.base import pure, qprint
-        >>> q = pure([1, 2, 3])
+        >>> q = qpure([1, 2, 3])
         >>> qprint(q)
     """
     v = base.getvector(v, 3)
@@ -86,8 +86,11 @@ def qnorm(q):
     :return: norm of the quaternion
     :rtype: float
 
-    Returns the norm, length or magnitude of the input quaternion which is
-    :math:`(s^2 + v_x^2 + v_y^2 + v_z^2}^{1/2}`
+    Returns the norm (length or magnitude) of the input quaternion which is
+    
+    .. math::
+
+        (s^2 + v_x^2 + v_y^2 + v_z^2)^{1/2}
 
     .. runblock:: pycon
 
@@ -95,14 +98,14 @@ def qnorm(q):
         >>> q = qnorm([1, 2, 3, 4])
         >>> print(q)
 
-    :seealso: unit
+    :seealso: :func:`qunit`
 
     """
     q = base.getvector(q, 4)
     return np.linalg.norm(q)
 
 
-def unit(q, tol=10):
+def qunit(q, tol=10):
     """
     Create a unit quaternion
 
@@ -116,8 +119,8 @@ def unit(q, tol=10):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import unit, qprint
-        >>> q = unit([1, 2, 3, 4])
+        >>> from spatialmath.base import qunit, qprint
+        >>> q = qunit([1, 2, 3, 4])
         >>> qprint(q)
 
     .. note:: Scalar part is always positive.
@@ -125,7 +128,7 @@ def unit(q, tol=10):
     .. note:: If the quaternion norm is less than ``tol * eps`` an exception is
               raised.
 
-    :seealso: norm
+    :seealso: :func:`qnorm`
     """
     q = base.getvector(q, 4)
     nm = np.linalg.norm(q)
@@ -141,7 +144,7 @@ def unit(q, tol=10):
     # return q
 
 
-def isunit(q, tol=100):
+def qisunit(q, tol=100):
     """
     Test if quaternion has unit length
 
@@ -154,18 +157,18 @@ def isunit(q, tol=100):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import eye, pure, isunit
-        >>> q = eye()
-        >>> isunit(q)
-        >>> q = pure([1, 2, 3])
-        >>> isunit(q)
+        >>> from spatialmath.base import qeye, qpure, qisunit
+        >>> q = qeye()
+        >>> qisunit(q)
+        >>> q = qpure([1, 2, 3])
+        >>> qisunit(q)
 
-    :seealso: unit
+    :seealso: :func:`qunit`
     """
     return base.iszerovec(q, tol=tol)
 
 
-def isequal(q1, q2, tol=100, unitq=False):
+def qisequal(q1, q2, tol=100, unitq=False):
     """
     Test if quaternions are equal
 
@@ -188,11 +191,11 @@ def isequal(q1, q2, tol=100, unitq=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import isequal
+        >>> from spatialmath.base import qisequal
         >>> q1 = [1, 2, 3, 4]
         >>> q2 = [-1, -2, -3, -4]
-        >>> isequal(q1, q2)
-        >>> isequal(q1, q2, unitq=True)
+        >>> qisequal(q1, q2)
+        >>> qisequal(q1, q2, unitq=True)
     """
     q1 = base.getvector(q1, 4)
     q2 = base.getvector(q2, 4)
@@ -229,7 +232,7 @@ def q2v(q):
 
     .. warning:: There is no check that the passed value is a unit-quaternion.
 
-    :seealso: :func:`~v2q`
+    :seealso: :func:`v2q`
 
     """
     q = base.getvector(q, 4)
@@ -291,7 +294,7 @@ def qqmul(q1, q2):
         >>> q2 = [5, 6, 7, 8]
         >>> qqmul(q1, q2)    # conventional Hamilton product
 
-    :seealso: qvmul, inner, vvmul
+    :seealso: qvmul, qinner, vvmul
 
     """
     q1 = base.getvector(q1, 4)
@@ -304,7 +307,7 @@ def qqmul(q1, q2):
     return np.r_[s1 * s2 - np.dot(v1, v2), s1 * v2 + s2 * v1 + np.cross(v1, v2)]
 
 
-def inner(q1, q2):
+def qinner(q1, q2):
     """
     Quaternion inner product
 
@@ -324,13 +327,13 @@ def inner(q1, q2):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import inner
+        >>> from spatialmath.base import qinner
         >>> from math import sqrt, acos, pi
         >>> q1 = [1, 2, 3, 4]
-        >>> inner(q1, q1)                      # square of the norm
+        >>> qinner(q1, q1)                     # square of the norm
         >>> q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis
         >>> q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis
-        >>> acos(inner(q1, q2)) * 180 / pi     # angle between q1 and q2
+        >>> acos(qinner(q1, q2)) * 180 / pi    # angle between q1 and q2
 
     :seealso: qvmul
 
@@ -368,7 +371,7 @@ def qvmul(q, v):
     """
     q = base.getvector(q, 4)
     v = base.getvector(v, 3)
-    qv = qqmul(q, qqmul(pure(v), conj(q)))
+    qv = qqmul(q, qqmul(qpure(v), qconj(q)))
     return qv[1:4]
 
 
@@ -443,17 +446,17 @@ def qpow(q, power):
     q = base.getvector(q, 4)
     if not isinstance(power, int):
         raise ValueError("Power must be an integer")
-    qr = eye()
+    qr = qeye()
     for _ in range(0, abs(power)):
         qr = qqmul(qr, q)
 
     if power < 0:
-        qr = conj(qr)
+        qr = qconj(qr)
 
     return qr
 
 
-def conj(q):
+def qconj(q):
     """
     Quaternion conjugate
 
@@ -466,9 +469,9 @@ def conj(q):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import conj, qprint
+        >>> from spatialmath.base import qconj, qprint
         >>> q = [1, 2, 3, 4]
-        >>> qprint(conj(q))
+        >>> qprint(qconj(q))
 
     :SymPy: supported
     """
@@ -482,6 +485,9 @@ def q2r(q, order="sxyz"):
 
     :arg q: unit-quaternion
     :type v: array_like(4)
+    :param order: the order of the quaternion elements. Must be 'sxyz' or
+        'xyzs'. Defaults to 'sxyz'.
+    :type order: str
     :return: corresponding SO(3) rotation matrix
     :rtype: ndarray(3,3)
 
@@ -525,7 +531,7 @@ def r2q(R, check=False, tol=100, order="sxyz"):
     :type check: bool
     :param tol: tolerance in units of eps
     :type tol: float
-    :param order: the order of the returned quaternion. Must be 'sxyz' or
+    :param order: the order of the returned quaternion elements. Must be 'sxyz' or
         'xyzs'. Defaults to 'sxyz'.
     :type order: str
     :return: unit-quaternion as Euler parameters
@@ -662,7 +668,7 @@ def r2q(R, check=False, tol=100, order="sxyz"):
 #         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
 
 
-def slerp(q0, q1, s, shortest=False):
+def qslerp(q0, q1, s, shortest=False):
     """
     Quaternion conjugate
 
@@ -689,13 +695,13 @@ def slerp(q0, q1, s, shortest=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import slerp, qprint
+        >>> from spatialmath.base import qslerp, qprint
         >>> from math import sqrt
         >>> q0 = [1/sqrt(2), 1/sqrt(2), 0, 0]  # 90deg rotation about x-axis
         >>> q1 = [1/sqrt(2), 0, 1/sqrt(2), 0]  # 90deg rotation about y-axis
-        >>> qprint(slerp(q0, q1, 0))           # this is q0
-        >>> qprint(slerp(q0, q1, 1))           # this is q1
-        >>> qprint(slerp(q0, q1, 0.5))         # this is in "half way" between
+        >>> qprint(qslerp(q0, q1, 0))           # this is q0
+        >>> qprint(qslerp(q0, q1, 1))           # this is q1
+        >>> qprint(qslerp(q0, q1, 0.5))         # this is in "half way" between
 
     .. warning:: There is no check that the passed values are unit-quaternions.
 
@@ -731,7 +737,7 @@ def slerp(q0, q1, s, shortest=False):
         return q0
 
 
-def rand():
+def qrand():
     """
     Random unit-quaternion
 
@@ -743,8 +749,8 @@ def rand():
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import rand, qprint
-        >>> qprint(rand())
+        >>> from spatialmath.base import qrand, qprint
+        >>> qprint(qrand())
     """
     u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
     return np.r_[
@@ -755,9 +761,9 @@ def rand():
     ]
 
 
-def matrix(q):
+def qmatrix(q):
     """
-    Convert to 4x4 matrix equivalent
+    Convert quaternion to 4x4 matrix equivalent
 
     :arg q: quaternion
     :type v: array_like(4)
@@ -770,11 +776,11 @@ def matrix(q):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import matrix, qqmul, qprint
+        >>> from spatialmath.base import qmatrix, qqmul, qprint
         >>> q1 = [1, 2, 3, 4]
         >>> q2 = [5, 6, 7, 8]
         >>> qqmul(q1, q2)    # conventional Hamilton product
-        >>> m = matrix(q1)
+        >>> m = qmatrix(q1)
         >>> print(m)
         >>> v = m @ np.array(q2)
         >>> print(v)
@@ -790,7 +796,7 @@ def matrix(q):
     return np.array([[s, -x, -y, -z], [x, s, -z, y], [y, z, s, -x], [z, -y, x, s]])
 
 
-def dot(q, w):
+def qdot(q, w):
     """
     Rate of change of unit-quaternion
 
@@ -807,10 +813,10 @@ def dot(q, w):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import dot, qprint
+        >>> from spatialmath.base import qdot, qprint
         >>> from math import sqrt
         >>> q = [1/sqrt(2), 1/sqrt(2), 0, 0]   # 90deg rotation about x-axis
-        >>> dot(q, [1, 2, 3])
+        >>> qdot(q, [1, 2, 3])
 
     .. warning:: There is no check that the passed values are unit-quaternions.
 
@@ -821,7 +827,7 @@ def dot(q, w):
     return 0.5 * np.r_[-np.dot(q[1:4], w), E @ w]
 
 
-def dotb(q, w):
+def qdotb(q, w):
     """
     Rate of change of unit-quaternion
 
@@ -838,10 +844,10 @@ def dotb(q, w):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import dotb, qprint
+        >>> from spatialmath.base import qdotb, qprint
         >>> from math import sqrt
         >>> q = [1/sqrt(2), 1/sqrt(2), 0, 0]   # 90deg rotation about x-axis
-        >>> dotb(q, [1, 2, 3])
+        >>> qdotb(q, [1, 2, 3])
 
     .. warning:: There is no check that the passed values are unit-quaternions.
 
@@ -852,7 +858,7 @@ def dotb(q, w):
     return 0.5 * np.r_[-np.dot(q[1:4], w), E @ w]
 
 
-def angle(q1, q2):
+def qangle(q1, q2):
     """
     Angle between two unit-quaternions
 
@@ -869,11 +875,11 @@ def angle(q1, q2):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import angle
+        >>> from spatialmath.base import qangle
         >>> from math import sqrt
         >>> q1 = [1/sqrt(2), 1/sqrt(2), 0, 0]    # 90deg rotation about x-axis
         >>> q2 = [1/sqrt(2), 0, 1/sqrt(2), 0]    # 90deg rotation about y-axis
-        >>> angle(q1, q2)
+        >>> qangle(q1, q2)
 
     :References:
 
@@ -918,10 +924,10 @@ def qprint(q, delim=("<", ">"), fmt="{: .4f}", file=sys.stdout):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import qprint, rand
+        >>> from spatialmath.base import qprint, qrand
         >>> q = [1, 2, 3, 4]
         >>> qprint(q)
-        >>> q = rand()   # a unit quaternion
+        >>> q = qrand()   # a unit quaternion
         >>> qprint(q, delim=('<<', '>>'))
     """
     q = base.getvector(q, 4)

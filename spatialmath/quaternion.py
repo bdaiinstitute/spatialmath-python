@@ -282,10 +282,10 @@ class Quaternion(BasePoseList):
             >>> Quaternion([1,2,3,4]) * Quaternion([5,6,7,8])   # Hamilton product
             >>> Quaternion([1,2,3,4]).matrix @ Quaternion([5,6,7,8]).vec  # matrix-vector product
 
-        :seealso: :func:`~spatialmath.base.quaternions.matrix`
+        :seealso: :func:`~spatialmath.base.quaternions.qmatrix`
         """
 
-        return base.matrix(self._A)
+        return base.qmatrix(self._A)
 
 
     def conj(self):
@@ -304,10 +304,10 @@ class Quaternion(BasePoseList):
             >>> from spatialmath import Quaternion
             >>> print(Quaternion.Pure([1,2,3]).conj())
 
-        :seealso: :func:`~spatialmath.base.quaternions.conj`
+        :seealso: :func:`~spatialmath.base.quaternions.qconj`
         """
 
-        return self.__class__([base.conj(q._A) for q in self])
+        return self.__class__([base.qconj(q._A) for q in self])
 
     def norm(self):
         r"""
@@ -358,7 +358,7 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
-        return UnitQuaternion([base.unit(q._A) for q in self], norm=False)
+        return UnitQuaternion([base.qunit(q._A) for q in self], norm=False)
 
     def log(self):
         r"""
@@ -389,7 +389,7 @@ class Quaternion(BasePoseList):
 
         :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
 
-        :seealso: :func:`~spatialmath.quaternion.Quaternion.exp`, :func:`~spatialmath.quaternion.Quaternion.log`, :func:`~spatialmath.quaternion.UnitQuaternion.angvec`, 
+        :seealso: :meth:`Quaternion.exp` :meth:`Quaternion.log` :meth:`UnitQuaternion.angvec`
         """
         norm = self.norm()
         s = math.log(norm)
@@ -427,7 +427,7 @@ class Quaternion(BasePoseList):
 
         :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
 
-        :seealso: :func:`~spatialmath.quaternion.Quaternion.log`, :func:`~spatialmath.quaternion.UnitQuaternion.log`, :func:`~spatialmath.quaternion.UnitQuaternion.AngVec`, :func:`~spatialmath.quaternion.UnitQuaternion.EulerVec`
+        :seealso: :meth:`Quaternion.log` :meth:`UnitQuaternion.log` :meth:`UnitQuaternion.AngVec` :meth:`UnitQuaternion.EulerVec`
         """
         exp_s = math.exp(self.s)
         norm_v = base.norm(self.v)
@@ -458,12 +458,12 @@ class Quaternion(BasePoseList):
             >>> Quaternion([1,2,3,4]).inner(Quaternion([5,6,7,8]))
             >>> numpy.dot([1,2,3,4], [5,6,7,8])
 
-        :seealso: :func:`~spatialmath.base.quaternions.inner`
+        :seealso: :func:`~spatialmath.base.quaternions.qinner`
         """
 
         assert isinstance(other, Quaternion), \
             'operands to inner must be Quaternion subclass'
-        return self.binop(other, base.inner, list1=False)
+        return self.binop(other, base.qinner, list1=False)
 
     #-------------------------------------------- operators
 
@@ -488,11 +488,11 @@ class Quaternion(BasePoseList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) == q2
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) == Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
 
-        :seealso: :func:`__ne__`, :func:`~spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`
         """
         assert isinstance(left, type(right)), \
             'operands to == are of different types'
-        return left.binop(right, base.isequal, list1=False)
+        return left.binop(right, base.qisequal, list1=False)
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
@@ -507,22 +507,17 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> q1 = Quaternion([1,2,3,4])
             >>> q2 = Quaternion([5,6,7,8])
             >>> q1 != q1
-            False
             >>> q1 != q2
-            True
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) != q1
-            [False, True]
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) != q2
-            [True, False]
 
-        :seealso: :func:`__ne__`, :func:`~spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`
         """
         assert isinstance(left, type(right)), 'operands to == are of different types'
-        return left.binop(right, lambda x, y: not base.isequal(x, y), list1=False)
+        return left.binop(right, lambda x, y: not base.qisequal(x, y), list1=False)
 
     def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
@@ -564,27 +559,14 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> Quaternion([1,2,3,4]) * Quaternion([5,6,7,8])
-            -60.000000 < 12.000000, 30.000000, 24.000000 >
-
             >>> Quaternion([1,2,3,4]) * 2
-            2.000000 < 4.000000, 6.000000, 8.000000 >
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) * 2
-            2.000000 < 4.000000, 6.000000, 8.000000 >
-            10.000000 < 12.000000, 14.000000, 16.000000 >
-
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) * Quaternion([1,2,3,4])
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-            -60.000000 < 20.000000, 14.000000, 32.000000 >
             >>> Quaternion([1,2,3,4]) * Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-            -60.000000 < 12.000000, 30.000000, 24.000000 >
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) * Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-            -124.000000 < 60.000000, 70.000000, 80.000000 >
 
-        :seealso: :func:`__rmul__`, :func:`__imul__`, :func:`~spatialmath.base.quaternions.qqmul`
+        :seealso: :func:`__rmul__` :func:`__imul__` :func:`~spatialmath.base.quaternions.qqmul`
         """
         if isinstance(right, left.__class__):
             # quaternion * [unit]quaternion case
@@ -665,7 +647,7 @@ class Quaternion(BasePoseList):
             >>> print(Quaternion([1,2,3,4]) ** -1)
             >>> print(Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) ** 2)
 
-        :seealso: :func:`spatialmath.base.quaternions.qpow`
+        :seealso: :func:`~spatialmath.base.quaternions.qpow`
         """
         return self.__class__([base.qpow(q._A, n) for q in self])
 
@@ -683,17 +665,13 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> q = Quaternion([1,2,3,4])
             >>> q **= 2
             >>> q
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-
             >>> q = Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
             >>> q **= 2
             >>> q
-            -28.000000 < 4.000000, 6.000000, 8.000000 >
-            -124.000000 < 60.000000, 70.000000, 80.000000 >
+
 
         :seealso: :func:`__pow__`
         """
@@ -746,15 +724,9 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> Quaternion([1,2,3,4]) + Quaternion([5,6,7,8])
-            6.000000 < 8.000000, 10.000000, 12.000000 >
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) + Quaternion([1,2,3,4])
-            2.000000 < 4.000000, 6.000000, 8.000000 >
-            6.000000 < 8.000000, 10.000000, 12.000000 >
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) + Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            2.000000 < 4.000000, 6.000000, 8.000000 >
-            10.000000 < 12.000000, 14.000000, 16.000000 >
         """
         # results is not in the group, return an array, not a class
         assert isinstance(left, type(right)), 'operands to + are of different types'
@@ -803,17 +775,9 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> Quaternion([1,2,3,4]) - Quaternion([5,6,7,8])
-            -4.000000 < -4.000000, -4.000000, -4.000000 >
-
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) - Quaternion([1,2,3,4])
-            0.000000 < 0.000000, 0.000000, 0.000000 >
-            4.000000 < 4.000000, 4.000000, 4.000000 >
-
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]) - Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            0.000000 < 0.000000, 0.000000, 0.000000 >
-            0.000000 < 0.000000, 0.000000, 0.000000 >
 
         """
         # results is not in the group, return an array, not a class
@@ -834,13 +798,8 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> -Quaternion([1,2,3,4])
-            -0.182574 << -0.365148, -0.547723, -0.730297 >>
-
             >>> -Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            -0.182574 << -0.365148, -0.547723, -0.730297 >>
-            -0.379049 << -0.454859, -0.530669, -0.606478 >>
         """
 
         return UnitQuaternion([-x for x in self.data])  # pylint: disable=invalid-unary-operand-type
@@ -857,14 +816,8 @@ class Quaternion(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Quaternion
-
             >>> q = Quaternion([1,2,3,4])
             >>> q
-            Quaternion(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.95533649, -0.29552021,  0.        ],
-                       [ 0.        ,  0.29552021,  0.95533649,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
-
         """
         name = type(self).__name__
         if len(self) == 0:
@@ -909,14 +862,12 @@ class Quaternion(BasePoseList):
             >>> from spatialmath import Quaternion
             >>> q = Quaternion([1,2,3,4])
             >>> print(x)
-            1.000000 < 2.000000, 3.000000, 4.000000 >
             >> q = UnitQuaternion.Rx(0.3)
-            0.988771 << 0.149438, 0.000000, 0.000000 >>
 
-            Note that unit quaternions are denoted by different delimiters for
-            the vector part.
+        Note that unit quaternions are denoted by different delimiters for
+        the vector part.
 
-                    :seealso: :func:`~spatialmath.base.quaternions.qnorm`
+        :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
         if isinstance(self, UnitQuaternion):
             delim = ('<<', '>>')
@@ -1003,7 +954,7 @@ class UnitQuaternion(Quaternion):
             # single argument
             if super().arghandler(s, check=check):
                 # create unit quaternion
-                self.data = [base.unit(q) for q in self.data]
+                self.data = [base.qunit(q) for q in self.data]
 
             elif isinstance(s, np.ndarray):
                 # passed a NumPy array, it could be:
@@ -1017,12 +968,12 @@ class UnitQuaternion(Quaternion):
                 elif s.shape == (4,):
                     # passed a 4-vector
                     if norm:
-                        self.data = [base.unit(s)]
+                        self.data = [base.qunit(s)]
                     else:
                         self.data = [s]
                 elif s.ndim == 2 and s.shape[1] == 4:
                     if norm:
-                        self.data = [base.unit(x) for x in s]
+                        self.data = [base.qunit(x) for x in s]
                     else:
                         # self.data = [base.qpositive(x) for x in s]
                         self.data = [x for x in s]
@@ -1042,7 +993,7 @@ class UnitQuaternion(Quaternion):
             # UnitQuaternion(s, v)   s is scalar, v is 3-vector
             q = np.r_[s, base.getvector(v)]
             if norm:
-                q = base.unit(q)
+                q = base.qunit(q)
             self.data = [q]
         
         else:
@@ -1051,7 +1002,7 @@ class UnitQuaternion(Quaternion):
 
     @staticmethod
     def _identity():
-        return base.eye()
+        return base.qeye()
 
     @staticmethod
     def isvalid(x, check=True):
@@ -1135,7 +1086,7 @@ class UnitQuaternion(Quaternion):
             >>> print(q2)
             >>> q == q2
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Vec3`
+        :seealso: :meth:`UnitQuaternion.Vec3`
         """
         return base.q2v(self._A)
 
@@ -1246,9 +1197,9 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Rand())
             >>> print(UQ.Rand(3))
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Rand`
+        :seealso: :meth:`UnitQuaternion.Rand`
         """
-        return cls([base.rand() for i in range(0, N)], check=False)
+        return cls([base.qrand() for i in range(0, N)], check=False)
 
     @classmethod
     def Eul(cls, *angles, unit='rad'):
@@ -1277,7 +1228,7 @@ class UnitQuaternion(Quaternion):
             >>> from spatialmath import UnitQuaternion as UQ
             >>> print(UQ.Eul([0.1, 0.2, 0.3]))
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.RPY`, :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
+        :seealso: :meth:`UnitQuaternion.RPY` :meth:`SE3.eul` :meth:`SE3.Eul` :meth:`~spatialmath.base.transforms3d.eul2r`
         """
         if len(angles) == 1:
             angles = angles[0]
@@ -1327,7 +1278,7 @@ class UnitQuaternion(Quaternion):
             >>> from spatialmath import UnitQuaternion as UQ
             >>> print(UQ.RPY([0.1, 0.2, 0.3]))
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.Eul`, :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.rpy2r`
+        :seealso: :meth:`UnitQuaternion.Eul` :meth:`SE3.rpy` :meth:`SE3.RPY` :func:`~spatialmath.base.transforms3d.rpy2r`
         """
         if len(angles) == 1:
             angles = angles[0]
@@ -1397,7 +1348,7 @@ class UnitQuaternion(Quaternion):
         .. note:: :math:`\theta = 0` the result in an identity quaternion, otherwise
             ``V`` must have a finite length, ie. :math:`|V| > 0`.
 
-        :seealso: :func:`~spatialmath.UnitQuaternion.angvec`, :func:`~spatialmath.quaternion.UnitQuaternion.exp`, :func:`~spatialmath.base.transforms3d.angvec2r`
+        :seealso: :meth:`UnitQuaternion.angvec` :meth:`UnitQuaternion.exp` :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         v = base.getvector(v, 3)
         base.isscalar(theta)
@@ -1428,7 +1379,7 @@ class UnitQuaternion(Quaternion):
         .. note:: :math:`\theta \eq 0` the result in an identity matrix, otherwise
             ``V`` must have a finite length, ie. :math:`|V| > 0`.
 
-        :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
+        :seealso: :meth:`SE3.angvec` :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         assert base.isvector(w, 3), 'w must be a 3-vector'
         w = base.getvector(w)
@@ -1464,7 +1415,7 @@ class UnitQuaternion(Quaternion):
             >>> print(q2)
             >>> q == q2
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.vec3`
+        :seealso: :meth:`UnitQuaternion.vec3`
         """
         return cls(base.v2q(vec))
 
@@ -1487,8 +1438,9 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Rx(0.3).inv() * UQ.Rx(0.3))
             >>> print(UQ.Rx([0.3, 0.6]).inv())
 
+        :seealso: :func:`~spatialmath.base.quaternions.qinv`
         """
-        return UnitQuaternion([base.conj(q._A) for q in self])
+        return UnitQuaternion([base.qconj(q._A) for q in self])
 
     @staticmethod
     def qvmul(qv1, qv2):
@@ -1518,7 +1470,7 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Vec3(qv))
             >>> print(UQ.Rx(0.3) * UQ.Ry(-0.3))
 
-        :seealso: :func:`~spatialmath.quaternion.UnitQuaternion.vec3`, :func:`~spatialmath.quaternion.UnitQuaternion.Vec3`
+        :seealso: :meth:`UnitQuaternion.vec3` :meth:`UnitQuaternion.Vec3`
         """
         return base.vvmul(qv1, qv2)
 
@@ -1534,8 +1486,10 @@ class UnitQuaternion(Quaternion):
         ``q.dot(ω)`` is the rate of change of the elements of the unit quaternion ``q``
         which represents the orientation of a body frame with angular velocity ``ω`` in
         the world frame.
+
+        :seealso: :func:`~spatialmath.base.quaternions.qdot`
         """
-        return base.dot(self._A, omega)
+        return base.qdot(self._A, omega)
 
     def dotb(self, omega):
         """
@@ -1549,8 +1503,10 @@ class UnitQuaternion(Quaternion):
         ``q.dotb(ω)`` is the rate of change of the elements of the unit quaternion ``q``
         which represents the orientation of a body frame with angular velocity ``ω`` in
         the body frame.
+
+        :seealso: :func:`~spatialmath.base.quaternions.qdotb`
         """
-        return base.dotb(self._A, omega)
+        return base.qdotb(self._A, omega)
 
     def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
@@ -1612,7 +1568,7 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Rx([0.3, 0.6]) * UQ.Rx(0.3))
             >>> print(UQ.Rx([0.3, 0.6]) * UQ.Rx([0.3, 0.6]))
 
-        :seealso: :func:`~spatialmath.Quaternion.__mul__`
+        :seealso: :meth:`Quaternion.__mul__`
         """
         if isinstance(left, right.__class__):
             # quaternion * quaternion case (same class)
@@ -1662,7 +1618,6 @@ class UnitQuaternion(Quaternion):
             >>> q = UQ.Rx(0.3)
             >>> q *= UQ.Rx(0.3)
             >>> q
-            0.955336 << 0.295520, 0.000000, 0.000000 >>
 
         :seealso: :func:`__mul__`
 
@@ -1723,7 +1678,7 @@ class UnitQuaternion(Quaternion):
 
         """
         if isinstance(left, right.__class__):
-            return UnitQuaternion(left.binop(right, lambda x, y: base.qqmul(x, base.conj(y))))
+            return UnitQuaternion(left.binop(right, lambda x, y: base.qqmul(x, base.qconj(y))))
         elif base.isscalar(right):
             return Quaternion(left.binop(right, lambda x, y: x / y))
         else:
@@ -1752,9 +1707,9 @@ class UnitQuaternion(Quaternion):
             >>> UQ([q1, q2]) == q2
             >>> UQ([q1, q2]) == UQ([q1, q2])
 
-        :seealso: :func:`__ne__`, :func:`~spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`
         """
-        return left.binop(right, lambda x, y: base.isequal(x, y, unitq=True), list1=False)
+        return left.binop(right, lambda x, y: base.qisequal(x, y, unitq=True), list1=False)
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
@@ -1779,9 +1734,9 @@ class UnitQuaternion(Quaternion):
             >>> UQ([q1, q2]) == q2
             >>> UQ([q1, q2]) == UQ([q1, q2])
 
-        :seealso: :func:`__eq__`, :func:`~spatialmath.base.quaternions.isequal`
+        :seealso: :func:`__eq__` :func:`~spatialmath.base.quaternions.qisequal`
         """
-        return left.binop(right, lambda x, y: not base.isequal(x, y, unitq=True), list1=False)
+        return left.binop(right, lambda x, y: not base.qisequal(x, y, unitq=True), list1=False)
 
     def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
@@ -1798,7 +1753,7 @@ class UnitQuaternion(Quaternion):
             costly.  It is useful for cases where a pose is incrementally update
             over many cycles.
         """
-        return left.__class__(left.binop(right, lambda x, y: base.unit(base.qqmul(x, y))))
+        return left.__class__(left.binop(right, lambda x, y: base.qunit(base.qqmul(x, y))))
 
     def interp(self, end, s=0, shortest=False):
         """
@@ -1838,7 +1793,7 @@ class UnitQuaternion(Quaternion):
 
         .. note:: values of ``s`` are silently clipped to the range [0, 1]
 
-        :seealso: :func:`~spatialmath.base.quaternions.slerp`
+        :seealso: :func:`~spatialmath.base.quaternions.qslerp`
         """
         # TODO allow self to have len() > 1
 
@@ -1853,7 +1808,7 @@ class UnitQuaternion(Quaternion):
             raise TypeError('end argument must be a UnitQuaternion')
         q1 = self.vec
         q2 = end.vec
-        dot = base.inner(q1, q2)
+        dot = base.qinner(q1, q2)
 
         # If the dot product is negative, the quaternions
         # have opposite handed-ness and slerp won't take
@@ -1914,7 +1869,7 @@ class UnitQuaternion(Quaternion):
 
         .. note:: values of ``s`` are silently clipped to the range [0, 1]
 
-        :seealso: :func:`~spatialmath.base.quaternions.slerp`
+        :seealso: :func:`~spatialmath.base.quaternions.qslerp`
         """
         # TODO allow self to have len() > 1
 
@@ -1975,7 +1930,7 @@ class UnitQuaternion(Quaternion):
 
         updated = base.qqmul(self.A, np.r_[ds, dv])
         if normalize:
-            updated = base.unit(updated)
+            updated = base.qunit(updated)
         self.data = [updated]
 
     def plot(self, *args, **kwargs):
@@ -2017,7 +1972,7 @@ class UnitQuaternion(Quaternion):
             >>> X.animate(frame='A', color='green')
             >>> X.animate(start=UQ.Ry(0.2))
 
-        :see :func:`~spatialmath.base.transforms3d.tranimate`, :func:`~spatialmath.base.transforms3d.trplot`
+        :see :func:`~spatialmath.base.transforms3d.tranimate` :func:`~spatialmath.base.transforms3d.trplot`
         """
         if len(self) > 1:
             base.tranimate([base.q2r(q) for q in self.data], *args, **kwargs)
@@ -2059,14 +2014,10 @@ class UnitQuaternion(Quaternion):
         .. runblock:: pycon
         
             >>> from spatialmath import UnitQuaternion as UQ
-
             >>> UQ.Rx(0.3).rpy()
-            array([ 0.3, -0. ,  0. ])
             >>> UQ.Rz([0.2, 0.3]).rpy()
-            array([[ 0. , -0. ,  0.2],
-                [ 0. , -0. ,  0.3]])
 
-        :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, ::func:`spatialmath.base.transforms3d.tr2rpy`
+        :seealso: :meth:`SE3.RPY` :func:`~spatialmath.base.transforms3d.tr2rpy`
         """
         if len(self) == 1:
             return base.tr2rpy(self.R, unit=unit, order=order)
@@ -2099,14 +2050,10 @@ class UnitQuaternion(Quaternion):
         .. runblock:: pycon
         
             >>> from spatialmath import UnitQuaternion as UQ
-
             >>> UQ.Rz(0.3).eul()
-            array([0. , 0. , 0.3])
             >>> UQ.Ry([0.3, 0.4]).eul()
-            array([[0. , 0.3, 0. ],
-                [0. , 0.4, 0. ]])
 
-        :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, ::func:`spatialmath.base.transforms3d.tr2eul`
+        :seealso: :meth:`SE3.Eul` :func:`~spatialmath.base.transforms3d.tr2eul`
         """
         if len(self) == 1:
             return base.tr2eul(self.R, unit=unit)
@@ -2137,7 +2084,7 @@ class UnitQuaternion(Quaternion):
         >>> UQ.Rz(0.3).angvec()
             (0.3, array([0., 0., 1.]))
 
-        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~spatialmath.quaternion.UnitQuaternion.log`, :func:`~angvec2r`
+        :seealso: :meth:`Quaternion.AngVec` :meth:`UnitQuaternion.log` :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         return base.tr2angvec(self.R, unit=unit)
 
@@ -2163,7 +2110,7 @@ class UnitQuaternion(Quaternion):
 
     #     :reference: `Wikipedia <https://en.wikipedia.org/wiki/Quaternion#Exponential,_logarithm,_and_power_functions>`_
 
-    #     :seealso: :func:`~spatialmath.quaternion.Quaternion.log`, `~spatialmath.quaternion.Quaternion.exp`
+    #     :seealso: :meth:`Quaternion.Quaternion.log`, `~spatialmath.quaternion.Quaternion.exp`
     #     """
     #     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))
 
@@ -2214,6 +2161,7 @@ class UnitQuaternion(Quaternion):
             - metrics 2 and 3 are equivalent, but 3 is more robust
             - SMTB-MATLAB uses metric 3 for UnitQuaternion.angle()
             - MATLAB's quaternion.dist() uses metric 4
+
         """
         if not isinstance(other, UnitQuaternion):
             raise TypeError('bad operand')
@@ -2261,11 +2209,8 @@ class UnitQuaternion(Quaternion):
         .. runblock:: pycon
         
             >>> from spatialmath import UnitQuaternion as UQ
-
             >>> UQ.Rz(0.3).SO3()
-            SO3(array([[ 0.95533649, -0.29552021,  0.        ],
-                    [ 0.29552021,  0.95533649,  0.        ],
-                    [ 0.        ,  0.        ,  1.        ]]))
+
         """
         return SO3(self.R, check=False)
 
@@ -2284,12 +2229,8 @@ class UnitQuaternion(Quaternion):
         .. runblock:: pycon
         
             >>> from spatialmath import UnitQuaternion as UQ
-
             >>> UQ.Rz(0.3).SE3()
-            SE3(array([[ 0.95533649, -0.29552021,  0.        ,  0.        ],
-                    [ 0.29552021,  0.95533649,  0.        ,  0.        ],
-                    [ 0.        ,  0.        ,  1.        ,  0.        ],
-                    [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+
         """
         return SE3(base.r2t(self.R), check=False)
 

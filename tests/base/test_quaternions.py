@@ -40,21 +40,21 @@ import spatialmath as sm
 
 class TestQuaternion(unittest.TestCase):
     def test_ops(self):
-        nt.assert_array_almost_equal(eye(), np.r_[1, 0, 0, 0])
+        nt.assert_array_almost_equal(qeye(), np.r_[1, 0, 0, 0])
 
-        nt.assert_array_almost_equal(pure(np.r_[1, 2, 3]), np.r_[0, 1, 2, 3])
-        nt.assert_array_almost_equal(pure([1, 2, 3]), np.r_[0, 1, 2, 3])
-        nt.assert_array_almost_equal(pure((1, 2, 3)), np.r_[0, 1, 2, 3])
+        nt.assert_array_almost_equal(qpure(np.r_[1, 2, 3]), np.r_[0, 1, 2, 3])
+        nt.assert_array_almost_equal(qpure([1, 2, 3]), np.r_[0, 1, 2, 3])
+        nt.assert_array_almost_equal(qpure((1, 2, 3)), np.r_[0, 1, 2, 3])
 
         nt.assert_equal(qnorm(np.r_[1, 2, 3, 4]), math.sqrt(30))
         nt.assert_equal(qnorm([1, 2, 3, 4]), math.sqrt(30))
         nt.assert_equal(qnorm((1, 2, 3, 4)), math.sqrt(30))
 
         nt.assert_array_almost_equal(
-            unit(np.r_[1, 2, 3, 4]), np.r_[1, 2, 3, 4] / math.sqrt(30)
+            qunit(np.r_[1, 2, 3, 4]), np.r_[1, 2, 3, 4] / math.sqrt(30)
         )
         nt.assert_array_almost_equal(
-            unit([1, 2, 3, 4]), np.r_[1, 2, 3, 4] / math.sqrt(30)
+            qunit([1, 2, 3, 4]), np.r_[1, 2, 3, 4] / math.sqrt(30)
         )
 
         nt.assert_array_almost_equal(
@@ -68,13 +68,13 @@ class TestQuaternion(unittest.TestCase):
         )
 
         nt.assert_array_almost_equal(
-            matrix(np.r_[1, 2, 3, 4]) @ np.r_[5, 6, 7, 8], np.r_[-60, 12, 30, 24]
+            qmatrix(np.r_[1, 2, 3, 4]) @ np.r_[5, 6, 7, 8], np.r_[-60, 12, 30, 24]
         )
         nt.assert_array_almost_equal(
-            matrix([1, 2, 3, 4]) @ np.r_[5, 6, 7, 8], np.r_[-60, 12, 30, 24]
+            qmatrix([1, 2, 3, 4]) @ np.r_[5, 6, 7, 8], np.r_[-60, 12, 30, 24]
         )
         nt.assert_array_almost_equal(
-            matrix(np.r_[1, 2, 3, 4]) @ np.r_[1, 2, 3, 4], np.r_[-28, 4, 6, 8]
+            qmatrix(np.r_[1, 2, 3, 4]) @ np.r_[1, 2, 3, 4], np.r_[-28, 4, 6, 8]
         )
 
         nt.assert_array_almost_equal(qpow(np.r_[1, 2, 3, 4], 0), np.r_[1, 0, 0, 0])
@@ -86,10 +86,10 @@ class TestQuaternion(unittest.TestCase):
             qpow(np.r_[1, 2, 3, 4], -2), np.r_[-28, -4, -6, -8]
         )
 
-        nt.assert_equal(isequal(np.r_[1, 2, 3, 4], np.r_[1, 2, 3, 4]), True)
-        nt.assert_equal(isequal(np.r_[1, 2, 3, 4], np.r_[5, 6, 7, 8]), False)
+        nt.assert_equal(qisequal(np.r_[1, 2, 3, 4], np.r_[1, 2, 3, 4]), True)
+        nt.assert_equal(qisequal(np.r_[1, 2, 3, 4], np.r_[5, 6, 7, 8]), False)
         nt.assert_equal(
-            isequal(
+            qisequal(
                 np.r_[1, 1, 0, 0] / math.sqrt(2),
                 np.r_[-1, -1, 0, 0] / math.sqrt(2),
                 unitq=True,
@@ -108,7 +108,7 @@ class TestQuaternion(unittest.TestCase):
             qprint([1, 2, 3, 4], file=None), " 1.0000 <  2.0000,  3.0000,  4.0000 >"
         )
 
-        nt.assert_equal(isunitvec(rand()), True)
+        nt.assert_equal(isunitvec(qrand()), True)
 
     def test_rotation(self):
         # rotation matrix to quaternion
@@ -135,26 +135,26 @@ class TestQuaternion(unittest.TestCase):
         q1 = np.r_[0, 1, 0, 0]
         q2 = np.r_[0, 0, 1, 0]
 
-        nt.assert_array_almost_equal(slerp(q1, q2, 0), q1)
-        nt.assert_array_almost_equal(slerp(q1, q2, 1), q2)
+        nt.assert_array_almost_equal(qslerp(q1, q2, 0), q1)
+        nt.assert_array_almost_equal(qslerp(q1, q2, 1), q2)
         nt.assert_array_almost_equal(
-            slerp(q1, q2, 0.5), np.r_[0, 1, 1, 0] / math.sqrt(2)
+            qslerp(q1, q2, 0.5), np.r_[0, 1, 1, 0] / math.sqrt(2)
         )
 
         q1 = [0, 1, 0, 0]
         q2 = [0, 0, 1, 0]
 
-        nt.assert_array_almost_equal(slerp(q1, q2, 0), q1)
-        nt.assert_array_almost_equal(slerp(q1, q2, 1), q2)
+        nt.assert_array_almost_equal(qslerp(q1, q2, 0), q1)
+        nt.assert_array_almost_equal(qslerp(q1, q2, 1), q2)
         nt.assert_array_almost_equal(
-            slerp(q1, q2, 0.5), np.r_[0, 1, 1, 0] / math.sqrt(2)
+            qslerp(q1, q2, 0.5), np.r_[0, 1, 1, 0] / math.sqrt(2)
         )
 
         nt.assert_array_almost_equal(
-            slerp(r2q(tr.rotx(-0.3)), r2q(tr.rotx(0.3)), 0.5), np.r_[1, 0, 0, 0]
+            qslerp(r2q(tr.rotx(-0.3)), r2q(tr.rotx(0.3)), 0.5), np.r_[1, 0, 0, 0]
         )
         nt.assert_array_almost_equal(
-            slerp(r2q(tr.roty(0.3)), r2q(tr.roty(0.5)), 0.5), r2q(tr.roty(0.4))
+            qslerp(r2q(tr.roty(0.3)), r2q(tr.roty(0.5)), 0.5), r2q(tr.roty(0.4))
         )
 
     def test_rotx(self):

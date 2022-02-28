@@ -182,6 +182,7 @@ class BasePoseList(UserList, ABC):
 
         elif isinstance(arg, np.ndarray):
             # it's a numpy array
+
             x = self._import(arg, check=check)
             if x is not None:
                 self.data = [x]

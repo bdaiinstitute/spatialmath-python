@@ -1464,7 +1464,7 @@ def trinterp(start, end, s=None):
 
     .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-    :seealso: :func:`spatialmath.smb.quaternions.slerp` :func:`~spatialmath.smb.transforms3d.trinterp2`
+    :seealso: :func:`spatialmath.smb.quaternions.qlerp` :func:`~spatialmath.smb.transforms3d.trinterp2`
     """
 
     if not 0 <= s <= 1:
@@ -1476,12 +1476,12 @@ def trinterp(start, end, s=None):
         if start is None:
             # 	TRINTERP(T, s)
             q0 = smb.r2q(smb.t2r(end))
-            qr = smb.slerp(smb.eye(), q0, s)
+            qr = smb.qslerp(smb.eye(), q0, s)
         else:
             # 	TRINTERP(T0, T1, s)
             q0 = smb.r2q(smb.t2r(start))
             q1 = smb.r2q(smb.t2r(end))
-            qr = smb.slerp(q0, q1, s)
+            qr = smb.qslerp(q0, q1, s)
 
         return smb.q2r(qr)
 
@@ -1492,7 +1492,7 @@ def trinterp(start, end, s=None):
             q0 = smb.r2q(smb.t2r(end))
             p0 = transl(end)
 
-            qr = smb.slerp(smb.eye(), q0, s)
+            qr = smb.qslerp(smb.eye(), q0, s)
             pr = s * p0
         else:
             # 	TRINTERP(T0, T1, s)
@@ -1502,7 +1502,7 @@ def trinterp(start, end, s=None):
             p0 = transl(start)
             p1 = transl(end)
 
-            qr = smb.slerp(q0, q1, s)
+            qr = smb.qslerp(q0, q1, s)
             pr = p0 * (1 - s) + s * p1
 
         return smb.rt2tr(smb.q2r(qr), pr)
