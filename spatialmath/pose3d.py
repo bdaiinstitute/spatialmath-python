@@ -743,7 +743,7 @@ class SO3(BasePoseMatrix):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion
+            >>> from spatialmath import SO3
             >>> R1 = SO3.Rx(0.3)
             >>> R2 = SO3.Ry(0.3)
             >>> print(R1.angdist(R1))
@@ -875,18 +875,15 @@ class SE3(SO3):
         ``x.t`` is the translational component of ``x`` as an array with
         shape (3,). If ``len(x) > 1``, return an array with shape=(N,3).
 
+        Example:
+
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion
-
+            >>> from spatialmath import SE3
             >>> x = SE3(1,2,3)
             >>> x.t
-            array([1., 2., 3.])
             >>> x = SE3([ SE3(1,2,3), SE3(4,5,6)])
             >>> x.t
-            array([[1., 2., 3.],
-                   [4., 5., 6.]])
-
         
         :SymPy: supported
         """
@@ -918,14 +915,14 @@ class SE3(SO3):
             T = \left[ \begin{array}{cc} \mat{R} & \vec{t} \\ 0 & 1 \end{array} \right],
             \mat{T}^{-1} = \left[ \begin{array}{cc} \mat{R}^T & -\mat{R}^T \vec{t} \\ 0 & 1 \end{array} \right]`
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> x = SE3(1,2,3)
             >>> x.inv()
-            SE3(array([[ 1.,  0.,  0., -1.],
-                       [ 0.,  1.,  0., -2.],
-                       [ 0.,  0.,  1., -3.],
-                       [ 0.,  0.,  0.,  1.]]))
+
 
         :seealso: :func:`~spatialmath.base.transforms3d.trinv`
 
@@ -949,13 +946,15 @@ class SE3(SO3):
         The vector :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`
         represents infinitesimal translation and rotation.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> x1 = SE3.Rx(0.3)
             >>> x2 = SE3.Rx(0.3001)
             >>> x1.delta(x2)
-            array([0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 9.99999998e-05,
-                0.00000000e+00, 0.00000000e+00])
+
 
         .. note::
 
@@ -1032,11 +1031,13 @@ class SE3(SO3):
         :return: equivalent rigid-body motion as a twist vector
         :rtype: Twist3 instance
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> x = SE3(1,2,3)
             >>> x.twist()
-            Twist3([1, 2, 3, 0, 0, 0])
 
         :seealso: :func:`spatialmath.twist.Twist3`
         """
@@ -1089,6 +1090,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> SE3.Rx(0.3)
             >>> SE3.Rx([0.3, 0.4])
 
@@ -1124,6 +1126,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> SE3.Ry(0.3)
             >>> SE3.Ry([0.3, 0.4])
 
@@ -1159,6 +1162,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> SE3.Rz(0.3)
             >>> SE3.Rz([0.3, 0.4])
 
@@ -1189,18 +1193,13 @@ class SE3(SO3):
         - ``SE3.Rand(N)`` is an SE3 object containing a sequence of N random
           poses.
 
-        Example::
 
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> SE3.Rand(2)
-            SE3([
-            array([[ 0.58076657,  0.64578702, -0.49565041, -0.78585825],
-                [-0.57373134, -0.10724881, -0.8119914 ,  0.72069253],
-                [-0.57753142,  0.75594763,  0.30822173,  0.12291999],
-                [ 0.        ,  0.        ,  0.        ,  1.        ]]),
-            array([[ 0.96481299, -0.26267256, -0.01179066,  0.80294729],
-                [ 0.06421463,  0.19190584,  0.97931028, -0.15021311],
-                [-0.25497525, -0.94560841,  0.20202067,  0.02684599],
-                [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
 
         :seealso: :func:`~spatialmath.quaternions.UnitQuaternion.Rand`
         """
@@ -1333,13 +1332,12 @@ class SE3(SO3):
             - ``o`` and ``a`` do not have to be orthogonal, so long as they are not parallel
               ``o`` is adjusted to be orthogonal to ``a``.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> SE3.OA([1, 0, 0], [0, 0, -1])
-            SE3(array([[-0.,  1.,  0.,  0.],
-                    [ 1.,  0.,  0.,  0.],
-                    [ 0.,  0., -1.,  0.],
-                    [ 0.,  0.,  0.,  1.]]))
 
         :seealso: :func:`~spatialmath.base.transforms3d.oa2r`
         """
@@ -1519,6 +1517,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> SE3.Tx(2)
             >>> SE3.Tx([2,3])
 
@@ -1545,6 +1544,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> SE3.Ty(2)
             >>> SE3.Ty([2,3])
 
@@ -1570,6 +1570,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> SE3.Tz(2)
             >>> SE3.Tz([2,3])
 
@@ -1638,7 +1639,7 @@ class SE3(SO3):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion
+            >>> from spatialmath import SE3
             >>> T1 = SE3.Rx(0.3)
             >>> T2 = SE3.Ry(0.3)
             >>> print(T1.angdist(T1))

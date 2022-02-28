@@ -39,10 +39,27 @@ class SpatialVector(BasePoseList):
     ``+``      addition of spatial vectors of the same subclass
     ``-``      subtraction of spatial vectors of the same subclass
     ``-``      unary minus
-    ``*``      premultiplication by Twist3 is transformation to new frame
+    ``*``      see table below
     ``^``      cross product x or x*
     ========   ===========================================================
 
+
+    Certain subtypes can be multiplied
+
+    ===================   ====================  ===================  =========================
+                Multiplicands                   Product
+    ------------------------------------------  ----------------------------------------------
+    left                  right                 type                 operation
+    ===================   ====================  ===================  =========================
+    SE3, Twist3           SpatialVelocity       SpatialVelocity      adjoint product
+    SE3, Twist3           SpatialAcceleration   SpatialAcceleration  adjoint product
+    SE3, Twist3           SpatialMomentum       SpatialMomentum      adjoint transpose product
+    SE3, Twist3           SpatialForce          SpatialForce         adjoint transpose product
+    SpatialAcceleration   SpatialInertia        SpatialForce         matrix-vector product**
+    SpatialVelocity       SpatialInertia        SpatialMomentum      matrix-vector product**
+    ===================   ====================  ===================  =========================
+
+    ** indicates commutative operator.
 
     .. inheritance-diagram:: spatialmath.spatialvector.SpatialVelocity spatialmath.spatialvector.SpatialAcceleration spatialmath.spatialvector.SpatialForce spatialmath.spatialvector.SpatialMomentum
        :top-classes: spatialmath.spatialvector.SpatialVector
@@ -442,7 +459,7 @@ class SpatialForce(SpatialF6):
         super().__init__(value)
 # n = SpatialForce(val);
 
-    def __rmul(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
         return SpatialForce(left.Ad.T @ right.A)
 

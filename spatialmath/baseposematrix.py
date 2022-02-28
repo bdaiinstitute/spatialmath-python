@@ -404,7 +404,7 @@ class BasePoseMatrix(BasePoseList):
 
             - For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
             - Values of ``s`` outside the range [0,1] are silently clipped
-        :seealso: :func:`interp1`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
+        :seealso: :func:`interp1`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.qslerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
 
         :SymPy: not supported
         """
@@ -482,7 +482,7 @@ class BasePoseMatrix(BasePoseList):
 
         #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-        :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.slerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
+        :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.qslerp`, :func:`~spatialmath.base.transforms2d.trinterp2`
 
         :SymPy: not supported
         """
@@ -590,8 +590,8 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def printline(self, arg=None, **kwargs):
-        """
+    def printline(self, *args, **kwargs):
+        r"""
         Print pose in compact single line format (superclass method)
         
         :param arg: value for orient option, optional
@@ -618,7 +618,6 @@ class BasePoseMatrix(BasePoseList):
         =============   =================================================
         ``orient``      description
         =============   =================================================
-
         ``'rpy/zyx'``   roll-pitch-yaw angles in ZYX axis order [default]
         ``'rpy/yxz'``   roll-pitch-yaw angles in YXZ axis order
         ``'rpy/zyx'``   roll-pitch-yaw angles in ZYX axis order
@@ -631,38 +630,33 @@ class BasePoseMatrix(BasePoseList):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE2, SE3
             >>> x = SE3.Rx(0.3)
             >>> x.printline()
-            >>> x = SE3.Rx([0.2, 0.3], 'rpy/xyz')
+            >>> x = SE3.Rx([0.2, 0.3])
             >>> x.printline()
             >>> x.printline('angvec')
             >>> x.printline(orient='angvec', fmt="{:.6f}")
             >>> x = SE2(1, 2, 0.3)
             >>> x.printline()
-            >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
 
         .. note::
             - Default formatting is for compact display of data
             - For tabular data set ``fmt`` to a fixed width format such as
               ``fmt='{:.3g}'``
 
-        :seealso: :func:`trprint`, :func:`trprint2`
+        :seealso: :meth:`strline` :func:`trprint`, :func:`trprint2`
         """
-        if arg is not None and kwargs == {}:
-            if isinstance(arg, str):
-                kwargs = dict(orient=arg)
-            else:
-                raise ValueError('single argument must be a string')
         if self.N == 2:
             for x in self.data:
-                base.trprint2(x, **kwargs)
+                base.trprint2(x, *args, **kwargs)
         else:
             for x in self.data:
-                base.trprint(x, **kwargs)
+                base.trprint(x, *args, **kwargs)
 
     def strline(self, *args, **kwargs):
         """
-        Print pose in compact single line format (superclass method)
+        Convert pose to compact single line string (superclass method)
 
         :param label: text label to put at start of line
         :type label: str
@@ -675,28 +669,44 @@ class BasePoseMatrix(BasePoseList):
         :type orient: str
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
+        :return: pose in string format
+        :rtype: str
 
-        Print pose in a compact single line format. If ``X`` has multiple
-        values, print one per line.
+        Convert pose in a compact single line format. If ``X`` has multiple
+        values, the string has one pose per line.
+
+        Orientation can be displayed in various formats:
+
+        =============   =================================================
+        ``orient``      description
+        =============   =================================================
+        ``'rpy/zyx'``   roll-pitch-yaw angles in ZYX axis order [default]
+        ``'rpy/yxz'``   roll-pitch-yaw angles in YXZ axis order
+        ``'rpy/zyx'``   roll-pitch-yaw angles in ZYX axis order
+        ``'eul'``       Euler angles in ZYZ axis order
+        ``'angvec'``    angle and axis
+        =============   =================================================
 
         Example:
 
         .. runblock:: pycon
 
+            >>> from spatialmath import SE2, SE3
             >>> x = SE3.Rx(0.3)
-            >>> x.printline()
-            >>> x = SE3.Rx([0.2, 0.3], 'rpy/xyz')
-            >>> x.printline()
+            >>> x.strline()
+            >>> x = SE3.Rx([0.2, 0.3])
+            >>> x.strline()
+            >>> x.strline('angvec')
+            >>> x.strline(orient='angvec', fmt="{:.6f}")
             >>> x = SE2(1, 2, 0.3)
-            >>> x.printline()
-            >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
+            >>> x.strline()
 
         .. note::
             - Default formatting is for compact display of data
             - For tabular data set ``fmt`` to a fixed width format such as
               ``fmt='{:.3g}'``
 
-        :seealso: :func:`trprint`, :func:`trprint2`
+        :seealso: :meth:`printline` :func:`trprint`, :func:`trprint2`
         """
         s = ""
         if self.N == 2:
