@@ -405,7 +405,7 @@ def plot_arrow(start, end, ax=None, **kwargs):
 
     ax.arrow(start[0], start[1], end[0] - start[0], end[1] - start[1], length_includes_head=True, **kwargs)
 
-def plot_poly(vertices, *fmt, close=False, **kwargs):
+def plot_polygon(vertices, *fmt, close=False, **kwargs):
 
     if close:
         vertices = np.hstack((vertices, vertices[:, [0]]))

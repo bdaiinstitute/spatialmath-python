@@ -323,7 +323,7 @@ __all__ = [
     "plot_point",
     "plot_text",
     "plot_box",
-    "plot_poly",
+    "plot_polygon",
     "circle",
     "ellipse",
     "sphere",
@@ -339,6 +339,7 @@ __all__ = [
     "plot_cone",
     "plot_cuboid",
     "axes_logic",
+    "expand_dims",
     "isnotebook",
     
     # spatial.base.numeric
