@@ -251,10 +251,12 @@ class SE2(SO2):
         """
         Construct new SE(2) object
 
-        :param unit: angular units 'deg' or 'rad' [default] if applicable :type
-        unit: str, optional :param check: check for valid SE(2) elements if
-        applicable, default to True :type check: bool :return: homogeneous
-        rigid-body transformation matrix :rtype: SE2 instance
+        :param unit: angular units 'deg' or 'rad' [default] if applicable 
+        :type unit: str, optional 
+        :param check: check for valid SE(2) elements if applicable, default to True 
+        :type check: bool 
+        :return: SE(2) matrix 
+        :rtype: SE2 instance
 
         - ``SE2()`` is an SE2 instance representing a null motion -- the
           identity matrix

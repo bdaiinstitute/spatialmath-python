@@ -2242,29 +2242,25 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
     :return: derivative of inverse angular velocity transformation matrix
     :rtype: ndarray(6,6) or ndarray(3,3)
 
-    The angular rate transformation matrix :math:`\mat{A}` is such that
+    The angular rate transformation matrix :math:`\mat{A} \in \mathbb{R}^{6 \times 6}` is such that
 
     .. math::
 
         \dvec{x} = \mat{A}^{-1}(\Gamma) \vec{\nu}
 
-    where :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational 
-    representation and is used to transform a geometric Jacobian to an analytic Jacobians.
+    where :math:`\dvec{x} \in \mathbb{R}^6` is analytic velocity :math:`(\vec{v}, \dvec{\Gamma})`, 
+    :math:`\vec{\nu} \in \mathbb{R}^6` is spatial velocity :math:`(\vec{v}, \vec{\omega})`, and
+    :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational 
+    representation.
 
     The relationship between spatial and analytic acceleration is
 
     .. math::
 
-        \ddvec{x} = \dmat{A}^{-1}(\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}
+        \ddvec{x} = \dmat{A}^{-1}(\Gamma, \dot{\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}
 
-    which requires
+    and :math:`\dmat{A}^{-1}(\Gamma, \dot{\Gamma)` is computed by this function.
     
-    .. math::
-    
-        \frac{d}{dt} \mat{A}^{-1}(\Gamma) = \mat{A}^{-1}(\Gamma, \dot{\Gamma})
-
-    This matrix is a function of :math:`\vec{\Gamma}` and :math:`\dvec{\Gamma}`,
-    and is also required to compute the derivative of an analytic Jacobian.
         
     ============================  ========================================
     ``representation``            Rotational representation
@@ -2276,7 +2272,7 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
     ``"exp"``                     exponential coordinate rates
     ============================  ========================================
 
-    If ``full=False`` the lower-right 3x3 matrix is returned which transforms
+    If ``full=True`` a block diagonal 6x6 matrix is returned which transforms analytic
     analytic rotational acceleration to angular acceleration.
 
     Reference:

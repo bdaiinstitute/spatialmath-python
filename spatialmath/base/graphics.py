@@ -401,11 +401,50 @@ def plot_box(
     return r
 
 def plot_arrow(start, end, ax=None, **kwargs):
+    """
+    Plot 2D arrow
+
+    :param start: start point, arrow tail
+    :type start: array_like(2)
+    :param end: end point, arrow head
+    :type end: array_like(2)
+    :param ax: axes to draw into, defaults to None
+    :type ax: Axes, optional
+    :param kwargs: argumetns to pass to :class:`matplotlib.patches.Arrow`
+
+    Example:
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import plotvol2, plot_arrow
+        >>> plotvol2(5)
+        >>> plot_arrow((-2, 2), (3, 4), color='r', width=0.1)  # red arrow
+    """
     ax = axes_logic(ax, 2)
 
     ax.arrow(start[0], start[1], end[0] - start[0], end[1] - start[1], length_includes_head=True, **kwargs)
 
 def plot_polygon(vertices, *fmt, close=False, **kwargs):
+    """
+    Plot polygon
+
+    :param vertices: vertices
+    :type vertices: ndarray(2,N)
+    :param close: close the polygon, defaults to False
+    :type close: bool, optional
+    :param kwargs: arguments passed to Patch
+    :return: Matplotlib artist
+    :rtype: line or patch
+
+    Example:
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import plotvol2, plot_polygon
+        >>> plotvol2(5)
+        >>> vertices = np.array([[-1, 2, -1], [1, 0, -1]])
+        >>> plot_polygon(vertices, filled=True, facecolor='g')  # green filled triangle
+    """
 
     if close:
         vertices = np.hstack((vertices, vertices[:, [0]]))
@@ -471,7 +510,7 @@ def plot_circle(
     :param args:
     :param radius: radius of circle
     :type radius: float
-    :param resolution: number of points on circumferece, defaults to 50
+    :param resolution: number of points on circumference, defaults to 50
     :type resolution: int, optional
     :return: the matplotlib object
     :rtype: list of Line2D or Patch.Polygon
@@ -1168,17 +1207,13 @@ def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
 
     Initialize axes with dimensions given by ``dim`` which can be:
 
-        * A (scalar), -A:A x -A:A
-        * [A,B], A:B x A:B
-        * [A,B,C,D], A:B x C:D
-
-    ==================  ======  ======
-    input               xrange  yrange
-    ==================  ======  ======
-    A (scalar)          -A:A    -A:A
-    [A, B]              A:B     A:B
-    [A, B, C, D, E, F]  A:B     C:D
-    ==================  ======  ======
+    ==============  ======  ======
+    input           xrange  yrange
+    ==============  ======  ======
+    A (scalar)      -A:A    -A:A
+    [A, B]           A:B     A:B
+    [A, B, C, D]     A:B     C:D
+    ==============  ======  ======
 
     :seealso: :func:`plotvol3`, :func:`expand_dims`
     """
@@ -1259,7 +1294,7 @@ def plotvol3(
 
 def expand_dims(dim=None, nd=2):
     """
-    Expact compact axis dimensions
+    Expand compact axis dimensions
 
     :param dim: dimensions, defaults to None
     :type dim: scalar, array_like(2), array_like(4), array_like(6), optional
