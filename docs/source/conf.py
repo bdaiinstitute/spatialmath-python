@@ -22,7 +22,7 @@ import sys
 project = 'Spatial Maths package'
 copyright = '2022, Peter Corke'
 author = 'Peter Corke'
-version = '0.9'
+version = '0.12'
 
 print(__file__)
 # The full version, including alpha/beta/rc tags
