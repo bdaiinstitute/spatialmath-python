@@ -53,7 +53,8 @@ extensions = [
 inheritance_node_attrs = dict(style='rounded')
 
 autosummary_generate = True
-autodoc_member_order = 'bysource'
+autodoc_member_order = 'groupwise'
+# bysource
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
