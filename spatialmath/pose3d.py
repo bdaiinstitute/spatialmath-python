@@ -1487,18 +1487,21 @@ class SE3(SO3):
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-        ``T = SE3.Trans(x, y, z)`` is an SE(3) representing pure translation.
+        - ``SE3.Trans(x, y, z)`` is an SE(3) representing pure translation.
 
-        ``T = SE3.Trans([x, y, z])`` as above, but translation is given as an
-        array.
+        - ``SE3.Trans([x, y, z])`` as above, but translation is given as an
+          array.
+
+        - ``SE3.Trans(t)`` where ``t`` is Nx3 then create an SE3 object with
+          N elements whose translation is defined by the rows of ``t``.
 
         """
         if y is None and z is None:
-            # single passed value, assume is 3-vector
-            t = base.getvector(x, 3)
+            # single passed value, assume is 3-vector or Nx3
+            t = base.getmatrix(x, (None, 3))
+            return cls([base.transl(_t) for _t in t], check=False)
         else:
-            t = np.array([x, y, z])
-        return cls(t)
+            return cls(np.array([x, y, z]))
 
     @classmethod
     def Tx(cls, x):
