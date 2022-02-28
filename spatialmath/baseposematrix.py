@@ -590,10 +590,12 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def printline(self, **kwargs):
+    def printline(self, arg=None, **kwargs):
         """
         Print pose in compact single line format (superclass method)
-
+        
+        :param arg: value for orient option, optional
+        :type arg: str
         :param label: text label to put at start of line
         :type label: str
         :param fmt: conversion format for each number as used by ``format()``
@@ -608,9 +610,22 @@ class BasePoseMatrix(BasePoseList):
         :param file: file to write formatted string to. [default, stdout]
         :type file: file object
 
-
         Print pose in a compact single line format. If ``X`` has multiple
         values, print one per line.
+
+        Orientation can be displayed in various formats:
+
+        =============   =================================================
+        ``orient``      description
+        =============   =================================================
+
+        ``'rpy/zyx'``   roll-pitch-yaw angles in ZYX axis order [default]
+        ``'rpy/yxz'``   roll-pitch-yaw angles in YXZ axis order
+        ``'rpy/zyx'``   roll-pitch-yaw angles in ZYX axis order
+        ``'eul'``       Euler angles in ZYZ axis order
+        ``'angvec'``    angle and axis
+        =============   =================================================
+
 
         Example:
 
@@ -620,6 +635,8 @@ class BasePoseMatrix(BasePoseList):
             >>> x.printline()
             >>> x = SE3.Rx([0.2, 0.3], 'rpy/xyz')
             >>> x.printline()
+            >>> x.printline('angvec')
+            >>> x.printline(orient='angvec', fmt="{:.6f}")
             >>> x = SE2(1, 2, 0.3)
             >>> x.printline()
             >>> SE3.Rand(N=3).printline(fmt='{:8.3g}')
@@ -631,6 +648,11 @@ class BasePoseMatrix(BasePoseList):
 
         :seealso: :func:`trprint`, :func:`trprint2`
         """
+        if arg is not None and kwargs == {}:
+            if isinstance(arg, str):
+                kwargs = dict(orient=arg)
+            else:
+                raise ValueError('single argument must be a string')
         if self.N == 2:
             for x in self.data:
                 base.trprint2(x, **kwargs)
