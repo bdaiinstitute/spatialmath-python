@@ -408,7 +408,7 @@ class SO3(BasePoseMatrix):
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
-        return cls([base.q2r(base.rand()) for _ in range(0, N)], check=False)
+        return cls([base.q2r(base.qrand()) for _ in range(0, N)], check=False)
 
     @classmethod
     def Eul(cls, *angles, unit='rad'):
