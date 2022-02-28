@@ -970,6 +970,15 @@ class Twist3(BaseTwist):
         - ``X.exp(θ) as above but with a rotation of ``θ`` about the twist axis,
           :math:`e^{\theta[S]}`
 
+        If ``len(X)==1`` and ``len(θ)==N`` then the resulting SE3 object has
+        ``N`` values equivalent to the twist :math:`e^{\theta_i[S]}`.
+
+        If ``len(X)==N`` and ``len(θ)==1`` then the resulting SE3 object has
+        ``N`` values equivalent to the twist :math:`e^{\theta[S_i]}`.
+
+        If ``len(X)==N`` and ``len(θ)==N`` then the resulting SE3 object has
+        ``N`` values equivalent to the twist :math:`e^{\theta_i[S_i]}`.
+
         Example:
         
         .. runblock:: pycon
@@ -987,9 +996,15 @@ class Twist3(BaseTwist):
 
         :seealso: :func:`spatialmath.base.trexp`
         """
-        theta = base.getunit(theta, unit)
+        theta = np.r_[base.getunit(theta, unit)]
 
-        return base.trexp(self.S * theta)
+        if len(self) == 1:
+            return SE3([base.trexp(self.S * t) for t in theta], check=False)
+        elif len(self) == len(theta):
+            return SE3([base.trexp(s * t) for s, t in zip(self.S, theta)], check=False)
+        else:
+            raise ValueError('length mismatch')
+
 
 
     # ------------------------- arithmetic -------------------------------#
@@ -1484,7 +1499,7 @@ class Twist2(BaseTwist):
         else:
             theta = base.getunit(theta, unit)
 
-        return base.trexp2(self.S * theta)
+        return SE2(base.trexp2(self.S * theta))
 
 
     def unit(self):
