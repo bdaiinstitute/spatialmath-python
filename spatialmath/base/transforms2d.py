@@ -3,8 +3,9 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 """
-This modules contains functions to create and transform SO(2) and SE(2) matrices,
-respectively 2D rotation matrices and homogeneous tranformation matrices.
+These functions create and manipulate 2D rotation matrices and rigid-body
+transformations as 2x2 SO(2) matrices and 3x3 SE(2) matrices respectively.
+These matrices are represented as 2D NumPy arrays.
 
 Vector arguments are what numpy refers to as ``array_like`` and can be a list,
 tuple, numpy array, numpy row vector or numpy column vector.

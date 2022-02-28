@@ -2,6 +2,12 @@
 # Copyright (c) 2000 Peter Corke
 # MIT Licence, see details in top-level file: LICENCE
 
+"""
+These functions create and manipulate quaternions or unit quaternions.
+The quaternion is represented
+by a 1D NumPy array with 4 elements: s, x, y, z.
+
+"""
 # pylint: disable=invalid-name
 
 import sys
