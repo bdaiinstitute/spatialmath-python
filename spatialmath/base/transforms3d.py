@@ -805,11 +805,11 @@ def oa2r(o, a=None):
 
     .. note::
 
-        - The A vector is the only guaranteed to have the same direction in the 
+        - The A vector is the only guaranteed to have the same direction in the
           resulting rotation matrix
         - O and A do not have to be unit-length, they are normalized
         - O and A do not have to be orthogonal, so long as they are not parallel
-        - The vectors O and A are parallel to the Y- and Z-axes of the 
+        - The vectors O and A are parallel to the Y- and Z-axes of the
           equivalent coordinate frame.
 
     :seealso: :func:`~oa2tr`
@@ -861,7 +861,7 @@ def oa2tr(o, a=None):
         - O and A do not have to be unit-length, they are normalized
         - O and A do not have to be orthogonal, so long as they are not parallel
         - The translational part is zero.
-        - The vectors O and A are parallel to the Y- and Z-axes of the 
+        - The vectors O and A are parallel to the Y- and Z-axes of the
           equivalent coordinate frame.
 
     :seealso: :func:`~oa2r`
@@ -1856,10 +1856,11 @@ def exp2jac(v):
     # (2.106)
     E = (
         np.eye(3)
-        + sk * (1 - np.cos(theta)) / theta ** 2
-        + sk @ sk * (theta - np.sin(theta)) / theta ** 3
+        + sk * (1 - np.cos(theta)) / theta**2
+        + sk @ sk * (theta - np.sin(theta)) / theta**3
     )
     return E
+
 
 def r2x(R, representation="rpy/xyz"):
     r"""
@@ -1893,13 +1894,14 @@ def r2x(R, representation="rpy/xyz"):
         r = tr2eul(R)
     elif representation.startswith("rpy/"):
         r = tr2rpy(R, order=representation[4:])
-    elif representation in ('arm', 'vehicle', 'camera'):
+    elif representation in ("arm", "vehicle", "camera"):
         r = tr2rpy(R, order=representation)
     elif representation == "exp":
         r = trlog(R, twist=True)
     else:
         raise ValueError(f"unknown representation: {representation}")
     return r
+
 
 def x2r(r, representation="rpy/xyz"):
     r"""
@@ -1933,13 +1935,14 @@ def x2r(r, representation="rpy/xyz"):
         R = eul2r(r)
     elif representation.startswith("rpy/"):
         R = rpy2r(r, order=representation[4:])
-    elif representation in ('arm', 'vehicle', 'camera'):
+    elif representation in ("arm", "vehicle", "camera"):
         R = rpy2r(r, order=representation)
     elif representation == "exp":
         R = trexp(r)
     else:
         raise ValueError(f"unknown representation: {representation}")
     return R
+
 
 def tr2x(T, representation="rpy/xyz"):
     r"""
@@ -1975,9 +1978,10 @@ def tr2x(T, representation="rpy/xyz"):
     r = r2x(R, representation=representation)
     return np.r_[t, r]
 
+
 def x2tr(x, representation="rpy/xyz"):
     r"""
-    Convert analytic representation to SE(3) 
+    Convert analytic representation to SE(3)
 
     :param x: analytic vector representation
     :type x: array_like(6)
@@ -2014,19 +2018,22 @@ def rot2jac(R, representation="rpy/xyz"):
     """
     DEPRECATED, use :func:`rotvelxform` instead
     """
-    raise DeprecationWarning('use rotvelxform instead')
+    raise DeprecationWarning("use rotvelxform instead")
+
 
 def angvelxform(𝚪, inverse=False, full=True, representation="rpy/xyz"):
     """
     DEPRECATED, use :func:`rotvelxform` instead
     """
-    raise DeprecationWarning('use rotvelxform instead')
+    raise DeprecationWarning("use rotvelxform instead")
+
 
 def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     """
     DEPRECATED, use :func:`rotvelxform` instead
     """
-    raise DeprecationWarning('use rotvelxform_inv_dot instead')
+    raise DeprecationWarning("use rotvelxform_inv_dot instead")
+
 
 def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
     r"""
@@ -2069,7 +2076,7 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
     ============================  ========================================
 
     If ``inverse==True`` return :math:`\mat{A}^{-1}` computed using
-    a closed-form solution rather than matrix inverse. 
+    a closed-form solution rather than matrix inverse.
 
     If ``full=True`` a block diagonal 6x6 matrix is returned which transforms analytic
     velocity to spatial velocity.
@@ -2078,9 +2085,9 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
         with ``full=False``.
 
     The analytical Jacobian is
-    
+
     .. math::
-    
+
         \mat{J}_a(q) = \mat{A}^{-1}(\Gamma)\, \mat{J}(q)
 
     where :math:`\mat{A}` is computed with ``inverse==True`` and ``full=True``.
@@ -2099,7 +2106,7 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
     if smb.isrot(𝚪):
         # passed a rotation matrix
         # convert to the representation
-        gamma = r2x(𝚪, representation=representation)
+        𝚪 = r2x(𝚪, representation=representation)
 
     if sym.issymbol(𝚪):
         C = sym.cos
@@ -2207,8 +2214,8 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
             # (2.106)
             A = (
                 np.eye(3)
-                + sk * (1 - C(theta)) / theta ** 2
-                + sk @ sk * (theta - S(theta)) / theta ** 3
+                + sk * (1 - C(theta)) / theta**2
+                + sk @ sk * (theta - S(theta)) / theta**3
             )
         else:
             # angular velocity -> analytical rates
@@ -2216,10 +2223,7 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
             A = (
                 np.eye(3)
                 - sk / 2
-                + sk
-                @ sk
-                / theta ** 2
-                * (1 - (theta / 2) * (S(theta) / (1 - C(theta))))
+                + sk @ sk / theta**2 * (1 - (theta / 2) * (S(theta) / (1 - C(theta))))
             )
 
     if full:
@@ -2249,9 +2253,9 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
 
         \dvec{x} = \mat{A}^{-1}(\Gamma) \vec{\nu}
 
-    where :math:`\dvec{x} \in \mathbb{R}^6` is analytic velocity :math:`(\vec{v}, \dvec{\Gamma})`, 
+    where :math:`\dvec{x} \in \mathbb{R}^6` is analytic velocity :math:`(\vec{v}, \dvec{\Gamma})`,
     :math:`\vec{\nu} \in \mathbb{R}^6` is spatial velocity :math:`(\vec{v}, \vec{\omega})`, and
-    :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational 
+    :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational
     representation.
 
     The relationship between spatial and analytic acceleration is
@@ -2261,8 +2265,8 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
         \ddvec{x} = \dmat{A}^{-1}(\Gamma, \dot{\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}
 
     and :math:`\dmat{A}^{-1}(\Gamma, \dot{\Gamma)` is computed by this function.
-    
-        
+
+
     ============================  ========================================
     ``representation``            Rotational representation
     ============================  ========================================
@@ -2303,11 +2307,10 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
                     -(
                         beta_dot * math.sin(beta) * S(gamma) / C(beta)
                         + gamma_dot * C(gamma)
-                    ) / C(beta),
-                    (
-                        beta_dot * S(beta) * C(gamma) / C(beta)
-                        - gamma_dot * S(gamma)
-                    ) / C(beta),
+                    )
+                    / C(beta),
+                    (beta_dot * S(beta) * C(gamma) / C(beta) - gamma_dot * S(gamma))
+                    / C(beta),
                 ],
                 [0, -gamma_dot * S(gamma), gamma_dot * C(gamma)],
                 [
@@ -2328,14 +2331,10 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
         Ainv_dot = np.array(
             [
                 [
-                    (
-                        beta_dot * S(beta) * C(gamma) / C(beta)
-                        - gamma_dot * S(gamma)
-                    ) / C(beta),
-                    (
-                        beta_dot * S(beta) * S(gamma) / C(beta)
-                        + gamma_dot * C(gamma)
-                    ) / C(beta),
+                    (beta_dot * S(beta) * C(gamma) / C(beta) - gamma_dot * S(gamma))
+                    / C(beta),
+                    (beta_dot * S(beta) * S(gamma) / C(beta) + gamma_dot * C(gamma))
+                    / C(beta),
                     0,
                 ],
                 [-gamma_dot * C(gamma), -gamma_dot * S(gamma), 0],
@@ -2357,26 +2356,20 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
         Ainv_dot = np.array(
             [
                 [
-                    (beta_dot * S(beta) * S(gamma) / C(beta)
-                    + gamma_dot * C(gamma)) / C(beta),
+                    (beta_dot * S(beta) * S(gamma) / C(beta) + gamma_dot * C(gamma))
+                    / C(beta),
                     0,
-                    (beta_dot * S(beta) * C(gamma) / C(beta) 
-                    - gamma_dot * S(gamma)) / C(beta)
+                    (beta_dot * S(beta) * C(gamma) / C(beta) - gamma_dot * S(gamma))
+                    / C(beta),
                 ],
+                [-gamma_dot * S(gamma), 0, -gamma_dot * C(gamma)],
                 [
-                    -gamma_dot * S(gamma),
+                    beta_dot * S(gamma) / C(beta) ** 2 + gamma_dot * C(gamma) * T(beta),
                     0,
-                    -gamma_dot * C(gamma)
+                    beta_dot * C(gamma) / C(beta) ** 2 - gamma_dot * S(gamma) * T(beta),
                 ],
-                [
-                    beta_dot * S(gamma) / C(beta)**2 
-                    + gamma_dot * C(gamma) * T(beta), 
-                    0,
-                    beta_dot * C(gamma) / C(beta)**2 
-                    - gamma_dot * S(gamma) * T(beta)
-                ]
             ]
-            )
+        )
 
     elif representation == "eul":
         # autogenerated by symbolic/angvelxform.ipynb
@@ -2394,15 +2387,9 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
                 ],
                 [-phi_dot * C(phi), -phi_dot * S(phi), 0],
                 [
-                    -(
-                        phi_dot * S(phi)
-                        + theta_dot * C(phi) * C(theta) / S(theta)
-                    )
+                    -(phi_dot * S(phi) + theta_dot * C(phi) * C(theta) / S(theta))
                     / S(theta),
-                    (
-                        phi_dot * C(phi)
-                        - theta_dot * S(phi) * C(theta) / S(theta)
-                    )
+                    (phi_dot * C(phi) - theta_dot * S(phi) * C(theta) / S(theta))
                     / S(theta),
                     0,
                 ],
@@ -2424,15 +2411,10 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
         #   results are close but different to numerical cross check
         #   something wrong in the derivation
         Theta_dot = (
-                (
-                -theta * C(theta) 
-                -S(theta) +
-                 theta * S(theta)**2 / (1 - C(theta)) 
-                ) * theta_dot / 2  / (1 - C(theta)) / theta**2
-                - (
-                    2 - theta * S(theta) / (1 - C(theta))
-                  ) * theta_dot / theta**3
-                ) 
+            -theta * C(theta) - S(theta) + theta * S(theta) ** 2 / (1 - C(theta))
+        ) * theta_dot / 2 / (1 - C(theta)) / theta**2 - (
+            2 - theta * S(theta) / (1 - C(theta))
+        ) * theta_dot / theta**3
 
         Ainv_dot = -0.5 * skd + 2.0 * sk @ skd * Theta + sk @ sk * Theta_dot
     else:
@@ -2583,11 +2565,7 @@ def trprint(
     # print the angular part in various representations
 
     # define some aliases for rpy conventions for arms, vehicles and cameras
-    aliases = {
-        'arm': 'rpy/xyz',
-        'vehicle': 'rpy/zyx',
-        'camera': 'rpy/yxz'
-    }
+    aliases = {"arm": "rpy/xyz", "vehicle": "rpy/zyx", "camera": "rpy/yxz"}
     if orient in aliases:
         orient = aliases[orient]
 
@@ -2632,12 +2610,8 @@ def _vec2s(fmt, v):
     return ", ".join([fmt.format(x) for x in v])
 
 
-
-
-
 def trplot(
     T,
-
     color="blue",
     frame=None,
     axislabel=True,
@@ -2657,7 +2631,7 @@ def trplot(
     dims=None,
     d2=1.15,
     flo=(-0.05, -0.05, -0.05),
-    **kwargs
+    **kwargs,
 ):
     """
     Plot a 3D coordinate frame
@@ -2806,7 +2780,7 @@ def trplot(
 
         # unpack the anaglyph parameters
         if anaglyph is True:
-            colors = 'rc'
+            colors = "rc"
             shift = 0.1
         elif isinstance(anaglyph, tuple):
             colors = anaglyph[0]
@@ -2867,7 +2841,7 @@ def trplot(
                 flo=flo,
                 anaglyph=anaglyph,
                 axislabel=axislabel,
-                **kwargs
+                **kwargs,
             )
         return
 
@@ -3023,6 +2997,7 @@ def trplot(
     if block:
         # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
         import matplotlib.pyplot as plt
+
         # TODO move blocking into graphics
         plt.show(block=block)
     return ax
@@ -3079,14 +3054,14 @@ def tranimate(T, **kwargs):
 
     anim = smb.animate.Animate(**kwargs)
     try:
-        del kwargs['dims']
+        del kwargs["dims"]
     except KeyError:
         pass
-    
+
     anim.trplot(T, **kwargs)
     anim.run(**kwargs)
 
-    #plt.show(block=block)
+    # plt.show(block=block)
 
 
 if __name__ == "__main__":  # pragma: no cover
