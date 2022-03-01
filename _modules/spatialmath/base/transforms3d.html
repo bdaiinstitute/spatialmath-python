@@ -880,11 +880,11 @@
 
 <span class="sd">    .. note::</span>
 
-<span class="sd">        - The A vector is the only guaranteed to have the same direction in the </span>
+<span class="sd">        - The A vector is the only guaranteed to have the same direction in the</span>
 <span class="sd">          resulting rotation matrix</span>
 <span class="sd">        - O and A do not have to be unit-length, they are normalized</span>
 <span class="sd">        - O and A do not have to be orthogonal, so long as they are not parallel</span>
-<span class="sd">        - The vectors O and A are parallel to the Y- and Z-axes of the </span>
+<span class="sd">        - The vectors O and A are parallel to the Y- and Z-axes of the</span>
 <span class="sd">          equivalent coordinate frame.</span>
 
 <span class="sd">    :seealso: :func:`~oa2tr`</span>
@@ -936,7 +936,7 @@
 <span class="sd">        - O and A do not have to be unit-length, they are normalized</span>
 <span class="sd">        - O and A do not have to be orthogonal, so long as they are not parallel</span>
 <span class="sd">        - The translational part is zero.</span>
-<span class="sd">        - The vectors O and A are parallel to the Y- and Z-axes of the </span>
+<span class="sd">        - The vectors O and A are parallel to the Y- and Z-axes of the</span>
 <span class="sd">          equivalent coordinate frame.</span>
 
 <span class="sd">    :seealso: :func:`~oa2r`</span>
@@ -1931,10 +1931,11 @@
     <span class="c1"># (2.106)</span>
     <span class="n">E</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-        <span class="o">+</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="o">+</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span>
+        <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">3</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">E</span></div>
+
 
 <div class="viewcode-block" id="r2x"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.r2x">[docs]</a><span class="k">def</span> <span class="nf">r2x</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -1968,13 +1969,14 @@
         <span class="n">r</span> <span class="o">=</span> <span class="n">tr2eul</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">representation</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;rpy/&quot;</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">tr2rpy</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">representation</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
-    <span class="k">elif</span> <span class="n">representation</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;arm&#39;</span><span class="p">,</span> <span class="s1">&#39;vehicle&#39;</span><span class="p">,</span> <span class="s1">&#39;camera&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">representation</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;arm&quot;</span><span class="p">,</span> <span class="s2">&quot;vehicle&quot;</span><span class="p">,</span> <span class="s2">&quot;camera&quot;</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">tr2rpy</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">representation</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s2">&quot;exp&quot;</span><span class="p">:</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">trlog</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown representation: </span><span class="si">{</span><span class="n">representation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span></div>
+
 
 <div class="viewcode-block" id="x2r"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.x2r">[docs]</a><span class="k">def</span> <span class="nf">x2r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2008,13 +2010,14 @@
         <span class="n">R</span> <span class="o">=</span> <span class="n">eul2r</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">representation</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;rpy/&quot;</span><span class="p">):</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">rpy2r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">representation</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
-    <span class="k">elif</span> <span class="n">representation</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;arm&#39;</span><span class="p">,</span> <span class="s1">&#39;vehicle&#39;</span><span class="p">,</span> <span class="s1">&#39;camera&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">representation</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;arm&quot;</span><span class="p">,</span> <span class="s2">&quot;vehicle&quot;</span><span class="p">,</span> <span class="s2">&quot;camera&quot;</span><span class="p">):</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">rpy2r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">representation</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s2">&quot;exp&quot;</span><span class="p">:</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">trexp</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown representation: </span><span class="si">{</span><span class="n">representation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">R</span></div>
+
 
 <div class="viewcode-block" id="tr2x"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2x">[docs]</a><span class="k">def</span> <span class="nf">tr2x</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2050,9 +2053,10 @@
     <span class="n">r</span> <span class="o">=</span> <span class="n">r2x</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="n">representation</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span></div>
 
+
 <div class="viewcode-block" id="x2tr"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.x2tr">[docs]</a><span class="k">def</span> <span class="nf">x2tr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert analytic representation to SE(3) </span>
+<span class="sd">    Convert analytic representation to SE(3)</span>
 
 <span class="sd">    :param x: analytic vector representation</span>
 <span class="sd">    :type x: array_like(6)</span>
@@ -2089,19 +2093,22 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DEPRECATED, use :func:`rotvelxform` instead</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s1">&#39;use rotvelxform instead&#39;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;use rotvelxform instead&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="angvelxform"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.angvelxform">[docs]</a><span class="k">def</span> <span class="nf">angvelxform</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DEPRECATED, use :func:`rotvelxform` instead</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s1">&#39;use rotvelxform instead&#39;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;use rotvelxform instead&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="angvelxform_dot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.angvelxform_dot">[docs]</a><span class="k">def</span> <span class="nf">angvelxform_dot</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DEPRECATED, use :func:`rotvelxform` instead</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s1">&#39;use rotvelxform_inv_dot instead&#39;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;use rotvelxform_inv_dot instead&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="rotvelxform"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rotvelxform">[docs]</a><span class="k">def</span> <span class="nf">rotvelxform</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2144,7 +2151,7 @@
 <span class="sd">    ============================  ========================================</span>
 
 <span class="sd">    If ``inverse==True`` return :math:`\mat{A}^{-1}` computed using</span>
-<span class="sd">    a closed-form solution rather than matrix inverse. </span>
+<span class="sd">    a closed-form solution rather than matrix inverse.</span>
 
 <span class="sd">    If ``full=True`` a block diagonal 6x6 matrix is returned which transforms analytic</span>
 <span class="sd">    velocity to spatial velocity.</span>
@@ -2153,9 +2160,9 @@
 <span class="sd">        with ``full=False``.</span>
 
 <span class="sd">    The analytical Jacobian is</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. math::</span>
-<span class="sd">    </span>
+
 <span class="sd">        \mat{J}_a(q) = \mat{A}^{-1}(\Gamma)\, \mat{J}(q)</span>
 
 <span class="sd">    where :math:`\mat{A}` is computed with ``inverse==True`` and ``full=True``.</span>
@@ -2174,7 +2181,7 @@
     <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">𝚪</span><span class="p">):</span>
         <span class="c1"># passed a rotation matrix</span>
         <span class="c1"># convert to the representation</span>
-        <span class="n">gamma</span> <span class="o">=</span> <span class="n">r2x</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="n">representation</span><span class="p">)</span>
+        <span class="n">𝚪</span> <span class="o">=</span> <span class="n">r2x</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="n">representation</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">sym</span><span class="o">.</span><span class="n">issymbol</span><span class="p">(</span><span class="n">𝚪</span><span class="p">):</span>
         <span class="n">C</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">cos</span>
@@ -2282,8 +2289,8 @@
             <span class="c1"># (2.106)</span>
             <span class="n">A</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-                <span class="o">+</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">2</span>
-                <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">3</span>
+                <span class="o">+</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span>
+                <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span> <span class="o">-</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">3</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># angular velocity -&gt; analytical rates</span>
@@ -2291,10 +2298,7 @@
             <span class="n">A</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
                 <span class="o">-</span> <span class="n">sk</span> <span class="o">/</span> <span class="mi">2</span>
-                <span class="o">+</span> <span class="n">sk</span>
-<div class="viewcode-block" id="rotvelxform_inv_dot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rotvelxform_inv_dot">[docs]</a>                <span class="o">@</span> <span class="n">sk</span>
-                <span class="o">/</span> <span class="n">theta</span> <span class="o">**</span> <span class="mi">2</span>
-                <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))))</span>
+                <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))))</span>
             <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
@@ -2303,7 +2307,7 @@
         <span class="k">return</span> <span class="n">A</span></div>
 
 
-<span class="k">def</span> <span class="nf">rotvelxform_inv_dot</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="rotvelxform_inv_dot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rotvelxform_inv_dot">[docs]</a><span class="k">def</span> <span class="nf">rotvelxform_inv_dot</span><span class="p">(</span><span class="n">𝚪</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Derivative of angular velocity transformation</span>
 
@@ -2324,9 +2328,9 @@
 
 <span class="sd">        \dvec{x} = \mat{A}^{-1}(\Gamma) \vec{\nu}</span>
 
-<span class="sd">    where :math:`\dvec{x} \in \mathbb{R}^6` is analytic velocity :math:`(\vec{v}, \dvec{\Gamma})`, </span>
+<span class="sd">    where :math:`\dvec{x} \in \mathbb{R}^6` is analytic velocity :math:`(\vec{v}, \dvec{\Gamma})`,</span>
 <span class="sd">    :math:`\vec{\nu} \in \mathbb{R}^6` is spatial velocity :math:`(\vec{v}, \vec{\omega})`, and</span>
-<span class="sd">    :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational </span>
+<span class="sd">    :math:`\vec{\Gamma} \in \mathbb{R}^3` is a minimal rotational</span>
 <span class="sd">    representation.</span>
 
 <span class="sd">    The relationship between spatial and analytic acceleration is</span>
@@ -2336,8 +2340,8 @@
 <span class="sd">        \ddvec{x} = \dmat{A}^{-1}(\Gamma, \dot{\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}</span>
 
 <span class="sd">    and :math:`\dmat{A}^{-1}(\Gamma, \dot{\Gamma)` is computed by this function.</span>
-<span class="sd">    </span>
-<span class="sd">        </span>
+
+
 <span class="sd">    ============================  ========================================</span>
 <span class="sd">    ``representation``            Rotational representation</span>
 <span class="sd">    ============================  ========================================</span>
@@ -2378,11 +2382,10 @@
                     <span class="o">-</span><span class="p">(</span>
                         <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
                         <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
-                    <span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
-                    <span class="p">(</span>
-                        <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-                        <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
-                    <span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
+                    <span class="p">)</span>
+                    <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
+                    <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
                 <span class="p">],</span>
                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)],</span>
                 <span class="p">[</span>
@@ -2403,14 +2406,10 @@
         <span class="n">Ainv_dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="p">[</span>
-                    <span class="p">(</span>
-                        <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-                        <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
-                    <span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
-                    <span class="p">(</span>
-                        <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-                        <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
-                    <span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
+                    <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
+                    <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
                     <span class="mi">0</span><span class="p">,</span>
                 <span class="p">],</span>
                 <span class="p">[</span><span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
@@ -2432,26 +2431,20 @@
         <span class="n">Ainv_dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="p">[</span>
-                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
+                    <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
                     <span class="mi">0</span><span class="p">,</span>
-                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> 
-                    <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+                    <span class="p">(</span><span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span>
+                    <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
                 <span class="p">],</span>
+                <span class="p">[</span><span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)],</span>
                 <span class="p">[</span>
-                    <span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span>
+                    <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">T</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
                     <span class="mi">0</span><span class="p">,</span>
-                    <span class="o">-</span><span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
+                    <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">T</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span>
                 <span class="p">],</span>
-                <span class="p">[</span>
-                    <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> 
-                    <span class="o">+</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">T</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> 
-                    <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">beta_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">C</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> 
-                    <span class="o">-</span> <span class="n">gamma_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">T</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-                <span class="p">]</span>
             <span class="p">]</span>
-            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">representation</span> <span class="o">==</span> <span class="s2">&quot;eul&quot;</span><span class="p">:</span>
         <span class="c1"># autogenerated by symbolic/angvelxform.ipynb</span>
@@ -2469,15 +2462,9 @@
                 <span class="p">],</span>
                 <span class="p">[</span><span class="o">-</span><span class="n">phi_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="o">-</span><span class="n">phi_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
                 <span class="p">[</span>
-                    <span class="o">-</span><span class="p">(</span>
-                        <span class="n">phi_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-                        <span class="o">+</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="o">-</span><span class="p">(</span><span class="n">phi_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">+</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
                     <span class="o">/</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span>
-                    <span class="p">(</span>
-                        <span class="n">phi_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-                        <span class="o">-</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-                    <span class="p">)</span>
+                    <span class="p">(</span><span class="n">phi_dot</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">-</span> <span class="n">theta_dot</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
                     <span class="o">/</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span>
                     <span class="mi">0</span><span class="p">,</span>
                 <span class="p">],</span>
@@ -2499,15 +2486,10 @@
         <span class="c1">#   results are close but different to numerical cross check</span>
         <span class="c1">#   something wrong in the derivation</span>
         <span class="n">Theta_dot</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span>
-                <span class="o">-</span><span class="n">theta</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> 
-                <span class="o">-</span><span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span>
-                 <span class="n">theta</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> 
-                <span class="p">)</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">/</span> <span class="mi">2</span>  <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span>
-                <span class="o">-</span> <span class="p">(</span>
-                    <span class="mi">2</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
-                  <span class="p">)</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">3</span>
-                <span class="p">)</span> 
+            <span class="o">-</span><span class="n">theta</span> <span class="o">*</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">+</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span>
+            <span class="mi">2</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">S</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">C</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+        <span class="p">)</span> <span class="o">*</span> <span class="n">theta_dot</span> <span class="o">/</span> <span class="n">theta</span><span class="o">**</span><span class="mi">3</span>
 
         <span class="n">Ainv_dot</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">skd</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">skd</span> <span class="o">*</span> <span class="n">Theta</span> <span class="o">+</span> <span class="n">sk</span> <span class="o">@</span> <span class="n">sk</span> <span class="o">*</span> <span class="n">Theta_dot</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2658,11 +2640,7 @@
     <span class="c1"># print the angular part in various representations</span>
 
     <span class="c1"># define some aliases for rpy conventions for arms, vehicles and cameras</span>
-    <span class="n">aliases</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;arm&#39;</span><span class="p">:</span> <span class="s1">&#39;rpy/xyz&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;vehicle&#39;</span><span class="p">:</span> <span class="s1">&#39;rpy/zyx&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;camera&#39;</span><span class="p">:</span> <span class="s1">&#39;rpy/yxz&#39;</span>
-    <span class="p">}</span>
+    <span class="n">aliases</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;arm&quot;</span><span class="p">:</span> <span class="s2">&quot;rpy/xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;vehicle&quot;</span><span class="p">:</span> <span class="s2">&quot;rpy/zyx&quot;</span><span class="p">,</span> <span class="s2">&quot;camera&quot;</span><span class="p">:</span> <span class="s2">&quot;rpy/yxz&quot;</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">orient</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
         <span class="n">orient</span> <span class="o">=</span> <span class="n">aliases</span><span class="p">[</span><span class="n">orient</span><span class="p">]</span>
 
@@ -2707,12 +2685,8 @@
     <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
 
 
-
-
-
 <div class="viewcode-block" id="trplot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trplot">[docs]</a><span class="k">def</span> <span class="nf">trplot</span><span class="p">(</span>
     <span class="n">T</span><span class="p">,</span>
-
     <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
     <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">axislabel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -2732,7 +2706,7 @@
     <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span>
     <span class="n">flo</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">),</span>
-    <span class="o">**</span><span class="n">kwargs</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot a 3D coordinate frame</span>
@@ -2881,7 +2855,7 @@
 
         <span class="c1"># unpack the anaglyph parameters</span>
         <span class="k">if</span> <span class="n">anaglyph</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">colors</span> <span class="o">=</span> <span class="s1">&#39;rc&#39;</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="s2">&quot;rc&quot;</span>
             <span class="n">shift</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anaglyph</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="n">anaglyph</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -2942,7 +2916,7 @@
                 <span class="n">flo</span><span class="o">=</span><span class="n">flo</span><span class="p">,</span>
                 <span class="n">anaglyph</span><span class="o">=</span><span class="n">anaglyph</span><span class="p">,</span>
                 <span class="n">axislabel</span><span class="o">=</span><span class="n">axislabel</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">return</span>
 
@@ -3098,6 +3072,7 @@
     <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
         <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit</span>
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
         <span class="c1"># TODO move blocking into graphics</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
@@ -3154,14 +3129,14 @@
 
     <span class="n">anim</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">pass</span>
-    
+
     <span class="n">anim</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="c1">#plt.show(block=block)</span>
+    <span class="c1"># plt.show(block=block)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -3203,7 +3178,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 28-Feb-2022.
+      <span class="lastupdated">Last updated on 01-Mar-2022.
       </span></p>
   </div>
 
