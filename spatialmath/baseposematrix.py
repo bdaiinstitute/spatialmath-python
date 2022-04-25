@@ -590,6 +590,31 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
+    def print(self, label=None, file=None):
+        """
+        Print pose as a matrix (superclass method)
+
+        :param label: label to print before the matrix, defaults to None
+        :type label: str, optional
+        :param file: file to write to, defaults to None
+        :type file: file object, optional
+
+        Print the pose as a matrix, with an optional line beforehand.  By default
+        the matrix is printed to stdout.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
+            >>> SE3().print()
+            >>> SE3().print("pose is:")
+
+        """
+        if label is not None:
+            print(label, file=file)
+        print(self, file=file)
+
     def printline(self, *args, **kwargs):
         r"""
         Print pose in compact single line format (superclass method)
