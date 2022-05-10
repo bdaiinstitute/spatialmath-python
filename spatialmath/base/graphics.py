@@ -1034,7 +1034,7 @@ def plot_cuboid(
     vertices = vertices.T
 
     if pose is not None:
-        vertices = pose * vertices
+        vertices = smbase.homtrans(pose.A, vertices)
 
     ax = axes_logic(ax, 3)
     # plot sides
