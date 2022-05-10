@@ -45,7 +45,7 @@ class Line3Test(unittest.TestCase):
         # 2, point constructor
         P = np.r_[2, 3, 7]
         Q = np.r_[2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         nt.assert_array_almost_equal(L.w, P-Q)
         nt.assert_array_almost_equal(L.v, np.cross(P-Q, Q))
     
@@ -74,7 +74,7 @@ class Line3Test(unittest.TestCase):
     
     def test_pp(self):
         # validate pp and ppd
-        L = Line3.TwoPoints([-1, 1, 2], [1, 1, 2])
+        L = Line3.Join([-1, 1, 2], [1, 1, 2])
         nt.assert_array_almost_equal(L.pp, np.r_[0, 1, 2])
         self.assertEqual(L.ppd, math.sqrt(5))
         
@@ -85,7 +85,7 @@ class Line3Test(unittest.TestCase):
     def test_contains(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         # validate contains
         self.assertTrue( L.contains([2, 3, 7]) )
@@ -96,7 +96,7 @@ class Line3Test(unittest.TestCase):
     def test_closest(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         p, d = L.closest_to_point(P)
         nt.assert_array_almost_equal(p, P)
@@ -107,7 +107,7 @@ class Line3Test(unittest.TestCase):
         nt.assert_array_almost_equal(p, Q)
         self.assertAlmostEqual(d, 0)
         
-        L = Line3.TwoPoints([-1, 1, 2], [1, 1, 2])
+        L = Line3.Join([-1, 1, 2], [1, 1, 2])
         p, d = L.closest_to_point([0, 1, 2])
         nt.assert_array_almost_equal(p, np.r_[0, 1, 2])
         self.assertAlmostEqual(d, 0)
@@ -128,7 +128,7 @@ class Line3Test(unittest.TestCase):
         
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d', proj_type='ortho')
@@ -142,9 +142,9 @@ class Line3Test(unittest.TestCase):
         w = np.r_[1, 2, 3]
         P = np.r_[-2, 4, 3]
         
-        L1 = Line3.TwoPoints(P, P + w)
-        L2 = Line3.TwoPoints(P + 2 * w, P + 5 * w)
-        L3 = Line3.TwoPoints(P + np.r_[1, 0, 0], P + w)
+        L1 = Line3.Join(P, P + w)
+        L2 = Line3.Join(P + 2 * w, P + 5 * w)
+        L3 = Line3.Join(P + np.r_[1, 0, 0], P + w)
         
         self.assertTrue(L1 == L2)
         self.assertFalse(L1 == L3)
@@ -155,7 +155,7 @@ class Line3Test(unittest.TestCase):
     def test_skew(self):
         
         P = [2, 3, 7]; Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         m = L.skew()
         
@@ -165,7 +165,7 @@ class Line3Test(unittest.TestCase):
     def test_mtimes(self):
         P = [1, 2, 0]
         Q = [1, 2, 10]  # vertical line through (1,2)
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         # check transformation by SE3
         
@@ -242,7 +242,7 @@ class Line3Test(unittest.TestCase):
     def test_contains(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         self.assertTrue( L.contains(L.point(0)) )
         self.assertTrue( L.contains(L.point(1)) )
@@ -251,7 +251,7 @@ class Line3Test(unittest.TestCase):
     def test_point(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         nt.assert_array_almost_equal(L.point(0).flatten(), L.pp)
 
@@ -261,7 +261,7 @@ class Line3Test(unittest.TestCase):
     def test_char(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]
-        L = Line3.TwoPoints(P, Q)
+        L = Line3.Join(P, Q)
         
         s = str(L)
         self.assertIsInstance(s, str)
@@ -271,10 +271,10 @@ class Line3Test(unittest.TestCase):
         
         xyplane = [0, 0, 1, 0]
         xzplane = [0, 1, 0, 0]
-        L = Line3.TwoPlanes(xyplane, xzplane) # x axis
+        L = Line3.IntersectingPlanes(xyplane, xzplane) # x axis
         nt.assert_array_almost_equal(L.vec, np.r_[0, 0, 0, -1, 0, 0])
         
-        L = Line3.TwoPoints([-1, 2, 3], [1, 2, 3]);  # line at y=2,z=3
+        L = Line3.Join([-1, 2, 3], [1, 2, 3]);  # line at y=2,z=3
         x6 = [1, 0, 0, -6]  # x = 6
         
         # plane_intersect
@@ -291,9 +291,9 @@ class Line3Test(unittest.TestCase):
     
     def test_methods(self):
         # intersection
-        px = Line3.TwoPoints([0, 0, 0], [1, 0, 0]);  # x-axis
-        py = Line3.TwoPoints([0, 0, 0], [0, 1, 0]);  # y-axis
-        px1 = Line3.TwoPoints([0, 1, 0], [1, 1, 0]); # offset x-axis
+        px = Line3.Join([0, 0, 0], [1, 0, 0]);  # x-axis
+        py = Line3.Join([0, 0, 0], [0, 1, 0]);  # y-axis
+        px1 = Line3.Join([0, 1, 0], [1, 1, 0]); # offset x-axis
         
         self.assertEqual(px.ppd, 0)
         self.assertEqual(px1.ppd, 1)

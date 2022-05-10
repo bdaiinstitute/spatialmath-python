@@ -261,7 +261,7 @@ class Line3(BasePoseList):
         return x.shape == (6,)
 
     @classmethod
-    def TwoPoints(cls, P=None, Q=None):
+    def Join(cls, P=None, Q=None):
         """
         Create 3D line from two 3D points
         
@@ -272,11 +272,11 @@ class Line3(BasePoseList):
         :return: 3D line
         :rtype: ``Line3`` instance
 
-        ``Line3(P, Q)`` create a ``Line3`` object that represents
+        ``Line3.Join(P, Q)`` create a ``Line3`` object that represents
         the line joining the 3D points ``P`` (3,) and ``Q`` (3,). The direction
         is from ``Q`` to ``P``.
 
-        :seealso: :meth:`Line3` :meth:`PointDir`
+        :seealso: :meth:`IntersectingPlanes` :meth:`PointDir`
         """
         P = base.getvector(P, 3)
         Q = base.getvector(Q, 3)
@@ -286,7 +286,7 @@ class Line3(BasePoseList):
         return cls(np.r_[v, w])
     
     @classmethod
-    def TwoPlanes(cls, pi1, pi2):
+    def IntersectingPlanes(cls, pi1, pi2):
         r"""
         Create 3D line from intersection of two planes
                 
@@ -297,13 +297,13 @@ class Line3(BasePoseList):
         :return: 3D line
         :rtype: ``Line3`` instance
 
-        ``L = Plucker.planes(PI1, PI2)`` is a Plucker object that represents
-        the line formed by the intersection of two planes ``PI1`` and ``PI2``.
+        ``L = Plucker.IntersectingPlanes(π1, π2)`` is a Plucker object that represents
+        the line formed by the intersection of two planes ``π1`` and ``π3``.
 
         Planes are represented by the 4-vector :math:`[a, b, c, d]` which describes
         the plane :math:`\pi: ax + by + cz + d=0`.
            
-        :seealso: :meth:`TwoPoints` :meth:`PointDir`
+        :seealso: :meth:`Join` :meth:`PointDir`
         """
 
         # TODO inefficient to create 2 temporary planes
@@ -332,7 +332,7 @@ class Line3(BasePoseList):
         ``Line3.pointdir(P, W)`` is a Plucker object that represents the
         line containing the point ``P`` and parallel to the direction vector ``W``.
 
-        :seealso: :meth:`TwoPoints` :meth:`TwoPlanes`
+        :seealso: :meth:`Join` :meth:`IntersectingPlanes`
         """
 
         p = base.getvector(point, 3)
