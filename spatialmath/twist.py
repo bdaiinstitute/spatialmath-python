@@ -825,15 +825,16 @@ class Twist3(BaseTwist):
 
 
 
-    def se3(self):
+    def skewa(self):
         """
         Convert 3D twist to se(3)
 
         :return: An se(3) matrix
         :rtype: ndarray(4,4)
 
-        ``X.se3()`` is the twist as an se(3) matrix, which is an augmented
-        skew-symmetric 4x4 matrix.
+        ``X.skewa()`` is the twist as a 4x4 augmented skew-symmetric matrix
+        belonging to the group se(3). This is the Lie algebra of the
+        corresponding SE(3) element. 
 
         Example:
         
@@ -841,7 +842,7 @@ class Twist3(BaseTwist):
 
             >>> from spatialmath import Twist3, base
             >>> S = Twist3.Rx(0.3)
-            >>> se = S.se3()
+            >>> se = S.skewa()
             >>> se
             >>> base.trexp(se)
         """
@@ -1436,15 +1437,16 @@ class Twist2(BaseTwist):
         else:
             return SE2([base.trexp2(self.S * t) for t in theta])
 
-    def se2(self):
+    def skewa(self):
         """
         Convert 2D twist to se(2)
 
         :return: An se(2) matrix
         :rtype: ndarray(3,3)
 
-        ``X.se2()`` is the twist as an se(2) matrix, which is an augmented
-        skew-symmetric 3x3 matrix.
+        ``X.skewa()`` is the twist as a 3x3 augmented skew-symmetric matrix
+        belonging to the group se(2). This is the Lie algebra of the
+        corresponding SE(2) element. 
 
         Example:
         
@@ -1452,7 +1454,7 @@ class Twist2(BaseTwist):
 
             >>> from spatialmath import Twist2, base
             >>> S = Twist2([1,2,3])
-            >>> se = S.se2()
+            >>> se = S.skewa()
             >>> se
             >>> base.trexp2(se)
         """

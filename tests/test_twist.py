@@ -73,7 +73,7 @@ class Twist3dTest(unittest.TestCase):
         s = [1, 2, 3, 4, 5, 6]
         x = Twist3(s)
         
-        array_compare(x.se3(), np.array([[ 0., -6.,  5.,  1.],
+        array_compare(x.skewa(), np.array([[ 0., -6.,  5.,  1.],
                     [ 6.,  0., -4.,  2.],
                     [-5.,  4.,  0.,  3.],
                     [ 0.,  0.,  0.,  0.]]))
@@ -88,7 +88,7 @@ class Twist3dTest(unittest.TestCase):
         self.assertIsInstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
-        a = Twist3([x.se3(), x.se3(), x.se3(), x.se3()])
+        a = Twist3([x.skewa(), x.skewa(), x.skewa(), x.skewa()])
         self.assertIsInstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
@@ -109,7 +109,7 @@ class Twist3dTest(unittest.TestCase):
         x = Twist3.UnitPrismatic([1, 2, 3])
         self.assertTrue(x.isprismatic)
         
-        self.assertTrue(Twist3.isvalid(x.se3()))
+        self.assertTrue(Twist3.isvalid(x.skewa()))
         self.assertTrue(Twist3.isvalid(x.S))
         
         self.assertFalse(Twist3.isvalid(2))
@@ -257,7 +257,7 @@ class Twist2dTest(unittest.TestCase):
         s = [1, 2, 3]
         x = Twist2(s)
         
-        array_compare(x.se2(), np.array([[ 0., -3.,  1.],
+        array_compare(x.skewa(), np.array([[ 0., -3.,  1.],
                                        [ 3.,  0.,  2.],
                                        [ 0.,  0.,  0.]]))
 
@@ -268,7 +268,7 @@ class Twist2dTest(unittest.TestCase):
         self.assertIsInstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
-        a = Twist2([x.se2(), x.se2(), x.se2(), x.se2()])
+        a = Twist2([x.skewa(), x.skewa(), x.skewa(), x.skewa()])
         self.assertIsInstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
@@ -289,7 +289,7 @@ class Twist2dTest(unittest.TestCase):
         x = Twist2.UnitPrismatic([1, 2])
         self.assertTrue(x.isprismatic)
         
-        self.assertTrue(Twist2.isvalid(x.se2()))
+        self.assertTrue(Twist2.isvalid(x.skewa()))
         self.assertTrue(Twist2.isvalid(x.S))
         
         self.assertFalse(Twist2.isvalid(2))
