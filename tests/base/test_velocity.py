@@ -89,10 +89,10 @@ class TestVelocity(unittest.TestCase):
         # ZYX order
         gamma = np.r_[1, 0, 0]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
-        print(numjac(exp2r, gamma, SO=3))
 
         gamma = np.r_[0.2, 0.3, 0.4]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
+
         gamma = np.r_[0, 0, 0]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
 
@@ -187,7 +187,6 @@ class TestVelocity(unittest.TestCase):
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
-        Adot = np.zeros((3,3))
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
@@ -207,7 +206,6 @@ class TestVelocity(unittest.TestCase):
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
-        Adot = np.zeros((3,3))
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
@@ -218,7 +216,6 @@ class TestVelocity(unittest.TestCase):
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, 3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
-        Adot = np.zeros((3,3))
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
