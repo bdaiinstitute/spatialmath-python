@@ -487,7 +487,7 @@ class SpatialForce(SpatialF6):
         right, left
     ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
-        return SpatialForce(left.Ad.T @ right.A)
+        return SpatialForce(left.Ad().T @ right.A)
 
 
 # ------------------------------------------------------------------------- #
