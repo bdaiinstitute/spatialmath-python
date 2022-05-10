@@ -1492,7 +1492,7 @@ def trinterp(start, end, s=None):
             q0 = smb.r2q(smb.t2r(end))
             p0 = transl(end)
 
-            qr = smb.qslerp(smb.eye(), q0, s)
+            qr = smb.qslerp(smb.qeye(), q0, s)
             pr = s * p0
         else:
             # 	TRINTERP(T0, T1, s)
