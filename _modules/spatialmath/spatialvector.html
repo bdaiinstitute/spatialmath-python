@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.spatialvector &mdash; Spatial Maths package 0.12.0
+  <title>spatialmath.spatialvector &mdash; Spatial Maths package 1.0.0
  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
@@ -96,6 +96,7 @@
 <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
 <span class="kn">from</span> <span class="nn">spatialmath.twist</span> <span class="kn">import</span> <span class="n">Twist3</span>
 
+
 <div class="viewcode-block" id="SpatialVector"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector">[docs]</a><span class="k">class</span> <span class="nc">SpatialVector</span><span class="p">(</span><span class="n">BasePoseList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial 6-vector abstract superclass</span>
@@ -178,7 +179,7 @@
         <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument to constructor&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad argument to constructor&quot;</span><span class="p">)</span></div>
 
         <span class="c1"># elif isinstance(value, list):</span>
         <span class="c1">#     assert all(map(lambda x: base.isvector(x, 6), value)), &#39;all elements of list must have valid shape and value for the class&#39;</span>
@@ -189,7 +190,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_identity</span><span class="p">():</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,))</span>
-    
+
 <div class="viewcode-block" id="SpatialVector.isvalid"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if vector is valid spatial vector</span>
@@ -206,7 +207,7 @@
     <span class="k">def</span> <span class="nf">_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">value</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad type passed&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bad type passed&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -220,6 +221,7 @@
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
     <span class="c1"># ------------------------------------------------------------------------ #</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -253,7 +255,12 @@
 <span class="sd">        line per element.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">typ</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{:s}</span><span class="s2">[</span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">; </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;</span><span class="si">{:s}</span><span class="s2">[</span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">; </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="SpatialVector.__neg__"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector.__neg__">[docs]</a>    <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -271,10 +278,11 @@
         <span class="c1"># for i=1:numel(obj)</span>
         <span class="c1"># y(i) = obj.new(-obj(i).vw);</span>
 
-        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="o">-</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="o">-</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
 
-
-<div class="viewcode-block" id="SpatialVector.__add__"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="SpatialVector.__add__"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -292,13 +300,15 @@
 
         <span class="c1"># TODO broadcasting with binop</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only add spatial vectors of same type&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;can only add spatial vectors of same type&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;can only add equal length arrays of spatial vectors&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can only add equal length arrays of spatial vectors&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">data</span><span class="p">)])</span></div>
 
-<div class="viewcode-block" id="SpatialVector.__sub__"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="SpatialVector.__sub__"><a class="viewcode-back" href="../../6d_spatial.html#spatialmath.spatialvector.SpatialVector.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``-`` operator (superclass method)</span>
 
@@ -315,14 +325,15 @@
 <span class="sd">        :seealso: :func:`__add__`, :func:`__neg__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only add spatial vectors of same type&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;can only add spatial vectors of same type&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;can only add equal length arrays of spatial vectors&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can only add equal length arrays of spatial vectors&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">data</span><span class="p">)])</span></div>
 
-
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span> <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span>
+        <span class="n">right</span><span class="p">,</span> <span class="n">left</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -331,7 +342,7 @@
 <span class="sd">        :raises TypeError: for incompatible left operand</span>
 
 <span class="sd">        ``X * S`` transforms the spatial vector ``S`` by the relative pose ``X``</span>
-<span class="sd">        which may be either an ``SE3`` or ``Twist3`` instance.  The spatial </span>
+<span class="sd">        which may be either an ``SE3`` or ``Twist3`` instance.  The spatial</span>
 <span class="sd">        vector is premultiplied by the adjoint of ``X`` or adjoint transpose</span>
 <span class="sd">        of ``X`` depending on the SpatialVector subclass of ``S``.</span>
 
@@ -353,14 +364,16 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;left operand of * must be SE3 or Twist3&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;left operand of * must be SE3 or Twist3&quot;</span><span class="p">)</span></div>
+
 
 <span class="c1"># ------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="SpatialM6"><a class="viewcode-back" href="../../6d_m6.html#spatialmath.spatialvector.SpatialM6">[docs]</a><span class="k">class</span> <span class="nc">SpatialM6</span><span class="p">(</span><span class="n">SpatialVector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial 6-vector abstract motion superclass</span>
-<span class="sd">    </span>
+
 <span class="sd">    Abstract superclass that represents the vector space for spatial motion.</span>
 
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`</span>
@@ -384,40 +397,44 @@
 <span class="sd">        on the SpatialVector subclass of ``v2``:</span>
 
 <span class="sd">        - if :math:`\vec{m} \in \mat{M}^6` is a spatial motion vector fixed in a</span>
-<span class="sd">          body with velocity :math:`\vec{v}` then </span>
+<span class="sd">          body with velocity :math:`\vec{v}` then</span>
 <span class="sd">          :math:`\dvec{m} = \vec{v} \times \vec{m}` or the ``crm()`` function.</span>
 
 <span class="sd">        - if :math:`\vec{f} \in \mat{F}^6` is a spatial force vector fixed in a</span>
-<span class="sd">          body with velocity :math:`\vec{v}` then </span>
+<span class="sd">          body with velocity :math:`\vec{v}` then</span>
 <span class="sd">          :math:`\dvec{f} = \vec{v} \times^* \vec{f}` or the ``crm()`` function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># v = obj.vw;</span>
         <span class="c1"># # vcross = [ skew(w) skew(v); zeros(3,3) skew(w) ]</span>
-        
+
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span>
-        <span class="n">vcross</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                            <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>    <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>  <span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>   <span class="mi">0</span><span class="p">,</span>     <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>   <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="p">],</span>
-                            <span class="p">[</span> <span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>  <span class="mi">0</span><span class="p">,</span>    <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>   <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>   <span class="mi">0</span><span class="p">,</span>     <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="p">],</span>
-                            <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>  <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>  <span class="mi">0</span><span class="p">,</span>     <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>   <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>   <span class="mi">0</span>     <span class="p">],</span>
-                            <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>      <span class="mi">0</span><span class="p">,</span>     <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>   <span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>  <span class="p">],</span>
-                            <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>      <span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>   <span class="mi">0</span><span class="p">,</span>    <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>   <span class="p">],</span>
-                            <span class="p">[</span> <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>     <span class="mi">0</span><span class="p">,</span>     <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>   <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>   <span class="mi">0</span>     <span class="p">]</span>
-                        <span class="p">])</span>
+        <span class="n">vcross</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SpatialVelocity</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">SpatialAcceleration</span><span class="p">(</span><span class="n">vcross</span> <span class="o">@</span> <span class="n">other</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>  <span class="c1"># x operator (crm)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SpatialF6</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="o">-</span><span class="n">vcross</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">other</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>      <span class="c1"># x* operator (crf)</span>
+            <span class="k">return</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="o">-</span><span class="n">vcross</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">other</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>  <span class="c1"># x* operator (crf)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;type mismatch&#39;</span><span class="p">)</span></div></div>
-        
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;type mismatch&quot;</span><span class="p">)</span></div></div>
+
+
 <span class="c1"># ------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="SpatialF6"><a class="viewcode-back" href="../../6d_f6.html#spatialmath.spatialvector.SpatialF6">[docs]</a><span class="k">class</span> <span class="nc">SpatialF6</span><span class="p">(</span><span class="n">SpatialVector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spatial 6-vector abstract force superclass</span>
 
-<span class="sd">    Abstract superclass that represents the vector space for spatial force. </span>
+<span class="sd">    Abstract superclass that represents the vector space for spatial force.</span>
 
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -429,7 +446,9 @@
 <div class="viewcode-block" id="SpatialF6.dot"><a class="viewcode-back" href="../../6d_f6.html#spatialmath.spatialvector.SpatialF6.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span></div></div>
 
+
 <span class="c1"># ------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="SpatialVelocity"><a class="viewcode-back" href="../../6d_velocity.html#spatialmath.spatialvector.SpatialVelocity">[docs]</a><span class="k">class</span> <span class="nc">SpatialVelocity</span><span class="p">(</span><span class="n">SpatialM6</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -445,6 +464,7 @@
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialAcceleration`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="SpatialVelocity.__init__"><a class="viewcode-back" href="../../6d_velocity.html#spatialmath.spatialvector.SpatialVelocity.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
@@ -488,12 +508,14 @@
 
 <span class="sd">        .. note:: The ``@`` operator was chosen because it has high precendence</span>
 <span class="sd">            and is somewhat invocative of multiplication.</span>
-<span class="sd">            </span>
+
 <span class="sd">        :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity.cross`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
 
+
 <span class="c1"># ------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="SpatialAcceleration"><a class="viewcode-back" href="../../6d_acceleration.html#spatialmath.spatialvector.SpatialAcceleration">[docs]</a><span class="k">class</span> <span class="nc">SpatialAcceleration</span><span class="p">(</span><span class="n">SpatialM6</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -509,6 +531,7 @@
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialVelocity`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="SpatialAcceleration.__init__"><a class="viewcode-back" href="../../6d_acceleration.html#spatialmath.spatialvector.SpatialAcceleration.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
 
@@ -529,16 +552,21 @@
 
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialMomentum`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
 <div class="viewcode-block" id="SpatialForce.__init__"><a class="viewcode-back" href="../../6d_force.html#spatialmath.spatialvector.SpatialForce.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
-<span class="c1"># n = SpatialForce(val);</span>
 
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+    <span class="c1"># n = SpatialForce(val);</span>
+
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span>
+        <span class="n">right</span><span class="p">,</span> <span class="n">left</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="c1"># Twist * SpatialForce -&gt; SpatialForce</span>
-        <span class="k">return</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">Ad</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">SpatialForce</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">Ad</span><span class="p">()</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span></div>
+
 
 <span class="c1"># ------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="SpatialMomentum"><a class="viewcode-back" href="../../6d_momentum.html#spatialmath.spatialvector.SpatialMomentum">[docs]</a><span class="k">class</span> <span class="nc">SpatialMomentum</span><span class="p">(</span><span class="n">SpatialF6</span><span class="p">):</span>
 
@@ -554,10 +582,13 @@
 
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialF6`,  :func:`~spatialmath.spatialvector.SpatialForce`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="SpatialMomentum.__init__"><a class="viewcode-back" href="../../6d_momentum.html#spatialmath.spatialvector.SpatialMomentum.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
 
+
 <span class="c1"># ------------------------------------------------------------------------- #</span>
+
 
 <div class="viewcode-block" id="SpatialInertia"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia">[docs]</a><span class="k">class</span> <span class="nc">SpatialInertia</span><span class="p">(</span><span class="n">BasePoseList</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -575,6 +606,7 @@
 <span class="sd">    :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`, :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="SpatialInertia.__init__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">I</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new spatial inertia</span>
@@ -600,29 +632,26 @@
         <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">I</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># no arguments</span>
             <span class="n">I</span> <span class="o">=</span> <span class="n">SpatialInertia</span><span class="o">.</span><span class="n">_identity</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">I</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">)):</span>
-            <span class="n">I</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">I</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)):</span>
+            <span class="n">I</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">I</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+                <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">I</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+                <span class="n">I</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="n">C</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">((</span><span class="n">m</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># sym friendly</span>
-            <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
-                    <span class="p">[</span><span class="n">M</span><span class="p">,</span>      <span class="n">m</span> <span class="o">*</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">],</span>
-                    <span class="p">[</span><span class="n">m</span> <span class="o">*</span> <span class="n">C</span><span class="p">,</span>  <span class="n">I</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">C</span> <span class="o">@</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
-                    <span class="p">])</span>
+            <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">M</span><span class="p">,</span> <span class="n">m</span> <span class="o">*</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> <span class="p">[</span><span class="n">m</span> <span class="o">*</span> <span class="n">C</span><span class="p">,</span> <span class="n">I</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">C</span> <span class="o">@</span> <span class="n">C</span><span class="o">.</span><span class="n">T</span><span class="p">]])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad values&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad values&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">I</span><span class="p">]</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_identity</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-    
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
 <div class="viewcode-block" id="SpatialInertia.isvalid"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if matrix is valid spatial inertia</span>
@@ -643,7 +672,7 @@
 <span class="sd">        :return: (6,6)</span>
 <span class="sd">        :rtype: tuple</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">SpatialInertia</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -665,8 +694,9 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="SpatialInertia.__add__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="SpatialInertia.__add__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spatial inertia addition</span>
 <span class="sd">        :param left:</span>
@@ -678,10 +708,12 @@
 <span class="sd">           SpatialInertia ``SI1`` and ``SI2`` are connected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">SpatialInertia</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;can only add spatial inertia to spatial inertia&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;can only add spatial inertia to spatial inertia&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">SpatialInertia</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">I</span> <span class="o">+</span> <span class="n">left</span><span class="o">.</span><span class="n">I</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SpatialInertia.__mul__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="SpatialInertia.__mul__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -701,11 +733,13 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">SpatialVelocity</span><span class="p">):</span>
             <span class="c1"># crf(v(i).vw)*model.I(i).I*v(i).vw;</span>
             <span class="c1"># v = Wrench( a.cross() * I.I * a.vw );</span>
-            <span class="k">return</span> <span class="n">SpatialMomentum</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>   <span class="c1"># M = mv</span>
+            <span class="k">return</span> <span class="n">SpatialMomentum</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="n">right</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>  <span class="c1"># M = mv</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad postmultiply operands for Inertia *&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bad postmultiply operands for Inertia *&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SpatialInertia.__rmul__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="SpatialInertia.__rmul__"><a class="viewcode-back" href="../../6d_inertia.html#spatialmath.spatialvector.SpatialInertia.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">left</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator (superclass method)</span>
 
@@ -721,6 +755,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">)</span></div></div>
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
     <span class="kn">import</span> <span class="nn">numpy.testing</span> <span class="k">as</span> <span class="nn">nt</span>
@@ -733,16 +768,13 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
-
-
-    <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialVelocity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialVelocity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialVelocity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">SpatialVelocity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
     <span class="n">a</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">v</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-
 
     <span class="n">vj</span> <span class="o">=</span> <span class="n">SpatialVelocity</span><span class="p">()</span>
 
@@ -765,10 +797,16 @@
     <span class="n">a</span> <span class="o">=</span> <span class="n">SpatialAcceleration</span><span class="p">()</span>
     <span class="n">I</span> <span class="o">=</span> <span class="n">SpatialInertia</span><span class="p">()</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">I</span> <span class="o">*</span> <span class="n">v</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">v</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">I</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">I</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
 
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_spatialvector.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
+    <span class="n">exec</span><span class="p">(</span>
+        <span class="nb">open</span><span class="p">(</span>
+            <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+            <span class="o">/</span> <span class="s2">&quot;tests&quot;</span>
+            <span class="o">/</span> <span class="s2">&quot;test_spatialvector.py&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="p">)</span>  <span class="c1"># pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -779,7 +817,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Apr-2022.
+      <span class="lastupdated">Last updated on 12-May-2022.
       </span></p>
   </div>
 

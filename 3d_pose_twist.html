@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>se(3) twist &mdash; Spatial Maths package 0.12.0
+  <title>se(3) twist &mdash; Spatial Maths package 1.0.0
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -238,8 +238,8 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">Twist3([</span>
-<span class="go">  [-1.4864, -0.10881, -0.16215, 0.91555, 1.5809, -1.7814],</span>
-<span class="go">  [0.38471, -0.28909, -0.49476, 1.2349, 0.4079, -0.09226]</span>
+<span class="go">  [-0.24073, 0.36732, 1.4338, 1.097, 1.9254, 0.47787],</span>
+<span class="go">  [-0.0037051, 1.2604, -1.0042, 2.5378, -0.65282, -1.6175]</span>
 <span class="go">])</span>
 </pre></div>
 </div>
@@ -930,9 +930,9 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([0.65897, -0.6047, 0.518, -0.42008, 1.3931, -1.4903])</span>
+<span class="go">Twist3([-1.1384, -0.98626, 0.23628, -0.814, -2.4141, -1.6621])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([-0.65897, 0.6047, -0.518, 0.42008, -1.3931, 1.4903])</span>
+<span class="go">Twist3([1.1384, 0.98626, -0.23628, 0.814, 2.4141, 1.6621])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
 <span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
 </pre></div>
@@ -1064,8 +1064,8 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="spatialmath.Twist3.se3">
-<span class="sig-name descname"><span class="pre">se3</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.se3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.se3" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="spatialmath.Twist3.skewa">
+<span class="sig-name descname"><span class="pre">skewa</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.skewa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.skewa" title="Permalink to this definition"></a></dt>
 <dd><p>Convert 3D twist to se(3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1075,8 +1075,9 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
 <dd class="field-even"><p>ndarray(4,4)</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">X.se3()</span></code> is the twist as an se(3) matrix, which is an augmented
-skew-symmetric 4x4 matrix.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X.skewa()</span></code> is the twist as a 4x4 augmented skew-symmetric matrix
+belonging to the group se(3). This is the Lie algebra of the
+corresponding SE(3) element.</p>
 <p>Example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
 <span class="gt">Traceback (most recent call last):</span>
@@ -1393,7 +1394,7 @@ this point is at infinity.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 25-Apr-2022.
+      <span class="lastupdated">Last updated on 12-May-2022.
       </span></p>
   </div>
 
