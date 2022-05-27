@@ -21,7 +21,7 @@ import scipy as sp
 from collections.abc import Iterable
 
 from spatialmath import base as smb
-import spatialmath.base.symbolic as sym
+from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
