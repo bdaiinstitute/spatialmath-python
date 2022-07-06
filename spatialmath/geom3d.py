@@ -399,7 +399,7 @@ class Line3(BasePoseList):
     
     @property
     def uw(self):
-        """
+        r"""
         Line direction as a unit vector
         
         :return: Line direction as a unit vector
@@ -415,7 +415,7 @@ class Line3(BasePoseList):
     
     @property
     def vec(self):
-        """
+        r"""
         Line as a Plucker coordinate vector
         
         :return: Plucker coordinate vector
@@ -518,7 +518,7 @@ class Line3(BasePoseList):
         return self.pp.reshape((3,1)) + self.uw.reshape((3,1)) * lam
 
     def lam(self, point):
-        """
+        r"""
         Parametric distance from principal point
 
         :param point: 3D point
