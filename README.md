@@ -1,10 +1,12 @@
 # Spatial Maths for Python
 
+[![A Python Robotics Package](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/py_collection.min.svg)](https://github.com/petercorke/robotics-toolbox-python)
+[![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
+
 [![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
 [![Anaconda version](https://anaconda.org/conda-forge/spatialmath-python/badges/version.svg)](https://anaconda.org/conda-forge/spatialmath-python)
 ![Python Version](https://img.shields.io/pypi/pyversions/roboticstoolbox-python.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
 
 [![Build Status](https://github.com/petercorke/spatialmath-python/workflows/build/badge.svg?branch=master)](https://github.com/petercorke/spatialmath-python/actions?query=workflow%3Abuild)
 [![Coverage](https://codecov.io/gh/petercorke/spatialmath-python/branch/master/graph/badge.svg)](https://codecov.io/gh/petercorke/spatialmath-python)
@@ -76,6 +78,40 @@ The class, method and functions names largely mirror those of the MATLAB toolbox
 ![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/fig1.png)
 
 ![animation video](./docs/figs/animate.gif)
+
+# Citing
+
+Check out our ICRA 2021 paper on [IEEE Xplore](https://ieeexplore.ieee.org/document/9561366) or get the PDF from [Peter's website](https://bit.ly/icra_rtb).  This describes the [Robotics Toolbox for Python](https://github.com/petercorke/robotics-toolbox-python) as well Spatial Maths.
+
+If the toolbox helped you in your research, please cite
+
+```
+@inproceedings{rtb,
+  title={Not your grandmother’s toolbox--the Robotics Toolbox reinvented for Python},
+  author={Corke, Peter and Haviland, Jesse},
+  booktitle={2021 IEEE International Conference on Robotics and Automation (ICRA)},
+  pages={11357--11363},
+  year={2021},
+  organization={IEEE}
+}
+```
+
+<br>
+
+<a id='6'></a>
+
+## Using the Toolbox in your Open Source Code?
+
+If you are using the Toolbox in your open source code, feel free to add our badge to your readme!
+
+[![Powered by the Robotics Toolbox](https://github.com/petercorke/spatialmath-python/raw/master/.github/svg/sm_powered.min.svg)](https://github.com/petercorke/spatialmath-python)
+
+Simply copy the following
+
+```
+[![Powered by the Spatial Math Toolbox](https://github.com/petercorke/spatialmath-python/raw/master/.github/svg/sm_powered.min.svg)](https://github.com/petercorke/spatialmath-python)
+```
+
 
 # Installation
 
