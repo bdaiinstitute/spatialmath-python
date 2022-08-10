@@ -302,20 +302,16 @@ class UnitDualQuaternion(DualQuaternion):
         and :math:`q_t` is a pure quaternion formed from the translational part
         :math:`t`.
         """
-        if real is None and dual is None:
-            self.real = None
-            self.dual = None
-            return
-        elif real is not None and dual is not None:
-            self.real = real  # quaternion, real part
-            self.dual = dual  # quaternion, dual part
-        elif dual is None and isinstance(real, SE3):
+
+        if dual is None and isinstance(real, SE3):
             T = real
             S = UnitQuaternion(T.R)
             D = Quaternion.Pure(T.t)
         
-            self.real = S
-            self.dual = 0.5 * D * S
+            real = S
+            dual = 0.5 * D * S
+
+        super().__init__(real, dual)
 
     def SE3(self):
         """
@@ -347,6 +343,9 @@ class UnitDualQuaternion(DualQuaternion):
 
 if __name__ == "__main__":  # pragma: no cover
 
-    import pathlib
+    from spatialmath import SE3, UnitDualQuaternion, DualQuaternion
 
-    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_dualquaternion.py").read())  # pylint: disable=exec-used
+    print(UnitDualQuaternion(SE3()))
+    # import pathlib
+
+    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_dualquaternion.py").read())  # pylint: disable=exec-used

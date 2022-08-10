@@ -1076,8 +1076,8 @@ class BasePoseMatrix(BasePoseList):
     # ----------------------- arithmetic
 
     def __mul__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1244,8 +1244,8 @@ class BasePoseMatrix(BasePoseList):
             return NotImplemented
 
     def __matmul__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``@`` operator (superclass method)
 
@@ -1272,8 +1272,8 @@ class BasePoseMatrix(BasePoseList):
             raise TypeError("@ only applies to pose composition")
 
     def __rmul__(
-        right, left
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        right, left  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1300,8 +1300,8 @@ class BasePoseMatrix(BasePoseList):
         return right.__mul__(left)
 
     def __imul__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -1318,8 +1318,8 @@ class BasePoseMatrix(BasePoseList):
         return left.__mul__(right)
 
     def __truediv__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -1373,8 +1373,8 @@ class BasePoseMatrix(BasePoseList):
             raise ValueError("bad operands")
 
     def __itruediv__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``/=`` operator (superclass method)
 
@@ -1391,8 +1391,8 @@ class BasePoseMatrix(BasePoseList):
         return left.__truediv__(right)
 
     def __add__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1443,8 +1443,8 @@ class BasePoseMatrix(BasePoseList):
         return left._op2(right, lambda x, y: x + y)
 
     def __radd__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1461,8 +1461,8 @@ class BasePoseMatrix(BasePoseList):
         return left.__add__(right)
 
     def __iadd__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``+=`` operator (superclass method)
 
@@ -1479,8 +1479,8 @@ class BasePoseMatrix(BasePoseList):
         return left.__add__(right)
 
     def __sub__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1531,8 +1531,8 @@ class BasePoseMatrix(BasePoseList):
         return left._op2(right, lambda x, y: x - y)
 
     def __rsub__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1549,8 +1549,8 @@ class BasePoseMatrix(BasePoseList):
         return -left.__sub__(right)
 
     def __isub__(
-        left, right
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1624,8 +1624,8 @@ class BasePoseMatrix(BasePoseList):
         return (not eq if isinstance(eq, bool) else [not x for x in eq])
 
     def _op2(
-        left, right, op
-    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right, op  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    ):
         """
         Perform binary operation
 

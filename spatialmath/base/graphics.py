@@ -1,6 +1,5 @@
 import math
 from itertools import product
-from collections.abc import Iterable
 import warnings
 import numpy as np
 import scipy as sp
@@ -1097,10 +1096,10 @@ def _render3D(ax, X, Y, Z, pose=None, filled=False, color=None, **kwargs):
         X, Y, Z = np.squeeze(np.dsplit(xyz.T.reshape(X.shape + (3,)), 3))
 
     if filled:
-        ax.plot_surface(X, Y, Z, color=color, **kwargs)
+        return ax.plot_surface(X, Y, Z, color=color, **kwargs)
     else:
         kwargs["colors"] = color
-        ax.plot_wireframe(X, Y, Z, **kwargs)
+        return ax.plot_wireframe(X, Y, Z, **kwargs)
 
 
 def _axes_dimensions(ax):

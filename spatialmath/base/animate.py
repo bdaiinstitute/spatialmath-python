@@ -818,9 +818,8 @@ if __name__ == "__main__":
 
     from spatialmath import base
 
-    T = base.rpy2r(0.3, 0.4, 0.5)
+    # T = base.rpy2r(0.3, 0.4, 0.5)
     # base.tranimate(T, wait=True)
 
     T = base.rot2(2)
     base.tranimate2(T, wait=True)
-    pass

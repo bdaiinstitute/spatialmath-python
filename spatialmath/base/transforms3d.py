@@ -3049,8 +3049,7 @@ def tranimate(T, **kwargs):
     :seealso: `trplot`, `plotvol3`
     """
 
-    block = kwargs.get("block", False)
-    kwargs["block"] = False
+    kwargs["block"] = kwargs.get("block", False)
 
     anim = smb.animate.Animate(**kwargs)
     try:

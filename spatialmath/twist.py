@@ -282,7 +282,7 @@ class BaseTwist(BasePoseList):
 
     def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         if base.isscalar(right):
-            return type(left)(left.S / right)
+            return left.__class__(left.S / right)
         else:
             raise ValueError('Twist /, incorrect right operand')
 
@@ -953,7 +953,6 @@ class Twist3(BaseTwist):
                 return SE3([base.trexp(S * t) for S, t in zip(self.data, theta)])
             else:
                 raise ValueError('length of twist and theta not consistent')
-        return SE3(self.exp(theta))
 
     def exp(self, theta=1, unit='rad'):
         """

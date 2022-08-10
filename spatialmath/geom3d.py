@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import spatialmath.base as base
 from spatialmath import SE3
 from spatialmath.baseposelist import BasePoseList
-from itertools import product
 
 _eps = np.finfo(np.float64).eps
 
@@ -564,7 +563,7 @@ class Line3(BasePoseList):
         else:
             raise ValueError('bad argument')
 
-    def __eq__(l1, l2):  # pylint: disable=no-self-argument
+    def __eq__(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
         
@@ -581,7 +580,7 @@ class Line3(BasePoseList):
         """
         return abs( 1 - np.dot(base.unitvec(l1.vec), base.unitvec(l2.vec))) < 10*_eps
     
-    def __ne__(l1, l2):  # pylint: disable=no-self-argument
+    def __ne__(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Test if two lines are not equivalent
         
@@ -598,7 +597,7 @@ class Line3(BasePoseList):
         """
         return not l1.__eq__(l2)
     
-    def isparallel(l1, l2, tol=10*_eps):  # pylint: disable=no-self-argument
+    def isparallel(l1, l2, tol=10*_eps):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Test if lines are parallel
         
@@ -616,7 +615,7 @@ class Line3(BasePoseList):
         return np.linalg.norm(np.cross(l1.w, l2.w) ) < tol
 
     
-    def __or__(l1, l2):  # pylint: disable=no-self-argument
+    def __or__(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``|`` operator tests for parallelism
         
@@ -633,7 +632,7 @@ class Line3(BasePoseList):
         """
         return l1.isparallel(l2)
 
-    def __xor__(l1, l2):  # pylint: disable=no-self-argument
+    def __xor__(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         
         """
         Overloaded ``^`` operator tests for intersection
@@ -660,7 +659,7 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #       
    
             
-    def intersects(l1, l2):  # pylint: disable=no-self-argument
+    def intersects(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Intersection point of two lines
         
@@ -683,7 +682,7 @@ class Line3(BasePoseList):
             # lines don't intersect
             return None
     
-    def distance(l1, l2):  # pylint: disable=no-self-argument
+    def distance(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Minimum distance between lines
         
@@ -836,7 +835,7 @@ class Line3(BasePoseList):
         return p, d
     
     
-    def commonperp(l1, l2):  # pylint: disable=no-self-argument
+    def commonperp(l1, l2):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
         
@@ -862,7 +861,7 @@ class Line3(BasePoseList):
         return l1.__class__(v, w)
 
 
-    def __mul__(left, right):  # pylint: disable=no-self-argument
+    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         r"""
         Reciprocal product
         
@@ -888,7 +887,7 @@ class Line3(BasePoseList):
         else:
             raise ValueError('bad arguments')
         
-    def __rmul__(right, left):  # pylint: disable=no-self-argument
+    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Rigid-body transformation of 3D line
 
@@ -913,7 +912,7 @@ class Line3(BasePoseList):
     #  PLUCKER LINE DISTANCE AND INTERSECTION
     # ------------------------------------------------------------------------- #       
 
-    def intersect_plane(self, plane):  # pylint: disable=no-self-argument
+    def intersect_plane(self, plane):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         r"""
         Line intersection with a plane
         
@@ -1193,8 +1192,6 @@ if __name__ == '__main__':   # pragma: no cover
     import pathlib
     import os.path
 
-    from spatialmath import Twist3
-
     L = Line3.TwoPoints((1,2,0), (1,2,1))
     print(L)
     print(L.intersect_plane([0, 0, 1, 0]))
@@ -1220,7 +1217,6 @@ if __name__ == '__main__':   # pragma: no cover
     print(L2)
     print(L2.intersect_plane([0, 0, 1, 0]))
 
-    pass
     # base.plotvol3(10)
     # S = Twist3.UnitRevolute([0, 0, 1], [2, 3, 2], 0.5);
     # L = S.line()
