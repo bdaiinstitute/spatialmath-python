@@ -84,7 +84,6 @@
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">base</span>
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
 <span class="kn">from</span> <span class="nn">spatialmath.baseposelist</span> <span class="kn">import</span> <span class="n">BasePoseList</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -474,7 +473,7 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Line direction as a unit vector</span>
 <span class="sd">        </span>
 <span class="sd">        :return: Line direction as a unit vector</span>
@@ -490,7 +489,7 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Line as a Plucker coordinate vector</span>
 <span class="sd">        </span>
 <span class="sd">        :return: Plucker coordinate vector</span>
@@ -593,7 +592,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">uw</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">lam</span></div>
 
 <div class="viewcode-block" id="Line3.lam"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.lam">[docs]</a>    <span class="k">def</span> <span class="nf">lam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parametric distance from principal point</span>
 
 <span class="sd">        :param point: 3D point</span>
@@ -639,7 +638,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad argument&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Line3.__eq__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.__eq__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if two lines are equivalent</span>
 <span class="sd">        </span>
@@ -656,7 +655,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">vec</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">l2</span><span class="o">.</span><span class="n">vec</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">*</span><span class="n">_eps</span></div>
     
-<div class="viewcode-block" id="Line3.__ne__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.__ne__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if two lines are not equivalent</span>
 <span class="sd">        </span>
@@ -673,7 +672,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">l1</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="Line3.isparallel"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.isparallel">[docs]</a>    <span class="k">def</span> <span class="nf">isparallel</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">_eps</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.isparallel"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.isparallel">[docs]</a>    <span class="k">def</span> <span class="nf">isparallel</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">_eps</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if lines are parallel</span>
 <span class="sd">        </span>
@@ -691,7 +690,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">l1</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">l2</span><span class="o">.</span><span class="n">w</span><span class="p">)</span> <span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span></div>
 
     
-<div class="viewcode-block" id="Line3.__or__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__or__">[docs]</a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.__or__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__or__">[docs]</a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``|`` operator tests for parallelism</span>
 <span class="sd">        </span>
@@ -708,7 +707,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">l1</span><span class="o">.</span><span class="n">isparallel</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Line3.__xor__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.__xor__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``^`` operator tests for intersection</span>
@@ -735,7 +734,7 @@
     <span class="c1"># ------------------------------------------------------------------------- #       </span>
    
             
-<div class="viewcode-block" id="Line3.intersects"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.intersects">[docs]</a>    <span class="k">def</span> <span class="nf">intersects</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.intersects"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.intersects">[docs]</a>    <span class="k">def</span> <span class="nf">intersects</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Intersection point of two lines</span>
 <span class="sd">        </span>
@@ -758,7 +757,7 @@
             <span class="c1"># lines don&#39;t intersect</span>
             <span class="k">return</span> <span class="kc">None</span></div>
     
-<div class="viewcode-block" id="Line3.distance"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.distance"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Minimum distance between lines</span>
 <span class="sd">        </span>
@@ -911,7 +910,7 @@
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">d</span></div>
     
     
-<div class="viewcode-block" id="Line3.commonperp"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.commonperp">[docs]</a>    <span class="k">def</span> <span class="nf">commonperp</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.commonperp"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.commonperp">[docs]</a>    <span class="k">def</span> <span class="nf">commonperp</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Common perpendicular to two lines</span>
 <span class="sd">        </span>
@@ -937,7 +936,7 @@
         <span class="k">return</span> <span class="n">l1</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Line3.__mul__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.__mul__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reciprocal product</span>
 <span class="sd">        </span>
@@ -963,7 +962,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad arguments&#39;</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="Line3.__rmul__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.__rmul__"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rigid-body transformation of 3D line</span>
 
@@ -988,7 +987,7 @@
     <span class="c1">#  PLUCKER LINE DISTANCE AND INTERSECTION</span>
     <span class="c1"># ------------------------------------------------------------------------- #       </span>
 
-<div class="viewcode-block" id="Line3.intersect_plane"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.intersect_plane">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Line3.intersect_plane"><a class="viewcode-back" href="../../classes-3d.html#spatialmath.geom3d.Line3.intersect_plane">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plane</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Line intersection with a plane</span>
 <span class="sd">        </span>
@@ -1268,8 +1267,6 @@
     <span class="kn">import</span> <span class="nn">pathlib</span>
     <span class="kn">import</span> <span class="nn">os.path</span>
 
-    <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
-
     <span class="n">L</span> <span class="o">=</span> <span class="n">Line3</span><span class="o">.</span><span class="n">TwoPoints</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">intersect_plane</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
@@ -1295,7 +1292,6 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">L2</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">L2</span><span class="o">.</span><span class="n">intersect_plane</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
 
-    <span class="k">pass</span>
     <span class="c1"># base.plotvol3(10)</span>
     <span class="c1"># S = Twist3.UnitRevolute([0, 0, 1], [2, 3, 2], 0.5);</span>
     <span class="c1"># L = S.line()</span>
@@ -1319,7 +1315,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 07-Jul-2022.
+      <span class="lastupdated">Last updated on 10-Aug-2022.
       </span></p>
   </div>
 

@@ -377,20 +377,16 @@
 <span class="sd">        and :math:`q_t` is a pure quaternion formed from the translational part</span>
 <span class="sd">        :math:`t`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">real</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dual</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">return</span>
-        <span class="k">elif</span> <span class="n">real</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dual</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="n">real</span>  <span class="c1"># quaternion, real part</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="n">dual</span>  <span class="c1"># quaternion, dual part</span>
-        <span class="k">elif</span> <span class="n">dual</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">SE3</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">dual</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">SE3</span><span class="p">):</span>
             <span class="n">T</span> <span class="o">=</span> <span class="n">real</span>
             <span class="n">S</span> <span class="o">=</span> <span class="n">UnitQuaternion</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">R</span><span class="p">)</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
         
-            <span class="bp">self</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="n">S</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">S</span></div>
+            <span class="n">real</span> <span class="o">=</span> <span class="n">S</span>
+            <span class="n">dual</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">S</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitDualQuaternion.SE3"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion.SE3">[docs]</a>    <span class="k">def</span> <span class="nf">SE3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -422,9 +418,12 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 
-    <span class="kn">import</span> <span class="nn">pathlib</span>
+    <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">UnitDualQuaternion</span><span class="p">,</span> <span class="n">DualQuaternion</span>
 
-    <span class="n">exec</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_dualquaternion.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=exec-used</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">SE3</span><span class="p">()))</span>
+    <span class="c1"># import pathlib</span>
+
+    <span class="c1"># exec(open(pathlib.Path(__file__).parent.parent.absolute() / &quot;tests&quot; / &quot;test_dualquaternion.py&quot;).read())  # pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -435,7 +434,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 07-Jul-2022.
+      <span class="lastupdated">Last updated on 10-Aug-2022.
       </span></p>
   </div>
 
