@@ -43,6 +43,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.inheritance_diagram',
     'sphinx_autorun',
+    "sphinx.ext.intersphinx",
     ]
     #'sphinx-prompt',
     #'recommonmark',
@@ -159,3 +160,9 @@ SE3._color = False
 import numpy as np
 np.set_printoptions(precision=4, suppress=True)
 """
+
+intersphinx_mapping = {
+    "numpy": ("http://docs.scipy.org/doc/numpy/", None),
+    "scipy": ("http://docs.scipy.org/doc/scipy/reference/", None),
+    "matplotlib": ("http://matplotlib.sourceforge.net/", None),
+}
