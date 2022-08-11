@@ -783,7 +783,6 @@ def points2tr2(p1, p2):
 # hack below to use points2tr above
 # use ClayFlannigan's improved data association
 from scipy.spatial import KDTree
-import numpy as np
 
 # reference or target 2xN
 # source  2xN

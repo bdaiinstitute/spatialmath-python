@@ -16,7 +16,6 @@ import math
 try:  # pragma: no cover
     # print('Using SymPy')
     import sympy
-    from sympy import S
 
     _symbolics = True
     symtype = (sympy.Expr,)
@@ -197,7 +196,7 @@ def zero():
 
     :seealso: :func:`sympy.S.Zero`
     """
-    return S.Zero
+    return sympy.S.Zero
 
 
 def one():
@@ -216,7 +215,7 @@ def one():
 
     :seealso: :func:`sympy.S.One`
     """
-    return S.One
+    return sympy.S.One
 
 
 def negative_one():
@@ -235,7 +234,7 @@ def negative_one():
 
     :seealso: :func:`sympy.S.NegativeOne`
     """
-    return S.NegativeOne
+    return sympy.S.NegativeOne
 
 
 def pi():
@@ -254,7 +253,7 @@ def pi():
 
     :seealso: :func:`sympy.S.Pi`
     """
-    return S.Pi
+    return sympy.S.Pi
 
 
 def simplify(x):

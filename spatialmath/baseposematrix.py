@@ -15,7 +15,6 @@ import numpy as np
 
 import spatialmath.base as base
 from spatialmath.baseposelist import BasePoseList
-from spatialmath.base import symbolic as sym
 
 _eps = np.finfo(np.float64).eps
 
@@ -572,7 +571,7 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: supported
         """
 
-        vf = np.vectorize(sym.simplify)
+        vf = np.vectorize(base.sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
 
     def stack(self):
@@ -904,7 +903,7 @@ class BasePoseMatrix(BasePoseList):
                 rowstr = " "
                 # format the columns
                 for colnum, element in enumerate(row):
-                    if sym.issymbol(element):
+                    if base.sym.issymbol(element):
                         s = "{:<12s}".format(str(element))
                     else:
                         if (
@@ -1075,9 +1074,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- arithmetic
 
-    def __mul__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1243,9 +1240,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             return NotImplemented
 
-    def __matmul__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``@`` operator (superclass method)
 
@@ -1271,9 +1266,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             raise TypeError("@ only applies to pose composition")
 
-    def __rmul__(
-        right, left  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1299,9 +1292,7 @@ class BasePoseMatrix(BasePoseList):
         #     return NotImplemented
         return right.__mul__(left)
 
-    def __imul__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __imul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -1317,9 +1308,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__mul__(right)
 
-    def __truediv__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -1372,9 +1361,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             raise ValueError("bad operands")
 
-    def __itruediv__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __itruediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/=`` operator (superclass method)
 
@@ -1390,9 +1377,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__truediv__(right)
 
-    def __add__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1442,9 +1427,7 @@ class BasePoseMatrix(BasePoseList):
         # results is not in the group, return an array, not a class
         return left._op2(right, lambda x, y: x + y)
 
-    def __radd__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __radd__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1458,11 +1441,9 @@ class BasePoseMatrix(BasePoseList):
 
         :seealso: :meth:`__add__`
         """
-        return left.__add__(right)
+        return right.__add__(left)
 
-    def __iadd__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __iadd__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``+=`` operator (superclass method)
 
@@ -1478,9 +1459,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__add__(right)
 
-    def __sub__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1530,9 +1509,7 @@ class BasePoseMatrix(BasePoseList):
         # TODO allow class +/- a conformant array
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __rsub__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1546,11 +1523,9 @@ class BasePoseMatrix(BasePoseList):
 
         :seealso: :meth:`__sub__`
         """
-        return -left.__sub__(right)
+        return -right.__sub__(left)
 
-    def __isub__(
-        left, right  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def __isub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1623,9 +1598,7 @@ class BasePoseMatrix(BasePoseList):
         eq = left == right
         return (not eq if isinstance(eq, bool) else [not x for x in eq])
 
-    def _op2(
-        left, right, op  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-    ):
+    def _op2(left, right, op):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Perform binary operation
 

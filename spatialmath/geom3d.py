@@ -1192,30 +1192,30 @@ if __name__ == '__main__':   # pragma: no cover
     import pathlib
     import os.path
 
-    L = Line3.TwoPoints((1,2,0), (1,2,1))
-    print(L)
-    print(L.intersect_plane([0, 0, 1, 0]))
+    # L = Line3.TwoPoints((1,2,0), (1,2,1))
+    # print(L)
+    # print(L.intersect_plane([0, 0, 1, 0]))
 
-    z = np.eye(6) * L
+    # z = np.eye(6) * L
 
-    L2 = SE3(2, 1, 10) * L
-    print(L2)
-    print(L2.intersect_plane([0, 0, 1, 0]))
+    # L2 = SE3(2, 1, 10) * L
+    # print(L2)
+    # print(L2.intersect_plane([0, 0, 1, 0]))
 
-    print('rx')
-    L2 = SE3.Rx(np.pi/4) * L
-    print(L2)
-    print(L2.intersect_plane([0, 0, 1, 0]))
+    # print('rx')
+    # L2 = SE3.Rx(np.pi/4) * L
+    # print(L2)
+    # print(L2.intersect_plane([0, 0, 1, 0]))
 
-    print('ry')
-    L2 = SE3.Ry(np.pi/4) * L
-    print(L2)
-    print(L2.intersect_plane([0, 0, 1, 0]))
+    # print('ry')
+    # L2 = SE3.Ry(np.pi/4) * L
+    # print(L2)
+    # print(L2.intersect_plane([0, 0, 1, 0]))
 
-    print('rz')
-    L2 = SE3.Rz(np.pi/4) * L
-    print(L2)
-    print(L2.intersect_plane([0, 0, 1, 0]))
+    # print('rz')
+    # L2 = SE3.Rz(np.pi/4) * L
+    # print(L2)
+    # print(L2.intersect_plane([0, 0, 1, 0]))
 
     # base.plotvol3(10)
     # S = Twist3.UnitRevolute([0, 0, 1], [2, 3, 2], 0.5);
@@ -1229,4 +1229,4 @@ if __name__ == '__main__':   # pragma: no cover
     
     # a = SE3.Exp([2,0,0,0,0,0])
 
-    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_geom3d.py").read())  # pylint: disable=exec-used
+    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_geom3d.py").read())  # pylint: disable=exec-used

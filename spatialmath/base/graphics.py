@@ -71,7 +71,7 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     if ax is None:
         ax = plt.gca()
 
-    handle = plt.text(pos[0], pos[1], text, color=color, **kwargs)
+    handle = ax.text(pos[0], pos[1], text, color=color, **kwargs)
     return [handle]
 
 
@@ -168,9 +168,9 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=No
     handles = []
     if isinstance(marker, (list, tuple)):
         for m in marker:
-            handles.append(plt.plot(x, y, m, **kwargs))
+            handles.append(ax.plot(x, y, m, **kwargs))
     else:
-        handles.append(plt.plot(x, y, marker, **kwargs))
+        handles.append(ax.plot(x, y, marker, **kwargs))
     if text is not None:
         try:
             xy = zip(x, y)
@@ -179,11 +179,11 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=No
         if isinstance(text, str):
             # simple string, but might have format chars
             for i, (x, y) in enumerate(xy):
-                handles.append(plt.text(x, y, " " + text.format(i), **textopts))
+                handles.append(ax.text(x, y, " " + text.format(i), **textopts))
         elif isinstance(text, (tuple, list)):
             for i, (x, y) in enumerate(xy):
                 handles.append(
-                    plt.text(
+                    ax.text(
                         x,
                         y,
                         " " + text[0].format(i, *[d[i] for d in text[1:]]),

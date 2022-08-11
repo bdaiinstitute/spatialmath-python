@@ -6,13 +6,11 @@ Created on Sun Jul  5 09:42:30 2020
 @author: corkep
 """
 from functools import reduce
-from spatialmath.base.graphics import axes_logic
 from spatialmath import base, SE2
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.transforms import Affine2D
-from matplotlib.collections import PatchCollection
 import numpy as np
 
 

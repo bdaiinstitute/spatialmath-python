@@ -1,6 +1,5 @@
 import numpy as np
 from spatialmath import base
-from functools import reduce
 
 # this is a collection of useful algorithms, not otherwise categorized
 
@@ -176,8 +175,6 @@ def bresenham(p0, p1, array=None):
 
     if array is not None:
         _ = array[y0, x0] + array[y1, x1]
-        
-    line = []
 
     dx = x1 - x0
     dy = y1 - y0

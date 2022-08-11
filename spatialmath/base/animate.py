@@ -12,10 +12,8 @@ import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from numpy.lib.arraysetops import isin
 from spatialmath import base
-from collections.abc import Iterable, Generator, Iterator
-import time
+from collections.abc import Iterable, Iterator
 
 # global variable holds reference to FuncAnimation object, this is essential
 # for animatiion to work
