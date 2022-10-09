@@ -1205,7 +1205,7 @@ class SE3(SO3):
         """
         X = np.random.uniform(low=xrange[0], high=xrange[1], size=N)  # random values in the range
         Y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
-        Z = np.random.uniform(low=yrange[0], high=zrange[1], size=N)  # random values in the range
+        Z = np.random.uniform(low=zrange[0], high=zrange[1], size=N)  # random values in the range
         R = SO3.Rand(N=N)
         return cls([base.transl(x, y, z) @ base.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
 
