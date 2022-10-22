@@ -249,7 +249,7 @@ class Animate:
             # animation and wait for its callback to be deregistered.
             while True:
                 plt.pause(0.25)
-                if len(_ani.event_source.callbacks) == 0:
+                if _ani.event_source is None or len(_ani.event_source.callbacks) == 0:
                     break
 
     def __repr__(self):
