@@ -24,8 +24,8 @@ docs: .FORCE
 	(cd docs; make html)
 
 dist: .FORCE
-	$(MAKE) test
-	python setup.py sdist
+	#$(MAKE) test
+	python -m build
 
 upload: .FORCE
 	twine upload dist/*
