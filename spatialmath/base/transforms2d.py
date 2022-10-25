@@ -392,12 +392,13 @@ def trlog2(T, check=True, twist=False, tol=10):
             st = T[1,0]
             ct = T[0,0]
             theta = math.atan(st / ct)
-
-            V = np.array([[st, -(1-ct)], [1-ct, st]])
-            tr = (np.linalg.inv(V) @ T[:2, 2]) * theta
-            print(tr)
+            if abs(theta) < tol * _eps:
+                tr = T[:2, 2].flatten()
+            else:
+                V = np.array([[st, -(1-ct)], [1-ct, st]])
+                tr = (np.linalg.inv(V) @ T[:2, 2]) * theta
             if twist:
-                return np.array([tr, theta])
+                return np.hstack([tr, theta])
             else:
                 return np.block([
                     [smb.skew(theta), tr[:, np.newaxis]], 
