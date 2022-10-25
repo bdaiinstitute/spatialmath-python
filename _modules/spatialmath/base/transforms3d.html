@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>spatialmath.base.transforms3d &mdash; Spatial Maths package 1.0.2
+  <title>spatialmath.base.transforms3d &mdash; Spatial Maths package 1.0.4
  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -92,7 +92,6 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">smb</span>
@@ -399,6 +398,8 @@
 <span class="sd">    :type T: numpy(4,4)</span>
 <span class="sd">    :param check: check validity of rotation submatrix</span>
 <span class="sd">    :type check: bool</span>
+<span class="sd">    :param tol: Tolerance in units of eps for rotation submatrix check, defaults to 100</span>
+<span class="sd">    :type: float</span>
 <span class="sd">    :return: whether matrix is an SE(3) homogeneous transformation matrix</span>
 <span class="sd">    :rtype: bool</span>
 
@@ -441,6 +442,8 @@
 <span class="sd">    :type R: numpy(3,3)</span>
 <span class="sd">    :param check: check validity of rotation submatrix</span>
 <span class="sd">    :type check: bool</span>
+<span class="sd">    :param tol: Tolerance in units of eps for rotation matrix test, defaults to 100</span>
+<span class="sd">    :type: float</span>
 <span class="sd">    :return: whether matrix is an SO(3) rotation matrix</span>
 <span class="sd">    :rtype: bool</span>
 
@@ -1218,7 +1221,7 @@
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="trlog"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trlog">[docs]</a><span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="trlog"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trlog">[docs]</a><span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Logarithm of SO(3) or SE(3) matrix</span>
 
@@ -1228,6 +1231,8 @@
 <span class="sd">    :type check: bool</span>
 <span class="sd">    :param twist: return a twist vector instead of matrix [default]</span>
 <span class="sd">    :type twist: bool</span>
+<span class="sd">    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10</span>
+<span class="sd">    :type: float</span>
 <span class="sd">    :return: logarithm</span>
 <span class="sd">    :rtype: ndarray(4,4) or ndarray(3,3)</span>
 <span class="sd">    :raises ValueError: bad argument</span>
@@ -1255,10 +1260,10 @@
 <span class="sd">    :seealso: :func:`~trexp` :func:`~spatialmath.smb.transformsNd.vex` :func:`~spatialmath.smb.transformsNd.vexa`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ishom</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="c1"># SE(3) matrix</span>
 
-        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
             <span class="c1"># is identity matrix</span>
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,))</span>
@@ -1297,7 +1302,7 @@
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
             <span class="c1"># check for trace = -1</span>
             <span class="c1">#   rotation by +/- pi, +/- 3pi etc.</span>
             <span class="n">diagonal</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
@@ -2302,7 +2307,9 @@
             <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">block_diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
+        <span class="n">AA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">AA</span><span class="p">[</span><span class="mi">3</span><span class="p">:,</span> <span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="k">return</span> <span class="n">AA</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
@@ -3154,7 +3161,7 @@
         <span class="nb">open</span><span class="p">(</span>
             <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
             <span class="o">/</span> <span class="s2">&quot;tests&quot;</span>
-            <span class="o">/</span> <span class="s2">&quot;smb&quot;</span>
+            <span class="o">/</span> <span class="s2">&quot;base&quot;</span>
             <span class="o">/</span> <span class="s2">&quot;test_transforms3d.py&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="p">)</span>  <span class="c1"># pylint: disable=exec-used</span>
@@ -3163,7 +3170,7 @@
         <span class="nb">open</span><span class="p">(</span>
             <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
             <span class="o">/</span> <span class="s2">&quot;tests&quot;</span>
-            <span class="o">/</span> <span class="s2">&quot;smb&quot;</span>
+            <span class="o">/</span> <span class="s2">&quot;base&quot;</span>
             <span class="o">/</span> <span class="s2">&quot;test_transforms3d_plot.py&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="p">)</span>  <span class="c1"># pylint: disable=exec-used</span>
@@ -3177,7 +3184,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 23-Oct-2022.
+      <span class="lastupdated">Last updated on 25-Oct-2022.
       </span></p>
   </div>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transforms in 3D &mdash; Spatial Maths package 1.0.2
+  <title>Transforms in 3D &mdash; Spatial Maths package 1.0.4
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -523,13 +523,17 @@ equivalent to a rotation of <span class="math notranslate nohighlight">\(\| w \|
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>T</strong> (<em>numpy</em><em>(</em><em>4</em><em>,</em><em>4</em><em>)</em>) – SE(3) matrix to test</p></li>
 <li><p><strong>check</strong> (<em>bool</em>) – check validity of rotation submatrix</p></li>
+<li><p><strong>tol</strong> – Tolerance in units of eps for rotation submatrix check, defaults to 100</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whether matrix is an SE(3) homogeneous transformation matrix</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>float</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>whether matrix is an SE(3) homogeneous transformation matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 <ul class="simple">
@@ -566,13 +570,17 @@ rotation sub-matrix and validitity of the bottom row.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>R</strong> (<em>numpy</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SO(3) matrix to test</p></li>
 <li><p><strong>check</strong> (<em>bool</em>) – check validity of rotation submatrix</p></li>
+<li><p><strong>tol</strong> – Tolerance in units of eps for rotation matrix test, defaults to 100</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whether matrix is an SO(3) rotation matrix</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>float</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>whether matrix is an SO(3) rotation matrix</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
 </dd>
 </dl>
 <ul class="simple">
@@ -1902,7 +1910,7 @@ between R0 (3x3) when S=0 and R1 (3x3) when S=1.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms3d.trlog">
-<span class="sig-name descname"><span class="pre">trlog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trlog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trlog" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trlog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms3d.html#trlog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms3d.trlog" title="Permalink to this definition"></a></dt>
 <dd><p>Logarithm of SO(3) or SE(3) matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1910,16 +1918,20 @@ between R0 (3x3) when S=0 and R1 (3x3) when S=1.</p></li>
 <li><p><strong>R</strong> (<em>ndarray</em><em>(</em><em>4</em><em>,</em><em>4</em><em>) or </em><em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(3) or SO(3) matrix</p></li>
 <li><p><strong>check</strong> (<em>bool</em>) – check that matrix is valid</p></li>
 <li><p><strong>twist</strong> (<em>bool</em>) – return a twist vector instead of matrix [default]</p></li>
+<li><p><strong>tol</strong> – Tolerance in units of eps for zero-rotation case, defaults to 10</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>logarithm</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>float</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(4,4) or ndarray(3,3)</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>logarithm</p>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(4,4) or ndarray(3,3)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – bad argument</p>
 </dd>
 </dl>
 <p>An efficient closed-form solution of the matrix logarithm for arguments that
@@ -2532,7 +2544,7 @@ in a minimal representation to an equivalent SE(3) matrix.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 23-Oct-2022.
+      <span class="lastupdated">Last updated on 25-Oct-2022.
       </span></p>
   </div>
 

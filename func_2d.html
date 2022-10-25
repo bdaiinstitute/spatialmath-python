@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transforms in 2D &mdash; Spatial Maths package 1.0.2
+  <title>Transforms in 2D &mdash; Spatial Maths package 1.0.4
  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
@@ -589,7 +589,7 @@ between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trinterp" title="spatialmath.base.transforms3d.trinterp"><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">trinterp()</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -635,7 +635,7 @@ between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.trlog2">
-<span class="sig-name descname"><span class="pre">trlog2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trlog2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trlog2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trlog2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trlog2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trlog2" title="Permalink to this definition"></a></dt>
 <dd><p>Logarithm of SO(2) or SE(2) matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -643,16 +643,20 @@ between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span
 <li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – SE(2) or SO(2) matrix</p></li>
 <li><p><strong>check</strong> (<em>bool</em>) – check that matrix is valid</p></li>
 <li><p><strong>twist</strong> (<em>bool</em>) – return a twist vector instead of matrix [default]</p></li>
+<li><p><strong>tol</strong> – Tolerance in units of eps for zero-rotation case, defaults to 10</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>logarithm</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>float</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray(3,3) or ndarray(3); or ndarray(2,2) or ndarray(1)</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>logarithm</p>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – bad argument</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray(3,3) or ndarray(3); or ndarray(2,2) or ndarray(1)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – bad argument</p>
 </dd>
 </dl>
 <p>An efficient closed-form solution of the matrix logarithm for arguments that
@@ -669,22 +673,22 @@ w].</p></li>
 </ul>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trlog2</span><span class="p">(</span><span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">))</span>
-<span class="go">array([[-0. , -0.3,  0. ],</span>
+<span class="go">array([[ 0. , -0.3,  0. ],</span>
 <span class="go">       [ 0.3,  0. ,  0. ],</span>
 <span class="go">       [ 0. ,  0. ,  0. ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trlog2</span><span class="p">(</span><span class="n">trot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">array([0. , 0. , 0.3])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trlog2</span><span class="p">(</span><span class="n">rot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">))</span>
-<span class="go">array([[-0. , -0.3],</span>
+<span class="go">array([[ 0. , -0.3],</span>
 <span class="go">       [ 0.3,  0. ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trlog2</span><span class="p">(</span><span class="n">rot2</span><span class="p">(</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">array([0.3])</span>
+<span class="go">0.3</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">trexp()</span></code>, <a class="reference internal" href="func_nd.html#spatialmath.base.transformsNd.vex" title="spatialmath.base.transformsNd.vex"><code class="xref py py-func docutils literal notranslate"><span class="pre">vex()</span></code></a>,
-<a class="reference internal" href="func_nd.html#spatialmath.base.transformsNd.vexa" title="spatialmath.base.transformsNd.vexa"><code class="xref py py-func docutils literal notranslate"><span class="pre">vexa()</span></code></a></p>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">trexp()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">vex()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">vexa()</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -943,7 +947,7 @@ single-line format and returns the string:</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 23-Oct-2022.
+      <span class="lastupdated">Last updated on 25-Oct-2022.
       </span></p>
   </div>
 
