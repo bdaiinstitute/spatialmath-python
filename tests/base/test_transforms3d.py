@@ -16,7 +16,7 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base.transforms3d import *
-from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr
+from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
 class Test3D(unittest.TestCase):
     def test_checks(self):
         # 2D case, with rotation matrix
@@ -292,6 +292,34 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2r(0, [1, 0, 0]), rotx(0))
         nt.assert_array_almost_equal(angvec2r(pi / 4, [1, 0, 0]), rotx(pi / 4))
         nt.assert_array_almost_equal(angvec2r(-pi / 4, [1, 0, 0]), rotx(-pi / 4))
+
+    def test_trlog(self):
+        R = rotx(0.5)
+        nt.assert_array_almost_equal(trlog(R), skew([0.5, 0, 0]))
+        R = roty(0.5)
+        nt.assert_array_almost_equal(trlog(R), skew([0, 0.5, 0]))
+        R = rotz(0.5)
+        nt.assert_array_almost_equal(trlog(R), skew([0, 0, 0.5]))
+
+        R = rpy2r(0.1, 0.2, 0.3)
+        nt.assert_array_almost_equal(logm(R), trlog(R))
+
+        T = transl(1, 2, 3) @ rpy2tr(0.1, 0.2, 0.3)
+        nt.assert_array_almost_equal(logm(T), trlog(T))
+
+    def test_trexp(self):
+        R = trexp(skew([0.5, 0, 0]))
+        nt.assert_array_almost_equal(R, rotx(0.5))
+        R = trexp(skew([0, 0.5, 0]))
+        nt.assert_array_almost_equal(R, roty(0.5))
+        R = trexp(skew([0, 0, 0.5]))
+        nt.assert_array_almost_equal(R, rotz(0.5))
+
+        R = rpy2r(0.1, 0.2, 0.3)
+        nt.assert_array_almost_equal(trexp(logm(R)), R)
+
+        T = transl(1, 2, 3) @ rpy2tr(0.1, 0.2, 0.3)
+        nt.assert_array_almost_equal(trexp(logm(T)), T)
 
     def test_exp2r(self):
 
