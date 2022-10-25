@@ -58,7 +58,14 @@ setup(
     url="https://github.com/petercorke/spatialmath-python",
     author="Peter Corke",
     author_email="rvc@petercorke.com",  # TODO
-    keywords="python SO2 SE2 SO3 SE3 twist translation orientation rotation euler-angles roll-pitch-yaw roll-pitch-yaw-angles quaternion unit-quaternion rotation-matrix transforms robotics robot vision pose",
+    keywords=["spatial-math", "spatial math",
+        "SO2", "SE2", "SO3", "SE3",
+        "SO(2)", "SE(2)", "SO(3)", "SE(3)",
+        "twist", "product of exponential", "translation", "orientation",
+        "angle-axis", "Lie group", "skew symmetric matrix",
+        "pose", "translation", "rotation matrix", "rigid body transform", "homogeneous transformation",
+        "Euler angles", "roll-pitch-yaw angles", "quaternion", "unit-quaternion"
+        "robotics", "robot vision"],
     license="MIT",  # TODO
     packages=find_packages(exclude=["test_*", "TODO*"]),
     install_requires=["numpy", "scipy", "matplotlib", "colored", "ansitable"],
