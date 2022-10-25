@@ -4,7 +4,7 @@ import warnings
 import numpy as np
 from matplotlib import colors
 
-from spatialmath import base as smbase
+from spatialmath import base as smb
 
 try:
     import matplotlib.pyplot as plt
@@ -1365,23 +1365,6 @@ def isnotebook():
 
 if __name__ == "__main__":
     import pathlib
-
-
-    plotvol2(5)
-    # plot_box(ltrb=[-1, 4, 2, 2], color='r', linewidth=2)
-    # plot_box(lbrt=[-1, 2, 2, 4], color='k', linestyle='--', linewidth=4)
-    # plot_box(lbwh=[2, -2, 2, 3], color='k', linewidth=2)
-    # plot_box(centre=(-2, -1), wh=2, color='b', linewidth=2)
-    # plot_box(centre=(-2, -1), wh=(1,3), color='g', linewidth=2)
-    # plt.grid(True)
-    # plt.show(block=True)
-
-    # plt.imshow(np.eye(200))
-    # umin, umax, vmin, vmax = 23, 166, 110, 212
-    # plot_box(l=umin, r=umax, t=vmin, b=vmax, color="g")
-
-    plot_circle(1, (2,3), resolution=3, filled=False)
-    plt.show(block=True)
     
     exec(
         open(
