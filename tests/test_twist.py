@@ -9,7 +9,6 @@ from math import pi
 from spatialmath.twist import *
 # from spatialmath import super_pose # as sp
 from spatialmath.base import *
-from spatialmath.base import argcheck
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.twist import BaseTwist
 
