@@ -2232,7 +2232,9 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
             )
 
     if full:
-        return sp.linalg.block_diag(np.eye(3, 3), A)
+        AA = np.eye(6)
+        AA[3:, 3:] = A
+        return AA
     else:
         return A
 
@@ -3084,7 +3086,7 @@ if __name__ == "__main__":  # pragma: no cover
         open(
             pathlib.Path(__file__).parent.parent.parent.absolute()
             / "tests"
-            / "smb"
+            / "base"
             / "test_transforms3d.py"
         ).read()
     )  # pylint: disable=exec-used
@@ -3093,7 +3095,7 @@ if __name__ == "__main__":  # pragma: no cover
         open(
             pathlib.Path(__file__).parent.parent.parent.absolute()
             / "tests"
-            / "smb"
+            / "base"
             / "test_transforms3d_plot.py"
         ).read()
     )  # pylint: disable=exec-used
