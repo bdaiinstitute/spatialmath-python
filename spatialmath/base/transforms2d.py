@@ -17,7 +17,6 @@ tuple, numpy array, numpy row vector or numpy column vector.
 import sys
 import math
 import numpy as np
-import scipy.linalg
 import spatialmath.base as smb
 
 _eps = np.finfo(np.float64).eps
@@ -793,7 +792,6 @@ def points2tr2(p1, p2):
 # https://github.com/1988kramer/intel_dataset/blob/master/scripts/Align2D.py
 # hack below to use points2tr above
 # use ClayFlannigan's improved data association
-from scipy.spatial import KDTree
 
 # reference or target 2xN
 # source  2xN
@@ -820,6 +818,8 @@ from scipy.spatial import KDTree
 #   max_iter: int, max number of iterations
 #   min_delta_err: float, minimum change in alignment error
 def ICP2d(reference, source, T=None, max_iter=20, min_delta_err=1e-4):
+
+    from scipy.spatial import KDTree
 
     mean_sq_error = 1.0e6 # initialize error as large number
     delta_err = 1.0e6    # change in error (used in stopping condition)

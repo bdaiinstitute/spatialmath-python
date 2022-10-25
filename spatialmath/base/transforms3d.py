@@ -17,7 +17,6 @@ tuple, numpy array, numpy row vector or numpy column vector.
 import sys
 import math
 import numpy as np
-import scipy as sp
 from collections.abc import Iterable
 
 from spatialmath import base as smb

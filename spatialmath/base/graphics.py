@@ -2,7 +2,6 @@ import math
 from itertools import product
 import warnings
 import numpy as np
-import scipy as sp
 from matplotlib import colors
 
 from spatialmath import base as smbase
@@ -574,6 +573,8 @@ def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=
         so to avoid inverting ``E`` twice to compute the ellipse, we flag that
         the inverse is provided using ``inverted``.
     """
+    from scipy.linalg import sqrtm
+
     if E.shape != (2, 2):
         raise ValueError("ellipse is defined by a 2x2 matrix")
 
@@ -590,7 +591,7 @@ def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=
     if not inverted:
         E = np.linalg.inv(E)
 
-    e = s * sp.linalg.sqrtm(E) @ xy + np.array(centre, ndmin=2).T
+    e = s * sqrtm(E) @ xy + np.array(centre, ndmin=2).T
     return e
 
 
@@ -766,6 +767,8 @@ def ellipsoid(
 
     :seealso: :func:`plot_ellipsoid`, :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
+    from scipy.linalg import sqrtm
+
     if E.shape != (3, 3):
         raise ValueError("ellipsoid is defined by a 3x3 matrix")
 
@@ -782,7 +785,7 @@ def ellipsoid(
 
     x, y, z = sphere()  # unit sphere
     e = (
-        s * sp.linalg.sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
+        s * sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
         + np.c_[centre].T
     )
     return e[0, :].reshape(x.shape), e[1, :].reshape(x.shape), e[2, :].reshape(x.shape)
