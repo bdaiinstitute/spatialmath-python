@@ -339,7 +339,7 @@ def trinv2(T):
     return Ti
 
 
-def trlog2(T, check=True, twist=False):
+def trlog2(T, check=True, twist=False, tol=10):
     """
     Logarithm of SO(2) or SE(2) matrix
 
@@ -349,6 +349,8 @@ def trlog2(T, check=True, twist=False):
     :type check: bool
     :param twist: return a twist vector instead of matrix [default]
     :type twist: bool
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
+    :type: float
     :return: logarithm
     :rtype: ndarray(3,3) or ndarray(3); or ndarray(2,2) or ndarray(1)
     :raises ValueError: bad argument
@@ -380,7 +382,7 @@ def trlog2(T, check=True, twist=False):
     if ishom2(T, check=check):
         # SE(2) matrix
 
-        if smb.iseye(T):
+        if smb.iseye(T, tol):
             # is identity matrix
             if twist:
                 return np.zeros((3,))

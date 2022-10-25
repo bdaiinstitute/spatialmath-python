@@ -323,6 +323,8 @@ def ishom(T, check=False, tol=100):
     :type T: numpy(4,4)
     :param check: check validity of rotation submatrix
     :type check: bool
+    :param tol: Tolerance in units of eps for rotation submatrix check, defaults to 100
+    :type: float
     :return: whether matrix is an SE(3) homogeneous transformation matrix
     :rtype: bool
 
@@ -365,6 +367,8 @@ def isrot(R, check=False, tol=100):
     :type R: numpy(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
+    :param tol: Tolerance in units of eps for rotation matrix test, defaults to 100
+    :type: float
     :return: whether matrix is an SO(3) rotation matrix
     :rtype: bool
 
@@ -1142,7 +1146,7 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
 
 
 # ---------------------------------------------------------------------------------------#
-def trlog(T, check=True, twist=False):
+def trlog(T, check=True, twist=False, tol=10):
     """
     Logarithm of SO(3) or SE(3) matrix
 
@@ -1152,6 +1156,8 @@ def trlog(T, check=True, twist=False):
     :type check: bool
     :param twist: return a twist vector instead of matrix [default]
     :type twist: bool
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
+    :type: float
     :return: logarithm
     :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad argument
@@ -1179,10 +1185,10 @@ def trlog(T, check=True, twist=False):
     :seealso: :func:`~trexp` :func:`~spatialmath.smb.transformsNd.vex` :func:`~spatialmath.smb.transformsNd.vexa`
     """
 
-    if ishom(T, check=check):
+    if ishom(T, check=check, tol=10):
         # SE(3) matrix
 
-        if smb.iseye(T):
+        if smb.iseye(T, tol=tol):
             # is identity matrix
             if twist:
                 return np.zeros((6,))
@@ -1221,7 +1227,7 @@ def trlog(T, check=True, twist=False):
                 return np.zeros((3,))
             else:
                 return np.zeros((3, 3))
-        elif abs(np.trace(R) + 1) < 100 * _eps:
+        elif abs(np.trace(R) + 1) < tol * _eps:
             # check for trace = -1
             #   rotation by +/- pi, +/- 3pi etc.
             diagonal = R.diagonal()
