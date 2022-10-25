@@ -374,31 +374,42 @@ def trlog2(T, check=True, twist=False):
         >>> trlog2(rot2(0.3))
         >>> trlog2(rot2(0.3), twist=True)
 
-    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`,
-              :func:`~spatialmath.base.transformsNd.vexa`
+    :seealso: :func:`~trexp`, :func:`~spatialmath.smb.transformsNd.vex`,
+              :func:`~spatialmath.smb.transformsNd.vexa`
     """
 
     if ishom2(T, check=check):
         # SE(2) matrix
 
-        if base.iseye(T):
+        if smb.iseye(T):
             # is identity matrix
             if twist:
                 return np.zeros((3,))
             else:
                 return np.zeros((3, 3))
         else:
+            st = T[1,0]
+            ct = T[0,0]
+            theta = math.atan(st / ct)
+
+            V = np.array([[st, -(1-ct)], [1-ct, st]])
+            tr = (np.linalg.inv(V) @ T[:2, 2]) * theta
+            print(tr)
             if twist:
-                return base.vexa(scipy.linalg.logm(T))
+                return np.array([tr, theta])
             else:
-                return scipy.linalg.logm(T)
+                return np.block([
+                    [smb.skew(theta), tr[:, np.newaxis]], 
+                    [np.zeros((1,3))]
+                ])
 
     elif isrot2(T, check=check):
         # SO(2) rotation matrix
+        theta = math.atan(T[1,0] / T[0,0])
         if twist:
-            return base.vex(scipy.linalg.logm(T))
+            return theta
         else:
-            return scipy.linalg.logm(T)
+            return smb.skew(theta)
     else:
         raise ValueError("Expect SO(2) or SE(2) matrix")
 

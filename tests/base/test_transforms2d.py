@@ -15,7 +15,7 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base.transforms2d import *
-from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr
+from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
 
 import matplotlib.pyplot as plt
 
@@ -65,6 +65,20 @@ class Test2D(unittest.TestCase):
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl2(T), np.array(t))
         # TODO
+
+    def test_trlog2(self):
+        R = rot2(0.5)
+        nt.assert_array_almost_equal(trlog2(R), skew(0.5))
+
+        T = transl2(1, 2) @ trot2(0.5)
+        nt.assert_array_almost_equal(logm(T), trlog2(T))
+
+    def test_trexp2(self):
+        R = trexp2(skew(0.5))
+        nt.assert_array_almost_equal(R, rot2(0.5))
+
+        T = transl2(1, 2) @ trot2(0.5)
+        nt.assert_array_almost_equal(trexp2(logm(T)), T)
 
     def test_transl2(self):
         nt.assert_array_almost_equal(
