@@ -142,10 +142,10 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=No
         # [(x,y), (x,y), ...]
         # [xlist, ylist]
         # [xarray, yarray]
-        if smbase.islistof(pos, (tuple, list)):
+        if smb.islistof(pos, (tuple, list)):
             x = [z[0] for z in pos]
             y = [z[1] for z in pos]
-        elif smbase.islistof(pos, np.ndarray):
+        elif smb.islistof(pos, np.ndarray):
             x = pos[0]
             y = pos[1]
         else:
@@ -231,7 +231,7 @@ def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
 
     # if lines.ndim == 1:
     #     lines = lines.
-    lines = smbase.getmatrix(lines, (3, None))
+    lines = smb.getmatrix(lines, (3, None))
 
     handles = []
     for line in lines.T:  # for each column
@@ -323,7 +323,7 @@ def plot_box(
     """
 
     if wh is not None:
-        if smbase.isscalar(wh):
+        if smb.isscalar(wh):
             w, h = wh, wh
         else:
             w, h = wh
@@ -528,7 +528,7 @@ def plot_circle(
         >>> plot_circle(2, 'b--')  # blue dashed circle
         >>> plot_circle(0.5, filled=True, facecolor='y')  # yellow filled circle
     """
-    centres = smbase.getmatrix(centre, (2, None))
+    centres = smb.getmatrix(centre, (2, None))
 
     ax = axes_logic(ax, 2)
     handles = []
@@ -724,7 +724,7 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
     """
     ax = axes_logic(ax, 3)
 
-    centre = smbase.getmatrix(centre, (3, None))
+    centre = smb.getmatrix(centre, (3, None))
 
     handles = []
     for c in centre.T:
@@ -893,7 +893,7 @@ def plot_cylinder(
 
     :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
     """
-    if smbase.isscalar(height):
+    if smb.isscalar(height):
         height = [0, height]
 
     ax = axes_logic(ax, 3)
@@ -1033,7 +1033,7 @@ def plot_cuboid(
     vertices = vertices.T
 
     if pose is not None:
-        vertices = smbase.homtrans(pose.A, vertices)
+        vertices = smb.homtrans(pose.A, vertices)
 
     ax = axes_logic(ax, 3)
     # plot sides
@@ -1315,7 +1315,7 @@ def expand_dims(dim=None, nd=2):
         * [A,B] -> [A, B, A, B, A, B]
         * [A,B,C,D,E,F] -> [A, B, C, D, E, F]
     """
-    dim = smbase.getvector(dim)
+    dim = smb.getvector(dim)
 
     if nd == 2:
         if len(dim) == 1:

@@ -18,7 +18,7 @@ import sys
 import math
 import numpy as np
 import scipy.linalg
-from spatialmath import base
+import spatialmath.base as smb
 
 _eps = np.finfo(np.float64).eps
 
@@ -52,9 +52,9 @@ def rot2(theta, unit="rad"):
         >>> rot2(0.3)
         >>> rot2(45, 'deg')
     """
-    theta = base.getunit(theta, unit)
-    ct = base.sym.cos(theta)
-    st = base.sym.sin(theta)
+    theta = smb.getunit(theta, unit)
+    ct = smb.sym.cos(theta)
+    st = smb.sym.sin(theta)
     # fmt: off
     R = np.array([
         [ct, -st],
@@ -94,7 +94,7 @@ def trot2(theta, unit="rad", t=None):
     """
     T = np.pad(rot2(theta, unit), (0, 1), mode="constant")
     if t is not None:
-        T[:2, 2] = base.getvector(t, 2, "array")
+        T[:2, 2] = smb.getvector(t, 2, "array")
     T[2, 2] = 1  # integer to be symbolic friendly
     return T
 
@@ -121,7 +121,7 @@ def xyt2tr(xyt, unit="rad"):
 
     :seealso: tr2xyt
     """
-    xyt = base.getvector(xyt, 3)
+    xyt = smb.getvector(xyt, 3)
     T = np.pad(rot2(xyt[2], unit), (0, 1), mode="constant")
     T[:2, 2] = xyt[0:2]
     T[2, 2] = 1.0
@@ -211,13 +211,13 @@ def transl2(x, y=None):
         function.
     """
 
-    if base.isscalar(x) and base.isscalar(y):
+    if smb.isscalar(x) and smb.isscalar(y):
         # (x, y) -> SE(2)
         t = np.r_[x, y]
-    elif base.isvector(x, 2):
+    elif smb.isvector(x, 2):
         # R2 -> SE(2)
-        t = base.getvector(x, 2)
-    elif base.ismatrix(x, (3, 3)):
+        t = smb.getvector(x, 2)
+    elif smb.ismatrix(x, (3, 3)):
         # SE(2) -> R2
         return x[:2, 2]
     else:
@@ -264,7 +264,7 @@ def ishom2(T, check=False):
         and T.shape == (3, 3)
         and (
             not check
-            or (base.isR(T[:2, :2]) and np.all(T[2, :] == np.array([0, 0, 1])))
+            or (smb.isR(T[:2, :2]) and np.all(T[2, :] == np.array([0, 0, 1])))
         )
     )
 
@@ -298,7 +298,7 @@ def isrot2(R, check=False):
     :seealso: isR, ishom2, isrot
     """
     return (
-        isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or base.isR(R))
+        isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or smb.isR(R))
     )
 
 
@@ -466,55 +466,55 @@ def trexp2(S, theta=None, check=True):
     :seealso: trlog, trexp2
     """
 
-    if base.ismatrix(S, (3, 3)) or base.isvector(S, 3):
+    if smb.ismatrix(S, (3, 3)) or smb.isvector(S, 3):
         # se(2) case
-        if base.ismatrix(S, (3, 3)):
+        if smb.ismatrix(S, (3, 3)):
             # augmentented skew matrix
-            if check and not base.isskewa(S):
+            if check and not smb.isskewa(S):
                 raise ValueError("argument must be a valid se(2) element")
-            tw = base.vexa(S)
+            tw = smb.vexa(S)
         else:
             # 3 vector
-            tw = base.getvector(S)
+            tw = smb.getvector(S)
 
-        if base.iszerovec(tw):
+        if smb.iszerovec(tw):
             return np.eye(3)
 
         if theta is None:
-            (tw, theta) = base.unittwist2_norm(tw)
-        elif not base.isunittwist2(tw):
+            (tw, theta) = smb.unittwist2_norm(tw)
+        elif not smb.isunittwist2(tw):
             raise ValueError("If theta is specified S must be a unit twist")
 
         t = tw[0:2]
         w = tw[2]
 
-        R = base.rodrigues(w, theta)
+        R = smb.rodrigues(w, theta)
 
-        skw = base.skew(w)
+        skw = smb.skew(w)
         V = (
             np.eye(2) * theta
             + (1.0 - math.cos(theta)) * skw
             + (theta - math.sin(theta)) * skw @ skw
         )
 
-        return base.rt2tr(R, V @ t)
+        return smb.rt2tr(R, V @ t)
 
-    elif base.ismatrix(S, (2, 2)) or base.isvector(S, 1):
+    elif smb.ismatrix(S, (2, 2)) or smb.isvector(S, 1):
         # so(2) case
-        if base.ismatrix(S, (2, 2)):
+        if smb.ismatrix(S, (2, 2)):
             # skew symmetric matrix
-            if check and not base.isskew(S):
+            if check and not smb.isskew(S):
                 raise ValueError("argument must be a valid so(2) element")
-            w = base.vex(S)
+            w = smb.vex(S)
         else:
             # 1 vector
-            w = base.getvector(S)
+            w = smb.getvector(S)
 
-        if theta is not None and not base.isunitvec(w):
+        if theta is not None and not smb.isunitvec(w):
             raise ValueError("If theta is specified S must be a unit twist")
 
         # do Rodrigues' formula for rotation
-        return base.rodrigues(w, theta)
+        return smb.rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
 
@@ -526,7 +526,7 @@ def adjoint2(T):
         return np.identity(2)
     elif T.shape == (3, 3):
         # SE(2) adjoint
-        (R, t) = base.tr2rt(T)
+        (R, t) = smb.tr2rt(T)
         # fmt: off
         return np.block([
                 [R, np.c_[t[1], -t[0]].T], 
@@ -567,7 +567,7 @@ def tr2jac2(T):
         raise ValueError("expecting an SE(2) matrix")
 
     J = np.eye(3, dtype=T.dtype)
-    J[:2, :2] = base.t2r(T)
+    J[:2, :2] = smb.t2r(T)
     return J
 
 
@@ -608,10 +608,10 @@ def trinterp2(start, end, s=None):
         >>> trinterp2(None, T2, 1)
         >>> trinterp2(None, T2, 0.5)
 
-    :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
+    :seealso: :func:`~spatialmath.smb.transforms3d.trinterp`
 
     """
-    if base.ismatrix(end, (2, 2)):
+    if smb.ismatrix(end, (2, 2)):
         # SO(2) case
         if start is None:
             # 	TRINTERP2(T, s)
@@ -630,7 +630,7 @@ def trinterp2(start, end, s=None):
             th = th0 * (1 - s) + s * th1
 
         return rot2(th)
-    elif base.ismatrix(end, (3, 3)):
+    elif smb.ismatrix(end, (3, 3)):
         if start is None:
             # 	TRINTERP2(T, s)
 
@@ -653,7 +653,7 @@ def trinterp2(start, end, s=None):
             pr = p0 * (1 - s) + s * p1
             th = th0 * (1 - s) + s * th1
 
-        return base.rt2tr(rot2(th), pr)
+        return smb.rt2tr(rot2(th), pr)
     else:
         return ValueError("Argument must be SO(2) or SE(2)")
 
@@ -930,7 +930,7 @@ def _AlignSVD(source, reference):
     # translation is the difference between the point clound centroids
     t = ref_centroid - R @ src_centroid
 
-    return base.rt2tr(R, t)
+    return smb.rt2tr(R, t)
 
 def trplot2(
     T,
@@ -1035,11 +1035,11 @@ def trplot2(
 
     # check input types
     if isrot2(T, check=True):
-        T = base.r2t(T)
+        T = smb.r2t(T)
     elif not ishom2(T, check=True):
         raise ValueError("argument is not valid SE(2) matrix")
 
-    ax = base.axes_logic(ax, 2)
+    ax = smb.axes_logic(ax, 2)
 
     try:
         if not ax.get_xlabel():
@@ -1053,7 +1053,7 @@ def trplot2(
         ax.set_aspect("equal")
 
     if dims is not None:
-        ax.axis(base.expand_dims(dims))
+        ax.axis(smb.expand_dims(dims))
     elif not hasattr(ax, "_plotvol"):
         ax.autoscale(enable=True, axis="both")
 
@@ -1172,7 +1172,7 @@ def tranimate2(T, **kwargs):
             tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5])
             tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
     """
-    anim = base.animate.Animate2(**kwargs)
+    anim = smb.animate.Animate2(**kwargs)
     try:
         del kwargs["dims"]
     except KeyError:
