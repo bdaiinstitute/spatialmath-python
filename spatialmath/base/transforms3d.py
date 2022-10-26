@@ -22,7 +22,7 @@ from collections.abc import Iterable
 from spatialmath import base as smb
 from spatialmath.base import symbolic as sym
 
-from typing import overload, Union, List, Tuple, TextIO
+from typing import overload, Union, List, Tuple, TextIO, Any, Optional
 ArrayLike = Union[List,Tuple,float,np.ndarray]
 R3x = Union[List,Tuple,float,np.ndarray]  # various ways to represent R^3 for input
 R3 = np.ndarray[(3,), float]  # R^3
@@ -150,7 +150,7 @@ def rotz(theta:float, unit:str="rad") -> SO3:
 
 
 # ---------------------------------------------------------------------------------------#
-def trotx(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
+def trotx(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
     """
     Create SE(3) pure rotation about X-axis
 
@@ -184,7 +184,7 @@ def trotx(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
 
 
 # ---------------------------------------------------------------------------------------#
-def troty(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
+def troty(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
     """
     Create SE(3) pure rotation about Y-axis
 
@@ -218,7 +218,7 @@ def troty(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
 
 
 # ---------------------------------------------------------------------------------------#
-def trotz(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
+def trotz(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
     """
     Create SE(3) pure rotation about Z-axis
 
@@ -265,7 +265,7 @@ def transl(x:R3x) -> SE3:
 def transl(x:SE3) -> R3:
     ...
 
-def transl(x:Union[R3x,float], y:Union[float,None]=None, zUnion[float,None]=None) -> Union[SE3,R3]:
+def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -> Union[SE3,R3]:
     """
     Create SE(3) pure translation, or extract translation from SE(3) matrix
 
@@ -429,7 +429,7 @@ def rpy2r(roll:float, pitch:float, yaw:float, *, unit:str="rad", order:str="zyx"
 def rpy2r(roll:R3x, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3:
     ...
 
-def rpy2r(roll:Union[float,R3x], pitch:Union[float,None]=None, yaw:Union[float,None]=None, *, unit:str="rad", order:str="zyx") -> SO3:
+def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, *, unit:str="rad", order:str="zyx") -> SO3:
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
@@ -502,7 +502,7 @@ def rpy2tr(roll:float, pitch:float, yaw:float, unit:str="rad", order:str="zyx") 
 def rpy2tr(roll:R3x, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3:
     ...
     
-def rpy2tr(roll:Union[float,R3x], pitch:Union[float,None]=None, yaw:Union[float,None]=None, unit:str="rad", order:str="zyx") -> SE3:
+def rpy2tr(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, unit:str="rad", order:str="zyx") -> SE3:
     """
     Create an SE(3) rotation matrix from roll-pitch-yaw angles
 
@@ -563,7 +563,7 @@ def eul2r(phi:float, theta:float, psi:float, unit:str="rad") -> SO3:
 def eul2r(phi:R3x, theta=None, psi=None, unit:str="rad") -> SO3:
     ...
 
-def eul2r(phi:Union[R3x,float], theta:Union[float,None]=None, psi:Union[float,None]=None, unit:sr="rad") -> SO3:
+def eul2r(phi:Union[R3x,float], theta:Optional[float]=None, psi:Optional[float]=None, unit:str="rad") -> SO3:
     """
     Create an SO(3) rotation matrix from Euler angles
 
@@ -615,7 +615,7 @@ def eul2tr(phi:float, theta:float, psi:float, unit:str="rad") -> SE3:
 def eul2tr(phi:R3x, theta=None, psi=None, unit:str="rad") -> SE3:
     ...
     
-def eul2tr(phi:Union[float,R3x], theta:Union[float,None]=None, psi:Union[float,None]=None, unit="rad") -> SE3:
+def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]=None, unit="rad") -> SE3:
     """
     Create an SE(3) pure rotation matrix from Euler angles
 
@@ -1323,14 +1323,14 @@ def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def trexp(S:so3, theta:Union[float,None]=None, check:bool=True) -> SO3:
+def trexp(S:so3, theta:Optional[float]=None, check:bool=True) -> SO3:
     ...
 
 @overload
-def trexp(S:se3, theta:Union[float,None]=None, check:bool=True) -> SE3:
+def trexp(S:se3, theta:Optional[float]=None, check:bool=True) -> SE3:
     ...
 
-def trexp(S:Union[so3,se3], theta:Union[float,None]=None, check:bool=True) -> Union[SO3,SE3]:
+def trexp(S:Union[so3,se3], theta:Optional[float]=None, check:bool=True) -> Union[SO3,SE3]:
     """
     Exponential of se(3) or so(3) matrix
 
@@ -1506,7 +1506,7 @@ def trnorm(T:SE3) -> SE3:
         return R
 
 
-def trinterp(start:Union[SE3,None], end:SE3, s:[float,None]=None) -> SE3:
+def trinterp(start:Optional[SE3], end:SE3, s:float) -> SE3:
     """
     Interpolate SE(3) matrices
 
@@ -1650,7 +1650,7 @@ def trinv(T:SE3) -> SE3:
     return Ti
 
 
-def tr2delta(T0:SE3, T1:Union[SE3,None]=None) -> R6:
+def tr2delta(T0:SE3, T1:Optional[SE3]=None) -> R6:
     r"""
     Difference of SE(3) matrices as differential motion
 
@@ -2319,7 +2319,7 @@ def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, repres
         return A
 
 @overload
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> R33,R66:
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> R33:
     ...
 
 @overload
@@ -2719,13 +2719,13 @@ def trplot(
     origincolor:str='',
     projection:str="ortho",
     block:bool=False,
-    anaglyph:Union[bool,str,Tuple[str,float],None]=None,
-    wtl:float=0.2,
-    width:float=None,
-    ax:Plt.Axes=None,
-    dims:Union[ArrayLike,None]=None,
-    d2:float=1.15,
-    flo:Tuple[float,float,float]=(-0.05, -0.05, -0.05),
+    anaglyph:Optional[Union[bool,str,Tuple[str,float]]]=None,
+    wtl:Optional[float]=0.2,
+    width:Optional[float]=None,
+    ax:Optional[Any]=None,  # can't assume MPL has been imported
+    dims:Optional[Union[ArrayLike,None]]=None,
+    d2:Optional[float]=1.15,
+    flo:Optional[Tuple[float,float,float]]=(-0.05, -0.05, -0.05),
     **kwargs,
 ):
     """
