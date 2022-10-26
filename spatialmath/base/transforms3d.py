@@ -22,12 +22,24 @@ from collections.abc import Iterable
 from spatialmath import base as smb
 from spatialmath.base import symbolic as sym
 
+from typing import overload, Union, List, Tuple, TextIO
+ArrayLike = Union[List,Tuple,float,np.ndarray]
+R3x = Union[List,Tuple,float,np.ndarray]  # various ways to represent R^3 for input
+R3 = np.ndarray[(3,), float]  # R^3
+R6 = np.ndarray[(3,), float]  # R^6
+SO3 = np.ndarray[(3,3), Any]  # SO(3) rotation matrix
+SE3 = np.ndarray[(3,3), float]  # SE(3) rigid-body transform
+so3 = np.ndarray[(3,3), float]  # so(3) Lie algebra of SO(3), skew-symmetrix matrix
+se3 = np.ndarray[(3,3), float]  # se(3) Lie algebra of SE(3), augmented skew-symmetrix matrix
+R66 = np.ndarray[(6,6), float]  # R^{6x6} matrix
+R33 = np.ndarray[(3,3), float]  # R^{3x3} matrix
+
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
 
 
-def rotx(theta, unit="rad"):
+def rotx(theta:float, unit:str="rad") -> SO3:
     """
     Create SO(3) rotation about X-axis
 
@@ -65,7 +77,7 @@ def rotx(theta, unit="rad"):
 
 
 # ---------------------------------------------------------------------------------------#
-def roty(theta, unit="rad"):
+def roty(theta:float, unit:str="rad") -> SO3:
     """
     Create SO(3) rotation about Y-axis
 
@@ -102,7 +114,7 @@ def roty(theta, unit="rad"):
 
 
 # ---------------------------------------------------------------------------------------#
-def rotz(theta, unit="rad"):
+def rotz(theta:float, unit:str="rad") -> SO3:
     """
     Create SO(3) rotation about Z-axis
 
@@ -138,7 +150,7 @@ def rotz(theta, unit="rad"):
 
 
 # ---------------------------------------------------------------------------------------#
-def trotx(theta, unit="rad", t=None):
+def trotx(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
     """
     Create SE(3) pure rotation about X-axis
 
@@ -172,7 +184,7 @@ def trotx(theta, unit="rad", t=None):
 
 
 # ---------------------------------------------------------------------------------------#
-def troty(theta, unit="rad", t=None):
+def troty(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
     """
     Create SE(3) pure rotation about Y-axis
 
@@ -206,7 +218,7 @@ def troty(theta, unit="rad", t=None):
 
 
 # ---------------------------------------------------------------------------------------#
-def trotz(theta, unit="rad", t=None):
+def trotz(theta:float, unit:str="rad", t:Union[R3,None]=None) -> SE3:
     """
     Create SE(3) pure rotation about Z-axis
 
@@ -241,8 +253,19 @@ def trotz(theta, unit="rad", t=None):
 
 # ---------------------------------------------------------------------------------------#
 
+@overload
+def transl(x:float, y:float, z:float) -> SE3:
+    ...
 
-def transl(x, y=None, z=None):
+@overload
+def transl(x:R3x) -> SE3:
+    ...
+
+@overload
+def transl(x:SE3) -> R3:
+    ...
+
+def transl(x:Union[R3x,float], y:Union[float,None]=None, zUnion[float,None]=None) -> Union[SE3,R3]:
     """
     Create SE(3) pure translation, or extract translation from SE(3) matrix
 
@@ -315,7 +338,7 @@ def transl(x, y=None, z=None):
     return T
 
 
-def ishom(T, check=False, tol=100):
+def ishom(T:SE3, check:bool=False, tol:float=100) -> bool:
     """
     Test if matrix belongs to SE(3)
 
@@ -359,7 +382,7 @@ def ishom(T, check=False, tol=100):
     )
 
 
-def isrot(R, check=False, tol=100):
+def isrot(R:SO3, check:bool=False, tol:float=100) -> bool:
     """
     Test if matrix belongs to SO(3)
 
@@ -398,7 +421,15 @@ def isrot(R, check=False, tol=100):
 
 
 # ---------------------------------------------------------------------------------------#
-def rpy2r(roll, pitch=None, yaw=None, *, unit="rad", order="zyx"):
+@overload
+def rpy2r(roll:float, pitch:float, yaw:float, *, unit:str="rad", order:str="zyx") -> SO3:
+    ...
+
+@overload
+def rpy2r(roll:R3x, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3:
+    ...
+
+def rpy2r(roll:Union[float,R3x], pitch:Union[float,None]=None, yaw:Union[float,None]=None, *, unit:str="rad", order:str="zyx") -> SO3:
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
@@ -462,9 +493,16 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit="rad", order="zyx"):
 
     return R
 
-
 # ---------------------------------------------------------------------------------------#
-def rpy2tr(roll, pitch=None, yaw=None, unit="rad", order="zyx"):
+@overload
+def rpy2tr(roll:float, pitch:float, yaw:float, unit:str="rad", order:str="zyx") -> SE3:
+    ...
+
+@overload
+def rpy2tr(roll:R3x, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3:
+    ...
+    
+def rpy2tr(roll:Union[float,R3x], pitch:Union[float,None]=None, yaw:Union[float,None]=None, unit:str="rad", order:str="zyx") -> SE3:
     """
     Create an SE(3) rotation matrix from roll-pitch-yaw angles
 
@@ -517,8 +555,15 @@ def rpy2tr(roll, pitch=None, yaw=None, unit="rad", order="zyx"):
 
 # ---------------------------------------------------------------------------------------#
 
+@overload
+def eul2r(phi:float, theta:float, psi:float, unit:str="rad") -> SO3:
+    ...
 
-def eul2r(phi, theta=None, psi=None, unit="rad"):
+@overload
+def eul2r(phi:R3x, theta=None, psi=None, unit:str="rad") -> SO3:
+    ...
+
+def eul2r(phi:Union[R3x,float], theta:Union[float,None]=None, psi:Union[float,None]=None, unit:sr="rad") -> SO3:
     """
     Create an SO(3) rotation matrix from Euler angles
 
@@ -562,7 +607,15 @@ def eul2r(phi, theta=None, psi=None, unit="rad"):
 
 
 # ---------------------------------------------------------------------------------------#
-def eul2tr(phi, theta=None, psi=None, unit="rad"):
+@overload
+def eul2tr(phi:float, theta:float, psi:float, unit:str="rad") -> SE3:
+    ...
+
+@overload
+def eul2tr(phi:R3x, theta=None, psi=None, unit:str="rad") -> SE3:
+    ...
+    
+def eul2tr(phi:Union[float,R3x], theta:Union[float,None]=None, psi:Union[float,None]=None, unit="rad") -> SE3:
     """
     Create an SE(3) pure rotation matrix from Euler angles
 
@@ -607,7 +660,7 @@ def eul2tr(phi, theta=None, psi=None, unit="rad"):
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta, v, unit="rad"):
+def angvec2r(theta:float, v:R3x, unit="rad") -> SO3:
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -655,7 +708,7 @@ def angvec2r(theta, v, unit="rad"):
 
 
 # ---------------------------------------------------------------------------------------#
-def angvec2tr(theta, v, unit="rad"):
+def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3:
     """
     Create an SE(3) pure rotation from rotation angle and axis
 
@@ -692,7 +745,7 @@ def angvec2tr(theta, v, unit="rad"):
 # ---------------------------------------------------------------------------------------#
 
 
-def exp2r(w):
+def exp2r(w:R3x) -> SE3:
     r"""
     Create an SO(3) rotation matrix from exponential coordinates
 
@@ -734,7 +787,7 @@ def exp2r(w):
     return R
 
 
-def exp2tr(w):
+def exp2tr(w:R3x) -> SE3:
     r"""
     Create an SE(3) pure rotation matrix from exponential coordinates
 
@@ -777,7 +830,7 @@ def exp2tr(w):
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2r(o, a=None):
+def oa2r(o:R3x, a:R3x) -> SO3:
     """
     Create SO(3) rotation matrix from two vectors
 
@@ -828,7 +881,7 @@ def oa2r(o, a=None):
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2tr(o, a=None):
+def oa2tr(o:R3x, a:R3x) -> SE3:
     """
     Create SE(3) pure rotation from two vectors
 
@@ -875,7 +928,7 @@ def oa2tr(o, a=None):
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2angvec(T, unit="rad", check=False):
+def tr2angvec(T:Union[SO3,SE3], unit:str="rad", check:bool=False) -> Tuple[float,R3]:
     r"""
     Convert SO(3) or SE(3) to angle and rotation vector
 
@@ -931,7 +984,7 @@ def tr2angvec(T, unit="rad", check=False):
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2eul(T, unit="rad", flip=False, check=False):
+def tr2eul(T:Union[SO3,SE3], unit:str="rad", flip:bool=False, check:bool=False) -> R3:
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
 
@@ -1006,7 +1059,7 @@ def tr2eul(T, unit="rad", flip=False, check=False):
 # ------------------------------------------------------------------------------------------------------------------- #
 
 
-def tr2rpy(T, unit="rad", order="zyx", check=False):
+def tr2rpy(T:Union[SO3,SE3], unit:str="rad", order:str="zyx", check:bool=False) -> R3:
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
 
@@ -1146,7 +1199,23 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
 
 
 # ---------------------------------------------------------------------------------------#
-def trlog(T, check=True, twist=False, tol=10):
+@overload
+def trlog(T:SO3, check:bool=True, twist:bool=False, tol:float=10) -> so3:
+    ...
+
+@overload
+def trlog(T:SE3, check:bool=True, twist:bool=False, tol:float=10) -> se3:
+    ...
+
+@overload
+def trlog(T:SO3, check:bool=True, twist:bool=True, tol:float=10) -> R3:
+    ...
+
+@overload
+def trlog(T:SE3, check:bool=True, twist:bool=True, tol:float=10) -> R6:
+    ...
+
+def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> Union[R3,R6,so3,se3]:
     """
     Logarithm of SO(3) or SE(3) matrix
 
@@ -1252,11 +1321,16 @@ def trlog(T, check=True, twist=False, tol=10):
     else:
         raise ValueError("Expect SO(3) or SE(3) matrix")
 
-
 # ---------------------------------------------------------------------------------------#
+@overload
+def trexp(S:so3, theta:Union[float,None]=None, check:bool=True) -> SO3:
+    ...
 
+@overload
+def trexp(S:se3, theta:Union[float,None]=None, check:bool=True) -> SE3:
+    ...
 
-def trexp(S, theta=None, check=True):
+def trexp(S:Union[so3,se3], theta:Union[float,None]=None, check:bool=True) -> Union[SO3,SE3]:
     """
     Exponential of se(3) or so(3) matrix
 
@@ -1373,7 +1447,7 @@ def trexp(S, theta=None, check=True):
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
 
-def trnorm(T):
+def trnorm(T:SE3) -> SE3:
     r"""
     Normalize an SO(3) or SE(3) matrix
 
@@ -1432,7 +1506,7 @@ def trnorm(T):
         return R
 
 
-def trinterp(start, end, s=None):
+def trinterp(start:Union[SE3,None], end:SE3, s:[float,None]=None) -> SE3:
     """
     Interpolate SE(3) matrices
 
@@ -1515,7 +1589,7 @@ def trinterp(start, end, s=None):
         return ValueError("Argument must be SO(3) or SE(3)")
 
 
-def delta2tr(d):
+def delta2tr(d:R6) -> SE3:
     r"""
     Convert differential motion to SE(3)
 
@@ -1541,7 +1615,7 @@ def delta2tr(d):
     return np.eye(4, 4) + smb.skewa(d)
 
 
-def trinv(T):
+def trinv(T:SE3) -> SE3:
     r"""
     Invert an SE(3) matrix
 
@@ -1576,7 +1650,7 @@ def trinv(T):
     return Ti
 
 
-def tr2delta(T0, T1=None):
+def tr2delta(T0:SE3, T1:Union[SE3,None]=None) -> R6:
     r"""
     Difference of SE(3) matrices as differential motion
 
@@ -1634,7 +1708,7 @@ def tr2delta(T0, T1=None):
     return np.r_[transl(Td), smb.vex(smb.t2r(Td) - np.eye(3))]
 
 
-def tr2jac(T):
+def tr2jac(T:SE3) -> R66:
     r"""
     SE(3) Jacobian matrix
 
@@ -1669,7 +1743,7 @@ def tr2jac(T):
     return np.block([[R, Z], [Z, R]])
 
 
-def eul2jac(angles):
+def eul2jac(angles:R3) -> R33:
     """
     Euler angle rate Jacobian
 
@@ -1723,7 +1797,7 @@ def eul2jac(angles):
     # fmt: on
 
 
-def rpy2jac(angles, order="zyx"):
+def rpy2jac(angles:R3, order:str="zyx") -> R33:
     """
     Jacobian from RPY angle rates to angular velocity
 
@@ -1804,7 +1878,7 @@ def rpy2jac(angles, order="zyx"):
     return J
 
 
-def exp2jac(v):
+def exp2jac(v:R3) -> R33:
     """
     Jacobian from exponential coordinate rates to angular velocity
 
@@ -1867,7 +1941,7 @@ def exp2jac(v):
     return E
 
 
-def r2x(R, representation="rpy/xyz"):
+def r2x(R:SO3, representation:str="rpy/xyz") -> R3:
     r"""
     Convert SO(3) matrix to angular representation
 
@@ -1908,7 +1982,7 @@ def r2x(R, representation="rpy/xyz"):
     return r
 
 
-def x2r(r, representation="rpy/xyz"):
+def x2r(r:R3, representation:str="rpy/xyz") -> SO3:
     r"""
     Convert angular representation to SO(3) matrix
 
@@ -1948,8 +2022,7 @@ def x2r(r, representation="rpy/xyz"):
         raise ValueError(f"unknown representation: {representation}")
     return R
 
-
-def tr2x(T, representation="rpy/xyz"):
+def tr2x(T:SE3, representation:str="rpy/xyz") -> R6:
     r"""
     Convert SE(3) to an analytic representation
 
@@ -1984,7 +2057,7 @@ def tr2x(T, representation="rpy/xyz"):
     return np.r_[t, r]
 
 
-def x2tr(x, representation="rpy/xyz"):
+def x2tr(x:R6, representation="rpy/xyz") -> SE3:
     r"""
     Convert analytic representation to SE(3)
 
@@ -2039,8 +2112,15 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     """
     raise DeprecationWarning("use rotvelxform_inv_dot instead")
 
+@overload
+def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> R33:
+    ...
 
-def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
+@overload
+def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=True, representation="rpy/xyz") -> R66:
+    ...
+
+def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> Union[R33,R66]:
     r"""
     Rotational velocity transformation
 
@@ -2238,8 +2318,15 @@ def rotvelxform(𝚪, inverse=False, full=False, representation="rpy/xyz"):
     else:
         return A
 
+@overload
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> R33,R66:
+    ...
 
-def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
+@overload
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=True, representation:str="rpy/xyz") -> R66:
+    ...
+
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> Union[R33,R66]:
     r"""
     Derivative of angular velocity transformation
 
@@ -2405,35 +2492,36 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
 
     elif representation == "exp":
         # autogenerated by symbolic/angvelxform_dot.ipynb
-        v = 𝚪
-        vd = 𝚪d
-        sk = smb.skew(v)
-        skd = smb.skew(vd)
+        sk = smb.skew(𝚪)
+        skd = smb.skew(𝚪d)
         theta_dot = np.inner(𝚪, 𝚪d) / smb.norm(𝚪)
         theta = smb.norm(𝚪)
-        Theta = (1.0 - theta / 2.0 * np.sin(theta) / (1.0 - np.cos(theta))) / theta**2
+        Theta = 1 / theta ** 2 * (1 - theta / 2 * S(theta) / (1 - C(theta)))
 
         # hand optimized version of code from notebook
         # TODO:
         #   results are close but different to numerical cross check
         #   something wrong in the derivation
-        Theta_dot = (
-            -theta * C(theta) - S(theta) + theta * S(theta) ** 2 / (1 - C(theta))
-        ) * theta_dot / 2 / (1 - C(theta)) / theta**2 - (
-            2 - theta * S(theta) / (1 - C(theta))
-        ) * theta_dot / theta**3
+        # Theta_dot = (
+        #     -theta * C(theta) - S(theta) + theta * S(theta) ** 2 / (1 - C(theta))
+        # ) * theta_dot / 2 / (1 - C(theta)) / theta**2 - (
+        #     2 - theta * S(theta) / (1 - C(theta))
+        # ) * theta_dot / theta**3
+        Theta_dot = (-1/2*theta*theta_dot*C(theta)/(1 - C(theta)) + (1/2)*theta*theta_dot*S(theta)**2/(1 - C(theta))**2 - 1/2*theta_dot*S(theta)/(1 - C(theta)))/theta**2 - 2*theta_dot*(-1/2*theta*S(theta)/(1 - C(theta)) + 1)/theta**3
 
         Ainv_dot = -0.5 * skd + 2.0 * sk @ skd * Theta + sk @ sk * Theta_dot
     else:
         raise ValueError("bad representation specified")
 
     if full:
-        return sp.linalg.block_diag(np.eye(3, 3), Ainv_dot)
+        result_66 = np.zeros(6,6)
+        result_66[3:,3:] = Ainv_dot
+        return result_66
     else:
         return Ainv_dot
 
 
-def tr2adjoint(T):
+def tr2adjoint(T:Union[SO3,SE3]) -> R66:
     r"""
     Adjoint matrix
 
@@ -2487,14 +2575,14 @@ def tr2adjoint(T):
 
 
 def trprint(
-    T,
-    orient="rpy/zyx",
-    label=None,
-    file=sys.stdout,
-    fmt="{:.3g}",
-    degsym=True,
-    unit="deg",
-):
+    T:Union[SO3,SE3],
+    orient:str="rpy/zyx",
+    label:str='',
+    file:TextIO=sys.stdout,
+    fmt:str="{:.3g}",
+    degsym:bool=True,
+    unit:str="deg",
+) -> str:
     """
      Compact display of SO(3) or SE(3) matrices
 
@@ -2562,7 +2650,7 @@ def trprint(
 
     s = ""
 
-    if label is not None:
+    if label != '':
         s += "{:s}: ".format(label)
 
     # print the translational part if it exists
@@ -2618,26 +2706,26 @@ def _vec2s(fmt, v):
 
 
 def trplot(
-    T,
-    color="blue",
-    frame=None,
-    axislabel=True,
-    axissubscript=True,
-    textcolor=None,
-    labels=("X", "Y", "Z"),
-    length=1,
-    style="arrow",
-    originsize=20,
-    origincolor=None,
-    projection="ortho",
-    block=False,
-    anaglyph=None,
-    wtl=0.2,
-    width=None,
-    ax=None,
-    dims=None,
-    d2=1.15,
-    flo=(-0.05, -0.05, -0.05),
+    T:Union[SO3,SE3],
+    color:str="blue",
+    frame:str='',
+    axislabel:bool=True,
+    axissubscript:bool=True,
+    textcolor:str='',
+    labels:Tuple[str,str,str]=("X", "Y", "Z"),
+    length:float=1,
+    style:str="arrow",
+    originsize:float=20,
+    origincolor:str='',
+    projection:str="ortho",
+    block:bool=False,
+    anaglyph:Union[bool,str,Tuple[str,float],None]=None,
+    wtl:float=0.2,
+    width:float=None,
+    ax:Plt.Axes=None,
+    dims:Union[ArrayLike,None]=None,
+    d2:float=1.15,
+    flo:Tuple[float,float,float]=(-0.05, -0.05, -0.05),
     **kwargs,
 ):
     """
@@ -2673,11 +2761,11 @@ def trplot(
     :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
         If dims is [min, max] those limits are applied to the x-, y- and z-axes.
     :type dims: array_like(6) or array_like(2)
-    :param anaglyph: 3D anaglyph display, left-right lens colors eg. ``'rc'``
-    for red-cyan glasses.  To set the disparity (default 0.1) provide second
-    argument in a tuple, eg. ``('rc', 0.2)``.  Bigger disparity exagerates the
-    3D "pop out" effect.
-    :type anaglyph: str or (str, float)
+    :param anaglyph: 3D anaglyph display, if True use use red-cyan glasses.  To
+    set the color pass a string like ``'gb'`` for green-blue glasses. To set the 
+    disparity (default 0.1) provide second argument in a tuple, eg. ``('rc', 0.2)``.  
+    Bigger disparity exagerates the 3D "pop out" effect.
+    :type anaglyph: bool, str or (str, float)
     :param wtl: width-to-length ratio for arrows, default 0.2
     :type wtl: float
     :param projection: 3D projection: ortho [default] or persp
@@ -2786,15 +2874,16 @@ def trplot(
         args = {**args, **kwargs}
 
         # unpack the anaglyph parameters
+        shift = 0.1
         if anaglyph is True:
             colors = "rc"
-            shift = 0.1
+        elif isinstance(anaglyph, str):
+            colors = anaglyph
         elif isinstance(anaglyph, tuple):
             colors = anaglyph[0]
             shift = anaglyph[1]
         else:
-            colors = anaglyph
-            shift = 0.1
+            raise ValueError('bad anaglyph value')
 
         # the left eye sees the normal trplot
         trplot(T, color=colors[0], **args)
@@ -2927,17 +3016,17 @@ def trplot(
             [o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color[2], linewidth=width
         )
 
-    if textcolor is None:
+    if textcolor != '':
         textcolor = color[0]
     else:
         textcolor = "blue"
-    if origincolor is None:
+    if origincolor != '':
         origincolor = color[0]
     else:
         origincolor = "black"
 
     # label the frame
-    if frame:
+    if frame != '':
         if textcolor is None:
             textcolor = color[0]
         else:
@@ -3010,7 +3099,7 @@ def trplot(
     return ax
 
 
-def tranimate(T, **kwargs):
+def tranimate(T:Union[SO3,SE3], **kwargs) -> None:
     """
     Animate a 3D coordinate frame
 
