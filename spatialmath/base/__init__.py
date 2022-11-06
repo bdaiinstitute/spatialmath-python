@@ -13,17 +13,17 @@ from spatialmath.base.animate import *  # lgtm [py/polluting-import]
 from spatialmath.base.graphics import *  # lgtm [py/polluting-import]
 from spatialmath.base.numeric import *  # lgtm [py/polluting-import]
 
-# from spatialmath.base.argcheck import (
-#     assertmatrix,
-#     ismatrix,
-#     getvector,
-#     assertvector,
-#     isvector,
-#     isscalar,
-#     getunit,
-#     isnumberlist,
-#     isvectorlist,
-# )
+from spatialmath.base.argcheck import (
+    assertmatrix,
+    ismatrix,
+    getvector,
+    assertvector,
+    isvector,
+    isscalar,
+    getunit,
+    isnumberlist,
+    isvectorlist,
+)
 # from spatialmath.base.quaternions import (
 #     pure,
 #     qnorm,
@@ -124,26 +124,26 @@ from spatialmath.base.numeric import *  # lgtm [py/polluting-import]
 #     homtrans,
 #     rodrigues,
 # )
-# from spatialmath.base.vectors import (
-#     colvec,
-#     unitvec,
-#     unitvec_norm,
-#     norm,
-#     normsq,
-#     isunitvec,
-#     iszerovec,
-#     isunittwist,
-#     isunittwist2,
-#     unittwist,
-#     unittwist_norm,
-#     unittwist2,
-#     angdiff,
-#     removesmall,
-#     cross,
-#     iszero,
-#     wrap_0_2pi,
-#     wrap_mpi_pi,
-# )
+from spatialmath.base.vectors import (
+    colvec,
+    unitvec,
+    unitvec_norm,
+    norm,
+    normsq,
+    isunitvec,
+    iszerovec,
+    isunittwist,
+    isunittwist2,
+    unittwist,
+    unittwist_norm,
+    unittwist2,
+    angdiff,
+    removesmall,
+    cross,
+    iszero,
+    wrap_0_2pi,
+    wrap_mpi_pi,
+)
 # from spatialmath.base.symbolic import *
 # from spatialmath.base.animate import Animate, Animate2
 # from spatialmath.base.graphics import (

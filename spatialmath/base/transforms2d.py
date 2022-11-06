@@ -19,6 +19,28 @@ import math
 import numpy as np
 import spatialmath.base as smb
 
+from typing import overload, Union, List, Tuple, TextIO, Any, Optional #, TypeGuard for 3.10
+# Array2 = Union[NDArray[(2,),np.dtype[np.floating]],np.ndarray[(2,1),np.dtype[np.floating]],np.ndarray[(1,2),np.dtype[np.floating]]]
+# Array3 = Union[np.ndarray[(3,),np.dtype[np.floating]],np.ndarray[(3,1),np.dtype[np.floating]],np.ndarray[(1,3),np.dtype[np.floating]]]
+Array2 = np.ndarray[Any, np.dtype[np.floating]]
+Array3 = np.ndarray[Any, np.dtype[np.floating]]
+Array6 = np.ndarray[Any, np.dtype[np.floating]]
+
+R2x = Union[List[float],Tuple[float,float],Array2]  # various ways to represent R^3 for input
+R3x = Union[List[float],Tuple[float,float],Array3]  # various ways to represent R^3 for input
+R6x = Union[List[float],Tuple[float,float,float,float,float,float],Array6]  # various ways to represent R^3 for input
+
+R2 = np.ndarray[Any, np.dtype[np.floating]]  # R^2
+R3 = np.ndarray[Any, np.dtype[np.floating]]  # R^3
+R6 = np.ndarray[Any, np.dtype[np.floating]]  # R^6
+SO2 = np.ndarray[Any, np.dtype[np.floating]]  # SO(2) rotation matrix
+SE2 = np.ndarray[Any, np.dtype[np.floating]]  # SE(2) rigid-body transform
+R22 = np.ndarray[Any, np.dtype[np.floating]]  # R^{2x2} matrix
+R33 = np.ndarray[Any, np.dtype[np.floating]]  # R^{3x3} matrix
+
+so2 = np.ndarray[Any, np.dtype[np.floating]]  # so(2) Lie algebra of SO(2), skew-symmetrix matrix
+se2 = np.ndarray[Any, np.dtype[np.floating]]  # se(2) Lie algebra of SE(2), augmented skew-symmetrix matrix
+
 _eps = np.finfo(np.float64).eps
 
 try:  # pragma: no cover
@@ -31,7 +53,7 @@ except ImportError:  # pragma: no cover
     _symbolics = False
 
 # ---------------------------------------------------------------------------------------#
-def rot2(theta, unit="rad"):
+def rot2(theta:float, unit:str="rad") -> SO2:
     """
     Create SO(2) rotation
 
@@ -61,9 +83,8 @@ def rot2(theta, unit="rad"):
     # fmt: on
     return R
 
-
 # ---------------------------------------------------------------------------------------#
-def trot2(theta, unit="rad", t=None):
+def trot2(theta:float, unit:str="rad", t:Optional[R2x]=None) -> SE2:
     """
     Create SE(2) pure rotation
 
@@ -98,7 +119,7 @@ def trot2(theta, unit="rad", t=None):
     return T
 
 
-def xyt2tr(xyt, unit="rad"):
+def xyt2tr(xyt:R3x, unit:str="rad") -> SE2:
     """
     Create SE(2) pure rotation
 
@@ -127,7 +148,7 @@ def xyt2tr(xyt, unit="rad"):
     return T
 
 
-def tr2xyt(T, unit="rad"):
+def tr2xyt(T:SE2, unit:str="rad") -> R3:
     """
     Convert SE(2) to x, y, theta
 
@@ -159,10 +180,17 @@ def tr2xyt(T, unit="rad"):
 
 
 # ---------------------------------------------------------------------------------------#
-def transl2(x, y=None):
+@overload
+def transl2(x:float, y:float) -> SE2:
+    ...
+
+@overload
+def transl2(x:R2x) -> SE2:
+    ...
+
+def transl2(x:Union[float,R2x], y:Optional[float]=None) -> SE2:
     """
     Create SE(2) pure translation, or extract translation from SE(2) matrix
-
 
     **Create a translational SE(2) matrix**
 
@@ -229,7 +257,7 @@ def transl2(x, y=None):
     return T
 
 
-def ishom2(T, check=False):
+def ishom2(T:Any, check:bool=False) -> bool:  # TypeGuard(SE2):
     """
     Test if matrix belongs to SE(2)
 
@@ -268,7 +296,7 @@ def ishom2(T, check=False):
     )
 
 
-def isrot2(R, check=False):
+def isrot2(R:Any, check:bool=False) -> bool:  # TypeGuard(SO2):
     """
     Test if matrix belongs to SO(2)
 
@@ -304,7 +332,7 @@ def isrot2(R, check=False):
 # ---------------------------------------------------------------------------------------#
 
 
-def trinv2(T):
+def trinv2(T:SE2) -> SE2:
     r"""
     Invert an SE(2) matrix
 
@@ -338,8 +366,23 @@ def trinv2(T):
     Ti[2, 2] = 1
     return Ti
 
+@overload
+def trlog2(T:SO2, check:bool=True, twist:bool=False, tol:float=10) -> so2:
+    ...
 
-def trlog2(T, check=True, twist=False, tol=10):
+@overload
+def trlog2(T:SE2, check:bool=True, twist:bool=False, tol:float=10) -> se2:
+    ...
+
+@overload
+def trlog2(T:SO2, check:bool=True, twist:bool=True, tol:float=10) -> float:
+    ...
+
+@overload
+def trlog2(T:SE2, check:bool=True, twist:bool=True, tol:float=10) -> R3:
+    ...    
+
+def trlog2(T:Union[SO2,SE2], check:bool=True, twist:bool=False, tol:float=10) -> Union[float,R3,so2,se2]:
     """
     Logarithm of SO(2) or SE(2) matrix
 
@@ -417,9 +460,15 @@ def trlog2(T, check=True, twist=False, tol=10):
 
 
 # ---------------------------------------------------------------------------------------#
+@overload
+def trexp2(S:so2, theta:Optional[float]=None, check:bool=True) -> SO2:
+    ...
 
+@overload
+def trexp2(S:se2, theta:Optional[float]=None, check:bool=True) -> SE2:
+    ...
 
-def trexp2(S, theta=None, check=True):
+def trexp2(S:Union[so2,se2], theta:Optional[float]=None, check:bool=True) -> Union[SO2,SE2]:
     """
     Exponential of so(2) or se(2) matrix
 
@@ -531,10 +580,17 @@ def trexp2(S, theta=None, check=True):
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
 
+@overload
+def adjoint2(T:SO2) -> R22:
+    ...
 
-def adjoint2(T):
+@overload
+def adjoint2(T:SE2) -> R33:
+    ...
+
+def adjoint2(T:Union[SO2,SE2]) -> Union[R22,R33]:
     # http://ethaneade.com/lie.pdf
-    if T.shape == (3, 3):
+    if T.shape == (2, 2):
         # SO(2) adjoint
         return np.identity(2)
     elif T.shape == (3, 3):
@@ -544,13 +600,13 @@ def adjoint2(T):
         return np.block([
                 [R, np.c_[t[1], -t[0]].T], 
                 [0, 0,           1]
-                ])
+                ])  # type: ignore
         # fmt: on
     else:
         raise ValueError("bad argument")
 
 
-def tr2jac2(T):
+def tr2jac2(T:SE2) -> R33:
     r"""
     SE(2) Jacobian matrix
 
@@ -584,7 +640,7 @@ def tr2jac2(T):
     return J
 
 
-def trinterp2(start, end, s=None):
+def trinterp2(start:Union[SE2,None], end:SE2, s:float=None) -> SE2:
     """
     Interpolate SE(2) or SO(2) matrices
 
@@ -671,7 +727,7 @@ def trinterp2(start, end, s=None):
         return ValueError("Argument must be SO(2) or SE(2)")
 
 
-def trprint2(T, label=None, file=sys.stdout, fmt="{:.3g}", unit="deg"):
+def trprint2(T:Union[SO2,SE2], label:str='', file:TextIO=sys.stdout, fmt:str="{:.3g}", unit:str="deg") -> str:
     """
     Compact display of SE(2) or SO(2) matrices
 
@@ -720,7 +776,7 @@ def trprint2(T, label=None, file=sys.stdout, fmt="{:.3g}", unit="deg"):
 
     s = ""
 
-    if label is not None:
+    if label != '':
         s += "{:s}: ".format(label)
 
     # print the translational part if it exists
@@ -744,7 +800,7 @@ def _vec2s(fmt, v):
     return ", ".join([fmt.format(x) for x in v])
 
 
-def points2tr2(p1, p2):
+def points2tr2(p1:np.ndarray, p2:np.ndarray) -> SE2:
     """
     SE(2) transform from corresponding points
 
@@ -820,7 +876,7 @@ def points2tr2(p1, p2):
 # params:
 #   max_iter: int, max number of iterations
 #   min_delta_err: float, minimum change in alignment error
-def ICP2d(reference, source, T=None, max_iter=20, min_delta_err=1e-4):
+def ICP2d(reference:np.ndarray, source:np.ndarray, T:Optional[SE2]=None, max_iter:int=20, min_delta_err:float=1e-4) -> SE2:
 
     from scipy.spatial import KDTree
 
@@ -947,7 +1003,7 @@ def _AlignSVD(source, reference):
     return smb.rt2tr(R, t)
 
 def trplot2(
-    T,
+    T:Union[SO2,SE2],
     color="blue",
     frame=None,
     axislabel=True,

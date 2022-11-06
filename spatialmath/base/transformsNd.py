@@ -13,13 +13,12 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 import math
 import numpy as np
-from spatialmath import base
+from spatialmath.base.sm_types import *
+from spatialmath.base.argcheck import getvector, isvector
+# from spatialmath.base.symbolic import issymbol
+# from spatialmath.base.transforms3d import transl
+# from spatialmath.base.transforms2d import transl2
 
-# from spatialmath.base import vectors as vec
-# from spatialmath.base import transforms2d as t2d
-# from spatialmath.base import transforms3d as t3d
-# from spatialmath.base import argcheck
-# from spatialmath.base import symbolic as sym
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -33,7 +32,15 @@ except ImportError:  # pragma: no cover
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
-def r2t(R, check=False):
+@overload
+def r2t(R:SO2Array, check:bool=False) -> SE2Array:
+    ...
+
+@overload
+def r2t(R:SO3Array, check:bool=False) -> SE3Array:
+    ...
+
+def r2t(R:SOnArray, check:bool=False) -> SEnArray:
     """
     Convert SO(n) to SE(n)
 
@@ -89,7 +96,15 @@ def r2t(R, check=False):
 
 
 # ---------------------------------------------------------------------------------------#
-def t2r(T, check=False):
+@overload
+def t2r(T:SE2Array, check:bool=False) -> SO2Array:
+    ...
+
+@overload
+def t2r(T:SE3Array, check:bool=False) -> SO3Array:
+    ...
+
+def t2r(T:SEnArray, check:bool=False) -> SOnArray:
     """
     Convert SE(n) to SO(n)
 
@@ -136,11 +151,21 @@ def t2r(T, check=False):
 
     return R
 
+a = t2r(np.eye(4,dtype='float'))
+
+b = t2r(np.eye(3))
 
 # ---------------------------------------------------------------------------------------#
 
+@overload
+def tr2rt(T:SE2Array, check=False) -> Tuple[SO2Array,R2]:
+    ...
 
-def tr2rt(T, check=False):
+@overload
+def tr2rt(T:SE3Array, check=False) -> Tuple[SO3Array,R3]:
+    ...
+
+def tr2rt(T:SEnArray, check=False) -> Tuple[SOnArray,Rn]:
     """
     Convert SE(n) to SO(n) and translation
 
@@ -189,8 +214,15 @@ def tr2rt(T, check=False):
 
 # ---------------------------------------------------------------------------------------#
 
+@overload
+def rt2tr(R:SO2Array, t:R2x, check=False) -> SE2Array:
+    ...
 
-def rt2tr(R, t, check=False):
+@overload
+def rt2tr(R:SO3Array, t:R3x, check=False) -> SE3Array:
+    ...
+
+def rt2tr(R:SOnArray, t:Rn, check=False) -> SEnArray:
     """
     Convert SO(n) and translation to SE(n)
 
@@ -220,7 +252,7 @@ def rt2tr(R, t, check=False):
 
     :seealso: rt2m, tr2rt, r2t
     """
-    t = base.getvector(t, dim=None, out="array")
+    t = getvector(t, dim=None, out="array")
     if not isinstance(R, np.ndarray):
         raise ValueError("Rotation matrix not a NumPy array")
     if R.shape[0] != t.shape[0]:
@@ -258,7 +290,7 @@ def rt2tr(R, t, check=False):
 # ---------------------------------------------------------------------------------------#
 
 
-def Ab2M(A, b):
+def Ab2M(A:np.ndarray, b:np.ndarray) -> np.ndarray:
     """
     Pack matrix and vector to matrix
 
@@ -285,7 +317,7 @@ def Ab2M(A, b):
 
     :seealso: rt2tr, tr2rt, r2t
     """
-    b = base.getvector(b, dim=None, out="array")
+    b = getvector(b, dim=None, out="array")
     if not isinstance(A, np.ndarray):
         raise ValueError("Rotation matrix not a NumPy array")
     if A.shape[0] != b.shape[0]:
@@ -308,7 +340,7 @@ def Ab2M(A, b):
 # ======================= predicates
 
 
-def isR(R, tol=100):
+def isR(R:SOnArray, tol:float=100) -> bool:  #-> TypeGuard[SOnArray]:
     r"""
     Test if matrix belongs to SO(n)
 
@@ -337,7 +369,7 @@ def isR(R, tol=100):
     )
 
 
-def isskew(S, tol=10):
+def isskew(S:sonArray, tol:float=10) -> bool: #-> TypeGuard[sonArray]:
     r"""
     Test if matrix belongs to so(n)
 
@@ -364,7 +396,7 @@ def isskew(S, tol=10):
     return np.linalg.norm(S + S.T) < tol * _eps
 
 
-def isskewa(S, tol=10):
+def isskewa(S:senArray, tol:float=10) -> bool: # -> TypeGuard[senArray]:
     r"""
     Test if matrix belongs to se(n)
 
@@ -394,7 +426,7 @@ def isskewa(S, tol=10):
     )
 
 
-def iseye(S, tol=10):
+def iseye(S:np.ndarray, tol:float=10) -> bool:
     """
     Test if matrix is identity
 
@@ -424,7 +456,15 @@ def iseye(S, tol=10):
 
 
 # ---------------------------------------------------------------------------------------#
-def skew(v):
+@overload
+def skew(v:R2x) -> se2Array:
+    ...
+
+@overload
+def skew(v:R3x) -> se3Array:
+    ...
+
+def skew(v:Union[R2x,R3x]) -> Union[se2Array,se3Array]:
     r"""
     Create skew-symmetric metrix from vector
 
@@ -450,10 +490,10 @@ def skew(v):
         - This is the inverse of the function ``vex()``.
         - These are the generator matrices for the Lie algebras so(2) and so(3).
 
-    :seealso: :func:`vex`, :func:`skewa`
+    :seealso: :func:`vex` :func:`skewa`
     :SymPy: supported
     """
-    v = base.getvector(v, None, "sequence")
+    v = getvector(v, None, "sequence")
     if len(v) == 1:
         return np.array([[0, -v[0]], [v[0], 0]])
     elif len(v) == 3:
@@ -463,9 +503,15 @@ def skew(v):
 
 
 # ---------------------------------------------------------------------------------------#
+@overload
+def vex(s:SO2Array, check:bool=False) -> R2:
+    ...
 
+@overload
+def vex(s:SO3Array, check:bool=False) -> R3:
+    ...
 
-def vex(s, check=False):
+def vex(s:SOnArray, check:bool=False) -> Union[R2,R3]:
     r"""
     Convert skew-symmetric matrix to vector
 
@@ -500,7 +546,7 @@ def vex(s, check=False):
         - The function takes the mean of the two elements that correspond to each unique
           element of the matrix.
 
-    :seealso: :func:`skew`, :func:`vexa`
+    :seealso: :func:`skew` :func:`vexa`
     :SymPy: supported
     """
     if s.shape == (3, 3):
@@ -514,9 +560,15 @@ def vex(s, check=False):
 
 
 # ---------------------------------------------------------------------------------------#
+@overload
+def skewa(v:R3x) -> se2Array:
+    ...
 
+@overload
+def skewa(v:R6x) -> se3Array:
+    ...
 
-def skewa(v):
+def skewa(v:Union[R3x,R6x]) -> Union[se2Array,se3Array]:
     r"""
     Create augmented skew-symmetric metrix from vector
 
@@ -543,11 +595,11 @@ def skewa(v):
         - These are the generator matrices for the Lie algebras se(2) and se(3).
         - Map twist vectors in 2D and 3D space to se(2) and se(3).
 
-    :seealso: :func:`vexa`, :func:`skew`
+    :seealso: :func:`vexa` :func:`skew`
     :SymPy: supported
     """
 
-    v = base.getvector(v, None)
+    v = getvector(v, None)
     if len(v) == 3:
         omega = np.zeros((3, 3), dtype=v.dtype)
         omega[:2, :2] = skew(v[2])
@@ -561,8 +613,15 @@ def skewa(v):
     else:
         raise ValueError("expecting a 3- or 6-vector")
 
+@overload
+def vexa(Omega:se2Array, check:bool=False) -> R3:
+    ...
 
-def vexa(Omega, check=False):
+@overload
+def vexa(Omega:se3Array, check:bool=False) -> R6:
+    ...
+
+def vexa(Omega:senArray, check:bool=False) -> Union[R3,R6]:
     r"""
     Convert skew-symmetric matrix to vector
 
@@ -597,18 +656,25 @@ def vexa(Omega, check=False):
         - The function takes the mean of the two elements that correspond to each unique
           element of the matrix.
 
-    :seealso: :func:`skewa`, :func:`vex`
+    :seealso: :func:`skewa` :func:`vex`
     :SymPy: supported
     """
     if Omega.shape == (4, 4):
-        return np.hstack((base.transl(Omega), vex(t2r(Omega), check=check)))
+        return np.hstack((Omega[:3,3], vex(t2r(Omega), check=check)))
     elif Omega.shape == (3, 3):
-        return np.hstack((base.transl2(Omega), vex(t2r(Omega), check=check)))
+        return np.hstack((Omega[:2,2], vex(t2r(Omega), check=check)))
     else:
         raise ValueError("expecting a 3x3 or 4x4 matrix")
 
+@overload
+def rodrigues(w:float, theta:Optional[float]=None) -> SO2Array:
+    ...
 
-def rodrigues(w, theta=None):
+@overload
+def rodrigues(w:R3x, theta:Optional[float]=None) -> SO2Array:
+    ...
+
+def rodrigues(w:Union[float,R3x], theta:Optional[float]=None) -> Union[SO2Array,SO3Array]:
     r"""
     Rodrigues' formula for rotation
 
@@ -634,15 +700,15 @@ def rodrigues(w, theta=None):
         >>> rodrigues(0.3)   # 2D version
 
     """
-    w = base.getvector(w)
-    if base.iszerovec(w):
+    w = getvector(w)
+    if iszerovec(w):
         # for a zero so(n) return unit matrix, theta not relevant
         if len(w) == 1:
             return np.eye(2)
         else:
             return np.eye(3)
     if theta is None:
-        w, theta = base.unitvec_norm(w)
+        w, theta = unitvec_norm(w)
 
     skw = skew(w)
     return (
@@ -652,7 +718,7 @@ def rodrigues(w, theta=None):
     )
 
 
-def h2e(v):
+def h2e(v:np.ndarray) -> np.ndarray:
     """
     Convert from homogeneous to Euclidean form
 
@@ -683,13 +749,13 @@ def h2e(v):
         # dealing with matrix
         return v[:-1, :] / v[-1, :][np.newaxis, :]
 
-    elif base.isvector(v):
+    elif isvector(v):
         # dealing with shape (N,) array
-        v = base.getvector(v, out="col")
+        v = getvector(v, out="col")
         return v[0:-1] / v[-1]
 
 
-def e2h(v):
+def e2h(v:np.ndarray) -> np.ndarray:
     """
     Convert from Euclidean to homogeneous form
 
@@ -719,13 +785,13 @@ def e2h(v):
         # dealing with matrix
         return np.vstack([v, np.ones((1, v.shape[1]))])
 
-    elif base.isvector(v):
+    elif isvector(v):
         # dealing with shape (N,) array
-        v = base.getvector(v, out="col")
+        v = getvector(v, out="col")
         return np.vstack((v, 1))
 
 
-def homtrans(T, p):
+def homtrans(T:SEnArray, p:np.ndarray) -> np.ndarray:
     r"""
     Apply a homogeneous transformation to a Euclidean vector
 
@@ -758,7 +824,7 @@ def homtrans(T, p):
           then the points are defined with respect to frame {B} and are transformed to be
           with respect to frame {A}.
 
-    :seealso: :func:`e2h`, :func:`h2e`
+    :seealso: :func:`e2h` :func:`h2e`
     """
     p = e2h(p)
     if p.shape[0] != T.shape[0]:
@@ -767,7 +833,7 @@ def homtrans(T, p):
     return h2e(T @ p)
 
 
-def det(m):
+def det(m:np.ndarray) -> float:
     """
     Determinant of matrix
 
@@ -800,6 +866,6 @@ if __name__ == "__main__":  # pragma: no cover
     print(h2e((1, 2, 3)))
     exec(
         open(
-            pathlib.Path(__file__).parent.absolute() / "test" / "test_transformsNd.py"
+            pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_transformsNd.py"
         ).read()
     )  # pylint: disable=exec-used

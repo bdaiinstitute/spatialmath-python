@@ -13,14 +13,18 @@ that can be passed.
 
 import math
 import numpy as np
-from spatialmath.base import symbolic as sym
+#from spatialmath.base import symbolic as sym # HACK
+from spatialmath.base.symbolic import issymbol, symtype
 
 # valid scalar types
-_scalartypes = (int, np.integer, float, np.floating) + sym.symtype
+_scalartypes = (int, np.integer, float, np.floating) + symtype
 
-from typing import Union, List, Tuple, Any, Optional, Type, Callable
-from numpy.typing import DTypeLike
-ArrayLike = Union[List, Tuple, np.ndarray]
+# from typing import Union, List, Tuple, Any, Optional, Type, Callable
+# from numpy.typing import DTypeLike
+# Array = np.ndarray[Any, np.dtype[np.floating]]
+# ArrayLike = Union[float,List[float],Tuple,Array]  # various ways to represent R^3 for input
+
+from spatialmath.base.sm_types import ArrayLike, Any, Tuple, Union, DTypeLike, Type, Optional, Callable
 
 def isscalar(x:Any) -> bool:
     """
@@ -327,7 +331,7 @@ def getvector(v:ArrayLike, dim:Union[int,None]=None, out:str="array", dtype:DTyp
     if isinstance(v, (list, tuple)):
         # list or tuple was passed in
 
-        if sym.issymbol(v):
+        if issymbol(v):
             dt = None
 
         if dim is not None and v and len(v) != dim:

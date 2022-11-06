@@ -17,9 +17,8 @@ from scipy.linalg import logm, expm
 from spatialmath.base.transformsNd import *
 from spatialmath.base.transforms3d import trotx, transl, rotx, isrot, ishom
 from spatialmath.base.transforms2d import trot2, transl2, rot2, isrot2, ishom2
-from spatialmath.base import sym
+from spatialmath.base.symbolic import symbol
 import matplotlib.pyplot as plt
-
 
 class TestND(unittest.TestCase):
     def test_iseye(self):
@@ -40,7 +39,7 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[0:3, 3], np.r_[0, 0, 0])
         nt.assert_array_almost_equal(T[:3, :3], R)
 
-        theta = sym.symbol("theta")
+        theta = symbol("theta")
         R = rotx(theta)
         T = r2t(R)
         self.assertEqual(r2t(R).dtype, "O")
@@ -54,7 +53,7 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
         nt.assert_array_almost_equal(T[:2, :2], R)
 
-        theta = sym.symbol("theta")
+        theta = symbol("theta")
         R = rot2(theta)
         T = r2t(R)
         self.assertEqual(r2t(R).dtype, "O")
@@ -96,7 +95,7 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl(T), np.array(t))
 
-        theta = sym.symbol("theta")
+        theta = symbol("theta")
         R = rotx(theta)
         self.assertEqual(r2t(R).dtype, "O")
 
@@ -107,7 +106,7 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl2(T), np.array(t))
 
-        theta = sym.symbol("theta")
+        theta = symbol("theta")
         R = rot2(theta)
         self.assertEqual(r2t(R).dtype, "O")
 
@@ -344,7 +343,7 @@ class TestND(unittest.TestCase):
         a = np.array([[1, 2], [3, 4]])
         self.assertAlmostEqual(np.linalg.det(a), det(a))
 
-        x, y = sym.symbol("x y")
+        x, y = symbol("x y")
         a = np.array([[x, y], [y, x]])
         self.assertEqual(det(a), x ** 2 - y ** 2)
 

@@ -15,7 +15,7 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base.vectors import *
-from spatialmath.base import sym
+from spatialmath.base.symbolics import symbol
 import matplotlib.pyplot as plt
 
 
@@ -77,17 +77,17 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(norm([1, 2, 3]), math.sqrt(14))
         self.assertAlmostEqual(norm(np.r_[1, 2, 3]), math.sqrt(14))
 
-        x, y = sym.symbol("x y")
+        x, y = symbol("x y")
         v = [x, y]
-        self.assertEqual(norm(v), sym.sqrt(x ** 2 + y ** 2))
-        self.assertEqual(norm(np.r_[v]), sym.sqrt(x ** 2 + y ** 2))
+        self.assertEqual(norm(v), sqrt(x ** 2 + y ** 2))
+        self.assertEqual(norm(np.r_[v]), sqrt(x ** 2 + y ** 2))
 
     def test_norm(self):
         self.assertAlmostEqual(norm([0, 0, 0]), 0)
         self.assertAlmostEqual(normsq([1, 2, 3]), 14)
         self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
 
-        x, y = sym.symbol("x y")
+        x, y = symbol("x y")
         v = [x, y]
         self.assertEqual(normsq(v), x ** 2 + y ** 2)
         self.assertEqual(normsq(np.r_[v]), x ** 2 + y ** 2)

@@ -1,3 +1,5 @@
+print("in spatialmath/__init__")
+
 from spatialmath.pose2d import SO2, SE2
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.baseposematrix import BasePoseMatrix
@@ -9,8 +11,7 @@ from spatialmath.spatialvector import SpatialVelocity, SpatialAcceleration, \
 from spatialmath.quaternion import Quaternion, UnitQuaternion
 from spatialmath.DualQuaternion import DualQuaternion, UnitDualQuaternion
 #from spatialmath.Plucker import *
-from spatialmath import base as smb
-
+# from spatialmath import base as smb
 
 __all__ = [
     # pose

@@ -19,27 +19,18 @@ import math
 import numpy as np
 from collections.abc import Iterable
 
-from spatialmath import base as smb
-from spatialmath.base import symbolic as sym
+from spatialmath.base.argcheck import getunit, getvector
+from spatialmath.base.transformsNd import r2t
+import spatialmath.base.symbolic as sym
 
-from typing import overload, Union, List, Tuple, TextIO, Any, Optional
-ArrayLike = Union[List,Tuple,float,np.ndarray]
-R3x = Union[List,Tuple,float,np.ndarray]  # various ways to represent R^3 for input
-R3 = np.ndarray[(3,), float]  # R^3
-R6 = np.ndarray[(3,), float]  # R^6
-SO3 = np.ndarray[(3,3), Any]  # SO(3) rotation matrix
-SE3 = np.ndarray[(3,3), float]  # SE(3) rigid-body transform
-so3 = np.ndarray[(3,3), float]  # so(3) Lie algebra of SO(3), skew-symmetrix matrix
-se3 = np.ndarray[(3,3), float]  # se(3) Lie algebra of SE(3), augmented skew-symmetrix matrix
-R66 = np.ndarray[(6,6), float]  # R^{6x6} matrix
-R33 = np.ndarray[(3,3), float]  # R^{3x3} matrix
+from spatialmath.base.sm_types import *
 
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
 
 
-def rotx(theta:float, unit:str="rad") -> SO3:
+def rotx(theta:float, unit:str="rad") -> SO3Array:
     """
     Create SO(3) rotation about X-axis
 
@@ -56,7 +47,7 @@ def rotx(theta:float, unit:str="rad") -> SO3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> rotx(0.3)
         >>> rotx(45, 'deg')
 
@@ -64,9 +55,9 @@ def rotx(theta:float, unit:str="rad") -> SO3:
     :SymPy: supported
     """
 
-    theta = smb.getunit(theta, unit)
-    ct = smb.sym.cos(theta)
-    st = smb.sym.sin(theta)
+    theta = getunit(theta, unit)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     # fmt: off
     R = np.array([
         [1, 0, 0],
@@ -77,7 +68,7 @@ def rotx(theta:float, unit:str="rad") -> SO3:
 
 
 # ---------------------------------------------------------------------------------------#
-def roty(theta:float, unit:str="rad") -> SO3:
+def roty(theta:float, unit:str="rad") -> SO3Array:
     """
     Create SO(3) rotation about Y-axis
 
@@ -94,7 +85,7 @@ def roty(theta:float, unit:str="rad") -> SO3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> roty(0.3)
         >>> roty(45, 'deg')
 
@@ -102,9 +93,9 @@ def roty(theta:float, unit:str="rad") -> SO3:
     :SymPy: supported
     """
 
-    theta = smb.getunit(theta, unit)
-    ct = smb.sym.cos(theta)
-    st = smb.sym.sin(theta)
+    theta = getunit(theta, unit)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     # fmt: off
     return np.array([
         [ct, 0, st],
@@ -114,7 +105,7 @@ def roty(theta:float, unit:str="rad") -> SO3:
 
 
 # ---------------------------------------------------------------------------------------#
-def rotz(theta:float, unit:str="rad") -> SO3:
+def rotz(theta:float, unit:str="rad") -> SO3Array:
     """
     Create SO(3) rotation about Z-axis
 
@@ -131,16 +122,16 @@ def rotz(theta:float, unit:str="rad") -> SO3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> rotz(0.3)
         >>> rotz(45, 'deg')
 
     :seealso: :func:`~yrotz`
     :SymPy: supported
     """
-    theta = smb.getunit(theta, unit)
-    ct = smb.sym.cos(theta)
-    st = smb.sym.sin(theta)
+    theta = getunit(theta, unit)
+    ct = sym.cos(theta)
+    st = sym.sin(theta)
     # fmt: off
     return np.array([
         [ct, -st, 0],
@@ -150,7 +141,7 @@ def rotz(theta:float, unit:str="rad") -> SO3:
 
 
 # ---------------------------------------------------------------------------------------#
-def trotx(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
+def trotx(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
     """
     Create SE(3) pure rotation about X-axis
 
@@ -170,21 +161,21 @@ def trotx(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> trotx(0.3)
         >>> trotx(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~rotx`
     :SymPy: supported
     """
-    T = smb.r2t(rotx(theta, unit))
+    T = r2t(rotx(theta, unit))
     if t is not None:
-        T[:3, 3] = smb.getvector(t, 3, "array")
+        T[:3, 3] = getvector(t, 3, "array")
     return T
 
 
 # ---------------------------------------------------------------------------------------#
-def troty(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
+def troty(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
     """
     Create SE(3) pure rotation about Y-axis
 
@@ -204,21 +195,21 @@ def troty(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> troty(0.3)
         >>> troty(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~roty`
     :SymPy: supported
     """
-    T = smb.r2t(roty(theta, unit))
+    T = r2t(roty(theta, unit))
     if t is not None:
-        T[:3, 3] = smb.getvector(t, 3, "array")
+        T[:3, 3] = getvector(t, 3, "array")
     return T
 
 
 # ---------------------------------------------------------------------------------------#
-def trotz(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
+def trotz(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
     """
     Create SE(3) pure rotation about Z-axis
 
@@ -238,34 +229,34 @@ def trotz(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> trotz(0.3)
         >>> trotz(45, 'deg', t=[1,2,3])
 
     :seealso: :func:`~rotz`
     :SymPy: supported
     """
-    T = smb.r2t(rotz(theta, unit))
+    T = r2t(rotz(theta, unit))
     if t is not None:
-        T[:3, 3] = smb.getvector(t, 3, "array")
+        T[:3, 3] = getvector(t, 3, "array")
     return T
 
 
 # ---------------------------------------------------------------------------------------#
 
 @overload
-def transl(x:float, y:float, z:float) -> SE3:
+def transl(x:float, y:float, z:float) -> SE3Array:
     ...
 
 @overload
-def transl(x:R3x) -> SE3:
+def transl(x:R3x) -> SE3Array:
     ...
 
 @overload
-def transl(x:SE3) -> R3:
+def transl(x:SE3Array) -> R3:
     ...
 
-def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -> Union[SE3,R3]:
+def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -> Union[SE3Array,R3]:
     """
     Create SE(3) pure translation, or extract translation from SE(3) matrix
 
@@ -289,7 +280,7 @@ def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> import numpy as np
         >>> transl(3, 4, 5)
         >>> transl([3, 4, 5])
@@ -308,7 +299,7 @@ def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> transl(T)
@@ -316,15 +307,15 @@ def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -
     .. note:: This function is compatible with the MATLAB version of the
         Toolbox.  It is unusual/weird in doing two completely different things
         inside the one function.
-    :seealso: :func:`~spatialmath.smb.transforms2d.transl2`
+    :seealso: :func:`~spatialmath.transforms2d.transl2`
     :SymPy: supported
     """
 
-    if smb.isscalar(x) and y is not None and z is not None:
+    if isscalar(x) and y is not None and z is not None:
         t = np.r_[x, y, z]
-    elif smb.isvector(x, 3):
-        t = smb.getvector(x, 3, out="array")
-    elif smb.ismatrix(x, (4, 4)):
+    elif isvector(x, 3):
+        t = getvector(x, 3, out="array")
+    elif ismatrix(x, (4, 4)):
         # SE(3) -> R3
         return x[:3, 3]
     else:
@@ -338,7 +329,7 @@ def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -
     return T
 
 
-def ishom(T:SE3, check:bool=False, tol:float=100) -> bool:
+def ishom(T:SE3Array, check:bool=False, tol:float=100) -> bool:
     """
     Test if matrix belongs to SE(3)
 
@@ -357,7 +348,7 @@ def ishom(T:SE3, check:bool=False, tol:float=100) -> bool:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> ishom(T)
@@ -367,7 +358,7 @@ def ishom(T:SE3, check:bool=False, tol:float=100) -> bool:
         >>> R = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
         >>> ishom(R)
 
-    :seealso: :func:`~spatialmath.smb.transformsNd.isR` :func:`~isrot` :func:`~spatialmath.smb.transforms2d.ishom2`
+    :seealso: :func:`~spatialmath.transformsNd.isR` :func:`~isrot` :func:`~spatialmath.transforms2d.ishom2`
     """
     return (
         isinstance(T, np.ndarray)
@@ -375,14 +366,14 @@ def ishom(T:SE3, check:bool=False, tol:float=100) -> bool:
         and (
             not check
             or (
-                smb.isR(T[:3, :3], tol=tol)
+                isR(T[:3, :3], tol=tol)
                 and np.all(T[3, :] == np.array([0, 0, 0, 1]))
             )
         )
     )
 
 
-def isrot(R:SO3, check:bool=False, tol:float=100) -> bool:
+def isrot(R:SO3Array, check:bool=False, tol:float=100) -> bool:
     """
     Test if matrix belongs to SO(3)
 
@@ -401,7 +392,7 @@ def isrot(R:SO3, check:bool=False, tol:float=100) -> bool:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> isrot(T)
@@ -411,25 +402,25 @@ def isrot(R:SO3, check:bool=False, tol:float=100) -> bool:
         >>> isrot(R)  # a quick check says it is an SO(3)
         >>> isrot(R, check=True) # but if we check more carefully...
 
-    :seealso: :func:`~spatialmath.smb.transformsNd.isR` :func:`~spatialmath.smb.transforms2d.isrot2`,  :func:`~ishom`
+    :seealso: :func:`~spatialmath.transformsNd.isR` :func:`~spatialmath.transforms2d.isrot2`,  :func:`~ishom`
     """
     return (
         isinstance(R, np.ndarray)
         and R.shape == (3, 3)
-        and (not check or smb.isR(R, tol=tol))
+        and (not check or isR(R, tol=tol))
     )
 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def rpy2r(roll:float, pitch:float, yaw:float, *, unit:str="rad", order:str="zyx") -> SO3:
+def rpy2r(roll:float, pitch:float, yaw:float, *, unit:str="rad", order:str="zyx") -> SO3Array:
     ...
 
 @overload
-def rpy2r(roll:R3x, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3:
+def rpy2r(roll:R3x, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3Array:
     ...
 
-def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, *, unit:str="rad", order:str="zyx") -> SO3:
+def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, *, unit:str="rad", order:str="zyx") -> SO3Array:
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
@@ -467,7 +458,7 @@ def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> rpy2r(0.1, 0.2, 0.3)
         >>> rpy2r([0.1, 0.2, 0.3])
         >>> rpy2r([10, 20, 30], unit='deg')
@@ -475,12 +466,12 @@ def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]
     :seealso: :func:`~eul2r` :func:`~rpy2tr` :func:`~tr2rpy`
     """
 
-    if smb.isscalar(roll):
+    if isscalar(roll):
         angles = [roll, pitch, yaw]
     else:
-        angles = smb.getvector(roll, 3)
+        angles = getvector(roll, 3)
 
-    angles = smb.getunit(angles, unit)
+    angles = getunit(angles, unit)
 
     if order in ("xyz", "arm"):
         R = rotx(angles[2]) @ roty(angles[1]) @ rotz(angles[0])
@@ -495,14 +486,14 @@ def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def rpy2tr(roll:float, pitch:float, yaw:float, unit:str="rad", order:str="zyx") -> SE3:
+def rpy2tr(roll:float, pitch:float, yaw:float, unit:str="rad", order:str="zyx") -> SE3Array:
     ...
 
 @overload
-def rpy2tr(roll:R3x, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3:
+def rpy2tr(roll:R3x, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3Array:
     ...
     
-def rpy2tr(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, unit:str="rad", order:str="zyx") -> SE3:
+def rpy2tr(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, unit:str="rad", order:str="zyx") -> SE3Array:
     """
     Create an SE(3) rotation matrix from roll-pitch-yaw angles
 
@@ -538,7 +529,7 @@ def rpy2tr(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> rpy2tr(0.1, 0.2, 0.3)
         >>> rpy2tr([0.1, 0.2, 0.3])
         >>> rpy2tr([10, 20, 30], unit='deg')
@@ -550,20 +541,20 @@ def rpy2tr(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float
     """
 
     R = rpy2r(roll, pitch, yaw, order=order, unit=unit)
-    return smb.r2t(R)
+    return r2t(R)
 
 
 # ---------------------------------------------------------------------------------------#
 
 @overload
-def eul2r(phi:float, theta:float, psi:float, unit:str="rad") -> SO3:
+def eul2r(phi:float, theta:float, psi:float, unit:str="rad") -> SO3Array:
     ...
 
 @overload
-def eul2r(phi:R3x, theta=None, psi=None, unit:str="rad") -> SO3:
+def eul2r(phi:R3x, theta=None, psi=None, unit:str="rad") -> SO3Array:
     ...
 
-def eul2r(phi:Union[R3x,float], theta:Optional[float]=None, psi:Optional[float]=None, unit:str="rad") -> SO3:
+def eul2r(phi:Union[R3x,float], theta:Optional[float]=None, psi:Optional[float]=None, unit:str="rad") -> SO3Array:
     """
     Create an SO(3) rotation matrix from Euler angles
 
@@ -586,7 +577,7 @@ def eul2r(phi:Union[R3x,float], theta:Optional[float]=None, psi:Optional[float]=
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> eul2r(0.1, 0.2, 0.3)
         >>> eul2r([0.1, 0.2, 0.3])
         >>> eul2r([10, 20, 30], unit='deg')
@@ -599,23 +590,23 @@ def eul2r(phi:Union[R3x,float], theta:Optional[float]=None, psi:Optional[float]=
     if np.isscalar(phi):
         angles = [phi, theta, psi]
     else:
-        angles = smb.getvector(phi, 3)
+        angles = getvector(phi, 3)
 
-    angles = smb.getunit(angles, unit)
+    angles = getunit(angles, unit)
 
     return rotz(angles[0]) @ roty(angles[1]) @ rotz(angles[2])
 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def eul2tr(phi:float, theta:float, psi:float, unit:str="rad") -> SE3:
+def eul2tr(phi:float, theta:float, psi:float, unit:str="rad") -> SE3Array:
     ...
 
 @overload
-def eul2tr(phi:R3x, theta=None, psi=None, unit:str="rad") -> SE3:
+def eul2tr(phi:R3x, theta=None, psi=None, unit:str="rad") -> SE3Array:
     ...
     
-def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]=None, unit="rad") -> SE3:
+def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]=None, unit="rad") -> SE3Array:
     """
     Create an SE(3) pure rotation matrix from Euler angles
 
@@ -640,7 +631,7 @@ def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> eul2tr(0.1, 0.2, 0.3)
         >>> eul2tr([0.1, 0.2, 0.3])
         >>> eul2tr([10, 20, 30], unit='deg')
@@ -654,13 +645,13 @@ def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]
     """
 
     R = eul2r(phi, theta, psi, unit=unit)
-    return smb.r2t(R)
+    return r2t(R)
 
 
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta:float, v:R3x, unit="rad") -> SO3:
+def angvec2r(theta:float, v:R3x, unit="rad") -> SO3Array:
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -679,7 +670,7 @@ def angvec2r(theta:float, v:R3x, unit="rad") -> SO3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> angvec2r(0.3, [1, 0, 0])  # rotx(0.3)
         >>> angvec2r(0, [1, 0, 0])    # rotx(0)
 
@@ -692,23 +683,23 @@ def angvec2r(theta:float, v:R3x, unit="rad") -> SO3:
 
     :SymPy: not supported
     """
-    if not np.isscalar(theta) or not smb.isvector(v, 3):
+    if not np.isscalar(theta) or not isvector(v, 3):
         raise ValueError("Arguments must be theta and vector")
 
     if np.linalg.norm(v) < 10 * _eps:
         return np.eye(3)
 
-    theta = smb.getunit(theta, unit)
+    theta = getunit(theta, unit)
 
     # Rodrigue's equation
 
-    sk = smb.skew(smb.unitvec(v))
+    sk = skew(unitvec(v))
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
 
 # ---------------------------------------------------------------------------------------#
-def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3:
+def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3Array:
     """
     Create an SE(3) pure rotation from rotation angle and axis
 
@@ -726,7 +717,7 @@ def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> angvec2tr(0.3, [1, 0, 0])  # rtotx(0.3)
 
     .. note::
@@ -739,13 +730,13 @@ def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3:
 
     :SymPy: not supported
     """
-    return smb.r2t(angvec2r(theta, v, unit=unit))
+    return r2t(angvec2r(theta, v, unit=unit))
 
 
 # ---------------------------------------------------------------------------------------#
 
 
-def exp2r(w:R3x) -> SE3:
+def exp2r(w:R3x) -> SE3Array:
     r"""
     Create an SO(3) rotation matrix from exponential coordinates
 
@@ -762,7 +753,7 @@ def exp2r(w:R3x) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
         >>> angvec2r([0, 0, 0])      # rotx(0)
 
@@ -772,22 +763,22 @@ def exp2r(w:R3x) -> SE3:
 
     :SymPy: not supported
     """
-    if not smb.isvector(w, 3):
+    if not isvector(w, 3):
         raise ValueError("Arguments must be a 3-vector")
 
-    v, theta = smb.unitvec_norm(w)
+    v, theta = unitvec_norm(w)
 
     if theta is None:
         return np.eye(3)
 
     # Rodrigue's equation
 
-    sk = smb.skew(v)
+    sk = skew(v)
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
 
-def exp2tr(w:R3x) -> SE3:
+def exp2tr(w:R3x) -> SE3Array:
     r"""
     Create an SE(3) pure rotation matrix from exponential coordinates
 
@@ -804,7 +795,7 @@ def exp2tr(w:R3x) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
         >>> angvec2r([0, 0, 0])      # rotx(0)
 
@@ -814,23 +805,23 @@ def exp2tr(w:R3x) -> SE3:
 
     :SymPy: not supported
     """
-    if not smb.isvector(w, 3):
+    if not isvector(w, 3):
         raise ValueError("Arguments must be a 3-vector")
 
-    v, theta = smb.unitvec_norm(w)
+    v, theta = unitvec_norm(w)
 
     if theta is None:
         return np.eye(4)
 
     # Rodrigue's equation
 
-    sk = smb.skew(v)
+    sk = skew(v)
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
-    return smb.r2t(R)
+    return r2t(R)
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2r(o:R3x, a:R3x) -> SO3:
+def oa2r(o:R3x, a:R3x) -> SO3Array:
     """
     Create SO(3) rotation matrix from two vectors
 
@@ -856,7 +847,7 @@ def oa2r(o:R3x, a:R3x) -> SO3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> oa2r([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
 
     .. note::
@@ -872,16 +863,16 @@ def oa2r(o:R3x, a:R3x) -> SO3:
 
     :SymPy: not supported
     """
-    o = smb.getvector(o, 3, out="array")
-    a = smb.getvector(a, 3, out="array")
+    o = getvector(o, 3, out="array")
+    a = getvector(a, 3, out="array")
     n = np.cross(o, a)
     o = np.cross(a, n)
-    R = np.stack((smb.unitvec(n), smb.unitvec(o), smb.unitvec(a)), axis=1)
+    R = np.stack((unitvec(n), unitvec(o), unitvec(a)), axis=1)
     return R
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2tr(o:R3x, a:R3x) -> SE3:
+def oa2tr(o:R3x, a:R3x) -> SE3Array:
     """
     Create SE(3) pure rotation from two vectors
 
@@ -907,7 +898,7 @@ def oa2tr(o:R3x, a:R3x) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> oa2tr([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
 
     .. note:
@@ -924,11 +915,11 @@ def oa2tr(o:R3x, a:R3x) -> SE3:
 
     :SymPy: not supported
     """
-    return smb.r2t(oa2r(o, a))
+    return r2t(oa2r(o, a))
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2angvec(T:Union[SO3,SE3], unit:str="rad", check:bool=False) -> Tuple[float,R3]:
+def tr2angvec(T:Union[SO3Array,SE3Array], unit:str="rad", check:bool=False) -> Tuple[float,R3]:
     r"""
     Convert SO(3) or SE(3) to angle and rotation vector
 
@@ -949,7 +940,7 @@ def tr2angvec(T:Union[SO3,SE3], unit:str="rad", check:bool=False) -> Tuple[float
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T = troty(45, 'deg')
         >>> v, theta = tr2angvec(T)
         >>> print(v, theta)
@@ -961,21 +952,21 @@ def tr2angvec(T:Union[SO3,SE3], unit:str="rad", check:bool=False) -> Tuple[float
     :seealso: :func:`~angvec2r` :func:`~angvec2tr` :func:`~tr2rpy` :func:`~tr2eul`
     """
 
-    if smb.ismatrix(T, (4, 4)):
-        R = smb.t2r(T)
+    if ismatrix(T, (4, 4)):
+        R = t2r(T)
     else:
         R = T
     if not isrot(R, check=check):
         raise ValueError("argument is not SO(3)")
 
-    v = smb.vex(trlog(R))
+    v = vex(trlog(R))
 
-    if smb.iszerovec(v):
+    if iszerovec(v):
         theta = 0
         v = np.r_[0, 0, 0]
     else:
-        theta = smb.norm(v)
-        v = smb.unitvec(v)
+        theta = norm(v)
+        v = unitvec(v)
 
     if unit == "deg":
         theta *= 180 / math.pi
@@ -984,7 +975,7 @@ def tr2angvec(T:Union[SO3,SE3], unit:str="rad", check:bool=False) -> Tuple[float
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2eul(T:Union[SO3,SE3], unit:str="rad", flip:bool=False, check:bool=False) -> R3:
+def tr2eul(T:Union[SO3Array,SE3Array], unit:str="rad", flip:bool=False, check:bool=False) -> R3:
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
 
@@ -1009,7 +1000,7 @@ def tr2eul(T:Union[SO3,SE3], unit:str="rad", flip:bool=False, check:bool=False) 
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T = eul2tr(0.2, 0.3, 0.5)
         >>> print(T)
         >>> tr2eul(T)
@@ -1026,8 +1017,8 @@ def tr2eul(T:Union[SO3,SE3], unit:str="rad", flip:bool=False, check:bool=False) 
 
     """
 
-    if smb.ismatrix(T, (4, 4)):
-        R = smb.t2r(T)
+    if ismatrix(T, (4, 4)):
+        R = t2r(T)
     else:
         R = T
     if not isrot(R, check=check):
@@ -1059,7 +1050,7 @@ def tr2eul(T:Union[SO3,SE3], unit:str="rad", flip:bool=False, check:bool=False) 
 # ------------------------------------------------------------------------------------------------------------------- #
 
 
-def tr2rpy(T:Union[SO3,SE3], unit:str="rad", order:str="zyx", check:bool=False) -> R3:
+def tr2rpy(T:Union[SO3Array,SE3Array], unit:str="rad", order:str="zyx", check:bool=False) -> R3:
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
 
@@ -1090,7 +1081,7 @@ def tr2rpy(T:Union[SO3,SE3], unit:str="rad", order:str="zyx", check:bool=False) 
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T = rpy2tr(0.2, 0.3, 0.5)
         >>> print(T)
         >>> tr2rpy(T)
@@ -1107,8 +1098,8 @@ def tr2rpy(T:Union[SO3,SE3], unit:str="rad", order:str="zyx", check:bool=False) 
     :SymPy: not supported
     """
 
-    if smb.ismatrix(T, (4, 4)):
-        R = smb.t2r(T)
+    if ismatrix(T, (4, 4)):
+        R = t2r(T)
     else:
         R = T
     if not isrot(R, check=check):
@@ -1200,22 +1191,22 @@ def tr2rpy(T:Union[SO3,SE3], unit:str="rad", order:str="zyx", check:bool=False) 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def trlog(T:SO3, check:bool=True, twist:bool=False, tol:float=10) -> so3:
+def trlog(T:SO3Array, check:bool=True, twist:bool=False, tol:float=10) -> so3Array:
     ...
 
 @overload
-def trlog(T:SE3, check:bool=True, twist:bool=False, tol:float=10) -> se3:
+def trlog(T:SE3Array, check:bool=True, twist:bool=False, tol:float=10) -> se3Array:
     ...
 
 @overload
-def trlog(T:SO3, check:bool=True, twist:bool=True, tol:float=10) -> R3:
+def trlog(T:SO3Array, check:bool=True, twist:bool=True, tol:float=10) -> R3:
     ...
 
 @overload
-def trlog(T:SE3, check:bool=True, twist:bool=True, tol:float=10) -> R6:
+def trlog(T:SE3Array, check:bool=True, twist:bool=True, tol:float=10) -> R6:
     ...
 
-def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> Union[R3,R6,so3,se3]:
+def trlog(T:Union[SO3Array,SE3Array], check:bool=True, twist:bool=False, tol:float=10) -> Union[R3,R6,so3Array,se3Array]:
     """
     Logarithm of SO(3) or SE(3) matrix
 
@@ -1245,37 +1236,37 @@ def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> 
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> trlog(trotx(0.3))
         >>> trlog(trotx(0.3), twist=True)
         >>> trlog(rotx(0.3))
         >>> trlog(rotx(0.3), twist=True)
 
-    :seealso: :func:`~trexp` :func:`~spatialmath.smb.transformsNd.vex` :func:`~spatialmath.smb.transformsNd.vexa`
+    :seealso: :func:`~trexp` :func:`~spatialmath.transformsNd.vex` :func:`~spatialmath.transformsNd.vexa`
     """
 
     if ishom(T, check=check, tol=10):
         # SE(3) matrix
 
-        if smb.iseye(T, tol=tol):
+        if iseye(T, tol=tol):
             # is identity matrix
             if twist:
                 return np.zeros((6,))
             else:
                 return np.zeros((4, 4))
         else:
-            [R, t] = smb.tr2rt(T)
+            [R, t] = tr2rt(T)
 
-            if smb.iseye(R):
+            if iseye(R):
                 # rotation matrix is identity
                 if twist:
                     return np.r_[t, 0, 0, 0]
                 else:
-                    return smb.Ab2M(np.zeros((3, 3)), t)
+                    return Ab2M(np.zeros((3, 3)), t)
             else:
                 S = trlog(R, check=False)  # recurse
-                w = smb.vex(S)
-                theta = smb.norm(w)
+                w = vex(S)
+                theta = norm(w)
                 Ginv = (
                     np.eye(3)
                     - S / 2
@@ -1285,12 +1276,12 @@ def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> 
                 if twist:
                     return np.r_[v, w]
                 else:
-                    return smb.Ab2M(S, v)
+                    return Ab2M(S, v)
 
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
-        if smb.iseye(R):
+        if iseye(R):
             # matrix is identity
             if twist:
                 return np.zeros((3,))
@@ -1309,13 +1300,13 @@ def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> 
             if twist:
                 return w * theta
             else:
-                return smb.skew(w * theta)
+                return skew(w * theta)
         else:
             # general case
             theta = math.acos((np.trace(R) - 1) / 2)
             skw = (R - R.T) / 2 / math.sin(theta)
             if twist:
-                return smb.vex(skw * theta)
+                return vex(skw * theta)
             else:
                 return skw * theta
     else:
@@ -1323,14 +1314,14 @@ def trlog(T:Union[SO3,SE3], check:bool=True, twist:bool=False, tol:float=10) -> 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def trexp(S:so3, theta:Optional[float]=None, check:bool=True) -> SO3:
+def trexp(S:so3Array, theta:Optional[float]=None, check:bool=True) -> SO3Array:
     ...
 
 @overload
-def trexp(S:se3, theta:Optional[float]=None, check:bool=True) -> SE3:
+def trexp(S:se3Array, theta:Optional[float]=None, check:bool=True) -> SE3Array:
     ...
 
-def trexp(S:Union[so3,se3], theta:Optional[float]=None, check:bool=True) -> Union[SO3,SE3]:
+def trexp(S:Union[so3Array,se3Array], theta:Optional[float]=None, check:bool=True) -> Union[SO3Array,SE3Array]:
     """
     Exponential of se(3) or so(3) matrix
 
@@ -1360,7 +1351,7 @@ def trexp(S:Union[so3,se3], theta:Optional[float]=None, check:bool=True) -> Unio
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> trexp(skew([1, 2, 3]))
         >>> trexp(skew([1, 0, 0]), 2)  # revolute unit twist
         >>> trexp([1, 2, 3])
@@ -1381,73 +1372,73 @@ def trexp(S:Union[so3,se3], theta:Optional[float]=None, check:bool=True) -> Unio
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> trexp(skewa([1, 2, 3, 4, 5, 6]))
         >>> trexp(skewa([1, 0, 0, 0, 0, 0]), 2)  # prismatic unit twist
         >>> trexp([1, 2, 3, 4, 5, 6])
         >>> trexp([1, 0, 0, 0, 0, 0], 2)
 
-    :seealso: :func:`~trlog :func:`~spatialmath.smb.transforms2d.trexp2`
+    :seealso: :func:`~trlog :func:`~spatialmath.transforms2d.trexp2`
     """
 
-    if smb.ismatrix(S, (4, 4)) or smb.isvector(S, 6):
+    if ismatrix(S, (4, 4)) or isvector(S, 6):
         # se(3) case
-        if smb.ismatrix(S, (4, 4)):
+        if ismatrix(S, (4, 4)):
             # augmentented skew matrix
-            if check and not smb.isskewa(S):
+            if check and not isskewa(S):
                 raise ValueError("argument must be a valid se(3) element")
-            tw = smb.vexa(S)
+            tw = vexa(S)
         else:
             # 6 vector
-            tw = smb.getvector(S)
+            tw = getvector(S)
 
-        if smb.iszerovec(tw):
+        if iszerovec(tw):
             return np.eye(4)
 
         if theta is None:
-            (tw, theta) = smb.unittwist_norm(tw)
+            (tw, theta) = unittwist_norm(tw)
         else:
             if theta == 0:
                 return np.eye(4)
-            elif not smb.isunittwist(tw):
+            elif not isunittwist(tw):
                 raise ValueError("If theta is specified S must be a unit twist")
 
         # tw is a unit twist, th is its magnitude
         t = tw[0:3]
         w = tw[3:6]
 
-        R = smb.rodrigues(w, theta)
+        R = rodrigues(w, theta)
 
-        skw = smb.skew(w)
+        skw = skew(w)
         V = (
             np.eye(3) * theta
             + (1.0 - math.cos(theta)) * skw
             + (theta - math.sin(theta)) * skw @ skw
         )
 
-        return smb.rt2tr(R, V @ t)
+        return rt2tr(R, V @ t)
 
-    elif smb.ismatrix(S, (3, 3)) or smb.isvector(S, 3):
+    elif ismatrix(S, (3, 3)) or isvector(S, 3):
         # so(3) case
-        if smb.ismatrix(S, (3, 3)):
+        if ismatrix(S, (3, 3)):
             # skew symmetric matrix
-            if check and not smb.isskew(S):
+            if check and not isskew(S):
                 raise ValueError("argument must be a valid so(3) element")
-            w = smb.vex(S)
+            w = vex(S)
         else:
             # 3 vector
-            w = smb.getvector(S)
+            w = getvector(S)
 
-        if theta is not None and not smb.isunitvec(w):
+        if theta is not None and not isunitvec(w):
             raise ValueError("If theta is specified S must be a unit twist")
 
         # do Rodrigues' formula for rotation
-        return smb.rodrigues(w, theta)
+        return rodrigues(w, theta)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
 
-def trnorm(T:SE3) -> SE3:
+def trnorm(T:SE3Array) -> SE3Array:
     r"""
     Normalize an SO(3) or SE(3) matrix
 
@@ -1474,7 +1465,7 @@ def trnorm(T:SE3) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> from numpy import linalg
         >>> T = troty(45, 'deg', t=[3, 4, 5])
         >>> linalg.det(T[:3,:3]) - 1 # is a valid SO(3)
@@ -1498,15 +1489,15 @@ def trnorm(T:SE3) -> SE3:
 
     n = np.cross(o, a)  # N = O x A
     o = np.cross(a, n)  # (a)];
-    R = np.stack((smb.unitvec(n), smb.unitvec(o), smb.unitvec(a)), axis=1)
+    R = np.stack((unitvec(n), unitvec(o), unitvec(a)), axis=1)
 
     if ishom(T):
-        return smb.rt2tr(R, T[:3, 3])
+        return rt2tr(R, T[:3, 3])
     else:
         return R
 
 
-def trinterp(start:Optional[SE3], end:SE3, s:float) -> SE3:
+def trinterp(start:Optional[SE3Array], end:SE3Array, s:float) -> SE3Array:
     """
     Interpolate SE(3) matrices
 
@@ -1531,7 +1522,7 @@ def trinterp(start:Optional[SE3], end:SE3, s:float) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T1 = transl(1, 2, 3)
         >>> T2 = transl(4, 5, 6)
         >>> trinterp(T1, T2, 0)
@@ -1543,53 +1534,53 @@ def trinterp(start:Optional[SE3], end:SE3, s:float) -> SE3:
 
     .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-    :seealso: :func:`spatialmath.smb.quaternions.qlerp` :func:`~spatialmath.smb.transforms3d.trinterp2`
+    :seealso: :func:`spatialmath.quaternions.qlerp` :func:`~spatialmath.transforms3d.trinterp2`
     """
 
     if not 0 <= s <= 1:
         raise ValueError("s outside interval [0,1]")
 
-    if smb.ismatrix(end, (3, 3)):
+    if ismatrix(end, (3, 3)):
         # SO(3) case
 
         if start is None:
             # 	TRINTERP(T, s)
-            q0 = smb.r2q(smb.t2r(end))
-            qr = smb.qslerp(smb.eye(), q0, s)
+            q0 = r2q(t2r(end))
+            qr = qslerp(eye(), q0, s)
         else:
             # 	TRINTERP(T0, T1, s)
-            q0 = smb.r2q(smb.t2r(start))
-            q1 = smb.r2q(smb.t2r(end))
-            qr = smb.qslerp(q0, q1, s)
+            q0 = r2q(t2r(start))
+            q1 = r2q(t2r(end))
+            qr = qslerp(q0, q1, s)
 
-        return smb.q2r(qr)
+        return q2r(qr)
 
-    elif smb.ismatrix(end, (4, 4)):
+    elif ismatrix(end, (4, 4)):
         # SE(3) case
         if start is None:
             # 	TRINTERP(T, s)
-            q0 = smb.r2q(smb.t2r(end))
+            q0 = r2q(t2r(end))
             p0 = transl(end)
 
-            qr = smb.qslerp(smb.qeye(), q0, s)
+            qr = qslerp(qeye(), q0, s)
             pr = s * p0
         else:
             # 	TRINTERP(T0, T1, s)
-            q0 = smb.r2q(smb.t2r(start))
-            q1 = smb.r2q(smb.t2r(end))
+            q0 = r2q(t2r(start))
+            q1 = r2q(t2r(end))
 
             p0 = transl(start)
             p1 = transl(end)
 
-            qr = smb.qslerp(q0, q1, s)
+            qr = qslerp(q0, q1, s)
             pr = p0 * (1 - s) + s * p1
 
-        return smb.rt2tr(smb.q2r(qr), pr)
+        return rt2tr(q2r(qr), pr)
     else:
         return ValueError("Argument must be SO(3) or SE(3)")
 
 
-def delta2tr(d:R6) -> SE3:
+def delta2tr(d:R6) -> SE3Array:
     r"""
     Convert differential motion to SE(3)
 
@@ -1603,7 +1594,7 @@ def delta2tr(d:R6) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> delta2tr([0.001, 0, 0, 0, 0.002, 0])
 
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
@@ -1612,10 +1603,10 @@ def delta2tr(d:R6) -> SE3:
     :SymPy: supported
     """
 
-    return np.eye(4, 4) + smb.skewa(d)
+    return np.eye(4, 4) + skewa(d)
 
 
-def trinv(T:SE3) -> SE3:
+def trinv(T:SE3Array) -> SE3Array:
     r"""
     Invert an SE(3) matrix
 
@@ -1631,7 +1622,7 @@ def trinv(T:SE3) -> SE3:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> trinv(T)
         >>> T @ trinv(T)
@@ -1650,7 +1641,7 @@ def trinv(T:SE3) -> SE3:
     return Ti
 
 
-def tr2delta(T0:SE3, T1:Optional[SE3]=None) -> R6:
+def tr2delta(T0:SE3Array, T1:Optional[SE3Array]=None) -> R6:
     r"""
     Difference of SE(3) matrices as differential motion
 
@@ -1676,7 +1667,7 @@ def tr2delta(T0:SE3, T1:Optional[SE3]=None) -> R6:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T1 = trotx(0.3, t=[4,5,6])
         >>> T2 = trotx(0.31, t=[4,5.02,6])
         >>> tr2delta(T1, T2)
@@ -1705,10 +1696,10 @@ def tr2delta(T0:SE3, T1:Optional[SE3]=None) -> R6:
         #  incremental transformation from T0 to T1 in the T0 frame
         Td = trinv(T0) @ T1
 
-    return np.r_[transl(Td), smb.vex(smb.t2r(Td) - np.eye(3))]
+    return np.r_[transl(Td), vex(t2r(Td) - np.eye(3))]
 
 
-def tr2jac(T:SE3) -> R66:
+def tr2jac(T:SE3Array) -> R6x6:
     r"""
     SE(3) Jacobian matrix
 
@@ -1727,7 +1718,7 @@ def tr2jac(T:SE3) -> R66:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2jac(T)
 
@@ -1739,11 +1730,11 @@ def tr2jac(T:SE3) -> R66:
         raise ValueError("expecting an SE(3) matrix")
 
     Z = np.zeros((3, 3), dtype=T.dtype)
-    R = smb.t2r(T)
+    R = t2r(T)
     return np.block([[R, Z], [Z, R]])
 
 
-def eul2jac(angles:R3) -> R33:
+def eul2jac(angles:R3) -> R3x3:
     """
     Euler angle rate Jacobian
 
@@ -1762,7 +1753,7 @@ def eul2jac(angles:R3) -> R33:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> eul2jac(0.1, 0.2, 0.3)
 
     .. note::
@@ -1783,10 +1774,10 @@ def eul2jac(angles:R3) -> R33:
     phi = angles[0]
     theta = angles[1]
 
-    ctheta = smb.sym.cos(theta)
-    stheta = smb.sym.sin(theta)
-    cphi = smb.sym.cos(phi)
-    sphi = smb.sym.sin(phi)
+    ctheta = sym.cos(theta)
+    stheta = sym.sin(theta)
+    cphi = sym.cos(phi)
+    sphi = sym.sin(phi)
 
     # fmt: off
     return np.array([
@@ -1797,7 +1788,7 @@ def eul2jac(angles:R3) -> R33:
     # fmt: on
 
 
-def rpy2jac(angles:R3, order:str="zyx") -> R33:
+def rpy2jac(angles:R3, order:str="zyx") -> R3x3:
     """
     Jacobian from RPY angle rates to angular velocity
 
@@ -1828,7 +1819,7 @@ def rpy2jac(angles:R3, order:str="zyx") -> R33:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> rpy2jac(0.1, 0.2, 0.3)
 
     .. note::
@@ -1846,10 +1837,10 @@ def rpy2jac(angles:R3, order:str="zyx") -> R33:
     pitch = angles[1]
     yaw = angles[2]
 
-    cp = smb.sym.cos(pitch)
-    sp = smb.sym.sin(pitch)
-    cy = smb.sym.cos(yaw)
-    sy = smb.sym.sin(yaw)
+    cp = sym.cos(pitch)
+    sp = sym.sin(pitch)
+    cy = sym.cos(yaw)
+    sy = sym.sin(yaw)
 
     if order == "xyz":
         # fmt: off
@@ -1878,7 +1869,7 @@ def rpy2jac(angles:R3, order:str="zyx") -> R33:
     return J
 
 
-def exp2jac(v:R3) -> R33:
+def exp2jac(v:R3) -> R3x3:
     """
     Jacobian from exponential coordinate rates to angular velocity
 
@@ -1892,7 +1883,7 @@ def exp2jac(v:R3) -> R33:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> expjac(0.3 * np.r_[1, 0, 0])
 
     .. note::
@@ -1913,7 +1904,7 @@ def exp2jac(v:R3) -> R33:
     :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2jac`
     """
 
-    vn, theta = smb.unitvec_norm(v)
+    vn, theta = unitvec_norm(v)
     if theta is None:
         return np.eye(3)
 
@@ -1923,14 +1914,14 @@ def exp2jac(v:R3) -> R33:
     # A = []
     # for i in range(3):
     #     # (III.7)
-    #     dRdvi = vn[i] * smb.skew(vn) + smb.skew(np.cross(vn, z[:,i])) / theta
-    #     x = smb.vex(dRdvi)
+    #     dRdvi = vn[i] * skew(vn) + skew(np.cross(vn, z[:,i])) / theta
+    #     x = vex(dRdvi)
     #     A.append(x)
     # return np.c_[A].T
 
     # from ETH paper
-    theta = smb.norm(v)
-    sk = smb.skew(v)
+    theta = norm(v)
+    sk = skew(v)
 
     # (2.106)
     E = (
@@ -1941,7 +1932,7 @@ def exp2jac(v:R3) -> R33:
     return E
 
 
-def r2x(R:SO3, representation:str="rpy/xyz") -> R3:
+def r2x(R:SO3Array, representation:str="rpy/xyz") -> R3:
     r"""
     Convert SO(3) matrix to angular representation
 
@@ -1982,7 +1973,7 @@ def r2x(R:SO3, representation:str="rpy/xyz") -> R3:
     return r
 
 
-def x2r(r:R3, representation:str="rpy/xyz") -> SO3:
+def x2r(r:R3, representation:str="rpy/xyz") -> SO3Array:
     r"""
     Convert angular representation to SO(3) matrix
 
@@ -2022,7 +2013,7 @@ def x2r(r:R3, representation:str="rpy/xyz") -> SO3:
         raise ValueError(f"unknown representation: {representation}")
     return R
 
-def tr2x(T:SE3, representation:str="rpy/xyz") -> R6:
+def tr2x(T:SE3Array, representation:str="rpy/xyz") -> R6:
     r"""
     Convert SE(3) to an analytic representation
 
@@ -2052,12 +2043,12 @@ def tr2x(T:SE3, representation:str="rpy/xyz") -> R6:
     :seealso: :func:`r2x`
     """
     t = transl(T)
-    R = smb.t2r(T)
+    R = t2r(T)
     r = r2x(R, representation=representation)
     return np.r_[t, r]
 
 
-def x2tr(x:R6, representation="rpy/xyz") -> SE3:
+def x2tr(x:R6, representation="rpy/xyz") -> SE3Array:
     r"""
     Convert analytic representation to SE(3)
 
@@ -2089,7 +2080,7 @@ def x2tr(x:R6, representation="rpy/xyz") -> SE3:
     t = x[:3]
     R = x2r(x[3:], representation=representation)
 
-    return smb.rt2tr(R, t)
+    return rt2tr(R, t)
 
 
 def rot2jac(R, representation="rpy/xyz"):
@@ -2113,14 +2104,14 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     raise DeprecationWarning("use rotvelxform_inv_dot instead")
 
 @overload
-def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> R33:
+def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> R3x3:
     ...
 
 @overload
-def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=True, representation="rpy/xyz") -> R66:
+def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=True, representation="rpy/xyz") -> R6x6:
     ...
 
-def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> Union[R33,R66]:
+def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> Union[R3x3,R6x6]:
     r"""
     Rotational velocity transformation
 
@@ -2188,7 +2179,7 @@ def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, repres
     :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2r` :func:`exp2jac`
     """
 
-    if smb.isrot(𝚪):
+    if isrot(𝚪):
         # passed a rotation matrix
         # convert to the representation
         𝚪 = r2x(𝚪, representation=representation)
@@ -2292,8 +2283,8 @@ def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, repres
 
     elif representation == "exp":
         # from ETHZ class notes
-        sk = smb.skew(𝚪)
-        theta = smb.norm(𝚪)
+        sk = skew(𝚪)
+        theta = norm(𝚪)
         if not inverse:
             # analytical rates -> angular velocity
             # (2.106)
@@ -2319,14 +2310,14 @@ def rotvelxform(𝚪:Union[R3x,SO3], inverse:bool=False, full:bool=False, repres
         return A
 
 @overload
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> R33:
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> R3x3:
     ...
 
 @overload
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=True, representation:str="rpy/xyz") -> R66:
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=True, representation:str="rpy/xyz") -> R6x6:
     ...
 
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> Union[R33,R66]:
+def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> Union[R3x3,R6x6]:
     r"""
     Derivative of angular velocity transformation
 
@@ -2492,10 +2483,10 @@ def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str
 
     elif representation == "exp":
         # autogenerated by symbolic/angvelxform_dot.ipynb
-        sk = smb.skew(𝚪)
-        skd = smb.skew(𝚪d)
-        theta_dot = np.inner(𝚪, 𝚪d) / smb.norm(𝚪)
-        theta = smb.norm(𝚪)
+        sk = skew(𝚪)
+        skd = skew(𝚪d)
+        theta_dot = np.inner(𝚪, 𝚪d) / norm(𝚪)
+        theta = norm(𝚪)
         Theta = 1 / theta ** 2 * (1 - theta / 2 * S(theta) / (1 - C(theta)))
 
         # hand optimized version of code from notebook
@@ -2521,7 +2512,7 @@ def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str
         return Ainv_dot
 
 
-def tr2adjoint(T:Union[SO3,SE3]) -> R66:
+def tr2adjoint(T:Union[SO3Array,SE3Array]) -> R6x6:
     r"""
     Adjoint matrix
 
@@ -2540,7 +2531,7 @@ def tr2adjoint(T:Union[SO3,SE3]) -> R66:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.import *
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2adjoint(T)
 
@@ -2563,10 +2554,10 @@ def tr2adjoint(T:Union[SO3,SE3]) -> R66:
         # fmt: on
     elif T.shape == (4, 4):
         # SE(3) adjoint
-        (R, t) = smb.tr2rt(T)
+        (R, t) = tr2rt(T)
         # fmt: off
         return np.block([
-                    [R, smb.skew(t) @ R], 
+                    [R, skew(t) @ R], 
                     [Z, R]
                 ])
         # fmt: on
@@ -2575,7 +2566,7 @@ def tr2adjoint(T:Union[SO3,SE3]) -> R66:
 
 
 def trprint(
-    T:Union[SO3,SE3],
+    T:Union[SO3Array,SE3Array],
     orient:str="rpy/zyx",
     label:str='',
     file:TextIO=sys.stdout,
@@ -2629,7 +2620,7 @@ def trprint(
 
      .. runblock:: pycon
 
-         >>> from spatialmath.smb import transl, rpy2tr, trprint
+         >>> from spatialmath.import transl, rpy2tr, trprint
          >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
          >>> trprint(T, file=None)
          >>> trprint(T, file=None, label='T', orient='angvec')
@@ -2644,7 +2635,7 @@ def trprint(
          - For tabular data set ``fmt`` to a fixed width format such as
            ``fmt='{:.3g}'``
 
-     :seealso: :func:`~spatialmath.smb.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`
+     :seealso: :func:`~spatialmath.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`
      :SymPy: not supported
     """
 
@@ -2706,7 +2697,7 @@ def _vec2s(fmt, v):
 
 
 def trplot(
-    T:Union[SO3,SE3],
+    T:Union[SO3Array,SE3Array],
     color:str="blue",
     frame:str='',
     axislabel:bool=True,
@@ -2843,9 +2834,9 @@ def trplot(
     # anaglyph
 
     if dims is None:
-        ax = smb.axes_logic(ax, 3, projection)
+        ax = axes_logic(ax, 3, projection)
     else:
-        ax = smb.plotvol3(dims, ax=ax)
+        ax = plotvol3(dims, ax=ax)
 
     try:
         if not ax.get_xlabel():
@@ -2889,8 +2880,8 @@ def trplot(
         trplot(T, color=colors[0], **args)
 
         # the right eye sees a from a viewpoint in shifted in the X direction
-        if smb.isrot(T):
-            T = smb.r2t(T)
+        if isrot(T):
+            T = r2t(T)
         trplot(transl(shift, 0, 0) @ T, color=colors[1], **args)
 
         return
@@ -2911,7 +2902,7 @@ def trplot(
 
     # check input types
     if isrot(T, check=True):
-        T = smb.r2t(T)
+        T = r2t(T)
     elif ishom(T, check=True):
         pass
     else:
@@ -3099,7 +3090,7 @@ def trplot(
     return ax
 
 
-def tranimate(T:Union[SO3,SE3], **kwargs) -> None:
+def tranimate(T:Union[SO3Array,SE3Array], **kwargs) -> None:
     """
     Animate a 3D coordinate frame
 
@@ -3147,7 +3138,7 @@ def tranimate(T:Union[SO3,SE3], **kwargs) -> None:
 
     kwargs["block"] = kwargs.get("block", False)
 
-    anim = smb.animate.Animate(**kwargs)
+    anim = animate.Animate(**kwargs)
     try:
         del kwargs["dims"]
     except KeyError:
@@ -3171,20 +3162,20 @@ if __name__ == "__main__":  # pragma: no cover
 
     import pathlib
 
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_transforms3d.py"
-        ).read()
-    )  # pylint: disable=exec-used
+    # exec(
+    #     open(
+    #         pathlib.Path(__file__).parent.parent.parent.absolute()
+    #         / "tests"
+    #         / "base"
+    #         / "test_transforms3d.py"
+    #     ).read()
+    # )  # pylint: disable=exec-used
 
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_transforms3d_plot.py"
-        ).read()
-    )  # pylint: disable=exec-used
+    # exec(
+    #     open(
+    #         pathlib.Path(__file__).parent.parent.parent.absolute()
+    #         / "tests"
+    #         / "base"
+    #         / "test_transforms3d_plot.py"
+    # #     ).read()
+    # )  # pylint: disable=exec-used

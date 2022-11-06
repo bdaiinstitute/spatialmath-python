@@ -13,7 +13,8 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 import math
 import numpy as np
-from spatialmath.base import getvector
+from spatialmath.base.argcheck import getvector
+from spatialmath.base.sm_types import ArrayLike, Tuple, Union, R3x, R3, R6x, R6 #SO3Array, R3, R4x4, TextIO, Tuple, Union, overload
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -27,7 +28,7 @@ except ImportError:  # pragma: no cover
 _eps = np.finfo(np.float64).eps
 
 
-def colvec(v):
+def colvec(v:ArrayLike) -> np.ndarray:
     """
     Create a column vector
 
@@ -47,7 +48,7 @@ def colvec(v):
     return np.array(v).reshape((len(v), 1))
 
 
-def unitvec(v):
+def unitvec(v:ArrayLike) -> np.ndarray:
     """
     Create a unit vector
 
@@ -77,7 +78,7 @@ def unitvec(v):
         return None
 
 
-def unitvec_norm(v):
+def unitvec_norm(v:ArrayLike) -> Union[Tuple[np.ndarray,float],Tuple[None,None]]:
     """
     Create a unit vector
 
@@ -104,10 +105,10 @@ def unitvec_norm(v):
     if n > 100 * _eps:  # if greater than eps
         return (v / n, n)
     else:
-        return None, None
+        return (None, None)
 
 
-def norm(v):
+def norm(v:ArrayLike) -> float:
     """
     Norm of vector
 
@@ -140,7 +141,7 @@ def norm(v):
         return math.sqrt(sum)
 
 
-def normsq(v):
+def normsq(v:ArrayLike) -> float:
     """
     Squared norm of vector
 
@@ -171,7 +172,7 @@ def normsq(v):
     return sum
 
 
-def cross(u, v):
+def cross(u:R3x, v:R3x) -> R3:
     """
     Cross product of vectors
 
@@ -201,7 +202,7 @@ def cross(u, v):
     ]
 
 
-def isunitvec(v, tol=10):
+def isunitvec(v:ArrayLike, tol:float=10) -> bool:
     """
     Test if vector has unit length
 
@@ -223,7 +224,7 @@ def isunitvec(v, tol=10):
     return abs(np.linalg.norm(v) - 1) < tol * _eps
 
 
-def iszerovec(v, tol=10):
+def iszerovec(v:ArrayLike, tol:float=10) -> bool:
     """
     Test if vector has zero length
 
@@ -245,7 +246,7 @@ def iszerovec(v, tol=10):
     return np.linalg.norm(v) < tol * _eps
 
 
-def iszero(v, tol=10):
+def iszero(v:float, tol:float=10) -> bool:
     """
     Test if scalar is zero
 
@@ -267,7 +268,7 @@ def iszero(v, tol=10):
     return abs(v) < tol * _eps
 
 
-def isunittwist(v, tol=10):
+def isunittwist(v:R6x, tol:float=10) -> bool:
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
@@ -307,7 +308,7 @@ def isunittwist(v, tol=10):
         raise ValueError
 
 
-def isunittwist2(v, tol=10):
+def isunittwist2(v:R3x, tol:float=10) -> bool:
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
@@ -346,7 +347,7 @@ def isunittwist2(v, tol=10):
         raise ValueError
 
 
-def unittwist(S, tol=10):
+def unittwist(S:R6x, tol:float=10) -> R6:
     """
     Convert twist to unit twist
 
@@ -387,7 +388,7 @@ def unittwist(S, tol=10):
     return S / th
 
 
-def unittwist_norm(S, tol=10):
+def unittwist_norm(S:R3x, tol:float=10) -> Union[R3,float]:
     """
     Convert twist to unit twist and norm
 
@@ -432,7 +433,7 @@ def unittwist_norm(S, tol=10):
     return (S / th, th)
 
 
-def unittwist2(S):
+def unittwist2(S:R3x) -> R3:
     """
     Convert twist to unit twist
 
@@ -466,7 +467,7 @@ def unittwist2(S):
     return S / th
 
 
-def unittwist2_norm(S):
+def unittwist2_norm(S:R3x) -> Tuple[R3,float]:
     """
     Convert twist to unit twist
 
@@ -499,7 +500,7 @@ def unittwist2_norm(S):
 
     return (S / th, th)
 
-def wrap_0_pi(theta):
+def wrap_0_pi(theta:float) -> float:
     r"""
     Wrap angle to range :math:`[0, \pi]`
 
@@ -520,7 +521,7 @@ def wrap_0_pi(theta):
     return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
 
 
-def wrap_0_2pi(theta):
+def wrap_0_2pi(theta:float) -> float:
     r"""
     Wrap angle to range :math:`[0, 2\pi)`
 
@@ -531,7 +532,7 @@ def wrap_0_2pi(theta):
     return theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
 
 
-def wrap_mpi_pi(angle):
+def wrap_mpi_pi(angle:float) -> float:
     r"""
     Wrap angle to range :math:`[\-pi, \pi)`
 
@@ -541,6 +542,9 @@ def wrap_mpi_pi(angle):
     """
     return np.mod(angle + math.pi, 2 * math.pi) - np.pi
 
+# @overload
+# def angdiff(a:ArrayLike):
+#     ...
 
 def angdiff(a, b=None):
     r"""
@@ -582,7 +586,7 @@ def angdiff(a, b=None):
         return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
 
 
-def removesmall(v, tol=100):
+def removesmall(v:ArrayLike, tol=100) -> np.ndarray:
     """
     Set small values to zero
 
