@@ -50,14 +50,14 @@ space:
                 
 More specifically:
 
- * `SE3` matrices belonging to the group SE(3) for position and orientation (pose) in 3-dimensions
- * `SO3` matrices belonging to the group SO(3) for orientation in 3-dimensions
- *  `UnitQuaternion` belonging to the group S3 for orientation in 3-dimensions
- * `Twist3` vectors belonging to the group se(3) for pose in 3-dimensions
- * `UnitDualQuaternion` maps to the group SE(3) for position and orientation (pose) in 3-dimensions
- * `SE2` matrices belonging to the group SE(2) for position and orientation (pose) in 2-dimensions
- * `SO2` matrices belonging to the group SO(2) for orientation in 2-dimensions
- * `Twist2` vectors belonging to the group se(2) for pose in 2-dimensions
+ * `SE3` matrices belonging to the group $\mathbf{SE}(3)$ for position and orientation (pose) in 3-dimensions
+ * `SO3` matrices belonging to the group $\mathbf{SO}(3)$ for orientation in 3-dimensions
+ *  `UnitQuaternion` belonging to the group $\mathbf{S}^3$ for orientation in 3-dimensions
+ * `Twist3` vectors belonging to the group $\mathbf{se}(3)$ for pose in 3-dimensions
+ * `UnitDualQuaternion` maps to the group $\mathbf{SE}(3)$ for position and orientation (pose) in 3-dimensions
+ * `SE2` matrices belonging to the group $\mathbf{SE}(2)$ for position and orientation (pose) in 2-dimensions
+ * `SO2` matrices belonging to the group $\mathbf{SO}(2)$ for orientation in 2-dimensions
+ * `Twist2` vectors belonging to the group $\mathbf{se}(2)$ for pose in 2-dimensions
 
 
 These classes provide convenience and type safety, as well as methods and overloaded operators to support:
