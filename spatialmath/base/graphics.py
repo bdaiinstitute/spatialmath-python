@@ -462,7 +462,9 @@ def _render2D(vertices, pose=None, filled=False, color=None, ax=None, fmt=(), **
         r = plt.Polygon(vertices.T, closed=True, **kwargs)
         ax.add_patch(r)
     else:
-        r = plt.plot(vertices[0, :], vertices[1, :], *fmt, color=color, **kwargs)
+        if color is not None:
+            kwargs["color"] = color
+        r = plt.plot(vertices[0, :], vertices[1, :], *fmt, **kwargs)
     return r
 
 
