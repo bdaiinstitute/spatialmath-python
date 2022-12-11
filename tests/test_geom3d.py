@@ -335,6 +335,40 @@ class PluckerTest(unittest.TestCase):
             Plucker(v, uw)
         except:
             pytest.fail('Inputs should have resulted in a valid Plucker coordinate')
+
+class ScrewTest(unittest.TestCase):
+    def test_validity(self):
+        import pytest
+        v = np.array([2, 2, 3])
+        w = np.array([-3, 1.5, 1])
+        pitch = 0.5
+        with pytest.raises(Exception):
+            screw = Screw(v, w, pitch)
+        uw = w / np.linalg.norm(w)
+        try:
+            screw = Screw(v, uw, pitch)
+        except:
+            pytest.fail('Inputs should have resulted in a valid Screw coordinate')
+
+    def test_conversion_Plucker(self):
+        v = np.array([2, 2, 3])
+        w = np.array([-3, 1.5, 1])
+        uw = w / np.linalg.norm(w)
+        pitch = 0.5
+        plucker = Plucker(v, uw)
+        screw = Screw.FromPlucker(plucker, pitch)
+        self.assertEqual(plucker, screw.ToPlucker())
+
+    def test_pitch_recovery(self):
+        v = np.array([2, 2, 3])
+        w = np.array([-3, 1.5, 1])
+        uw = w / np.linalg.norm(w)
+        pitch = 0.5
+        plucker = Plucker(v, uw)
+        screw = Screw.FromPlucker(plucker, pitch)
+        self.assertAlmostEqual(screw.pitch, pitch)
+
+
 if __name__ == "__main__":
 
     unittest.main()

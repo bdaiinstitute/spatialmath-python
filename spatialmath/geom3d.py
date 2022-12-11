@@ -1192,6 +1192,37 @@ class Plucker(Line3):
             v, w)) < _eps, 'vectors are not orthogonal, they do not constitute a Plücker object'
         super().__init__(v, w)
 
+
+class Screw(Line3):
+    """
+    Class for Screw coordinates
+    .. note:: This class needs to strictly NOT derive from Plucker, because a Screw coordinate is generally
+    not a valid Plucker coordinate.
+    """
+
+    def __init__(self, v, w, pitch):
+        assert abs(np.linalg.norm(w) - 1) < 1e-4, 'Action line vector of Screw coordinates is not unit!'
+        if pitch == np.inf:
+            s = np.zeros(3)
+            sm = w
+        else:
+            s = w
+            sm = v + pitch * w
+        super().__init__(sm, s)
+
+    @property
+    def pitch(self):
+        return np.dot(self.w, self.v) / np.dot(self.w, self.w)
+
+    @classmethod
+    def FromPlucker(cls, plucker, pitch):
+        return cls(plucker.v, plucker.w, pitch)
+    """
+    Retrieves the Plucker line of action from Screw coordinates
+    """
+    def ToPlucker(self):
+        return Plucker(self.v - self.pitch*self.w, self.w)
+
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
