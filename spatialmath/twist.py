@@ -746,6 +746,20 @@ class Twist3(BaseTwist):
             v = theta * screw.v / s_norm
         return cls(v, w)
 
+    @classmethod
+    def FromPlucker(cls, plucker: Plucker, d=1.0, theta=1.0):
+        """
+            Create a new 3D twist from:
+                - Plucker coordinates of a line,
+                - the distance desired along that line,
+                - the rotation desired about that line.
+        """
+        if abs(theta) > 1e-4:
+            pitch = d / theta
+        else:
+            pitch = np.inf
+        return Twist3.FromScrew(Screw.FromPlucker(plucker, pitch), theta)
+
     # -------------------------  methods -------------------------------#
 
     def printline(self, **kwargs):
