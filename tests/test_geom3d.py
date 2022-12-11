@@ -313,6 +313,28 @@ class Line3Test(unittest.TestCase):
     #     px.intersect_plane(plane)
     #     py.intersect_plane(plane)
 
+class PluckerTest(unittest.TestCase):
+    def test_validity(self):
+        import pytest
+        # Action line vector (w) is not unit.
+        with pytest.raises(Exception):
+            v = np.array([2, 2, 3])
+            w = np.array([-3, 1.5, 1])
+            Plucker(v,w)
+        # Direction and moment vectors are not orthogonal.
+        with pytest.raises(Exception):
+            v = np.array([2, 2, 3])
+            w = np.array([-3, 2, 1])
+            uw = w / np.linalg.norm(w)
+            Plucker(v, uw)
+        # Everything is valid, object should be constructed.
+        try:
+            v = np.array([2, 2, 3])
+            w = np.array([-3, 1.5, 1])
+            uw = w / np.linalg.norm(w)
+            Plucker(v, uw)
+        except:
+            pytest.fail('Inputs should have resulted in a valid Plucker coordinate')
 if __name__ == "__main__":
 
     unittest.main()
