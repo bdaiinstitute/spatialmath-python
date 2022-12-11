@@ -1179,14 +1179,19 @@ class Line3(BasePoseList):
         
     # Static factory methods for constructors from exotic representations
 
+
 class Plucker(Line3):
 
     def __init__(self, v=None, w=None):
-        import warnings
-
-        warnings.warn('use Line class instead', DeprecationWarning)
+        if np.linalg.norm(w) < 1e-4:  # edge-case -> line at infinity.
+            pass
+        elif abs(np.linalg.norm(w) - 1) > 1e-4:
+            raise ValueError(
+                'Action line vector of Plucker coordinates is not unit!')
+        assert abs(np.dot(
+            v, w)) < _eps, 'vectors are not orthogonal, they do not constitute a Plücker object'
         super().__init__(v, w)
-    
+
 if __name__ == '__main__':   # pragma: no cover
 
     import pathlib
