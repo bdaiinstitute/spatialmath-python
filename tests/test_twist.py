@@ -79,7 +79,20 @@ class Twist3dTest(unittest.TestCase):
         
     def test_conversion_Plucker(self):
         pass
-        
+    
+    def test_conversion_Screw(self):
+        v = np.array([2, 2, 3])
+        w = np.array([-3, 1.5, 1])
+        uw = w / np.linalg.norm(w)
+        pitch = 0.5
+        screw = Screw(v, uw, pitch)
+        theta = 0.75
+        twist = Twist3.FromScrew(screw, theta)
+        self.assertEqual(screw, twist.ToScrew())
+        self.assertAlmostEqual(twist.theta, theta)
+        self.assertAlmostEqual(twist.pitch, pitch)
+        self.assertAlmostEqual(screw.pitch, pitch)
+
     def test_list_constuctor(self):
         x = Twist3([1, 0, 0, 0, 0, 0])
         
