@@ -3065,7 +3065,7 @@ def tranimate(T, **kwargs):
         pass
 
     anim.trplot(T, **kwargs)
-    anim.run(**kwargs)
+    return anim.run(**kwargs)
 
     # plt.show(block=block)
 

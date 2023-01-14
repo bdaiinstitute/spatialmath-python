@@ -168,8 +168,8 @@ class Animate:
         :type nframes: int
         :param interval: number of milliseconds between frames [default 50]
         :type interval: int
-        :param movie: name of file to write MP4 movie into
-        :type movie: str
+        :param movie: name of file to write MP4 movie into, or True
+        :type movie: str, bool
         :param wait: wait until animation is complete, default False
         :type wait: bool
 
@@ -180,6 +180,8 @@ class Animate:
 
             - the ``movie`` option requires the ffmpeg package to be installed:
               ``conda install -c conda-forge ffmpeg``
+            - if ``movie=True`` then return an HTML5 video which can be displayed in a notebook
+              using ``HTML()``
             - invokes the draw() method of every object in the display list
         """
 
@@ -208,9 +210,6 @@ class Animate:
 
             return animation.artists()
 
-        global _ani
-
-        # blit leaves a trail and first frame
         if movie is not None:
             repeat = False
 
@@ -223,17 +222,22 @@ class Animate:
         else:
             frames = iter(np.linspace(0, 1, nframes))
 
+        global _ani
+        fig = plt.gcf()
         _ani = animation.FuncAnimation(
-            fig=plt.gcf(),
+            fig=fig,
             func=update,
             frames=frames,
             fargs=(self,),
-            blit=False,
+            blit=False, # blit leaves a trail and first frame, set to False
             interval=interval,
             repeat=repeat,
         )
 
-        if movie is not None:
+        if movie is True:
+            plt.close(fig)
+            return _ani.to_html5_video()
+        elif isinstance(movie, str):
             # Set up formatting for the movie files
             if os.path.exists(movie):
                 print("overwriting movie", movie)
@@ -251,6 +255,8 @@ class Animate:
                 plt.pause(0.25)
                 if _ani.event_source is None or len(_ani.event_source.callbacks) == 0:
                     break
+        return _ani
+
 
     def __repr__(self):
         """
@@ -570,8 +576,10 @@ class Animate2:
         :type repeat: bool
         :param interval: number of milliseconds between frames [default 50]
         :type interval: int
-        :param movie: name of file to write MP4 movie into
-        :type movie: str
+        :param movie: name of file to write MP4 movie into or True
+        :type movie: str, bool
+        :returns: Matplotlib animation object
+        :rtype: Matplotlib animation object
 
         Animates a 3D coordinate frame moving from the world frame to a frame
         represented by the SO(3) or SE(3) matrix to the current axes.
@@ -580,6 +588,8 @@ class Animate2:
 
             - the ``movie`` option requires the ffmpeg package to be installed:
               ``conda install -c conda-forge ffmpeg``
+            - if ``movie=True`` then return an HTML5 video which can be displayed in a notebook
+              using ``HTML()``
             - invokes the draw() method of every object in the display list
         """
 
@@ -601,8 +611,11 @@ class Animate2:
         self.done = False
         if self.trajectory is not None:
             nframes = len(self.trajectory)
-        ani = animation.FuncAnimation(
-            fig=plt.gcf(),
+
+        global _ani
+        fig = plt.gcf()
+        _ani = animation.FuncAnimation(
+            fig=fig,
             func=update,
             frames=range(0, nframes),
             fargs=(self,),
@@ -611,17 +624,19 @@ class Animate2:
             repeat=repeat,
         )
 
-        if movie is None:
-            while repeat or not self.done:
-                plt.pause(1)
-        else:
+        if movie is True:
+            plt.close(fig)
+            return _ani.to_html5_video()
+        elif isinstance(movie, str):
             # Set up formatting for the movie files
             if os.path.exists(movie):
                 print("overwriting movie", movie)
             else:
                 print("creating movie", movie)
             FFwriter = animation.FFMpegWriter(fps=10, extra_args=["-vcodec", "libx264"])
-            ani.save(movie, writer=FFwriter)
+            _ani.save(movie, writer=FFwriter)
+
+        return _ani
 
     def __repr__(self):
         """
