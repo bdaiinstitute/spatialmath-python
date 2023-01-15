@@ -619,6 +619,57 @@ class Twist3(BaseTwist):
         return cls([np.r_[0,0,0,0,0,x] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
+    def RPY(cls, *pos, **kwargs):
+        """
+        Create a new 3D twist from roll-pitch-yaw angles
+
+        :param 𝚪: roll-pitch-yaw angles
+        :type 𝚪: array_like or numpy.ndarray with shape=(N,3)
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
+        :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
+        :type order: str
+        :return: 3D twist vector
+        :rtype: Twist3 instance
+
+        - ``Twist3.RPY(𝚪)`` is a 3D rotation defined by a 3-vector of roll,
+          pitch, yaw angles :math:`\Gamma=(r, p, y)` which correspond to
+          successive rotations about the axes specified by ``order``:
+
+            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+              then by roll about the new x-axis.  This is the **convention** for a mobile robot with x-axis forward
+              and y-axis sideways.
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+              then by roll about the new z-axis. This is the **convention** for a robot gripper with z-axis forward
+              and y-axis between the gripper fingers.
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
+              then by roll about the new z-axis. This is the **convention** for a camera with z-axis parallel
+              to the optical axis and x-axis parallel to the pixel rows.
+
+        If ``𝚪`` is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
+        corresponding to the rows of ``𝚪``.
+
+        - ``Twist3.RPY(⍺, β, 𝛾)`` as above but the angles are provided as three
+          scalars.
+
+
+        Example:
+
+        .. runblock:: pycon
+        
+            >>> from spatialmath import SE3
+            >>> Twist3.RPY(0.1, 0.2, 0.3)
+            >>> Twist3.RPY([0.1, 0.2, 0.3])
+            >>> Twist3.RPY(0.1, 0.2, 0.3, order='xyz')
+            >>> Twist3.RPY(10, 20, 30, unit='deg')
+
+        :seealso: :meth:`~spatialmath.SE3.RPY`
+        :SymPy: supported
+        """
+        T = SE3.RPY(*pos, **kwargs)
+        return cls(T)
+
+    @classmethod
     def Tx(cls, x):
         """
         Create a new 3D twist for pure translation along the X-axis
