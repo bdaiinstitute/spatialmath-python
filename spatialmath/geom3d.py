@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import spatialmath.base as base
 from spatialmath import SE3
 from spatialmath.baseposelist import BasePoseList
+import warnings
 
 _eps = np.finfo(np.float64).eps
 
@@ -367,7 +368,7 @@ class Line3(BasePoseList):
     def IntersectingPlanes(cls, pi1, pi2):
 
         warnings.warn('use TwoPlanes method instead', DeprecationWarning)
-        return cls.TwolPlanes(pi1, pi2)
+        return cls.TwoPlanes(pi1, pi2)
 
     @classmethod
     def PointDir(cls, point, dir):
