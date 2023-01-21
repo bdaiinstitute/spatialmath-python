@@ -1117,8 +1117,8 @@ def _axes_dimensions(ax):
     :rtype: int
     """
     classname = ax.__class__.__name__
-
-    if classname in ("Axes3DSubplot", "Animate"):
+    base_classes = ax.__class__.__bases__
+    if classname in ("Axes3DSubplot", "Animate") or any(base_class.__name__ in ("Axes3DSubplot", "Animate") for base_class in base_classes):
         return 3
     elif classname in ("AxesSubplot", "Animate2"):
         return 2
