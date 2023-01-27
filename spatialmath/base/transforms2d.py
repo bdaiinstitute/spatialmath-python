@@ -375,8 +375,8 @@ def trlog2(T, check=True, twist=False, tol=10):
         >>> trlog2(rot2(0.3))
         >>> trlog2(rot2(0.3), twist=True)
 
-    :seealso: :func:`~trexp`, :func:`~spatialmath.smb.transformsNd.vex`,
-              :func:`~spatialmath.smb.transformsNd.vexa`
+    :seealso: :func:`~trexp`, :func:`~spatialmath.base.transformsNd.vex`,
+              :func:`~spatialmath.base.transformsNd.vexa`
     """
 
     if ishom2(T, check=check):
@@ -621,7 +621,7 @@ def trinterp2(start, end, s=None):
         >>> trinterp2(None, T2, 1)
         >>> trinterp2(None, T2, 0.5)
 
-    :seealso: :func:`~spatialmath.smb.transforms3d.trinterp`
+    :seealso: :func:`~spatialmath.base.transforms3d.trinterp`
 
     """
     if smb.ismatrix(end, (2, 2)):

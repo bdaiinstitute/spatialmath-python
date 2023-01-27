@@ -44,7 +44,7 @@ def rotx(theta, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import rotx
         >>> rotx(0.3)
         >>> rotx(45, 'deg')
 
@@ -82,7 +82,7 @@ def roty(theta, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import roty
         >>> roty(0.3)
         >>> roty(45, 'deg')
 
@@ -119,11 +119,11 @@ def rotz(theta, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import rotz
         >>> rotz(0.3)
         >>> rotz(45, 'deg')
 
-    :seealso: :func:`~yrotz`
+    :seealso: :func:`~trotz`
     :SymPy: supported
     """
     theta = smb.getunit(theta, unit)
@@ -158,7 +158,7 @@ def trotx(theta, unit="rad", t=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trotx
         >>> trotx(0.3)
         >>> trotx(45, 'deg', t=[1,2,3])
 
@@ -192,7 +192,7 @@ def troty(theta, unit="rad", t=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import troty
         >>> troty(0.3)
         >>> troty(45, 'deg', t=[1,2,3])
 
@@ -226,7 +226,7 @@ def trotz(theta, unit="rad", t=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trotz
         >>> trotz(0.3)
         >>> trotz(45, 'deg', t=[1,2,3])
 
@@ -266,7 +266,7 @@ def transl(x, y=None, z=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import transl
         >>> import numpy as np
         >>> transl(3, 4, 5)
         >>> transl([3, 4, 5])
@@ -285,7 +285,7 @@ def transl(x, y=None, z=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import transl
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> transl(T)
@@ -293,7 +293,7 @@ def transl(x, y=None, z=None):
     .. note:: This function is compatible with the MATLAB version of the
         Toolbox.  It is unusual/weird in doing two completely different things
         inside the one function.
-    :seealso: :func:`~spatialmath.smb.transforms2d.transl2`
+    :seealso: :func:`~spatialmath.base.transforms2d.transl2`
     :SymPy: supported
     """
 
@@ -334,7 +334,7 @@ def ishom(T, check=False, tol=100):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import ishom
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> ishom(T)
@@ -344,7 +344,7 @@ def ishom(T, check=False, tol=100):
         >>> R = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
         >>> ishom(R)
 
-    :seealso: :func:`~spatialmath.smb.transformsNd.isR` :func:`~isrot` :func:`~spatialmath.smb.transforms2d.ishom2`
+    :seealso: :func:`~spatialmath.base.transformsNd.isR` :func:`~isrot` :func:`~spatialmath.base.transforms2d.ishom2`
     """
     return (
         isinstance(T, np.ndarray)
@@ -378,7 +378,7 @@ def isrot(R, check=False, tol=100):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import isrot
         >>> import numpy as np
         >>> T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
         >>> isrot(T)
@@ -388,7 +388,7 @@ def isrot(R, check=False, tol=100):
         >>> isrot(R)  # a quick check says it is an SO(3)
         >>> isrot(R, check=True) # but if we check more carefully...
 
-    :seealso: :func:`~spatialmath.smb.transformsNd.isR` :func:`~spatialmath.smb.transforms2d.isrot2`,  :func:`~ishom`
+    :seealso: :func:`~spatialmath.base.transformsNd.isR` :func:`~spatialmath.base.transforms2d.isrot2`,  :func:`~ishom`
     """
     return (
         isinstance(R, np.ndarray)
@@ -436,7 +436,7 @@ def rpy2r(roll, pitch=None, yaw=None, *, unit="rad", order="zyx"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import rpy2r
         >>> rpy2r(0.1, 0.2, 0.3)
         >>> rpy2r([0.1, 0.2, 0.3])
         >>> rpy2r([10, 20, 30], unit='deg')
@@ -500,7 +500,7 @@ def rpy2tr(roll, pitch=None, yaw=None, unit="rad", order="zyx"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import rpy2tr
         >>> rpy2tr(0.1, 0.2, 0.3)
         >>> rpy2tr([0.1, 0.2, 0.3])
         >>> rpy2tr([10, 20, 30], unit='deg')
@@ -541,7 +541,7 @@ def eul2r(phi, theta=None, psi=None, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import eul2r
         >>> eul2r(0.1, 0.2, 0.3)
         >>> eul2r([0.1, 0.2, 0.3])
         >>> eul2r([10, 20, 30], unit='deg')
@@ -587,7 +587,7 @@ def eul2tr(phi, theta=None, psi=None, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import eul2tr
         >>> eul2tr(0.1, 0.2, 0.3)
         >>> eul2tr([0.1, 0.2, 0.3])
         >>> eul2tr([10, 20, 30], unit='deg')
@@ -626,7 +626,7 @@ def angvec2r(theta, v, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import angvec2r
         >>> angvec2r(0.3, [1, 0, 0])  # rotx(0.3)
         >>> angvec2r(0, [1, 0, 0])    # rotx(0)
 
@@ -673,7 +673,7 @@ def angvec2tr(theta, v, unit="rad"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import angvec2tr
         >>> angvec2tr(0.3, [1, 0, 0])  # rtotx(0.3)
 
     .. note::
@@ -709,9 +709,9 @@ def exp2r(w):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
-        >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
-        >>> angvec2r([0, 0, 0])      # rotx(0)
+        >>> from spatialmath.base import exp2r, rotx
+        >>> exp2r([0.3, 0, 0])
+        >>> rotx(0.3)
 
     .. note:: Exponential coordinates are also known as an Euler vector
 
@@ -751,9 +751,9 @@ def exp2tr(w):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
-        >>> eulervec2r([0.3, 0, 0])  # rotx(0.3)
-        >>> angvec2r([0, 0, 0])      # rotx(0)
+        >>> from spatialmath.base import exp2tr, trotx
+        >>> exp2tr([0.3, 0, 0])
+        >>> trotx(0.3)
 
     .. note:: Exponential coordinates are also known as an Euler vector
 
@@ -803,7 +803,7 @@ def oa2r(o, a=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import oa2r
         >>> oa2r([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
 
     .. note::
@@ -854,7 +854,7 @@ def oa2tr(o, a=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import oa2tr
         >>> oa2tr([0, 1, 0], [0, 0, -1])  # Y := Y, Z := -Z
 
     .. note:
@@ -896,7 +896,7 @@ def tr2angvec(T, unit="rad", check=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import  troty, tr2angvec
         >>> T = troty(45, 'deg')
         >>> v, theta = tr2angvec(T)
         >>> print(v, theta)
@@ -956,7 +956,7 @@ def tr2eul(T, unit="rad", flip=False, check=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import tr2eul, eul2tr
         >>> T = eul2tr(0.2, 0.3, 0.5)
         >>> print(T)
         >>> tr2eul(T)
@@ -1037,7 +1037,7 @@ def tr2rpy(T, unit="rad", order="zyx", check=False):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import tr2rpy, rpy2tr
         >>> T = rpy2tr(0.2, 0.3, 0.5)
         >>> print(T)
         >>> tr2rpy(T)
@@ -1176,13 +1176,13 @@ def trlog(T, check=True, twist=False, tol=10):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trlog, rotx, trotx
         >>> trlog(trotx(0.3))
         >>> trlog(trotx(0.3), twist=True)
         >>> trlog(rotx(0.3))
         >>> trlog(rotx(0.3), twist=True)
 
-    :seealso: :func:`~trexp` :func:`~spatialmath.smb.transformsNd.vex` :func:`~spatialmath.smb.transformsNd.vexa`
+    :seealso: :func:`~trexp` :func:`~spatialmath.base.transformsNd.vex` :func:`~spatialmath.base.transformsNd.vexa`
     """
 
     if ishom(T, check=check, tol=10):
@@ -1286,7 +1286,7 @@ def trexp(S, theta=None, check=True):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trexp, skew
         >>> trexp(skew([1, 2, 3]))
         >>> trexp(skew([1, 0, 0]), 2)  # revolute unit twist
         >>> trexp([1, 2, 3])
@@ -1307,13 +1307,13 @@ def trexp(S, theta=None, check=True):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trexp, skewa
         >>> trexp(skewa([1, 2, 3, 4, 5, 6]))
         >>> trexp(skewa([1, 0, 0, 0, 0, 0]), 2)  # prismatic unit twist
         >>> trexp([1, 2, 3, 4, 5, 6])
         >>> trexp([1, 0, 0, 0, 0, 0], 2)
 
-    :seealso: :func:`~trlog :func:`~spatialmath.smb.transforms2d.trexp2`
+    :seealso: :func:`~trlog :func:`~spatialmath.base.transforms2d.trexp2`
     """
 
     if smb.ismatrix(S, (4, 4)) or smb.isvector(S, 6):
@@ -1400,7 +1400,7 @@ def trnorm(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trnorm, troty
         >>> from numpy import linalg
         >>> T = troty(45, 'deg', t=[3, 4, 5])
         >>> linalg.det(T[:3,:3]) - 1 # is a valid SO(3)
@@ -1457,7 +1457,7 @@ def trinterp(start, end, s=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import transl, trinterp
         >>> T1 = transl(1, 2, 3)
         >>> T2 = transl(4, 5, 6)
         >>> trinterp(T1, T2, 0)
@@ -1469,7 +1469,7 @@ def trinterp(start, end, s=None):
 
     .. note:: Rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-    :seealso: :func:`spatialmath.smb.quaternions.qlerp` :func:`~spatialmath.smb.transforms3d.trinterp2`
+    :seealso: :func:`spatialmath.base.quaternions.qlerp` :func:`~spatialmath.base.transforms3d.trinterp2`
     """
 
     if not 0 <= s <= 1:
@@ -1529,7 +1529,7 @@ def delta2tr(d):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import delta2tr
         >>> delta2tr([0.001, 0, 0, 0, 0.002, 0])
 
     :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
@@ -1557,7 +1557,7 @@ def trinv(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import trinv, trotx
         >>> T = trotx(0.3, t=[4,5,6])
         >>> trinv(T)
         >>> T @ trinv(T)
@@ -1602,7 +1602,7 @@ def tr2delta(T0, T1=None):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import tr2delta, trotx
         >>> T1 = trotx(0.3, t=[4,5,6])
         >>> T2 = trotx(0.31, t=[4,5.02,6])
         >>> tr2delta(T1, T2)
@@ -1653,7 +1653,7 @@ def tr2jac(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import tr2jac, trotx
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2jac(T)
 
@@ -1688,8 +1688,8 @@ def eul2jac(angles):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
-        >>> eul2jac(0.1, 0.2, 0.3)
+        >>> from spatialmath.base import eul2jac
+        >>> eul2jac([0.1, 0.2, 0.3])
 
     .. note::
         - Used in the creation of an analytical Jacobian.
@@ -1754,8 +1754,8 @@ def rpy2jac(angles, order="zyx"):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
-        >>> rpy2jac(0.1, 0.2, 0.3)
+        >>> from spatialmath.base import rpy2jac
+        >>> rpy2jac([0.1, 0.2, 0.3])
 
     .. note::
         - Used in the creation of an analytical Jacobian.
@@ -1818,8 +1818,8 @@ def exp2jac(v):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
-        >>> expjac(0.3 * np.r_[1, 0, 0])
+        >>> from spatialmath.base import exp2jac
+        >>> exp2jac([0.3, 0, 0])
 
     .. note::
         - Used in the creation of an analytical Jacobian.
@@ -2452,7 +2452,7 @@ def tr2adjoint(T):
 
     .. runblock:: pycon
 
-        >>> from spatialmath.smb import *
+        >>> from spatialmath.base import tr2adjoint, trotx
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2adjoint(T)
 
@@ -2541,7 +2541,7 @@ def trprint(
 
      .. runblock:: pycon
 
-         >>> from spatialmath.smb import transl, rpy2tr, trprint
+         >>> from spatialmath.base import transl, rpy2tr, trprint
          >>> T = transl(1,2,3) @ rpy2tr(10, 20, 30, 'deg')
          >>> trprint(T, file=None)
          >>> trprint(T, file=None, label='T', orient='angvec')
@@ -2556,7 +2556,7 @@ def trprint(
          - For tabular data set ``fmt`` to a fixed width format such as
            ``fmt='{:.3g}'``
 
-     :seealso: :func:`~spatialmath.smb.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`
+     :seealso: :func:`~spatialmath.base.transforms2d.trprint2` :func:`~tr2eul` :func:`~tr2rpy` :func:`~tr2angvec`
      :SymPy: not supported
     """
 
