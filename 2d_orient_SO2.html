@@ -2,6 +2,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <link rel="icon" href="_static/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="_static/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="_static/apple-touch-icon.png" sizes="180x180" type="image/png">
+    <link rel="android-chrome" href="_static/android-chrome-192x192.png " sizes="192x192" type="image/png">
+    <link rel="android-chrome" href="_static/android-chrome-512x512.png " sizes="512x512" type="image/png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SO(2) matrix &mdash; Spatial Maths package  documentation</title>
@@ -17,8 +22,8 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "dmat": ["\\dot{\\mathbf{#1}}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}})</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "dmat": ["\\dot{\\mathbf{#1}}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}}</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -860,6 +865,16 @@ results in the difference holding more than one value according to:</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ol class="arabic simple">
+<li><p>Pose is <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code> or <code class="docutils literal notranslate"><span class="pre">SE3</span></code> instance</p></li>
+<li><p>N is 2 for <code class="docutils literal notranslate"><span class="pre">SO2</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code>; 3 for <code class="docutils literal notranslate"><span class="pre">SO3</span></code> or <code class="docutils literal notranslate"><span class="pre">SE3</span></code></p></li>
+<li><p>Scalar multiplication is not a group operation so the result will
+be a matrix</p></li>
+<li><p>Any other input combinations result in a ValueError.</p></li>
+</ol>
+</div>
 <p>For pose composition either or both operands may hold more than one value which
 results in the composition holding more than one value according to:</p>
 <table class="docutils align-default">
@@ -869,20 +884,36 @@ results in the composition holding more than one value according to:</p>
 <col style="width: 7%" />
 <col style="width: 62%" />
 </colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>len(left)</p></th>
+<th class="head"><p>len(right)</p></th>
+<th class="head"><p>len</p></th>
+<th class="head"><p>operation</p></th>
+</tr>
+</thead>
 <tbody>
-<tr class="row-odd"><td><p>len(left)</p></td>
-<td><p>len(right)</p></td>
-<td><p>len</p></td>
-<td><p>operation</p></td>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">quo</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right.inv()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">quo[i]</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right[i].inv()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>N</p></td>
+<td><p>1</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">quo[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right.inv()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>M</p></td>
+<td><p>M</p></td>
+<td><p>M</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">quo[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right[i].inv()</span></code></p></td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<div><p>1          1             1    <code class="docutils literal notranslate"><span class="pre">quo</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right.inv()</span></code>
-1          M             M    <code class="docutils literal notranslate"><span class="pre">quo[i]</span> <span class="pre">=</span> <span class="pre">left</span> <span class="pre">*</span> <span class="pre">right[i].inv()</span></code>
-N          1             M    <code class="docutils literal notranslate"><span class="pre">quo[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right.inv()</span></code>
-M          M             M    <code class="docutils literal notranslate"><span class="pre">quo[i]</span> <span class="pre">=</span> <span class="pre">left[i]</span> <span class="pre">*</span> <span class="pre">right[i].inv()</span></code></p>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
