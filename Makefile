@@ -16,7 +16,7 @@ test:
 	pytest
 
 coverage:
-	coverage run --omit=\*/test_\* -m unittest
+	pytest --cov=spatialmath
 	coverage report
 
 docs: .FORCE
