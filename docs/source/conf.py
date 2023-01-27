@@ -91,7 +91,6 @@ html_theme_options = {
 
     }
 html_logo = '../figs/CartesianSnakes_LogoW.png'
-html_favicon = 'favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -114,6 +113,8 @@ latex_elements = {
     # 'fncychap': '\\usepackage[Lenny]{fncychap}',
     'fncychap': '\\usepackage{fncychap}',
 }
+
+# -------- RVC maths notation -------------------------------------------------------#
 
 # see https://stackoverflow.com/questions/9728292/creating-latex-math-macros-within-sphinx
 mathjax3_config = {
