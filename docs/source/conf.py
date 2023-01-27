@@ -46,6 +46,7 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'sphinx_autorun',
     "sphinx.ext.intersphinx",
+    "sphinx-favicon",
     ]
     #'sphinx-prompt',
     #'recommonmark',
@@ -115,9 +116,9 @@ latex_elements = {
 }
 
 # see https://stackoverflow.com/questions/9728292/creating-latex-math-macros-within-sphinx
-mathjax_config = {
-    'TeX': {
-        'Macros': {
+mathjax3_config = {
+    'tex': {
+        'macros': {
             # RVC Math notation
             #  - not possible to do the if/then/else approach
             #  - subset only
@@ -168,3 +169,40 @@ intersphinx_mapping = {
     "scipy": ("http://docs.scipy.org/doc/scipy/reference/", None),
     "matplotlib": ("http://matplotlib.sourceforge.net/", None),
 }
+
+# -------- Options favicon -------------------------------------------------------#
+
+html_static_path = ["_static"]
+# create favicons online using https://favicon.io/favicon-converter/
+favicons = [
+    {
+        "rel": "icon",
+        "sizes": "16x16",
+        "static-file": "favicon-16x16.png",
+        "type": "image/png",
+    },
+    {
+        "rel": "icon",
+        "sizes": "32x32",
+        "static-file": "favicon-32x32.png",
+        "type": "image/png",
+    },
+    {
+        "rel": "apple-touch-icon",
+        "sizes": "180x180",
+        "static-file": "apple-touch-icon.png",
+        "type": "image/png",
+    },
+    {
+        "rel": "android-chrome",
+        "sizes": "192x192",
+        "static-file": "android-chrome-192x192.png ",
+        "type": "image/png",
+    },
+    {
+        "rel": "android-chrome",
+        "sizes": "512x512",
+        "static-file": "android-chrome-512x512.png ",
+        "type": "image/png",
+    },
+]
