@@ -20,14 +20,16 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'Spatial Maths package'
-copyright = '2022, Peter Corke'
+copyright = '2020-, Peter Corke.'
 author = 'Peter Corke'
-version = '0.12'
+import spatialmath
+version = spatialmath.__version__
 
-print(__file__)
 # The full version, including alpha/beta/rc tags
-with open('../../RELEASE', encoding='utf-8') as f:
-    release = f.read()
+# with open('../../RELEASE', encoding='utf-8') as f:
+#     release = f.read()
+# import spatialmath
+# release = spatialmath.__version__
 
 # -- General configuration ---------------------------------------------------
 

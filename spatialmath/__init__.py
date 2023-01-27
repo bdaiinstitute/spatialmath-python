@@ -37,4 +37,10 @@ __all__ = [
     "smb",
 ]
 
+try:
+    import importlib.metadata
+    __version__ = importlib.metadata.version("spatialmath-python")
+except:
+    pass
+
 
