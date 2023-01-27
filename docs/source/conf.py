@@ -22,14 +22,14 @@ import sys
 project = 'Spatial Maths package'
 copyright = '2020-, Peter Corke.'
 author = 'Peter Corke'
-import spatialmath
-version = spatialmath.__version__
-
-# The full version, including alpha/beta/rc tags
-# with open('../../RELEASE', encoding='utf-8') as f:
-#     release = f.read()
-# import spatialmath
-# release = spatialmath.__version__
+try:
+    import spatialmath
+    version = spatialmath.__version__
+except AttributeError:
+    import re
+    with open("../../pyproject.toml", "r") as f:
+        m = re.compile(r'version\s*=\s*"([0-9\.]+)"').search(f.read())
+        version = m[1]
 
 # -- General configuration ---------------------------------------------------
 
