@@ -4,8 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>se(3) twist &mdash; Spatial Maths package 1.0.4
- documentation</title>
+  <title>se(3) twist &mdash; Spatial Maths package  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -36,7 +35,7 @@
             <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.12
+                1.0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -209,6 +208,71 @@ vector.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.Twist3.RPY">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RPY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.RPY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.RPY" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new 3D twist from roll-pitch-yaw angles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>𝚪</strong> (<em>array_like</em><em> or </em><em>numpy.ndarray with shape=</em><em>(</em><em>N</em><em>,</em><em>3</em><em>)</em>) – roll-pitch-yaw angles</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
+<li><p><strong>order</strong> (<em>str</em>) – rotation order: ‘zyx’ [default], ‘xyz’, or ‘yxz’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>3D twist vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Twist3 instance</p>
+</dd>
+</dl>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3.RPY(𝚪)</span></code> is a 3D rotation defined by a 3-vector of roll,
+pitch, yaw angles <span class="math notranslate nohighlight">\(\Gamma=(r, p, y)\)</span> which correspond to
+successive rotations about the axes specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'zyx'</span></code> [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+then by roll about the new x-axis.  This is the <strong>convention</strong> for a mobile robot with x-axis forward
+and y-axis sideways.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'xyz'</span></code>, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+then by roll about the new z-axis. This is the <strong>convention</strong> for a robot gripper with z-axis forward
+and y-axis between the gripper fingers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'yxz'</span></code>, rotate by yaw about the y-axis, then by pitch about the new x-axis,
+then by roll about the new z-axis. This is the <strong>convention</strong> for a camera with z-axis parallel
+to the optical axis and x-axis parallel to the pixel rows.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">𝚪</span></code> is an Nx3 matrix then the result is a sequence of rotations each defined by RPY angles
+corresponding to the rows of <code class="docutils literal notranslate"><span class="pre">𝚪</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Twist3.RPY(⍺,</span> <span class="pre">β,</span> <span class="pre">𝛾)</span></code> as above but the angles are provided as three
+scalars.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;Twist3&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;Twist3&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;Twist3&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">RPY()</span></code></p>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist3.Rand">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Rand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist3.Rand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist3.Rand" title="Permalink to this definition"></a></dt>
 <dd><p>Create a new random 3D twist</p>
@@ -238,8 +302,8 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">Twist3([</span>
-<span class="go">  [0.87608, -0.15263, -0.2537, 0.26765, 0.31554, 2.7081],</span>
-<span class="go">  [-0.53142, -0.26074, 1.1217, 1.5666, 1.0986, 0.72773]</span>
+<span class="go">  [-0.12493, -0.020566, 0.95205, 1.0849, -1.8792, -2.0675],</span>
+<span class="go">  [-0.3394, 1.2085, 0.76958, 0.59099, 2.0877, 0.025227]</span>
 <span class="go">])</span>
 </pre></div>
 </div>
@@ -930,9 +994,9 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([0.25698, 0.26619, -0.63132, 0.039561, 1.8389, 1.4601])</span>
+<span class="go">Twist3([-0.89912, -1.1879, -1.0081, 1.9419, 0.24679, -2.2134])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([-0.25698, -0.26619, 0.63132, -0.039561, -1.8389, -1.4601])</span>
+<span class="go">Twist3([0.89912, 1.1879, 1.0081, -1.9419, -0.24679, 2.2134])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
 <span class="go">Twist3([0, 0, 0, 0, 0, 0])</span>
 </pre></div>
@@ -1109,7 +1173,7 @@ Twist <code class="docutils literal notranslate"><span class="pre">S</span></cod
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.Twist3.A">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">numpy.ndarray</span></a></em><a class="headerlink" href="#spatialmath.Twist3.A" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a></em><a class="headerlink" href="#spatialmath.Twist3.A" title="Permalink to this definition"></a></dt>
 <dd><p>Array value of an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1393,8 +1457,8 @@ this point is at infinity.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Peter Corke.
-      <span class="lastupdated">Last updated on 17-Nov-2022.
+    <p>&#169; Copyright 2020-, Peter Corke..
+      <span class="lastupdated">Last updated on 27-Jan-2023.
       </span></p>
   </div>
 
