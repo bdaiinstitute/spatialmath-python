@@ -747,7 +747,7 @@ class Line3(BasePoseList):
 
         ``l1.distance(l2) is the minimum distance between two lines.
         
-        .. notes:: Works for parallel, skew and intersecting lines.
+        .. note:: Works for parallel, skew and intersecting lines.
 
         :seealso: :meth:`closest_to_line`
         """

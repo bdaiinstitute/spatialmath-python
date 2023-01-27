@@ -2277,9 +2277,9 @@ def rotvelxform_inv_dot(𝚪, 𝚪d, full=False, representation="rpy/xyz"):
     ============================  ========================================
     ``representation``            Rotational representation
     ============================  ========================================
-    ``"rpy/xyz"`` ``"arm"``      RPY angular rates in XYZ order (default)
-    ``"rpy/zyx"`` ``"vehicle"``  RPY angular rates in XYZ order
-    ``"rpy/yxz"`` ``"camera"``   RPY angular rates in YXZ order
+    ``"rpy/xyz"`` ``"arm"``       RPY angular rates in XYZ order (default)
+    ``"rpy/zyx"`` ``"vehicle"``   RPY angular rates in XYZ order
+    ``"rpy/yxz"`` ``"camera"``    RPY angular rates in YXZ order
     ``"eul"``                     Euler angular rates in ZYZ order
     ``"exp"``                     exponential coordinate rates
     ============================  ========================================
@@ -2547,7 +2547,7 @@ def trprint(
          >>> trprint(T, file=None, label='T', orient='angvec')
          >>> trprint(T, file=None, label='T', orient='angvec', fmt='{:8.4g}')
 
-     .. notes::
+     .. note::
 
          - If the 'rpy' option is selected, then the particular angle sequence can be
            specified with the options 'xyz' or 'yxz' which are passed through to ``tr2rpy``.

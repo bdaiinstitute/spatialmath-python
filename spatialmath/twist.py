@@ -1040,7 +1040,7 @@ class Twist3(BaseTwist):
             >>> S.exp(0)
             >>> S.exp(1)
 
-        .. notes::
+        .. note::
 
             - For the second form, the twist must, if rotational, have a unit 
               rotational component.
@@ -1539,7 +1539,7 @@ class Twist2(BaseTwist):
             >>> S.exp(0)
             >>> S.exp(1)
 
-        .. notes::
+        .. note::
 
             - For the second form, the twist must, if rotational, have a unit 
               rotational component.

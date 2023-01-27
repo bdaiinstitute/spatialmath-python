@@ -709,7 +709,7 @@ def trprint2(T, label=None, file=sys.stdout, fmt="{:.3g}", unit="deg"):
         >>> trprint2(T, file=None, label='T', fmt='{:8.4g}')
 
 
-    .. notes::
+    .. note::
 
         - Default formatting is for compact display of data
         - For tabular data set ``fmt`` to a fixed width format such as

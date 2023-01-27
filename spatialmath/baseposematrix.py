@@ -1330,7 +1330,7 @@ class BasePoseMatrix(BasePoseList):
         Pose             scalar           NxN matrix   element-wise division
         ==============   ==============   ===========  =========================
 
-        .. notes::
+        .. note::
 
             #. Pose is ``SO2``, ``SE2``, ``SO3`` or ``SE3`` instance
             #. N is 2 for ``SO2``, ``SE2``; 3 for ``SO3`` or ``SE3``
@@ -1344,7 +1344,6 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  =====================================
         len(left)   len(right)   len     operation
         =========   ==========   ====  =====================================
-
          1          1             1    ``quo = left * right.inv()``
          1          M             M    ``quo[i] = left * right[i].inv()``
          N          1             M    ``quo[i] = left[i] * right.inv()``
