@@ -148,7 +148,7 @@ class TestVelocity(unittest.TestCase):
         nt.assert_array_almost_equal(A, eul2jac(gamma))
         nt.assert_array_almost_equal(Ai @ A, np.eye(3))
 
-        gamma = [0.1, 0.2, 0.3]
+        gamma = [0.1, -0.2, 0.3]
         A = rotvelxform(gamma, full=False, representation="exp")
         Ai = rotvelxform(gamma, full=False, inverse=True, representation="exp")
         nt.assert_array_almost_equal(A, exp2jac(gamma))
@@ -185,7 +185,7 @@ class TestVelocity(unittest.TestCase):
     def test_angvelxform_inv_dot_eul(self):
         rep = 'eul'
         gamma = [0.1, 0.2, 0.3]
-        gamma_d = [2, 3, 4]
+        gamma_d = [2, -3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
@@ -194,9 +194,8 @@ class TestVelocity(unittest.TestCase):
     def test_angvelxform_dot_rpy_xyz(self):
         rep = 'rpy/xyz'
         gamma = [0.1, 0.2, 0.3]
-        gamma_d = [2, 3, 4]
+        gamma_d = [2, -3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
-        Adot = np.zeros((3,3))
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
@@ -204,17 +203,18 @@ class TestVelocity(unittest.TestCase):
     def test_angvelxform_dot_rpy_zyx(self):
         rep = 'rpy/zyx'
         gamma = [0.1, 0.2, 0.3]
-        gamma_d = [2, 3, 4]
+        gamma_d = [2, -3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
-    @unittest.skip("bug in angvelxform_dot for exponential coordinates")
+    # @unittest.skip("bug in angvelxform_dot for exponential coordinates")
     def test_angvelxform_dot_exp(self):
         rep = 'exp'
         gamma = [0.1, 0.2, 0.3]
-        gamma_d = [2, 3, 4]
+        gamma /= np.linalg.norm(gamma)
+        gamma_d = [2, -3, 4]
         H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
