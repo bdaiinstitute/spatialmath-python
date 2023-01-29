@@ -17,7 +17,6 @@ test:
 
 coverage:
 	pytest --cov=spatialmath
-	coverage report
 
 docs: .FORCE
 	(cd docs; make html)
