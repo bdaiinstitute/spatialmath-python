@@ -56,8 +56,8 @@ jobs:
         pip install pytest-timeout
     - name: Run coverage
       run: |
-        pytest --cov=spatialmath --cov-report xml:coverage.xml
-        coverage report
+        coverage run -m pytest
+        coverage xml --omit='tests/*.py,tests/base/*.py' 
     - name: upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
