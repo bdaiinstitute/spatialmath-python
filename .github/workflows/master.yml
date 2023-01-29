@@ -56,8 +56,9 @@ jobs:
         pip install pytest-timeout
     - name: Run coverage
       run: |
-        coverage run -m pytest
-        coverage xml --omit='tests/*.py,tests/base/*.py' 
+        coverage run --omit='tests/*.py,tests/base/*.py' -m pytest
+        coverage report
+        coverage xml 
     - name: upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
