@@ -620,7 +620,7 @@ class Twist3(BaseTwist):
 
     @classmethod
     def RPY(cls, *pos, **kwargs):
-        """
+        r"""
         Create a new 3D twist from roll-pitch-yaw angles
 
         :param 𝚪: roll-pitch-yaw angles
@@ -679,7 +679,7 @@ class Twist3(BaseTwist):
         :return: 3D twist vector
         :rtype: Twist3 instance
 
-        `Twist3.Tx(x)` is an se(3) translation of ``x`` along the x-axis
+        ``Twist3.Tx(x)`` is an se(3) translation of ``x`` along the x-axis
 
         Example:
 
@@ -705,7 +705,7 @@ class Twist3(BaseTwist):
         :return: 3D twist vector
         :rtype: Twist3 instance
 
-        `Twist3.Ty(y) is an se(3) translation of ``y`` along the y-axis
+        ``Twist3.Ty(y)`` is an se(3) translation of ``y`` along the y-axis
 
         Example:
 
@@ -730,7 +730,7 @@ class Twist3(BaseTwist):
         :return: 3D twist vector
         :rtype: Twist3 instance
 
-        `Twist3.Tz(z)` is an se(3) translation of ``z`` along the z-axis
+        ``Twist3.Tz(z)`` is an se(3) translation of ``z`` along the z-axis
 
         Example:
 
