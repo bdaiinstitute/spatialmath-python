@@ -510,6 +510,8 @@ def wrap_0_pi(theta):
     This is used to fold angles of colatitude.  If zero is the angle of the
     north pole, colatitude increases to :math:`\pi` at the south pole then
     decreases to :math:`0` as we head back to the north pole.
+
+    :seealso: :func:`wrap_mpi2_pi2` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`
     """
     n = (theta / np.pi)
     if isinstance(n, np.ndarray):
@@ -519,6 +521,26 @@ def wrap_0_pi(theta):
     
     return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
 
+def wrap_mpi2_pi2(theta):
+    r"""
+    Wrap angle to range :math:`[-\pi/2, \pi/2]`
+
+    :param theta: input angle
+    :type theta: scalar or ndarray
+    :return: angle wrapped into range :math:`[-\pi/2, \pi/2]`
+
+    This is used to fold angles of latitude.
+
+    :seealso: :func:`wrap_0_pi` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`
+
+    """
+    n = (theta / np.pi)
+    if isinstance(n, np.ndarray):
+        n = n.astype(int)
+    else:
+        n = int(n)
+    
+    return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
 
 def wrap_0_2pi(theta):
     r"""
@@ -527,17 +549,22 @@ def wrap_0_2pi(theta):
     :param theta: input angle
     :type theta: scalar or ndarray
     :return: angle wrapped into range :math:`[0, 2\pi)`
+
+    :seealso: :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`
     """
+    
     return theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
 
 
 def wrap_mpi_pi(angle):
     r"""
-    Wrap angle to range :math:`[\-pi, \pi)`
+    Wrap angle to range :math:`[-\pi, \pi)`
 
     :param theta: input angle
     :type theta: scalar or ndarray
     :return: angle wrapped into range :math:`[-\pi, \pi)`
+
+    :seealso: :func:`wrap_0_2pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`
     """
     return np.mod(angle + math.pi, 2 * math.pi) - np.pi
 
@@ -575,12 +602,122 @@ def angdiff(a, b=None):
         >>> angdiff(0.9 * pi, -0.9 * pi) / pi
         >>> angdiff(3 * pi)
 
+    :seealso: :func:`vector_diff` :func:`wrap_mpi_pi`
     """
     if b is None:
         return np.mod(a + math.pi, 2 * math.pi) - math.pi
     else:
         return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
 
+def angle_std(theta):
+    r"""
+    Standard deviation of angular values
+
+    :param theta: angular values
+    :type theta: array_like
+    :return: circular standard deviation
+    :rtype: float
+
+    .. math::
+
+        \sigma_{\theta} = \sqrt{-2 \log \| \left[ \frac{\sum \sin \theta_i}{N}, \frac{\sum \sin \theta_i}{N} \right] \|} \in [0, \infty)
+
+    :seealso: :func:`angle_mean`
+    """
+    X = np.cos(theta).mean()
+    Y = np.sin(theta).mean()
+    R = np.sqrt(X**2 + Y**2)
+
+    return np.sqrt(-2 * np.log(R))
+
+def angle_mean(theta):
+    r"""
+    Mean of angular values
+
+    :param theta: angular values
+    :type v: array_like
+    :return: circular mean
+    :rtype: float
+
+    The circular mean is given by
+
+    .. math::
+
+        \bar{\theta} = \tan^{-1} \frac{\sum \sin \theta_i}{\sum \cos \theta_i} \in [-\pi, \pi)]
+    
+    :seealso: :func:`angle_std`
+    """
+    X = np.cos(theta).sum()
+    Y = np.sin(theta).sum()
+    return np.artan2(Y, X)
+
+def angle_wrap(theta, mode='-pi:pi'):
+    """
+    Generalized angle-wrapping
+
+    :param v: angles to wrap
+    :type v: array_like
+    :param mode: wrapping mode, one of: ``"0:2pi"``, ``"0:pi"``, ``"-pi/2:pi/2"`` or ``"-pi:pi"`` [default]
+    :type mode: str, optional
+    :return: wrapped angles
+    :rtype: ndarray
+
+    .. note:: The modes ``"0:pi"`` and ``"-pi/2:pi/2"`` are used to wrap angles of
+        colatitude and latitude respectively.
+ 
+    :seealso: :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`
+    """
+    if mode == "0:2pi":
+        return wrap_0_2pi(theta)
+    elif mode == "-pi:pi":
+        return  wrap_mpi_pi(theta)
+    elif mode == "0:pi":
+        return  wrap_0_pi(theta)
+    elif mode == "0:pi":
+        return  wrap_mpi2_pi2(theta)
+    else:
+        raise ValueError('bad method specified')
+
+def vector_diff(v1, v2, mode):
+    """
+    Generalized vector differnce
+
+    :param v1: first vector
+    :type v1: array_like(n)
+    :param v2: second vector
+    :type v2: array_like(n)
+    :param mode: subtraction mode
+    :type mode: str of length n
+
+    ==============  ==================================== 
+    mode character  purpose
+    ==============  ==================================== 
+    r               real number, don't wrap
+    c               angle on circle, wrap to [-π, π)
+    C               angle on circle, wrap to [0, 2π)
+    l               latitude angle, wrap to [-π/2, π/2]
+    L               colatitude angle, wrap to [0, π]
+    ==============  ==================================== 
+
+    :seealso: :func:`angdiff` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`
+    """
+    v = getvector(v1) - getvector(v2)
+    for i, m in enumerate(mode):
+        if m == "r":
+            pass
+        elif m == "c":
+            v[i] = wrap_mpi_pi(v[i])
+        elif m == "C":
+            v[i] = wrap_0_2pi(v[i])
+        elif m == "l":
+            v[i] = wrap_mpi2_pi2(v[i])
+        elif m == "L":
+            v[i] = wrap_0_pi(v[i])
+        else:
+            raise ValueError('bad mode character')
+
+    return v
+         
 
 def removesmall(v, tol=100):
     """
