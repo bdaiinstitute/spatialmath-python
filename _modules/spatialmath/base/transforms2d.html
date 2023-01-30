@@ -7,6 +7,7 @@
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -1029,6 +1030,7 @@
     <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">),</span>
     <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">originsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">rviz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1070,8 +1072,6 @@
 <span class="sd">    :type wtl: float</span>
 <span class="sd">    :param rviz: show Rviz style arrows, default False</span>
 <span class="sd">    :type rviz: bool</span>
-<span class="sd">    :param projection: 3D projection: ortho [default] or persp</span>
-<span class="sd">    :type projection: str</span>
 <span class="sd">    :param width: width of lines, default 1</span>
 <span class="sd">    :type width: float</span>
 <span class="sd">    :param d1: distance of frame axis label text from origin, default 0.05</span>
@@ -1087,29 +1087,70 @@
 <span class="sd">    The appearance of the coordinate frame depends on many parameters:</span>
 
 <span class="sd">    - coordinate axes depend on:</span>
+
 <span class="sd">        - ``color`` of axes</span>
 <span class="sd">        - ``width`` of line</span>
 <span class="sd">        - ``length`` of line</span>
 <span class="sd">        - ``arrow`` if True [default] draw the axis with an arrow head</span>
+
 <span class="sd">    - coordinate axis labels depend on:</span>
+
 <span class="sd">        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z</span>
 <span class="sd">        - ``labels`` 2-list of alternative axis labels</span>
 <span class="sd">        - ``textcolor`` which defaults to ``color``</span>
 <span class="sd">        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript</span>
-<span class="sd">            for each axis label</span>
+<span class="sd">          for each axis label</span>
+
 <span class="sd">    - coordinate frame label depends on:</span>
-<span class="sd">        - `frame` the label placed inside {} near the origin of the frame</span>
+
+<span class="sd">        - `frame` the label placed inside {...} near the origin of the frame</span>
+
 <span class="sd">    - a dot at the origin</span>
+
 <span class="sd">        - ``originsize`` size of the dot, if zero no dot</span>
 <span class="sd">        - ``origincolor`` color of the dot, defaults to ``color``</span>
 <span class="sd">        - If no current figure, one is created</span>
 <span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
+<span class="sd">        </span>
+<span class="sd">    Examples::</span>
 
-<span class="sd">    Examples:</span>
+<span class="sd">        trplot2(T, frame=&#39;A&#39;)</span>
+<span class="sd">        trplot2(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
+<span class="sd">        trplot2(T1, &#39;labels&#39;, &#39;AB&#39;);</span>
 
-<span class="sd">            trplot2(T, frame=&#39;A&#39;)</span>
-<span class="sd">            trplot2(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
-<span class="sd">            trplot2(T1, &#39;labels&#39;, &#39;AB&#39;);</span>
+<span class="sd">    .. plot::</span>
+
+<span class="sd">        import matplotlib.pyplot as plt</span>
+<span class="sd">        from spatialmath.base import trplot2, transl2, trot2</span>
+<span class="sd">        import math</span>
+<span class="sd">        fig, ax = plt.subplots(3,3, figsize=(10,10))</span>
+<span class="sd">        text_opts = dict(bbox=dict(boxstyle=&quot;round&quot;, </span>
+<span class="sd">            fc=&quot;w&quot;, </span>
+<span class="sd">            alpha=0.9), </span>
+<span class="sd">            zorder=20,</span>
+<span class="sd">            family=&#39;monospace&#39;,</span>
+<span class="sd">            fontsize=8,</span>
+<span class="sd">            verticalalignment=&#39;top&#39;)</span>
+<span class="sd">        T = transl2(2, 1)@trot2(math.pi/3)</span>
+<span class="sd">        trplot2(T, ax=ax[0][0], dims=[0,4,0,4])</span>
+<span class="sd">        ax[0][0].text(0.2, 3.8, &quot;trplot2(T)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)</span>
+<span class="sd">        ax[0][1].text(0.2, 3.8, &quot;trplot2(T, originsize=0)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)</span>
+<span class="sd">        ax[0][2].text(0.2, 3.8, &quot;trplot2(T, arrow=False)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)</span>
+<span class="sd">        ax[1][0].text(0.2, 3.8, &quot;trplot2(T, axislabel=False)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)</span>
+<span class="sd">        ax[1][1].text(0.2, 3.8, &quot;trplot2(T, width=3)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame=&#39;B&#39;)</span>
+<span class="sd">        ax[1][2].text(0.2, 3.8, &quot;trplot2(T, frame=&#39;B&#39;)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color=&#39;r&#39;, textcolor=&#39;k&#39;)</span>
+<span class="sd">        ax[2][0].text(0.2, 3.8, &quot;trplot2(T, color=&#39;r&#39;,textcolor=&#39;k&#39;)&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=(&quot;u&quot;, &quot;v&quot;))</span>
+<span class="sd">        ax[2][1].text(0.2, 3.8, &quot;trplot2(T, labels=(&#39;u&#39;, &#39;v&#39;))&quot;, **text_opts)</span>
+<span class="sd">        trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)</span>
+<span class="sd">        ax[2][2].text(0.2, 3.8, &quot;trplot2(T, rviz=True)&quot;, **text_opts)</span>
+
 
 <span class="sd">    :SymPy: not supported</span>
 
@@ -1132,7 +1173,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">pass</span>  <span class="c1"># if axes are an Animate object</span>
 
@@ -1179,11 +1220,12 @@
             <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
             <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="c1"># plot an invisible point at the end of each arrow to allow auto-scaling to work</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">originsize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="n">originsize</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># label the frame</span>
     <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
@@ -1201,6 +1243,8 @@
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">axislabel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
         <span class="c1"># add the labels to each axis</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
@@ -1271,11 +1315,50 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
     <span class="c1"># trplot2( transl2(1,2), frame=&#39;A&#39;, rviz=True, width=1)</span>
     <span class="c1"># trplot2( transl2(3,1), color=&#39;red&#39;, arrow=True, width=3, frame=&#39;B&#39;)</span>
     <span class="c1"># trplot2( transl2(4, 3)@trot2(math.pi/3), color=&#39;green&#39;, frame=&#39;c&#39;)</span>
     <span class="c1"># plt.grid(True)</span>
+
+    <span class="c1"># fig, ax = plt.subplots(3,3, figsize=(10,10))</span>
+    <span class="c1"># text_opts = dict(bbox=dict(boxstyle=&quot;round&quot;, </span>
+    <span class="c1">#     fc=&quot;w&quot;, </span>
+    <span class="c1">#     alpha=0.9), </span>
+    <span class="c1">#     zorder=20,</span>
+    <span class="c1">#     family=&#39;monospace&#39;,</span>
+    <span class="c1">#     fontsize=8,</span>
+    <span class="c1">#     verticalalignment=&#39;top&#39;)</span>
+    <span class="c1"># T = transl2(2, 1)@trot2(math.pi/3)</span>
+    <span class="c1"># trplot2(T, ax=ax[0][0], dims=[0,4,0,4])</span>
+    <span class="c1"># ax[0][0].text(0.2, 3.8, &quot;trplot2(T)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)</span>
+    <span class="c1"># ax[0][1].text(0.2, 3.8, &quot;trplot2(T, originsize=0)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)</span>
+    <span class="c1"># ax[0][2].text(0.2, 3.8, &quot;trplot2(T, arrow=False)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)</span>
+    <span class="c1"># ax[1][0].text(0.2, 3.8, &quot;trplot2(T, axislabel=False)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)</span>
+    <span class="c1"># ax[1][1].text(0.2, 3.8, &quot;trplot2(T, width=3)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame=&#39;B&#39;)</span>
+    <span class="c1"># ax[1][2].text(0.2, 3.8, &quot;trplot2(T, frame=&#39;B&#39;)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color=&#39;r&#39;, textcolor=&#39;k&#39;)</span>
+    <span class="c1"># ax[2][0].text(0.2, 3.8, &quot;trplot2(T, color=&#39;r&#39;,\n        textcolor=&#39;k&#39;)&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=(&quot;u&quot;, &quot;v&quot;))</span>
+    <span class="c1"># ax[2][1].text(0.2, 3.8, &quot;trplot2(T, labels=(&#39;u&#39;, &#39;v&#39;))&quot;, **text_opts)</span>
+
+    <span class="c1"># trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)</span>
+    <span class="c1"># ax[2][2].text(0.2, 3.8, &quot;trplot2(T, rviz=True)&quot;, **text_opts)</span>
+
+
 
     <span class="n">exec</span><span class="p">(</span>
         <span class="nb">open</span><span class="p">(</span>
@@ -1295,7 +1378,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 29-Jan-2023.
+      <span class="lastupdated">Last updated on 30-Jan-2023.
       </span></p>
   </div>
 

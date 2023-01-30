@@ -13,6 +13,7 @@
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -151,6 +152,90 @@ a NumPy array <code class="docutils literal notranslate"><span class="pre">a[i]-
 <span class="go">-3.141592653589793</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.vector_diff" title="spatialmath.base.vectors.vector_diff"><code class="xref py py-func docutils literal notranslate"><span class="pre">vector_diff()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi_pi" title="spatialmath.base.vectors.wrap_mpi_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi_pi()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.vectors.angle_mean">
+<span class="sig-name descname"><span class="pre">angle_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#angle_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.angle_mean" title="Permalink to this definition"></a></dt>
+<dd><p>Mean of angular values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>theta</strong> – angular values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>circular mean</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p>The circular mean is given by</p>
+<div class="math notranslate nohighlight">
+\[\bar{\theta} = \tan^{-1} \frac{\sum \sin \theta_i}{\sum \cos \theta_i} \in [-\pi, \pi)]\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.angle_std" title="spatialmath.base.vectors.angle_std"><code class="xref py py-func docutils literal notranslate"><span class="pre">angle_std()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.vectors.angle_std">
+<span class="sig-name descname"><span class="pre">angle_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#angle_std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.angle_std" title="Permalink to this definition"></a></dt>
+<dd><p>Standard deviation of angular values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>theta</strong> (<em>array_like</em>) – angular values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>circular standard deviation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<div class="math notranslate nohighlight">
+\[\sigma_{\theta} = \sqrt{-2 \log \| \left[ \frac{\sum \sin \theta_i}{N}, \frac{\sum \sin \theta_i}{N} \right] \|} \in [0, \infty)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.angle_mean" title="spatialmath.base.vectors.angle_mean"><code class="xref py py-func docutils literal notranslate"><span class="pre">angle_mean()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.vectors.angle_wrap">
+<span class="sig-name descname"><span class="pre">angle_wrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'-pi:pi'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#angle_wrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.angle_wrap" title="Permalink to this definition"></a></dt>
+<dd><p>Generalized angle-wrapping</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – angles to wrap</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – wrapping mode, one of: <code class="docutils literal notranslate"><span class="pre">&quot;0:2pi&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;0:pi&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;-pi/2:pi/2&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;-pi:pi&quot;</span></code> [default]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>wrapped angles</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The modes <code class="docutils literal notranslate"><span class="pre">&quot;0:pi&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;-pi/2:pi/2&quot;</span></code> are used to wrap angles of
+colatitude and latitude respectively.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.wrap_0_2pi" title="spatialmath.base.vectors.wrap_0_2pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_2pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi_pi" title="spatialmath.base.vectors.wrap_mpi_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_pi" title="spatialmath.base.vectors.wrap_0_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi2_pi2" title="spatialmath.base.vectors.wrap_mpi2_pi2"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi2_pi2()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -689,6 +774,54 @@ or <span class="math notranslate nohighlight">\(|v|^2\)</span>.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.vectors.vector_diff">
+<span class="sig-name descname"><span class="pre">vector_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#vector_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.vector_diff" title="Permalink to this definition"></a></dt>
+<dd><p>Generalized vector differnce</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v1</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em>) – first vector</p></li>
+<li><p><strong>v2</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em>) – second vector</p></li>
+<li><p><strong>mode</strong> (<em>str of length n</em>) – subtraction mode</p></li>
+</ul>
+</dd>
+</dl>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>mode character</p></th>
+<th class="head"><p>purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>r</p></td>
+<td><p>real number, don’t wrap</p></td>
+</tr>
+<tr class="row-odd"><td><p>c</p></td>
+<td><p>angle on circle, wrap to [-π, π)</p></td>
+</tr>
+<tr class="row-even"><td><p>C</p></td>
+<td><p>angle on circle, wrap to [0, 2π)</p></td>
+</tr>
+<tr class="row-odd"><td><p>l</p></td>
+<td><p>latitude angle, wrap to [-π/2, π/2]</p></td>
+</tr>
+<tr class="row-even"><td><p>L</p></td>
+<td><p>colatitude angle, wrap to [0, π]</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.angdiff" title="spatialmath.base.vectors.angdiff"><code class="xref py py-func docutils literal notranslate"><span class="pre">angdiff()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_2pi" title="spatialmath.base.vectors.wrap_0_2pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_2pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi_pi" title="spatialmath.base.vectors.wrap_mpi_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_pi" title="spatialmath.base.vectors.wrap_0_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi2_pi2" title="spatialmath.base.vectors.wrap_mpi2_pi2"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi2_pi2()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.vectors.wrap_0_2pi">
 <span class="sig-name descname"><span class="pre">wrap_0_2pi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#wrap_0_2pi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.wrap_0_2pi" title="Permalink to this definition"></a></dt>
 <dd><p>Wrap angle to range <span class="math notranslate nohighlight">\([0, 2\pi)\)</span></p>
@@ -698,6 +831,9 @@ or <span class="math notranslate nohighlight">\(|v|^2\)</span>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>angle wrapped into range <span class="math notranslate nohighlight">\([0, 2\pi)\)</span></p>
+</dd>
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi_pi" title="spatialmath.base.vectors.wrap_mpi_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_pi" title="spatialmath.base.vectors.wrap_0_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi2_pi2" title="spatialmath.base.vectors.wrap_mpi2_pi2"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi2_pi2()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.angle_wrap" title="spatialmath.base.vectors.angle_wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">angle_wrap()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -717,18 +853,46 @@ or <span class="math notranslate nohighlight">\(|v|^2\)</span>.</p>
 <p>This is used to fold angles of colatitude.  If zero is the angle of the
 north pole, colatitude increases to <span class="math notranslate nohighlight">\(\pi\)</span> at the south pole then
 decreases to <span class="math notranslate nohighlight">\(0\)</span> as we head back to the north pole.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi2_pi2" title="spatialmath.base.vectors.wrap_mpi2_pi2"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi2_pi2()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_2pi" title="spatialmath.base.vectors.wrap_0_2pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_2pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi_pi" title="spatialmath.base.vectors.wrap_mpi_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.angle_wrap" title="spatialmath.base.vectors.angle_wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">angle_wrap()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.vectors.wrap_mpi2_pi2">
+<span class="sig-name descname"><span class="pre">wrap_mpi2_pi2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#wrap_mpi2_pi2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.wrap_mpi2_pi2" title="Permalink to this definition"></a></dt>
+<dd><p>Wrap angle to range <span class="math notranslate nohighlight">\([-\pi/2, \pi/2]\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>theta</strong> (<em>scalar</em><em> or </em><em>ndarray</em>) – input angle</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>angle wrapped into range <span class="math notranslate nohighlight">\([-\pi/2, \pi/2]\)</span></p>
+</dd>
+</dl>
+<p>This is used to fold angles of latitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.wrap_0_pi" title="spatialmath.base.vectors.wrap_0_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_2pi" title="spatialmath.base.vectors.wrap_0_2pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_2pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi_pi" title="spatialmath.base.vectors.wrap_mpi_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.angle_wrap" title="spatialmath.base.vectors.angle_wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">angle_wrap()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.vectors.wrap_mpi_pi">
 <span class="sig-name descname"><span class="pre">wrap_mpi_pi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/vectors.html#wrap_mpi_pi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.vectors.wrap_mpi_pi" title="Permalink to this definition"></a></dt>
-<dd><p>Wrap angle to range <span class="math notranslate nohighlight">\([\-pi, \pi)\)</span></p>
+<dd><p>Wrap angle to range <span class="math notranslate nohighlight">\([-\pi, \pi)\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>theta</strong> (<em>scalar</em><em> or </em><em>ndarray</em>) – input angle</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>angle wrapped into range <span class="math notranslate nohighlight">\([-\pi, \pi)\)</span></p>
+</dd>
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.vectors.wrap_0_2pi" title="spatialmath.base.vectors.wrap_0_2pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_2pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_0_pi" title="spatialmath.base.vectors.wrap_0_pi"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_0_pi()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.wrap_mpi2_pi2" title="spatialmath.base.vectors.wrap_mpi2_pi2"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap_mpi2_pi2()</span></code></a> <a class="reference internal" href="#spatialmath.base.vectors.angle_wrap" title="spatialmath.base.vectors.angle_wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">angle_wrap()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -747,7 +911,7 @@ decreases to <span class="math notranslate nohighlight">\(0\)</span> as we head 
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 29-Jan-2023.
+      <span class="lastupdated">Last updated on 30-Jan-2023.
       </span></p>
   </div>
 

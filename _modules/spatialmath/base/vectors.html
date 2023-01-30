@@ -7,6 +7,7 @@
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -583,6 +584,8 @@
 <span class="sd">    This is used to fold angles of colatitude.  If zero is the angle of the</span>
 <span class="sd">    north pole, colatitude increases to :math:`\pi` at the south pole then</span>
 <span class="sd">    decreases to :math:`0` as we head back to the north pole.</span>
+
+<span class="sd">    :seealso: :func:`wrap_mpi2_pi2` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -592,6 +595,26 @@
     
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="wrap_mpi2_pi2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi2_pi2">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap angle to range :math:`[-\pi/2, \pi/2]`</span>
+
+<span class="sd">    :param theta: input angle</span>
+<span class="sd">    :type theta: scalar or ndarray</span>
+<span class="sd">    :return: angle wrapped into range :math:`[-\pi/2, \pi/2]`</span>
+
+<span class="sd">    This is used to fold angles of latitude.</span>
+
+<span class="sd">    :seealso: :func:`wrap_0_pi` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="wrap_0_2pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_2pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_2pi</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -600,17 +623,22 @@
 <span class="sd">    :param theta: input angle</span>
 <span class="sd">    :type theta: scalar or ndarray</span>
 <span class="sd">    :return: angle wrapped into range :math:`[0, 2\pi)`</span>
+
+<span class="sd">    :seealso: :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">return</span> <span class="n">theta</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="wrap_mpi_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi_pi</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrap angle to range :math:`[\-pi, \pi)`</span>
+<span class="sd">    Wrap angle to range :math:`[-\pi, \pi)`</span>
 
 <span class="sd">    :param theta: input angle</span>
 <span class="sd">    :type theta: scalar or ndarray</span>
 <span class="sd">    :return: angle wrapped into range :math:`[-\pi, \pi)`</span>
+
+<span class="sd">    :seealso: :func:`wrap_0_2pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
 
@@ -648,12 +676,122 @@
 <span class="sd">        &gt;&gt;&gt; angdiff(0.9 * pi, -0.9 * pi) / pi</span>
 <span class="sd">        &gt;&gt;&gt; angdiff(3 * pi)</span>
 
+<span class="sd">    :seealso: :func:`vector_diff` :func:`wrap_mpi_pi`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span></div>
 
+<div class="viewcode-block" id="angle_std"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_std">[docs]</a><span class="k">def</span> <span class="nf">angle_std</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Standard deviation of angular values</span>
+
+<span class="sd">    :param theta: angular values</span>
+<span class="sd">    :type theta: array_like</span>
+<span class="sd">    :return: circular standard deviation</span>
+<span class="sd">    :rtype: float</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \sigma_{\theta} = \sqrt{-2 \log \| \left[ \frac{\sum \sin \theta_i}{N}, \frac{\sum \sin \theta_i}{N} \right] \|} \in [0, \infty)</span>
+
+<span class="sd">    :seealso: :func:`angle_mean`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">Y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="angle_mean"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_mean">[docs]</a><span class="k">def</span> <span class="nf">angle_mean</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mean of angular values</span>
+
+<span class="sd">    :param theta: angular values</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :return: circular mean</span>
+<span class="sd">    :rtype: float</span>
+
+<span class="sd">    The circular mean is given by</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \bar{\theta} = \tan^{-1} \frac{\sum \sin \theta_i}{\sum \cos \theta_i} \in [-\pi, \pi)]</span>
+<span class="sd">    </span>
+<span class="sd">    :seealso: :func:`angle_std`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">artan2</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="angle_wrap"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_wrap">[docs]</a><span class="k">def</span> <span class="nf">angle_wrap</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;-pi:pi&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generalized angle-wrapping</span>
+
+<span class="sd">    :param v: angles to wrap</span>
+<span class="sd">    :type v: array_like</span>
+<span class="sd">    :param mode: wrapping mode, one of: ``&quot;0:2pi&quot;``, ``&quot;0:pi&quot;``, ``&quot;-pi/2:pi/2&quot;`` or ``&quot;-pi:pi&quot;`` [default]</span>
+<span class="sd">    :type mode: str, optional</span>
+<span class="sd">    :return: wrapped angles</span>
+<span class="sd">    :rtype: ndarray</span>
+
+<span class="sd">    .. note:: The modes ``&quot;0:pi&quot;`` and ``&quot;-pi/2:pi/2&quot;`` are used to wrap angles of</span>
+<span class="sd">        colatitude and latitude respectively.</span>
+<span class="sd"> </span>
+<span class="sd">    :seealso: :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;0:2pi&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wrap_0_2pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;-pi:pi&quot;</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="n">wrap_mpi_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;0:pi&quot;</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="n">wrap_0_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;0:pi&quot;</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="n">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad method specified&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="vector_diff"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.vector_diff">[docs]</a><span class="k">def</span> <span class="nf">vector_diff</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generalized vector differnce</span>
+
+<span class="sd">    :param v1: first vector</span>
+<span class="sd">    :type v1: array_like(n)</span>
+<span class="sd">    :param v2: second vector</span>
+<span class="sd">    :type v2: array_like(n)</span>
+<span class="sd">    :param mode: subtraction mode</span>
+<span class="sd">    :type mode: str of length n</span>
+
+<span class="sd">    ==============  ==================================== </span>
+<span class="sd">    mode character  purpose</span>
+<span class="sd">    ==============  ==================================== </span>
+<span class="sd">    r               real number, don&#39;t wrap</span>
+<span class="sd">    c               angle on circle, wrap to [-π, π)</span>
+<span class="sd">    C               angle on circle, wrap to [0, 2π)</span>
+<span class="sd">    l               latitude angle, wrap to [-π/2, π/2]</span>
+<span class="sd">    L               colatitude angle, wrap to [0, π]</span>
+<span class="sd">    ==============  ==================================== </span>
+
+<span class="sd">    :seealso: :func:`angdiff` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="o">-</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_mpi_pi</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_0_2pi</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_0_pi</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad mode character&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">v</span></div>
+         
 
 <div class="viewcode-block" id="removesmall"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.removesmall">[docs]</a><span class="k">def</span> <span class="nf">removesmall</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -702,7 +840,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 29-Jan-2023.
+      <span class="lastupdated">Last updated on 30-Jan-2023.
       </span></p>
   </div>
 
