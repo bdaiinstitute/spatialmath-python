@@ -956,6 +956,7 @@ def trplot2(
     labels=("X", "Y"),
     length=1,
     arrow=True,
+    originsize=20,
     rviz=False,
     ax=None,
     block=False,
@@ -997,8 +998,6 @@ def trplot2(
     :type wtl: float
     :param rviz: show Rviz style arrows, default False
     :type rviz: bool
-    :param projection: 3D projection: ortho [default] or persp
-    :type projection: str
     :param width: width of lines, default 1
     :type width: float
     :param d1: distance of frame axis label text from origin, default 0.05
@@ -1014,29 +1013,70 @@ def trplot2(
     The appearance of the coordinate frame depends on many parameters:
 
     - coordinate axes depend on:
+
         - ``color`` of axes
         - ``width`` of line
         - ``length`` of line
         - ``arrow`` if True [default] draw the axis with an arrow head
+
     - coordinate axis labels depend on:
+
         - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
         - ``labels`` 2-list of alternative axis labels
         - ``textcolor`` which defaults to ``color``
         - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
-            for each axis label
+          for each axis label
+
     - coordinate frame label depends on:
-        - `frame` the label placed inside {} near the origin of the frame
+
+        - `frame` the label placed inside {...} near the origin of the frame
+
     - a dot at the origin
+
         - ``originsize`` size of the dot, if zero no dot
         - ``origincolor`` color of the dot, defaults to ``color``
         - If no current figure, one is created
         - If current figure, but no axes, a 3d Axes is created
+        
+    Examples::
 
-    Examples:
+        trplot2(T, frame='A')
+        trplot2(T, frame='A', color='green')
+        trplot2(T1, 'labels', 'AB');
 
-            trplot2(T, frame='A')
-            trplot2(T, frame='A', color='green')
-            trplot2(T1, 'labels', 'AB');
+    .. plot::
+
+        import matplotlib.pyplot as plt
+        from spatialmath.base import trplot2, transl2, trot2
+        import math
+        fig, ax = plt.subplots(3,3, figsize=(10,10))
+        text_opts = dict(bbox=dict(boxstyle="round", 
+            fc="w", 
+            alpha=0.9), 
+            zorder=20,
+            family='monospace',
+            fontsize=8,
+            verticalalignment='top')
+        T = transl2(2, 1)@trot2(math.pi/3)
+        trplot2(T, ax=ax[0][0], dims=[0,4,0,4])
+        ax[0][0].text(0.2, 3.8, "trplot2(T)", **text_opts)
+        trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)
+        ax[0][1].text(0.2, 3.8, "trplot2(T, originsize=0)", **text_opts)
+        trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)
+        ax[0][2].text(0.2, 3.8, "trplot2(T, arrow=False)", **text_opts)
+        trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)
+        ax[1][0].text(0.2, 3.8, "trplot2(T, axislabel=False)", **text_opts)
+        trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)
+        ax[1][1].text(0.2, 3.8, "trplot2(T, width=3)", **text_opts)
+        trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame='B')
+        ax[1][2].text(0.2, 3.8, "trplot2(T, frame='B')", **text_opts)
+        trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color='r', textcolor='k')
+        ax[2][0].text(0.2, 3.8, "trplot2(T, color='r',textcolor='k')", **text_opts)
+        trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=("u", "v"))
+        ax[2][1].text(0.2, 3.8, "trplot2(T, labels=('u', 'v'))", **text_opts)
+        trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)
+        ax[2][2].text(0.2, 3.8, "trplot2(T, rviz=True)", **text_opts)
+
 
     :SymPy: not supported
 
@@ -1059,7 +1099,7 @@ def trplot2(
         if not ax.get_xlabel():
             ax.set_xlabel(labels[0])
         if not ax.get_ylabel():
-            ax.set_ylabel(labels[0])
+            ax.set_ylabel(labels[1])
     except AttributeError:
         pass  # if axes are an Animate object
 
@@ -1106,11 +1146,12 @@ def trplot2(
             facecolor=color,
             edgecolor=color,
         )
-        # plot an invisible point at the end of each arrow to allow auto-scaling to work
-        ax.scatter(x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[20, 0, 0])
     else:
         ax.plot([o[0], x[0]], [o[1], x[1]], color=color, linewidth=width)
         ax.plot([o[0], y[0]], [o[1], y[1]], color=color, linewidth=width)
+
+    if originsize > 0:
+        ax.scatter(x=[o[0], x[0], y[0]], y=[o[1], x[1], y[1]], s=[originsize, 0, 0])
 
     # label the frame
     if frame:
@@ -1128,6 +1169,8 @@ def trplot2(
         )
 
     if axislabel:
+        if textcolor is not None:
+            color = textcolor
         # add the labels to each axis
         x = (x - o) * d2 + o
         y = (y - o) * d2 + o
@@ -1198,11 +1241,50 @@ def tranimate2(T, **kwargs):
 
 if __name__ == "__main__":  # pragma: no cover
     import pathlib
+    import matplotlib.pyplot as plt
 
     # trplot2( transl2(1,2), frame='A', rviz=True, width=1)
     # trplot2( transl2(3,1), color='red', arrow=True, width=3, frame='B')
     # trplot2( transl2(4, 3)@trot2(math.pi/3), color='green', frame='c')
     # plt.grid(True)
+
+    # fig, ax = plt.subplots(3,3, figsize=(10,10))
+    # text_opts = dict(bbox=dict(boxstyle="round", 
+    #     fc="w", 
+    #     alpha=0.9), 
+    #     zorder=20,
+    #     family='monospace',
+    #     fontsize=8,
+    #     verticalalignment='top')
+    # T = transl2(2, 1)@trot2(math.pi/3)
+    # trplot2(T, ax=ax[0][0], dims=[0,4,0,4])
+    # ax[0][0].text(0.2, 3.8, "trplot2(T)", **text_opts)
+
+    # trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)
+    # ax[0][1].text(0.2, 3.8, "trplot2(T, originsize=0)", **text_opts)
+
+    # trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)
+    # ax[0][2].text(0.2, 3.8, "trplot2(T, arrow=False)", **text_opts)
+
+    # trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)
+    # ax[1][0].text(0.2, 3.8, "trplot2(T, axislabel=False)", **text_opts)
+
+    # trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)
+    # ax[1][1].text(0.2, 3.8, "trplot2(T, width=3)", **text_opts)
+
+    # trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame='B')
+    # ax[1][2].text(0.2, 3.8, "trplot2(T, frame='B')", **text_opts)
+
+    # trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color='r', textcolor='k')
+    # ax[2][0].text(0.2, 3.8, "trplot2(T, color='r',\n        textcolor='k')", **text_opts)
+
+    # trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=("u", "v"))
+    # ax[2][1].text(0.2, 3.8, "trplot2(T, labels=('u', 'v'))", **text_opts)
+
+    # trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)
+    # ax[2][2].text(0.2, 3.8, "trplot2(T, rviz=True)", **text_opts)
+
+
 
     exec(
         open(
