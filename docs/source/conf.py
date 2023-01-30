@@ -20,14 +20,16 @@ import sys
 # -- Project information -----------------------------------------------------
 
 project = 'Spatial Maths package'
-copyright = '2022, Peter Corke'
+copyright = '2020-, Peter Corke.'
 author = 'Peter Corke'
-version = '0.12'
-
-print(__file__)
-# The full version, including alpha/beta/rc tags
-with open('../../RELEASE', encoding='utf-8') as f:
-    release = f.read()
+try:
+    import spatialmath
+    version = spatialmath.__version__
+except AttributeError:
+    import re
+    with open("../../pyproject.toml", "r") as f:
+        m = re.compile(r'version\s*=\s*"([0-9\.]+)"').search(f.read())
+        version = m[1]
 
 # -- General configuration ---------------------------------------------------
 
@@ -42,14 +44,13 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
     'sphinx.ext.inheritance_diagram',
+    'matplotlib.sphinxext.plot_directive',
     'sphinx_autorun',
     "sphinx.ext.intersphinx",
+    "sphinx-favicon",
     ]
-    #'sphinx-prompt',
-    #'recommonmark',
     #'sphinx.ext.autosummary',
-    #'sphinx_markdown_tables',
-    #    
+
 # inheritance_node_attrs = dict(style='rounded,filled', fillcolor='lightblue')
 inheritance_node_attrs = dict(style='rounded')
 
@@ -88,7 +89,6 @@ html_theme_options = {
 
     }
 html_logo = '../figs/CartesianSnakes_LogoW.png'
-html_favicon = 'favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -112,10 +112,12 @@ latex_elements = {
     'fncychap': '\\usepackage{fncychap}',
 }
 
+# -------- RVC maths notation -------------------------------------------------------#
+
 # see https://stackoverflow.com/questions/9728292/creating-latex-math-macros-within-sphinx
-mathjax_config = {
-    'TeX': {
-        'Macros': {
+mathjax3_config = {
+    'tex': {
+        'macros': {
             # RVC Math notation
             #  - not possible to do the if/then/else approach
             #  - subset only
@@ -166,3 +168,40 @@ intersphinx_mapping = {
     "scipy": ("http://docs.scipy.org/doc/scipy/reference/", None),
     "matplotlib": ("http://matplotlib.sourceforge.net/", None),
 }
+
+# -------- Options favicon -------------------------------------------------------#
+
+html_static_path = ["_static"]
+# create favicons online using https://favicon.io/favicon-converter/
+favicons = [
+    {
+        "rel": "icon",
+        "sizes": "16x16",
+        "static-file": "favicon-16x16.png",
+        "type": "image/png",
+    },
+    {
+        "rel": "icon",
+        "sizes": "32x32",
+        "static-file": "favicon-32x32.png",
+        "type": "image/png",
+    },
+    {
+        "rel": "apple-touch-icon",
+        "sizes": "180x180",
+        "static-file": "apple-touch-icon.png",
+        "type": "image/png",
+    },
+    {
+        "rel": "android-chrome",
+        "sizes": "192x192",
+        "static-file": "android-chrome-192x192.png ",
+        "type": "image/png",
+    },
+    {
+        "rel": "android-chrome",
+        "sizes": "512x512",
+        "static-file": "android-chrome-512x512.png ",
+        "type": "image/png",
+    },
+]

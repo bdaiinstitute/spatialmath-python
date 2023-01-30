@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import spatialmath.base as base
 from spatialmath import SE3
 from spatialmath.baseposelist import BasePoseList
+import warnings
 
 _eps = np.finfo(np.float64).eps
 
@@ -92,7 +93,54 @@ class Plane3:
         d = np.dot(l.v, p) 
         
         return cls(n, d)
+
+    @classmethod
+    def TwoLines(cls, l1, l2):
+        """
+        Create a plane object from two line
         
+        :param l1: 3D line
+        :type l1: Line3
+        :param l2: 3D line
+        :type l2: Line3
+        :return: a Plane object
+        :rtype: Plane
+
+        .. warning:: This algorithm fails if the lines are parallel.
+
+        :seealso: :meth:`LinePoint` :meth:`PointNormal`  :meth:`ThreePoints`
+        """
+        n = np.cross(l1.w, l2.w)
+        d = np.dot(l1.v, l2.w) 
+        
+        return cls(n, d)
+
+    @staticmethod
+    def intersection(pi1, pi2, pi3):
+        """
+        Intersection point of three planes
+        
+        :param pi1: plane 1
+        :type pi1: Plane
+        :param pi2: plane 2
+        :type pi2: Plane
+        :param pi3: plane 3
+        :type pi3: Plane
+        :return: coordinates of intersection point
+        :rtype: ndarray(3)
+
+        This static method computes the intersection point of the three planes
+        given as arguments.
+
+        .. warning:: This algorithm fails if the planes do not intersect, or
+            intersect along a line.
+
+        :seealso: :meth:`Plane`
+        """
+        A = np.vstack([pi1.n, pi2.n, pi3.n])
+        b = np.array([pi1.d, pi2.d, pi3.d])
+        return np.linalg.det(A) @ b
+
     @property
     def n(self):
         r"""
@@ -210,7 +258,7 @@ class Line3(BasePoseList):
 
         A representation of a 3D line using Plucker coordinates.
 
-        - ``Line3(P)`` creates a 3D line from a Plucker coordinate vector ``[v, w]``
+        - ``Line3(p)`` creates a 3D line from a Plucker coordinate vector ``p=[v, w]``
            where ``v`` (3,) is the moment and ``w`` (3,) is the line direction.
         
         - ``Line3(v, w)`` as above but the components ``v`` and ``w`` are
@@ -218,11 +266,11 @@ class Line3(BasePoseList):
           
         - ``Line3(L)`` creates a copy of the ``Line3`` object ``L``.
 
-        .. note::
+        :notes:
             
             - The ``Line3`` object inherits from ``collections.UserList`` and has list-like
               behaviours.
-            - A single ``Line3`` object contains a 1D array of Plucker coordinates.
+            - A single ``Line3`` object contains a 1D-array of Plucker coordinates.
             - The elements of the array are guaranteed to be Plucker coordinates.
             - The number of elements is given by ``len(L)``
             - The elements can be accessed using index and slice notation, eg. ``L[1]`` or
@@ -230,7 +278,7 @@ class Line3(BasePoseList):
             - The ``Line3`` instance can be used as an iterator in a for loop or list comprehension.
             - Some methods support operations on the internal list.
           
-        :seealso: :meth:`TwoPoints` :meth:`Planes` :meth:`PointDir`
+        :seealso: :meth:`Join` :meth:`TwoPlanes` :meth:`PointDir`
         """
         super().__init__()  # enable list powers
 
@@ -285,7 +333,7 @@ class Line3(BasePoseList):
         return cls(np.r_[v, w])
     
     @classmethod
-    def IntersectingPlanes(cls, pi1, pi2):
+    def TwoPlanes(cls, pi1, pi2):
         r"""
         Create 3D line from intersection of two planes
                 
@@ -296,7 +344,7 @@ class Line3(BasePoseList):
         :return: 3D line
         :rtype: ``Line3`` instance
 
-        ``L = Plucker.IntersectingPlanes(π1, π2)`` is a Plucker object that represents
+        ``L = Line3.TwoPlanes(π1, π2)`` is a ``Line3`` object that represents
         the line formed by the intersection of two planes ``π1`` and ``π3``.
 
         Planes are represented by the 4-vector :math:`[a, b, c, d]` which describes
@@ -317,6 +365,12 @@ class Line3(BasePoseList):
         return cls(np.r_[v, w])
 
     @classmethod
+    def IntersectingPlanes(cls, pi1, pi2):
+
+        warnings.warn('use TwoPlanes method instead', DeprecationWarning)
+        return cls.TwoPlanes(pi1, pi2)
+
+    @classmethod
     def PointDir(cls, point, dir):
         """
         Create 3D line from a point and direction
@@ -328,7 +382,7 @@ class Line3(BasePoseList):
         :return: 3D line
         :rtype: ``Line3`` instance
         
-        ``Line3.pointdir(P, W)`` is a Plucker object that represents the
+        ``Line3.PointDir(P, W)`` is a `Line3`` object that represents the
         line containing the point ``P`` and parallel to the direction vector ``W``.
 
         :seealso: :meth:`Join` :meth:`IntersectingPlanes`
@@ -693,7 +747,7 @@ class Line3(BasePoseList):
 
         ``l1.distance(l2) is the minimum distance between two lines.
         
-        .. notes:: Works for parallel, skew and intersecting lines.
+        .. note:: Works for parallel, skew and intersecting lines.
 
         :seealso: :meth:`closest_to_line`
         """

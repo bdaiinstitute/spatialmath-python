@@ -271,7 +271,7 @@ class Line3Test(unittest.TestCase):
         
         xyplane = [0, 0, 1, 0]
         xzplane = [0, 1, 0, 0]
-        L = Line3.IntersectingPlanes(xyplane, xzplane) # x axis
+        L = Line3.TwoPlanes(xyplane, xzplane) # x axis
         nt.assert_array_almost_equal(L.vec, np.r_[0, 0, 0, -1, 0, 0])
         
         L = Line3.Join([-1, 2, 3], [1, 2, 3]);  # line at y=2,z=3

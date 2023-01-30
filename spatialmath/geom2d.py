@@ -584,8 +584,52 @@ class LineSegment2(Line2):
     # has hom line + 2 values of lambda
     pass
 
+class Ellipse:
+
+    def __init__(self, centre, radii, orientation=0):
+        xc, yc = centre
+        alpha = 1.0 / radii[0]
+        beta = 1.0 / radii[1]
+        gamma = 0
+
+        e0 = alpha
+        e1 = beta
+        e2 = 2 * gamma
+        e3 = -2 * (alpha * xc + gamma * yc)
+        e4 = -2 * (beta * yc + gamma * xc)
+        e5 = alpha * xc**2 + beta * yc**2 + 2 * gamma * xc * yc - 1
+
+        self.e0 = e1 / e0
+        self.e1 = e2 / e0
+        self.e2 = e3 / e0
+        self.e3 = e4 / e0
+        self.e4 = e5 / e0
+        
+    def __str__(self):
+        return f"Ellipse({self.e0}, {self.e1}, {self.e2}, {self.e3}, {self.e4})"
+
+    def E(self):
+        # return 3x3 ellipse matrix
+        pass
+
+    def centre(self):
+        # return centre
+        pass
+
+# alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5 = symbols("alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5")
+# solve(eq, [alpha, beta, gamma, xc, yc])
+# eq = [
+#     alpha - e0,
+#     beta- e1,
+#     2 * gamma - e2,
+#     -2 * (alpha * xc + gamma * yc) - e3,
+#     -2 * (beta * yc + gamma * xc) - e4,
+#     alpha * xc**2 + beta * yc**2 + 2 * gamma * xc * yc - 1 - e5
+# ]
+
 if __name__ == "__main__":
 
+    print(Ellipse((500, 500), (100, 200)))
     p = Polygon2([[1, 3, 2], [2, 2, 4]])
     p.transformed(SE2(0, 0, np.pi/2)).vertices()
 

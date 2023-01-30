@@ -1309,7 +1309,7 @@ class UnitQuaternion(Quaternion):
             >>> from spatialmath import UnitQuaternion as UQ
             >>> print(UQ.OA([0,0,-1], [0,1,0]))
 
-        .. notes::
+        .. note::
 
             - Only the ``A`` vector is guaranteed to have the same direction in the resulting
             rotation matrix

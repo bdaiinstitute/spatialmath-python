@@ -256,6 +256,7 @@ __all__ = [
     "trinv",
     "tr2delta",
     "tr2jac",
+    "tr2adjoint",
     "rpy2jac",
     "eul2jac",
     "exp2jac",

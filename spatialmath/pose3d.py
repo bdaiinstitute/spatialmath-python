@@ -261,7 +261,7 @@ class SO3(BasePoseMatrix):
 
         By default the angle is in radians but can be changed setting `unit='deg'`.
 
-        .. notes::
+        .. note::
 
             - If the input is SE(3) the translation component is ignored.
 
@@ -525,7 +525,7 @@ class SO3(BasePoseMatrix):
         respectively called the *orientation* and *approach* vectors defined such that
         R = [N, O, A] and N = O x A.
 
-        .. notes::
+        .. note::
 
             - Only the ``A`` vector is guaranteed to have the same direction in the resulting
             rotation matrix
