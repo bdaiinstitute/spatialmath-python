@@ -16,10 +16,14 @@ test:
 	pytest
 
 coverage:
-	pytest --cov=spatialmath
+	coverage run --omit='tests/*.py,tests/base/*.py' -m pytest
+	coverage report
 
 docs: .FORCE
 	(cd docs; make html)
+
+view:
+	open docs/build/html/index.html
 
 dist: .FORCE
 	#$(MAKE) test

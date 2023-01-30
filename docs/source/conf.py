@@ -44,15 +44,13 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
     'sphinx.ext.inheritance_diagram',
+    'matplotlib.sphinxext.plot_directive',
     'sphinx_autorun',
     "sphinx.ext.intersphinx",
     "sphinx-favicon",
     ]
-    #'sphinx-prompt',
-    #'recommonmark',
     #'sphinx.ext.autosummary',
-    #'sphinx_markdown_tables',
-    #    
+
 # inheritance_node_attrs = dict(style='rounded,filled', fillcolor='lightblue')
 inheritance_node_attrs = dict(style='rounded')
 
