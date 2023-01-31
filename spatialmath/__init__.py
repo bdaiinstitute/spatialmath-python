@@ -35,7 +35,6 @@ __all__ = [
     "Plane3",
     "Line2",
     "Polygon2",
-    "smb",
 ]
 
 try:
