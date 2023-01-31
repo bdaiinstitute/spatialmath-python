@@ -13,8 +13,9 @@ tuple, numpy array, numpy row vector or numpy column vector.
 
 import math
 import numpy as np
-from spatialmath.base.sm_types import *
+from spatialmath.base.types import *
 from spatialmath.base.argcheck import getvector, isvector
+from spatialmath.base.vectors import iszerovec, unitvec_norm
 # from spatialmath.base.symbolic import issymbol
 # from spatialmath.base.transforms3d import transl
 # from spatialmath.base.transforms2d import transl2
@@ -215,11 +216,11 @@ def tr2rt(T:SEnArray, check=False) -> Tuple[SOnArray,Rn]:
 # ---------------------------------------------------------------------------------------#
 
 @overload
-def rt2tr(R:SO2Array, t:R2x, check=False) -> SE2Array:
+def rt2tr(R:SO2Array, t:ArrayLike2, check=False) -> SE2Array:
     ...
 
 @overload
-def rt2tr(R:SO3Array, t:R3x, check=False) -> SE3Array:
+def rt2tr(R:SO3Array, t:ArrayLike3, check=False) -> SE3Array:
     ...
 
 def rt2tr(R:SOnArray, t:Rn, check=False) -> SEnArray:
@@ -457,14 +458,14 @@ def iseye(S:np.ndarray, tol:float=10) -> bool:
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def skew(v:R2x) -> se2Array:
+def skew(v:ArrayLike2) -> se2Array:
     ...
 
 @overload
-def skew(v:R3x) -> se3Array:
+def skew(v:ArrayLike3) -> se3Array:
     ...
 
-def skew(v:Union[R2x,R3x]) -> Union[se2Array,se3Array]:
+def skew(v:Union[ArrayLike2,ArrayLike3]) -> Union[se2Array,se3Array]:
     r"""
     Create skew-symmetric metrix from vector
 
@@ -561,14 +562,14 @@ def vex(s:SOnArray, check:bool=False) -> Union[R2,R3]:
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def skewa(v:R3x) -> se2Array:
+def skewa(v:ArrayLike3) -> se2Array:
     ...
 
 @overload
-def skewa(v:R6x) -> se3Array:
+def skewa(v:ArrayLike6) -> se3Array:
     ...
 
-def skewa(v:Union[R3x,R6x]) -> Union[se2Array,se3Array]:
+def skewa(v:Union[ArrayLike3,ArrayLike6]) -> Union[se2Array,se3Array]:
     r"""
     Create augmented skew-symmetric metrix from vector
 
@@ -671,10 +672,10 @@ def rodrigues(w:float, theta:Optional[float]=None) -> SO2Array:
     ...
 
 @overload
-def rodrigues(w:R3x, theta:Optional[float]=None) -> SO2Array:
+def rodrigues(w:ArrayLike3, theta:Optional[float]=None) -> SO2Array:
     ...
 
-def rodrigues(w:Union[float,R3x], theta:Optional[float]=None) -> Union[SO2Array,SO3Array]:
+def rodrigues(w:Union[float,ArrayLike3], theta:Optional[float]=None) -> Union[SO2Array,SO3Array]:
     r"""
     Rodrigues' formula for rotation
 

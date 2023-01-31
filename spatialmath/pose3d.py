@@ -18,7 +18,7 @@ To use::
     :top-classes: collections.UserList
     :parts: 1
     
-.. image:: ../figs/pose-values.png
+.. image:: figs/pose-values.png
 """
 
 # pylint: disable=invalid-name

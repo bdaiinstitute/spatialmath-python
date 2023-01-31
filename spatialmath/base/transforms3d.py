@@ -19,11 +19,13 @@ import math
 import numpy as np
 from collections.abc import Iterable
 
-from spatialmath.base.argcheck import getunit, getvector
-from spatialmath.base.transformsNd import r2t
+from spatialmath.base.argcheck import getunit, getvector, isvector, isscalar, ismatrix
+from spatialmath.base.vectors import unitvec, unitvec_norm, norm, isunitvec, iszerovec, unittwist_norm, isunittwist
+from spatialmath.base.transformsNd import r2t, t2r, rt2tr, skew, skewa, vex, vexa, isskew, isskewa, isR, iseye, tr2rt, rodrigues, Ab2M
+from spatialmath.base.quaternions import r2q, q2r, qeye, qslerp
 import spatialmath.base.symbolic as sym
 
-from spatialmath.base.sm_types import *
+from spatialmath.base.types import *
 
 _eps = np.finfo(np.float64).eps
 
@@ -35,9 +37,7 @@ def rotx(theta:float, unit:str="rad") -> SO3Array:
     Create SO(3) rotation about X-axis
 
     :param theta: rotation angle about X-axis
-    :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
 
@@ -73,9 +73,7 @@ def roty(theta:float, unit:str="rad") -> SO3Array:
     Create SO(3) rotation about Y-axis
 
     :param theta: rotation angle about Y-axis
-    :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
 
@@ -110,9 +108,7 @@ def rotz(theta:float, unit:str="rad") -> SO3Array:
     Create SO(3) rotation about Z-axis
 
     :param theta: rotation angle about Z-axis
-    :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
 
@@ -141,14 +137,12 @@ def rotz(theta:float, unit:str="rad") -> SO3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def trotx(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
+def trotx(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
     """
     Create SE(3) pure rotation about X-axis
 
     :param theta: rotation angle about X-axis
-    :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :param t: 3D translation vector, defaults to [0,0,0]
     :type t: array_like(3)
     :return: SE(3) transformation matrix
@@ -175,14 +169,12 @@ def trotx(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def troty(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
+def troty(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
     """
     Create SE(3) pure rotation about Y-axis
 
     :param theta: rotation angle about Y-axis
-    :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :param t: 3D translation vector, defaults to [0,0,0]
     :type t: array_like(3)
     :return: SE(3) transformation matrix
@@ -209,14 +201,12 @@ def troty(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def trotz(theta:float, unit:str="rad", t:Optional[R3]=None) -> SE3Array:
+def trotz(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
     """
     Create SE(3) pure rotation about Z-axis
 
     :param theta: rotation angle about Z-axis
-    :type theta: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :param t: 3D translation vector, defaults to [0,0,0]
     :type t: array_like(3)
     :return: SE(3) transformation matrix
@@ -249,14 +239,14 @@ def transl(x:float, y:float, z:float) -> SE3Array:
     ...
 
 @overload
-def transl(x:R3x) -> SE3Array:
+def transl(x:ArrayLike3) -> SE3Array:
     ...
 
 @overload
 def transl(x:SE3Array) -> R3:
     ...
 
-def transl(x:Union[R3x,float], y:Optional[float]=None, z:Optional[float]=None) -> Union[SE3Array,R3]:
+def transl(x:Union[ArrayLike3,float], y:Optional[float]=None, z:Optional[float]=None) -> Union[SE3Array,R3]:
     """
     Create SE(3) pure translation, or extract translation from SE(3) matrix
 
@@ -336,11 +326,8 @@ def ishom(T:SE3Array, check:bool=False, tol:float=100) -> bool:
     :param T: SE(3) matrix to test
     :type T: numpy(4,4)
     :param check: check validity of rotation submatrix
-    :type check: bool
     :param tol: Tolerance in units of eps for rotation submatrix check, defaults to 100
-    :type: float
     :return: whether matrix is an SE(3) homogeneous transformation matrix
-    :rtype: bool
 
     - ``ishom(T)`` is True if the argument ``T`` is of dimension 4x4
     - ``ishom(T, check=True)`` as above, but also checks orthogonality of the
@@ -372,7 +359,6 @@ def ishom(T:SE3Array, check:bool=False, tol:float=100) -> bool:
         )
     )
 
-
 def isrot(R:SO3Array, check:bool=False, tol:float=100) -> bool:
     """
     Test if matrix belongs to SO(3)
@@ -380,11 +366,8 @@ def isrot(R:SO3Array, check:bool=False, tol:float=100) -> bool:
     :param R: SO(3) matrix to test
     :type R: numpy(3,3)
     :param check: check validity of rotation submatrix
-    :type check: bool
     :param tol: Tolerance in units of eps for rotation matrix test, defaults to 100
-    :type: float
     :return: whether matrix is an SO(3) rotation matrix
-    :rtype: bool
 
     - ``isrot(R)`` is True if the argument ``R`` is of dimension 3x3
     - ``isrot(R, check=True)`` as above, but also checks orthogonality of the
@@ -417,23 +400,21 @@ def rpy2r(roll:float, pitch:float, yaw:float, *, unit:str="rad", order:str="zyx"
     ...
 
 @overload
-def rpy2r(roll:R3x, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3Array:
+def rpy2r(roll:ArrayLike3, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3Array:
     ...
 
-def rpy2r(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, *, unit:str="rad", order:str="zyx") -> SO3Array:
+def rpy2r(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optional[float]=None, *, unit:str="rad", order:str="zyx") -> SO3Array:
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
     :param roll: roll angle
-    :type roll: float
+    :type roll: float or array_like(3)
     :param pitch: pitch angle
     :type pitch: float
     :param yaw: yaw angle
     :type yaw: float
     :param unit: angular units: 'rad' [default], or 'deg'
-    :type unit: str
     :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
-    :type order: str
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
     :raises ValueError: bad argument
@@ -490,10 +471,10 @@ def rpy2tr(roll:float, pitch:float, yaw:float, unit:str="rad", order:str="zyx") 
     ...
 
 @overload
-def rpy2tr(roll:R3x, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3Array:
+def rpy2tr(roll:ArrayLike3, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3Array:
     ...
     
-def rpy2tr(roll:Union[float,R3x], pitch:Optional[float]=None, yaw:Optional[float]=None, unit:str="rad", order:str="zyx") -> SE3Array:
+def rpy2tr(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optional[float]=None, unit:str="rad", order:str="zyx") -> SE3Array:
     """
     Create an SE(3) rotation matrix from roll-pitch-yaw angles
 
@@ -551,10 +532,10 @@ def eul2r(phi:float, theta:float, psi:float, unit:str="rad") -> SO3Array:
     ...
 
 @overload
-def eul2r(phi:R3x, theta=None, psi=None, unit:str="rad") -> SO3Array:
+def eul2r(phi:ArrayLike3, theta=None, psi=None, unit:str="rad") -> SO3Array:
     ...
 
-def eul2r(phi:Union[R3x,float], theta:Optional[float]=None, psi:Optional[float]=None, unit:str="rad") -> SO3Array:
+def eul2r(phi:Union[ArrayLike3,float], theta:Optional[float]=None, psi:Optional[float]=None, unit:str="rad") -> SO3Array:
     """
     Create an SO(3) rotation matrix from Euler angles
 
@@ -603,10 +584,10 @@ def eul2tr(phi:float, theta:float, psi:float, unit:str="rad") -> SE3Array:
     ...
 
 @overload
-def eul2tr(phi:R3x, theta=None, psi=None, unit:str="rad") -> SE3Array:
+def eul2tr(phi:ArrayLike3, theta=None, psi=None, unit:str="rad") -> SE3Array:
     ...
     
-def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]=None, unit="rad") -> SE3Array:
+def eul2tr(phi:Union[float,ArrayLike3], theta:Optional[float]=None, psi:Optional[float]=None, unit="rad") -> SE3Array:
     """
     Create an SE(3) pure rotation matrix from Euler angles
 
@@ -651,7 +632,7 @@ def eul2tr(phi:Union[float,R3x], theta:Optional[float]=None, psi:Optional[float]
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta:float, v:R3x, unit="rad") -> SO3Array:
+def angvec2r(theta:float, v:ArrayLike3, unit="rad") -> SO3Array:
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -699,7 +680,7 @@ def angvec2r(theta:float, v:R3x, unit="rad") -> SO3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3Array:
+def angvec2tr(theta:float, v:ArrayLike3, unit="rad") -> SE3Array:
     """
     Create an SE(3) pure rotation from rotation angle and axis
 
@@ -736,7 +717,7 @@ def angvec2tr(theta:float, v:R3x, unit="rad") -> SE3Array:
 # ---------------------------------------------------------------------------------------#
 
 
-def exp2r(w:R3x) -> SE3Array:
+def exp2r(w:ArrayLike3) -> SE3Array:
     r"""
     Create an SO(3) rotation matrix from exponential coordinates
 
@@ -778,7 +759,7 @@ def exp2r(w:R3x) -> SE3Array:
     return R
 
 
-def exp2tr(w:R3x) -> SE3Array:
+def exp2tr(w:ArrayLike3) -> SE3Array:
     r"""
     Create an SE(3) pure rotation matrix from exponential coordinates
 
@@ -821,7 +802,7 @@ def exp2tr(w:R3x) -> SE3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2r(o:R3x, a:R3x) -> SO3Array:
+def oa2r(o:ArrayLike3, a:ArrayLike3) -> SO3Array:
     """
     Create SO(3) rotation matrix from two vectors
 
@@ -872,7 +853,7 @@ def oa2r(o:R3x, a:R3x) -> SO3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2tr(o:R3x, a:R3x) -> SE3Array:
+def oa2tr(o:ArrayLike3, a:ArrayLike3) -> SE3Array:
     """
     Create SE(3) pure rotation from two vectors
 
@@ -1650,7 +1631,7 @@ def tr2delta(T0:SE3Array, T1:Optional[SE3Array]=None) -> R6:
     :param T1: second SE(3) matrix
     :type T1: ndarray(4,4)
     :return: Differential motion as a 6-vector
-    :rtype:ndarray(6)
+    :rtype: ndarray(6)
     :raises ValueError: bad arguments
 
     - ``tr2delta(T0, T1)`` is the differential motion Δ (6x1) corresponding to
@@ -1661,7 +1642,7 @@ def tr2delta(T0:SE3Array, T1:Optional[SE3Array]=None) -> R6:
       pose represented by T.
 
     The vector :math:`\Delta = [\delta_x, \delta_y, \delta_z, \theta_x,
-    \theta_y, \theta_z` represents infinitessimal translation and rotation, and
+    \theta_y, \theta_z]` represents infinitessimal translation and rotation, and
     is an approximation to the instantaneous spatial velocity multiplied by time
     step.
 
@@ -1734,7 +1715,7 @@ def tr2jac(T:SE3Array) -> R6x6:
     return np.block([[R, Z], [Z, R]])
 
 
-def eul2jac(angles:R3) -> R3x3:
+def eul2jac(angles:ArrayLike3) -> R3x3:
     """
     Euler angle rate Jacobian
 
@@ -1788,17 +1769,13 @@ def eul2jac(angles:R3) -> R3x3:
     # fmt: on
 
 
-def rpy2jac(angles:R3, order:str="zyx") -> R3x3:
+def rpy2jac(angles:ArrayLike3, order:str="zyx") -> R3x3:
     """
     Jacobian from RPY angle rates to angular velocity
 
     :param angles: roll-pitch-yaw angles (⍺, β, γ)
-    :param order: angle sequence, defaults to 'zyx'
-    :type order: str, optional
     :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
-    :type order: str
     :return: Jacobian matrix
-    :rtype: ndarray(3,3)
 
     - ``rpy2jac(⍺, β, γ)`` is a Jacobian matrix (3x3) that maps roll-pitch-yaw
       angle rates to angular velocity at the operating point (⍺, β, γ). These
@@ -1973,7 +1950,7 @@ def r2x(R:SO3Array, representation:str="rpy/xyz") -> R3:
     return r
 
 
-def x2r(r:R3, representation:str="rpy/xyz") -> SO3Array:
+def x2r(r:ArrayLike3, representation:str="rpy/xyz") -> SO3Array:
     r"""
     Convert angular representation to SO(3) matrix
 
@@ -2104,14 +2081,14 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     raise DeprecationWarning("use rotvelxform_inv_dot instead")
 
 @overload
-def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> R3x3:
+def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> R3x3:
     ...
 
 @overload
-def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=True, representation="rpy/xyz") -> R6x6:
+def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=True, representation="rpy/xyz") -> R6x6:
     ...
 
-def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> Union[R3x3,R6x6]:
+def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> Union[R3x3,R6x6]:
     r"""
     Rotational velocity transformation
 
@@ -2176,7 +2153,7 @@ def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=False, r
 
     :SymPy: supported
 
-    :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2r` :func:`exp2jac`
+    :seealso: :func:`rotvelxform_inv_dot` :func:`eul2jac` :func:`rpy2r` :func:`exp2jac`
     """
 
     if isrot(𝚪):
@@ -2310,25 +2287,23 @@ def rotvelxform(𝚪:Union[R3x,SO3Array], inverse:bool=False, full:bool=False, r
         return A
 
 @overload
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> R3x3:
+def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, representation:str="rpy/xyz") -> R3x3:
     ...
 
 @overload
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=True, representation:str="rpy/xyz") -> R6x6:
+def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=True, representation:str="rpy/xyz") -> R6x6:
     ...
 
-def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str="rpy/xyz") -> Union[R3x3,R6x6]:
+def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, representation:str="rpy/xyz") -> Union[R3x3,R6x6]:
     r"""
     Derivative of angular velocity transformation
 
     :param 𝚪: angular representation
-    :type 𝚪: ndarray(3)
-    :param 𝚪d: angular representation rate
-    :type 𝚪d: ndarray(3)
+    :type 𝚪: array_like(3)
+    :param 𝚪d: angular representation rate :math:`\dvec{\Gamma}`
+    :type 𝚪d: array_like(3)
     :param representation: defaults to 'rpy/xyz'
-    :type representation: str, optional
     :param full: return 6x6 transform for spatial velocity
-    :type full: bool
     :return: derivative of inverse angular velocity transformation matrix
     :rtype: ndarray(6,6) or ndarray(3,3)
 
@@ -2347,9 +2322,9 @@ def rotvelxform_inv_dot(𝚪:R3x, 𝚪d:R3x, full:bool=False, representation:str
 
     .. math::
 
-        \ddvec{x} = \dmat{A}^{-1}(\Gamma, \dot{\Gamma) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}
+        \ddvec{x} = \dmat{A}^{-1}(\Gamma, \dot{\Gamma}) \vec{\nu} + \mat{A}^{-1}(\Gamma) \dvec{\nu}
 
-    and :math:`\dmat{A}^{-1}(\Gamma, \dot{\Gamma)` is computed by this function.
+    and :math:`\dmat{A}^{-1}(\Gamma, \dot{\Gamma})` is computed by this function.
 
 
     ============================  ========================================

@@ -14,7 +14,7 @@ tuple, numpy array, numpy row vector or numpy column vector.
 import math
 import numpy as np
 from spatialmath.base.argcheck import getvector
-from spatialmath.base.sm_types import ArrayLike, Tuple, Union, R3x, R3, R6x, R6 #SO3Array, R3, R4x4, TextIO, Tuple, Union, overload
+from spatialmath.base.types import *
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cover
 _eps = np.finfo(np.float64).eps
 
 
-def colvec(v:ArrayLike) -> np.ndarray:
+def colvec(v:ArrayLike) -> NDArray:
     """
     Create a column vector
 
@@ -48,7 +48,7 @@ def colvec(v:ArrayLike) -> np.ndarray:
     return np.array(v).reshape((len(v), 1))
 
 
-def unitvec(v:ArrayLike) -> np.ndarray:
+def unitvec(v:ArrayLike) -> NDArray:
     """
     Create a unit vector
 
@@ -78,7 +78,7 @@ def unitvec(v:ArrayLike) -> np.ndarray:
         return None
 
 
-def unitvec_norm(v:ArrayLike) -> Union[Tuple[np.ndarray,float],Tuple[None,None]]:
+def unitvec_norm(v:ArrayLike) -> Union[Tuple[NDArray,float],Tuple[None,None]]:
     """
     Create a unit vector
 
@@ -172,7 +172,7 @@ def normsq(v:ArrayLike) -> float:
     return sum
 
 
-def cross(u:R3x, v:R3x) -> R3:
+def cross(u:ArrayLike3, v:ArrayLike3) -> R3:
     """
     Cross product of vectors
 
@@ -268,7 +268,7 @@ def iszero(v:float, tol:float=10) -> bool:
     return abs(v) < tol * _eps
 
 
-def isunittwist(v:R6x, tol:float=10) -> bool:
+def isunittwist(v:ArrayLike6, tol:float=10) -> bool:
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
@@ -308,7 +308,7 @@ def isunittwist(v:R6x, tol:float=10) -> bool:
         raise ValueError
 
 
-def isunittwist2(v:R3x, tol:float=10) -> bool:
+def isunittwist2(v:ArrayLike3, tol:float=10) -> bool:
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
@@ -347,7 +347,7 @@ def isunittwist2(v:R3x, tol:float=10) -> bool:
         raise ValueError
 
 
-def unittwist(S:R6x, tol:float=10) -> R6:
+def unittwist(S:ArrayLike6, tol:float=10) -> R6:
     """
     Convert twist to unit twist
 
@@ -388,7 +388,7 @@ def unittwist(S:R6x, tol:float=10) -> R6:
     return S / th
 
 
-def unittwist_norm(S:R3x, tol:float=10) -> Union[R3,float]:
+def unittwist_norm(S:ArrayLike6, tol:float=10) -> Union[R3,float]:
     """
     Convert twist to unit twist and norm
 
@@ -433,7 +433,7 @@ def unittwist_norm(S:R3x, tol:float=10) -> Union[R3,float]:
     return (S / th, th)
 
 
-def unittwist2(S:R3x) -> R3:
+def unittwist2(S:ArrayLike3) -> R3:
     """
     Convert twist to unit twist
 
@@ -467,7 +467,7 @@ def unittwist2(S:R3x) -> R3:
     return S / th
 
 
-def unittwist2_norm(S:R3x) -> Tuple[R3,float]:
+def unittwist2_norm(S:ArrayLike3) -> Tuple[R3,float]:
     """
     Convert twist to unit twist
 
@@ -522,7 +522,7 @@ def wrap_0_pi(theta:float) -> float:
     
     return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
 
-def wrap_mpi2_pi2(theta):
+def wrap_mpi2_pi2(theta:float) -> float:
     r"""
     Wrap angle to range :math:`[-\pi/2, \pi/2]`
 
@@ -573,7 +573,7 @@ def wrap_mpi_pi(angle:float) -> float:
 # def angdiff(a:ArrayLike):
 #     ...
 
-def angdiff(a, b=None):
+def angdiff(a:ArrayLike, b:ArrayLike=None) -> NDArray:
     r"""
     Angular difference
 
@@ -613,7 +613,7 @@ def angdiff(a, b=None):
     else:
         return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
 
-def angle_std(theta):
+def angle_std(theta: ArrayLike) -> float:
     r"""
     Standard deviation of angular values
 
@@ -634,7 +634,7 @@ def angle_std(theta):
 
     return np.sqrt(-2 * np.log(R))
 
-def angle_mean(theta):
+def angle_mean(theta: ArrayLike) -> float:
     r"""
     Mean of angular values
 
@@ -655,7 +655,7 @@ def angle_mean(theta):
     Y = np.sin(theta).sum()
     return np.artan2(Y, X)
 
-def angle_wrap(theta, mode='-pi:pi'):
+def angle_wrap(theta:ArrayLike, mode:str='-pi:pi') -> NDArray:
     """
     Generalized angle-wrapping
 
@@ -682,7 +682,7 @@ def angle_wrap(theta, mode='-pi:pi'):
     else:
         raise ValueError('bad method specified')
 
-def vector_diff(v1, v2, mode):
+def vector_diff(v1: ArrayLike, v2:ArrayLike, mode:str) -> NDArray:
     """
     Generalized vector differnce
 
@@ -723,7 +723,7 @@ def vector_diff(v1, v2, mode):
     return v
          
 
-def removesmall(v:ArrayLike, tol=100) -> np.ndarray:
+def removesmall(v:ArrayLike, tol:float=100) -> NDArray:
     """
     Set small values to zero
 

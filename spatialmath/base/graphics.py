@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import colors
 
 from spatialmath import base as smb
-
+from spatialmath.base.types import *
 try:
     import matplotlib.pyplot as plt
     from matplotlib.patches import Circle
@@ -35,8 +35,9 @@ All return a list of the graphic objects they create.
 
 # =========================== 2D shapes =================================== #
 
+Color = Union[str, Tuple[float, float, float]]
 
-def plot_text(pos, text=None, ax=None, color=None, **kwargs):
+def plot_text(pos: ArrayLike2, text:str=None, ax: plt.Axes=None, color: Color=None, **kwargs):
     """
     Plot text using matplotlib
 
@@ -74,7 +75,7 @@ def plot_text(pos, text=None, ax=None, color=None, **kwargs):
     return [handle]
 
 
-def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=None, **kwargs):
+def plot_point(pos: ArrayLike2, marker:str="bs", text:str=None, ax:plt.Axes=None, textargs:dict=None, textcolor:Color=None, **kwargs) -> List[plt.Artist]:
     """
     Plot a point using matplotlib
 
@@ -102,6 +103,7 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=No
 
     - Multiple points can be marked if ``pos`` is a 2xn array or a list of
       coordinate pairs.  In this case:
+
         - all points have the same ``text`` label
         - ``text`` can include the format string {} which is susbstituted for the
           point index, starting at zero
@@ -192,7 +194,7 @@ def plot_point(pos, marker="bs", text=None, ax=None, textargs=None, textcolor=No
     return handles
 
 
-def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
+def plot_homline(lines:Union[ArrayLike3,NDArray], *args, ax:plt.Axes=None, xlim:ArrayLike2=None, ylim:ArrayLike2=None, **kwargs) -> List[plt.Artist]:
     r"""
     Plot a homogeneous line using matplotlib
 
@@ -245,31 +247,31 @@ def plot_homline(lines, *args, ax=None, xlim=None, ylim=None, **kwargs):
 
 
 def plot_box(
-    *fmt,
-    lbrt=None,
-    lrbt=None,
-    lbwh=None,
-    bbox=None,
-    ltrb=None,
-    lb=None,
-    lt=None,
-    rb=None,
-    rt=None,
-    wh=None,
-    centre=None,
-    w=None,
-    h=None,
-    ax=None,
-    filled=False,
+    *fmt:Optional[str],
+    lbrt:Optional[ArrayLike4]=None,
+    lrbt:Optional[ArrayLike4]=None,
+    lbwh:Optional[ArrayLike4]=None,
+    bbox:Optional[ArrayLike4]=None,
+    ltrb:Optional[ArrayLike4]=None,
+    lb:Optional[ArrayLike2]=None,
+    lt:Optional[ArrayLike2]=None,
+    rb:Optional[ArrayLike2]=None,
+    rt:Optional[ArrayLike2]=None,
+    wh:Optional[ArrayLike2]=None,
+    centre:Optional[ArrayLike2]=None,
+    w:Optional[float]=None,
+    h:Optional[float]=None,
+    ax:Optional[plt.Axes]=None,
+    filled:bool=False,
     **kwargs
-):
+) -> List[plt.Artist]:
     """
     Plot a 2D box using matplotlib
 
     :param bl: bottom-left corner, defaults to None
     :type bl: array_like(2), optional
     :param tl: top-left corner, defaults to None
-    :type tl: [array_like(2), optional
+    :type tl: array_like(2), optional
     :param br: bottom-right corner, defaults to None
     :type br: array_like(2), optional
     :param tr: top-right corner, defaults to None
@@ -285,7 +287,7 @@ def plot_box(
     :param ax: the axes to draw on, defaults to ``gca()``
     :type ax: Axis, optional
     :param bbox: bounding box matrix, defaults to None
-    :type bbox: ndarray(2,2), optional
+    :type bbox: array_like(4), optional
     :param color: box outline color
     :type color: array_like(3) or str
     :param fillcolor: box fill color
@@ -398,7 +400,7 @@ def plot_box(
 
     return r
 
-def plot_arrow(start, end, ax=None, **kwargs):
+def plot_arrow(start:ArrayLike2, end:ArrayLike2, ax:plt.Axes=None, **kwargs) -> List[plt.Artist]:
     """
     Plot 2D arrow
 
@@ -422,7 +424,7 @@ def plot_arrow(start, end, ax=None, **kwargs):
 
     ax.arrow(start[0], start[1], end[0] - start[0], end[1] - start[1], length_includes_head=True, **kwargs)
 
-def plot_polygon(vertices, *fmt, close=False, **kwargs):
+def plot_polygon(vertices:NDArray, *fmt, close:bool=False, **kwargs) -> List[plt.Artist]:
     """
     Plot polygon
 
@@ -449,7 +451,7 @@ def plot_polygon(vertices, *fmt, close=False, **kwargs):
     return _render2D(vertices, fmt=fmt, **kwargs)
 
 
-def _render2D(vertices, pose=None, filled=False, color=None, ax=None, fmt=(), **kwargs):
+def _render2D(vertices:NDArray, pose=None, filled:bool=False, color:Color=None, ax:plt.Axes=None, fmt=(), **kwargs) -> List[plt.Artist]:
 
     ax = axes_logic(ax, 2)
     if pose is not None:
@@ -468,7 +470,7 @@ def _render2D(vertices, pose=None, filled=False, color=None, ax=None, fmt=(), **
     return r
 
 
-def circle(centre=(0, 0), radius=1, resolution=50, closed=False):
+def circle(centre:ArrayLike2=(0, 0), radius:float=1, resolution:int=50, closed:bool=False) -> Points2:
     """
     Points on a circle
 
@@ -500,8 +502,8 @@ def circle(centre=(0, 0), radius=1, resolution=50, closed=False):
 
 
 def plot_circle(
-    radius, centre, *fmt, resolution=50, ax=None, filled=False, **kwargs
-):
+    radius:float, centre:ArrayLike2, *fmt:Optional[str], resolution:Optional[int]=50, ax:Optional[plt.Axes]=None, filled:Optional[bool]=False, **kwargs
+) -> List[plt.Artist]:
     """
     Plot a circle using matplotlib
 
@@ -543,7 +545,7 @@ def plot_circle(
     return handles
 
 
-def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=False, closed=False):
+def ellipse(E:R2x2, centre:Optional[ArrayLike2]=(0, 0), scale:Optional[float]=1, confidence:Optional[float]=None, resolution:Optional[int]=40, inverted:Optional[bool]=False, closed:Optional[bool]=False) -> Points2:
     r"""
     Points on ellipse
 
@@ -598,17 +600,17 @@ def ellipse(E, centre=(0, 0), scale=1, confidence=None, resolution=40, inverted=
 
 
 def plot_ellipse(
-    E,
-    *fmt,
-    centre=(0, 0),
-    scale=1,
-    confidence=None,
-    resolution=40,
-    inverted=False,
-    ax=None,
-    filled=False,
+    E:R2x2,
+    *fmt:Optional[str],
+    centre:Optional[ArrayLike2]=(0, 0),
+    scale:Optional[float]=1,
+    confidence:Optional[float]=None,
+    resolution:Optional[int]=40,
+    inverted:Optional[bool]=False,
+    ax:Optional[plt.Axes]=None,
+    filled:Optional[bool]=False,
     **kwargs
-):
+) -> List[plt.Artist]:
     r"""
     Plot an ellipse using matplotlib
 
@@ -662,7 +664,7 @@ def plot_ellipse(
 # =========================== 3D shapes =================================== #
 
 
-def sphere(radius=1, centre=(0, 0, 0), resolution=50):
+def sphere(radius:float=1, centre:Optional[ArrayLike2]=(0, 0, 0), resolution:Optional[int]=50) -> Tuple[NDArray, NDArray, NDArray]:
     """
     Points on a sphere
 
@@ -689,7 +691,7 @@ def sphere(radius=1, centre=(0, 0, 0), resolution=50):
     return (x, y, z)
 
 
-def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **kwargs):
+def plot_sphere(radius:float, centre:Optional[ArrayLike3]=(0, 0, 0), pose:Optional[SE3Array]=None, resolution:Optional[int]=50, ax:Optional[plt.Axes]=None, **kwargs) -> List[plt.Artist]:
     """
     Plot a sphere using matplotlib
 
@@ -738,8 +740,8 @@ def plot_sphere(radius, centre=(0, 0, 0), pose=None, resolution=50, ax=None, **k
 
 
 def ellipsoid(
-    E, centre=(0, 0, 0), scale=1, confidence=None, resolution=40, inverted=False
-):
+    E:R2x2, centre:Optional[ArrayLike3]=(0, 0, 0), scale:Optional[float]=1, confidence:Optional[float]=None, resolution:Optional[int]=40, inverted:Optional[bool]=False
+) -> Tuple[NDArray, NDArray, NDArray]:
     r"""
     rPoints on an ellipsoid
 
@@ -794,15 +796,15 @@ def ellipsoid(
 
 
 def plot_ellipsoid(
-    E,
-    centre=(0, 0, 0),
-    scale=1,
-    confidence=None,
-    resolution=40,
-    inverted=False,
-    ax=None,
+    E:R2x2,
+    centre:Optional[ArrayLike3]=(0, 0, 0),
+    scale:Optional[float]=1,
+    confidence:Optional[float]=None,
+    resolution:Optional[int]=40,
+    inverted:Optional[bool]=False,
+    ax:Optional[plt.Axes]=None,
     **kwargs
-):
+) -> List[plt.Artist]:
     r"""
     Draw an ellipsoid using matplotlib
 
@@ -848,8 +850,7 @@ def plot_ellipsoid(
     handle = _render3D(ax, X, Y, Z, **kwargs)
     return [handle]
 
-# TODO, get cylinder, cuboid, cone working
-def cylinder(center_x, center_y, radius, height_z, resolution=50):
+def cylinder(center_x:float, center_y:float, radius:float, height_z:float, resolution:int=50) -> Tuple[NDArray, NDArray, NDArray]:
     Z = np.linspace(0, height_z, radius)
     theta = np.linspace(0, 2 * np.pi, radius)
     theta_grid, z_grid = np.meshgrid(theta, z)
@@ -860,15 +861,15 @@ def cylinder(center_x, center_y, radius, height_z, resolution=50):
 # https://stackoverflow.com/questions/30715083/python-plotting-a-wireframe-3d-cuboid
 # https://stackoverflow.com/questions/26874791/disconnected-surfaces-when-plotting-cones
 def plot_cylinder(
-    radius,
-    height,
-    resolution=50,
-    centre=(0, 0, 0),
+    radius:float,
+    height:Union[float, ArrayLike2],
+    resolution:Optional[int]=50,
+    centre:Optional[ArrayLike3]=(0, 0, 0),
     ends=False,
     ax=None,
     filled=False,
     **kwargs
-):
+) -> List[plt.Artist]:
     """
     Plot a cylinder using matplotlib
 
@@ -876,9 +877,8 @@ def plot_cylinder(
     :type radius: float
     :param height: height of cylinder in the z-direction
     :type height: float or array_like(2)
-    :param resolution: number of points on circumferece, defaults to 50
-    :type resolution: int, optional
-
+    :param resolution: number of points on circumference, defaults to 50
+    :param centre: position of centre
     :param pose: pose of sphere, defaults to None
     :type pose: SE3, optional
     :param ax: axes to draw into, defaults to None
@@ -925,32 +925,27 @@ def plot_cylinder(
 
 
 def plot_cone(
-    radius,
-    height,
-    resolution=50,
-    flip=False,
-    centre=(0, 0, 0),
-    ends=False,
-    ax=None,
-    filled=False,
+    radius:float,
+    height:float,
+    resolution:Optional[int]=50,
+    flip:Optional[bool]=False,
+    centre:Optional[ArrayLike3]=(0, 0, 0),
+    ends:Optional[bool]=False,
+    ax:Optional[plt.Axes]=None,
+    filled:Optional[bool]=False,
     **kwargs
-):
+) -> List[plt.Artist]:
     """
     Plot a cone using matplotlib
 
     :param radius: radius of cone at open end
-    :type radius: float
     :param height: height of cone in the z-direction
-    :type height: float
     :param resolution: number of points on circumferece, defaults to 50
-    :type resolution: int, optional
     :param flip: cone faces upward, defaults to False
-    :type flip: bool, optional
-
+    :param ends: add a surface for the base of the cone
     :param pose: pose of cone, defaults to None
     :type pose: SE3, optional
     :param ax: axes to draw into, defaults to None
-    :type ax: Axes3D, optional
     :param filled: draw filled polygon, else wireframe, defaults to False
     :type filled: bool, optional
     :param kwargs: arguments passed to ``plot_wireframe`` or ``plot_surface``
@@ -1000,8 +995,8 @@ def plot_cone(
 
 
 def plot_cuboid(
-    sides=[1, 1, 1], centre=(0, 0, 0), pose=None, ax=None, filled=False, **kwargs
-):
+    sides:ArrayLike3=(1, 1, 1), centre:Optional[ArrayLike3]=(0, 0, 0), pose:Optional[SE3Array]=None, ax:Optional[plt.Axes]=None, filled:Optional[bool]=False, **kwargs
+) -> List[plt.Artist]:
     """
     Plot a cuboid (3D box) using matplotlib
 
@@ -1077,7 +1072,7 @@ def plot_cuboid(
         return collection
 
 
-def _render3D(ax, X, Y, Z, pose=None, filled=False, color=None, **kwargs):
+def _render3D(ax:plt.Axes, X:NDArray, Y:NDArray, Z:NDArray, pose:Optional[SE3Array]=None, filled:Optional[bool]=False, color:Optional[Color]=None, **kwargs):
 
     # TODO:
     # handle pose in here
@@ -1107,7 +1102,7 @@ def _render3D(ax, X, Y, Z, pose=None, filled=False, color=None, **kwargs):
         return ax.plot_wireframe(X, Y, Z, **kwargs)
 
 
-def _axes_dimensions(ax):
+def _axes_dimensions(ax:plt.Axes) -> int:
     """
     Dimensions of axes
 
@@ -1124,16 +1119,16 @@ def _axes_dimensions(ax):
         return 2
 
 
-def axes_get_limits(ax):
+def axes_get_limits(ax:plt.Axes) -> NDArray:
     return np.r_[ax.get_xlim(), ax.get_ylim()]
 
 
-def axes_get_scale(ax):
+def axes_get_scale(ax:plt.Axes) -> float:
     limits = axes_get_limits(ax)
     return max(abs(limits[1] - limits[0]), abs(limits[3] - limits[2]))
 
 
-def axes_logic(ax, dimensions, projection="ortho", autoscale=True):
+def axes_logic(ax:plt.Axes, dimensions:ArrayLike, projection:Optional[str]="ortho", autoscale:Optional[bool]=True) -> plt.Axes:
     """
     Axis creation logic
 
@@ -1198,7 +1193,7 @@ def axes_logic(ax, dimensions, projection="ortho", autoscale=True):
     return ax
 
 
-def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
+def plotvol2(dim:ArrayLike, ax:Optional[plt.Axes]=None, equal:Optional[bool]=True, grid:Optional[bool]=False, labels:Optional[bool]=True) -> plt.Axes:
     """
     Create 2D plot area
 
@@ -1241,8 +1236,8 @@ def plotvol2(dim, ax=None, equal=True, grid=False, labels=True):
 
 
 def plotvol3(
-    dim=None, ax=None, equal=True, grid=False, labels=True, projection="ortho"
-):
+    dim:ArrayLike=None, ax:plt.Axes=None, equal:Optional[bool]=True, grid:Optional[bool]=False, labels:Optional[bool]=True, projection:Optional[str]="ortho"
+) -> plt.Axes:
     """
     Create 3D plot volume
 
@@ -1296,7 +1291,7 @@ def plotvol3(
     return ax
 
 
-def expand_dims(dim=None, nd=2):
+def expand_dims(dim:ArrayLike=None, nd:int=2) -> NDArray:
     """
     Expand compact axis dimensions
 
@@ -1344,7 +1339,7 @@ def expand_dims(dim=None, nd=2):
         raise ValueError("nd is 2 or 3")
 
 
-def isnotebook():
+def isnotebook() -> bool:
     """
     Determine if code is being run from a Jupyter notebook
 

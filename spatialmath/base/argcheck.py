@@ -24,7 +24,7 @@ _scalartypes = (int, np.integer, float, np.floating) + symtype
 # Array = np.ndarray[Any, np.dtype[np.floating]]
 # ArrayLike = Union[float,List[float],Tuple,Array]  # various ways to represent R^3 for input
 
-from spatialmath.base.sm_types import ArrayLike, Any, Tuple, Union, DTypeLike, Type, Optional, Callable
+from spatialmath.base.types import *
 
 def isscalar(x:Any) -> bool:
     """
@@ -263,7 +263,7 @@ def verifymatrix(m:np.ndarray, shape:Tuple[Union[int,None],Union[int,None]]) -> 
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
 
-def getvector(v:ArrayLike, dim:Union[int,None]=None, out:str="array", dtype:DTypeLike=np.float64) -> np.ndarray:
+def getvector(v:ArrayLike, dim:Union[int,None]=None, out:Optional[str]="array", dtype:Optional[DTypeLike]=np.float64) -> np.ndarray:
     """
     Return a vector value
 

@@ -1,9 +1,10 @@
 import numpy as np
 from spatialmath import base
+from spatialmath.base.types import *
 
 # this is a collection of useful algorithms, not otherwise categorized
 
-def numjac(f, x, dx=1e-8, SO=0, SE=0):
+def numjac(f:Callable, x:ArrayLike, dx:float=1e-8, SO:int=0, SE:int=0) -> NDArray:
     r"""
     Numerically compute Jacobian of function
 
@@ -60,7 +61,7 @@ def numjac(f, x, dx=1e-8, SO=0, SE=0):
 
     return np.c_[Jcol].T
 
-def numhess(J, x, dx=1e-8):
+def numhess(J:Callable, x:NDArray, dx:float=1e-8):
     r"""
     Numerically compute Hessian given Jacobian function
 

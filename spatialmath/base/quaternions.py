@@ -14,8 +14,7 @@ import sys
 import math
 import numpy as np
 import spatialmath.base as smb
-
-from spatialmath.base.sm_types import QuaternionArrayx, UnitQuaternionArrayx, R3x, QuaternionArray, UnitQuaternionArray, SO3Array, R3, R4x4, TextIO, Tuple, Union, overload
+from spatialmath.base.types import *
 
 _eps = np.finfo(np.float64).eps
 
@@ -40,7 +39,7 @@ def qeye() -> QuaternionArray:
     return np.r_[1, 0, 0, 0]
 
 
-def qpure(v:R3x) -> QuaternionArray:
+def qpure(v:ArrayLike3) -> QuaternionArray:
     """
     Create a pure quaternion
 
@@ -62,7 +61,7 @@ def qpure(v:R3x) -> QuaternionArray:
     return np.r_[0, v]
 
 
-def qpositive(q:QuaternionArrayx) -> QuaternionArray:
+def qpositive(q:ArrayLike4) -> QuaternionArray:
     """
     Quaternion with positive scalar part
 
@@ -79,7 +78,7 @@ def qpositive(q:QuaternionArrayx) -> QuaternionArray:
         return q
 
 
-def qnorm(q:QuaternionArrayx) -> float:
+def qnorm(q:ArrayLike4) -> float:
     r"""
     Norm of a quaternion
 
@@ -107,7 +106,7 @@ def qnorm(q:QuaternionArrayx) -> float:
     return np.linalg.norm(q)
 
 
-def qunit(q:QuaternionArrayx, tol:float=10) -> UnitQuaternionArray:
+def qunit(q:ArrayLike4, tol:Optional[float]=10) -> UnitQuaternionArray:
     """
     Create a unit quaternion
 
@@ -145,7 +144,7 @@ def qunit(q:QuaternionArrayx, tol:float=10) -> UnitQuaternionArray:
         return -q
 
 
-def qisunit(q:QuaternionArrayx, tol:float=100) -> bool:
+def qisunit(q:ArrayLike4, tol:Optional[float]=100) -> bool:
     """
     Test if quaternion has unit length
 
@@ -169,14 +168,14 @@ def qisunit(q:QuaternionArrayx, tol:float=100) -> bool:
     return smb.iszerovec(q, tol=tol)
 
 @overload
-def qisequal(q1:QuaternionArrayx, q2:QuaternionArrayx, tol:float=100, unitq:bool=False) -> bool:
+def qisequal(q1:ArrayLike4, q2:ArrayLike4, tol:Optional[float]=100, unitq:Optional[bool]=False) -> bool:
     ...
 
 @overload
-def qisequal(q1:UnitQuaternionArrayx, q2:UnitQuaternionArrayx, tol:float=100, unitq:bool=True) -> bool:
+def qisequal(q1:ArrayLike4, q2:ArrayLike4, tol:Optional[float]=100, unitq:Optional[bool]=True) -> bool:
     ...
 
-def qisequal(q1, q2, tol:float=100, unitq:bool=False):
+def qisequal(q1, q2, tol:Optional[float]=100, unitq:Optional[bool]=False):
     """
     Test if quaternions are equal
 
@@ -216,7 +215,7 @@ def qisequal(q1, q2, tol:float=100, unitq:bool=False):
         return np.sum(np.abs(q1 - q2)) < tol * _eps
 
 
-def q2v(q:UnitQuaternionArrayx) -> R3:
+def q2v(q:ArrayLike4) -> R3:
     """
     Convert unit-quaternion to 3-vector
 
@@ -250,7 +249,7 @@ def q2v(q:UnitQuaternionArrayx) -> R3:
         return -q[1:4]
 
 
-def v2q(v:R3x) -> UnitQuaternionArray:
+def v2q(v:ArrayLike3) -> UnitQuaternionArray:
     r"""
     Convert 3-vector to unit-quaternion
 
@@ -281,7 +280,7 @@ def v2q(v:R3x) -> UnitQuaternionArray:
     return np.r_[s, v]
 
 
-def qqmul(q1:QuaternionArrayx, q2:QuaternionArrayx) -> QuaternionArray:
+def qqmul(q1:ArrayLike4, q2:ArrayLike4) -> QuaternionArray:
     """
     Quaternion multiplication
 
@@ -315,7 +314,7 @@ def qqmul(q1:QuaternionArrayx, q2:QuaternionArrayx) -> QuaternionArray:
     return np.r_[s1 * s2 - np.dot(v1, v2), s1 * v2 + s2 * v1 + np.cross(v1, v2)]
 
 
-def qinner(q1:QuaternionArrayx, q2:QuaternionArrayx) -> float:
+def qinner(q1:ArrayLike4, q2:ArrayLike4) -> float:
     """
     Quaternion inner product
 
@@ -352,7 +351,7 @@ def qinner(q1:QuaternionArrayx, q2:QuaternionArrayx) -> float:
     return np.dot(q1, q2)
 
 
-def qvmul(q:UnitQuaternionArrayx, v:R3x) -> R3:
+def qvmul(q:ArrayLike4, v:ArrayLike3) -> R3:
     """
     Vector rotation
 
@@ -383,7 +382,7 @@ def qvmul(q:UnitQuaternionArrayx, v:R3x) -> R3:
     return qv[1:4]
 
 
-def vvmul(qa:R3x, qb:R3x) -> R3:
+def vvmul(qa:ArrayLike3, qb:ArrayLike3) -> R3:
     """
     Quaternion multiplication
 
@@ -420,7 +419,7 @@ def vvmul(qa:R3x, qb:R3x) -> R3:
     ]
 
 
-def qpow(q:QuaternionArrayx, power:int) -> QuaternionArray:
+def qpow(q:ArrayLike4, power:int) -> QuaternionArray:
     """
     Raise quaternion to a power
 
@@ -463,7 +462,7 @@ def qpow(q:QuaternionArrayx, power:int) -> QuaternionArray:
     return qr
 
 
-def qconj(q:QuaternionArrayx) -> QuaternionArray:
+def qconj(q:ArrayLike4) -> QuaternionArray:
     """
     Quaternion conjugate
 
@@ -486,7 +485,7 @@ def qconj(q:QuaternionArrayx) -> QuaternionArray:
     return np.r_[q[0], -q[1:4]]
 
 
-def q2r(q:UnitQuaternionArrayx, order:str="sxyz") -> SO3Array:
+def q2r(q:ArrayLike4, order:Optional[str]="sxyz") -> SO3Array:
     """
     Convert unit-quaternion to SO(3) rotation matrix
 
@@ -528,7 +527,7 @@ def q2r(q:UnitQuaternionArrayx, order:str="sxyz") -> SO3Array:
     )
 
 
-def r2q(R:SO3Array, check:bool=False, tol:float=100, order:str="sxyz") -> UnitQuaternionArray:
+def r2q(R:SO3Array, check:Optional[bool]=False, tol:Optional[float]=100, order:Optional[str]="sxyz") -> UnitQuaternionArray:
     """
     Convert SO(3) rotation matrix to unit-quaternion
 
@@ -675,7 +674,7 @@ def r2q(R:SO3Array, check:bool=False, tol:float=100, order:str="sxyz") -> UnitQu
 #         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
 
 
-def qslerp(q0:UnitQuaternionArrayx, q1:UnitQuaternionArrayx, s:float, shortest:bool=False) -> UnitQuaternionArray:
+def qslerp(q0:ArrayLike4, q1:ArrayLike4, s:float, shortest:Optional[bool]=False) -> UnitQuaternionArray:
     """
     Quaternion conjugate
 
@@ -768,7 +767,7 @@ def qrand() -> UnitQuaternionArray:
     ]
 
 
-def qmatrix(q:QuaternionArrayx) -> R4x4:
+def qmatrix(q:ArrayLike4) -> R4x4:
     """
     Convert quaternion to 4x4 matrix equivalent
 
@@ -803,7 +802,7 @@ def qmatrix(q:QuaternionArrayx) -> R4x4:
     return np.array([[s, -x, -y, -z], [x, s, -z, y], [y, z, s, -x], [z, -y, x, s]])
 
 
-def qdot(q:UnitQuaternionArrayx, w:R3x) -> QuaternionArray:
+def qdot(q:ArrayLike4, w:ArrayLike3) -> QuaternionArray:
     """
     Rate of change of unit-quaternion
 
@@ -834,7 +833,7 @@ def qdot(q:UnitQuaternionArrayx, w:R3x) -> QuaternionArray:
     return 0.5 * np.r_[-np.dot(q[1:4], w), E @ w]
 
 
-def qdotb(q:UnitQuaternionArrayx, w:R3x) -> QuaternionArray:
+def qdotb(q:ArrayLike4, w:ArrayLike3) -> QuaternionArray:
     """
     Rate of change of unit-quaternion
 
@@ -865,7 +864,7 @@ def qdotb(q:UnitQuaternionArrayx, w:R3x) -> QuaternionArray:
     return 0.5 * np.r_[-np.dot(q[1:4], w), E @ w]
 
 
-def qangle(q1:UnitQuaternionArrayx, q2:UnitQuaternionArrayx) -> float:
+def qangle(q1:ArrayLike4, q2:ArrayLike4) -> float:
     """
     Angle between two unit-quaternions
 
@@ -903,7 +902,7 @@ def qangle(q1:UnitQuaternionArrayx, q2:UnitQuaternionArrayx) -> float:
     return 2.0 * math.atan2(smb.norm(q1 - q2), smb.norm(q1 + q2))
 
 
-def qprint(q:Union[QuaternionArrayx,UnitQuaternionArrayx], delim:Tuple[str,str]=("<", ">"), fmt:str="{: .4f}", file:TextIO=sys.stdout) -> str:
+def qprint(q:Union[ArrayLike4,ArrayLike4], delim:Optional[Tuple[str,str]]=("<", ">"), fmt:Optional[str]="{: .4f}", file:Optional[TextIO]=sys.stdout) -> str:
     """
     Format a quaternion
 
