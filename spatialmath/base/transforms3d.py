@@ -23,6 +23,8 @@ from spatialmath.base.argcheck import getunit, getvector, isvector, isscalar, is
 from spatialmath.base.vectors import unitvec, unitvec_norm, norm, isunitvec, iszerovec, unittwist_norm, isunittwist
 from spatialmath.base.transformsNd import r2t, t2r, rt2tr, skew, skewa, vex, vexa, isskew, isskewa, isR, iseye, tr2rt, rodrigues, Ab2M
 from spatialmath.base.quaternions import r2q, q2r, qeye, qslerp
+from spatialmath.base.graphics import plotvol3, axes_logic
+from spatialmath.base.animate import Animate
 import spatialmath.base.symbolic as sym
 
 from spatialmath.base.types import *
@@ -2457,10 +2459,10 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
         )
 
     elif representation == "exp":
-        sk = smb.skew(𝚪)
-        theta = smb.norm(𝚪)
-        skd = smb.skew(𝚪d)
-        theta_dot = np.inner(𝚪, 𝚪d) / smb.norm(𝚪)
+        sk = skew(𝚪)
+        theta = norm(𝚪)
+        skd = skew(𝚪d)
+        theta_dot = np.inner(𝚪, 𝚪d) / norm(𝚪)
         Theta = (1.0 - theta / 2.0 * np.sin(theta) / (1.0 - np.cos(theta))) / theta**2
 
         # hand optimized version of code from notebook symbolic/angvelxform_dot.ipynb
@@ -3107,7 +3109,7 @@ def tranimate(T:Union[SO3Array,SE3Array], **kwargs) -> None:
 
     kwargs["block"] = kwargs.get("block", False)
 
-    anim = animate.Animate(**kwargs)
+    anim = Animate(**kwargs)
     try:
         del kwargs["dims"]
     except KeyError:

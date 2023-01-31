@@ -15,7 +15,7 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base.vectors import *
-from spatialmath.base.symbolics import symbol
+from spatialmath.base.symbolic import symbol
 import matplotlib.pyplot as plt
 
 
