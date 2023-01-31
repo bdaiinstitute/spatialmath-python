@@ -45,11 +45,13 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.inheritance_diagram',
     'matplotlib.sphinxext.plot_directive',
+    "sphinx_autodoc_typehints",
     'sphinx_autorun',
     "sphinx.ext.intersphinx",
     "sphinx-favicon",
     ]
     #'sphinx.ext.autosummary',
+# typehints_use_signature_return = True
 
 # inheritance_node_attrs = dict(style='rounded,filled', fillcolor='lightblue')
 inheritance_node_attrs = dict(style='rounded')
@@ -205,3 +207,5 @@ favicons = [
         "type": "image/png",
     },
 ]
+
+autodoc_type_aliases = {'SO3Array': 'SO3Array'}
