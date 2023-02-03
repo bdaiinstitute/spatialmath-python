@@ -6,7 +6,7 @@ import numpy as np
 
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.pose2d import SE2
-from spatialmath.geom3d import Line3
+from spatialmath.geom3d import Line3, Plucker, Screw
 import spatialmath.base as base
 from spatialmath.baseposelist import BasePoseList
 
@@ -786,6 +786,30 @@ class Twist3(BaseTwist):
 
         return cls([_twist(x, y, z, r) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
 
+    @classmethod
+    def FromScrew(cls, screw: Screw, theta=1.0):
+        """
+            Create a new 3D twist from a unit Screw coordinate and magnitude of that screw.
+        """
+        s_norm = np.linalg.norm(screw.w)
+        if s_norm > 1e-4:
+            w = theta * screw.w / s_norm
+            v = theta * screw.v / s_norm
+        return cls(v, w)
+
+    @classmethod
+    def FromPlucker(cls, plucker: Plucker, d=1.0, theta=1.0):
+        """
+            Create a new 3D twist from:
+                - Plucker coordinates of a line,
+                - the distance desired along that line,
+                - the rotation desired about that line.
+        """
+        if abs(theta) > 1e-4:
+            pitch = d / theta
+        else:
+            pitch = np.inf
+        return Twist3.FromScrew(Screw.FromPlucker(plucker, pitch), theta)
 
     # -------------------------  methods -------------------------------#
 
@@ -912,13 +936,13 @@ class Twist3(BaseTwist):
 
         ``X.pitch()`` is the pitch of the twist as a scalar in units of distance
         per radian. 
-        
+
         If we consider the twist as a screw, this is the distance of
-        translation along the screw axis for a one radian rotation about the
+        translation along the screw axis for ``X.theta()`` radian rotation about the
         screw axis.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -927,7 +951,7 @@ class Twist3(BaseTwist):
             >>> S.pitch
 
         """
-        return np.dot(self.w, self.v)
+        return np.dot(self.w, self.v) / pow(self.theta,2)
 
     def line(self):
         """
@@ -1056,7 +1080,16 @@ class Twist3(BaseTwist):
         else:
             raise ValueError('length mismatch')
 
+    def ToPlucker(self):
+        if abs(self.theta) > 1e-4:
+            l = self.w / self.theta
+            return Plucker((self.v / self.theta) - self.pitch * l, l)
+        else:
+            return Plucker(self.v, np.zeros(3))
 
+    def ToScrew(self):
+        plucker = self.ToPlucker()
+        return Screw.FromPlucker(plucker, self.pitch)
 
     # ------------------------- arithmetic -------------------------------#
 
