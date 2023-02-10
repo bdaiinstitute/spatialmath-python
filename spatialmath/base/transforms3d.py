@@ -1221,13 +1221,14 @@ def trlog(T, check=True, twist=False, tol=10):
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
-        if smb.iseye(R):
+        trace_R = np.trace(R)
+        if abs(trace_R - 3) < tol * _eps:
             # matrix is identity
             if twist:
                 return np.zeros((3,))
             else:
                 return np.zeros((3, 3))
-        elif abs(np.trace(R) + 1) < tol * _eps:
+        elif abs(trace_R + 1) < tol * _eps:
             # check for trace = -1
             #   rotation by +/- pi, +/- 3pi etc.
             diagonal = R.diagonal()
