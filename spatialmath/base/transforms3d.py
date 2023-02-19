@@ -15,13 +15,35 @@ tuple, numpy array, numpy row vector or numpy column vector.
 # pylint: disable=invalid-name
 
 import sys
+from collections.abc import Iterable
 import math
 import numpy as np
-from collections.abc import Iterable
 
 from spatialmath.base.argcheck import getunit, getvector, isvector, isscalar, ismatrix
-from spatialmath.base.vectors import unitvec, unitvec_norm, norm, isunitvec, iszerovec, unittwist_norm, isunittwist
-from spatialmath.base.transformsNd import r2t, t2r, rt2tr, skew, skewa, vex, vexa, isskew, isskewa, isR, iseye, tr2rt, rodrigues, Ab2M
+from spatialmath.base.vectors import (
+    unitvec,
+    unitvec_norm,
+    norm,
+    isunitvec,
+    iszerovec,
+    unittwist_norm,
+    isunittwist,
+)
+from spatialmath.base.transformsNd import (
+    r2t,
+    t2r,
+    rt2tr,
+    skew,
+    skewa,
+    vex,
+    vexa,
+    isskew,
+    isskewa,
+    isR,
+    iseye,
+    tr2rt,
+    Ab2M,
+)
 from spatialmath.base.quaternions import r2q, q2r, qeye, qslerp
 from spatialmath.base.graphics import plotvol3, axes_logic
 from spatialmath.base.animate import Animate
@@ -29,12 +51,14 @@ import spatialmath.base.symbolic as sym
 
 from spatialmath.base.types import *
 
+print(SO3Array)
+
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
 
 
-def rotx(theta:float, unit:str="rad") -> SO3Array:
+def rotx(theta: float, unit: str = "rad") -> SO3Array:
     """
     Create SO(3) rotation about X-axis
 
@@ -62,15 +86,18 @@ def rotx(theta:float, unit:str="rad") -> SO3Array:
     st = sym.sin(theta)
     # fmt: off
     R = np.array([
-        [1, 0, 0],
+        [1, 0,   0],
         [0, ct, -st],
-        [0, st, ct]])
+        [0, st,  ct]])  # type: ignore
     # fmt: on
     return R
 
 
+a = rotx(1) @ rotx(2)
+
+
 # ---------------------------------------------------------------------------------------#
-def roty(theta:float, unit:str="rad") -> SO3Array:
+def roty(theta: float, unit: str = "rad") -> SO3Array:
     """
     Create SO(3) rotation about Y-axis
 
@@ -98,14 +125,14 @@ def roty(theta:float, unit:str="rad") -> SO3Array:
     st = sym.sin(theta)
     # fmt: off
     return np.array([
-        [ct, 0, st],
-        [0, 1, 0],
-        [-st, 0, ct]])
+        [ ct, 0, st],
+        [ 0,  1, 0],
+        [-st, 0, ct]])  # type: ignore
     # fmt: on
 
 
 # ---------------------------------------------------------------------------------------#
-def rotz(theta:float, unit:str="rad") -> SO3Array:
+def rotz(theta: float, unit: str = "rad") -> SO3Array:
     """
     Create SO(3) rotation about Z-axis
 
@@ -133,13 +160,13 @@ def rotz(theta:float, unit:str="rad") -> SO3Array:
     # fmt: off
     return np.array([
         [ct, -st, 0],
-        [st, ct, 0],
-        [0, 0, 1]])
+        [st,  ct, 0],
+        [0,   0,  1]])  # type: ignore
     # fmt: on
 
 
 # ---------------------------------------------------------------------------------------#
-def trotx(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
+def trotx(theta: float, unit: str = "rad", t: Optional[ArrayLike3] = None) -> SE3Array:
     """
     Create SE(3) pure rotation about X-axis
 
@@ -171,7 +198,7 @@ def trotx(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def troty(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
+def troty(theta: float, unit: str = "rad", t: Optional[ArrayLike3] = None) -> SE3Array:
     """
     Create SE(3) pure rotation about Y-axis
 
@@ -203,7 +230,7 @@ def troty(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def trotz(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
+def trotz(theta: float, unit: str = "rad", t: Optional[ArrayLike3] = None) -> SE3Array:
     """
     Create SE(3) pure rotation about Z-axis
 
@@ -236,22 +263,25 @@ def trotz(theta:float, unit:str="rad", t:Optional[ArrayLike3]=None) -> SE3Array:
 
 # ---------------------------------------------------------------------------------------#
 
-@overload
-def transl(x:float, y:float, z:float) -> SE3Array:
+
+@overload  # pragma: no cover
+def transl(x: float, y: float, z: float) -> SE3Array:
     ...
 
-@overload
-def transl(x:ArrayLike3) -> SE3Array:
+
+@overload  # pragma: no cover
+def transl(x: ArrayLike3) -> SE3Array:
     ...
 
-@overload
-def transl(x:SE3Array) -> R3:
+
+@overload  # pragma: no cover
+def transl(x: SE3Array) -> R3:
     ...
 
-def transl(x:Union[ArrayLike3,float], y:Optional[float]=None, z:Optional[float]=None) -> Union[SE3Array,R3]:
+
+def transl(x, y=None, z=None):
     """
     Create SE(3) pure translation, or extract translation from SE(3) matrix
-
 
     **Create a translational SE(3) matrix**
 
@@ -321,7 +351,7 @@ def transl(x:Union[ArrayLike3,float], y:Optional[float]=None, z:Optional[float]=
     return T
 
 
-def ishom(T:SE3Array, check:bool=False, tol:float=100) -> bool:
+def ishom(T: Any, check: bool = False, tol: float = 100) -> bool:
     """
     Test if matrix belongs to SE(3)
 
@@ -354,14 +384,12 @@ def ishom(T:SE3Array, check:bool=False, tol:float=100) -> bool:
         and T.shape == (4, 4)
         and (
             not check
-            or (
-                isR(T[:3, :3], tol=tol)
-                and np.all(T[3, :] == np.array([0, 0, 0, 1]))
-            )
+            or (isR(T[:3, :3], tol=tol) and all(T[3, :] == np.array([0, 0, 0, 1])))
         )
     )
 
-def isrot(R:SO3Array, check:bool=False, tol:float=100) -> bool:
+
+def isrot(R: Any, check: bool = False, tol: float = 100) -> bool:
     """
     Test if matrix belongs to SO(3)
 
@@ -397,15 +425,33 @@ def isrot(R:SO3Array, check:bool=False, tol:float=100) -> bool:
 
 
 # ---------------------------------------------------------------------------------------#
-@overload
-def rpy2r(roll:float, pitch:float, yaw:float, *, unit:str="rad", order:str="zyx") -> SO3Array:
+@overload  # pragma: no cover
+def rpy2r(
+    roll: float, pitch: float, yaw: float, *, unit: str = "rad", order: str = "zyx"
+) -> SO3Array:
     ...
 
-@overload
-def rpy2r(roll:ArrayLike3, pitch:None=None, yaw:None=None, unit:str="rad", *, order:str="zyx") -> SO3Array:
+
+@overload  # pragma: no cover
+def rpy2r(
+    roll: ArrayLike3,
+    pitch: None = None,
+    yaw: None = None,
+    *,
+    unit: str = "rad",
+    order: str = "zyx",
+) -> SO3Array:
     ...
 
-def rpy2r(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optional[float]=None, *, unit:str="rad", order:str="zyx") -> SO3Array:
+
+def rpy2r(
+    roll: Union[ArrayLike3, float],
+    pitch: Optional[float] = None,
+    yaw: Optional[float] = None,
+    *,
+    unit: str = "rad",
+    order: str = "zyx",
+) -> SO3Array:
     """
     Create an SO(3) rotation matrix from roll-pitch-yaw angles
 
@@ -456,6 +502,7 @@ def rpy2r(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optional
 
     angles = getunit(angles, unit)
 
+    a = rotx(0)
     if order in ("xyz", "arm"):
         R = rotx(angles[2]) @ roty(angles[1]) @ rotz(angles[0])
     elif order in ("zyx", "vehicle"):
@@ -467,16 +514,33 @@ def rpy2r(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optional
 
     return R
 
+
 # ---------------------------------------------------------------------------------------#
-@overload
-def rpy2tr(roll:float, pitch:float, yaw:float, unit:str="rad", order:str="zyx") -> SE3Array:
+@overload  # pragma: no cover
+def rpy2tr(
+    roll: float, pitch: float, yaw: float, unit: str = "rad", order: str = "zyx"
+) -> SE3Array:
     ...
 
-@overload
-def rpy2tr(roll:ArrayLike3, pitch=None, yaw=None, unit:str="rad", order:str="zyx") -> SE3Array:
+
+@overload  # pragma: no cover
+def rpy2tr(
+    roll: ArrayLike3,
+    pitch: None = None,
+    yaw: None = None,
+    unit: str = "rad",
+    order: str = "zyx",
+) -> SE3Array:
     ...
-    
-def rpy2tr(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optional[float]=None, unit:str="rad", order:str="zyx") -> SE3Array:
+
+
+def rpy2tr(
+    roll,
+    pitch=None,
+    yaw=None,
+    unit: str = "rad",
+    order: str = "zyx",
+) -> SE3Array:
     """
     Create an SE(3) rotation matrix from roll-pitch-yaw angles
 
@@ -529,15 +593,25 @@ def rpy2tr(roll:Union[float,ArrayLike3], pitch:Optional[float]=None, yaw:Optiona
 
 # ---------------------------------------------------------------------------------------#
 
-@overload
-def eul2r(phi:float, theta:float, psi:float, unit:str="rad") -> SO3Array:
+
+@overload  # pragma: no cover
+def eul2r(phi: float, theta: float, psi: float, unit: str = "rad") -> SO3Array:
     ...
 
-@overload
-def eul2r(phi:ArrayLike3, theta=None, psi=None, unit:str="rad") -> SO3Array:
+
+@overload  # pragma: no cover
+def eul2r(
+    phi: ArrayLike3, theta: None = None, psi: None = None, unit: str = "rad"
+) -> SO3Array:
     ...
 
-def eul2r(phi:Union[ArrayLike3,float], theta:Optional[float]=None, psi:Optional[float]=None, unit:str="rad") -> SO3Array:
+
+def eul2r(
+    phi: Union[ArrayLike3, float],
+    theta: Optional[float] = None,
+    psi: Optional[float] = None,
+    unit: str = "rad",
+) -> SO3Array:
     """
     Create an SO(3) rotation matrix from Euler angles
 
@@ -581,15 +655,22 @@ def eul2r(phi:Union[ArrayLike3,float], theta:Optional[float]=None, psi:Optional[
 
 
 # ---------------------------------------------------------------------------------------#
-@overload
-def eul2tr(phi:float, theta:float, psi:float, unit:str="rad") -> SE3Array:
+@overload  # pragma: no cover
+def eul2tr(phi: float, theta: float, psi: float, unit: str = "rad") -> SE3Array:
     ...
 
-@overload
-def eul2tr(phi:ArrayLike3, theta=None, psi=None, unit:str="rad") -> SE3Array:
+
+@overload  # pragma: no cover
+def eul2tr(phi: ArrayLike3, theta=None, psi=None, unit: str = "rad") -> SE3Array:
     ...
-    
-def eul2tr(phi:Union[float,ArrayLike3], theta:Optional[float]=None, psi:Optional[float]=None, unit="rad") -> SE3Array:
+
+
+def eul2tr(
+    phi,
+    theta=None,
+    psi=None,
+    unit="rad",
+) -> SE3Array:
     """
     Create an SE(3) pure rotation matrix from Euler angles
 
@@ -634,7 +715,7 @@ def eul2tr(phi:Union[float,ArrayLike3], theta:Optional[float]=None, psi:Optional
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta:float, v:ArrayLike3, unit="rad") -> SO3Array:
+def angvec2r(theta: float, v: ArrayLike3, unit="rad") -> SO3Array:
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -666,23 +747,23 @@ def angvec2r(theta:float, v:ArrayLike3, unit="rad") -> SO3Array:
 
     :SymPy: not supported
     """
-    if not np.isscalar(theta) or not isvector(v, 3):
-        raise ValueError("Arguments must be theta and vector")
+    if not isscalar(theta) or not isvector(v, 3):
+        raise ValueError("Arguments must be angle and vector")
 
     if np.linalg.norm(v) < 10 * _eps:
         return np.eye(3)
 
-    theta = getunit(theta, unit)
+    θ = getunit(theta, unit)
 
     # Rodrigue's equation
 
-    sk = skew(unitvec(v))
-    R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
+    sk = skew(cast(ArrayLike3, unitvec(v)))
+    R = np.eye(3) + math.sin(θ) * sk + (1.0 - math.cos(θ)) * sk @ sk
     return R
 
 
 # ---------------------------------------------------------------------------------------#
-def angvec2tr(theta:float, v:ArrayLike3, unit="rad") -> SE3Array:
+def angvec2tr(theta: float, v: ArrayLike3, unit="rad") -> SE3Array:
     """
     Create an SE(3) pure rotation from rotation angle and axis
 
@@ -719,7 +800,7 @@ def angvec2tr(theta:float, v:ArrayLike3, unit="rad") -> SE3Array:
 # ---------------------------------------------------------------------------------------#
 
 
-def exp2r(w:ArrayLike3) -> SE3Array:
+def exp2r(w: ArrayLike3) -> SE3Array:
     r"""
     Create an SO(3) rotation matrix from exponential coordinates
 
@@ -749,19 +830,19 @@ def exp2r(w:ArrayLike3) -> SE3Array:
     if not isvector(w, 3):
         raise ValueError("Arguments must be a 3-vector")
 
-    v, theta = unitvec_norm(w)
-
-    if theta is None:
+    try:
+        v, theta = unitvec_norm(w)
+    except ValueError:
         return np.eye(3)
 
     # Rodrigue's equation
 
-    sk = skew(v)
+    sk = skew(cast(ArrayLike3, v))
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
     return R
 
 
-def exp2tr(w:ArrayLike3) -> SE3Array:
+def exp2tr(w: ArrayLike3) -> SE3Array:
     r"""
     Create an SE(3) pure rotation matrix from exponential coordinates
 
@@ -791,20 +872,20 @@ def exp2tr(w:ArrayLike3) -> SE3Array:
     if not isvector(w, 3):
         raise ValueError("Arguments must be a 3-vector")
 
-    v, theta = unitvec_norm(w)
-
-    if theta is None:
+    try:
+        v, theta = unitvec_norm(w)
+    except ValueError:
         return np.eye(4)
 
     # Rodrigue's equation
 
-    sk = skew(v)
+    sk = skew(cast(ArrayLike3, v))
     R = np.eye(3) + math.sin(theta) * sk + (1.0 - math.cos(theta)) * sk @ sk
-    return r2t(R)
+    return r2t(cast(SO3Array, R))
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2r(o:ArrayLike3, a:ArrayLike3) -> SO3Array:
+def oa2r(o: ArrayLike3, a: ArrayLike3) -> SO3Array:
     """
     Create SO(3) rotation matrix from two vectors
 
@@ -855,7 +936,7 @@ def oa2r(o:ArrayLike3, a:ArrayLike3) -> SO3Array:
 
 
 # ---------------------------------------------------------------------------------------#
-def oa2tr(o:ArrayLike3, a:ArrayLike3) -> SE3Array:
+def oa2tr(o: ArrayLike3, a: ArrayLike3) -> SE3Array:
     """
     Create SE(3) pure rotation from two vectors
 
@@ -902,7 +983,9 @@ def oa2tr(o:ArrayLike3, a:ArrayLike3) -> SE3Array:
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2angvec(T:Union[SO3Array,SE3Array], unit:str="rad", check:bool=False) -> Tuple[float,R3]:
+def tr2angvec(
+    T: Union[SO3Array, SE3Array], unit: str = "rad", check: bool = False
+) -> Tuple[float, R3]:
     r"""
     Convert SO(3) or SE(3) to angle and rotation vector
 
@@ -942,7 +1025,7 @@ def tr2angvec(T:Union[SO3Array,SE3Array], unit:str="rad", check:bool=False) -> T
     if not isrot(R, check=check):
         raise ValueError("argument is not SO(3)")
 
-    v = vex(trlog(R))
+    v = vex(trlog(cast(SO3Array, R)))
 
     if iszerovec(v):
         theta = 0
@@ -958,7 +1041,12 @@ def tr2angvec(T:Union[SO3Array,SE3Array], unit:str="rad", check:bool=False) -> T
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
-def tr2eul(T:Union[SO3Array,SE3Array], unit:str="rad", flip:bool=False, check:bool=False) -> R3:
+def tr2eul(
+    T: Union[SO3Array, SE3Array],
+    unit: str = "rad",
+    flip: bool = False,
+    check: bool = False,
+) -> R3:
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
 
@@ -1027,13 +1115,18 @@ def tr2eul(T:Union[SO3Array,SE3Array], unit:str="rad", flip:bool=False, check:bo
     if unit == "deg":
         eul *= 180 / math.pi
 
-    return eul
+    return eul  # type: ignore
 
 
 # ------------------------------------------------------------------------------------------------------------------- #
 
 
-def tr2rpy(T:Union[SO3Array,SE3Array], unit:str="rad", order:str="zyx", check:bool=False) -> R3:
+def tr2rpy(
+    T: Union[SO3Array, SE3Array],
+    unit: str = "rad",
+    order: str = "zyx",
+    check: bool = False,
+) -> R3:
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
 
@@ -1090,7 +1183,6 @@ def tr2rpy(T:Union[SO3Array,SE3Array], unit:str="rad", order:str="zyx", check:bo
 
     rpy = np.zeros((3,))
     if order in ("xyz", "arm"):
-
         # XYZ order
         if abs(abs(R[0, 2]) - 1) < 10 * _eps:  # when |R13| == 1
             # singularity
@@ -1115,7 +1207,6 @@ def tr2rpy(T:Union[SO3Array,SE3Array], unit:str="rad", order:str="zyx", check:bo
                 rpy[1] = math.atan(R[0, 2] * math.cos(rpy[2]) / R[2, 2])
 
     elif order in ("zyx", "vehicle"):
-
         # old ZYX order (as per Paul book)
         if abs(abs(R[2, 0]) - 1) < 10 * _eps:  # when |R31| == 1
             # singularity
@@ -1140,7 +1231,6 @@ def tr2rpy(T:Union[SO3Array,SE3Array], unit:str="rad", order:str="zyx", check:bo
                 rpy[1] = -math.atan(R[2, 0] * math.cos(rpy[0]) / R[2, 2])
 
     elif order in ("yxz", "camera"):
-
         if abs(abs(R[1, 2]) - 1) < 10 * _eps:  # when |R23| == 1
             # singularity
             rpy[0] = 0
@@ -1169,27 +1259,40 @@ def tr2rpy(T:Union[SO3Array,SE3Array], unit:str="rad", order:str="zyx", check:bo
     if unit == "deg":
         rpy *= 180 / math.pi
 
-    return rpy
+    return rpy  # type: ignore
 
 
 # ---------------------------------------------------------------------------------------#
-@overload
-def trlog(T:SO3Array, check:bool=True, twist:bool=False, tol:float=10) -> so3Array:
+@overload  # pragma: no cover
+def trlog(
+    T: SO3Array, check: bool = True, twist: bool = False, tol: float = 10
+) -> so3Array:
     ...
 
-@overload
-def trlog(T:SE3Array, check:bool=True, twist:bool=False, tol:float=10) -> se3Array:
+
+@overload  # pragma: no cover
+def trlog(
+    T: SE3Array, check: bool = True, twist: bool = False, tol: float = 10
+) -> se3Array:
     ...
 
-@overload
-def trlog(T:SO3Array, check:bool=True, twist:bool=True, tol:float=10) -> R3:
+
+@overload  # pragma: no cover
+def trlog(T: SO3Array, check: bool = True, twist: bool = True, tol: float = 10) -> R3:
     ...
 
-@overload
-def trlog(T:SE3Array, check:bool=True, twist:bool=True, tol:float=10) -> R6:
+
+@overload  # pragma: no cover
+def trlog(T: SE3Array, check: bool = True, twist: bool = True, tol: float = 10) -> R6:
     ...
 
-def trlog(T:Union[SO3Array,SE3Array], check:bool=True, twist:bool=False, tol:float=10) -> Union[R3,R6,so3Array,se3Array]:
+
+def trlog(
+    T: Union[SO3Array, SE3Array],
+    check: bool = True,
+    twist: bool = False,
+    tol: float = 10,
+) -> Union[R3, R6, so3Array, se3Array]:
     """
     Logarithm of SO(3) or SE(3) matrix
 
@@ -1247,7 +1350,8 @@ def trlog(T:Union[SO3Array,SE3Array], check:bool=True, twist:bool=False, tol:flo
                 else:
                     return Ab2M(np.zeros((3, 3)), t)
             else:
-                S = trlog(R, check=False)  # recurse
+                # S = trlog(R, check=False)  # recurse
+                S = trlog(cast(SO3Array, R), check=False)  # recurse
                 w = vex(S)
                 theta = norm(w)
                 Ginv = (
@@ -1295,16 +1399,29 @@ def trlog(T:Union[SO3Array,SE3Array], check:bool=True, twist:bool=False, tol:flo
     else:
         raise ValueError("Expect SO(3) or SE(3) matrix")
 
+
 # ---------------------------------------------------------------------------------------#
-@overload
-def trexp(S:so3Array, theta:Optional[float]=None, check:bool=True) -> SO3Array:
+@overload  # pragma: no cover
+def trexp(S: so3Array, theta: Optional[float] = None, check: bool = True) -> SO3Array:
     ...
 
-@overload
-def trexp(S:se3Array, theta:Optional[float]=None, check:bool=True) -> SE3Array:
+
+@overload  # pragma: no cover
+def trexp(S: se3Array, theta: Optional[float] = None, check: bool = True) -> SE3Array:
     ...
 
-def trexp(S:Union[so3Array,se3Array], theta:Optional[float]=None, check:bool=True) -> Union[SO3Array,SE3Array]:
+
+@overload  # pragma: no cover
+def trexp(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array:
+    ...
+
+
+@overload  # pragma: no cover
+def trexp(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array:
+    ...
+
+
+def trexp(S, theta=None, check=True):
     """
     Exponential of se(3) or so(3) matrix
 
@@ -1370,7 +1487,7 @@ def trexp(S:Union[so3Array,se3Array], theta:Optional[float]=None, check:bool=Tru
             # augmentented skew matrix
             if check and not isskewa(S):
                 raise ValueError("argument must be a valid se(3) element")
-            tw = vexa(S)
+            tw = vexa(cast(se3Array, S))
         else:
             # 6 vector
             tw = getvector(S)
@@ -1421,7 +1538,7 @@ def trexp(S:Union[so3Array,se3Array], theta:Optional[float]=None, check:bool=Tru
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
 
-def trnorm(T:SE3Array) -> SE3Array:
+def trnorm(T: SE3Array) -> SE3Array:
     r"""
     Normalize an SO(3) or SE(3) matrix
 
@@ -1475,12 +1592,22 @@ def trnorm(T:SE3Array) -> SE3Array:
     R = np.stack((unitvec(n), unitvec(o), unitvec(a)), axis=1)
 
     if ishom(T):
-        return rt2tr(R, T[:3, 3])
+        return rt2tr(cast(SO3Array, R), T[:3, 3])
     else:
         return R
 
 
-def trinterp(start:Optional[SE3Array], end:SE3Array, s:float) -> SE3Array:
+@overload
+def trinterp(start: Optional[SO3Array], end: SO3Array, s: float) -> SO3Array:
+    ...
+
+
+@overload
+def trinterp(start: Optional[SE3Array], end: SE3Array, s: float) -> SE3Array:
+    ...
+
+
+def trinterp(start, end, s):
     """
     Interpolate SE(3) matrices
 
@@ -1529,7 +1656,7 @@ def trinterp(start:Optional[SE3Array], end:SE3Array, s:float) -> SE3Array:
         if start is None:
             # 	TRINTERP(T, s)
             q0 = r2q(t2r(end))
-            qr = qslerp(eye(), q0, s)
+            qr = qslerp(qeye(), q0, s)
         else:
             # 	TRINTERP(T0, T1, s)
             q0 = r2q(t2r(start))
@@ -1563,7 +1690,7 @@ def trinterp(start:Optional[SE3Array], end:SE3Array, s:float) -> SE3Array:
         return ValueError("Argument must be SO(3) or SE(3)")
 
 
-def delta2tr(d:R6) -> SE3Array:
+def delta2tr(d: R6) -> SE3Array:
     r"""
     Convert differential motion to SE(3)
 
@@ -1589,7 +1716,7 @@ def delta2tr(d:R6) -> SE3Array:
     return np.eye(4, 4) + skewa(d)
 
 
-def trinv(T:SE3Array) -> SE3Array:
+def trinv(T: SE3Array) -> SE3Array:
     r"""
     Invert an SE(3) matrix
 
@@ -1624,7 +1751,7 @@ def trinv(T:SE3Array) -> SE3Array:
     return Ti
 
 
-def tr2delta(T0:SE3Array, T1:Optional[SE3Array]=None) -> R6:
+def tr2delta(T0: SE3Array, T1: Optional[SE3Array] = None) -> R6:
     r"""
     Difference of SE(3) matrices as differential motion
 
@@ -1682,7 +1809,7 @@ def tr2delta(T0:SE3Array, T1:Optional[SE3Array]=None) -> R6:
     return np.r_[transl(Td), vex(t2r(Td) - np.eye(3))]
 
 
-def tr2jac(T:SE3Array) -> R6x6:
+def tr2jac(T: SE3Array) -> R6x6:
     r"""
     SE(3) Jacobian matrix
 
@@ -1717,7 +1844,7 @@ def tr2jac(T:SE3Array) -> R6x6:
     return np.block([[R, Z], [Z, R]])
 
 
-def eul2jac(angles:ArrayLike3) -> R3x3:
+def eul2jac(angles: ArrayLike3) -> R3x3:
     """
     Euler angle rate Jacobian
 
@@ -1750,10 +1877,6 @@ def eul2jac(angles:ArrayLike3) -> R3x3:
 
     :seealso: :func:`angvelxform` :func:`rpy2jac` :func:`exp2jac`
     """
-
-    if len(angles) == 1:
-        angles = angles[0]
-
     phi = angles[0]
     theta = angles[1]
 
@@ -1764,14 +1887,15 @@ def eul2jac(angles:ArrayLike3) -> R3x3:
 
     # fmt: off
     return np.array([
-            [ 0, -sphi, cphi * stheta],
-            [ 0,  cphi, sphi * stheta],
-            [ 1,     0, ctheta ]
-        ])
+            [ 0.0, -sphi, cphi * stheta],
+            [ 0.0,  cphi, sphi * stheta],
+            [ 1.0,     0.0, ctheta ]
+        ]  # type: ignore
+        )
     # fmt: on
 
 
-def rpy2jac(angles:ArrayLike3, order:str="zyx") -> R3x3:
+def rpy2jac(angles: ArrayLike3, order: str = "zyx") -> R3x3:
     """
     Jacobian from RPY angle rates to angular velocity
 
@@ -1827,7 +1951,7 @@ def rpy2jac(angles:ArrayLike3, order:str="zyx") -> R3x3:
             [ sp,       0,   1], 
             [-cp * sy,  cy,  0],
             [ cp * cy,  sy,  0]
-        ])
+        ])  # type: ignore
         # fmt: on
     elif order == "zyx":
         # fmt: off
@@ -1835,7 +1959,7 @@ def rpy2jac(angles:ArrayLike3, order:str="zyx") -> R3x3:
                 [ cp * cy, -sy, 0],
                 [ cp * sy,  cy, 0],
                 [-sp,       0,  1],
-            ])
+            ])  # type: ignore
         # fmt: on
     elif order == "yxz":
         # fmt: off
@@ -1843,12 +1967,14 @@ def rpy2jac(angles:ArrayLike3, order:str="zyx") -> R3x3:
                 [ cp * sy,  cy, 0],
                 [-sp,       0,  1],
                 [ cp * cy, -sy, 0]
-            ])
+            ])  # type: ignore
         # fmt: on
+    else:
+        raise ValueError("unknown order")
     return J
 
 
-def exp2jac(v:R3) -> R3x3:
+def exp2jac(v: R3) -> R3x3:
     """
     Jacobian from exponential coordinate rates to angular velocity
 
@@ -1883,8 +2009,9 @@ def exp2jac(v:R3) -> R3x3:
     :seealso: :func:`rotvelxform` :func:`eul2jac` :func:`rpy2jac`
     """
 
-    vn, theta = unitvec_norm(v)
-    if theta is None:
+    try:
+        vn, theta = unitvec_norm(v)
+    except ValueError:
         return np.eye(3)
 
     # R = trexp(v)
@@ -1911,7 +2038,7 @@ def exp2jac(v:R3) -> R3x3:
     return E
 
 
-def r2x(R:SO3Array, representation:str="rpy/xyz") -> R3:
+def r2x(R: SO3Array, representation: str = "rpy/xyz") -> R3:
     r"""
     Convert SO(3) matrix to angular representation
 
@@ -1952,7 +2079,7 @@ def r2x(R:SO3Array, representation:str="rpy/xyz") -> R3:
     return r
 
 
-def x2r(r:ArrayLike3, representation:str="rpy/xyz") -> SO3Array:
+def x2r(r: ArrayLike3, representation: str = "rpy/xyz") -> SO3Array:
     r"""
     Convert angular representation to SO(3) matrix
 
@@ -1992,7 +2119,8 @@ def x2r(r:ArrayLike3, representation:str="rpy/xyz") -> SO3Array:
         raise ValueError(f"unknown representation: {representation}")
     return R
 
-def tr2x(T:SE3Array, representation:str="rpy/xyz") -> R6:
+
+def tr2x(T: SE3Array, representation: str = "rpy/xyz") -> R6:
     r"""
     Convert SE(3) to an analytic representation
 
@@ -2027,7 +2155,7 @@ def tr2x(T:SE3Array, representation:str="rpy/xyz") -> R6:
     return np.r_[t, r]
 
 
-def x2tr(x:R6, representation="rpy/xyz") -> SE3Array:
+def x2tr(x: R6, representation="rpy/xyz") -> SE3Array:
     r"""
     Convert analytic representation to SE(3)
 
@@ -2082,15 +2210,51 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
     """
     raise DeprecationWarning("use rotvelxform_inv_dot instead")
 
-@overload
-def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> R3x3:
+
+@overload  # pragma: no cover
+def rotvelxform(
+    𝚪: ArrayLike3,
+    inverse: bool = False,
+    full: bool = False,
+    representation="rpy/xyz",
+) -> R3x3:
     ...
 
-@overload
-def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=True, representation="rpy/xyz") -> R6x6:
+
+@overload  # pragma: no cover
+def rotvelxform(
+    𝚪: SO3Array,
+    inverse: bool = False,
+    full: bool = False,
+) -> R3x3:
     ...
 
-def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=False, representation="rpy/xyz") -> Union[R3x3,R6x6]:
+
+@overload  # pragma: no cover
+def rotvelxform(
+    𝚪: ArrayLike3,
+    inverse: bool = False,
+    full: bool = True,
+    representation="rpy/xyz",
+) -> R6x6:
+    ...
+
+
+@overload  # pragma: no cover
+def rotvelxform(
+    𝚪: SO3Array,
+    inverse: bool = False,
+    full: bool = True,
+) -> R6x6:
+    ...
+
+
+def rotvelxform(
+    𝚪,
+    inverse=False,
+    full=False,
+    representation="rpy/xyz",
+):
     r"""
     Rotational velocity transformation
 
@@ -2180,17 +2344,17 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
             # fmt: off
             A = np.array([
                 [ S(beta),          0,        1], 
-                [-S(gamma)*C(beta), C(gamma), 0], 
-                [ C(beta)*C(gamma), S(gamma), 0]
+                [-S(gamma)*C(beta), C(gamma), 0], # type: ignore
+                [ C(beta)*C(gamma), S(gamma), 0]  # type: ignore
                 ])
             # fmt: on
         else:
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [0, -S(gamma)/C(beta),  C(gamma)/C(beta)], 
+                [0, -S(gamma)/C(beta),  C(gamma)/C(beta)], # type: ignore
                 [0,  C(gamma),          S(gamma)], 
-                [1,  S(gamma)*T(beta), -C(gamma)*T(beta)]
+                [1,  S(gamma)*T(beta), -C(gamma)*T(beta)]  # type: ignore
                 ])
             # fmt: on
 
@@ -2201,18 +2365,18 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [C(beta)*C(gamma), -S(gamma), 0], 
-                [S(gamma)*C(beta),  C(gamma), 0], 
-                [-S(beta),          0,        1]
-                ])
+                [C(beta)*C(gamma), -S(gamma), 0], # type: ignore
+                [S(gamma)*C(beta),  C(gamma), 0], # type: ignore
+                [-S(beta),          0,        1]  # type: ignore
+                ]) # type: ignore
             # fmt: on
         else:
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [C(gamma)/C(beta), S(gamma)/C(beta), 0],
-                [-S(gamma),        C(gamma),         0],
-                [C(gamma)*T(beta), S(gamma)*T(beta), 1]
+                [C(gamma)/C(beta), S(gamma)/C(beta), 0],  # type: ignore
+                [-S(gamma),        C(gamma),         0],  # type: ignore
+                [C(gamma)*T(beta), S(gamma)*T(beta), 1]   # type: ignore
                 ])
             # fmt: on
 
@@ -2223,19 +2387,19 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [ S(gamma)*C(beta),  C(gamma), 0],
-                [-S(beta),           0,        1],
-                [ C(beta)*C(gamma), -S(gamma), 0]
+                [ S(gamma)*C(beta),  C(gamma), 0],  # type: ignore
+                [-S(beta),           0,        1],  # type: ignore
+                [ C(beta)*C(gamma), -S(gamma), 0]   # type: ignore
             ])
             # fmt: on
         else:
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [S(gamma)/C(beta), 0,  C(gamma)/C(beta)], 
-                [C(gamma),         0, -S(gamma)],
-                [S(gamma)*T(beta), 1,  C(gamma)*T(beta)]
-                ])
+                [S(gamma)/C(beta), 0,  C(gamma)/C(beta)], # type: ignore
+                [C(gamma),         0, -S(gamma)],         # type: ignore
+                [S(gamma)*T(beta), 1,  C(gamma)*T(beta)]  # type: ignore
+                ]) # type: ignore
             # fmt: on
 
     elif representation == "eul":
@@ -2245,8 +2409,8 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [0, -S(phi), S(theta)*C(phi)], 
-                [0,  C(phi), S(phi)*S(theta)], 
+                [0, -S(phi), S(theta)*C(phi)], # type: ignore
+                [0,  C(phi), S(phi)*S(theta)], # type: ignore
                 [1,  0,      C(theta)]
                 ])
             # fmt: on
@@ -2254,9 +2418,9 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
             # angular velocity -> analytical rates
             # fmt: off
             A = np.array([
-                [-C(phi)/T(theta), -S(phi)/T(theta),  1], 
-                [-S(phi),           C(phi),           0], 
-                [ C(phi)/S(theta),  S(phi)/S(theta),  0]
+                [-C(phi)/T(theta), -S(phi)/T(theta),  1], # type: ignore
+                [-S(phi),           C(phi),           0], # type: ignore
+                [ C(phi)/S(theta),  S(phi)/S(theta),  0]  # type: ignore
                 ])
             # fmt: on
 
@@ -2280,6 +2444,8 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
                 - sk / 2
                 + sk @ sk / theta**2 * (1 - (theta / 2) * (S(theta) / (1 - C(theta))))
             )
+    else:
+        raise ValueError("unknown representation")
 
     if full:
         AA = np.eye(6)
@@ -2288,15 +2454,24 @@ def rotvelxform(𝚪:Union[ArrayLike3,SO3Array], inverse:bool=False, full:bool=F
     else:
         return A
 
-@overload
-def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, representation:str="rpy/xyz") -> R3x3:
+
+@overload  # pragma: no cover
+def rotvelxform_inv_dot(
+    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = False, representation: str = "rpy/xyz"
+) -> R3x3:
     ...
 
-@overload
-def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=True, representation:str="rpy/xyz") -> R6x6:
+
+@overload  # pragma: no cover
+def rotvelxform_inv_dot(
+    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = True, representation: str = "rpy/xyz"
+) -> R6x6:
     ...
 
-def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, representation:str="rpy/xyz") -> Union[R3x3,R6x6]:
+
+def rotvelxform_inv_dot(
+    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = False, representation: str = "rpy/xyz"
+) -> Union[R3x3, R6x6]:
     r"""
     Derivative of angular velocity transformation
 
@@ -2353,9 +2528,11 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
     if sym.issymbol(𝚪):
         C = sym.cos
         S = sym.sin
+        T = sym.tan
     else:
         C = math.cos
         S = math.sin
+        T = math.tan
 
     if representation in ("rpy/xyz", "arm"):
         # autogenerated by symbolic/angvelxform.ipynb
@@ -2382,7 +2559,7 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
                     -beta_dot * C(gamma) / C(beta) ** 2
                     + gamma_dot * S(gamma) * math.tan(beta),
                 ],
-            ]
+            ]  # type: ignore
         )
 
     elif representation in ("rpy/zyx", "vehicle"):
@@ -2407,7 +2584,7 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
                     + gamma_dot * C(gamma) * math.tan(beta),
                     0,
                 ],
-            ]
+            ]  # type: ignore
         )
 
     elif representation in ("rpy/yxz", "camera"):
@@ -2430,7 +2607,7 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
                     0,
                     beta_dot * C(gamma) / C(beta) ** 2 - gamma_dot * S(gamma) * T(beta),
                 ],
-            ]
+            ]  # type: ignore
         )
 
     elif representation == "eul":
@@ -2455,7 +2632,7 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
                     / S(theta),
                     0,
                 ],
-            ]
+            ]  # type: ignore
         )
 
     elif representation == "exp":
@@ -2478,22 +2655,39 @@ def rotvelxform_inv_dot(𝚪:ArrayLike3, 𝚪d:ArrayLike3, full:bool=False, repr
         raise ValueError("bad representation specified")
 
     if full:
-        return sp.linalg.block_diag(np.zeros((3, 3)), Ainv_dot)
+        Afull = np.zeros((6, 6))
+        Afull[3:, 3:] = Ainv_dot
+        return Afull
     else:
         return Ainv_dot
 
 
-def tr2adjoint(T:Union[SO3Array,SE3Array]) -> R6x6:
+@overload  # pragma: no cover
+def tr2adjoint(T: SO3Array) -> R3x3:
+    ...
+
+
+@overload  # pragma: no cover
+def tr2adjoint(T: SE3Array) -> R6x6:
+    ...
+
+
+def tr2adjoint(T):
     r"""
     Adjoint matrix
 
-    :param T: SO(3) or SE(3) matrix
-    :type T: ndarray(3,3) or ndarray(4,4)
+    :param T: SE(3) or SO(3) matrix
+    :type T: ndarray(4,4) or ndarray(3,3)
     :return: adjoint matrix
-    :rtype: ndarray(6,6)
+    :rtype: ndarray(6,6) or ndarray(3,3)
 
-    Computes an adjoint matrix that maps spatial velocity between two frames defined by
-    an SE(3) matrix.
+    Computes an adjoint matrix that maps the Lie algebra between frames.
+
+    .. math:
+
+        Ad(\mat{T}) \vec{X} X = \vee \left( \mat{T} \skew{\vec{X} \mat{T}^{-1} \right)
+
+    where :math:`\mat{T} \in \SE3`.
 
     ``tr2jac(T)`` is an adjoint matrix (6x6) that maps spatial velocity or
     differential motion between frame {B} to frame {A} which are attached to the
@@ -2507,7 +2701,7 @@ def tr2adjoint(T:Union[SO3Array,SE3Array]) -> R6x6:
         >>> tr2adjoint(T)
 
     :Reference:
-        - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+        - Robotics, Vision & Control for Python, Section 3, P. Corke, Springer 2023.
         - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>_
 
     :SymPy: supported
@@ -2517,12 +2711,7 @@ def tr2adjoint(T:Union[SO3Array,SE3Array]) -> R6x6:
     if T.shape == (3, 3):
         # SO(3) adjoint
         R = T
-        # fmt: off
-        return np.block([
-                    [R, Z],
-                    [Z, R]
-                ])
-        # fmt: on
+        return R
     elif T.shape == (4, 4):
         # SE(3) adjoint
         (R, t) = tr2rt(T)
@@ -2581,13 +2770,13 @@ def rodrigues(w: ArrayLike3, theta: Optional[float] = None) -> SO3Array:
 
 
 def trprint(
-    T:Union[SO3Array,SE3Array],
-    orient:str="rpy/zyx",
-    label:str='',
-    file:TextIO=sys.stdout,
-    fmt:str="{:.3g}",
-    degsym:bool=True,
-    unit:str="deg",
+    T: Union[SO3Array, SE3Array],
+    orient: str = "rpy/zyx",
+    label: str = "",
+    file: TextIO = sys.stdout,
+    fmt: str = "{:.3g}",
+    degsym: bool = True,
+    unit: str = "deg",
 ) -> str:
     """
      Compact display of SO(3) or SE(3) matrices
@@ -2656,7 +2845,7 @@ def trprint(
 
     s = ""
 
-    if label != '':
+    if label != "":
         s += "{:s}: ".format(label)
 
     # print the translational part if it exists
@@ -2675,7 +2864,7 @@ def trprint(
         if len(a) == 2:
             seq = a[1]
         else:
-            seq = None
+            seq = "zyx"
         angles = tr2rpy(T, order=seq, unit=unit)
         if degsym and unit == "deg":
             fmt += "\u00b0"
@@ -2711,462 +2900,535 @@ def _vec2s(fmt, v):
     return ", ".join([fmt.format(x) for x in v])
 
 
-def trplot(
-    T:Union[SO3Array,SE3Array],
-    color:str="blue",
-    frame:str='',
-    axislabel:bool=True,
-    axissubscript:bool=True,
-    textcolor:str='',
-    labels:Tuple[str,str,str]=("X", "Y", "Z"),
-    length:float=1,
-    style:str="arrow",
-    originsize:float=20,
-    origincolor:str='',
-    projection:str="ortho",
-    block:bool=False,
-    anaglyph:Optional[Union[bool,str,Tuple[str,float]]]=None,
-    wtl:Optional[float]=0.2,
-    width:Optional[float]=None,
-    ax:Optional[Any]=None,  # can't assume MPL has been imported
-    dims:Optional[Union[ArrayLike,None]]=None,
-    d2:Optional[float]=1.15,
-    flo:Optional[Tuple[float,float,float]]=(-0.05, -0.05, -0.05),
-    **kwargs,
-):
-    """
-    Plot a 3D coordinate frame
+try:
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
 
-    :param T: SE(3) or SO(3) matrix
-    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
+    _matplotlib_exists = True
+except ImportError:
+    _matplotlib_exists = False
 
-    :param color: color of the lines defining the frame
-    :type color: str or list(3) of str
-    :param textcolor: color of text labels for the frame, default ``color``
-    :type textcolor: str
-    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
-    :type frame: str
-    :param axislabel: display labels on axes, default True
-    :type axislabel: bool
-    :param axissubscript: display subscripts on axis labels, default True
-    :type axissubscript: bool
-    :param labels: labels for the axes, defaults to X, Y and Z
-    :type labels: 3-tuple of strings
-    :param length: length of coordinate frame axes, default 1
-    :type length: float or array_like(3)
-    :param style: axis style: 'arrow' [default], 'line', 'rviz' (Rviz style)
-    :type style: str
-    :param originsize: size of dot to draw at the origin, 0 for no dot (default 20)
-    :type originsize: int
-    :param origincolor: color of dot to draw at the origin, default is ``color``
-    :type origincolor: str
-    :param ax: the axes to plot into, defaults to current axes
-    :type ax: Axes3D reference
-    :param block: run the GUI main loop until all windows are closed, default True
-    :type block: bool
-    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
-        If dims is [min, max] those limits are applied to the x-, y- and z-axes.
-    :type dims: array_like(6) or array_like(2)
-    :param anaglyph: 3D anaglyph display, if True use use red-cyan glasses.  To
-    set the color pass a string like ``'gb'`` for green-blue glasses. To set the 
-    disparity (default 0.1) provide second argument in a tuple, eg. ``('rc', 0.2)``.  
-    Bigger disparity exagerates the 3D "pop out" effect.
-    :type anaglyph: bool, str or (str, float)
-    :param wtl: width-to-length ratio for arrows, default 0.2
-    :type wtl: float
-    :param projection: 3D projection: ortho [default] or persp
-    :type projection: str
-    :param width: width of lines, default 1
-    :type width: float
-    :param flo: frame label offset, a vector for frame label text string relative
-        to frame origin, default (-0.05, -0.05, -0.05)
-    :type flo: array_like(3)
-    :param d2: distance of frame axis label text from origin, default 1.15
-    :type d2: float
-    :return: axes containing the frame
-    :rtype: Axes3DSubplot
-    :raises ValueError: bad arguments
+if _matplotlib_exists:
 
-    Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the
-    current axes. If ``T`` is iterable then multiple frames will be drawn.
+    def trplot(
+        T: Union[SO3Array, SE3Array],
+        style: str = "arrow",
+        color: Union[str, Tuple[str, str, str], List[str]] = "blue",
+        frame: str = "",
+        axislabel: bool = True,
+        axissubscript: bool = True,
+        textcolor: str = "",
+        labels: Tuple[str, str, str] = ("X", "Y", "Z"),
+        length: float = 1,
+        originsize: float = 20,
+        origincolor: str = "",
+        projection: str = "ortho",
+        block: bool = False,
+        anaglyph: Optional[Union[bool, str, Tuple[str, float]]] = None,
+        wtl: float = 0.2,
+        width: Optional[float] = None,
+        ax: Optional[Axes3D] = None,
+        dims: Optional[ArrayLikePure] = None,
+        d2: float = 1.15,
+        flo: Tuple[float, float, float] = (-0.05, -0.05, -0.05),
+        **kwargs,
+    ):
+        """
+        Plot a 3D coordinate frame
 
-    The appearance of the coordinate frame depends on many parameters:
+        :param T: SE(3) or SO(3) matrix
+        :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
+        :param style: axis style: 'arrow' [default], 'line', 'rgb', 'rviz' (Rviz style)
+        :type style: str
 
-    - coordinate axes depend on:
-        - ``color`` of axes
-        - ``width`` of line
-        - ``length`` of line
-        - ``style`` which is one of:
-            - ``'arrow'`` [default], draw line with arrow head in ``color``
-            - ``'line'``, draw line with no arrow head in ``color``
-            - ``'rviz'``, draw line with no arrow head with color depending upon
-              axis, red for X, green for Y, blue for Z
-    - coordinate axis labels depend on:
-        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
-        - ``labels`` 3-list of alternative axis labels
-        - ``textcolor`` which defaults to ``color``
-        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
-          for each axis label
-    - coordinate frame label depends on:
-        - `frame` the label placed inside {} near the origin of the frame
-    - a dot at the origin
-        - ``originsize`` size of the dot, if zero no dot
-        - ``origincolor`` color of the dot, defaults to ``color``
+        :param color: color of the lines defining the frame
+        :type color: str or list(3) or tuple(3) of str
+        :param textcolor: color of text labels for the frame, default ``color``
+        :type textcolor: str
+        :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels
+        :type frame: str
+        :param axislabel: display labels on axes, default True
+        :type axislabel: bool
+        :param axissubscript: display subscripts on axis labels, default True
+        :type axissubscript: bool
+        :param labels: labels for the axes, defaults to X, Y and Z
+        :type labels: 3-tuple of strings
+        :param length: length of coordinate frame axes, default 1
+        :type length: float or array_like(3)
+        :param originsize: size of dot to draw at the origin, 0 for no dot (default 20)
+        :type originsize: int
+        :param origincolor: color of dot to draw at the origin, default is ``color``
+        :type origincolor: str
+        :param ax: the axes to plot into, defaults to current axes
+        :type ax: Axes3D reference
+        :param block: run the GUI main loop until all windows are closed, default True
+        :type block: bool
+        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,zmin, zmax].
+            If dims is [min, max] those limits are applied to the x-, y- and z-axes.
+        :type dims: array_like(6) or array_like(2)
+        :param anaglyph: 3D anaglyph display, if True use use red-cyan glasses.  To
+            set the color pass a string like ``'gb'`` for green-blue glasses. To set the
+            disparity (default 0.1) provide second argument in a tuple, eg. ``('rc', 0.2)``.
+            Bigger disparity exagerates the 3D "pop out" effect.
+        :type anaglyph: bool, str or (str, float)
+        :param wtl: width-to-length ratio for arrows, default 0.2
+        :type wtl: float
+        :param projection: 3D projection: ortho [default] or persp
+        :type projection: str
+        :param width: width of lines, default 1
+        :type width: float
+        :param flo: frame label offset, a vector for frame label text string relative
+            to frame origin, default (-0.05, -0.05, -0.05)
+        :type flo: array_like(3)
+        :param d2: distance of frame axis label text from origin, default 1.15
+        :type d2: float
+        :return: axes containing the frame
+        :rtype: Axes3DSubplot
+        :raises ValueError: bad arguments
 
-    Examples:
+        Adds a 3D coordinate frame represented by the SO(3) or SE(3) matrix to the
+        current axes. If ``T`` is iterable then multiple frames will be drawn.
 
-            trplot(T, frame='A')
-            trplot(T, frame='A', color='green')
-            trplot(T1, 'labels', 'UVW');
+        The appearance of the coordinate frame depends on many parameters:
 
-    .. note:: If ``axes`` is specified the plot is drawn there, otherwise:
-        - it will draw in the current figure (as given by ``gca()``)
-        - if no axes in the current figure, it will create a 3D axes
-        - if no current figure, it will create one, and a 3D axes
+        - coordinate axes depend on:
+            - ``color`` of axes
+            - ``width`` of line
+            - ``length`` of line
+            - ``style`` which is one of:
+                - ``'arrow'`` [default], draw line with arrow head in ``color``
+                - ``'line'``, draw line with no arrow head in ``color``
+                - ``'rgb'``, frame axes are lines with no arrow head and red for X, green
+                for Y, blue for Z; no origin dot
+                - ``'rviz'``, frame axes are thick lines with no arrow head and red for X,
+                green for Y, blue for Z; no origin dot
+        - coordinate axis labels depend on:
+            - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
+            - ``labels`` 3-list of alternative axis labels
+            - ``textcolor`` which defaults to ``color``
+            - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
+            for each axis label
+        - coordinate frame label depends on:
+            - `frame` the label placed inside {} near the origin of the frame
+        - a dot at the origin
+            - ``originsize`` size of the dot, if zero no dot
+            - ``origincolor`` color of the dot, defaults to ``color``
 
-    .. note:: The ``'rgb'`` style is a variant of the ``'line'`` style and
-        is somewhat RViz like.  The axes are colored red, green, blue; are
-        drawn thick (width=8) and have no arrows.
+        Examples::
 
-    .. note:: The ``anaglyph`` effect is induced by drawing two versions of the
-        frame in different colors: one that corresponds to lens over the left
-        eye and one to the lens over the right eye. The view for the right eye
-        is from a view point shifted in the positive x-direction.
+                trplot(T, frame='A')
+                trplot(T, frame='A', color='green')
+                trplot(T1, 'labels', 'UVW');
 
-    .. note:: The origin is normally indicated with a marker of the same color
-        as the frame.  The default size is 20. This can be disabled by setting
-        its size to zero by ``originsize=0``.  For ``'rgb'`` style the default is 0
-        but it can be set explicitly, and the color is as per the ``color``
-        option.
+        .. plot::
 
-    :SymPy: not supported
+            import matplotlib.pyplot as plt
+            from spatialmath.base import trplot, transl, rpy2tr
+            fig = plt.figure(figsize=(10,10))
+            text_opts = dict(bbox=dict(boxstyle="round",
+                fc="w",
+                alpha=0.9),
+                zorder=20,
+                family='monospace',
+                fontsize=8,
+                verticalalignment='top')
+            T = transl(2, 1, 1)@ rpy2tr(0, 0, 0)
 
-    :seealso: :func:`tranimate` :func:`plotvol3` :func:`axes_logic`
-    """
+            ax = fig.add_subplot(331, projection='3d')
+            trplot(T, ax=ax, dims=[0,4])
+            ax.text(0.5, 0.5, 4.5, "trplot(T)", **text_opts)
+            ax = fig.add_subplot(332, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], originsize=0)
+            ax.text(0.5, 0.5, 4.5, "trplot(T, originsize=0)", **text_opts)
+            ax = fig.add_subplot(333, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], style='line')
+            ax.text(0.5, 0.5, 4.5, "trplot(T, style='line')", **text_opts)
+            ax = fig.add_subplot(334, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], axislabel=False)
+            ax.text(0.5, 0.5, 4.5, "trplot(T, axislabel=False)", **text_opts)
+            ax = fig.add_subplot(335, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], width=3)
+            ax.text(0.5, 0.5, 4.5, "trplot(T, width=3)", **text_opts)
+            ax = fig.add_subplot(336, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], frame='B')
+            ax.text(0.5, 0.5, 4.5, "trplot(T, frame='B')", **text_opts)
+            ax = fig.add_subplot(337, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], color='r', textcolor='k')
+            ax.text(0.5, 0.5, 4.5, "trplot(T, color='r', textcolor='k')", **text_opts)
+            ax = fig.add_subplot(338, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], labels=("u", "v", "w"))
+            ax.text(0.5, 0.5, 4.5, "trplot(T, labels=('u', 'v', 'w'))", **text_opts)
+            ax = fig.add_subplot(339, projection='3d')
+            trplot(T, ax=ax, dims=[0,4], style='rviz')
+            ax.text(0.5, 0.5, 4.5, "trplot(T, style='rviz')", **text_opts)
 
-    # TODO
-    # animation
-    # anaglyph
 
-    if dims is None:
-        ax = axes_logic(ax, 3, projection)
-    else:
-        ax = plotvol3(dims, ax=ax)
+        .. note:: If ``axes`` is specified the plot is drawn there, otherwise:
+            - it will draw in the current figure (as given by ``gca()``)
+            - if no axes in the current figure, it will create a 3D axes
+            - if no current figure, it will create one, and a 3D axes
 
-    try:
-        if not ax.get_xlabel():
-            ax.set_xlabel(labels[0])
-        if not ax.get_ylabel():
-            ax.set_ylabel(labels[1])
-        if not ax.get_zlabel():
-            ax.set_zlabel(labels[2])
-    except AttributeError:
-        pass  # if axes are an Animate object
+        .. note:: ``width`` can be set in the ``rgb`` or ``rviz`` styles to override the
+            defaults which are 1 and 8 respectively.
 
-    if anaglyph is not None:
-        # enforce perspective projection
-        ax.set_proj_type("persp")
+        .. note:: The ``anaglyph`` effect is induced by drawing two versions of the
+            frame in different colors: one that corresponds to lens over the left
+            eye and one to the lens over the right eye. The view for the right eye
+            is from a view point shifted in the positive x-direction.
 
-        # collect all the arguments to use for left and right views
-        args = {
-            "ax": ax,
-            "frame": frame,
-            "length": length,
-            "style": style,
-            "wtl": wtl,
-            "flo": flo,
-            "d2": d2,
-        }
-        args = {**args, **kwargs}
+        .. note:: The origin is normally indicated with a marker of the same color
+            as the frame.  The default size is 20. This can be disabled by setting
+            its size to zero by ``originsize=0``.  For ``'rgb'`` style the default is 0
+            but it can be set explicitly, and the color is as per the ``color``
+            option.
 
-        # unpack the anaglyph parameters
-        shift = 0.1
-        if anaglyph is True:
-            colors = "rc"
-        elif isinstance(anaglyph, str):
-            colors = anaglyph
-        elif isinstance(anaglyph, tuple):
-            colors = anaglyph[0]
-            shift = anaglyph[1]
+        :SymPy: not supported
+
+        :seealso: :func:`tranimate` :func:`plotvol3` :func:`axes_logic`
+        """
+
+        # TODO
+        # animation
+        # anaglyph
+
+        if dims is None:
+            ax = axes_logic(ax, 3, projection)
         else:
-            raise ValueError('bad anaglyph value')
+            ax = plotvol3(dims, ax=ax)
 
-        # the left eye sees the normal trplot
-        trplot(T, color=colors[0], **args)
+        try:
+            if not ax.get_xlabel():
+                ax.set_xlabel(labels[0])
+            if not ax.get_ylabel():
+                ax.set_ylabel(labels[1])
+            if not ax.get_zlabel():
+                ax.set_zlabel(labels[2])
+        except AttributeError:
+            pass  # if axes are an Animate object
 
-        # the right eye sees a from a viewpoint in shifted in the X direction
-        if isrot(T):
-            T = r2t(T)
-        trplot(transl(shift, 0, 0) @ T, color=colors[1], **args)
+        if anaglyph is not None:
+            # enforce perspective projection
+            ax.set_proj_type("persp")
 
-        return
+            # collect all the arguments to use for left and right views
+            args = {
+                "ax": ax,
+                "frame": frame,
+                "length": length,
+                "style": style,
+                "wtl": wtl,
+                "flo": flo,
+                "d2": d2,
+            }
+            args = {**args, **kwargs}
 
-    if style == "rviz":
-        if originsize is None:
-            originsize = 0
-        color = "rgb"
-        if width is None:
-            width = 8
-        style = "line"
+            # unpack the anaglyph parameters
+            shift = 0.1
+            if anaglyph is True:
+                colors = "rc"
+            elif isinstance(anaglyph, str):
+                colors = anaglyph
+            elif isinstance(anaglyph, tuple):
+                colors = anaglyph[0]
+                shift = anaglyph[1]
+            else:
+                raise ValueError("bad anaglyph value")
 
-    if isinstance(color, str):
-        if color == "rgb":
-            color = ("red", "green", "blue")
+            # the left eye sees the normal trplot
+            trplot(T, color=colors[0], **args)
+
+            # the right eye sees a from a viewpoint in shifted in the X direction
+            if isrot(T):
+                T = r2t(cast(SO3Array, T))
+            trplot(transl(shift, 0, 0) @ T, color=colors[1], **args)
+
+            return
+
+        if style == "rviz":
+            if originsize is None:
+                originsize = 0
+            color = "rgb"
+            if width is None:
+                width = 8
+            style = "line"
+        elif style == "rgb":
+            if originsize is None:
+                originsize = 0
+            color = "rgb"
+            if width is None:
+                width = 1
+            style = "arrow"
+
+        if isinstance(color, str):
+            if color == "rgb":
+                color = ("red", "green", "blue")
+            else:
+                color = (color,) * 3
+
+        # check input types
+        if isrot(T, check=True):
+            T = r2t(cast(SO3Array, T))
+        elif ishom(T, check=True):
+            pass
         else:
-            color = (color,) * 3
+            # assume it is an iterable
+            for Tk in T:
+                trplot(
+                    Tk,
+                    ax=ax,
+                    block=block,
+                    dims=dims,
+                    color=color,
+                    frame=frame,
+                    textcolor=textcolor,
+                    labels=labels,
+                    length=length,
+                    style=style,
+                    projection=projection,
+                    originsize=originsize,
+                    origincolor=origincolor,
+                    wtl=wtl,
+                    width=width,
+                    d2=d2,
+                    flo=flo,
+                    anaglyph=anaglyph,
+                    axislabel=axislabel,
+                    **kwargs,
+                )
+            return
 
-    # check input types
-    if isrot(T, check=True):
-        T = r2t(T)
-    elif ishom(T, check=True):
-        pass
-    else:
-        # assume it is an iterable
-        for Tk in T:
-            trplot(
-                Tk,
-                ax=ax,
-                block=block,
-                dims=dims,
-                color=color,
-                frame=frame,
-                textcolor=textcolor,
-                labels=labels,
-                length=length,
-                style=style,
-                projection=projection,
-                originsize=originsize,
-                origincolor=origincolor,
-                wtl=wtl,
-                width=width,
-                d2=d2,
-                flo=flo,
-                anaglyph=anaglyph,
-                axislabel=axislabel,
-                **kwargs,
+        if dims is not None:
+            dims = tuple(dims)
+            if len(dims) == 2:
+                dims = dims * 3
+            ax.set_xlim(left=dims[0], right=dims[1])
+            ax.set_ylim(bottom=dims[2], top=dims[3])
+            ax.set_zlim(bottom=dims[4], top=dims[5])
+
+        # create unit vectors in homogeneous form
+        if isinstance(length, Iterable):
+            axlength = getvector(length, 3)
+        else:
+            axlength = (length,) * 3
+
+        o = T @ np.array([0, 0, 0, 1])
+        x = T @ np.array([axlength[0], 0, 0, 1])
+        y = T @ np.array([0, axlength[1], 0, 1])
+        z = T @ np.array([0, 0, axlength[2], 1])
+
+        # draw the axes
+
+        if style == "arrow":
+            ax.quiver(
+                o[0],
+                o[1],
+                o[2],
+                x[0] - o[0],
+                x[1] - o[1],
+                x[2] - o[2],
+                arrow_length_ratio=wtl,
+                linewidth=width,
+                facecolor=color[0],
+                edgecolor=color[1],
             )
-        return
+            ax.quiver(
+                o[0],
+                o[1],
+                o[2],
+                y[0] - o[0],
+                y[1] - o[1],
+                y[2] - o[2],
+                arrow_length_ratio=wtl,
+                linewidth=width,
+                facecolor=color[1],
+                edgecolor=color[1],
+            )
+            ax.quiver(
+                o[0],
+                o[1],
+                o[2],
+                z[0] - o[0],
+                z[1] - o[1],
+                z[2] - o[2],
+                arrow_length_ratio=wtl,
+                linewidth=width,
+                facecolor=color[2],
+                edgecolor=color[2],
+            )
 
-    if dims is not None:
-        if len(dims) == 2:
-            dims = dims * 3
-        ax.set_xlim(dims[0:2])
-        ax.set_ylim(dims[2:4])
-        ax.set_zlim(dims[4:6])
+            # plot some points
+            #  invisible point at the end of each arrow to allow auto-scaling to work
+            ax.scatter(
+                xs=[o[0], x[0], y[0], z[0]],
+                ys=[o[1], x[1], y[1], z[1]],
+                zs=[o[2], x[2], y[2], z[2]],
+                s=[0, 0, 0, 0],
+            )
+        elif style == "line":
+            ax.plot(
+                [o[0], x[0]],
+                [o[1], x[1]],
+                [o[2], x[2]],
+                color=color[0],
+                linewidth=width,
+            )
+            ax.plot(
+                [o[0], y[0]],
+                [o[1], y[1]],
+                [o[2], y[2]],
+                color=color[1],
+                linewidth=width,
+            )
+            ax.plot(
+                [o[0], z[0]],
+                [o[1], z[1]],
+                [o[2], z[2]],
+                color=color[2],
+                linewidth=width,
+            )
 
-    # create unit vectors in homogeneous form
-    if not isinstance(length, Iterable):
-        length = (length,) * 3
-
-    o = T @ np.array([0, 0, 0, 1])
-    x = T @ np.array([length[0], 0, 0, 1])
-    y = T @ np.array([0, length[1], 0, 1])
-    z = T @ np.array([0, 0, length[2], 1])
-
-    # draw the axes
-
-    if style == "arrow":
-        ax.quiver(
-            o[0],
-            o[1],
-            o[2],
-            x[0] - o[0],
-            x[1] - o[1],
-            x[2] - o[2],
-            arrow_length_ratio=wtl,
-            linewidth=width,
-            facecolor=color[0],
-            edgecolor=color[1],
-        )
-        ax.quiver(
-            o[0],
-            o[1],
-            o[2],
-            y[0] - o[0],
-            y[1] - o[1],
-            y[2] - o[2],
-            arrow_length_ratio=wtl,
-            linewidth=width,
-            facecolor=color[1],
-            edgecolor=color[1],
-        )
-        ax.quiver(
-            o[0],
-            o[1],
-            o[2],
-            z[0] - o[0],
-            z[1] - o[1],
-            z[2] - o[2],
-            arrow_length_ratio=wtl,
-            linewidth=width,
-            facecolor=color[2],
-            edgecolor=color[2],
-        )
-
-        # plot some points
-        #  invisible point at the end of each arrow to allow auto-scaling to work
-        ax.scatter(
-            xs=[o[0], x[0], y[0], z[0]],
-            ys=[o[1], x[1], y[1], z[1]],
-            zs=[o[2], x[2], y[2], z[2]],
-            s=[0, 0, 0, 0],
-        )
-    elif style == "line":
-        ax.plot(
-            [o[0], x[0]], [o[1], x[1]], [o[2], x[2]], color=color[0], linewidth=width
-        )
-        ax.plot(
-            [o[0], y[0]], [o[1], y[1]], [o[2], y[2]], color=color[1], linewidth=width
-        )
-        ax.plot(
-            [o[0], z[0]], [o[1], z[1]], [o[2], z[2]], color=color[2], linewidth=width
-        )
-
-    if textcolor != '':
-        textcolor = color[0]
-    else:
-        textcolor = "blue"
-    if origincolor != '':
-        origincolor = color[0]
-    else:
-        origincolor = "black"
-
-    # label the frame
-    if frame != '':
-        if textcolor is None:
+        if textcolor == "":
             textcolor = color[0]
-        else:
-            textcolor = "blue"
-        if origincolor is None:
+
+        if origincolor != "":
             origincolor = color[0]
         else:
             origincolor = "black"
 
-        o1 = T @ np.array(np.r_[flo, 1])
-        ax.text(
-            o1[0],
-            o1[1],
-            o1[2],
-            r"$\{" + frame + r"\}$",
-            color=textcolor,
-            verticalalignment="top",
-            horizontalalignment="center",
-        )
+        # label the frame
+        if frame != "":
+            if textcolor is None:
+                textcolor = color[0]
+            else:
+                textcolor = "blue"
+            if origincolor is None:
+                origincolor = color[0]
+            else:
+                origincolor = "black"
 
-    if axislabel:
-        # add the labels to each axis
+            o1 = T @ np.array(np.r_[flo, 1])
+            ax.text(
+                o1[0],
+                o1[1],
+                o1[2],
+                r"$\{" + frame + r"\}$",
+                color=textcolor,
+                verticalalignment="top",
+                horizontalalignment="center",
+            )
 
-        x = (x - o) * d2 + o
-        y = (y - o) * d2 + o
-        z = (z - o) * d2 + o
+        if axislabel:
+            # add the labels to each axis
 
-        if frame is None or not axissubscript:
-            format = "${:s}$"
-        else:
-            format = "${:s}_{{{:s}}}$"
+            x = (x - o) * d2 + o
+            y = (y - o) * d2 + o
+            z = (z - o) * d2 + o
 
-        ax.text(
-            x[0],
-            x[1],
-            x[2],
-            format.format(labels[0], frame),
-            color=textcolor,
-            horizontalalignment="center",
-            verticalalignment="center",
-        )
-        ax.text(
-            y[0],
-            y[1],
-            y[2],
-            format.format(labels[1], frame),
-            color=textcolor,
-            horizontalalignment="center",
-            verticalalignment="center",
-        )
-        ax.text(
-            z[0],
-            z[1],
-            z[2],
-            format.format(labels[2], frame),
-            color=textcolor,
-            horizontalalignment="center",
-            verticalalignment="center",
-        )
+            if frame is None or not axissubscript:
+                format = "${:s}$"
+            else:
+                format = "${:s}_{{{:s}}}$"
 
-    if originsize > 0:
-        ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=origincolor, s=originsize)
+            ax.text(
+                x[0],
+                x[1],
+                x[2],
+                format.format(labels[0], frame),
+                color=textcolor,
+                horizontalalignment="center",
+                verticalalignment="center",
+            )
+            ax.text(
+                y[0],
+                y[1],
+                y[2],
+                format.format(labels[1], frame),
+                color=textcolor,
+                horizontalalignment="center",
+                verticalalignment="center",
+            )
+            ax.text(
+                z[0],
+                z[1],
+                z[2],
+                format.format(labels[2], frame),
+                color=textcolor,
+                horizontalalignment="center",
+                verticalalignment="center",
+            )
 
-    if block:
-        # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
-        import matplotlib.pyplot as plt
+        if originsize > 0:
+            ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=origincolor, s=originsize)
 
-        # TODO move blocking into graphics
-        plt.show(block=block)
-    return ax
+        if block:
+            # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
+            import matplotlib.pyplot as plt
 
+            # TODO move blocking into graphics
+            plt.show(block=block)
+        return ax
 
-def tranimate(T:Union[SO3Array,SE3Array], **kwargs) -> None:
-    """
-    Animate a 3D coordinate frame
+    def tranimate(T: Union[SO3Array, SE3Array], **kwargs) -> str:
+        """
+        Animate a 3D coordinate frame
 
-    :param T: SE(3) or SO(3) matrix
-    :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
-    :param nframes: number of steps in the animation [default 100]
-    :type nframes: int
-    :param repeat: animate in endless loop [default False]
-    :type repeat: bool
-    :param interval: number of milliseconds between frames [default 50]
-    :type interval: int
-    :param wait: wait until animation is complete, default False
-    :type wait: bool
-    :param movie: name of file to write MP4 movie into
-    :type movie: str
-    :param **kwargs: arguments passed to ``trplot``
+        :param T: SE(3) or SO(3) matrix
+        :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
+        :param nframes: number of steps in the animation [default 100]
+        :type nframes: int
+        :param repeat: animate in endless loop [default False]
+        :type repeat: bool
+        :param interval: number of milliseconds between frames [default 50]
+        :type interval: int
+        :param wait: wait until animation is complete, default False
+        :type wait: bool
+        :param movie: name of file to write MP4 movie into
+        :type movie: str
+        :param **kwargs: arguments passed to ``trplot``
 
-    - ``tranimate(T)`` where ``T`` is an SO(3) or SE(3) matrix, animates a 3D
-      coordinate frame moving from the world frame to the frame ``T`` in
-      ``nsteps``.
+        - ``tranimate(T)`` where ``T`` is an SO(3) or SE(3) matrix, animates a 3D
+        coordinate frame moving from the world frame to the frame ``T`` in
+        ``nsteps``.
 
-    - ``tranimate(I)`` where ``I`` is an iterable or generator, animates a 3D
-      coordinate frame representing the pose of each element in the sequence of
-      SO(3) or SE(3) matrices.
+        - ``tranimate(I)`` where ``I`` is an iterable or generator, animates a 3D
+        coordinate frame representing the pose of each element in the sequence of
+        SO(3) or SE(3) matrices.
 
-    Examples:
+        Examples:
 
-            >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
-            >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
+                >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5])
+                >>> tranimate(transl(1,2,3)@trotx(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
 
-    .. note:: For Jupyter this works with the ``notebook`` and ``TkAgg``
-        backends.
+        .. note:: For Jupyter this works with the ``notebook`` and ``TkAgg``
+            backends.
 
-    .. note:: The animation occurs in the background after ``tranimate`` has
-        returned. If ``block=True`` this blocks after the animation has completed.
+        .. note:: The animation occurs in the background after ``tranimate`` has
+            returned. If ``block=True`` this blocks after the animation has completed.
 
-    .. note:: When saving animation to a file the animation does not appear
-        on screen.  A ``StopIteration`` exception may occur, this seems to
-        be a matplotlib bug #19599
+        .. note:: When saving animation to a file the animation does not appear
+            on screen.  A ``StopIteration`` exception may occur, this seems to
+            be a matplotlib bug #19599
 
-    :SymPy: not supported
+        :SymPy: not supported
 
-    :seealso: `trplot`, `plotvol3`
-    """
+        :seealso: `trplot`, `plotvol3`
+        """
 
-    kwargs["block"] = kwargs.get("block", False)
+        kwargs["block"] = kwargs.get("block", False)
 
-    anim = Animate(**kwargs)
-    try:
-        del kwargs["dims"]
-    except KeyError:
-        pass
+        anim = Animate(**kwargs)
+        try:
+            del kwargs["dims"]
+        except KeyError:
+            pass
 
-    anim.trplot(T, **kwargs)
-    return anim.run(**kwargs)
+        anim.trplot(T, **kwargs)
+        return anim.run(**kwargs)
 
-    # plt.show(block=block)
+        # plt.show(block=block)
 
 
 if __name__ == "__main__":  # pragma: no cover
-
     # import sympy
     # from spatialmath.base.symbolic import *
 

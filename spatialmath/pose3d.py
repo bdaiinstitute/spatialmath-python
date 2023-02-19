@@ -20,29 +20,58 @@ To use::
     
 .. image:: figs/pose-values.png
 """
+from __future__ import annotations
 
 # pylint: disable=invalid-name
 
 import numpy as np
 
 from spatialmath import base
+from spatialmath.base.types import *
 from spatialmath.baseposematrix import BasePoseMatrix
+from spatialmath.pose2d import SE2
+
+from spatialmath.twist import Twist3
 
 
 # ============================== SO3 =====================================#
 
 
-class SO3(BasePoseMatrix):  
+class SO3(BasePoseMatrix):
     """
-    SO(3) matrix class
+       SO(3) matrix class
 
-    This subclass represents rotations in 3D space.  Internally it is a 3x3 
-    orthogonal matrix belonging to the group SO(3).
+       This subclass represents rotations in 3D space.  Internally it is a 3x3
+       orthogonal matrix belonging to the group SO(3).
 
- .. inheritance-diagram:: spatialmath.pose3d.SO3
-    :top-classes: collections.UserList
-    :parts: 1
+    .. inheritance-diagram:: spatialmath.pose3d.SO3
+       :top-classes: collections.UserList
+       :parts: 1
     """
+
+    @overload
+    def __init__(self):
+        ...
+
+    @overload
+    def __init__(self, arg: SO3, *, check=True):
+        ...
+
+    @overload
+    def __init__(self, arg: SE3, *, check=True):
+        ...
+
+    @overload
+    def __init__(self, arg: SO3Array, *, check=True):
+        ...
+
+    @overload
+    def __init__(self, arg: List[SO3Array], *, check=True):
+        ...
+
+    @overload
+    def __init__(self, arg: List[Union[SO3, SO3Array]], *, check=True):
+        ...
 
     def __init__(self, arg=None, *, check=True):
         """
@@ -67,19 +96,20 @@ class SO3(BasePoseMatrix):
         :SymPy: supported
         """
         super().__init__()
-        
+
         if isinstance(arg, SE3):
             self.data = [base.t2r(x) for x in arg.data]
 
         elif not super().arghandler(arg, check=check):
-            raise ValueError('bad argument to constructor')
+            raise ValueError("bad argument to constructor")
 
     @staticmethod
-    def _identity():
+    def _identity() -> R3x3:
         return np.eye(3)
+
     # ------------------------------------------------------------------------ #
     @property
-    def shape(self):
+    def shape(self) -> Tuple[int, int]:
         """
         Shape of the object's interal matrix representation
 
@@ -91,17 +121,17 @@ class SO3(BasePoseMatrix):
         return (3, 3)
 
     @property
-    def R(self):
+    def R(self) -> SO3Array:
         """
         SO(3) or SE(3) as rotation matrix
 
         :return: rotational component
-        :rtype: numpy.ndarray, shape=(3,3)
+        :rtype: ndarray(3,3)
 
         ``x.R`` is the rotation matrix component of ``x`` as an array with
         shape (3,3). If ``len(x) > 1``, return an array with shape=(N,3,3).
 
-        .. warning:: The i'th rotation matrix is ``x[i,:,:]`` or simply 
+        .. warning:: The i'th rotation matrix is ``x[i,:,:]`` or simply
             ``x[i]``. This is different to the MATLAB version where the i'th
             rotation matrix is ``x(:,:,i)``.
 
@@ -116,55 +146,61 @@ class SO3(BasePoseMatrix):
         :SymPy: supported
         """
         if len(self) == 1:
-            return self.A[:3, :3]
+            return self.A[:3, :3]  # type: ignore
         else:
-            return np.array([x[:3, :3] for x in self.A])
+            return np.array([x[:3, :3] for x in self.A])  # type: ignore
 
     @property
-    def n(self):
+    def n(self) -> R3:
         """
         Normal vector of SO(3) or SE(3)
 
         :return: normal vector
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3)
 
         This is the first column of the rotation submatrix, sometimes called the
         *normal vector*.  It is parallel to the x-axis of the frame defined by
         this pose.
         """
-        return self.A[:3, 0]
+        if len(self) != 1:
+            raise ValueError("can only determine n-vector for singleton pose")
+        return self.A[:3, 0]  # type: ignore
 
     @property
-    def o(self):
+    def o(self) -> R3:
         """
         Orientation vector of SO(3) or SE(3)
 
         :return: orientation vector
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3)
 
         This is the second column of the rotation submatrix, sometimes called
         the *orientation vector*.  It is parallel to the y-axis of the frame
         defined by this pose.
         """
-        return self.A[:3, 1]
+        if len(self) != 1:
+            raise ValueError("can only determine o-vector for singleton pose")
+        return self.A[:3, 1]  # type: ignore
 
     @property
-    def a(self):
+    def a(self) -> R3:
         """
         Approach vector of SO(3) or SE(3)
 
         :return: approach vector
-        :rtype: numpy.ndarray, shape=(3,)
+        :rtype: ndarray(3)
 
         This is the third column of the rotation submatrix, sometimes called the
         *approach vector*.  It is parallel to the z-axis of the frame defined by
         this pose.
         """
-        return self.A[:3, 2]
+        if len(self) != 1:
+            raise ValueError("can only determine a-vector for singleton pose")
+        return self.A[:3, 2]  # type: ignore
 
     # ------------------------------------------------------------------------ #
 
-    def inv(self):
+    def inv(self) -> Self:
         """
         Inverse of SO(3)
 
@@ -176,11 +212,11 @@ class SO3(BasePoseMatrix):
         transpose.
         """
         if len(self) == 1:
-            return SO3(self.A.T, check=False)
+            return SO3(self.A.T, check=False)  # type: ignore
         else:
             return SO3([x.T for x in self.A], check=False)
 
-    def eul(self, unit='rad', flip=False):
+    def eul(self, unit: str = "rad", flip: bool = False) -> Union[R3, RNx3]:
         r"""
         SO(3) or SE(3) as Euler angles
 
@@ -202,11 +238,11 @@ class SO3(BasePoseMatrix):
         :SymPy: not supported
         """
         if len(self) == 1:
-            return base.tr2eul(self.A, unit=unit, flip=flip)
+            return base.tr2eul(self.A, unit=unit, flip=flip)  # type: ignore
         else:
             return np.array([base.tr2eul(x, unit=unit, flip=flip) for x in self.A])
 
-    def rpy(self, unit='rad', order='zyx'):
+    def rpy(self, unit: str = "rad", order: str = "zyx") -> Union[R3, RNx3]:
         """
         SO(3) or SE(3) as roll-pitch-yaw angles
 
@@ -240,11 +276,11 @@ class SO3(BasePoseMatrix):
         :SymPy: not supported
         """
         if len(self) == 1:
-            return base.tr2rpy(self.A, unit=unit, order=order)
+            return base.tr2rpy(self.A, unit=unit, order=order)  # type: ignore
         else:
             return np.array([base.tr2rpy(x, unit=unit, order=order) for x in self.A])
 
-    def angvec(self, unit='rad'):
+    def angvec(self, unit: str = "rad") -> Tuple[float, R3]:
         r"""
         SO(3) or SE(3) as angle and rotation vector
 
@@ -253,9 +289,9 @@ class SO3(BasePoseMatrix):
         :param check: check that rotation matrix is valid
         :type check: bool
         :return: :math:`(\theta, {\bf v})`
-        :rtype: float, numpy.ndarray, shape=(3,)
+        :rtype: float or ndarray(3)
 
-        ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation 
+        ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation
         angle and a rotation axis which is equivalent to the rotation of
         the unit quaternion ``q``.
 
@@ -279,7 +315,7 @@ class SO3(BasePoseMatrix):
     # ------------------------------------------------------------------------ #
 
     @staticmethod
-    def isvalid(x, check=True):
+    def isvalid(x: NDArray, check: bool = True) -> bool:
         """
         Test if matrix is valid SO(3)
 
@@ -296,7 +332,7 @@ class SO3(BasePoseMatrix):
     # ---------------- variant constructors ---------------------------------- #
 
     @classmethod
-    def Rx(cls, theta, unit='rad'):
+    def Rx(cls, theta: float, unit: str = "rad") -> Self:
         """
         Construct a new SO(3) from X-axis rotation
 
@@ -323,10 +359,12 @@ class SO3(BasePoseMatrix):
             >>> x[7]
 
         """
-        return cls([base.rotx(x, unit=unit) for x in base.getvector(theta)], check=False)
+        return cls(
+            [base.rotx(x, unit=unit) for x in base.getvector(theta)], check=False
+        )
 
     @classmethod
-    def Ry(cls, theta, unit='rad'):
+    def Ry(cls, theta, unit: str = "rad") -> Self:
         """
         Construct a new SO(3) from Y-axis rotation
 
@@ -353,10 +391,12 @@ class SO3(BasePoseMatrix):
             >>> x[7]
 
         """
-        return cls([base.roty(x, unit=unit) for x in base.getvector(theta)], check=False)
+        return cls(
+            [base.roty(x, unit=unit) for x in base.getvector(theta)], check=False
+        )
 
     @classmethod
-    def Rz(cls, theta, unit='rad'):
+    def Rz(cls, theta, unit: str = "rad") -> Self:
         """
         Construct a new SO(3) from Z-axis rotation
 
@@ -383,10 +423,12 @@ class SO3(BasePoseMatrix):
             >>> x[7]
 
         """
-        return cls([base.rotz(x, unit=unit) for x in base.getvector(theta)], check=False)
+        return cls(
+            [base.rotz(x, unit=unit) for x in base.getvector(theta)], check=False
+        )
 
     @classmethod
-    def Rand(cls, N=1):
+    def Rand(cls, N: int = 1) -> Self:
         """
         Construct a new SO(3) from random rotation
 
@@ -410,13 +452,23 @@ class SO3(BasePoseMatrix):
         """
         return cls([base.q2r(base.qrand()) for _ in range(0, N)], check=False)
 
+    @overload
     @classmethod
-    def Eul(cls, *angles, unit='rad'):
+    def Eul(cls, *angles: float, unit: str = "rad") -> Self:
+        ...
+
+    @overload
+    @classmethod
+    def Eul(cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad") -> Self:
+        ...
+
+    @classmethod
+    def Eul(cls, *angles, unit: str = "rad") -> Self:
         r"""
         Construct a new SO(3) from Euler angles
 
         :param 𝚪: Euler angles
-        :type 𝚪: array_like or numpy.ndarray with shape=(N,3)
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: SO(3) rotation
@@ -434,7 +486,7 @@ class SO3(BasePoseMatrix):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SO3
             >>> SO3.Eul(0.1, 0.2, 0.3)
             >>> SO3.Eul([0.1, 0.2, 0.3])
@@ -450,8 +502,25 @@ class SO3(BasePoseMatrix):
         else:
             return cls([base.eul2r(a, unit=unit) for a in angles], check=False)
 
+    @overload
     @classmethod
-    def RPY(cls, *angles, unit='rad', order='zyx', ):
+    def RPY(
+        cls,
+        *angles: float,
+        unit: str = "rad",
+        order="zyx",
+    ) -> Self:
+        ...
+
+    @overload
+    @classmethod
+    def RPY(
+        cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad", order="zyx"
+    ) -> Self:
+        ...
+
+    @classmethod
+    def RPY(cls, *angles, unit="rad", order="zyx"):
         r"""
         Construct a new SO(3) from roll-pitch-yaw angles
 
@@ -487,7 +556,7 @@ class SO3(BasePoseMatrix):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SO3
             >>> SO3.RPY(0.1, 0.2, 0.3)
             >>> SO3.RPY([0.1, 0.2, 0.3])
@@ -506,10 +575,12 @@ class SO3(BasePoseMatrix):
         if base.isvector(angles, 3):
             return cls(base.rpy2r(angles, unit=unit, order=order), check=False)
         else:
-            return cls([base.rpy2r(a, unit=unit, order=order) for a in angles], check=False)
+            return cls(
+                [base.rpy2r(a, unit=unit, order=order) for a in angles], check=False
+            )
 
     @classmethod
-    def OA(cls, o, a):
+    def OA(cls, o: ArrayLike3, a: ArrayLike3) -> Self:
         """
         Construct a new SO(3) from two vectors
 
@@ -537,7 +608,12 @@ class SO3(BasePoseMatrix):
         return cls(base.oa2r(o, a), check=False)
 
     @classmethod
-    def TwoVectors(cls, x=None, y=None, z=None):
+    def TwoVectors(
+        cls,
+        x: Optional[Union[str, ArrayLike3]] = None,
+        y: Optional[Union[str, ArrayLike3]] = None,
+        z: Optional[Union[str, ArrayLike3]] = None,
+    ) -> Self:
         """
         Construct a new SO(3) from any two vectors
 
@@ -549,7 +625,7 @@ class SO3(BasePoseMatrix):
         :type z: str, array_like(3), optional
 
         Create a rotation by defining the direction of two of the new
-        axes in terms of the old axes.  Axes are denoted by strings ``"x"``, 
+        axes in terms of the old axes.  Axes are denoted by strings ``"x"``,
         ``"y"``, ``"z"``, ``"-x"``, ``"-y"``, ``"-z"``.
 
         The directions can also be specified by 3-element vectors, but these
@@ -558,22 +634,23 @@ class SO3(BasePoseMatrix):
         To create a rotation where the new frame has its x-axis in -z-direction
         of the previous frame, and its z-axis in the x-direction of the previous
         frame is::
-        
+
             >>> SO3.TwoVectors(x='-z', z='x')
         """
+
         def vval(v):
             if isinstance(v, str):
                 sign = 1
-                if v[0] == '-':
+                if v[0] == "-":
                     sign = -1
-                    v = v[1:] # skip sign char
-                elif v[0] == '+':
-                    v = v[1:] # skip sign char
-                if v[0] == 'x':
+                    v = v[1:]  # skip sign char
+                elif v[0] == "+":
+                    v = v[1:]  # skip sign char
+                if v[0] == "x":
                     v = [sign, 0, 0]
-                elif v[0] == 'y':
+                elif v[0] == "y":
                     v = [0, sign, 0]
-                elif v[0] == 'z':
+                elif v[0] == "z":
                     v = [0, 0, sign]
                 return np.r_[v]
             else:
@@ -600,7 +677,7 @@ class SO3(BasePoseMatrix):
         return cls(np.c_[x, y, z], check=False)
 
     @classmethod
-    def AngleAxis(cls, theta, v, *, unit='rad'):
+    def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> Self:
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
 
@@ -622,9 +699,9 @@ class SO3(BasePoseMatrix):
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`spatialmath.base.transforms3d.angvec2r`
         """
         return cls(base.angvec2r(theta, v, unit=unit), check=False)
-        
+
     @classmethod
-    def AngVec(cls, theta, v, *, unit='rad'):
+    def AngVec(cls, theta, v, *, unit="rad") -> Self:
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
 
@@ -648,7 +725,7 @@ class SO3(BasePoseMatrix):
         return cls(base.angvec2r(theta, v, unit=unit), check=False)
 
     @classmethod
-    def EulerVec(cls, w):
+    def EulerVec(cls, w) -> Self:
         r"""
         Construct a new SO(3) rotation matrix from an Euler rotation vector
 
@@ -664,7 +741,7 @@ class SO3(BasePoseMatrix):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SO3
             >>> SO3.EulerVec([0.5,0,0])
 
@@ -673,20 +750,25 @@ class SO3(BasePoseMatrix):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.angvec`, :func:`~spatialmath.base.transforms3d.angvec2r`
         """
-        assert base.isvector(w, 3), 'w must be a 3-vector'
+        assert base.isvector(w, 3), "w must be a 3-vector"
         w = base.getvector(w)
         theta = base.norm(w)
         return cls(base.angvec2r(theta, w), check=False)
 
     @classmethod
-    def Exp(cls, S, check=True, so3=True):
+    def Exp(
+        cls,
+        S: Union[R3, RNx3],
+        check: bool = True,
+        so3: bool = True,
+    ) -> Self:
         r"""
         Create an SO(3) rotation matrix from so(3)
 
         :param S: Lie algebra so(3)
-        :type S: numpy ndarray
+        :type S: ndarray(3,3), ndarray(n,3)
         :param check: check that passed matrix is valid so(3), default True
-        :type check: bool
+        :param so3: the input is interpretted as an so(3) matrix not a stack of three twists, default True
         :return: SO(3) rotation
         :rtype: SO3 instance
 
@@ -697,7 +779,7 @@ class SO3(BasePoseMatrix):
         - ``SO3.Exp(T)`` is a sequence of SO(3) rotations defined by an Nx3 matrix
           of twist vectors, one per row.
 
-        Note:
+        .. note::
         - if :math:`\theta \eq 0` the result in an identity matrix
         - an input 3x3 matrix is ambiguous, it could be the first or third case above.  In this
           case the parameter `so3` is the decider.
@@ -707,9 +789,9 @@ class SO3(BasePoseMatrix):
         if base.ismatrix(S, (-1, 3)) and not so3:
             return cls([base.trexp(s, check=check) for s in S], check=False)
         else:
-            return cls(base.trexp(S, check=check), check=False)
+            return cls(base.trexp(cast(R3, S), check=check), check=False)
 
-    def angdist(self, other, metric=6):
+    def angdist(self, other: SO3, metric: int = 6) -> Union[float, ndarray]:
         r"""
         Angular distance metric between rotations
 
@@ -768,28 +850,57 @@ class SO3(BasePoseMatrix):
         elif metric == 6:
             op = lambda R1, R2: base.norm(base.trlog(R1 @ R2.T, twist=True))
         else:
-            raise ValueError('unknown metric')
-        
+            raise ValueError("unknown metric")
+
         ad = self._op2(other, op)
         if isinstance(ad, list):
             return np.array(ad)
         else:
             return ad
 
+
 # ============================== SE3 =====================================#
 
 
 class SE3(SO3):
     """
-    SE(3) matrix class
+       SE(3) matrix class
 
-    This subclass represents rigid-body motion in 3D space.  Internally it is a 
-    4x4 homogeneous transformation matrix belonging to the group SE(3).
+       This subclass represents rigid-body motion in 3D space.  Internally it is a
+       4x4 homogeneous transformation matrix belonging to the group SE(3).
 
- .. inheritance-diagram:: spatialmath.pose3d.SE3
-    :top-classes: collections.UserList
-    :parts: 1
+    .. inheritance-diagram:: spatialmath.pose3d.SE3
+       :top-classes: collections.UserList
+       :parts: 1
     """
+
+    @overload
+    def __init__(self):  # identity
+        ...
+
+    @overload
+    def __init__(self, x: Union[SE3, SO3, SE2], *, check=True):  # copy/promote
+        ...
+
+    @overload
+    def __init__(self, x: List[SE3], *, check=True):  # import list of SE3
+        ...
+
+    @overload
+    def __init__(self, x: float, y: float, z: float, *, check=True):  # pure translation
+        ...
+
+    @overload
+    def __init__(self, x: ArrayLike3, *, check=True):  # pure translation
+        ...
+
+    @overload
+    def __init__(self, x: SE3Array, *, check=True):  # import native array
+        ...
+
+    @overload
+    def __init__(self, x: List[SE3Array], *, check=True):  # import native arrays
+        ...
 
     def __init__(self, x=None, y=None, z=None, *, check=True):
         """
@@ -815,7 +926,7 @@ class SE3(SO3):
              ``X``
         - ``SE3([X1, X2, ... XN])`` has ``N`` values
           given by the elements ``Xi`` each of which is an SE3 instance.
-        
+
         :SymPy: supported
         """
         if y is None and z is None:
@@ -825,13 +936,15 @@ class SE3(SO3):
                 return
             elif isinstance(x, SO3):
                 self.data = [base.r2t(_x) for _x in x.data]
-            elif type(x).__name__ == 'SE2':
+            elif isinstance(x, SE2):  # type(x).__name__ == "SE2":
+
                 def convert(x):
                     # convert SE(2) to SE(3)
                     out = np.identity(4, dtype=x.dtype)
-                    out[:2,:2] = x[:2,:2]
-                    out[:2,3] = x[:2,2]
+                    out[:2, :2] = x[:2, :2]
+                    out[:2, 3] = x[:2, 2]
                     return out
+
                 self.data = [convert(_x) for _x in x.data]
             elif base.isvector(x, 3):
                 # SE3( [x, y, z] )
@@ -841,19 +954,19 @@ class SE3(SO3):
                 self.data = [base.transl(T) for T in x]
 
             else:
-                raise ValueError('bad argument to constructor')
+                raise ValueError("bad argument to constructor")
 
         elif y is not None and z is not None:
             # SE3(x, y, z)
             self.data = [base.transl(x, y, z)]
 
     @staticmethod
-    def _identity():
+    def _identity() -> NDArray:
         return np.eye(4)
-        
+
     # ------------------------------------------------------------------------ #
     @property
-    def shape(self):
+    def shape(self) -> Tuple[int, int]:
         """
         Shape of the object's internal matrix representation
 
@@ -865,7 +978,7 @@ class SE3(SO3):
         return (4, 4)
 
     @property
-    def t(self):
+    def t(self) -> R3:
         """
         Translational component of SE(3)
 
@@ -884,7 +997,7 @@ class SE3(SO3):
             >>> x.t
             >>> x = SE3([ SE3(1,2,3), SE3(4,5,6)])
             >>> x.t
-        
+
         :SymPy: supported
         """
         if len(self) == 1:
@@ -893,14 +1006,15 @@ class SE3(SO3):
             return np.array([x[:3, 3] for x in self.A])
 
     @t.setter
-    def t(self, v):
+    def t(self, v: ArrayLike3):
         if len(self) > 1:
             raise ValueError("can only assign translation to length 1 object")
         v = base.getvector(v, 3)
         self.A[:3, 3] = v
+
     # ------------------------------------------------------------------------ #
 
-    def inv(self):
+    def inv(self) -> SE3:
         r"""
         Inverse of SE(3)
 
@@ -911,7 +1025,7 @@ class SE3(SO3):
         account the matrix structure.
 
         .. math::
-        
+
             T = \left[ \begin{array}{cc} \mat{R} & \vec{t} \\ 0 & 1 \end{array} \right],
             \mat{T}^{-1} = \left[ \begin{array}{cc} \mat{R}^T & -\mat{R}^T \vec{t} \\ 0 & 1 \end{array} \right]`
 
@@ -933,12 +1047,12 @@ class SE3(SO3):
         else:
             return SE3([base.trinv(x) for x in self.A], check=False)
 
-    def delta(self, X2=None):
+    def delta(self, X2: Optional[SE3] = None) -> R6:
         r"""
         Infinitesimal difference of SE(3) values
 
         :return: differential motion vector
-        :rtype: numpy.ndarray, shape=(6,)
+        :rtype: ndarray(6)
 
         ``X1.delta(X2)`` is the differential motion (6x1) corresponding to
         infinitesimal motion (in the ``X1`` frame) from pose ``X1`` to ``X2``.
@@ -954,7 +1068,6 @@ class SE3(SO3):
             >>> x1 = SE3.Rx(0.3)
             >>> x2 = SE3.Rx(0.3001)
             >>> x1.delta(x2)
-
 
         .. note::
 
@@ -972,25 +1085,25 @@ class SE3(SO3):
         else:
             return base.tr2delta(self.A, X2.A)
 
-    def Ad(self):
+    def Ad(self) -> R6x6:
         r"""
         Adjoint of SE(3)
 
         :return: adjoint matrix
-        :rtype: numpy.ndarray, shape=(6,6)
+        :rtype: ndarray(6,6)
 
         ``SE3.Ad`` is the 6x6 adjoint matrix
 
         If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`
-        and the SE(3) represents the pose of {B} relative to {A}, 
+        and the SE(3) represents the pose of {B} relative to {A},
         ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then
         :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.
 
-        .. warning:: Do not use this method to map velocities 
+        .. warning:: Do not use this method to map velocities
             between robot base and end-effector frames - use ``jacob()``.
 
         .. note:: Use this method to map velocities between two frames on
-            the same rigid-body.  
+            the same rigid-body.
 
         :reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
         :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
@@ -998,18 +1111,18 @@ class SE3(SO3):
         """
         return base.tr2adjoint(self.A)
 
-    def jacob(self):
+    def jacob(self) -> R6x6:
         r"""
         Velocity transform for SE(3)
 
         :return: Jacobian matrix
-        :rtype: numpy.ndarray, shape=(6,6)
+        :rtype: ndarray(6,6)
 
         ``SE3.jacob()`` is the 6x6 Jacobian that maps spatial velocity or
         differential motion from frame {B} to frame {A} where the pose of {B}
         relative to {A} is represented by the homogeneous transform T =
-        :math:`{}^A {\bf T}_B`.  
-        
+        :math:`{}^A {\bf T}_B`.
+
         .. note::
             - To map from frame {A} to frame {B} use the transpose of this matrix.
             - Use this method to map velocities between the robot end-effector frame
@@ -1024,7 +1137,7 @@ class SE3(SO3):
         """
         return base.tr2jac(self.A)
 
-    def twist(self):
+    def twist(self) -> Twist3:
         """
         SE(3) as twist
 
@@ -1041,13 +1154,12 @@ class SE3(SO3):
 
         :seealso: :func:`spatialmath.twist.Twist3`
         """
-        from spatialmath.twist import Twist3
-
         return Twist3(self.log(twist=True))
+
     # ------------------------------------------------------------------------ #
 
     @staticmethod
-    def isvalid(x, check=True):
+    def isvalid(x: NDArray, check: bool = True) -> bool:
         """
         Test if matrix is a valid SE(3)
 
@@ -1064,7 +1176,12 @@ class SE3(SO3):
     # ---------------- variant constructors ---------------------------------- #
 
     @classmethod
-    def Rx(cls, theta, unit='rad', t=None):
+    def Rx(
+        cls,
+        theta: ArrayLike,
+        unit: str = "rad",
+        t: Optional[ArrayLike3] = None,
+    ) -> SE3:
         """
         Create anSE(3) pure rotation about the X-axis
 
@@ -1097,10 +1214,17 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.trotx`
         :SymPy: supported
         """
-        return cls([base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
+        return cls(
+            [base.trotx(x, t=t, unit=unit) for x in base.getvector(theta)], check=False
+        )
 
     @classmethod
-    def Ry(cls, theta, unit='rad', t=None):
+    def Ry(
+        cls,
+        theta: ArrayLike,
+        unit: str = "rad",
+        t: Optional[ArrayLike3] = None,
+    ) -> SE3:
         """
         Create an SE(3) pure rotation about the Y-axis
 
@@ -1133,10 +1257,17 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.troty`
         :SymPy: supported
         """
-        return cls([base.troty(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
+        return cls(
+            [base.troty(x, t=t, unit=unit) for x in base.getvector(theta)], check=False
+        )
 
     @classmethod
-    def Rz(cls, theta, unit='rad', t=None):
+    def Rz(
+        cls,
+        theta: ArrayLike,
+        unit: str = "rad",
+        t: Optional[ArrayLike3] = None,
+    ) -> SE3:
         """
         Create an SE(3) pure rotation about the Z-axis
 
@@ -1169,10 +1300,18 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.trotz`
         :SymPy: supported
         """
-        return cls([base.trotz(x, t=t, unit=unit) for x in base.getvector(theta)], check=False)
+        return cls(
+            [base.trotz(x, t=t, unit=unit) for x in base.getvector(theta)], check=False
+        )
 
     @classmethod
-    def Rand(cls, N=1, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1)):  # pylint: disable=arguments-differ
+    def Rand(
+        cls,
+        N: int = 1,
+        xrange: Optional[ArrayLike2] = (-1, 1),
+        yrange: Optional[ArrayLike2] = (-1, 1),
+        zrange: Optional[ArrayLike2] = (-1, 1),
+    ) -> SE3:  # pylint: disable=arguments-differ
         """
         Create a random SE(3)
 
@@ -1203,19 +1342,36 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.quaternions.UnitQuaternion.Rand`
         """
-        X = np.random.uniform(low=xrange[0], high=xrange[1], size=N)  # random values in the range
-        Y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
-        Z = np.random.uniform(low=zrange[0], high=zrange[1], size=N)  # random values in the range
+        X = np.random.uniform(
+            low=xrange[0], high=xrange[1], size=N
+        )  # random values in the range
+        Y = np.random.uniform(
+            low=yrange[0], high=yrange[1], size=N
+        )  # random values in the range
+        Z = np.random.uniform(
+            low=zrange[0], high=zrange[1], size=N
+        )  # random values in the range
         R = SO3.Rand(N=N)
-        return cls([base.transl(x, y, z) @ base.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
+        return cls(
+            [base.transl(x, y, z) @ base.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)],
+            check=False,
+        )
+
+    @overload
+    def Eul(cls, phi: float, theta: float, psi: float, unit: str = "rad") -> SE3:
+        ...
+
+    @overload
+    def Eul(cls, angles: ArrayLike3, unit: str = "rad") -> SE3:
+        ...
 
     @classmethod
-    def Eul(cls, *angles, unit='rad'):
+    def Eul(cls, *angles, unit="rad") -> SE3:
         r"""
         Create an SE(3) pure rotation from Euler angles
 
         :param 𝚪: Euler angles
-        :type 𝚪: array_like or numpy.ndarray with shape=(N,3)
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: SE(3) matrix
@@ -1235,7 +1391,7 @@ class SE3(SO3):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SE3
             >>> SE3.Eul(0.1, 0.2, 0.3)
             >>> SE3.Eul([0.1, 0.2, 0.3])
@@ -1251,13 +1407,21 @@ class SE3(SO3):
         else:
             return cls([base.eul2tr(a, unit=unit) for a in angles], check=False)
 
+    @overload
+    def RPY(cls, roll: float, pitch: float, yaw: float, unit: str = "rad") -> SE3:
+        ...
+
+    @overload
+    def RPY(cls, angles: ArrayLike3, unit: str = "rad") -> SE3:
+        ...
+
     @classmethod
-    def RPY(cls, *angles, unit='rad', order='zyx'):
+    def RPY(cls, *angles, unit="rad", order="zyx") -> SE3:
         r"""
         Create an SE(3) pure rotation from roll-pitch-yaw angles
 
         :param 𝚪: roll-pitch-yaw angles
-        :type 𝚪: array_like or numpy.ndarray with shape=(N,3)
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param order: rotation order: 'zyx' [default], 'xyz', or 'yxz'
@@ -1288,7 +1452,7 @@ class SE3(SO3):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SE3
             >>> SE3.RPY(0.1, 0.2, 0.3)
             >>> SE3.RPY([0.1, 0.2, 0.3])
@@ -1304,17 +1468,19 @@ class SE3(SO3):
         if base.isvector(angles, 3):
             return cls(base.rpy2tr(angles, order=order, unit=unit), check=False)
         else:
-            return cls([base.rpy2tr(a, order=order, unit=unit) for a in angles], check=False)
+            return cls(
+                [base.rpy2tr(a, order=order, unit=unit) for a in angles], check=False
+            )
 
     @classmethod
-    def OA(cls, o, a):
+    def OA(cls, o: ArrayLike3, a: ArrayLike3) -> SE3:
         r"""
         Create an SE(3) pure rotation from two vectors
 
         :param o: 3-vector parallel to Y- axis
-        :type o: array_like
+        :type o: array_like(3)
         :param a: 3-vector parallel to the Z-axis
-        :type a: array_like
+        :type a: array_like(3)
         :return: SE(3) matrix
         :rtype: SE3 instance
 
@@ -1344,7 +1510,9 @@ class SE3(SO3):
         return cls(base.oa2tr(o, a), check=False)
 
     @classmethod
-    def AngleAxis(cls, theta, v, *, unit='rad'):
+    def AngleAxis(
+        cls, theta: float, v: ArrayLike3, *, unit: Optional[unit] = "rad"
+    ) -> SE3:
         r"""
         Create an SE(3) pure rotation matrix from rotation angle and axis
 
@@ -1352,8 +1520,8 @@ class SE3(SO3):
         :type θ: float
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :param v: rotation axis, 3-vector
-        :type v: array_like
+        :param v: rotation axis
+        :type v: array_like(3)
         :return: SE(3) matrix
         :rtype: SE3 instance
 
@@ -1373,7 +1541,7 @@ class SE3(SO3):
         return cls(base.angvec2tr(theta, v, unit=unit), check=False)
 
     @classmethod
-    def AngVec(cls, theta, v, *, unit='rad'):
+    def AngVec(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> SE3:
         r"""
         Create an SE(3) pure rotation matrix from rotation angle and axis
 
@@ -1381,8 +1549,8 @@ class SE3(SO3):
         :type θ: float
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :param v: rotation axis, 3-vector
-        :type v: array_like
+        :param v: rotation axis
+        :type v: array_like(3)
         :return: SE(3) matrix
         :rtype: SE3 instance
 
@@ -1397,12 +1565,12 @@ class SE3(SO3):
         return cls(base.angvec2tr(theta, v, unit=unit), check=False)
 
     @classmethod
-    def EulerVec(cls, w):
+    def EulerVec(cls, w: ArrayLike3) -> SE3:
         r"""
         Construct a new SE(3) pure rotation matrix from an Euler rotation vector
 
         :param ω: rotation axis
-        :type ω: 3-element array_like
+        :type ω: array_like(3)
         :return: SE(3) rotation
         :rtype: SE3 instance
 
@@ -1413,7 +1581,7 @@ class SE3(SO3):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SE3
             >>> SE3.EulerVec([0.5,0,0])
 
@@ -1422,18 +1590,18 @@ class SE3(SO3):
 
         :seealso: :func:`~spatialmath.pose3d.SE3.AngVec`, :func:`~spatialmath.base.transforms3d.angvec2tr`
         """
-        assert base.isvector(w, 3), 'w must be a 3-vector'
+        assert base.isvector(w, 3), "w must be a 3-vector"
         w = base.getvector(w)
         theta = base.norm(w)
         return cls(base.angvec2tr(theta, w), check=False)
 
     @classmethod
-    def Exp(cls, S, check=True):
+    def Exp(cls, S: Union[R6, R4x4], check: bool = True) -> SE3:
         """
         Create an SE(3) matrix from se(3)
 
         :param S: Lie algebra se(3) matrix
-        :type S: numpy ndarray
+        :type S: ndarray(6), ndarray(4,4)
         :return: SE(3) matrix
         :rtype: SE3 instance
 
@@ -1448,20 +1616,18 @@ class SE3(SO3):
             return cls(base.trexp(base.getvector(S)), check=False)
         else:
             return cls(base.trexp(S), check=False)
-            
 
     @classmethod
-    def Delta(cls, d):
+    def Delta(cls, d: ArrayLike6) -> SE3:
         r"""
         Create SE(3) from differential motion
 
         :param d: differential motion
-        :type d: 6-element array_like
+        :type d: array_like(6)
         :return: SE(3) matrix
         :rtype: SE3 instance
 
-
-        ``SE3.Delta2tr(d)`` is an SE(3) representing differential 
+        ``SE3.Delta2tr(d)`` is an SE(3) representing differential
         motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
 
         :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
@@ -1471,8 +1637,16 @@ class SE3(SO3):
         """
         return cls(base.trnorm(base.delta2tr(d)))
 
+    @overload
+    def Trans(cls, x: float, y: float, z: float) -> SE3:
+        ...
+
+    @overload
+    def Trans(cls, xyz: ArrayLike3) -> SE3:
+        ...
+
     @classmethod
-    def Trans(cls, x, y=None, z=None):
+    def Trans(cls, x, y=None, z=None) -> SE3:
         """
         Create SE(3) from translation vector
 
@@ -1502,7 +1676,7 @@ class SE3(SO3):
             return cls(np.array([x, y, z]))
 
     @classmethod
-    def Tx(cls, x):
+    def Tx(cls, x: float) -> SE3:
         """
         Create an SE(3) translation along the X-axis
 
@@ -1527,9 +1701,8 @@ class SE3(SO3):
         """
         return cls([base.transl(_x, 0, 0) for _x in base.getvector(x)], check=False)
 
-
     @classmethod
-    def Ty(cls, y):
+    def Ty(cls, y: float) -> SE3:
         """
         Create an SE(3) translation along the Y-axis
 
@@ -1555,7 +1728,7 @@ class SE3(SO3):
         return cls([base.transl(0, _y, 0) for _y in base.getvector(y)], check=False)
 
     @classmethod
-    def Tz(cls, z):
+    def Tz(cls, z: float) -> SE3:
         """
         Create an SE(3) translation along the Z-axis
 
@@ -1580,7 +1753,12 @@ class SE3(SO3):
         return cls([base.transl(0, 0, _z) for _z in base.getvector(z)], check=False)
 
     @classmethod
-    def Rt(cls, R, t=None, check=True):
+    def Rt(
+        cls,
+        R: Union[SO3, SO3Array],
+        t: Optional[ArrayLike3] = None,
+        check: bool = True,
+    ) -> SE3:
         """
         Create an SE(3) from rotation and translation
 
@@ -1599,13 +1777,13 @@ class SE3(SO3):
         elif base.isrot(R, check=check):
             pass
         else:
-            raise ValueError('expecting SO3 or rotation matrix')
+            raise ValueError("expecting SO3 or rotation matrix")
 
         if t is None:
             t = np.zeros((3,))
         return cls(base.rt2tr(R, t, check=check), check=check)
 
-    def angdist(self, other, metric=6):
+    def angdist(self, other: SE3, metric: int = 6) -> float:
         r"""
         Angular distance metric between poses
 
@@ -1660,12 +1838,14 @@ class SE3(SO3):
             return UnitQuaternion(self).angdist(UnitQuaternion(other), metric=metric)
 
         elif metric == 5:
-            op = lambda T1, T2: np.linalg.norm(np.eye(3) - T1[:3,:3] @ T2[:3,:3].T)
+            op = lambda T1, T2: np.linalg.norm(np.eye(3) - T1[:3, :3] @ T2[:3, :3].T)
         elif metric == 6:
-            op = lambda T1, T2: base.norm(base.trlog(T1[:3,:3] @ T2[:3,:3].T, twist=True))
+            op = lambda T1, T2: base.norm(
+                base.trlog(T1[:3, :3] @ T2[:3, :3].T, twist=True)
+            )
         else:
-            raise ValueError('unknown metric')
-        
+            raise ValueError("unknown metric")
+
         ad = self._op2(other, op)
         if isinstance(ad, list):
             return np.array(ad)
@@ -1685,7 +1865,12 @@ class SE3(SO3):
     #     else:
     #         return cls(base.rt2tr(R, t))
 
-if __name__ == '__main__':   # pragma: no cover
 
+if __name__ == "__main__":  # pragma: no cover
     import pathlib
-    exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose3d.py").read())  # pylint: disable=exec-used
+
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose3d.py"
+        ).read()
+    )  # pylint: disable=exec-used

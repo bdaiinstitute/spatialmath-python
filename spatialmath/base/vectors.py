@@ -28,87 +28,7 @@ except ImportError:  # pragma: no cover
 _eps = np.finfo(np.float64).eps
 
 
-def colvec(v:ArrayLike) -> NDArray:
-    """
-    Create a column vector
-
-    :param v: any vector
-    :type v: array_like(n)
-    :return: a column vector
-    :rtype: ndarray(n,1)
-
-    Convert input to a column vector.
-
-    .. runblock:: pycon
-
-        >>> from spatialmath.base import *
-        >>> colvec([1, 2, 3])
-    """
-    v = getvector(v)
-    return np.array(v).reshape((len(v), 1))
-
-
-def unitvec(v:ArrayLike) -> NDArray:
-    """
-    Create a unit vector
-
-    :param v: any vector
-    :type v: array_like(n)
-    :return: a unit-vector parallel to ``v``.
-    :rtype: ndarray(n)
-    :raises ValueError: for zero length vector
-
-    ``unitvec(v)`` is a vector parallel to `v` of unit length.
-
-    .. runblock:: pycon
-
-        >>> from spatialmath.base import *
-        >>> unitvec([3, 4])
-
-    :seealso: :func:`~numpy.linalg.norm`
-
-    """
-
-    v = getvector(v)
-    n = norm(v)
-
-    if n > 100 * _eps:  # if greater than eps
-        return v / n
-    else:
-        return None
-
-
-def unitvec_norm(v:ArrayLike) -> Union[Tuple[NDArray,float],Tuple[None,None]]:
-    """
-    Create a unit vector
-
-    :param v: any vector
-    :type v: array_like(n)
-    :return: a unit-vector parallel to ``v`` and the norm
-    :rtype: (ndarray(n), float)
-    :raises ValueError: for zero length vector
-
-    ``unitvec(v)`` is a vector parallel to `v` of unit length.
-
-    .. runblock:: pycon
-
-        >>> from spatialmath.base import *
-        >>> unitvec([3, 4])
-
-    :seealso: :func:`~numpy.linalg.norm`
-
-    """
-
-    v = getvector(v)
-    n = np.linalg.norm(v)
-
-    if n > 100 * _eps:  # if greater than eps
-        return (v / n, n)
-    else:
-        return (None, None)
-
-
-def norm(v:ArrayLike) -> float:
+def norm(v: ArrayLikePure) -> float:
     """
     Norm of vector
 
@@ -141,7 +61,7 @@ def norm(v:ArrayLike) -> float:
         return math.sqrt(sum)
 
 
-def normsq(v:ArrayLike) -> float:
+def normsq(v: ArrayLikePure) -> float:
     """
     Squared norm of vector
 
@@ -172,7 +92,7 @@ def normsq(v:ArrayLike) -> float:
     return sum
 
 
-def cross(u:ArrayLike3, v:ArrayLike3) -> R3:
+def cross(u: ArrayLike3, v: ArrayLike3) -> R3:
     """
     Cross product of vectors
 
@@ -202,7 +122,87 @@ def cross(u:ArrayLike3, v:ArrayLike3) -> R3:
     ]
 
 
-def isunitvec(v:ArrayLike, tol:float=10) -> bool:
+def colvec(v: ArrayLike) -> NDArray:
+    """
+    Create a column vector
+
+    :param v: any vector
+    :type v: array_like(n)
+    :return: a column vector
+    :rtype: ndarray(n,1)
+
+    Convert input to a column vector.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> colvec([1, 2, 3])
+    """
+    v = getvector(v)
+    return np.array(v).reshape((len(v), 1))
+
+
+def unitvec(v: ArrayLike) -> NDArray:
+    """
+    Create a unit vector
+
+    :param v: any vector
+    :type v: array_like(n)
+    :return: a unit-vector parallel to ``v``.
+    :rtype: ndarray(n)
+    :raises ValueError: for zero length vector
+
+    ``unitvec(v)`` is a vector parallel to `v` of unit length.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unitvec([3, 4])
+
+    :seealso: :func:`~numpy.linalg.norm`
+
+    """
+
+    v = getvector(v)
+    n = norm(v)
+
+    if n > 100 * _eps:  # if greater than eps
+        return v / n
+    else:
+        raise ValueError("zero norm vector")
+
+
+def unitvec_norm(v: ArrayLike, tol: float = 100) -> Tuple[NDArray, float]:
+    """
+    Create a unit vector
+
+    :param v: any vector
+    :type v: array_like(n)
+    :return: a unit-vector parallel to ``v`` and the norm
+    :rtype: (ndarray(n), float)
+    :raises ValueError: for zero length vector
+
+    ``unitvec(v)`` is a vector parallel to `v` of unit length.
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> unitvec([3, 4])
+
+    :seealso: :func:`~numpy.linalg.norm`
+
+    """
+
+    v = getvector(v)
+    nm = norm(v)
+
+    if nm > tol * _eps:  # if greater than eps
+        return (v / nm, nm)
+    else:
+        raise ValueError("zero norm vector")
+
+
+def isunitvec(v: ArrayLike, tol: float = 10) -> bool:
     """
     Test if vector has unit length
 
@@ -221,10 +221,10 @@ def isunitvec(v:ArrayLike, tol:float=10) -> bool:
 
     :seealso: unit, iszerovec, isunittwist
     """
-    return abs(np.linalg.norm(v) - 1) < tol * _eps
+    return bool(abs(np.linalg.norm(v) - 1) < tol * _eps)
 
 
-def iszerovec(v:ArrayLike, tol:float=10) -> bool:
+def iszerovec(v: ArrayLike, tol: float = 10) -> bool:
     """
     Test if vector has zero length
 
@@ -243,10 +243,10 @@ def iszerovec(v:ArrayLike, tol:float=10) -> bool:
 
     :seealso: unit, isunitvec, isunittwist
     """
-    return np.linalg.norm(v) < tol * _eps
+    return bool(np.linalg.norm(v) < tol * _eps)
 
 
-def iszero(v:float, tol:float=10) -> bool:
+def iszero(v: float, tol: float = 10) -> bool:
     """
     Test if scalar is zero
 
@@ -265,10 +265,10 @@ def iszero(v:float, tol:float=10) -> bool:
 
     :seealso: unit, iszerovec, isunittwist
     """
-    return abs(v) < tol * _eps
+    return bool(abs(v) < tol * _eps)
 
 
-def isunittwist(v:ArrayLike6, tol:float=10) -> bool:
+def isunittwist(v: ArrayLike6, tol: float = 10) -> bool:
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
@@ -302,13 +302,13 @@ def isunittwist(v:ArrayLike6, tol:float=10) -> bool:
     if len(v) == 6:
         # test for SE(3) twist
         return isunitvec(v[3:6], tol=tol) or (
-            np.linalg.norm(v[3:6]) < tol * _eps and isunitvec(v[0:3], tol=tol)
+            bool(np.linalg.norm(v[3:6]) < tol * _eps) and isunitvec(v[0:3], tol=tol)
         )
     else:
         raise ValueError
 
 
-def isunittwist2(v:ArrayLike3, tol:float=10) -> bool:
+def isunittwist2(v: ArrayLike3, tol: float = 10) -> bool:
     r"""
     Test if vector represents a unit twist in SE(2) or SE(3)
 
@@ -347,7 +347,7 @@ def isunittwist2(v:ArrayLike3, tol:float=10) -> bool:
         raise ValueError
 
 
-def unittwist(S:ArrayLike6, tol:float=10) -> R6:
+def unittwist(S: ArrayLike6, tol: float = 10) -> Union[R6, None]:
     """
     Convert twist to unit twist
 
@@ -388,7 +388,7 @@ def unittwist(S:ArrayLike6, tol:float=10) -> R6:
     return S / th
 
 
-def unittwist_norm(S:ArrayLike6, tol:float=10) -> Union[R3,float]:
+def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float]:
     """
     Convert twist to unit twist and norm
 
@@ -420,7 +420,7 @@ def unittwist_norm(S:ArrayLike6, tol:float=10) -> Union[R3,float]:
     S = getvector(S, 6)
 
     if iszerovec(S, tol=tol):
-        return (None, None)
+        raise ValueError("zero norm")
 
     v = S[0:3]
     w = S[3:6]
@@ -433,7 +433,7 @@ def unittwist_norm(S:ArrayLike6, tol:float=10) -> Union[R3,float]:
     return (S / th, th)
 
 
-def unittwist2(S:ArrayLike3) -> R3:
+def unittwist2(S: ArrayLike3) -> R3:
     """
     Convert twist to unit twist
 
@@ -467,7 +467,7 @@ def unittwist2(S:ArrayLike3) -> R3:
     return S / th
 
 
-def unittwist2_norm(S:ArrayLike3) -> Tuple[R3,float]:
+def unittwist2_norm(S: ArrayLike3) -> Tuple[R3, float]:
     """
     Convert twist to unit twist
 
@@ -500,7 +500,8 @@ def unittwist2_norm(S:ArrayLike3) -> Tuple[R3,float]:
 
     return (S / th, th)
 
-def wrap_0_pi(theta:float) -> float:
+
+def wrap_0_pi(theta: ArrayLike) -> Union[float, NDArray]:
     r"""
     Wrap angle to range :math:`[0, \pi]`
 
@@ -514,15 +515,21 @@ def wrap_0_pi(theta:float) -> float:
 
     :seealso: :func:`wrap_mpi2_pi2` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`
     """
-    n = (theta / np.pi)
+    theta = np.abs(theta)
+    n = theta / np.pi
     if isinstance(n, np.ndarray):
         n = n.astype(int)
     else:
-        n = int(n)
-    
-    return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
+        n = np.fix(n).astype(int)
 
-def wrap_mpi2_pi2(theta:float) -> float:
+    y = np.where(np.bitwise_and(n, 1) == 0, theta - n * np.pi, (n + 1) * np.pi - theta)
+    if isinstance(y, np.ndarray) and y.size == 1:
+        return float(y)
+    else:
+        return y
+
+
+def wrap_mpi2_pi2(theta: ArrayLike) -> Union[float, NDArray]:
     r"""
     Wrap angle to range :math:`[-\pi/2, \pi/2]`
 
@@ -535,15 +542,21 @@ def wrap_mpi2_pi2(theta:float) -> float:
     :seealso: :func:`wrap_0_pi` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`
 
     """
-    n = (theta / np.pi)
+    theta = getvector(theta)
+    n = theta / np.pi * 2
     if isinstance(n, np.ndarray):
         n = n.astype(int)
     else:
-        n = int(n)
-    
-    return np.where(n & 1 == 0, theta - n * np.pi, (n+1) * np.pi - theta)
+        n = np.fix(n).astype(int)
 
-def wrap_0_2pi(theta:float) -> float:
+    y = np.where(np.bitwise_and(n, 1) == 0, theta - n * np.pi, n * np.pi - theta)
+    if isinstance(y, np.ndarray) and len(y) == 1:
+        return float(y)
+    else:
+        return y
+
+
+def wrap_0_2pi(theta: ArrayLike) -> Union[float, NDArray]:
     r"""
     Wrap angle to range :math:`[0, 2\pi)`
 
@@ -553,11 +566,15 @@ def wrap_0_2pi(theta:float) -> float:
 
     :seealso: :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`
     """
-    
-    return theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
+    theta = getvector(theta)
+    y = theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
+    if isinstance(y, np.ndarray) and len(y) == 1:
+        return float(y)
+    else:
+        return y
 
 
-def wrap_mpi_pi(angle:float) -> float:
+def wrap_mpi_pi(theta: ArrayLike) -> Union[float, NDArray]:
     r"""
     Wrap angle to range :math:`[-\pi, \pi)`
 
@@ -567,13 +584,30 @@ def wrap_mpi_pi(angle:float) -> float:
 
     :seealso: :func:`wrap_0_2pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`
     """
-    return np.mod(angle + math.pi, 2 * math.pi) - np.pi
+    theta = getvector(theta)
+    y = np.mod(theta + math.pi, 2 * math.pi) - np.pi
+    if isinstance(y, np.ndarray) and len(y) == 1:
+        return float(y)
+    else:
+        return y
+
 
 # @overload
 # def angdiff(a:ArrayLike):
 #     ...
 
-def angdiff(a:ArrayLike, b:ArrayLike=None) -> NDArray:
+
+@overload
+def angdiff(a: ArrayLike, b: ArrayLike) -> NDArray:
+    ...
+
+
+@overload
+def angdiff(a: ArrayLike) -> NDArray:
+    ...
+
+
+def angdiff(a, b=None):
     r"""
     Angular difference
 
@@ -608,10 +642,13 @@ def angdiff(a:ArrayLike, b:ArrayLike=None) -> NDArray:
 
     :seealso: :func:`vector_diff` :func:`wrap_mpi_pi`
     """
-    if b is None:
-        return np.mod(a + math.pi, 2 * math.pi) - math.pi
-    else:
-        return np.mod(a - b + math.pi, 2 * math.pi) - math.pi
+    a = getvector(a)
+    if b is not None:
+        b = getvector(b, len(a))
+        a -= b
+
+    return np.mod(a + math.pi, 2 * math.pi) - math.pi
+
 
 def angle_std(theta: ArrayLike) -> float:
     r"""
@@ -634,6 +671,7 @@ def angle_std(theta: ArrayLike) -> float:
 
     return np.sqrt(-2 * np.log(R))
 
+
 def angle_mean(theta: ArrayLike) -> float:
     r"""
     Mean of angular values
@@ -648,14 +686,15 @@ def angle_mean(theta: ArrayLike) -> float:
     .. math::
 
         \bar{\theta} = \tan^{-1} \frac{\sum \sin \theta_i}{\sum \cos \theta_i} \in [-\pi, \pi)]
-    
+
     :seealso: :func:`angle_std`
     """
     X = np.cos(theta).sum()
     Y = np.sin(theta).sum()
-    return np.artan2(Y, X)
+    return np.arctan2(Y, X)
 
-def angle_wrap(theta:ArrayLike, mode:str='-pi:pi') -> NDArray:
+
+def angle_wrap(theta: ArrayLike, mode: str = "-pi:pi") -> Union[float, NDArray]:
     """
     Generalized angle-wrapping
 
@@ -668,21 +707,22 @@ def angle_wrap(theta:ArrayLike, mode:str='-pi:pi') -> NDArray:
 
     .. note:: The modes ``"0:pi"`` and ``"-pi/2:pi/2"`` are used to wrap angles of
         colatitude and latitude respectively.
- 
+
     :seealso: :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`
     """
     if mode == "0:2pi":
         return wrap_0_2pi(theta)
     elif mode == "-pi:pi":
-        return  wrap_mpi_pi(theta)
+        return wrap_mpi_pi(theta)
     elif mode == "0:pi":
-        return  wrap_0_pi(theta)
+        return wrap_0_pi(theta)
     elif mode == "0:pi":
-        return  wrap_mpi2_pi2(theta)
+        return wrap_mpi2_pi2(theta)
     else:
-        raise ValueError('bad method specified')
+        raise ValueError("bad method specified")
 
-def vector_diff(v1: ArrayLike, v2:ArrayLike, mode:str) -> NDArray:
+
+def vector_diff(v1: ArrayLike, v2: ArrayLike, mode: str) -> NDArray:
     """
     Generalized vector differnce
 
@@ -693,15 +733,15 @@ def vector_diff(v1: ArrayLike, v2:ArrayLike, mode:str) -> NDArray:
     :param mode: subtraction mode
     :type mode: str of length n
 
-    ==============  ==================================== 
+    ==============  ====================================
     mode character  purpose
-    ==============  ==================================== 
+    ==============  ====================================
     r               real number, don't wrap
     c               angle on circle, wrap to [-π, π)
     C               angle on circle, wrap to [0, 2π)
     l               latitude angle, wrap to [-π/2, π/2]
     L               colatitude angle, wrap to [0, π]
-    ==============  ==================================== 
+    ==============  ====================================
 
     :seealso: :func:`angdiff` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`
     """
@@ -718,12 +758,12 @@ def vector_diff(v1: ArrayLike, v2:ArrayLike, mode:str) -> NDArray:
         elif m == "L":
             v[i] = wrap_0_pi(v[i])
         else:
-            raise ValueError('bad mode character')
+            raise ValueError("bad mode character")
 
     return v
-         
 
-def removesmall(v:ArrayLike, tol:float=100) -> NDArray:
+
+def removesmall(v: ArrayLike, tol: float = 100) -> NDArray:
     """
     Set small values to zero
 
@@ -746,7 +786,7 @@ def removesmall(v:ArrayLike, tol:float=100) -> NDArray:
         >>> print(a[3])
 
     """
-    return np.where(abs(v) < tol * _eps, 0, v)
+    return np.where(np.abs(v) < tol * _eps, 0, v)
 
 
 if __name__ == "__main__":  # pragma: no cover

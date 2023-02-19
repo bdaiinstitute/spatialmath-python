@@ -3,11 +3,12 @@ Provide list super powers for spatial math objects.
 """
 
 # pylint: disable=invalid-name
-
+from __future__ import annotations
 from collections import UserList
 from abc import ABC, abstractproperty, abstractstaticmethod
 import numpy as np
 import spatialmath.base.argcheck as argcheck
+from spatialmath.base.types import *
 import copy
 
 _numtypes = (int, np.int64, float, np.float64)
@@ -84,7 +85,7 @@ class BasePoseList(UserList, ABC):
             return None
 
     @classmethod
-    def Empty(cls):
+    def Empty(cls) -> Self:
         """
         Construct an empty instance (BasePoseList superclass method)
 
@@ -103,7 +104,7 @@ class BasePoseList(UserList, ABC):
         return x
 
     @classmethod
-    def Alloc(cls, n=1):
+    def Alloc(cls, n: Optional[int] = 1) -> Self:
         """
         Construct an instance with N default values (BasePoseList superclass method)
 
@@ -136,15 +137,18 @@ class BasePoseList(UserList, ABC):
         x.data = [cls._identity() for i in range(n)]  # make n copies of the data
         return x
 
-    def arghandler(self, arg, convertfrom=(), check=True):
+    def arghandler(
+        self, arg: Any, convertfrom: Tuple = (), check: Optional[bool] = True
+    ) -> bool:
         """
         Standard constructor support (BasePoseList superclass method)
 
-        :param self: the instance to be initialized :type self: BasePoseList
-        instance :param arg: initial value :param convertfrom: list of classes
-        to accept and convert from :type: tuple of typles :param check: check
-        value is valid, defaults to True :type check: bool :raises ValueError:
-        bad type passed
+        :param arg: initial value
+        :param convertfrom: list of classes to accept and convert from
+        :type: tuple of typles
+        :param check: check value is valid, defaults to True
+        :type check: bool
+        :raises ValueError: bad type passed
 
         The value ``arg`` can be any of:
 
@@ -244,7 +248,7 @@ class BasePoseList(UserList, ABC):
         return self.data[0].__array_interface__
 
     @property
-    def _A(self):
+    def _A(self) -> Union[List[NDArray], NDArray]:
         """
         Spatial vector as an array
         :return: Moment vector
@@ -257,7 +261,7 @@ class BasePoseList(UserList, ABC):
             return self.data
 
     @property
-    def A(self) -> np.ndarray:
+    def A(self) -> Union[List[NDArray], NDArray]:
         """
         Array value of an instance (BasePoseList superclass method)
 
@@ -278,7 +282,7 @@ class BasePoseList(UserList, ABC):
 
     # ------------------------------------------------------------------------ #
 
-    def __getitem__(self, i):
+    def __getitem__(self, i: Union[int, slice]) -> BasePoseList:
         """
         Access value of an instance (BasePoseList superclass method)
 
@@ -324,7 +328,7 @@ class BasePoseList(UserList, ABC):
             return ret
             # return self.__class__(self.data[i], check=False)
 
-    def __setitem__(self, i, value):
+    def __setitem__(self, i: int, value: BasePoseList) -> None:
         """
         Assign a value to an instance (BasePoseList superclass method)
 
@@ -354,19 +358,19 @@ class BasePoseList(UserList, ABC):
         self.data[i] = value.A
 
     # flag these binary operators as being not supported
-    def __lt__(self, other):
+    def __lt__(self, other: BasePoseList) -> Type[Exception]:
         return NotImplementedError
 
-    def __le__(self, other):
+    def __le__(self, other: BasePoseList) -> Type[Exception]:
         return NotImplementedError
 
-    def __gt__(self, other):
+    def __gt__(self, other: BasePoseList) -> Type[Exception]:
         return NotImplementedError
 
-    def __ge__(self, other):
+    def __ge__(self, other: BasePoseList) -> Type[Exception]:
         return NotImplementedError
 
-    def append(self, item):
+    def append(self, item: BasePoseList) -> None:
         """
         Append a value to an instance (BasePoseList superclass method)
 
@@ -394,7 +398,7 @@ class BasePoseList(UserList, ABC):
             raise ValueError("can't append a multivalued instance - use extend")
         super().append(item.A)
 
-    def extend(self, iterable):
+    def extend(self, iterable: BasePoseList) -> None:
         """
         Extend sequence of values in an instance (BasePoseList superclass method)
 
@@ -420,7 +424,7 @@ class BasePoseList(UserList, ABC):
             raise ValueError("can't append different type of object")
         super().extend(iterable._A)
 
-    def insert(self, i, item):
+    def insert(self, i: int, item: BasePoseList) -> None:
         """
         Insert a value to an instance (BasePoseList superclass method)
 
@@ -457,7 +461,7 @@ class BasePoseList(UserList, ABC):
             )
         super().insert(i, item._A)
 
-    def pop(self, i=-1):
+    def pop(self, i: Optional[int] = -1) -> Self:
         """
         Pop value from an instance (BasePoseList superclass method)
 
@@ -486,7 +490,13 @@ class BasePoseList(UserList, ABC):
         """
         return self.__class__(super().pop(i))
 
-    def binop(self, right, op, op2=None, list1=True):
+    def binop(
+        self,
+        right: BasePoseList,
+        op: Callable,
+        op2: Optional[Callable] = None,
+        list1: Optional[bool] = True,
+    ) -> List:
         """
         Perform binary operation
 
@@ -611,7 +621,9 @@ class BasePoseList(UserList, ABC):
         #     else:
         #         return [op(x, right) for x in left.A]
 
-    def unop(self, op, matrix=False):
+    def unop(
+        self, op: Callable, matrix: Optional[bool] = False
+    ) -> Union[NDArray, List]:
         """
         Perform unary operation
 

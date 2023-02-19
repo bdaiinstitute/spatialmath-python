@@ -13,7 +13,8 @@ that can be passed.
 
 import math
 import numpy as np
-#from spatialmath.base import symbolic as sym # HACK
+
+# from spatialmath.base import symbolic as sym # HACK
 from spatialmath.base.symbolic import issymbol, symtype
 
 # valid scalar types
@@ -26,7 +27,8 @@ _scalartypes = (int, np.integer, float, np.floating) + symtype
 
 from spatialmath.base.types import *
 
-def isscalar(x:Any) -> bool:
+
+def isscalar(x: Any) -> bool:
     """
     Test if argument is a real scalar
 
@@ -47,7 +49,7 @@ def isscalar(x:Any) -> bool:
     return isinstance(x, _scalartypes)
 
 
-def isinteger(x:Any) -> bool:
+def isinteger(x: Any) -> bool:
     """
     Test if argument is a scalar integer
 
@@ -67,7 +69,9 @@ def isinteger(x:Any) -> bool:
     return isinstance(x, (int, np.integer))
 
 
-def assertmatrix(m:Any, shape:Tuple[Union[int,None],Union[int,None]]=None) -> None:
+def assertmatrix(
+    m: Any, shape: Tuple[Union[int, None], Union[int, None]] = (None, None)
+) -> None:
     """
     Assert that argument is a 2D matrix
 
@@ -121,11 +125,13 @@ def assertmatrix(m:Any, shape:Tuple[Union[int,None],Union[int,None]]=None) -> No
             )
 
 
-def ismatrix(m:Any, shape:Tuple[Union[int,None],Union[int,None]]) -> bool:
+def ismatrix(m: Any, shape: Tuple[Union[int, None], Union[int, None]]) -> bool:
     """
     Test if argument is a real 2D matrix
 
-    :param m: value to test :param shape: required shape :type shape: 2-tuple
+    :param m: value to test
+    :param shape: required shape
+    :type shape: 2-tuple
     :return: True if value is of specified shape :rtype: bool
 
     Tests if the argument is a real 2D matrix with a specified shape ``shape``
@@ -160,7 +166,11 @@ def ismatrix(m:Any, shape:Tuple[Union[int,None],Union[int,None]]) -> bool:
     return True
 
 
-def getmatrix(m:ArrayLike, shape:Tuple[Union[int,None],Union[int,None]], dtype=np.float64) -> np.ndarray:
+def getmatrix(
+    m: ArrayLike,
+    shape: Tuple[Union[int, None], Union[int, None]],
+    dtype: DTypeLike = np.float64,
+) -> np.ndarray:
     r"""
     Convert argument to 2D array
 
@@ -218,8 +228,9 @@ def getmatrix(m:ArrayLike, shape:Tuple[Union[int,None],Union[int,None]], dtype=n
 
     elif isvector(m):
         # passed a 1D array
-        m = getvector(m, dtype=dtype)
+        m = getvector(m, dtype=dtype, out="array")
         if shape[0] is not None and shape[1] is not None:
+            shape = cast(Tuple[int, int], shape)
             if len(m) == np.prod(shape):
                 return m.reshape(shape)
             else:
@@ -235,7 +246,9 @@ def getmatrix(m:ArrayLike, shape:Tuple[Union[int,None],Union[int,None]], dtype=n
         raise TypeError("argument must be scalar or ndarray")
 
 
-def verifymatrix(m:np.ndarray, shape:Tuple[Union[int,None],Union[int,None]]) -> None:
+def verifymatrix(
+    m: np.ndarray, shape: Tuple[Union[int, None], Union[int, None]]
+) -> None:
     """
     Assert that argument is array of specified size
 
@@ -257,13 +270,53 @@ def verifymatrix(m:np.ndarray, shape:Tuple[Union[int,None],Union[int,None]]) -> 
         raise TypeError("input must be a numPy ndarray")
 
     if not m.shape == shape:
-        raise ValueError("incorrect matrix dimensions, " "expecting {0}".format(shape))
+        raise ValueError("incorrect matrix dimensions, expecting {0}".format(shape))
 
 
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
+@overload
+def getvector(
+    v: ArrayLike,
+    dim: Optional[Union[int, None]] = None,
+    out: str = "array",
+    dtype: DTypeLike = np.float64,
+) ->  NDArray:
+    ...
 
-def getvector(v:ArrayLike, dim:Union[int,None]=None, out:Optional[str]="array", dtype:Optional[DTypeLike]=np.float64) -> np.ndarray:
+@overload
+def getvector(
+    v: ArrayLike,
+    dim: Optional[Union[int, None]] = None,
+    out: str = "list",
+    dtype: DTypeLike = np.float64,
+) -> List[float]:
+    ...
+
+@overload
+def getvector(
+    v: Tuple[float, ...],
+    dim: Optional[Union[int, None]] = None,
+    out: str = "sequence",
+    dtype: DTypeLike = np.float64,
+) -> Tuple[float, ...]:
+    ...
+
+@overload
+def getvector(
+    v: List[float],
+    dim: Optional[Union[int, None]] = None,
+    out: str = "sequence",
+    dtype: DTypeLike = np.float64,
+) -> List[float]:
+    ...
+    
+def getvector(
+    v: ArrayLike,
+    dim: Optional[Union[int, None]] = None,
+    out: str = "array",
+    dtype: DTypeLike = np.float64,
+) -> Union[NDArray, List[float], Tuple[float, ...]]:
     """
     Return a vector value
 
@@ -326,8 +379,7 @@ def getvector(v:ArrayLike, dim:Union[int,None]=None, out:Optional[str]="array", 
     dt = dtype
 
     if isinstance(v, _scalartypes):  # handle scalar case
-        v = [v]
-
+        v = [v]  # type: ignore
     if isinstance(v, (list, tuple)):
         # list or tuple was passed in
 
@@ -376,7 +428,9 @@ def getvector(v:ArrayLike, dim:Union[int,None]=None, out:Optional[str]="array", 
         raise TypeError("invalid input type")
 
 
-def assertvector(v:Any, dim:Union[int,None]=None, msg:Optional[str]=None) -> None:
+def assertvector(
+    v: Any, dim: Optional[Union[int, None]] = None, msg: Optional[str] = None
+) -> None:
     """
     Assert that argument is a real vector
 
@@ -402,7 +456,7 @@ def assertvector(v:Any, dim:Union[int,None]=None, msg:Optional[str]=None) -> Non
         raise ValueError(msg)
 
 
-def isvector(v:Any, dim:Optional[int]=None) -> bool:
+def isvector(v: Any, dim: Optional[int] = None) -> bool:
     """
     Test if argument is a real vector
 
@@ -458,7 +512,25 @@ def isvector(v:Any, dim:Optional[int]=None) -> bool:
     return False
 
 
-def getunit(v:ArrayLike, unit:str="rad") -> np.ndarray:
+@overload
+def getunit(v: float, unit: str = "rad") -> float:  # pragma: no cover
+    ...
+
+
+@overload
+def getunit(v: NDArray, unit: str = "rad") -> NDArray:  # pragma: no cover
+    ...
+
+
+@overload
+def getunit(v: List[float], unit: str = "rad") -> List[float]:  # pragma: no cover
+    ...
+
+@overload
+def getunit(v: Tuple[float, ...], unit: str = "rad") -> List[float]:  # pragma: no cover
+    ...
+
+def getunit(v: Union[float, NDArray, Tuple[float, ...], List[float]], unit: str = "rad") -> Union[float, NDArray, List[float]]:
     """
     Convert value according to angular units
 
@@ -469,6 +541,8 @@ def getunit(v:ArrayLike, unit:str="rad") -> np.ndarray:
     :return: the converted value in radians
     :rtype: list(m) or ndarray(m)
     :raises ValueError: argument is not a valid angular unit
+
+    The input can be a list or ndarray() and the output is the same type.
 
     .. runblock:: pycon
 
@@ -481,17 +555,24 @@ def getunit(v:ArrayLike, unit:str="rad") -> np.ndarray:
         >>> getunit(np.r_[90, 180], 'deg')
     """
     if unit == "rad":
-        return v
+        if isinstance(v, tuple):
+            return list(v)
+        else:
+            return v
     elif unit == "deg":
         if isinstance(v, np.ndarray) or np.isscalar(v):
-            return v * math.pi / 180
-        else:
+            return v * math.pi / 180  # type: ignore
+        elif isinstance(v, (list, tuple)):
             return [x * math.pi / 180 for x in v]
+        else:
+            raise ValueError("bad argument")
     else:
         raise ValueError("invalid angular units")
+    
+    return ret
 
 
-def isnumberlist(x:Any) -> bool:
+def isnumberlist(x: Any) -> bool:
     """
     Test if argument is a list of scalars
 
@@ -518,7 +599,7 @@ def isnumberlist(x:Any) -> bool:
     )
 
 
-def isvectorlist(x:Any, n:int) -> bool:
+def isvectorlist(x: Any, n: int) -> bool:
     """
     Test if argument is a list of vectors
 
@@ -541,7 +622,7 @@ def isvectorlist(x:Any, n:int) -> bool:
     return islistof(x, lambda x: isinstance(x, np.ndarray) and x.shape == (n,))
 
 
-def islistof(value:Any, what:Union[Type,Callable], n:Optional[int]=None):
+def islistof(value: Any, what: Union[Type, Callable], n: Optional[int] = None):
     """
     Test if argument is a list of specified type
 

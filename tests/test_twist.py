@@ -10,6 +10,7 @@ from spatialmath.twist import *
 # from spatialmath import super_pose # as sp
 from spatialmath.base import *
 from spatialmath.baseposematrix import BasePoseMatrix
+from spatialmath import SE2, SE3
 from spatialmath.twist import BaseTwist
 
 def array_compare(x, y):

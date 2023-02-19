@@ -7,6 +7,7 @@ Created on Sun Jul  5 14:37:24 2020
 """
 
 from spatialmath.geom3d import *
+from spatialmath.pose3d import SE3
 
 import unittest
 import numpy.testing as nt

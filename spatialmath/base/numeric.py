@@ -4,7 +4,14 @@ from spatialmath.base.types import *
 
 # this is a collection of useful algorithms, not otherwise categorized
 
-def numjac(f:Callable, x:ArrayLike, dx:float=1e-8, SO:int=0, SE:int=0) -> NDArray:
+
+def numjac(
+    f: Callable,
+    x: ArrayLike,
+    dx: float = 1e-8,
+    SO: int = 0,
+    SE: int = 0,
+) -> NDArray:
     r"""
     Numerically compute Jacobian of function
 
@@ -61,7 +68,8 @@ def numjac(f:Callable, x:ArrayLike, dx:float=1e-8, SO:int=0, SE:int=0) -> NDArra
 
     return np.c_[Jcol].T
 
-def numhess(J:Callable, x:NDArray, dx:float=1e-8):
+
+def numhess(J: Callable, x: NDArray, dx: float = 1e-8):
     r"""
     Numerically compute Hessian given Jacobian function
 
@@ -74,7 +82,7 @@ def numhess(J:Callable, x:NDArray, dx:float=1e-8):
     :return: Hessian matrix
     :rtype: ndarray(m,n,n)
 
-    Computes a numerical approximation to the Hessian for ``J(x)`` where 
+    Computes a numerical approximation to the Hessian for ``J(x)`` where
     :math:`f: \mathbb{R}^n  \mapsto \mathbb{R}^{m \times n}`.
 
     The result is a 3D array where
@@ -91,15 +99,22 @@ def numhess(J:Callable, x:NDArray, dx:float=1e-8):
     J0 = J(x)
     for i in range(len(x)):
 
-        Ji = J(x + I[:,i] * dx)
+        Ji = J(x + I[:, i] * dx)
         Hi = (Ji - J0) / dx
 
         Hcol.append(Hi)
-        
+
     return np.stack(Hcol, axis=0)
 
-def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}", 
-    brackets=("[ ", " ]"), suppress_small=True):
+
+def array2str(
+    X: NDArray,
+    valuesep: str = ", ",
+    rowsep: str = " | ",
+    fmt: str = "{:.3g}",
+    brackets: Tuple[str, str] = ("[ ", " ]"),
+    suppress_small: bool = True,
+) -> str:
     """
     Convert array to single line string
 
@@ -111,7 +126,7 @@ def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}",
     :type rowsep: str, optional
     :param format: format string, defaults to "{:.3g}"
     :type precision: str, optional
-    :param brackets: strings to be added to start and end of the string, 
+    :param brackets: strings to be added to start and end of the string,
         defaults to ("[ ", " ]").  Set to None to suppress brackets.
     :type brackets: list, tuple of str
     :param suppress_small: small values (:math:`|x| < 10^{-12}` are converted
@@ -125,7 +140,7 @@ def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}",
     # convert to ndarray if not already
     if isinstance(X, (list, tuple)):
         X = base.getvector(X)
-    
+
     def format_row(x):
         s = ""
         for j, e in enumerate(x):
@@ -135,7 +150,7 @@ def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}",
                 s += valuesep
             s += fmt.format(e)
         return s
-    
+
     if X.ndim == 1:
         # 1D case
         s = format_row(X)
@@ -151,7 +166,8 @@ def array2str(X, valuesep=", ", rowsep=" | ", fmt="{:.3g}",
         s = brackets[0] + s + brackets[1]
     return s
 
-def bresenham(p0, p1, array=None):
+
+def bresenham(p0: ArrayLike2, p1: ArrayLike2) -> Tuple[NDArray, NDArray]:
     """
     Line drawing in a grid
 
@@ -168,14 +184,11 @@ def bresenham(p0, p1, array=None):
     The end points, and all points along the line are integers.
 
     .. note:: The API is similar to the Bresenham algorithm but this
-        implementation uses NumPy vectorised arithmetic which makes it 
+        implementation uses NumPy vectorised arithmetic which makes it
         faster than the Bresenham algorithm in Python.
     """
     x0, y0 = p0
     x1, y1 = p1
-
-    if array is not None:
-        _ = array[y0, x0] + array[y1, x1]
 
     dx = x1 - x0
     dy = y1 - y0
@@ -213,10 +226,13 @@ def bresenham(p0, p1, array=None):
 
     return x.astype(int), y.astype(int)
 
-def mpq_point(data, p, q):
+
+def mpq_point(data: Points2, p: int, q: int) -> float:
     r"""
     Moments of polygon
 
+    :param data: polygon vertices, points as columns
+    :type data: ndarray(2,N)
     :param p: moment order x
     :type p: int
     :param q: moment order y
@@ -225,7 +241,7 @@ def mpq_point(data, p, q):
     Returns the pq'th moment of the polygon
 
     .. math::
-    
+
         M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q
 
     Example:
@@ -244,7 +260,8 @@ def mpq_point(data, p, q):
 
     return np.sum(x**p * y**q)
 
-def gauss1d(mu, var, x):
+
+def gauss1d(mu: float, var: float, x: ArrayLike):
     """
     Gaussian function in 1D
 
@@ -262,9 +279,14 @@ def gauss1d(mu, var, x):
     sigma = np.sqrt(var)
     x = base.getvector(x)
 
-    return 1.0 / np.sqrt(sigma**2 * 2 * np.pi) * np.exp(-(x-mu)**2/2/sigma**2)
+    return (
+        1.0
+        / np.sqrt(sigma**2 * 2 * np.pi)
+        * np.exp(-((x - mu) ** 2) / 2 / sigma**2)
+    )
 
-def gauss2d(mu, P, X, Y):
+
+def gauss2d(mu: ArrayLike2, P: NDArray, X: NDArray, Y: NDArray) -> NDArray:
     """
     Gaussian function in 2D
 
@@ -287,16 +309,20 @@ def gauss2d(mu, P, X, Y):
     x = X.ravel() - mu[0]
     y = Y.ravel() - mu[1]
 
-    Pi = np.linalg.inv(P);
-    g = 1/(2*np.pi*np.sqrt(np.linalg.det(P))) * np.exp(
-         -0.5*(x**2 * Pi[0, 0] + y**2 * Pi[1, 1] + 2 * x * y * Pi[0, 1]));
+    Pi = np.linalg.inv(P)
+    g = (
+        1
+        / (2 * np.pi * np.sqrt(np.linalg.det(P)))
+        * np.exp(-0.5 * (x**2 * Pi[0, 0] + y**2 * Pi[1, 1] + 2 * x * y * Pi[0, 1]))
+    )
     return g.reshape(X.shape)
+
 
 if __name__ == "__main__":
 
     r = np.linspace(-4, 4, 6)
     x, y = np.meshgrid(r, r)
-    print(gauss2d([0, 0], np.diag([1,2]), x, y))
+    print(gauss2d([0, 0], np.diag([1, 2]), x, y))
     # print(bresenham([2,2], [2,4]))
     # print(bresenham([2,2], [2,-4]))
     # print(bresenham([2,2], [4,2]))

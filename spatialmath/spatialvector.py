@@ -205,7 +205,9 @@ class SpatialVector(BasePoseList):
 
         return self.__class__([-x for x in self.data])
 
-    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __add__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -229,7 +231,9 @@ class SpatialVector(BasePoseList):
 
         return left.__class__([x + y for x, y in zip(left.data, right.data)])
 
-    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __sub__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -252,7 +256,9 @@ class SpatialVector(BasePoseList):
 
         return left.__class__([x - y for x, y in zip(left.data, right.data)])
 
-    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(
+        right, left
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -477,9 +483,12 @@ class SpatialForce(SpatialF6):
 
     # n = SpatialForce(val);
 
-    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(
+        right, left
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         # Twist * SpatialForce -> SpatialForce
         return SpatialForce(left.Ad().T @ right.A)
+
 
 # ------------------------------------------------------------------------- #
 
@@ -610,7 +619,9 @@ class SpatialInertia(BasePoseList):
     def __str__(self):
         return str(self.A)
 
-    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __add__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Spatial inertia addition
         :param left:
@@ -625,7 +636,9 @@ class SpatialInertia(BasePoseList):
             raise TypeError("can only add spatial inertia to spatial inertia")
         return SpatialInertia(left.I + left.I)
 
-    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __mul__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -649,7 +662,9 @@ class SpatialInertia(BasePoseList):
         else:
             raise TypeError("bad postmultiply operands for Inertia *")
 
-    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(
+        right, left
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 

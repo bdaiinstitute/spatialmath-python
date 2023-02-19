@@ -8,12 +8,14 @@
 # text.set_position()
 # quiver.set_offsets(), quiver.set_UVC()
 # FancyArrow.set_xy()
+from __future__ import annotations
 import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from spatialmath import base
 from collections.abc import Iterable, Iterator
+from spatialmath.base.types import *
 
 # global variable holds reference to FuncAnimation object, this is essential
 # for animatiion to work
@@ -45,7 +47,12 @@ class Animate:
     """
 
     def __init__(
-        self, axes=None, dims=None, projection="ortho", labels=("X", "Y", "Z"), **kwargs
+        self,
+        axes: Optional[plt.Axes] = None,
+        dims: Optional[ArrayLike] = None,
+        projection: Optional[str] = "ortho",
+        labels: Optional[Tuple[str, str, str]] = ("X", "Y", "Z"),
+        **kwargs,
     ):
         """
         Construct an Animate object
@@ -100,7 +107,12 @@ class Animate:
 
         # TODO set flag for 2d or 3d axes, flag errors on the methods called later
 
-    def trplot(self, end, start=None, **kwargs):
+    def trplot(
+        self,
+        end: Union[SO3Array, SE3Array],
+        start: Optional[Union[SO3Array, SE3Array]] = None,
+        **kwargs,
+    ):
         """
         Define the transform to animate
 
@@ -144,18 +156,18 @@ class Animate:
         # draw axes at the origin
         base.trplot(self.start, ax=self, **kwargs)
 
-    def set_proj_type(self, proj_type):
+    def set_proj_type(self, proj_type: str):
         self.ax.set_proj_type(proj_type)
 
     def run(
         self,
-        movie=None,
-        axes=None,
-        repeat=False,
-        interval=50,
-        nframes=100,
-        wait=False,
-        **kwargs
+        movie: Optional[str] = None,
+        axes: Optional[plt.Axes] = None,
+        repeat: Optional[bool] = False,
+        interval: Optional[int] = 50,
+        nframes: Optional[int] = 100,
+        wait: Optional[bool] = False,
+        **kwargs,
     ):
         """
         Run the animation
@@ -229,7 +241,7 @@ class Animate:
             func=update,
             frames=frames,
             fargs=(self,),
-            blit=False, # blit leaves a trail and first frame, set to False
+            blit=False,  # blit leaves a trail and first frame, set to False
             interval=interval,
             repeat=repeat,
         )
@@ -257,8 +269,7 @@ class Animate:
                     break
         return _ani
 
-
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Human readable version of the display list
 
@@ -269,10 +280,10 @@ class Animate:
         """
         return "Animate(" + ", ".join([x.type for x in self.displaylist]) + ")"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Animate(len={len(self.displaylist)}"
 
-    def artists(self):
+    def artists(self) -> List[plt.Artist]:
         """
         List of artists that need to be updated
 
@@ -290,7 +301,7 @@ class Animate:
     # ------------------- plot()
 
     class _Line:
-        def __init__(self, anim, h, xs, ys, zs):
+        def __init__(self, anim: Animate, h, xs, ys, zs):
             # form 4xN matrix, columns are first/last point in homogeneous form
             p = np.vstack([xs, ys, zs])
             self.p = np.vstack([p, np.ones((p.shape[1],))])
@@ -303,7 +314,7 @@ class Animate:
             self.h.set_data(p[0, :], p[1, :])
             self.h.set_3d_properties(p[2, :])
 
-    def plot(self, x, y, z, *args, **kwargs):
+    def plot(self, x: ArrayLike, y: ArrayLike, z: ArrayLike, *args: List, **kwargs):
         """
         Plot a polyline
 
@@ -362,7 +373,17 @@ class Animate:
             p = p[0:3, :].T.reshape(3, 2, 3)
             self.h.set_segments(p)
 
-    def quiver(self, x, y, z, u, v, w, *args, **kwargs):
+    def quiver(
+        self,
+        x: ArrayLike,
+        y: ArrayLike,
+        z: ArrayLike,
+        u: ArrayLike,
+        v: ArrayLike,
+        w: ArrayLike,
+        *args: List,
+        **kwargs,
+    ):
         """
         Plot a quiver
 
@@ -407,7 +428,7 @@ class Animate:
             self.h.set_position((p[0], p[1]))
             self.h.set_3d_properties(z=p[2], zdir="x")
 
-    def text(self, x, y, z, *args, **kwargs):
+    def text(self, x: float, y: float, z: float, *args: List, **kwargs):
         """
         Plot text
 
@@ -429,28 +450,30 @@ class Animate:
 
     # ------------------- scatter()
 
-    def scatter(self, xs, ys, zs, s=0, **kwargs):
-        h = self.plot(xs, ys, zs, '.', markersize=0, **kwargs)
+    def scatter(
+        self, xs: ArrayLike, ys: ArrayLike, zs: ArrayLike, s: float = 0, **kwargs
+    ):
+        h = self.plot(xs, ys, zs, ".", markersize=0, **kwargs)
         self.displaylist.append(Animate._Line(self, h, xs, ys, zs))
 
     # ------------------- wrappers for Axes primitives
 
-    def set_xlim(self, *args, **kwargs):
+    def set_xlim(self, *args: List, **kwargs):
         self.ax.set_xlim(*args, **kwargs)
 
-    def set_ylim(self, *args, **kwargs):
+    def set_ylim(self, *args: List, **kwargs):
         self.ax.set_ylim(*args, **kwargs)
 
-    def set_zlim(self, *args, **kwargs):
+    def set_zlim(self, *args: List, **kwargs):
         self.ax.set_zlim(*args, **kwargs)
 
-    def set_xlabel(self, *args, **kwargs):
+    def set_xlabel(self, *args: List, **kwargs):
         self.ax.set_xlabel(*args, **kwargs)
 
-    def set_ylabel(self, *args, **kwargs):
+    def set_ylabel(self, *args: List, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
 
-    def set_zlabel(self, *args, **kwargs):
+    def set_zlabel(self, *args: List, **kwargs):
         self.ax.set_zlabel(*args, **kwargs)
 
 
@@ -478,7 +501,13 @@ class Animate2:
         anim.run(loop=True)  # animate it
     """
 
-    def __init__(self, axes=None, dims=None, labels=("X", "Y"), **kwargs):
+    def __init__(
+        self,
+        axes: Optional[plt.Axes] = None,
+        dims: Optional[ArrayLike] = None,
+        labels: Tuple[str, str] = ("X", "Y"),
+        **kwargs,
+    ):
         """
         Construct an Animate object
 
@@ -518,13 +547,18 @@ class Animate2:
             axes.set_ylim(dims[2:4])
             # ax.set_aspect('equal')
         else:
-            axes.autoscale(enable=True, axis='both')
+            axes.autoscale(enable=True, axis="both")
 
         self.ax = axes
 
         # set flag for 2d or 3d axes, flag errors on the methods called later
 
-    def trplot2(self, end, start=None, **kwargs):
+    def trplot2(
+        self,
+        end: Union[SO2Array, SE2Array],
+        start: Optional[Union[SO2Array, SE2Array]] = None,
+        **kwargs,
+    ):
         """
         Define the transform to animate
 
@@ -673,7 +707,7 @@ class Animate2:
         self.ax.set_aspect(*args, **kwargs)
 
     def autoscale(self, *args, **kwargs):
-        #self.ax.autoscale(*args, **kwargs)
+        # self.ax.autoscale(*args, **kwargs)
         pass
 
     class _Line:
@@ -793,7 +827,7 @@ class Animate2:
     # ------------------- scatter()
 
     def scatter(self, x, y, s=0, **kwargs):
-        h = self.plot(x, y, '.', markersize=0, **kwargs)
+        h = self.plot(x, y, ".", markersize=0, **kwargs)
         self.displaylist.append(Animate2._Line(self, h, x, y))
 
     # ------------------- wrappers for Axes primitives

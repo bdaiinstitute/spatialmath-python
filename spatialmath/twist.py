@@ -3,12 +3,10 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
-
-from spatialmath.pose3d import SO3, SE3
-from spatialmath.pose2d import SE2
 from spatialmath.geom3d import Line3
 import spatialmath.base as base
 from spatialmath.baseposelist import BasePoseList
+
 
 class BaseTwist(BasePoseList):
     """
@@ -28,7 +26,7 @@ class BaseTwist(BasePoseList):
     - ``*`` will compose two instances of the same subclass, and the result will be
       an instance of the same subclass, since this is a group operator.
 
-    These classes all inherit from ``UserList`` which enables them to 
+    These classes all inherit from ``UserList`` which enables them to
     represent a sequence of values, ie. a ``Twist3`` instance can contain
     a sequence of twists.  Most of the Python ``list`` operators
     are applicable:
@@ -58,7 +56,7 @@ class BaseTwist(BasePoseList):
     """
 
     def __init__(self):
-        super().__init__()   # enable UserList superpowers
+        super().__init__()  # enable UserList superpowers
 
     @property
     def S(self):
@@ -135,7 +133,6 @@ class BaseTwist(BasePoseList):
         else:
             return [base.iszerovec(x.v) for x in self.data]
 
-
     @property
     def isunit(self):
         r"""
@@ -200,7 +197,7 @@ class BaseTwist(BasePoseList):
     def prod(self):
         r"""
         Product of twists (superclass method)
- 
+
         :return: Product of elements
         :rtype: Twist2 or Twist3
 
@@ -208,7 +205,7 @@ class BaseTwist(BasePoseList):
         elements :math:`\prod_i=0^{N-1} S_i`.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3
@@ -229,7 +226,7 @@ class BaseTwist(BasePoseList):
             twprod = twprod @ exp(tw)
         return self.__class__(log(twprod))
 
-    def __eq__(left, right): # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __eq__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
@@ -252,7 +249,7 @@ class BaseTwist(BasePoseList):
         :seealso: :func:`__ne__`
         """
         if type(left) != type(right):
-            raise TypeError('operands to == are of different types')
+            raise TypeError("operands to == are of different types")
         return left.binop(right, lambda x, y: all(x == y), list1=False)
 
     def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
@@ -277,14 +274,17 @@ class BaseTwist(BasePoseList):
         :seealso: :func:`__ne__`
         """
         if type(left) != type(right):
-            raise TypeError('operands to != are of different types')
+            raise TypeError("operands to != are of different types")
         return left.binop(right, lambda x, y: not all(x == y), list1=False)
 
-    def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __truediv__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         if base.isscalar(right):
             return left.__class__(left.S / right)
         else:
-            raise ValueError('Twist /, incorrect right operand')
+            raise ValueError("Twist /, incorrect right operand")
+
 
 # ======================================================================== #
 
@@ -323,6 +323,8 @@ class Twist3(BaseTwist):
           Twist3 instance containing N motions
 
         """
+        from spatialmath.pose3d import SE3
+
         super().__init__()
 
         if w is None:
@@ -332,14 +334,14 @@ class Twist3(BaseTwist):
             elif isinstance(arg, SE3):
                 self.data = [arg.twist().A]
 
-        elif w is not None and base.isvector(w, 3) and base.isvector(arg,3):
+        elif w is not None and base.isvector(w, 3) and base.isvector(arg, 3):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
             return
 
         else:
-            raise ValueError('bad value to Twist constructor')
-            
+            raise ValueError("bad value to Twist constructor")
+
     # ------------------------ SMUserList required ---------------------------#
 
     @staticmethod
@@ -348,15 +350,15 @@ class Twist3(BaseTwist):
 
     def _import(self, value, check=True):
         if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
-            if value.shape == (4,4):
+            if value.shape == (4, 4):
                 # it's an se(3)
                 return base.vexa(value)
             elif value.shape == (6,):
                 # it's a twist vector
                 return value
         elif base.ishom(value, check=check):
-                return base.trlog(value, twist=True, check=False)
-        raise TypeError('bad type passed')
+            return base.trlog(value, twist=True, check=False)
+        raise TypeError("bad type passed")
 
     @staticmethod
     def isvalid(v, check=True):
@@ -407,7 +409,6 @@ class Twist3(BaseTwist):
         """
         return (6,)
 
-
     @property
     def N(self):
         """
@@ -416,7 +417,7 @@ class Twist3(BaseTwist):
         :return: dimension
         :rtype: int
 
-        Dimension of the group is 3 for ``Twist3`` and corresponds to the 
+        Dimension of the group is 3 for ``Twist3`` and corresponds to the
         dimension of the space (3D in this case) to which these
         rigid-body motions apply.
 
@@ -526,7 +527,7 @@ class Twist3(BaseTwist):
         return cls(v, w)
 
     @classmethod
-    def Rx(cls, theta, unit='rad'):
+    def Rx(cls, theta, unit="rad"):
         """
         Create a new 3D twist for pure rotation about the X-axis
 
@@ -554,10 +555,10 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.trotx`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,0,x,0,0] for x in base.getunit(theta, unit=unit)])
+        return cls([np.r_[0, 0, 0, x, 0, 0] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
-    def Ry(cls, theta, unit='rad', t=None):
+    def Ry(cls, theta, unit="rad", t=None):
         """
         Create a new 3D twist for pure rotation about the Y-axis
 
@@ -585,10 +586,10 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.troty`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,0,0,x,0] for x in base.getunit(theta, unit=unit)])
+        return cls([np.r_[0, 0, 0, 0, x, 0] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
-    def Rz(cls, theta, unit='rad', t=None):
+    def Rz(cls, theta, unit="rad", t=None):
         """
         Create a new 3D twist for pure rotation about the Z-axis
 
@@ -616,7 +617,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.trotz`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,0,0,0,x] for x in base.getunit(theta, unit=unit)])
+        return cls([np.r_[0, 0, 0, 0, 0, x] for x in base.getunit(theta, unit=unit)])
 
     @classmethod
     def RPY(cls, *pos, **kwargs):
@@ -656,7 +657,7 @@ class Twist3(BaseTwist):
         Example:
 
         .. runblock:: pycon
-        
+
             >>> from spatialmath import SE3
             >>> Twist3.RPY(0.1, 0.2, 0.3)
             >>> Twist3.RPY([0.1, 0.2, 0.3])
@@ -666,6 +667,8 @@ class Twist3(BaseTwist):
         :seealso: :meth:`~spatialmath.SE3.RPY`
         :SymPy: supported
         """
+        from spatialmath.pose3d import SE3
+
         T = SE3.RPY(*pos, **kwargs)
         return cls(T)
 
@@ -692,8 +695,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([np.r_[_x,0,0,0,0,0] for _x in base.getvector(x)], check=False)
-
+        return cls([np.r_[_x, 0, 0, 0, 0, 0] for _x in base.getvector(x)], check=False)
 
     @classmethod
     def Ty(cls, y):
@@ -718,7 +720,7 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([np.r_[0,_y,0,0,0,0] for _y in base.getvector(y)], check=False)
+        return cls([np.r_[0, _y, 0, 0, 0, 0] for _y in base.getvector(y)], check=False)
 
     @classmethod
     def Tz(cls, z):
@@ -742,10 +744,12 @@ class Twist3(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([np.r_[0,0,_z,0,0,0] for _z in base.getvector(z)], check=False)
+        return cls([np.r_[0, 0, _z, 0, 0, 0] for _z in base.getvector(z)], check=False)
 
     @classmethod
-    def Rand(cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1):  # pylint: disable=arguments-differ
+    def Rand(
+        cls, *, xrange=(-1, 1), yrange=(-1, 1), zrange=(-1, 1), N=1
+    ):  # pylint: disable=arguments-differ
         """
         Create a new random 3D twist
 
@@ -775,17 +779,26 @@ class Twist3(BaseTwist):
 
         :seealso: :func:`~spatialmath.quaternions.UnitQuaternion.Rand`
         """
-        X = np.random.uniform(low=xrange[0], high=xrange[1], size=N)  # random values in the range
-        Y = np.random.uniform(low=yrange[0], high=yrange[1], size=N)  # random values in the range
-        Z = np.random.uniform(low=yrange[0], high=zrange[1], size=N)  # random values in the range
+        from spatialmath.pose3d import SO3
+
+        X = np.random.uniform(
+            low=xrange[0], high=xrange[1], size=N
+        )  # random values in the range
+        Y = np.random.uniform(
+            low=yrange[0], high=yrange[1], size=N
+        )  # random values in the range
+        Z = np.random.uniform(
+            low=yrange[0], high=zrange[1], size=N
+        )  # random values in the range
         R = SO3.Rand(N=N)
 
         def _twist(x, y, z, r):
             T = base.transl(x, y, z) @ base.r2t(r.A)
             return base.trlog(T, twist=True)
 
-        return cls([_twist(x, y, z, r) for (x, y, z, r) in zip(X, Y, Z, R)], check=False)
-
+        return cls(
+            [_twist(x, y, z, r) for (x, y, z, r) in zip(X, Y, Z, R)], check=False
+        )
 
     # -------------------------  methods -------------------------------#
 
@@ -800,7 +813,7 @@ class Twist3(BaseTwist):
           Twist ``S``.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -841,10 +854,12 @@ class Twist3(BaseTwist):
 
         :seealso: :func:`Twist3.Ad`
         """
-        return np.block([
-                    [base.skew(self.w), base.skew(self.v)], 
-                    [np.zeros((3, 3)), base.skew(self.w)]
-                 ])
+        return np.block(
+            [
+                [base.skew(self.w), base.skew(self.v)],
+                [np.zeros((3, 3)), base.skew(self.w)],
+            ]
+        )
 
     def Ad(self):
         """
@@ -860,7 +875,7 @@ class Twist3(BaseTwist):
         transform a twist relative to frame {A} to one relative to frame {B}.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3
@@ -874,8 +889,6 @@ class Twist3(BaseTwist):
         """
         return self.SE3().Ad()
 
-
-
     def skewa(self):
         """
         Convert 3D twist to se(3)
@@ -885,10 +898,10 @@ class Twist3(BaseTwist):
 
         ``X.skewa()`` is the twist as a 4x4 augmented skew-symmetric matrix
         belonging to the group se(3). This is the Lie algebra of the
-        corresponding SE(3) element. 
+        corresponding SE(3) element.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3, base
@@ -911,14 +924,14 @@ class Twist3(BaseTwist):
         :rtype: float
 
         ``X.pitch()`` is the pitch of the twist as a scalar in units of distance
-        per radian. 
-        
+        per radian.
+
         If we consider the twist as a screw, this is the distance of
         translation along the screw axis for a one radian rotation about the
         screw axis.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -939,7 +952,7 @@ class Twist3(BaseTwist):
         ``X.line()`` is a Plucker object representing the line of the twist axis.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -957,11 +970,11 @@ class Twist3(BaseTwist):
         :return: the pole of the twist
         :rtype: ndarray(3)
 
-        ``X.pole()`` is a point on the twist axis. For a pure translation 
+        ``X.pole()`` is a point on the twist axis. For a pure translation
         this point is at infinity.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -971,18 +984,18 @@ class Twist3(BaseTwist):
         """
         return np.cross(self.w, self.v) / self.theta
 
-    def SE3(self, theta=1, unit='rad'):
+    def SE3(self, theta=1, unit="rad"):
         """
         Convert 3D twist to SE(3) matrix
 
         :return: an SE(3) representation
         :rtype: SE3 instance
 
-        ``S.SE3()`` is an SE3 object representing the homogeneous transformation 
+        ``S.SE3()`` is an SE3 object representing the homogeneous transformation
         equivalent to the Twist3. This is the exponentiation of the twist vector.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3
@@ -991,6 +1004,8 @@ class Twist3(BaseTwist):
 
         :seealso: :func:`Twist3.exp`
         """
+        from spatialmath.pose3d import SE3
+
         theta = base.getunit(theta, unit)
 
         if base.isscalar(theta):
@@ -1003,9 +1018,9 @@ class Twist3(BaseTwist):
             elif len(self) == len(theta):
                 return SE3([base.trexp(S * t) for S, t in zip(self.data, theta)])
             else:
-                raise ValueError('length of twist and theta not consistent')
+                raise ValueError("length of twist and theta not consistent")
 
-    def exp(self, theta=1, unit='rad'):
+    def exp(self, theta=1, unit="rad"):
         """
         Exponentiate a 3D twist
 
@@ -1031,7 +1046,7 @@ class Twist3(BaseTwist):
         ``N`` values equivalent to the twist :math:`e^{\theta_i[S_i]}`.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -1042,11 +1057,13 @@ class Twist3(BaseTwist):
 
         .. note::
 
-            - For the second form, the twist must, if rotational, have a unit 
+            - For the second form, the twist must, if rotational, have a unit
               rotational component.
 
         :seealso: :func:`spatialmath.base.trexp`
         """
+        from spatialmath.pose3d import SE3
+
         theta = np.r_[base.getunit(theta, unit)]
 
         if len(self) == 1:
@@ -1054,13 +1071,13 @@ class Twist3(BaseTwist):
         elif len(self) == len(theta):
             return SE3([base.trexp(s * t) for s, t in zip(self.S, theta)], check=False)
         else:
-            raise ValueError('length mismatch')
-
-
+            raise ValueError("length mismatch")
 
     # ------------------------- arithmetic -------------------------------#
 
-    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __mul__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator
 
@@ -1105,11 +1122,18 @@ class Twist3(BaseTwist):
         =========   ==========   ====  ================================
 
         """
+        from spatialmath.pose3d import SE3
+
         # TODO TW * T compounds a twist with an SE2/3 transformation
 
         if isinstance(right, Twist3):
             # twist composition -> Twist
-            return Twist3(left.binop(right, lambda x, y: base.trlog(base.trexp(x) @ base.trexp(y), twist=True)))
+            return Twist3(
+                left.binop(
+                    right,
+                    lambda x, y: base.trlog(base.trexp(x) @ base.trexp(y), twist=True),
+                )
+            )
         elif isinstance(right, SE3):
             # twist * SE3 -> SE3
             return SE3(left.binop(right, lambda x, y: base.trexp(x) @ y), check=False)
@@ -1117,10 +1141,11 @@ class Twist3(BaseTwist):
             # return Twist(left.S * right)
             return Twist3(left.binop(right, lambda x, y: x * y))
         else:
-            raise ValueError('twist *, incorrect right operand')
+            raise ValueError("twist *, incorrect right operand")
 
-
-    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(
+        right, left
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator
 
@@ -1136,7 +1161,7 @@ class Twist3(BaseTwist):
         if base.isscalar(left):
             return Twist3(right.S * left)
         else:
-            raise ValueError('Twist3 *, incorrect left operand')
+            raise ValueError("Twist3 *, incorrect left operand")
 
     def __str__(self):
         """
@@ -1155,7 +1180,14 @@ class Twist3(BaseTwist):
             >>> x = Twist3.R([1,2,3], [4,5,6])
             >>> print(x)
         """
-        return '\n'.join(["({:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g})".format(*list(base.removesmall(tw.S))) for tw in self])
+        return "\n".join(
+            [
+                "({:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g})".format(
+                    *list(base.removesmall(tw.S))
+                )
+                for tw in self
+            ]
+        )
 
     def __repr__(self):
         """
@@ -1178,11 +1210,22 @@ class Twist3(BaseTwist):
         if len(self) == 0:
             return "Twist([])"
         elif len(self) == 1:
-            return "Twist3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
+            return "Twist3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(
+                *list(self.S)
+            )
         else:
-            return "Twist3([\n" + \
-                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(*list(tw)) for tw in self.data]) +\
-                "\n])"
+            return (
+                "Twist3([\n"
+                + ",\n".join(
+                    [
+                        "  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(
+                            *list(tw)
+                        )
+                        for tw in self.data
+                    ]
+                )
+                + "\n])"
+            )
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -1203,35 +1246,37 @@ class Twist3(BaseTwist):
                     p.break_()
                 p.text(f"{i:3d}: {str(x)}")
 
+
 # ======================================================================== #
 
-class Twist2(BaseTwist):
 
+class Twist2(BaseTwist):
     def __init__(self, arg=None, w=None, check=True):
         r"""
-        Construct a new 2D Twist object
+            Construct a new 2D Twist object
 
-        :type a: 2-element array-like
-        :return: 2D prismatic twist
-        :rtype: Twist2 instance
+            :type a: 2-element array-like
+            :return: 2D prismatic twist
+            :rtype: Twist2 instance
 
-        - ``Twist2(R)`` is a 2D Twist object representing the SO(2) rotation expressed as 
-          a 2x2 matrix.
-        - ``Twist2(T)`` is a 2D Twist object representing the SE(2) rigid-body motion expressed as 
-          a 3x3 matrix.
-        - ``Twist2(X)`` if X is an SO2 instance then create a 2D Twist object representing the SO(2) rotation,
-          and if X is an SE2 instance then create a 2D Twist object representing the SE(2) motion
-        - ``Twist2(V)`` is a  2D Twist object specified directly by a 3-element array-like comprising the
-          moment vector (1 element) and direction vector (2 elements).
+            - ``Twist2(R)`` is a 2D Twist object representing the SO(2) rotation expressed as
+              a 2x2 matrix.
+            - ``Twist2(T)`` is a 2D Twist object representing the SE(2) rigid-body motion expressed as
+              a 3x3 matrix.
+            - ``Twist2(X)`` if X is an SO2 instance then create a 2D Twist object representing the SO(2) rotation,
+              and if X is an SE2 instance then create a 2D Twist object representing the SE(2) motion
+            - ``Twist2(V)`` is a  2D Twist object specified directly by a 3-element array-like comprising the
+              moment vector (1 element) and direction vector (2 elements).
 
-    :References:
-        - **Robotics, Vision & Control**, Corke, Springer 2017.
-        - **Modern Robotics, Lynch & Park**, Cambridge 2017
+        :References:
+            - **Robotics, Vision & Control**, Corke, Springer 2017.
+            - **Modern Robotics, Lynch & Park**, Cambridge 2017
 
-    .. note:: Compared to Lynch & Park this module implements twist vectors
-        with the translational components first, followed by rotational
-        components, ie. :math:`[\omega, \vec{v}]`.
+        .. note:: Compared to Lynch & Park this module implements twist vectors
+            with the translational components first, followed by rotational
+            components, ie. :math:`[\omega, \vec{v}]`.
         """
+        from spatialmath.pose2d import SE2
 
         super().__init__()
 
@@ -1240,12 +1285,12 @@ class Twist2(BaseTwist):
             if super().arghandler(arg, convertfrom=(SE2,), check=check):
                 return
 
-        elif w is not None and base.isscalar(w) and base.isvector(arg,2):
+        elif w is not None and base.isscalar(w) and base.isvector(arg, 2):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
             return
 
-        raise ValueError('bad twist value')
+        raise ValueError("bad twist value")
 
     # ------------------------ SMUserList required ---------------------------#
     @staticmethod
@@ -1264,15 +1309,15 @@ class Twist2(BaseTwist):
 
     def _import(self, value, check=True):
         if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
-            if value.shape == (3,3):
+            if value.shape == (3, 3):
                 # it's an se(2)
                 return base.vexa(value)
             elif value.shape == (3,):
                 # it's a twist vector
                 return value
         elif base.ishom2(value, check=check):
-                return base.trlog2(value, twist=True, check=False)
-        raise TypeError('bad type passed')
+            return base.trlog2(value, twist=True, check=False)
+        raise TypeError("bad type passed")
 
     @staticmethod
     def isvalid(v, check=True):
@@ -1326,7 +1371,7 @@ class Twist2(BaseTwist):
         - ``Twist2.Revolute(q)`` is a 2D Twist object representing rotation about the 2D point ``q``.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist2
@@ -1370,7 +1415,7 @@ class Twist2(BaseTwist):
         :return: dimension
         :rtype: int
 
-        Dimension of the group is 2 for ``Twist2`` and corresponds to the 
+        Dimension of the group is 2 for ``Twist2`` and corresponds to the
         dimension of the space (2D in this case) to which these
         rigid-body motions apply.
 
@@ -1434,11 +1479,11 @@ class Twist2(BaseTwist):
         :return: the pole of the twist
         :rtype: ndarray(2)
 
-        ``X.pole()`` is a point on the twist axis. For a pure translation 
+        ``X.pole()`` is a point on the twist axis. For a pure translation
         this point is at infinity.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -1454,18 +1499,18 @@ class Twist2(BaseTwist):
     def printline(self, **kwargs):
         return self.SE2().printline(**kwargs)
 
-    def SE2(self, theta=1, unit='rad'):
+    def SE2(self, theta=1, unit="rad"):
         """
         Convert 2D twist to SE(2) matrix
 
         :return: an SE(2) representation
         :rtype: SE3 instance
 
-        ``S.SE2()`` is an SE2 object representing the homogeneous transformation 
+        ``S.SE2()`` is an SE2 object representing the homogeneous transformation
         equivalent to the Twist2. This is the exponentiation of the twist vector.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist2
@@ -1474,8 +1519,10 @@ class Twist2(BaseTwist):
 
         :seealso: :func:`Twist3.exp`
         """
-        if unit != 'rad' and self.isprismatic:
-            print('Twist3.exp: using degree mode for a prismatic twist')
+        from spatialmath.pose2d import SE2
+
+        if unit != "rad" and self.isprismatic:
+            print("Twist3.exp: using degree mode for a prismatic twist")
 
         if theta is None:
             theta = 1
@@ -1496,10 +1543,10 @@ class Twist2(BaseTwist):
 
         ``X.skewa()`` is the twist as a 3x3 augmented skew-symmetric matrix
         belonging to the group se(2). This is the Lie algebra of the
-        corresponding SE(2) element. 
+        corresponding SE(2) element.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import Twist2, base
@@ -1513,7 +1560,7 @@ class Twist2(BaseTwist):
         else:
             return [base.skewa(x.S) for x in self]
 
-    def exp(self, theta=None, unit='rad'):
+    def exp(self, theta=None, unit="rad"):
         r"""
         Exponentiate a 2D twist
 
@@ -1530,7 +1577,7 @@ class Twist2(BaseTwist):
           :math:`e^{\theta[S]}`
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE2, Twist2
@@ -1541,18 +1588,19 @@ class Twist2(BaseTwist):
 
         .. note::
 
-            - For the second form, the twist must, if rotational, have a unit 
+            - For the second form, the twist must, if rotational, have a unit
               rotational component.
 
         :seealso: :func:`spatialmath.base.trexp2`
         """
+        from spatialmath.pose2d import SE2
+
         if theta is None:
             theta = 1.0
         else:
             theta = base.getunit(theta, unit)
 
         return SE2(base.trexp2(self.S * theta))
-
 
     def unit(self):
         """
@@ -1562,7 +1610,7 @@ class Twist2(BaseTwist):
           Twist ``S``.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -1586,7 +1634,7 @@ class Twist2(BaseTwist):
           homogeneous transformation.
 
         Example:
-        
+
         .. runblock:: pycon
 
             >>> from spatialmath import SE3, Twist3
@@ -1596,10 +1644,12 @@ class Twist2(BaseTwist):
 
         :seealso: SE3.Ad.
         """
-        return np.array([
-                    [base.skew(self.w), base.skew(self.v)], 
-                    [np.zeros((3, 3)), base.skew(self.w)]
-                ])
+        return np.array(
+            [
+                [base.skew(self.w), base.skew(self.v)],
+                [np.zeros((3, 3)), base.skew(self.w)],
+            ]
+        )
 
     @classmethod
     def Tx(cls, x):
@@ -1624,8 +1674,7 @@ class Twist2(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms2d.transl2`
         :SymPy: supported
         """
-        return cls([np.r_[_x,0,0] for _x in base.getvector(x)], check=False)
-
+        return cls([np.r_[_x, 0, 0] for _x in base.getvector(x)], check=False)
 
     @classmethod
     def Ty(cls, y):
@@ -1650,9 +1699,11 @@ class Twist2(BaseTwist):
         :seealso: :func:`~spatialmath.base.transforms2d.transl2`
         :SymPy: supported
         """
-        return cls([np.r_[0,_y,0] for _y in base.getvector(y)], check=False)
+        return cls([np.r_[0, _y, 0] for _y in base.getvector(y)], check=False)
 
-    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __mul__(
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator
 
@@ -1694,9 +1745,18 @@ class Twist2(BaseTwist):
          M          M             M    ``prod[i] = left[i] * right[i]``
         =========   ==========   ====  ================================
         """
+        from spatialmath.pose2d import SE2
+
         if isinstance(right, Twist2):
             # twist composition -> Twist
-            return Twist2(left.binop(right, lambda x, y: base.trlog2(base.trexp2(x) @ base.trexp2(y), twist=True)))
+            return Twist2(
+                left.binop(
+                    right,
+                    lambda x, y: base.trlog2(
+                        base.trexp2(x) @ base.trexp2(y), twist=True
+                    ),
+                )
+            )
         elif isinstance(right, SE2):
             # twist * SE2 -> SE2
             return SE2(left.binop(right, lambda x, y: base.trexp2(x) @ y), check=False)
@@ -1704,13 +1764,13 @@ class Twist2(BaseTwist):
             # return Twist(left.S * right)
             return Twist2(left.binop(right, lambda x, y: x * y))
         else:
-            raise ValueError('Twist2 *, incorrect right operand')
+            raise ValueError("Twist2 *, incorrect right operand")
 
     def __rmul(self, left):
         if base.isscalar(left):
             return Twist2(self.S * left)
         else:
-            raise ValueError('twist *, incorrect left operand')
+            raise ValueError("twist *, incorrect left operand")
 
     def __str__(self):
         """
@@ -1728,7 +1788,7 @@ class Twist2(BaseTwist):
             >>> x = Twist2([1,2,3])
             >>> print(x)
         """
-        return '\n'.join(["({:.5g} {:.5g}; {:.5g})".format(*list(tw.S)) for tw in self])
+        return "\n".join(["({:.5g} {:.5g}; {:.5g})".format(*list(tw.S)) for tw in self])
 
     def __repr__(self):
         """
@@ -1752,9 +1812,13 @@ class Twist2(BaseTwist):
         if len(self) == 1:
             return "Twist2([{:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
         else:
-            return "Twist2([\n" + \
-                ',\n'.join(["  [{:.5g}, {:.5g}, {:.5g}}]".format(*list(tw.S)) for tw in self]) +\
-                "\n])"
+            return (
+                "Twist2([\n"
+                + ",\n".join(
+                    ["  [{:.5g}, {:.5g}, {:.5g}}]".format(*list(tw.S)) for tw in self]
+                )
+                + "\n])"
+            )
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -1775,10 +1839,13 @@ class Twist2(BaseTwist):
                     p.break_()
                 p.text(f"{i:3d}: {str(x)}")
 
-if __name__ == '__main__':   # pragma: no cover
 
-    tw = Twist3( SE3.Rx(0) )
+if __name__ == "__main__":  # pragma: no cover
 
-    # import pathlib
+    import pathlib
 
-    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_twist.py").read())  # pylint: disable=exec-used
+    exec(
+        open(
+            pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_twist.py"
+        ).read()
+    )  # pylint: disable=exec-used

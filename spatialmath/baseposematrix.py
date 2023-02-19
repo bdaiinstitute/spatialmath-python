@@ -1,6 +1,7 @@
 # Part of Spatial Math Toolbox for Python
 # Copyright (c) 2000 Peter Corke
 # MIT Licence, see details in top-level file: LICENCE
+from __future__ import annotations
 
 import numpy as np
 
@@ -14,6 +15,7 @@ import numpy as np
 #     _symbolics = False
 
 import spatialmath.base as base
+from spatialmath.base.types import *
 from spatialmath.baseposelist import BasePoseList
 
 _eps = np.finfo(np.float64).eps
@@ -137,7 +139,7 @@ class BasePoseMatrix(BasePoseList):
     # ------------------------------------------------------------------------ #
 
     @property
-    def about(self):
+    def about(self) -> str:
         """
         Succinct summary of object type and length (superclass property)
 
@@ -156,7 +158,7 @@ class BasePoseMatrix(BasePoseList):
         return "{:s}[{:d}]".format(type(self).__name__, len(self))
 
     @property
-    def N(self):
+    def N(self) -> int:
         """
         Dimension of the object's group (superclass property)
 
@@ -181,7 +183,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- tests
     @property
-    def isSO(self):
+    def isSO(self) -> bool:
         """
         Test if object belongs to SO(n) group (superclass property)
 
@@ -193,7 +195,7 @@ class BasePoseMatrix(BasePoseList):
         return type(self).__name__ == "SO2" or type(self).__name__ == "SO3"
 
     @property
-    def isSE(self):
+    def isSE(self) -> bool:
         """
         Test if object belongs to SE(n) group (superclass property)
 
@@ -210,7 +212,7 @@ class BasePoseMatrix(BasePoseList):
 
     # --------- compatibility methods
 
-    def isrot(self):
+    def isrot(self) -> bool:
         """
         Test if object belongs to SO(3) group (superclass method)
 
@@ -231,7 +233,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return type(self).__name__ == "SO3"
 
-    def isrot2(self):
+    def isrot2(self) -> bool:
         """
         Test if object belongs to SO(2) group (superclass method)
 
@@ -252,7 +254,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return type(self).__name__ == "SO2"
 
-    def ishom(self):
+    def ishom(self) -> bool:
         """
         Test if object belongs to SE(3) group (superclass method)
 
@@ -273,7 +275,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return type(self).__name__ == "SE3"
 
-    def ishom2(self):
+    def ishom2(self) -> bool:
         """
         Test if object belongs to SE(2) group (superclass method)
 
@@ -296,7 +298,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- functions
 
-    def det(self):
+    def det(self) -> Tuple[float, Rn]:
         """
         Determinant of rotational component (superclass method)
 
@@ -328,11 +330,13 @@ class BasePoseMatrix(BasePoseList):
             else:
                 return [np.linalg.det(T[:2, :2]) for T in self.data]
 
-    def log(self, twist=False):
+    def log(self, twist: Optional[bool] = False) -> Union[NDArray, List[NDArray]]:
         """
         Logarithm of pose (superclass method)
 
-        :return: logarithm :rtype: numpy.ndarray :raises: ValueError
+        :return: logarithm
+        :rtype: ndarray
+        :raises: ValueError
 
         An efficient closed-form solution of the matrix logarithm.
 
@@ -370,7 +374,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             return log
 
-    def interp(self, end=None, s=None):
+    def interp(self, end: Optional[bool] = None, s: Union[int, float] = None) -> Self:
         """
         Interpolate between poses (superclass method)
 
@@ -434,7 +438,7 @@ class BasePoseMatrix(BasePoseList):
                 [base.trinterp(start=self.A, end=end, s=_s) for _s in s]
             )
 
-    def interp1(self, s=None):
+    def interp1(self, s: float = None) -> Self:
         """
         Interpolate pose (superclass method)
 
@@ -507,7 +511,7 @@ class BasePoseMatrix(BasePoseList):
                     [base.trinterp(None, x, s=s[0]) for x in self.data]
                 )
 
-    def norm(self):
+    def norm(self) -> Self:
         """
         Normalize pose (superclass method)
 
@@ -541,7 +545,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             return self.__class__([base.trnorm(x) for x in self.data])
 
-    def simplify(self):
+    def simplify(self) -> Self:
         """
         Symbolically simplify matrix values (superclass method)
 
@@ -574,7 +578,7 @@ class BasePoseMatrix(BasePoseList):
         vf = np.vectorize(base.sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
 
-    def stack(self):
+    def stack(self) -> NDArray:
         """
         Convert to 3-dimensional matrix
 
@@ -589,7 +593,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- i/o stuff
 
-    def print(self, label=None, file=None):
+    def print(self, label: Optional[str] = None, file: Optional[TextIO] = None) -> None:
         """
         Print pose as a matrix (superclass method)
 
@@ -609,15 +613,16 @@ class BasePoseMatrix(BasePoseList):
             >>> SE3().print()
             >>> SE3().print("pose is:")
 
+        :seealso: :meth:`printline` :meth:`strline`
         """
         if label is not None:
             print(label, file=file)
         print(self, file=file)
 
-    def printline(self, *args, **kwargs):
+    def printline(self, *args, **kwargs) -> None:
         r"""
         Print pose in compact single line format (superclass method)
-        
+
         :param arg: value for orient option, optional
         :type arg: str
         :param label: text label to put at start of line
@@ -649,7 +654,6 @@ class BasePoseMatrix(BasePoseList):
         ``'angvec'``    angle and axis
         =============   =================================================
 
-
         Example:
 
         .. runblock:: pycon
@@ -678,7 +682,7 @@ class BasePoseMatrix(BasePoseList):
             for x in self.data:
                 base.trprint(x, *args, **kwargs)
 
-    def strline(self, *args, **kwargs):
+    def strline(self, *args, **kwargs) -> str:
         """
         Convert pose to compact single line string (superclass method)
 
@@ -741,21 +745,20 @@ class BasePoseMatrix(BasePoseList):
                 s += base.trprint(x, *args, file=False, **kwargs)
         return s
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Readable representation of pose (superclass method)
 
         :return: readable representation of the pose as a list of arrays
         :rtype: str
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> x = SE3.Rx(0.3)
-            >>> x
-            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.95533649, -0.29552021,  0.        ],
-                       [ 0.        ,  0.29552021,  0.95533649,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
+            >>> repr(x)
 
         """
 
@@ -805,7 +808,7 @@ class BasePoseMatrix(BasePoseList):
             for i, x in enumerate(self):
                 p.text(f"{i}:\n{str(x)}")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Pretty string representation of pose (superclass method)
 
@@ -814,14 +817,13 @@ class BasePoseMatrix(BasePoseList):
 
         Convert the pose's matrix value to a simple grid of numbers.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> x = SE3.Rx(0.3)
             >>> print(x)
-               1           0           0           0
-               0           0.955336   -0.29552     0
-               0           0.29552     0.955336    0
-               0           0           0           1
 
         Notes:
 
@@ -837,13 +839,13 @@ class BasePoseMatrix(BasePoseList):
         else:
             return self._string_color(color=True)
 
-    def _string_matrix(self):
+    def _string_matrix(self) -> str:
         if self._ansiformatter is None:
             self._ansiformatter = ANSIMatrix(style="thick")
 
         return "\n".join([self._ansiformatter.str(A) for A in self.data])
 
-    def _string_color(self, color=False):
+    def _string_color(self, color: Optional[bool] = False) -> str:
         """
         Pretty print the matrix value
 
@@ -860,15 +862,6 @@ class BasePoseMatrix(BasePoseList):
                 * red: rotational elements
                 * blue: translational elements
                 * white: constant elements
-
-        Example::
-
-            >>> x = SE3.Rx(0.3)
-            >>> print(str(x))
-               1           0           0           0
-               0           0.955336   -0.29552     0
-               0           0.29552     0.955336    0
-               0           0           0           1
 
         """
         # print('in __str__', _color)
@@ -950,7 +943,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- graphics
 
-    def plot(self, *args, **kwargs):
+    def plot(self, *args, **kwargs) -> None:
         """
         Plot pose object as a coordinate frame (superclass method)
 
@@ -964,6 +957,12 @@ class BasePoseMatrix(BasePoseList):
             >>> X = SE3.Rx(0.3)
             >>> X.plot(frame='A', color='green')
 
+        .. plot::
+
+            from spatialmath import SE3
+            X = SE3.Rx(0.3)
+            X.plot(frame='A', color='green')
+
         :seealso: :func:`~spatialmath.base.transforms3d.trplot`, :func:`~spatialmath.base.transforms2d.trplot2`
         """
         if self.N == 2:
@@ -971,7 +970,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             base.trplot(self.A, *args, **kwargs)
 
-    def animate(self, *args, start=None, **kwargs):
+    def animate(self, *args, start=None, **kwargs) -> None:
         """
         Plot pose object as an animated coordinate frame (superclass method)
 
@@ -1011,7 +1010,7 @@ class BasePoseMatrix(BasePoseList):
                 base.tranimate(self.A, start=start, *args, **kwargs)
 
     # ------------------------------------------------------------------------ #
-    def prod(self):
+    def prod(self) -> Self:
         r"""
         Product of elements (superclass method)
 
@@ -1021,21 +1020,18 @@ class BasePoseMatrix(BasePoseList):
         ``x.prod()`` is the product of the values held by ``x``, ie.
         :math:`\prod_i^N T_i`.
 
-        Example::
+        .. runblock:: pycon
 
+            >>> from spatialmath import SE3
             >>> x = SE3.Rx([0, 0.1, 0.2, 0.3])
             >>> x.prod()
-            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.82533561, -0.56464247,  0.        ],
-                       [ 0.        ,  0.56464247,  0.82533561,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
         """
         Tprod = self.__class__._identity()  # identity value
         for T in self.data:
             Tprod = Tprod @ T
         return self.__class__(Tprod)
 
-    def __pow__(self, n):
+    def __pow__(self, n: int) -> Self:
         """
         Overloaded ``**`` operator (superclass method)
 
@@ -1047,23 +1043,13 @@ class BasePoseMatrix(BasePoseList):
         ``X**n`` raise all values held in `X` to the specified power using repeated
         multiplication.  If ``n`` < 0 then the result is inverted.
 
-        Example::
+        Example:
 
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
             >>> SE3.Rx(0.1) ** 2
-            SE3(array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                       [ 0.        ,  0.98006658, -0.19866933,  0.        ],
-                       [ 0.        ,  0.19866933,  0.98006658,  0.        ],
-                       [ 0.        ,  0.        ,  0.        ,  1.        ]]))
             >>> SE3.Rx([0, 0.1]) ** 2
-            SE3([
-            array([[1., 0., 0., 0.],
-                   [0., 1., 0., 0.],
-                   [0., 0., 1., 0.],
-                   [0., 0., 0., 1.]]),
-            array([[ 1.        ,  0.        ,  0.        ,  0.        ],
-                   [ 0.        ,  0.98006658, -0.19866933,  0.        ],
-                   [ 0.        ,  0.19866933,  0.98006658,  0.        ],
-                   [ 0.        ,  0.        ,  0.        ,  1.        ]]) ])
 
         """
 
@@ -1074,7 +1060,7 @@ class BasePoseMatrix(BasePoseList):
 
     # ----------------------- arithmetic
 
-    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __mul__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1240,7 +1226,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             return NotImplemented
 
-    def __matmul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __matmul__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``@`` operator (superclass method)
 
@@ -1266,7 +1252,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             raise TypeError("@ only applies to pose composition")
 
-    def __rmul__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rmul__(right, left):  # pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator (superclass method)
 
@@ -1292,7 +1278,7 @@ class BasePoseMatrix(BasePoseList):
         #     return NotImplemented
         return right.__mul__(left)
 
-    def __imul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __imul__(left, right):  # noqa
         """
         Overloaded ``*=`` operator (superclass method)
 
@@ -1308,7 +1294,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__mul__(right)
 
-    def __truediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __truediv__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
 
@@ -1360,7 +1346,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             raise ValueError("bad operands")
 
-    def __itruediv__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __itruediv__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/=`` operator (superclass method)
 
@@ -1376,7 +1362,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__truediv__(right)
 
-    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __add__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1426,7 +1412,7 @@ class BasePoseMatrix(BasePoseList):
         # results is not in the group, return an array, not a class
         return left._op2(right, lambda x, y: x + y)
 
-    def __radd__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __radd__(right, left):  # pylint: disable=no-self-argument
         """
         Overloaded ``+`` operator (superclass method)
 
@@ -1442,7 +1428,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return right.__add__(left)
 
-    def __iadd__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __iadd__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``+=`` operator (superclass method)
 
@@ -1458,7 +1444,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__add__(right)
 
-    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __sub__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1508,7 +1494,7 @@ class BasePoseMatrix(BasePoseList):
         # TODO allow class +/- a conformant array
         return left._op2(right, lambda x, y: x - y)
 
-    def __rsub__(right, left):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __rsub__(right, left: Self):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
 
@@ -1524,7 +1510,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return -right.__sub__(left)
 
-    def __isub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __isub__(left, right: Self):  # pylint: disable=no-self-argument
         """
         Overloaded ``-=`` operator (superclass method)
 
@@ -1541,7 +1527,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__sub__(right)
 
-    def __eq__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __eq__(left, right: Self) -> bool:  # pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
@@ -1566,10 +1552,13 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        return (left._op2(right, lambda x, y: np.allclose(x, y))
-                if type(left) == type(right) else False)
+        return (
+            left._op2(right, lambda x, y: np.allclose(x, y))
+            if type(left) == type(right)
+            else False
+        )
 
-    def __ne__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __ne__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``!=`` operator (superclass method)
 
@@ -1595,9 +1584,9 @@ class BasePoseMatrix(BasePoseList):
 
         """
         eq = left == right
-        return (not eq if isinstance(eq, bool) else [not x for x in eq])
+        return not eq if isinstance(eq, bool) else [not x for x in eq]
 
-    def _op2(left, right, op):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def _op2(left, right: Self, op: Callable):  # pylint: disable=no-self-argument
         """
         Perform binary operation
 

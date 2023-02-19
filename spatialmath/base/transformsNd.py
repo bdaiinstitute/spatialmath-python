@@ -16,6 +16,7 @@ import numpy as np
 from spatialmath.base.types import *
 from spatialmath.base.argcheck import getvector, isvector
 from spatialmath.base.vectors import iszerovec, unitvec_norm
+
 # from spatialmath.base.symbolic import issymbol
 # from spatialmath.base.transforms3d import transl
 # from spatialmath.base.transforms2d import transl2
@@ -32,16 +33,19 @@ except ImportError:  # pragma: no cover
 
 _eps = np.finfo(np.float64).eps
 
+
 # ---------------------------------------------------------------------------------------#
 @overload
-def r2t(R:SO2Array, check:bool=False) -> SE2Array:
+def r2t(R: SO2Array, check: bool = False) -> SE2Array:
     ...
+
 
 @overload
-def r2t(R:SO3Array, check:bool=False) -> SE3Array:
+def r2t(R: SO3Array, check: bool = False) -> SE3Array:
     ...
 
-def r2t(R:SOnArray, check:bool=False) -> SEnArray:
+
+def r2t(R, check=False):
     """
     Convert SO(n) to SE(n)
 
@@ -98,14 +102,16 @@ def r2t(R:SOnArray, check:bool=False) -> SEnArray:
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def t2r(T:SE2Array, check:bool=False) -> SO2Array:
+def t2r(T: SE2Array, check: bool = False) -> SO2Array:
     ...
+
 
 @overload
-def t2r(T:SE3Array, check:bool=False) -> SO3Array:
+def t2r(T: SE3Array, check: bool = False) -> SO3Array:
     ...
 
-def t2r(T:SEnArray, check:bool=False) -> SOnArray:
+
+def t2r(T: SEnArray, check: bool = False) -> SOnArray:
     """
     Convert SE(n) to SO(n)
 
@@ -152,21 +158,25 @@ def t2r(T:SEnArray, check:bool=False) -> SOnArray:
 
     return R
 
-a = t2r(np.eye(4,dtype='float'))
+
+a = t2r(np.eye(4, dtype="float"))
 
 b = t2r(np.eye(3))
 
 # ---------------------------------------------------------------------------------------#
 
-@overload
-def tr2rt(T:SE2Array, check=False) -> Tuple[SO2Array,R2]:
-    ...
 
 @overload
-def tr2rt(T:SE3Array, check=False) -> Tuple[SO3Array,R3]:
+def tr2rt(T: SE2Array, check=False) -> Tuple[SO2Array, R2]:
     ...
 
-def tr2rt(T:SEnArray, check=False) -> Tuple[SOnArray,Rn]:
+
+@overload
+def tr2rt(T: SE3Array, check=False) -> Tuple[SO3Array, R3]:
+    ...
+
+
+def tr2rt(T: SEnArray, check=False) -> Tuple[SOnArray, Rn]:
     """
     Convert SE(n) to SO(n) and translation
 
@@ -210,20 +220,23 @@ def tr2rt(T:SEnArray, check=False) -> Tuple[SOnArray,Rn]:
     else:
         raise ValueError("T must be an SE2 or SE3 homogeneous transformation matrix")
 
-    return [R, t]
+    return (R, t)
 
 
 # ---------------------------------------------------------------------------------------#
 
-@overload
-def rt2tr(R:SO2Array, t:ArrayLike2, check=False) -> SE2Array:
-    ...
 
 @overload
-def rt2tr(R:SO3Array, t:ArrayLike3, check=False) -> SE3Array:
+def rt2tr(R: SO2Array, t: ArrayLike2, check=False) -> SE2Array:
     ...
 
-def rt2tr(R:SOnArray, t:Rn, check=False) -> SEnArray:
+
+@overload
+def rt2tr(R: SO3Array, t: ArrayLike3, check=False) -> SE3Array:
+    ...
+
+
+def rt2tr(R, t, check=False):
     """
     Convert SO(n) and translation to SE(n)
 
@@ -263,17 +276,16 @@ def rt2tr(R:SOnArray, t:Rn, check=False) -> SEnArray:
 
     if R.dtype == "O":
         if R.shape == (2, 2):
-            T = np.pad(R, ((0, 1), (0, 1)), 'constant')
+            T = np.pad(R, ((0, 1), (0, 1)), "constant")  # type: ignore
             T[:2, 2] = t
             T[2, 2] = 1
         elif R.shape == (3, 3):
-            T = np.pad(R, ((0, 1), (0, 1)), 'constant')
+            T = np.pad(R, ((0, 1), (0, 1)), "constant")  # type: ignore
             T[:3, 3] = t
             T[3, 3] = 1
         else:
             raise ValueError("R must be an SO2 or SO3 rotation matrix")
     else:
-
         if R.shape == (2, 2):
             T = np.eye(3)
             T[:2, :2] = R
@@ -291,7 +303,7 @@ def rt2tr(R:SOnArray, t:Rn, check=False) -> SEnArray:
 # ---------------------------------------------------------------------------------------#
 
 
-def Ab2M(A:np.ndarray, b:np.ndarray) -> np.ndarray:
+def Ab2M(A: np.ndarray, b: np.ndarray) -> np.ndarray:
     """
     Pack matrix and vector to matrix
 
@@ -341,7 +353,7 @@ def Ab2M(A:np.ndarray, b:np.ndarray) -> np.ndarray:
 # ======================= predicates
 
 
-def isR(R:SOnArray, tol:float=100) -> bool:  #-> TypeGuard[SOnArray]:
+def isR(R: NDArray, tol: float = 100) -> bool:  # -> TypeGuard[SOnArray]:
     r"""
     Test if matrix belongs to SO(n)
 
@@ -364,13 +376,13 @@ def isR(R:SOnArray, tol:float=100) -> bool:  #-> TypeGuard[SOnArray]:
 
     :seealso: isrot2, isrot
     """
-    return (
+    return bool(
         np.linalg.norm(R @ R.T - np.eye(R.shape[0])) < tol * _eps
         and np.linalg.det(R @ R.T) > 0
     )
 
 
-def isskew(S:sonArray, tol:float=10) -> bool: #-> TypeGuard[sonArray]:
+def isskew(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[sonArray]:
     r"""
     Test if matrix belongs to so(n)
 
@@ -394,10 +406,10 @@ def isskew(S:sonArray, tol:float=10) -> bool: #-> TypeGuard[sonArray]:
 
     :seealso: isskewa
     """
-    return np.linalg.norm(S + S.T) < tol * _eps
+    return bool(np.linalg.norm(S + S.T) < tol * _eps)
 
 
-def isskewa(S:senArray, tol:float=10) -> bool: # -> TypeGuard[senArray]:
+def isskewa(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[senArray]:
     r"""
     Test if matrix belongs to se(n)
 
@@ -422,12 +434,12 @@ def isskewa(S:senArray, tol:float=10) -> bool: # -> TypeGuard[senArray]:
 
     :seealso: isskew
     """
-    return np.linalg.norm(S[0:-1, 0:-1] + S[0:-1, 0:-1].T) < tol * _eps and np.all(
+    return bool(np.linalg.norm(S[0:-1, 0:-1] + S[0:-1, 0:-1].T) < tol * _eps) and all(
         S[-1, :] == 0
     )
 
 
-def iseye(S:np.ndarray, tol:float=10) -> bool:
+def iseye(S: NDArray, tol: float = 10) -> bool:
     """
     Test if matrix is identity
 
@@ -453,19 +465,21 @@ def iseye(S:np.ndarray, tol:float=10) -> bool:
     s = S.shape
     if len(s) != 2 or s[0] != s[1]:
         return False  # not a square matrix
-    return np.linalg.norm(S - np.eye(s[0])) < tol * _eps
+    return bool(np.linalg.norm(S - np.eye(s[0])) < tol * _eps)
 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def skew(v:ArrayLike2) -> se2Array:
+def skew(v: float) -> se2Array:
     ...
+
 
 @overload
-def skew(v:ArrayLike3) -> se3Array:
+def skew(v: ArrayLike3) -> se3Array:
     ...
 
-def skew(v:Union[ArrayLike2,ArrayLike3]) -> Union[se2Array,se3Array]:
+
+def skew(v):
     r"""
     Create skew-symmetric metrix from vector
 
@@ -496,23 +510,36 @@ def skew(v:Union[ArrayLike2,ArrayLike3]) -> Union[se2Array,se3Array]:
     """
     v = getvector(v, None, "sequence")
     if len(v) == 1:
-        return np.array([[0, -v[0]], [v[0], 0]])
+        # fmt: off
+        return np.array([
+            [0.0,  -v[0]], 
+            [v[0],  0.0]
+        ])  # type: ignore
+        # fmt: on
     elif len(v) == 3:
-        return np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+        # fmt: off
+        return np.array([
+            [ 0,    -v[2],  v[1]],
+            [ v[2],  0,    -v[0]],
+            [-v[1],  v[0],  0]
+        ])  # type: ignore
+        # fmt: on
     else:
         raise ValueError("argument must be a 1- or 3-vector")
 
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def vex(s:SO2Array, check:bool=False) -> R2:
+def vex(s: so2Array, check: bool = False) -> R1:
     ...
+
 
 @overload
-def vex(s:SO3Array, check:bool=False) -> R3:
+def vex(s: so3Array, check: bool = False) -> R3:
     ...
 
-def vex(s:SOnArray, check:bool=False) -> Union[R2,R3]:
+
+def vex(s, check=False):
     r"""
     Convert skew-symmetric matrix to vector
 
@@ -562,14 +589,16 @@ def vex(s:SOnArray, check:bool=False) -> Union[R2,R3]:
 
 # ---------------------------------------------------------------------------------------#
 @overload
-def skewa(v:ArrayLike3) -> se2Array:
+def skewa(v: ArrayLike3) -> se2Array:
     ...
+
 
 @overload
-def skewa(v:ArrayLike6) -> se3Array:
+def skewa(v: ArrayLike6) -> se3Array:
     ...
 
-def skewa(v:Union[ArrayLike3,ArrayLike6]) -> Union[se2Array,se3Array]:
+
+def skewa(v: Union[ArrayLike3, ArrayLike6]) -> Union[se2Array, se3Array]:
     r"""
     Create augmented skew-symmetric metrix from vector
 
@@ -614,15 +643,18 @@ def skewa(v:Union[ArrayLike3,ArrayLike6]) -> Union[se2Array,se3Array]:
     else:
         raise ValueError("expecting a 3- or 6-vector")
 
-@overload
-def vexa(Omega:se2Array, check:bool=False) -> R3:
-    ...
 
 @overload
-def vexa(Omega:se3Array, check:bool=False) -> R6:
+def vexa(Omega: se2Array, check: bool = False) -> R3:
     ...
 
-def vexa(Omega:senArray, check:bool=False) -> Union[R3,R6]:
+
+@overload
+def vexa(Omega: se3Array, check: bool = False) -> R6:
+    ...
+
+
+def vexa(Omega: senArray, check: bool = False) -> Union[R3, R6]:
     r"""
     Convert skew-symmetric matrix to vector
 
@@ -661,14 +693,14 @@ def vexa(Omega:senArray, check:bool=False) -> Union[R3,R6]:
     :SymPy: supported
     """
     if Omega.shape == (4, 4):
-        return np.hstack((Omega[:3,3], vex(t2r(Omega), check=check)))
+        return np.hstack((Omega[:3, 3], vex(Omega[:3, :3], check=check)))
     elif Omega.shape == (3, 3):
-        return np.hstack((Omega[:2,2], vex(t2r(Omega), check=check)))
+        return np.hstack((Omega[:2, 2], vex(Omega[:2, :2], check=check)))
     else:
         raise ValueError("expecting a 3x3 or 4x4 matrix")
 
 
-def h2e(v:np.ndarray) -> np.ndarray:
+def h2e(v: NDArray) -> NDArray:
     """
     Convert from homogeneous to Euclidean form
 
@@ -704,8 +736,11 @@ def h2e(v:np.ndarray) -> np.ndarray:
         v = getvector(v, out="col")
         return v[0:-1] / v[-1]
 
+    else:
+        raise ValueError("bad type")
 
-def e2h(v:np.ndarray) -> np.ndarray:
+
+def e2h(v: NDArray) -> NDArray:
     """
     Convert from Euclidean to homogeneous form
 
@@ -740,8 +775,11 @@ def e2h(v:np.ndarray) -> np.ndarray:
         v = getvector(v, out="col")
         return np.vstack((v, 1))
 
+    else:
+        raise ValueError("bad type")
 
-def homtrans(T:SEnArray, p:np.ndarray) -> np.ndarray:
+
+def homtrans(T: SEnArray, p: np.ndarray) -> np.ndarray:
     r"""
     Apply a homogeneous transformation to a Euclidean vector
 
@@ -783,7 +821,7 @@ def homtrans(T:SEnArray, p:np.ndarray) -> np.ndarray:
     return h2e(T @ p)
 
 
-def det(m:np.ndarray) -> float:
+def det(m: np.ndarray) -> float:
     """
     Determinant of matrix
 
@@ -803,7 +841,7 @@ def det(m:np.ndarray) -> float:
 
     :SymPy: supported
     """
-    if m.dtype.kind == "O":
+    if m.dtype.kind == "O" and _symbolics:
         return Matrix(m).det()
     else:
         return np.linalg.det(m)
@@ -812,10 +850,11 @@ def det(m:np.ndarray) -> float:
 if __name__ == "__main__":  # pragma: no cover
     import pathlib
 
-    print(e2h((1, 2, 3)))
-    print(h2e((1, 2, 3)))
     exec(
         open(
-            pathlib.Path(__file__).parent.parent.parent.absolute() / "tests" / "base" / "test_transformsNd.py"
+            pathlib.Path(__file__).parent.parent.parent.absolute()
+            / "tests"
+            / "base"
+            / "test_transformsNd.py"
         ).read()
     )  # pylint: disable=exec-used

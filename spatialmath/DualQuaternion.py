@@ -1,13 +1,16 @@
+from __future__ import annotations
 import numpy as np
 from spatialmath import Quaternion, UnitQuaternion, SE3
 from spatialmath import base
+from spatialmath.base.types import *
 
 # TODO scalar multiplication
+
 
 class DualQuaternion:
     r"""
     A dual number is an ordered pair :math:`\hat{a} = (a, b)` or written as
-    :math:`a + \epsilon b` where :math:`\epsilon^2 = 0`.  
+    :math:`a + \epsilon b` where :math:`\epsilon^2 = 0`.
 
     A dual quaternion can be considered as either:
 
@@ -27,7 +30,7 @@ class DualQuaternion:
     :seealso: :func:`UnitDualQuaternion`
     """
 
-    def __init__(self, real=None, dual=None):
+    def __init__(self, real: Quaternion = None, dual: Quaternion = None):
         """
         Construct a new dual quaternion
 
@@ -61,23 +64,23 @@ class DualQuaternion:
             self.dual = Quaternion(real[4:8])
         elif real is not None and dual is not None:
             if not isinstance(real, Quaternion):
-                raise ValueError('real part must be a Quaternion subclass')
+                raise ValueError("real part must be a Quaternion subclass")
             if not isinstance(dual, Quaternion):
-                raise ValueError('real part must be a Quaternion subclass')
+                raise ValueError("real part must be a Quaternion subclass")
             self.real = real  # quaternion, real part
             self.dual = dual  # quaternion, dual part
         else:
-            raise ValueError('expecting zero or two parameters')
+            raise ValueError("expecting zero or two parameters")
 
     @classmethod
-    def Pure(cls, x):
+    def Pure(cls, x: ArrayLike3) -> Self:
         x = base.getvector(x, 3)
         return cls(UnitQuaternion(), Quaternion.Pure(x))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         String representation of dual quaternion
 
@@ -94,7 +97,7 @@ class DualQuaternion:
         """
         return str(self.real) + " + ε " + str(self.dual)
 
-    def norm(self):
+    def norm(self) -> Tuple[float, float]:
         """
         Norm of a dual quaternion
 
@@ -116,7 +119,7 @@ class DualQuaternion:
         b = self.real * self.dual.conj() + self.dual * self.real.conj()
         return (base.sqrt(a.s), base.sqrt(b.s))
 
-    def conj(self):
+    def conj(self) -> Self:
         r"""
         Conjugate of dual quaternion
 
@@ -137,7 +140,9 @@ class DualQuaternion:
         """
         return DualQuaternion(self.real.conj(), self.dual.conj())
 
-    def __add__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __add__(
+        left, right: DualQuaternion
+    ) -> Self:  # pylint: disable=no-self-argument
         """
         Sum of two dual quaternions
 
@@ -154,7 +159,9 @@ class DualQuaternion:
         """
         return DualQuaternion(left.real + right.real, left.dual + right.dual)
 
-    def __sub__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __sub__(
+        left, right: DualQuaternion
+    ) -> Self:  # pylint: disable=no-self-argument
         """
         Difference of two dual quaternions
 
@@ -171,7 +178,7 @@ class DualQuaternion:
         """
         return DualQuaternion(left.real - right.real, left.dual - right.dual)
 
-    def __mul__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+    def __mul__(left, right: Self) -> Self:  # pylint: disable=no-self-argument
         """
         Product of dual quaternion
 
@@ -193,7 +200,9 @@ class DualQuaternion:
             real = left.real * right.real
             dual = left.real * right.dual + left.dual * right.real
 
-            if isinstance(left, UnitDualQuaternion) and isinstance(left, UnitDualQuaternion):
+            if isinstance(left, UnitDualQuaternion) and isinstance(
+                left, UnitDualQuaternion
+            ):
                 return UnitDualQuaternion(real, dual)
             else:
                 return DualQuaternion(real, dual)
@@ -202,7 +211,7 @@ class DualQuaternion:
             vp = left * DualQuaternion.Pure(v) * left.conj()
             return vp.dual.v
 
-    def matrix(self):
+    def matrix(self) -> R8x8:
         """
         Dual quaternion as a matrix
 
@@ -222,13 +231,12 @@ class DualQuaternion:
             >>> d.matrix() @ d.vec
             >>> d * d
         """
-        return np.block([
-                [self.real.matrix, np.zeros((4,4))],
-                [self.dual.matrix, self.real.matrix]
-            ])
+        return np.block(
+            [[self.real.matrix, np.zeros((4, 4))], [self.dual.matrix, self.real.matrix]]
+        )
 
     @property
-    def vec(self):
+    def vec(self) -> R8:
         """
         Dual quaternion as a vector
 
@@ -245,10 +253,10 @@ class DualQuaternion:
         """
         return np.r_[self.real.vec, self.dual.vec]
 
-
     # def log(self):
     #     pass
-        
+
+
 class UnitDualQuaternion(DualQuaternion):
     """[summary]
 
@@ -261,6 +269,13 @@ class UnitDualQuaternion(DualQuaternion):
 
     :seealso: :func:`UnitDualQuaternion`
     """
+
+    @overload
+    def __init__(self, T: SE3):
+        ...
+
+    def __init__(self, real: Quaternion, dual: Quaternion):
+        ...
 
     def __init__(self, real=None, dual=None):
         r"""
@@ -307,13 +322,13 @@ class UnitDualQuaternion(DualQuaternion):
             T = real
             S = UnitQuaternion(T.R)
             D = Quaternion.Pure(T.t)
-        
+
             real = S
             dual = 0.5 * D * S
 
         super().__init__(real, dual)
 
-    def SE3(self):
+    def SE3(self) -> SE3:
         """
         Convert unit dual quaternion to SE(3) matrix
 
@@ -335,11 +350,12 @@ class UnitDualQuaternion(DualQuaternion):
         t = 2 * self.dual * self.real.conj()
 
         return SE3(base.rt2tr(R, t.v))
-        
+
     # def exp(self):
     #     w = self.real.v
     #     v = self.dual.v
     #     theta = base.norm(w)
+
 
 if __name__ == "__main__":  # pragma: no cover
 

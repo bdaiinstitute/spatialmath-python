@@ -12,6 +12,7 @@ supported.
 """
 
 import math
+from spatialmath.base.types import *
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -19,6 +20,7 @@ try:  # pragma: no cover
 
     _symbolics = True
     symtype = (sympy.Expr,)
+    from sympy import Symbol
 
 except ImportError:  # pragma: no cover
     _symbolics = False
@@ -27,41 +29,44 @@ except ImportError:  # pragma: no cover
 
 # ---------------------------------------------------------------------------------------#
 
+if _symbolics:
 
-def symbol(name, real=True):
-    """
-    Create symbolic variables
+    def symbol(
+        name: str, real: Optional[bool] = True
+    ) -> Union[Symbol, Tuple[Symbol, ...]]:
+        """
+        Create symbolic variables
 
-    :param name: symbol names
-    :type name: str
-    :param real: assume variable is real, defaults to True
-    :type real: bool, optional
-    :return: SymPy symbols
-    :rtype: sympy
+        :param name: symbol names
+        :type name: str
+        :param real: assume variable is real, defaults to True
+        :type real: bool, optional
+        :return: SymPy symbols
+        :rtype: sympy
 
-    .. runblock:: pycon
+        .. runblock:: pycon
 
-        >>> from spatialmath.base.symbolic import *
-        >>> theta = symbol('theta')
-        >>> theta
-        >>> theta, psi = symbol('theta psi')
-        >>> theta
-        >>> psi
-        >>> q = symbol('q_:6')
-        >>> q
+            >>> from spatialmath.base.symbolic import *
+            >>> theta = symbol('theta')
+            >>> theta
+            >>> theta, psi = symbol('theta psi')
+            >>> theta
+            >>> psi
+            >>> q = symbol('q_:6')
+            >>> q
 
-    .. note:: In Jupyter symbols are pretty printed.
+        .. note:: In Jupyter symbols are pretty printed.
 
-        - symbols named after greek letters will appear as greek letters
-        - underscore means subscript as it does in LaTex, so the symbols ``q``
-          above will be subscripted.
+            - symbols named after greek letters will appear as greek letters
+            - underscore means subscript as it does in LaTex, so the symbols ``q``
+            above will be subscripted.
 
-    :seealso: :func:`sympy.symbols`
-    """
-    return sympy.symbols(name, real=real)
+        :seealso: :func:`sympy.symbols`
+        """
+        return sympy.symbols(name, real=real)
 
 
-def issymbol(var):
+def issymbol(var: Any) -> bool:
     """
     Test if variable is symbolic
 
@@ -84,6 +89,16 @@ def issymbol(var):
             return isinstance(var, symtype)
     else:
         return False
+
+
+@overload
+def sin(theta: float) -> float:
+    ...
+
+
+@overload
+def sin(theta: Symbol) -> Symbol:
+    ...
 
 
 def sin(theta):
@@ -110,6 +125,16 @@ def sin(theta):
         return math.sin(theta)
 
 
+@overload
+def cos(theta: float) -> float:
+    ...
+
+
+@overload
+def cos(theta: Symbol) -> Symbol:
+    ...
+
+
 def cos(theta):
     """
     Generalized cosine function
@@ -133,6 +158,17 @@ def cos(theta):
     else:
         return math.cos(theta)
 
+
+@overload
+def tan(theta: float) -> float:
+    ...
+
+
+@overload
+def tan(theta: Symbol) -> Symbol:
+    ...
+
+
 def tan(theta):
     """
     Generalized tangent function
@@ -155,6 +191,17 @@ def tan(theta):
         return sympy.tan(theta)
     else:
         return math.tan(theta)
+
+
+@overload
+def sqrt(theta: float) -> float:
+    ...
+
+
+@overload
+def sqrt(theta: Symbol) -> Symbol:
+    ...
+
 
 def sqrt(v):
     """
@@ -180,7 +227,7 @@ def sqrt(v):
         return math.sqrt(v)
 
 
-def zero():
+def zero() -> Symbol:
     """
     Symbolic constant: zero
 
@@ -199,7 +246,7 @@ def zero():
     return sympy.S.Zero
 
 
-def one():
+def one() -> Symbol:
     """
     Symbolic constant: one
 
@@ -218,7 +265,7 @@ def one():
     return sympy.S.One
 
 
-def negative_one():
+def negative_one() -> Symbol:
     """
     Symbolic constant: negative one
 
@@ -237,7 +284,7 @@ def negative_one():
     return sympy.S.NegativeOne
 
 
-def pi():
+def pi() -> Symbol:
     """
     Symbolic constant: pi
 
@@ -256,7 +303,7 @@ def pi():
     return sympy.S.Pi
 
 
-def simplify(x):
+def simplify(x: Symbol) -> Symbol:
     """
     Symbolic simplification
 

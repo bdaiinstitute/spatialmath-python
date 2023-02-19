@@ -15,12 +15,16 @@ N = 100000
 table = ANSITable(
     Column("Operation", headalign="^"),
     Column("Time (μs)", headalign="^", fmt="{:.2f}"),
-    border="thick")
+    border="thick",
+)
+
 
 def result(op, t):
     global table
 
-    table.row(op, t/N*1e6)
+    table.row(op, t / N * 1e6)
+
+
 # ------------------------------------------------------------------------- #
 
 # transforms_setup = '''
@@ -147,7 +151,6 @@ def result(op, t):
 # result("base.qvmul", t)
 
 
-
 # # ------------------------------------------------------------------------- #
 # twist_setup = '''
 # from spatialmath import SE3, Twist3
@@ -213,7 +216,7 @@ def result(op, t):
 # result("np.cos", t)
 
 # ------------------------------------------------------------------------- #
-misc_setup = '''
+misc_setup = """
 from spatialmath import base
 import numpy as np
 s = np.r_[1.0,2,3,4,5,6]
@@ -224,47 +227,47 @@ b = np.r_[-5.0, 4.0, 3.0]
 A = np.random.randn(6,6)
 As = (A + A.T) / 2
 bb = np.random.randn(6)
-'''
+"""
 table.rule()
 
-t = timeit.timeit(stmt='c = np.linalg.inv(As)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="c = np.linalg.inv(As)", setup=misc_setup, number=N)
 result("np.inv(As)", t)
 
-t = timeit.timeit(stmt='c = np.linalg.pinv(As)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="c = np.linalg.pinv(As)", setup=misc_setup, number=N)
 result("np.pinv(As)", t)
 
-t = timeit.timeit(stmt='c = np.linalg.solve(As, bb)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="c = np.linalg.solve(As, bb)", setup=misc_setup, number=N)
 result("np.solve(As, b)", t)
 
-t = timeit.timeit(stmt='c = np.cross(a,b)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="c = np.cross(a,b)", setup=misc_setup, number=N)
 result("np.cross()", t)
 
-t = timeit.timeit(stmt='c = base.cross(a,b)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="c = base.cross(a,b)", setup=misc_setup, number=N)
 result("cross()", t)
 
-t = timeit.timeit(stmt='a = np.inner(s,s).sum()', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = np.inner(s,s).sum()", setup=misc_setup, number=N)
 result("inner()", t)
 
-t = timeit.timeit(stmt='a = np.linalg.norm(s) ** 2', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = np.linalg.norm(s) ** 2", setup=misc_setup, number=N)
 result("np.norm**2", t)
 
-t = timeit.timeit(stmt='a = base.normsq(s)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = base.normsq(s)", setup=misc_setup, number=N)
 result("base.normsq", t)
 
-t = timeit.timeit(stmt='a = (s ** 2).sum()', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = (s ** 2).sum()", setup=misc_setup, number=N)
 result("s**2.sum()", t)
 
-t = timeit.timeit(stmt='a = np.sum(s ** 2)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = np.sum(s ** 2)", setup=misc_setup, number=N)
 result("np.sum(s ** 2)", t)
 
-t = timeit.timeit(stmt='a = np.linalg.norm(s)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = np.linalg.norm(s)", setup=misc_setup, number=N)
 result("np.norm(R6)", t)
-t = timeit.timeit(stmt='a = base.norm(s)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = base.norm(s)", setup=misc_setup, number=N)
 result("base.norm(R6)", t)
 
-t = timeit.timeit(stmt='a = np.linalg.norm(s3)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = np.linalg.norm(s3)", setup=misc_setup, number=N)
 result("np.norm(R3)", t)
-t = timeit.timeit(stmt='a = base.norm(s3)', setup=misc_setup, number=N)
+t = timeit.timeit(stmt="a = base.norm(s3)", setup=misc_setup, number=N)
 result("base.norm(R3)", t)
 
 
