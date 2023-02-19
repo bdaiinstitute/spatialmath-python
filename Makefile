@@ -18,6 +18,8 @@ test:
 coverage:
 	coverage run --omit='tests/*.py,tests/base/*.py' -m pytest
 	coverage report
+	coverage html
+	open htmlcov/index.html
 
 docs: .FORCE
 	(cd docs; make html)
