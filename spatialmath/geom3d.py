@@ -260,7 +260,7 @@ class Line3(BasePoseList):
     def __init__(self, v: ArrayLike6):
         ...
 
-    def __init__(self, v=None, w=None):
+    def __init__(self, v=None, w=None, check=True):
         """
         Create a Line3 object
 
@@ -268,6 +268,8 @@ class Line3(BasePoseList):
         :type v: array_like(6) or array_like(3)
         :param w: Plucker direction vector, optional
         :type w: array_like(3), optional
+        :param check: check that the parameters are valid, defaults to True
+        :type check: bool
         :raises ValueError: bad arguments
         :return: 3D line
         :rtype: ``Line3`` instance
@@ -303,14 +305,17 @@ class Line3(BasePoseList):
         if w is None:
             # zero or one arguments passed
             if super().arghandler(v, convertfrom=(SE3,)):
+                if check and not base.iszero(np.dot(self.v, self.w)):
+                    raise ValueError("invalid Plucker coordinates")
                 return
 
-        else:
-            # additional arguments
-            assert base.isvector(v, 3) and base.isvector(
-                w, 3
-            ), "expecting two 3-vectors"
+        if base.isvector(v, 3) and base.isvector(w, 3):
+            if check and not base.iszero(np.dot(v, w)):
+                raise ValueError("invalid Plucker coordinates")
             self.data = [np.r_[v, w]]
+
+        else:
+            raise ValueError("invalid argument to Line3 constructor")
 
         # needed to allow __rmul__ to work if left multiplied by ndarray
         # self.__array_priority__ = 100
@@ -980,7 +985,9 @@ class Line3(BasePoseList):
 
         return p, d
 
-    def commonperp(l1, l2: Line3) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    def commonperp(
+        l1, l2: Line3
+    ) -> Line3:  # type:ignore pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
 
@@ -1008,7 +1015,9 @@ class Line3(BasePoseList):
 
         return l1.__class__(v, w)
 
-    def __mul__(left, right: Line3) -> float:  # type:ignore pylint: disable=no-self-argument
+    def __mul__(
+        left, right: Line3
+    ) -> float:  # type:ignore pylint: disable=no-self-argument
         r"""
         Reciprocal product
 
@@ -1034,7 +1043,9 @@ class Line3(BasePoseList):
         else:
             raise ValueError("bad arguments")
 
-    def __rmul__(right, left: SE3) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    def __rmul__(
+        right, left: SE3
+    ) -> Line3:  # type:ignore pylint: disable=no-self-argument
         """
         Rigid-body transformation of 3D line
 
