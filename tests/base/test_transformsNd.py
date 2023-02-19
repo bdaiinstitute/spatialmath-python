@@ -17,8 +17,16 @@ from scipy.linalg import logm, expm
 from spatialmath.base.transformsNd import *
 from spatialmath.base.transforms3d import trotx, transl, rotx, isrot, ishom
 from spatialmath.base.transforms2d import trot2, transl2, rot2, isrot2, ishom2
-from spatialmath.base.symbolic import symbol
+
+try:
+    import sympy as sp
+
+    _symbolics = True
+    from spatialmath.base.symbolic import symbol
+except ImportError:
+    _symbolics = False
 import matplotlib.pyplot as plt
+
 
 class TestND(unittest.TestCase):
     def test_iseye(self):
@@ -39,24 +47,9 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[0:3, 3], np.r_[0, 0, 0])
         nt.assert_array_almost_equal(T[:3, :3], R)
 
-        theta = symbol("theta")
-        R = rotx(theta)
-        T = r2t(R)
-        self.assertEqual(r2t(R).dtype, "O")
-        nt.assert_array_almost_equal(T[0:3, 3], np.r_[0, 0, 0])
-        # nt.assert_array_almost_equal(T[:3,:3], R)
-        self.assertTrue((T[:3, :3] == R).all())
-
         # 2D
         R = rot2(0.3)
         T = r2t(R)
-        nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
-        nt.assert_array_almost_equal(T[:2, :2], R)
-
-        theta = symbol("theta")
-        R = rot2(theta)
-        T = r2t(R)
-        self.assertEqual(r2t(R).dtype, "O")
         nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
         nt.assert_array_almost_equal(T[:2, :2], R)
 
@@ -65,6 +58,23 @@ class TestND(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             r2t(np.eye(3, 4))
+
+    @unittest.skipUnless(_symbolics, "sympy required")
+    def test_r2t_sym(self):
+        theta = symbol("theta")
+        R = rot2(theta)
+        T = r2t(R)
+        self.assertEqual(r2t(R).dtype, "O")
+        nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
+        nt.assert_array_almost_equal(T[:2, :2], R)
+
+        theta = symbol("theta")
+        R = rotx(theta)
+        T = r2t(R)
+        self.assertEqual(r2t(R).dtype, "O")
+        nt.assert_array_almost_equal(T[0:3, 3], np.r_[0, 0, 0])
+        # nt.assert_array_almost_equal(T[:3,:3], R)
+        self.assertTrue((T[:3, :3] == R).all())
 
     def test_t2r(self):
         # 3D
@@ -95,10 +105,6 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl(T), np.array(t))
 
-        theta = symbol("theta")
-        R = rotx(theta)
-        self.assertEqual(r2t(R).dtype, "O")
-
         # 2D
         R = rot2(0.2)
         t = [3, 4]
@@ -106,15 +112,21 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl2(T), np.array(t))
 
-        theta = symbol("theta")
-        R = rot2(theta)
-        self.assertEqual(r2t(R).dtype, "O")
-
         with self.assertRaises(ValueError):
             rt2tr(3, 4)
 
         with self.assertRaises(ValueError):
             rt2tr(np.eye(3, 4), [1, 2, 3, 4])
+
+    @unittest.skipUnless(_symbolics, "sympy required")
+    def test_rt2tr_sym(self):
+        theta = symbol("theta")
+        R = rotx(theta)
+        self.assertEqual(r2t(R).dtype, "O")
+
+        theta = symbol("theta")
+        R = rot2(theta)
+        self.assertEqual(r2t(R).dtype, "O")
 
     def test_tr2rt(self):
         # 3D
@@ -136,7 +148,6 @@ class TestND(unittest.TestCase):
             R, t = tr2rt(np.eye(3, 4))
 
     def test_checks(self):
-
         # 3D case, with rotation matrix
         R = np.eye(3)
         self.assertTrue(isR(R))
@@ -217,7 +228,6 @@ class TestND(unittest.TestCase):
         nt.assert_almost_equal(h2e([2, 4, 6, 2]), np.c_[1, 2, 3].T)
 
     def test_homtrans(self):
-
         # 3D
         T = trotx(pi / 2, t=[1, 2, 3])
         v = [10, 12, 14]
@@ -339,16 +349,16 @@ class TestND(unittest.TestCase):
         nt.assert_almost_equal(vexa(sk), t)
 
     def test_det(self):
-
         a = np.array([[1, 2], [3, 4]])
         self.assertAlmostEqual(np.linalg.det(a), det(a))
 
+    @unittest.skipUnless(_symbolics, "sympy required")
+    def test_det_sym(self):
         x, y = symbol("x y")
         a = np.array([[x, y], [y, x]])
-        self.assertEqual(det(a), x ** 2 - y ** 2)
+        self.assertEqual(det(a), x**2 - y**2)
 
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()

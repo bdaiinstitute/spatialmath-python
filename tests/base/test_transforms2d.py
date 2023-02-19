@@ -15,7 +15,17 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base.transforms2d import *
-from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
+from spatialmath.base.transformsNd import (
+    isR,
+    t2r,
+    r2t,
+    rt2tr,
+    skew,
+    vexa,
+    skewa,
+    homtrans,
+)
+from spatialmath.base.numeric import numjac
 
 import matplotlib.pyplot as plt
 
@@ -70,8 +80,12 @@ class Test2D(unittest.TestCase):
         R = rot2(0.5)
         nt.assert_array_almost_equal(trlog2(R), skew(0.5))
 
+        nt.assert_array_almost_equal(trlog2(R, twist=True), 0.5)
+
         T = transl2(1, 2) @ trot2(0.5)
-        nt.assert_array_almost_equal(logm(T), trlog2(T))
+        nt.assert_array_almost_equal(trlog2(T), logm(T))
+
+        nt.assert_array_almost_equal(trlog2(T, twist=True), vexa(logm(T)))
 
     def test_trexp2(self):
         R = trexp2(skew(0.5))
@@ -87,6 +101,44 @@ class Test2D(unittest.TestCase):
         nt.assert_array_almost_equal(
             transl2([1, 2]), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])
         )
+
+    def test_xyt2tr(self):
+        T = xyt2tr([1, 2, 0])
+        nt.assert_array_almost_equal(T, transl2(1, 2))
+
+        T = xyt2tr([1, 2, 0.2])
+        nt.assert_array_almost_equal(T, rt2tr(rot2(0.2), [1, 2]))
+
+    def test_trinv2(self):
+
+        T = rt2tr(rot2(0.2), [1, 2])
+        nt.assert_array_almost_equal(trinv2(T) @ T, np.eye(3))
+
+    def test_tradjoint2(self):
+
+        T = xyt2tr([1, 2, 0.2])
+        X = [1, 2, 3]
+        nt.assert_almost_equal(tradjoint2(T) @ X, vexa(T @ skewa(X) @ trinv2(T)))
+
+    def test_points2tr2(self):
+
+        p1 = np.random.uniform(size=(2, 5))
+        T = xyt2tr([1, 2, 0.2])
+        p2 = homtrans(T, p1)
+        T2 = points2tr2(p1, p2)
+        nt.assert_almost_equal(T, T2)
+
+    def test_icp2d(self):
+
+        p1 = np.random.uniform(size=(2, 30))
+        T = xyt2tr([1, 2, 0.2])
+
+        p2 = homtrans(T, p1)
+        k = np.random.permutation(p2.shape[1])
+        p2 = p2[:, k]
+
+        T2 = ICP2d(p2, p1, T=xyt2tr([1, 2, 0.2]))
+        nt.assert_almost_equal(T, T2)
 
     def test_print2(self):
 
@@ -171,6 +223,12 @@ class Test2D(unittest.TestCase):
         nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0), T0)
         nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=1), T1)
         nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
+
+        nt.assert_array_almost_equal(trinterp2(start=None, end=T1, s=0), np.eye(3))
+        nt.assert_array_almost_equal(trinterp2(start=None, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(
+            trinterp2(start=None, end=T1, s=0.5), xyt2tr([0.5, 1, 0.15])
+        )
 
     def test_plot(self):
         plt.figure()

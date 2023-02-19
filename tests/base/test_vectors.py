@@ -15,8 +15,18 @@ import math
 from scipy.linalg import logm, expm
 
 from spatialmath.base.vectors import *
-from spatialmath.base.symbolic import symbol
+
+try:
+    import sympy as sp
+
+    from spatialmath.base.symbolic import *
+
+    _symbolics = True
+except ImportError:
+    _symbolics = False
 import matplotlib.pyplot as plt
+
+from math import pi
 
 
 class TestVector(unittest.TestCase):
@@ -25,7 +35,6 @@ class TestVector(unittest.TestCase):
         plt.close("all")
 
     def test_unit(self):
-
         nt.assert_array_almost_equal(unitvec([1, 0, 0]), np.r_[1, 0, 0])
         nt.assert_array_almost_equal(unitvec([0, 1, 0]), np.r_[0, 1, 0])
         nt.assert_array_almost_equal(unitvec([0, 0, 1]), np.r_[0, 0, 1])
@@ -42,12 +51,14 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(unitvec([0, 9, 0]), np.r_[0, 1, 0])
         nt.assert_array_almost_equal(unitvec([0, 0, 9]), np.r_[0, 0, 1])
 
-        self.assertIsNone(unitvec([0, 0, 0]))
-        self.assertIsNone(unitvec([0]))
-        self.assertIsNone(unitvec(0))
+        with self.assertRaises(ValueError):
+            unitvec([0, 0, 0])
+        with self.assertRaises(ValueError):
+            unitvec([0])
+        with self.assertRaises(ValueError):
+            unitvec(0)
 
     def test_colvec(self):
-
         t = np.r_[1, 2, 3]
         cv = colvec(t)
         self.assertEqual(cv.shape, (3, 1))
@@ -77,23 +88,14 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(norm([1, 2, 3]), math.sqrt(14))
         self.assertAlmostEqual(norm(np.r_[1, 2, 3]), math.sqrt(14))
 
+    @unittest.skipUnless(_symbolics, "sympy required")
+    def test_norm_sym(self):
         x, y = symbol("x y")
         v = [x, y]
-        self.assertEqual(norm(v), sqrt(x ** 2 + y ** 2))
-        self.assertEqual(norm(np.r_[v]), sqrt(x ** 2 + y ** 2))
-
-    def test_norm(self):
-        self.assertAlmostEqual(norm([0, 0, 0]), 0)
-        self.assertAlmostEqual(normsq([1, 2, 3]), 14)
-        self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
-
-        x, y = symbol("x y")
-        v = [x, y]
-        self.assertEqual(normsq(v), x ** 2 + y ** 2)
-        self.assertEqual(normsq(np.r_[v]), x ** 2 + y ** 2)
+        self.assertEqual(norm(v), sqrt(x**2 + y**2))
+        self.assertEqual(norm(np.r_[v]), sqrt(x**2 + y**2))
 
     def test_cross(self):
-
         A = np.eye(3)
 
         for i in range(0, 3):
@@ -206,8 +208,8 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(a[0], np.r_[0, 0, -1, 0, 0, 0])
         nt.assert_array_almost_equal(a[1], 2)
 
-        a = unittwist_norm([0, 0, 0, 0, 0, 0])
-        self.assertEqual(a, (None, None))
+        with self.assertRaises(ValueError):
+            unittwist_norm([0, 0, 0, 0, 0, 0])
 
     def test_iszerovec(self):
         self.assertTrue(iszerovec([0]))
@@ -223,13 +225,58 @@ class TestVector(unittest.TestCase):
         self.assertFalse(iszero(1))
 
     def test_angdiff(self):
-
         self.assertEqual(angdiff(0, 0), 0)
-        self.assertEqual(angdiff(np.pi, 0), -np.pi)
-        self.assertEqual(angdiff(-np.pi, np.pi), 0)
+        self.assertEqual(angdiff(pi, 0), -pi)
+        self.assertEqual(angdiff(-pi, pi), 0)
+
+    def test_wrap(self):
+        self.assertAlmostEqual(wrap_0_2pi(0), 0)
+        self.assertAlmostEqual(wrap_0_2pi(2 * pi), 0)
+        self.assertAlmostEqual(wrap_0_2pi(3 * pi), pi)
+        self.assertAlmostEqual(wrap_0_2pi(-pi), pi)
+        nt.assert_array_almost_equal(
+            wrap_0_2pi([0, 2 * pi, 3 * pi, -pi]), [0, 0, pi, pi]
+        )
+
+        self.assertAlmostEqual(wrap_mpi_pi(0), 0)
+        self.assertAlmostEqual(wrap_mpi_pi(-pi), -pi)
+        self.assertAlmostEqual(wrap_mpi_pi(pi), -pi)
+        self.assertAlmostEqual(wrap_mpi_pi(2 * pi), 0)
+        self.assertAlmostEqual(wrap_mpi_pi(1.5 * pi), -0.5 * pi)
+        self.assertAlmostEqual(wrap_mpi_pi(-1.5 * pi), 0.5 * pi)
+        nt.assert_array_almost_equal(
+            wrap_mpi_pi([0, -pi, pi, 2 * pi, 1.5 * pi, -1.5 * pi]),
+            [0, -pi, -pi, 0, -0.5 * pi, 0.5 * pi],
+        )
+
+        self.assertAlmostEqual(wrap_0_pi(0), 0)
+        self.assertAlmostEqual(wrap_0_pi(pi), pi)
+        self.assertAlmostEqual(wrap_0_pi(1.2 * pi), 0.8 * pi)
+        self.assertAlmostEqual(wrap_0_pi(-0.2 * pi), 0.2 * pi)
+        nt.assert_array_almost_equal(
+            wrap_0_pi([0, pi, 1.2 * pi, -0.2 * pi]), [0, pi, 0.8 * pi, 0.2 * pi]
+        )
+
+        self.assertAlmostEqual(wrap_mpi2_pi2(0), 0)
+        self.assertAlmostEqual(wrap_mpi2_pi2(-0.5 * pi), -0.5 * pi)
+        self.assertAlmostEqual(wrap_mpi2_pi2(0.5 * pi), 0.5 * pi)
+        self.assertAlmostEqual(wrap_mpi2_pi2(0.6 * pi), 0.4 * pi)
+        self.assertAlmostEqual(wrap_mpi2_pi2(-0.6 * pi), -0.4 * pi)
+        nt.assert_array_almost_equal(
+            wrap_mpi2_pi2([0, -0.5 * pi, 0.5 * pi, 0.6 * pi, -0.6 * pi]),
+            [0, -0.5 * pi, 0.5 * pi, 0.4 * pi, -0.4 * pi],
+        )
+
+    def test_angle_stats(self):
+        theta = np.linspace(3 * pi / 2, 5 * pi / 2, 50)
+        self.assertAlmostEqual(angle_mean(theta), 0)
+        self.assertAlmostEqual(angle_std(theta), 0.9717284050981313)
+
+        theta = np.linspace(pi / 2, 3 * pi / 2, 50)
+        self.assertAlmostEqual(angle_mean(theta), pi)
+        self.assertAlmostEqual(angle_std(theta), 0.9717284050981313)
 
     def test_removesmall(self):
-
         v = np.r_[1, 2, 3]
         nt.assert_array_almost_equal(removesmall(v), v)
 
@@ -248,5 +295,4 @@ class TestVector(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()
