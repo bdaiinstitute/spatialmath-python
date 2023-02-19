@@ -24,6 +24,7 @@ from spatialmath.base.argcheck import (
     isnumberlist,
     isvectorlist,
 )
+
 # from spatialmath.base.quaternions import (
 #     pure,
 #     qnorm,
@@ -144,6 +145,7 @@ from spatialmath.base.vectors import (
     wrap_0_2pi,
     wrap_mpi_pi,
 )
+
 # from spatialmath.base.symbolic import *
 # from spatialmath.base.animate import Animate, Animate2
 # from spatialmath.base.graphics import (
@@ -183,7 +185,6 @@ __all__ = [
     "getunit",
     "isnumberlist",
     "isvectorlist",
-
     # spatialmath.base.quaternions
     "qpure",
     "qnorm",
@@ -207,7 +208,6 @@ __all__ = [
     "qdotb",
     "qangle",
     "qprint",
-
     # spatialmath.base.transforms2d
     "rot2",
     "trot2",
@@ -224,7 +224,6 @@ __all__ = [
     "xyt2tr",
     "tr2xyt",
     "trinv2",
-
     # spatialmath.base.transforms3d
     "rotx",
     "roty",
@@ -245,6 +244,7 @@ __all__ = [
     "exp2tr",
     "oa2r",
     "oa2tr",
+    "rodrigues",
     "tr2angvec",
     "tr2eul",
     "tr2rpy",
@@ -270,11 +270,9 @@ __all__ = [
     "x2r",
     "rotvelxform",
     "rotvelxform_inv_dot",
-
     # deprecated
     "angvelxform",
     "angvelxform_dot",
-
     # spatialmath.base.transformsNd
     "t2r",
     "r2t",
@@ -292,8 +290,6 @@ __all__ = [
     "h2e",
     "e2h",
     "homtrans",
-    "rodrigues",
-
     # spatialmath.base.vectors
     "colvec",
     "unitvec",
@@ -317,7 +313,6 @@ __all__ = [
     # spatialmath.base.animate
     "Animate",
     "Animate2",
-
     # spatial.base.graphics
     "plotvol2",
     "plotvol3",
@@ -342,7 +337,6 @@ __all__ = [
     "axes_logic",
     "expand_dims",
     "isnotebook",
-    
     # spatial.base.numeric
     "numjac",
     "numhess",

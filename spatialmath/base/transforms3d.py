@@ -2536,6 +2536,50 @@ def tr2adjoint(T:Union[SO3Array,SE3Array]) -> R6x6:
         raise ValueError("bad argument")
 
 
+def rodrigues(w: ArrayLike3, theta: Optional[float] = None) -> SO3Array:
+    r"""
+    Rodrigues' formula for 3D rotation
+
+    :param w: rotation vector
+    :type w: array_like(3)
+    :param theta: rotation angle
+    :type theta: float or None
+    :return: SO(3) matrix
+    :rtype: ndarray(3,3)
+
+    Compute Rodrigues' formula for a rotation matrix given a rotation axis
+    and angle.
+
+    .. math::
+
+        \mat{R} = \mat{I}_{3 \times 3} + \sin \theta \skx{\hat{\vec{v}}} + (1 - \cos \theta) \skx{\hat{\vec{v}}}^2
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import *
+        >>> rodrigues([1, 0, 0], 0.3)
+        >>> rodrigues([0.3, 0, 0])
+
+    """
+    w = getvector(w, 3)
+    if iszerovec(w):
+        # for a zero so(3) return unit matrix, theta not relevant
+        return np.eye(3)
+
+    if theta is None:
+        try:
+            w, theta = unitvec_norm(w)
+        except ValueError:
+            return np.eye(3)
+
+    skw = skew(cast(ArrayLike3, w))
+    return (
+        np.eye(skw.shape[0])
+        + math.sin(theta) * skw
+        + (1.0 - math.cos(theta)) * skw @ skw
+    )
+
+
 def trprint(
     T:Union[SO3Array,SE3Array],
     orient:str="rpy/zyx",

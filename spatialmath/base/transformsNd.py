@@ -667,57 +667,6 @@ def vexa(Omega:senArray, check:bool=False) -> Union[R3,R6]:
     else:
         raise ValueError("expecting a 3x3 or 4x4 matrix")
 
-@overload
-def rodrigues(w:float, theta:Optional[float]=None) -> SO2Array:
-    ...
-
-@overload
-def rodrigues(w:ArrayLike3, theta:Optional[float]=None) -> SO2Array:
-    ...
-
-def rodrigues(w:Union[float,ArrayLike3], theta:Optional[float]=None) -> Union[SO2Array,SO3Array]:
-    r"""
-    Rodrigues' formula for rotation
-
-    :param w: rotation vector
-    :type w: array_like(3) or array_like(1)
-    :param θ: rotation angle
-    :type θ: float or None
-    :return: SO(n) matrix
-    :rtype: ndarray(2,2) or ndarray(3,3)
-
-    Compute Rodrigues' formula for a rotation matrix given a rotation axis
-    and angle.
-
-    .. math::
-
-        \mat{R} = \mat{I}_{3 \times 3} + \sin \theta \skx{\hat{\vec{v}}} + (1 - \cos \theta) \skx{\hat{\vec{v}}}^2
-
-    .. runblock:: pycon
-
-        >>> from spatialmath.base import *
-        >>> rodrigues([1, 0, 0], 0.3)
-        >>> rodrigues([0.3, 0, 0])
-        >>> rodrigues(0.3)   # 2D version
-
-    """
-    w = getvector(w)
-    if iszerovec(w):
-        # for a zero so(n) return unit matrix, theta not relevant
-        if len(w) == 1:
-            return np.eye(2)
-        else:
-            return np.eye(3)
-    if theta is None:
-        w, theta = unitvec_norm(w)
-
-    skw = skew(w)
-    return (
-        np.eye(skw.shape[0])
-        + math.sin(theta) * skw
-        + (1.0 - math.cos(theta)) * skw @ skw
-    )
-
 
 def h2e(v:np.ndarray) -> np.ndarray:
     """

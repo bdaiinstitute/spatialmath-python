@@ -552,7 +552,7 @@ def trexp2(S:Union[so2Array,se2Array], theta:Optional[float]=None, check:bool=Tr
         t = tw[0:2]
         w = tw[2]
 
-        R = smb.rodrigues(w, theta)
+        R = smb.rot2(w * theta)
 
         skw = smb.skew(w)
         V = (
@@ -574,11 +574,13 @@ def trexp2(S:Union[so2Array,se2Array], theta:Optional[float]=None, check:bool=Tr
             # 1 vector
             w = smb.getvector(S)
 
-        if theta is not None and not smb.isunitvec(w):
-            raise ValueError("If theta is specified S must be a unit twist")
+        if theta is not None:
+            if not smb.isunitvec(w):
+                raise ValueError("If theta is specified S must be a unit twist")
+            w *= theta
 
-        # do Rodrigues' formula for rotation
-        return smb.rodrigues(w, theta)
+        # compute rotation matrix, simpler than Rodrigues for 2D case
+        return smb.rot2(w[0])
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
 
