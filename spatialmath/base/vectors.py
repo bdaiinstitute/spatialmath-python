@@ -644,7 +644,7 @@ def angdiff(a, b=None):
     """
     a = getvector(a)
     if b is not None:
-        b = getvector(b, len(a))
+        b = getvector(b)
         a -= b
 
     return np.mod(a + math.pi, 2 * math.pi) - math.pi

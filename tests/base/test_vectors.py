@@ -229,6 +229,9 @@ class TestVector(unittest.TestCase):
         self.assertEqual(angdiff(pi, 0), -pi)
         self.assertEqual(angdiff(-pi, pi), 0)
 
+        nt.assert_array_almost_equal(angdiff([0, -pi, pi], 0), [0, -pi, -pi])
+        nt.assert_array_almost_equal(angdiff([1, 2, 3], [1, 2, 3]), [0, 0, 0])
+
     def test_wrap(self):
         self.assertAlmostEqual(wrap_0_2pi(0), 0)
         self.assertAlmostEqual(wrap_0_2pi(2 * pi), 0)

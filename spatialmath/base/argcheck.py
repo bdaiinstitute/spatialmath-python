@@ -275,14 +275,16 @@ def verifymatrix(
 
 # and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
 
+
 @overload
 def getvector(
     v: ArrayLike,
     dim: Optional[Union[int, None]] = None,
     out: str = "array",
     dtype: DTypeLike = np.float64,
-) ->  NDArray:
+) -> NDArray:
     ...
+
 
 @overload
 def getvector(
@@ -293,6 +295,7 @@ def getvector(
 ) -> List[float]:
     ...
 
+
 @overload
 def getvector(
     v: Tuple[float, ...],
@@ -302,6 +305,7 @@ def getvector(
 ) -> Tuple[float, ...]:
     ...
 
+
 @overload
 def getvector(
     v: List[float],
@@ -310,7 +314,8 @@ def getvector(
     dtype: DTypeLike = np.float64,
 ) -> List[float]:
     ...
-    
+
+
 def getvector(
     v: ArrayLike,
     dim: Optional[Union[int, None]] = None,
@@ -387,7 +392,9 @@ def getvector(
             dt = None
 
         if dim is not None and v and len(v) != dim:
-            raise ValueError("incorrect vector length")
+            raise ValueError(
+                "incorrect vector length: expected {}, got {}".format(dim, len(v))
+            )
         if out == "sequence":
             return v
         elif out == "list":
@@ -526,11 +533,15 @@ def getunit(v: NDArray, unit: str = "rad") -> NDArray:  # pragma: no cover
 def getunit(v: List[float], unit: str = "rad") -> List[float]:  # pragma: no cover
     ...
 
+
 @overload
 def getunit(v: Tuple[float, ...], unit: str = "rad") -> List[float]:  # pragma: no cover
     ...
 
-def getunit(v: Union[float, NDArray, Tuple[float, ...], List[float]], unit: str = "rad") -> Union[float, NDArray, List[float]]:
+
+def getunit(
+    v: Union[float, NDArray, Tuple[float, ...], List[float]], unit: str = "rad"
+) -> Union[float, NDArray, List[float]]:
     """
     Convert value according to angular units
 
@@ -568,7 +579,7 @@ def getunit(v: Union[float, NDArray, Tuple[float, ...], List[float]], unit: str 
             raise ValueError("bad argument")
     else:
         raise ValueError("invalid angular units")
-    
+
     return ret
 
 
