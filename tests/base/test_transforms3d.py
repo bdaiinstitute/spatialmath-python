@@ -17,6 +17,8 @@ from scipy.linalg import logm, expm
 
 from spatialmath.base.transforms3d import *
 from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
+
+
 class Test3D(unittest.TestCase):
     def test_checks(self):
         # 2D case, with rotation matrix
@@ -152,7 +154,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(trotz(pi / 2, t=np.array([3, 4, 5])), T)
 
     def test_rpy2r(self):
-
         r2d = 180 / pi
 
         # default zyx order
@@ -189,7 +190,6 @@ class Test3D(unittest.TestCase):
         )
 
     def test_rpy2tr(self):
-
         r2d = 180 / pi
 
         # default zyx order
@@ -226,7 +226,6 @@ class Test3D(unittest.TestCase):
         )
 
     def test_eul2r(self):
-
         r2d = 180 / pi
 
         # default zyx order
@@ -241,7 +240,6 @@ class Test3D(unittest.TestCase):
         )
 
     def test_eul2tr(self):
-
         r2d = 180 / pi
 
         # default zyx order
@@ -256,7 +254,6 @@ class Test3D(unittest.TestCase):
         )
 
     def test_angvec2r(self):
-
         r2d = 180 / pi
 
         nt.assert_array_almost_equal(angvec2r(0, [1, 0, 0]), rotx(0))
@@ -272,7 +269,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2r(-pi / 4, [0, 0, 1]), rotz(-pi / 4))
 
     def test_angvec2tr(self):
-
         r2d = 180 / pi
 
         nt.assert_array_almost_equal(angvec2tr(0, [1, 0, 0]), trotx(0))
@@ -294,6 +290,9 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(angvec2r(-pi / 4, [1, 0, 0]), rotx(-pi / 4))
 
     def test_trlog(self):
+        R = np.eye(3)
+        nt.assert_array_almost_equal(trlog(R), skew([0, 0, 0]))
+
         R = rotx(0.5)
         nt.assert_array_almost_equal(trlog(R), skew([0.5, 0, 0]))
         R = roty(0.5)
@@ -322,7 +321,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(trexp(logm(T)), T)
 
     def test_exp2r(self):
-
         r2d = 180 / pi
 
         nt.assert_array_almost_equal(exp2r([0, 0, 0]), rotx(0))
@@ -338,7 +336,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(exp2r([0, 0, -pi / 4]), rotz(-pi / 4))
 
     def test_exp2tr(self):
-
         r2d = 180 / pi
 
         nt.assert_array_almost_equal(exp2tr([0, 0, 0]), trotx(0))
@@ -428,7 +425,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(rpy2tr(tr2rpy(a, order=seq), order=seq), a)
 
     def test_tr2eul(self):
-
         eul = np.r_[0.1, 0.2, 0.3]
         R = eul2r(eul)
         nt.assert_array_almost_equal(tr2eul(R), eul)
@@ -452,7 +448,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(eul2r(eul2), R)
 
     def test_tr2angvec(self):
-
         # null rotation
         # - vector isn't defined here, but RTB sets it (0 0 0)
         [theta, v] = tr2angvec(np.eye(3, 3))
@@ -495,7 +490,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(v, np.r_[0, 1, 0])
 
     def test_print(self):
-
         R = rotx(0.3) @ roty(0.4)
         s = trprint(R, file=None)
         self.assertIsInstance(s, str)
@@ -547,7 +541,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0.5), np.eye(4))
 
     def test_tr2delta(self):
-
         # unit testing tr2delta with a tr matrix
         nt.assert_array_almost_equal(
             tr2delta(transl(0.1, 0.2, 0.3)), np.r_[0.1, 0.2, 0.3, 0, 0, 0]
@@ -594,7 +587,6 @@ class Test3D(unittest.TestCase):
         # verifyError(testCase, @()delta2tr(1),'MATLAB:badsubscript');
 
     def test_tr2jac(self):
-
         # NOTE, create these matrices using pyprint() in MATLAB
         # TODO change to forming it from block R matrices directly
         nt.assert_array_almost_equal(
@@ -629,38 +621,58 @@ class Test3D(unittest.TestCase):
         # verifyError(tc, @()tr2jac(1),'SMTB:t2r:badarg');
 
     def test_r2x(self):
-
         R = rpy2r(0.2, 0.3, 0.4)
 
         nt.assert_array_almost_equal(r2x(R, representation="eul"), tr2eul(R))
-        nt.assert_array_almost_equal(r2x(R, representation="rpy/xyz"), tr2rpy(R, order="xyz"))
-        nt.assert_array_almost_equal(r2x(R, representation="rpy/zyx"), tr2rpy(R, order="zyx"))
-        nt.assert_array_almost_equal(r2x(R, representation="rpy/yxz"), tr2rpy(R, order="yxz"))
+        nt.assert_array_almost_equal(
+            r2x(R, representation="rpy/xyz"), tr2rpy(R, order="xyz")
+        )
+        nt.assert_array_almost_equal(
+            r2x(R, representation="rpy/zyx"), tr2rpy(R, order="zyx")
+        )
+        nt.assert_array_almost_equal(
+            r2x(R, representation="rpy/yxz"), tr2rpy(R, order="yxz")
+        )
 
-        nt.assert_array_almost_equal(r2x(R, representation="arm"), tr2rpy(R, order="xyz"))
-        nt.assert_array_almost_equal(r2x(R, representation="vehicle"), tr2rpy(R, order="zyx"))
-        nt.assert_array_almost_equal(r2x(R, representation="camera"), tr2rpy(R, order="yxz"))
+        nt.assert_array_almost_equal(
+            r2x(R, representation="arm"), tr2rpy(R, order="xyz")
+        )
+        nt.assert_array_almost_equal(
+            r2x(R, representation="vehicle"), tr2rpy(R, order="zyx")
+        )
+        nt.assert_array_almost_equal(
+            r2x(R, representation="camera"), tr2rpy(R, order="yxz")
+        )
 
         nt.assert_array_almost_equal(r2x(R, representation="exp"), trlog(R, twist=True))
 
-
     def test_x2r(self):
-
         x = [0.2, 0.3, 0.4]
 
         nt.assert_array_almost_equal(x2r(x, representation="eul"), eul2r(x))
-        nt.assert_array_almost_equal(x2r(x, representation="rpy/xyz"), rpy2r(x, order="xyz"))
-        nt.assert_array_almost_equal(x2r(x, representation="rpy/zyx"), rpy2r(x, order="zyx"))
-        nt.assert_array_almost_equal(x2r(x, representation="rpy/yxz"), rpy2r(x, order="yxz"))
+        nt.assert_array_almost_equal(
+            x2r(x, representation="rpy/xyz"), rpy2r(x, order="xyz")
+        )
+        nt.assert_array_almost_equal(
+            x2r(x, representation="rpy/zyx"), rpy2r(x, order="zyx")
+        )
+        nt.assert_array_almost_equal(
+            x2r(x, representation="rpy/yxz"), rpy2r(x, order="yxz")
+        )
 
-        nt.assert_array_almost_equal(x2r(x, representation="arm"), rpy2r(x, order="xyz"))
-        nt.assert_array_almost_equal(x2r(x, representation="vehicle"), rpy2r(x, order="zyx"))
-        nt.assert_array_almost_equal(x2r(x, representation="camera"), rpy2r(x, order="yxz"))
+        nt.assert_array_almost_equal(
+            x2r(x, representation="arm"), rpy2r(x, order="xyz")
+        )
+        nt.assert_array_almost_equal(
+            x2r(x, representation="vehicle"), rpy2r(x, order="zyx")
+        )
+        nt.assert_array_almost_equal(
+            x2r(x, representation="camera"), rpy2r(x, order="yxz")
+        )
 
         nt.assert_array_almost_equal(x2r(x, representation="exp"), trexp(x))
 
     def test_tr2x(self):
-
         t = [1, 2, 3]
         R = rpy2tr(0.2, 0.3, 0.4)
         T = transl(t) @ R
@@ -698,28 +710,39 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(x[3:], trlog(t2r(R), twist=True))
 
     def test_x2tr(self):
-
         t = [1, 2, 3]
         gamma = [0.3, 0.2, 0.1]
         x = np.r_[t, gamma]
 
-        nt.assert_array_almost_equal(x2tr(x, representation="eul"), transl(t) @ eul2tr(gamma))
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="eul"), transl(t) @ eul2tr(gamma)
+        )
 
-        nt.assert_array_almost_equal(x2tr(x, representation="rpy/xyz"), transl(t) @ rpy2tr(gamma, order="xyz"))
-        nt.assert_array_almost_equal(x2tr(x, representation="rpy/zyx"), transl(t) @ rpy2tr(gamma, order="zyx"))
-        nt.assert_array_almost_equal(x2tr(x, representation="rpy/yxz"), transl(t) @ rpy2tr(gamma, order="yxz"))
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="rpy/xyz"), transl(t) @ rpy2tr(gamma, order="xyz")
+        )
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="rpy/zyx"), transl(t) @ rpy2tr(gamma, order="zyx")
+        )
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="rpy/yxz"), transl(t) @ rpy2tr(gamma, order="yxz")
+        )
 
-        nt.assert_array_almost_equal(x2tr(x, representation="arm"), transl(t) @ rpy2tr(gamma, order="xyz"))
-        nt.assert_array_almost_equal(x2tr(x, representation="vehicle"), transl(t) @ rpy2tr(gamma, order="zyx"))
-        nt.assert_array_almost_equal(x2tr(x, representation="camera"), transl(t) @ rpy2tr(gamma, order="yxz"))
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="arm"), transl(t) @ rpy2tr(gamma, order="xyz")
+        )
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="vehicle"), transl(t) @ rpy2tr(gamma, order="zyx")
+        )
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="camera"), transl(t) @ rpy2tr(gamma, order="yxz")
+        )
 
-        nt.assert_array_almost_equal(x2tr(x, representation="exp"), transl(t) @ r2t(trexp(gamma)))
-
-
-
+        nt.assert_array_almost_equal(
+            x2tr(x, representation="exp"), transl(t) @ r2t(trexp(gamma))
+        )
 
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()

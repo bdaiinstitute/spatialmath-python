@@ -450,8 +450,8 @@ def iseye(S: NDArray, tol: float = 10) -> bool:
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool
 
-    Check if matrix is an identity matrix. We test that the trace tom row is zero
-    We check that the norm of the residual is less than ``tol * eps``.
+    Check if matrix is an identity matrix. 
+    We check that the sum of the absolute value of the residual is less than ``tol * eps``.
 
     .. runblock:: pycon
 
@@ -465,7 +465,7 @@ def iseye(S: NDArray, tol: float = 10) -> bool:
     s = S.shape
     if len(s) != 2 or s[0] != s[1]:
         return False  # not a square matrix
-    return bool(np.linalg.norm(S - np.eye(s[0])) < tol * _eps)
+    return bool(np.abs(S - np.eye(s[0])).sum() < tol * _eps)
 
 
 # ---------------------------------------------------------------------------------------#
