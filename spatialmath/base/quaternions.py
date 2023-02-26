@@ -498,7 +498,9 @@ def qconj(q: ArrayLike4) -> QuaternionArray:
     return np.r_[q[0], -q[1:4]]
 
 
-def q2r(q: Union[UnitQuaternionArray, ArrayLike4], order: Optional[str] = "sxyz") -> SO3Array:
+def q2r(
+    q: Union[UnitQuaternionArray, ArrayLike4], order: Optional[str] = "sxyz"
+) -> SO3Array:
     """
     Convert unit-quaternion to SO(3) rotation matrix
 
@@ -601,25 +603,78 @@ def r2q(
     d3 = (-R[0, 0] + R[1, 1] - R[2, 2] + 1) ** 2
     d4 = (-R[0, 0] - R[1, 1] + R[2, 2] + 1) ** 2
 
-    e0 = math.sqrt(d1 + t23m + t13m + t12m) / 4.0
-    e1 = math.sqrt(t23m + d2 + t12p + t13p) / 4.0
-    e2 = math.sqrt(t13m + t12p + d3 + t23p) / 4.0
-    e3 = math.sqrt(t12m + t13p + t23p + d4) / 4.0
+    e = np.array(
+        [
+            math.sqrt(d1 + t23m + t13m + t12m) / 4.0,
+            math.sqrt(t23m + d2 + t12p + t13p) / 4.0,
+            math.sqrt(t13m + t12p + d3 + t23p) / 4.0,
+            math.sqrt(t12m + t13p + t23p + d4) / 4.0,
+        ]
+    )
 
-    # transfer sign from rotation element differences
-    if R[2, 1] < R[1, 2]:
-        e1 = -e1
-    if R[0, 2] < R[2, 0]:
-        e2 = -e2
-    if R[1, 0] < R[0, 1]:
-        e3 = -e3
+    i = np.argmax(e)
+
+    if i == 0:
+        e[1] = math.copysign(e[1], R[2, 1] - R[1, 2])
+        e[2] = math.copysign(e[2], R[0, 2] - R[2, 0])
+        e[3] = math.copysign(e[3], R[1, 0] - R[0, 1])
+    elif i == 1:
+        e[0] = math.copysign(e[0], R[2, 1] - R[1, 2])
+        e[2] = math.copysign(e[2], R[1, 0] + R[0, 1])
+        e[3] = math.copysign(e[3], R[0, 2] + R[2, 0])
+    elif i == 2:
+        e[0] = math.copysign(e[0], R[0, 2] - R[2, 0])
+        e[1] = math.copysign(e[1], R[1, 0] + R[0, 1])
+        e[3] = math.copysign(e[3], R[2, 1] + R[1, 2])
+    else:
+        e[0] = math.copysign(e[0], R[1, 0] - R[0, 1])
+        e[1] = math.copysign(e[1], R[0, 2] + R[2, 0])
+        e[2] = math.copysign(e[1], R[2, 1] + R[1, 2])
 
     if order == "sxyz":
-        return np.r_[e0, e1, e2, e3]
+        return e
     elif order == "xyzs":
-        return np.r_[e1, e2, e3, e0]
+        return e[[1, 2, 3, 0]]
     else:
         raise ValueError("order is invalid, must be 'sxyz' or 'xyzs'")
+
+
+# def r2q_svd(R):
+#     U = np.array(
+#         [
+#             [
+#                 R[0, 0] + R[1, 1] + R[2, 2] + 1,
+#                 R[2, 1] - R[1, 2],
+#                 -R[2, 0] + R[0, 2],
+#                 R[1, 0] - R[0, 1],
+#             ],
+#             [
+#                 R[2, 1] - R[1, 2],
+#                 R[0, 0] - R[1, 1] - R[2, 2] + 1,
+#                 R[1, 0] + R[0, 1],
+#                 R[2, 0] + R[0, 2],
+#             ],
+#             [
+#                 -R[2, 0] + R[0, 2],
+#                 R[1, 0] + R[0, 1],
+#                 -R[0, 0] + R[1, 1] - R[2, 2] + 1,
+#                 R[2, 1] + R[1, 2],
+#             ],
+#             [
+#                 R[1, 0] - R[0, 1],
+#                 R[2, 0] + R[0, 2],
+#                 R[2, 1] + R[1, 2],
+#                 -R[0, 0] - R[1, 1] + R[2, 2] + 1,
+#             ],
+#         ]
+#     )
+
+#     U, S, VT = np.linalg.svd(U)
+
+#     e = U[:, 0]
+#     # if e[0] < -10 * _eps:
+#     #     e = -e
+#     return e
 
 
 # def r2q_old(R, check=False, tol=100):
@@ -649,6 +704,15 @@ def r2q(
 
 #     .. note:: Scalar part is always positive.
 
+#     :reference:
+#         - Funda, Taylor, IEEE Trans. Robotics and Automation, 6(3),
+#           June 1990, pp.382-388.  (coding reference)
+#         - Sarabandi, S., and Thomas, F. (March 1, 2019).
+#           "A Survey on the Computation of Quaternions From Rotation Matrices."
+#           ASME. J. Mechanisms Robotics. April 2019; 11(2): 021006. (according to this
+#           paper the algorithm is Hughes' method)
+
+
 #     :seealso: :func:`q2r`
 #     """
 #     if not smb.isrot(R, check=check, tol=tol):
@@ -659,22 +723,24 @@ def r2q(
 #     ky = R[0, 2] - R[2, 0]  # Ax - Nz
 #     kz = R[1, 0] - R[0, 1]  # Ny - Ox
 
+#     # equation (7)
 #     if (R[0, 0] >= R[1, 1]) and (R[0, 0] >= R[2, 2]):
 #         kx1 = R[0, 0] - R[1, 1] - R[2, 2] + 1  # Nx - Oy - Az + 1
 #         ky1 = R[1, 0] + R[0, 1]  # Ny + Ox
 #         kz1 = R[2, 0] + R[0, 2]  # Nz + Ax
-#         add = (kx >= 0)
+#         add = kx >= 0
 #     elif R[1, 1] >= R[2, 2]:
 #         kx1 = R[1, 0] + R[0, 1]  # Ny + Ox
 #         ky1 = R[1, 1] - R[0, 0] - R[2, 2] + 1  # Oy - Nx - Az + 1
 #         kz1 = R[2, 1] + R[1, 2]  # Oz + Ay
-#         add = (ky >= 0)
+#         add = ky >= 0
 #     else:
 #         kx1 = R[2, 0] + R[0, 2]  # Nz + Ax
 #         ky1 = R[2, 1] + R[1, 2]  # Oz + Ay
 #         kz1 = R[2, 2] - R[0, 0] - R[1, 1] + 1  # Az - Nx - Oy + 1
-#         add = (kz >= 0)
+#         add = kz >= 0
 
+#     # equation (8)
 #     if add:
 #         kx = kx + kx1
 #         ky = ky + ky1
@@ -687,9 +753,9 @@ def r2q(
 #     kv = np.r_[kx, ky, kz]
 #     nm = np.linalg.norm(kv)
 #     if abs(nm) < tol * _eps:
-#         return eye()
+#         return qeye()
 #     else:
-#         return np.r_[qs, (math.sqrt(1.0 - qs ** 2) / nm) * kv]
+#         return np.r_[qs, (math.sqrt(1.0 - qs**2) / nm) * kv]
 
 
 def qslerp(

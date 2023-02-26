@@ -161,6 +161,52 @@ class TestQuaternion(unittest.TestCase):
         pass
 
     def test_r2q(self):
+        # null rotation case
+        R = np.eye(3)
+        nt.assert_array_almost_equal(r2q(R), [1, 0, 0, 0])
+
+        R = tr.rotx(np.pi / 2)
+        nt.assert_array_almost_equal(r2q(R), np.r_[1, 1, 0, 0] / np.sqrt(2))
+
+        R = tr.rotx(-np.pi / 2)
+        nt.assert_array_almost_equal(r2q(R), np.r_[1, -1, 0, 0] / np.sqrt(2))
+
+        R = tr.rotx(np.pi)
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 1, 0, 0])
+
+        R = tr.rotx(-np.pi)
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 1, 0, 0])
+
+        # ry
+        R = tr.roty(np.pi / 2)
+        nt.assert_array_almost_equal(r2q(R), np.r_[1, 0, 1, 0] / np.sqrt(2))
+
+        R = tr.roty(-np.pi / 2)
+        nt.assert_array_almost_equal(r2q(R), np.r_[1, 0, -1, 0] / np.sqrt(2))
+
+        R = tr.roty(np.pi)
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 0, 1, 0])
+
+        R = tr.roty(-np.pi)
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 0, 1, 0])
+
+        # rz
+        R = tr.rotz(np.pi / 2)
+        nt.assert_array_almost_equal(r2q(R), np.r_[1, 0, 0, 1] / np.sqrt(2))
+
+        R = tr.rotz(-np.pi / 2)
+        nt.assert_array_almost_equal(r2q(R), np.r_[1, 0, 0, -1] / np.sqrt(2))
+
+        R = tr.rotz(np.pi)
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 0, 0, 1])
+
+        R = tr.rotz(-np.pi)
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 0, 0, 1])
+
+        # github issue case
+        R = np.array([[0, -1, 0], [-1, 0, 0], [0, 0, -1]])
+        nt.assert_array_almost_equal(r2q(R), np.r_[0, 1, -1, 0] / np.sqrt(2))
+
         r1 = sm.SE3.Rx(0.1)
         q1a = np.array([9.987503e-01, 4.997917e-02, 0.000000e00, 2.775558e-17])
         q1b = np.array([4.997917e-02, 0.000000e00, 2.775558e-17, 9.987503e-01])
