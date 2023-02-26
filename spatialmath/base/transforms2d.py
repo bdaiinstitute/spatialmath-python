@@ -1121,7 +1121,8 @@ def ICP2d(
 
 if _matplotlib_exists:
     import matplotlib.pyplot as plt
-    from mpl_toolkits.axisartist import Axes
+    # from mpl_toolkits.axisartist import Axes
+    from matplotlib.axes import Axes
 
     def trplot2(
         T: Union[SO2Array, SE2Array],

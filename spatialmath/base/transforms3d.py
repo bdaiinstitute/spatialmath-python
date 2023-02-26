@@ -51,8 +51,6 @@ import spatialmath.base.symbolic as sym
 
 from spatialmath.base.types import *
 
-print(SO3Array)
-
 _eps = np.finfo(np.float64).eps
 
 # ---------------------------------------------------------------------------------------#
