@@ -22,24 +22,34 @@ def qcompare(x, y):
         y = y.A
     nt.assert_array_almost_equal(x, y)
 
+
 # straight port of the MATLAB unit tests
 
 
 class TestUnitQuaternion(unittest.TestCase):
-
     def test_constructor_variants(self):
         nt.assert_array_almost_equal(UnitQuaternion().vec, np.r_[1, 0, 0, 0])
 
-        nt.assert_array_almost_equal(UnitQuaternion.Rx(90, 'deg').vec, np.r_[1, 1, 0, 0] / math.sqrt(2))
-        nt.assert_array_almost_equal(UnitQuaternion.Rx(-90, 'deg').vec, np.r_[1, -1, 0, 0] / math.sqrt(2))
-        nt.assert_array_almost_equal(UnitQuaternion.Ry(90, 'deg').vec, np.r_[1, 0, 1, 0] / math.sqrt(2))
-        nt.assert_array_almost_equal(UnitQuaternion.Ry(-90, 'deg').vec, np.r_[1, 0, -1, 0] / math.sqrt(2))
-        nt.assert_array_almost_equal(UnitQuaternion.Rz(90, 'deg').vec, np.r_[1, 0, 0, 1] / math.sqrt(2))
-        nt.assert_array_almost_equal(UnitQuaternion.Rz(-90, 'deg').vec, np.r_[1, 0, 0, -1] / math.sqrt(2))
-
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Rx(90, "deg").vec, np.r_[1, 1, 0, 0] / math.sqrt(2)
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Rx(-90, "deg").vec, np.r_[1, -1, 0, 0] / math.sqrt(2)
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Ry(90, "deg").vec, np.r_[1, 0, 1, 0] / math.sqrt(2)
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Ry(-90, "deg").vec, np.r_[1, 0, -1, 0] / math.sqrt(2)
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Rz(90, "deg").vec, np.r_[1, 0, 0, 1] / math.sqrt(2)
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Rz(-90, "deg").vec, np.r_[1, 0, 0, -1] / math.sqrt(2)
+        )
 
     def test_constructor(self):
-
         qcompare(UnitQuaternion(), [1, 0, 0, 0])
 
         # from S
@@ -118,7 +128,6 @@ class TestUnitQuaternion(unittest.TestCase):
         self.assertEqual(len(q), 3)
         qcompare(q, np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
 
-
         # from S
         M = np.identity(4)
         q = UnitQuaternion(M)
@@ -128,7 +137,6 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(q[1], np.r_[0, 1, 0, 0])
         qcompare(q[2], np.r_[0, 0, 1, 0])
         qcompare(q[3], np.r_[0, 0, 0, 1])
-
 
         # # vectorised forms of R, T
         # R = []; T = []
@@ -151,21 +159,19 @@ class TestUnitQuaternion(unittest.TestCase):
         self.assertEqual(len(uu), 4)
 
     def test_string(self):
-
         u = UnitQuaternion()
 
         s = str(u)
         self.assertIsInstance(s, str)
-        self.assertTrue(s.endswith(' >>'))
-        self.assertEqual(s.count('\n'), 0)
+        self.assertTrue(s.endswith(" >>"))
+        self.assertEqual(s.count("\n"), 0)
 
         q = UnitQuaternion.Rx([0.3, 0.4, 0.5])
         s = str(q)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 2)
+        self.assertEqual(s.count("\n"), 2)
 
     def test_properties(self):
-
         u = UnitQuaternion()
 
         # s,v
@@ -196,7 +202,6 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(roty(-pi / 2)).SE3(), SE3.Ry(-pi / 2))
         qcompare(UnitQuaternion(rotz(pi)).SE3(), SE3.Rz(pi))
 
-
     def test_staticconstructors(self):
         # rotation primitives
         for theta in [-pi / 2, 0, pi / 2, pi]:
@@ -209,36 +214,56 @@ class TestUnitQuaternion(unittest.TestCase):
             nt.assert_array_almost_equal(UnitQuaternion.Rz(theta).R, rotz(theta))
 
         for theta in np.r_[-pi / 2, 0, pi / 2, pi] * 180 / pi:
-            nt.assert_array_almost_equal(UnitQuaternion.Rx(theta, 'deg').R, rotx(theta, 'deg'))
+            nt.assert_array_almost_equal(
+                UnitQuaternion.Rx(theta, "deg").R, rotx(theta, "deg")
+            )
 
         for theta in [-pi / 2, 0, pi / 2, pi]:
-            nt.assert_array_almost_equal(UnitQuaternion.Ry(theta, 'deg').R, roty(theta, 'deg'))
+            nt.assert_array_almost_equal(
+                UnitQuaternion.Ry(theta, "deg").R, roty(theta, "deg")
+            )
 
         for theta in [-pi / 2, 0, pi / 2, pi]:
-            nt.assert_array_almost_equal(UnitQuaternion.Rz(theta, 'deg').R, rotz(theta, 'deg'))
+            nt.assert_array_almost_equal(
+                UnitQuaternion.Rz(theta, "deg").R, rotz(theta, "deg")
+            )
 
         # 3 angle
-        nt.assert_array_almost_equal(UnitQuaternion.RPY([0.1, 0.2, 0.3]).R, rpy2r(0.1, 0.2, 0.3))
+        nt.assert_array_almost_equal(
+            UnitQuaternion.RPY([0.1, 0.2, 0.3]).R, rpy2r(0.1, 0.2, 0.3)
+        )
 
-        nt.assert_array_almost_equal(UnitQuaternion.Eul([0.1, 0.2, 0.3]).R, eul2r(0.1, 0.2, 0.3))
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Eul([0.1, 0.2, 0.3]).R, eul2r(0.1, 0.2, 0.3)
+        )
 
-        nt.assert_array_almost_equal(UnitQuaternion.RPY([10, 20, 30], unit='deg').R, rpy2r(10, 20, 30, unit='deg'))
+        nt.assert_array_almost_equal(
+            UnitQuaternion.RPY([10, 20, 30], unit="deg").R,
+            rpy2r(10, 20, 30, unit="deg"),
+        )
 
-        nt.assert_array_almost_equal(UnitQuaternion.Eul([10, 20, 30], unit='deg').R, eul2r(10, 20, 30, unit='deg'))
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Eul([10, 20, 30], unit="deg").R,
+            eul2r(10, 20, 30, unit="deg"),
+        )
 
         # (theta, v)
         th = 0.2
         v = unitvec([1, 2, 3])
         nt.assert_array_almost_equal(UnitQuaternion.AngVec(th, v).R, angvec2r(th, v))
         nt.assert_array_almost_equal(UnitQuaternion.AngVec(-th, v).R, angvec2r(-th, v))
-        nt.assert_array_almost_equal(UnitQuaternion.AngVec(-th, -v).R, angvec2r(-th, -v))
+        nt.assert_array_almost_equal(
+            UnitQuaternion.AngVec(-th, -v).R, angvec2r(-th, -v)
+        )
         nt.assert_array_almost_equal(UnitQuaternion.AngVec(th, -v).R, angvec2r(th, -v))
 
         # (theta, v)
         th = 0.2
         v = unitvec([1, 2, 3])
         nt.assert_array_almost_equal(UnitQuaternion.EulerVec(th * v).R, angvec2r(th, v))
-        nt.assert_array_almost_equal(UnitQuaternion.EulerVec(-th * v).R, angvec2r(-th, v))
+        nt.assert_array_almost_equal(
+            UnitQuaternion.EulerVec(-th * v).R, angvec2r(-th, v)
+        )
 
     def test_canonic(self):
         R = rotx(0)
@@ -266,11 +291,11 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(R), np.r_[cos(pi / 2), sin(pi / 2) * np.r_[0, 0, 1]])
 
         R = rotx(-pi)
-        qcompare(UnitQuaternion(R), np.r_[cos(-pi / 2), sin(-pi / 2) * np.r_[1, 0, 0]])
+        qcompare(UnitQuaternion(R), np.r_[cos(pi / 2), sin(pi / 2) * np.r_[1, 0, 0]])
         R = roty(-pi)
-        qcompare(UnitQuaternion(R), np.r_[cos(-pi / 2), sin(-pi / 2) * np.r_[0, 1, 0]])
+        qcompare(UnitQuaternion(R), np.r_[cos(pi / 2), sin(pi / 2) * np.r_[0, 1, 0]])
         R = rotz(-pi)
-        qcompare(UnitQuaternion(R), np.r_[cos(-pi / 2), sin(-pi / 2) * np.r_[0, 0, 1]])
+        qcompare(UnitQuaternion(R), np.r_[cos(pi / 2), sin(pi / 2) * np.r_[0, 0, 1]])
 
     def test_convert(self):
         # test conversion from rotn matrix to u.quaternion and back
@@ -306,7 +331,6 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(R).R, R)
 
     def test_resulttype(self):
-
         q = Quaternion([2, 0, 0, 0])
         u = UnitQuaternion()
 
@@ -344,7 +368,6 @@ class TestUnitQuaternion(unittest.TestCase):
         self.assertIsInstance(u.SE3(), SE3)
 
     def test_multiply(self):
-
         vx = np.r_[1, 0, 0]
         vy = np.r_[0, 1, 0]
         vz = np.r_[0, 0, 1]
@@ -360,13 +383,22 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(u * rx, rx)
 
         # vector x vector
-        qcompare(UnitQuaternion([ry, rz, rx]) * UnitQuaternion([rx, ry, rz]), UnitQuaternion([ry * rx, rz * ry, rx * rz]))
+        qcompare(
+            UnitQuaternion([ry, rz, rx]) * UnitQuaternion([rx, ry, rz]),
+            UnitQuaternion([ry * rx, rz * ry, rx * rz]),
+        )
 
         # scalar x vector
-        qcompare(ry * UnitQuaternion([rx, ry, rz]), UnitQuaternion([ry * rx, ry * ry, ry * rz]))
+        qcompare(
+            ry * UnitQuaternion([rx, ry, rz]),
+            UnitQuaternion([ry * rx, ry * ry, ry * rz]),
+        )
 
         # vector x scalar
-        qcompare(UnitQuaternion([rx, ry, rz]) * ry, UnitQuaternion([rx * ry, ry * ry, rz * ry]))
+        qcompare(
+            UnitQuaternion([rx, ry, rz]) * ry,
+            UnitQuaternion([rx * ry, ry * ry, rz * ry]),
+        )
 
         # quatvector product
         # scalar x scalar
@@ -377,17 +409,21 @@ class TestUnitQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(ry * np.c_[vx, vy, vz], np.c_[-vz, vy, vx])
 
         # vector x scalar
-        nt.assert_array_almost_equal(UnitQuaternion([ry, rz, rx]) * vy, np.c_[vy, -vx, vz])
+        nt.assert_array_almost_equal(
+            UnitQuaternion([ry, rz, rx]) * vy, np.c_[vy, -vx, vz]
+        )
 
     def test_matmul(self):
-
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
 
         qcompare(rx @ ry, rx * ry)
 
-        qcompare(UnitQuaternion([ry, rz, rx]) @ UnitQuaternion([rx, ry, rz]), UnitQuaternion([ry * rx, rz * ry, rx * rz]))
+        qcompare(
+            UnitQuaternion([ry, rz, rx]) @ UnitQuaternion([rx, ry, rz]),
+            UnitQuaternion([ry * rx, rz * ry, rx * rz]),
+        )
 
     # def multiply_test_normalized(self):
 
@@ -417,7 +453,6 @@ class TestUnitQuaternion(unittest.TestCase):
     #     #nt.assert_array_almost_equal([rx, ry, rz] .* ry, [rx.*ry, ry.*ry, rz.*ry])
 
     def test_divide(self):
-
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
@@ -429,22 +464,30 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(rx / u, rx)
         qcompare(ry / ry, u)
 
-        #vector /vector
-        qcompare(UnitQuaternion([ry, rz, rx]) / UnitQuaternion([rx, ry, rz]), UnitQuaternion([ry / rx, rz / ry, rx / rz]))
+        # vector /vector
+        qcompare(
+            UnitQuaternion([ry, rz, rx]) / UnitQuaternion([rx, ry, rz]),
+            UnitQuaternion([ry / rx, rz / ry, rx / rz]),
+        )
 
-        #vector / scalar
-        qcompare(UnitQuaternion([rx, ry, rz]) / ry, UnitQuaternion([rx / ry, ry / ry, rz / ry]))
+        # vector / scalar
+        qcompare(
+            UnitQuaternion([rx, ry, rz]) / ry,
+            UnitQuaternion([rx / ry, ry / ry, rz / ry]),
+        )
 
         # scalar /vector
-        qcompare(ry / UnitQuaternion([rx, ry, rz]), UnitQuaternion([ry / rx, ry / ry, ry / rz]))
+        qcompare(
+            ry / UnitQuaternion([rx, ry, rz]),
+            UnitQuaternion([ry / rx, ry / ry, ry / rz]),
+        )
 
     def test_angle(self):
-            # angle between quaternions
+        # angle between quaternions
         # pure
         v = [5, 6, 7]
 
     def test_conversions(self):
-
         # , 3 angle
         qcompare(UnitQuaternion.RPY([0.1, 0.2, 0.3]).rpy(), [0.1, 0.2, 0.3])
         qcompare(UnitQuaternion.RPY(0.1, 0.2, 0.3).rpy(), [0.1, 0.2, 0.3])
@@ -452,10 +495,15 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion.Eul([0.1, 0.2, 0.3]).eul(), [0.1, 0.2, 0.3])
         qcompare(UnitQuaternion.Eul(0.1, 0.2, 0.3).eul(), [0.1, 0.2, 0.3])
 
+        qcompare(
+            UnitQuaternion.RPY([10, 20, 30], unit="deg").R,
+            rpy2r(10, 20, 30, unit="deg"),
+        )
 
-        qcompare(UnitQuaternion.RPY([10, 20, 30], unit='deg').R, rpy2r(10, 20, 30, unit='deg'))
-
-        qcompare(UnitQuaternion.Eul([10, 20, 30], unit='deg').R, eul2r(10, 20, 30, unit='deg'))
+        qcompare(
+            UnitQuaternion.Eul([10, 20, 30], unit="deg").R,
+            eul2r(10, 20, 30, unit="deg"),
+        )
 
         # (theta, v)
         th = 0.2
@@ -478,7 +526,6 @@ class TestUnitQuaternion(unittest.TestCase):
     #  SE3                     convert to SE3 class
 
     def test_miscellany(self):
-
         # AbsTol not used since Quaternion supports eq() operator
 
         rx = UnitQuaternion.Rx(pi / 2)
@@ -502,7 +549,7 @@ class TestUnitQuaternion(unittest.TestCase):
         q = rx * ry * rz
 
         qcompare(q**0, u)
-        qcompare(q**(-1), q.inv())
+        qcompare(q ** (-1), q.inv())
         qcompare(q**2, q * q)
 
         # angle
@@ -519,20 +566,19 @@ class TestUnitQuaternion(unittest.TestCase):
         # nt.assert_array_almost_equal(rx.increment(w), rx*UnitQuaternion.omega(w))
 
     def test_interp(self):
-
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
         u = UnitQuaternion()
 
-        q = UnitQuaternion.RPY([.2, .3, .4])
+        q = UnitQuaternion.RPY([0.2, 0.3, 0.4])
 
         # from null
         qcompare(q.interp1(0), u)
         qcompare(q.interp1(1), q)
 
-        #self.assertEqual(length(q.interp(linspace(0,1, 10))), 10)
-        #self.assertTrue(all( q.interp([0, 1]) == [u, q]))
+        # self.assertEqual(length(q.interp(linspace(0,1, 10))), 10)
+        # self.assertTrue(all( q.interp([0, 1]) == [u, q]))
         # TODO vectorizing
 
         q0_5 = q.interp1(0.5)
@@ -554,7 +600,7 @@ class TestUnitQuaternion(unittest.TestCase):
         qq = rx.interp(q, 11)
         self.assertEqual(len(qq), 11)
 
-        #self.assertTrue(all( q.interp([0, 1], dest=rx, ) == [q, rx]))
+        # self.assertTrue(all( q.interp([0, 1], dest=rx, ) == [q, rx]))
 
         # test shortest option
         # q1 = UnitQuaternion.Rx(0.9*pi)
@@ -583,7 +629,6 @@ class TestUnitQuaternion(unittest.TestCase):
             q.increment([0.1, 0, 0], normalize=True)
         qcompare(q, UnitQuaternion.Rx(1))
 
-
     def test_eq(self):
         q1 = UnitQuaternion([0, 1, 0, 0])
         q2 = UnitQuaternion([0, -1, 0, 0])
@@ -595,10 +640,20 @@ class TestUnitQuaternion(unittest.TestCase):
         self.assertTrue(q1 == q2)  # because of double wrapping
         self.assertFalse(q1 == q3)
 
-        nt.assert_array_almost_equal(UnitQuaternion([q1, q1, q1]) == UnitQuaternion([q1, q1, q1]), [True, True, True])
-        nt.assert_array_almost_equal(UnitQuaternion([q1, q2, q3]) == UnitQuaternion([q1, q2, q3]), [True, True, True])
-        nt.assert_array_almost_equal(UnitQuaternion([q1, q1, q3]) == q1, [True, True, False])
-        nt.assert_array_almost_equal(q3 == UnitQuaternion([q1, q1, q3]), [False, False, True])
+        nt.assert_array_almost_equal(
+            UnitQuaternion([q1, q1, q1]) == UnitQuaternion([q1, q1, q1]),
+            [True, True, True],
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion([q1, q2, q3]) == UnitQuaternion([q1, q2, q3]),
+            [True, True, True],
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion([q1, q1, q3]) == q1, [True, True, False]
+        )
+        nt.assert_array_almost_equal(
+            q3 == UnitQuaternion([q1, q1, q3]), [False, False, True]
+        )
 
     def test_logical(self):
         rx = UnitQuaternion.Rx(pi / 2)
@@ -621,14 +676,12 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(q.dotb(omega), 0.5 * q * Quaternion.Pure(omega))
 
     def test_matrix(self):
-
         q1 = UnitQuaternion.RPY([0.1, 0.2, 0.3])
         q2 = UnitQuaternion.RPY([0.2, 0.3, 0.4])
 
         qcompare(q1 * q2, q1.matrix @ q2.vec)
 
     def test_vec3(self):
-
         q1 = UnitQuaternion.RPY([0.1, 0.2, 0.3])
         q2 = UnitQuaternion.RPY([0.2, 0.3, 0.4])
 
@@ -654,9 +707,7 @@ class TestUnitQuaternion(unittest.TestCase):
 
 
 class TestQuaternion(unittest.TestCase):
-
     def test_constructor(self):
-
         q = Quaternion()
         self.assertEqual(len(q), 1)
         self.assertIsInstance(q, Quaternion)
@@ -683,7 +734,13 @@ class TestQuaternion(unittest.TestCase):
 
         # pure
         v = [5, 6, 7]
-        nt.assert_array_almost_equal(Quaternion.Pure(v).vec, [0, ] + v)
+        nt.assert_array_almost_equal(
+            Quaternion.Pure(v).vec,
+            [
+                0,
+            ]
+            + v,
+        )
 
         # tc.verifyError( @() Quaternion.pure([1, 2]), 'SMTB:Quaternion:badarg')
 
@@ -697,39 +754,34 @@ class TestQuaternion(unittest.TestCase):
         # tc.verifyError( @() Quaternion([1, 2, 3]), 'SMTB:Quaternion:badarg')
 
     def test_string(self):
-
         u = Quaternion()
 
         s = str(u)
         self.assertIsInstance(s, str)
-        self.assertTrue(s.endswith(' >'))
-        self.assertEqual(s.count('\n'), 0)
+        self.assertTrue(s.endswith(" >"))
+        self.assertEqual(s.count("\n"), 0)
         self.assertEqual(len(s), 37)
 
         q = Quaternion([u, u, u])
         s = str(q)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 2)
+        self.assertEqual(s.count("\n"), 2)
 
     def test_properties(self):
-
         q = Quaternion([1, 2, 3, 4])
         self.assertEqual(q.s, 1)
         nt.assert_array_almost_equal(q.v, np.r_[2, 3, 4])
         nt.assert_array_almost_equal(q.vec, np.r_[1, 2, 3, 4])
 
     def log_test_exp(self):
-
         q1 = Quaternion([4, 3, 2, 1])
         q2 = Quaternion([-1, 2, -3, 4])
 
         nt.assert_array_almost_equal(exp(log(q1)), q1)
         nt.assert_array_almost_equal(exp(log(q2)), q2)
 
-        #nt.assert_array_almost_equal(log(exp(q1)), q1)
-        #nt.assert_array_almost_equal(log(exp(q2)), q2)
-
-
+        # nt.assert_array_almost_equal(log(exp(q1)), q1)
+        # nt.assert_array_almost_equal(log(exp(q2)), q2)
 
     def test_concat(self):
         u = Quaternion()
@@ -739,7 +791,6 @@ class TestQuaternion(unittest.TestCase):
         self.assertEqual(len(uu), 4)
 
     def primitive_test_convert(self):
-
         # s,v
         nt.assert_array_almost_equal(Quaternion([1, 0, 0, 0]).s, 1)
         nt.assert_array_almost_equal(Quaternion([1, 0, 0, 0]).v, [0, 0, 0])
@@ -754,7 +805,6 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(Quaternion([0, 0, 0, 1]).v, [0, 0, 1])
 
     def test_resulttype(self):
-
         q = Quaternion([2, 0, 0, 0])
 
         self.assertIsInstance(q, Quaternion)
@@ -768,7 +818,6 @@ class TestQuaternion(unittest.TestCase):
         self.assertIsInstance(q + q, Quaternion)
 
     def test_multiply(self):
-
         q1 = Quaternion([1, 2, 3, 4])
         q2 = Quaternion([4, 3, 2, 1])
         q3 = Quaternion([-1, 2, -3, 4])
@@ -787,7 +836,10 @@ class TestQuaternion(unittest.TestCase):
         qcompare(q, [-12, 6, 24, 12])
 
         # vector x vector
-        qcompare(Quaternion([q1, u, q2, u, q3, u]) * Quaternion([u, q1, u, q2, u, q3]), Quaternion([q1, q1, q2, q2, q3, q3]))
+        qcompare(
+            Quaternion([q1, u, q2, u, q3, u]) * Quaternion([u, q1, u, q2, u, q3]),
+            Quaternion([q1, q1, q2, q2, q3, q3]),
+        )
 
         q = Quaternion([q1, u, q2, u, q3, u])
         q *= Quaternion([u, q1, u, q2, u, q3])
@@ -890,7 +942,6 @@ class TestQuaternion(unittest.TestCase):
         qcompare(q2.vec, v1 - v2)
 
     def test_power(self):
-
         q = Quaternion([1, 2, 3, 4])
 
         qcompare(q**0, Quaternion([1, 0, 0, 0]))
@@ -904,7 +955,9 @@ class TestQuaternion(unittest.TestCase):
 
         # norm
         nt.assert_array_almost_equal(q.norm(), np.linalg.norm(v))
-        nt.assert_array_almost_equal(Quaternion([q, u, q]).norm(), [np.linalg.norm(v), 1, np.linalg.norm(v)])
+        nt.assert_array_almost_equal(
+            Quaternion([q, u, q]).norm(), [np.linalg.norm(v), 1, np.linalg.norm(v)]
+        )
 
         # unit
         qu = q.unit()
@@ -915,11 +968,10 @@ class TestQuaternion(unittest.TestCase):
 
         # inner
         nt.assert_equal(u.inner(u), 1)
-        nt.assert_equal(q.inner(q), q.norm()**2)
+        nt.assert_equal(q.inner(q), q.norm() ** 2)
         nt.assert_equal(q.inner(u), np.dot(q.vec, u.vec))
 
 
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     unittest.main()
