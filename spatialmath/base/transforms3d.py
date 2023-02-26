@@ -2933,15 +2933,6 @@ def trplot(
 
     # label the frame
     if frame:
-        if textcolor is None:
-            textcolor = color[0]
-        else:
-            textcolor = "blue"
-        if origincolor is None:
-            origincolor = color[0]
-        else:
-            origincolor = "black"
-
         o1 = T @ np.array(np.r_[flo, 1])
         ax.text(
             o1[0],
