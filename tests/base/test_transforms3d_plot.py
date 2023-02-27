@@ -22,8 +22,6 @@ import matplotlib.pyplot as plt
 
 
 class Test3D(unittest.TestCase):
-
-
     def test_plot(self):
         plt.figure()
         # test options
@@ -65,7 +63,9 @@ class Test3D(unittest.TestCase):
         T = [transl(1, 2, 3), transl(2, 3, 4), transl(3, 4, 5)]
         trplot(T)
 
-        plt.clf()
+        plt.close("all")
+
+    def test_animate(self):
         tranimate(transl(1, 2, 3), repeat=False, wait=True)
 
         tranimate(transl(1, 2, 3), repeat=False, wait=True)
@@ -75,9 +75,7 @@ class Test3D(unittest.TestCase):
         plt.close("all")
         # test animate with line not arrow, text, test with SO(3)
 
-    
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()
