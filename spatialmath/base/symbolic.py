@@ -23,8 +23,10 @@ try:  # pragma: no cover
     from sympy import Symbol
 
 except ImportError:  # pragma: no cover
+    # SymPy is not installed
     _symbolics = False
     symtype = ()
+    Symbol = Any
 
 
 # ---------------------------------------------------------------------------------------#

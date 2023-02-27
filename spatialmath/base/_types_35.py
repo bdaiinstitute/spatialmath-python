@@ -28,6 +28,8 @@ from typing_extensions import Self
 
 from numpy.typing import DTypeLike, NDArray  # , ArrayLike
 
+from typing import cast
+
 # from typing import TypeVar
 # NDArray = TypeVar('NDArray')
 import numpy as np
