@@ -1025,12 +1025,12 @@ def tr2angvec(
 
     v = vex(trlog(cast(SO3Array, R)))
 
-    if iszerovec(v):
-        theta = 0
-        v = np.r_[0, 0, 0]
-    else:
+    try:
         theta = norm(v)
         v = unitvec(v)
+    except ValueError:
+        theta = 0
+        v = np.r_[0, 0, 0]
 
     if unit == "deg":
         theta *= 180 / math.pi
@@ -1332,47 +1332,35 @@ def trlog(
     if ishom(T, check=check, tol=10):
         # SE(3) matrix
 
-        if iseye(T, tol=tol):
-            # is identity matrix
-            if twist:
-                return np.zeros((6,))
-            else:
-                return np.zeros((4, 4))
-        else:
-            [R, t] = tr2rt(T)
+        [R, t] = tr2rt(T)
 
-            if iseye(R):
-                # rotation matrix is identity
-                if twist:
-                    return np.r_[t, 0, 0, 0]
-                else:
-                    return Ab2M(np.zeros((3, 3)), t)
+        # S = trlog(R, check=False)  # recurse
+        S = trlog(cast(SO3Array, R), check=False)  # recurse
+        w = vex(S)
+        theta = norm(w)
+        if theta == 0:
+            # rotation matrix is identity
+            if twist:
+                return np.r_[t, 0, 0, 0]
             else:
-                # S = trlog(R, check=False)  # recurse
-                S = trlog(cast(SO3Array, R), check=False)  # recurse
-                w = vex(S)
-                theta = norm(w)
-                Ginv = (
-                    np.eye(3)
-                    - S / 2
-                    + (1 / theta - 1 / math.tan(theta / 2) / 2) / theta * S @ S
-                )
-                v = Ginv @ t
-                if twist:
-                    return np.r_[v, w]
-                else:
-                    return Ab2M(S, v)
+                return Ab2M(np.zeros((3, 3)), t)
+        else:
+            # general case
+            Ginv = (
+                np.eye(3)
+                - S / 2
+                + (1 / theta - 1 / math.tan(theta / 2) / 2) / theta * S @ S
+            )
+            v = Ginv @ t
+            if twist:
+                return np.r_[v, w]
+            else:
+                return Ab2M(S, v)
 
     elif isrot(T, check=check):
         # deal with rotation matrix
         R = T
-        if iseye(R):
-            # matrix is identity
-            if twist:
-                return np.zeros((3,))
-            else:
-                return np.zeros((3, 3))
-        elif abs(np.trace(R) + 1) < tol * _eps:
+        if abs(np.trace(R) + 1) < tol * _eps:
             # check for trace = -1
             #   rotation by +/- pi, +/- 3pi etc.
             diagonal = R.diagonal()
@@ -1389,11 +1377,18 @@ def trlog(
         else:
             # general case
             theta = math.acos((np.trace(R) - 1) / 2)
-            skw = (R - R.T) / 2 / math.sin(theta)
-            if twist:
-                return vex(skw * theta)
+            st = math.sin(theta)
+            if st == 0:
+                if twist:
+                    return np.zeros((3,))
+                else:
+                    return np.zeros((3, 3))
             else:
-                return skw * theta
+                skw = (R - R.T) / 2 / st
+                if twist:
+                    return vex(skw * theta)
+                else:
+                    return skw * theta
     else:
         raise ValueError("Expect SO(3) or SE(3) matrix")
 
@@ -3454,3 +3449,16 @@ if __name__ == "__main__":  # pragma: no cover
     #         / "test_transforms3d_plot.py"
     # #     ).read()
     # )  # pylint: disable=exec-used
+    import numpy as np
+
+    T = np.array(
+        [
+            [1, 3.881e-14, 0, -1.985e-13],
+            [-3.881e-14, 1, 1.438e-11, 1.192e-13],
+            [0, -1.438e-11, 1, 0],
+            [0, 0, 0, 1],
+        ]
+    )
+    theta, vec = tr2angvec(T)
+    print(theta, vec)
+    print(trlog(T, twist=True))
