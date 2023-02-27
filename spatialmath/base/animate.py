@@ -198,7 +198,6 @@ class Animate:
         """
 
         def update(frame, animation):
-
             # frame is the result of calling next() on a iterator or generator
             # seemingly the animation framework isn't checking StopException
             # so there is no way to know when this is no longer called.
@@ -244,6 +243,7 @@ class Animate:
             blit=False,  # blit leaves a trail and first frame, set to False
             interval=interval,
             repeat=repeat,
+            save_count=nframes,
         )
 
         if movie is True:
