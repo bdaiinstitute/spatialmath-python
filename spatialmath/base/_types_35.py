@@ -34,7 +34,7 @@ import numpy as np
 
 
 ArrayLike = Union[float, List[float], Tuple[float, ...], NDArray]
-ArrayLikePure = Union[List[float], Tuple[float, ...], NDArray]]
+ArrayLikePure = Union[List[float], Tuple[float, ...], NDArray]
 ArrayLike2 = Union[List, Tuple[float, float], NDArray]
 ArrayLike3 = Union[List, Tuple[float, float, float], NDArray]
 ArrayLike4 = Union[List, Tuple[float, float, float, float], NDArray]
