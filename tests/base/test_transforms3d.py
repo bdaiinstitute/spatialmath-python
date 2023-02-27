@@ -292,13 +292,19 @@ class Test3D(unittest.TestCase):
     def test_trlog(self):
         R = np.eye(3)
         nt.assert_array_almost_equal(trlog(R), skew([0, 0, 0]))
+        nt.assert_array_almost_equal(trlog(R, twist=True), [0, 0, 0])
 
         R = rotx(0.5)
         nt.assert_array_almost_equal(trlog(R), skew([0.5, 0, 0]))
+        nt.assert_array_almost_equal(trlog(R, twist=True), [0.5, 0, 0])
+
         R = roty(0.5)
         nt.assert_array_almost_equal(trlog(R), skew([0, 0.5, 0]))
+        nt.assert_array_almost_equal(trlog(R, twist=True), [0, 0.5, 0])
+
         R = rotz(0.5)
         nt.assert_array_almost_equal(trlog(R), skew([0, 0, 0.5]))
+        nt.assert_array_almost_equal(trlog(R, twist=True), [0, 0, 0.5])
 
         R = rpy2r(0.1, 0.2, 0.3)
         nt.assert_array_almost_equal(logm(R), trlog(R))
