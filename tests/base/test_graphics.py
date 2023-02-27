@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import matplotlib.pyplot as plt
 from spatialmath.base import *
 
 # test graphics primitives
@@ -7,6 +8,9 @@ from spatialmath.base import *
 
 
 class TestGraphics(unittest.TestCase):
+    def teardown_method(self, method):
+        plt.close("all")
+
     def test_plotvol2(self):
         plotvol2(5)
 
@@ -20,7 +24,6 @@ class TestGraphics(unittest.TestCase):
         plot_point((2, 3), "x", text="foo")
 
     def test_plot_text(self):
-
         plot_text((2, 3), "foo")
         plot_text(np.r_[2, 3], "foo")
 
@@ -90,5 +93,4 @@ class TestGraphics(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main(buffer=True)
