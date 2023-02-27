@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Spatial Maths package
-            <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Spatial Maths package
+              <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +64,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">spatialmath.twist</li>
       <li class="wy-breadcrumbs-aside">
@@ -77,12 +81,10 @@
 <span class="c1"># MIT Licence, see details in top-level file: LICENCE</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SO3</span><span class="p">,</span> <span class="n">SE3</span>
-<span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
 <span class="kn">from</span> <span class="nn">spatialmath.geom3d</span> <span class="kn">import</span> <span class="n">Line3</span>
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">base</span>
 <span class="kn">from</span> <span class="nn">spatialmath.baseposelist</span> <span class="kn">import</span> <span class="n">BasePoseList</span>
+
 
 <span class="k">class</span> <span class="nc">BaseTwist</span><span class="p">(</span><span class="n">BasePoseList</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -102,7 +104,7 @@
 <span class="sd">    - ``*`` will compose two instances of the same subclass, and the result will be</span>
 <span class="sd">      an instance of the same subclass, since this is a group operator.</span>
 
-<span class="sd">    These classes all inherit from ``UserList`` which enables them to </span>
+<span class="sd">    These classes all inherit from ``UserList`` which enables them to</span>
 <span class="sd">    represent a sequence of values, ie. a ``Twist3`` instance can contain</span>
 <span class="sd">    a sequence of twists.  Most of the Python ``list`` operators</span>
 <span class="sd">    are applicable:</span>
@@ -132,7 +134,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>   <span class="c1"># enable UserList superpowers</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>  <span class="c1"># enable UserList superpowers</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -209,7 +211,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">iszerovec</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">isunit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -274,7 +275,7 @@
     <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Product of twists (superclass method)</span>
-<span class="sd"> </span>
+
 <span class="sd">        :return: Product of elements</span>
 <span class="sd">        :rtype: Twist2 or Twist3</span>
 
@@ -282,7 +283,7 @@
 <span class="sd">        elements :math:`\prod_i=0^{N-1} S_i`.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist3</span>
@@ -303,7 +304,7 @@
             <span class="n">twprod</span> <span class="o">=</span> <span class="n">twprod</span> <span class="o">@</span> <span class="n">exp</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">twprod</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span> <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``==`` operator (superclass method)</span>
 
@@ -326,7 +327,7 @@
 <span class="sd">        :seealso: :func:`__ne__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;operands to == are of different types&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;operands to == are of different types&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
@@ -351,14 +352,17 @@
 <span class="sd">        :seealso: :func:`__ne__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;operands to != are of different types&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;operands to != are of different types&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
         <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">S</span> <span class="o">/</span> <span class="n">right</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Twist /, incorrect right operand&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Twist /, incorrect right operand&quot;</span><span class="p">)</span>
+
 
 <span class="c1"># ======================================================================== #</span>
 
@@ -397,6 +401,8 @@
 <span class="sd">          Twist3 instance containing N motions</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -406,14 +412,14 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">SE3</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">twist</span><span class="p">()</span><span class="o">.</span><span class="n">A</span><span class="p">]</span>
 
-        <span class="k">elif</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="c1"># Twist(v, w)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">arg</span><span class="p">,</span> <span class="n">w</span><span class="p">]]</span>
             <span class="k">return</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad value to Twist constructor&#39;</span><span class="p">)</span></div>
-            
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad value to Twist constructor&quot;</span><span class="p">)</span></div>
+
     <span class="c1"># ------------------------ SMUserList required ---------------------------#</span>
 
     <span class="nd">@staticmethod</span>
@@ -422,15 +428,15 @@
 
     <span class="k">def</span> <span class="nf">_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
                 <span class="c1"># it&#39;s an se(3)</span>
                 <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">6</span><span class="p">,):</span>
                 <span class="c1"># it&#39;s a twist vector</span>
                 <span class="k">return</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ishom</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad type passed&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bad type passed&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Twist3.isvalid"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -481,7 +487,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)</span>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -490,7 +495,7 @@
 <span class="sd">        :return: dimension</span>
 <span class="sd">        :rtype: int</span>
 
-<span class="sd">        Dimension of the group is 3 for ``Twist3`` and corresponds to the </span>
+<span class="sd">        Dimension of the group is 3 for ``Twist3`` and corresponds to the</span>
 <span class="sd">        dimension of the space (3D in this case) to which these</span>
 <span class="sd">        rigid-body motions apply.</span>
 
@@ -600,7 +605,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist3.Rx"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Rx">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Rx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Rx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new 3D twist for pure rotation about the X-axis</span>
 
@@ -628,10 +633,10 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trotx`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="Twist3.Ry"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Ry">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Ry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Ry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new 3D twist for pure rotation about the Y-axis</span>
 
@@ -659,10 +664,10 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.troty`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="Twist3.Rz"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Rz">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Rz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">Rz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new 3D twist for pure rotation about the Z-axis</span>
 
@@ -690,7 +695,7 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trotz`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)])</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="Twist3.RPY"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.RPY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -730,7 +735,7 @@
 <span class="sd">        Example:</span>
 
 <span class="sd">        .. runblock:: pycon</span>
-<span class="sd">        </span>
+
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3</span>
 <span class="sd">            &gt;&gt;&gt; Twist3.RPY(0.1, 0.2, 0.3)</span>
 <span class="sd">            &gt;&gt;&gt; Twist3.RPY([0.1, 0.2, 0.3])</span>
@@ -740,6 +745,8 @@
 <span class="sd">        :seealso: :meth:`~spatialmath.SE3.RPY`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
+
         <span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">RPY</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">T</span><span class="p">)</span></div>
 
@@ -766,8 +773,7 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.transl`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">_x</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist3.Ty"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Ty">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Ty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -792,7 +798,7 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.transl`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">_y</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_y</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">y</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_y</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">y</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist3.Tz"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Tz">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -816,10 +822,12 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.transl`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">_z</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_z</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">z</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_z</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_z</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">z</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist3.Rand"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Rand">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">yrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">zrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+    <span class="k">def</span> <span class="nf">Rand</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">xrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">yrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">zrange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">N</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">):</span>  <span class="c1"># pylint: disable=arguments-differ</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new random 3D twist</span>
 
@@ -849,17 +857,26 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.quaternions.UnitQuaternion.Rand`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># random values in the range</span>
-        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># random values in the range</span>
-        <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">zrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># random values in the range</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SO3</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+            <span class="n">low</span><span class="o">=</span><span class="n">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span>
+        <span class="p">)</span>  <span class="c1"># random values in the range</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+            <span class="n">low</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span>
+        <span class="p">)</span>  <span class="c1"># random values in the range</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span>
+            <span class="n">low</span><span class="o">=</span><span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">high</span><span class="o">=</span><span class="n">zrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span>
+        <span class="p">)</span>  <span class="c1"># random values in the range</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">SO3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_twist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
             <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">_twist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">_twist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">R</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span></div>
 
     <span class="c1"># -------------------------  methods -------------------------------#</span>
 
@@ -874,7 +891,7 @@
 <span class="sd">          Twist ``S``.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -915,10 +932,12 @@
 
 <span class="sd">        :seealso: :func:`Twist3.Ad`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
-                    <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)],</span> 
-                    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)]</span>
-                 <span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)],</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)],</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist3.Ad"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.Ad">[docs]</a>    <span class="k">def</span> <span class="nf">Ad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -934,7 +953,7 @@
 <span class="sd">        transform a twist relative to frame {A} to one relative to frame {B}.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist3</span>
@@ -948,8 +967,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SE3</span><span class="p">()</span><span class="o">.</span><span class="n">Ad</span><span class="p">()</span></div>
 
-
-
 <div class="viewcode-block" id="Twist3.skewa"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.skewa">[docs]</a>    <span class="k">def</span> <span class="nf">skewa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert 3D twist to se(3)</span>
@@ -959,10 +976,10 @@
 
 <span class="sd">        ``X.skewa()`` is the twist as a 4x4 augmented skew-symmetric matrix</span>
 <span class="sd">        belonging to the group se(3). This is the Lie algebra of the</span>
-<span class="sd">        corresponding SE(3) element. </span>
+<span class="sd">        corresponding SE(3) element.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist3, base</span>
@@ -985,14 +1002,14 @@
 <span class="sd">        :rtype: float</span>
 
 <span class="sd">        ``X.pitch()`` is the pitch of the twist as a scalar in units of distance</span>
-<span class="sd">        per radian. </span>
-<span class="sd">        </span>
+<span class="sd">        per radian.</span>
+
 <span class="sd">        If we consider the twist as a screw, this is the distance of</span>
 <span class="sd">        translation along the screw axis for a one radian rotation about the</span>
 <span class="sd">        screw axis.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1013,7 +1030,7 @@
 <span class="sd">        ``X.line()`` is a Plucker object representing the line of the twist axis.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1031,11 +1048,11 @@
 <span class="sd">        :return: the pole of the twist</span>
 <span class="sd">        :rtype: ndarray(3)</span>
 
-<span class="sd">        ``X.pole()`` is a point on the twist axis. For a pure translation </span>
+<span class="sd">        ``X.pole()`` is a point on the twist axis. For a pure translation</span>
 <span class="sd">        this point is at infinity.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1045,18 +1062,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span>
 
-<div class="viewcode-block" id="Twist3.SE3"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.SE3">[docs]</a>    <span class="k">def</span> <span class="nf">SE3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist3.SE3"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.SE3">[docs]</a>    <span class="k">def</span> <span class="nf">SE3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert 3D twist to SE(3) matrix</span>
 
 <span class="sd">        :return: an SE(3) representation</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
-<span class="sd">        ``S.SE3()`` is an SE3 object representing the homogeneous transformation </span>
+<span class="sd">        ``S.SE3()`` is an SE3 object representing the homogeneous transformation</span>
 <span class="sd">        equivalent to the Twist3. This is the exponentiation of the twist vector.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist3</span>
@@ -1065,6 +1082,8 @@
 
 <span class="sd">        :seealso: :func:`Twist3.exp`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
+
         <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
@@ -1077,9 +1096,9 @@
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">S</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">S</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">theta</span><span class="p">)])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length of twist and theta not consistent&#39;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of twist and theta not consistent&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Twist3.exp"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist3.exp"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exponentiate a 3D twist</span>
 
@@ -1105,7 +1124,7 @@
 <span class="sd">        ``N`` values equivalent to the twist :math:`e^{\theta_i[S_i]}`.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1116,11 +1135,13 @@
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">            - For the second form, the twist must, if rotational, have a unit </span>
+<span class="sd">            - For the second form, the twist must, if rotational, have a unit</span>
 <span class="sd">              rotational component.</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.base.trexp`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
+
         <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1128,13 +1149,13 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length mismatch&#39;</span><span class="p">)</span></div>
-
-
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length mismatch&quot;</span><span class="p">)</span></div>
 
     <span class="c1"># ------------------------- arithmetic -------------------------------#</span>
 
-<div class="viewcode-block" id="Twist3.__mul__"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Twist3.__mul__"><a class="viewcode-back" href="../../3d_pose_twist.html#spatialmath.Twist3.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator</span>
 
@@ -1179,11 +1200,18 @@
 <span class="sd">        =========   ==========   ====  ================================</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
+
         <span class="c1"># TODO TW * T compounds a twist with an SE2/3 transformation</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">Twist3</span><span class="p">):</span>
             <span class="c1"># twist composition -&gt; Twist</span>
-            <span class="k">return</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">Twist3</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span>
+                    <span class="n">right</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">SE3</span><span class="p">):</span>
             <span class="c1"># twist * SE3 -&gt; SE3</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">y</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1191,10 +1219,11 @@
             <span class="c1"># return Twist(left.S * right)</span>
             <span class="k">return</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;twist *, incorrect right operand&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;twist *, incorrect right operand&quot;</span><span class="p">)</span></div>
 
-
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span>
+        <span class="n">right</span><span class="p">,</span> <span class="n">left</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator</span>
 
@@ -1210,7 +1239,7 @@
         <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">right</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">left</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Twist3 *, incorrect left operand&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Twist3 *, incorrect left operand&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1229,7 +1258,14 @@
 <span class="sd">            &gt;&gt;&gt; x = Twist3.R([1,2,3], [4,5,6])</span>
 <span class="sd">            &gt;&gt;&gt; print(x)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;(</span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">; </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">removesmall</span><span class="p">(</span><span class="n">tw</span><span class="o">.</span><span class="n">S</span><span class="p">)))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;(</span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">; </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">removesmall</span><span class="p">(</span><span class="n">tw</span><span class="o">.</span><span class="n">S</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1252,11 +1288,22 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Twist([])&quot;</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;Twist3([</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s2">&quot;Twist3([</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;Twist3([</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> \
-                <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;  [</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span> <span class="o">+</span>\
-                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">])&quot;</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s2">&quot;Twist3([</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="s2">&quot;  [</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">])&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_repr_pretty_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1277,35 +1324,37 @@
                     <span class="n">p</span><span class="o">.</span><span class="n">break_</span><span class="p">()</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
+
 <span class="c1"># ======================================================================== #</span>
 
-<div class="viewcode-block" id="Twist2"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2">[docs]</a><span class="k">class</span> <span class="nc">Twist2</span><span class="p">(</span><span class="n">BaseTwist</span><span class="p">):</span>
 
+<div class="viewcode-block" id="Twist2"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2">[docs]</a><span class="k">class</span> <span class="nc">Twist2</span><span class="p">(</span><span class="n">BaseTwist</span><span class="p">):</span>
 <div class="viewcode-block" id="Twist2.__init__"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct a new 2D Twist object</span>
+<span class="sd">            Construct a new 2D Twist object</span>
 
-<span class="sd">        :type a: 2-element array-like</span>
-<span class="sd">        :return: 2D prismatic twist</span>
-<span class="sd">        :rtype: Twist2 instance</span>
+<span class="sd">            :type a: 2-element array-like</span>
+<span class="sd">            :return: 2D prismatic twist</span>
+<span class="sd">            :rtype: Twist2 instance</span>
 
-<span class="sd">        - ``Twist2(R)`` is a 2D Twist object representing the SO(2) rotation expressed as </span>
-<span class="sd">          a 2x2 matrix.</span>
-<span class="sd">        - ``Twist2(T)`` is a 2D Twist object representing the SE(2) rigid-body motion expressed as </span>
-<span class="sd">          a 3x3 matrix.</span>
-<span class="sd">        - ``Twist2(X)`` if X is an SO2 instance then create a 2D Twist object representing the SO(2) rotation,</span>
-<span class="sd">          and if X is an SE2 instance then create a 2D Twist object representing the SE(2) motion</span>
-<span class="sd">        - ``Twist2(V)`` is a  2D Twist object specified directly by a 3-element array-like comprising the</span>
-<span class="sd">          moment vector (1 element) and direction vector (2 elements).</span>
+<span class="sd">            - ``Twist2(R)`` is a 2D Twist object representing the SO(2) rotation expressed as</span>
+<span class="sd">              a 2x2 matrix.</span>
+<span class="sd">            - ``Twist2(T)`` is a 2D Twist object representing the SE(2) rigid-body motion expressed as</span>
+<span class="sd">              a 3x3 matrix.</span>
+<span class="sd">            - ``Twist2(X)`` if X is an SO2 instance then create a 2D Twist object representing the SO(2) rotation,</span>
+<span class="sd">              and if X is an SE2 instance then create a 2D Twist object representing the SE(2) motion</span>
+<span class="sd">            - ``Twist2(V)`` is a  2D Twist object specified directly by a 3-element array-like comprising the</span>
+<span class="sd">              moment vector (1 element) and direction vector (2 elements).</span>
 
-<span class="sd">    :References:</span>
-<span class="sd">        - **Robotics, Vision &amp; Control**, Corke, Springer 2017.</span>
-<span class="sd">        - **Modern Robotics, Lynch &amp; Park**, Cambridge 2017</span>
+<span class="sd">        :References:</span>
+<span class="sd">            - **Robotics, Vision &amp; Control**, Corke, Springer 2017.</span>
+<span class="sd">            - **Modern Robotics, Lynch &amp; Park**, Cambridge 2017</span>
 
-<span class="sd">    .. note:: Compared to Lynch &amp; Park this module implements twist vectors</span>
-<span class="sd">        with the translational components first, followed by rotational</span>
-<span class="sd">        components, ie. :math:`[\omega, \vec{v}]`.</span>
+<span class="sd">        .. note:: Compared to Lynch &amp; Park this module implements twist vectors</span>
+<span class="sd">            with the translational components first, followed by rotational</span>
+<span class="sd">            components, ie. :math:`[\omega, \vec{v}]`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -1314,12 +1363,12 @@
             <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">convertfrom</span><span class="o">=</span><span class="p">(</span><span class="n">SE2</span><span class="p">,),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
                 <span class="k">return</span>
 
-        <span class="k">elif</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
             <span class="c1"># Twist(v, w)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">arg</span><span class="p">,</span> <span class="n">w</span><span class="p">]]</span>
             <span class="k">return</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad twist value&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad twist value&quot;</span><span class="p">)</span></div>
 
     <span class="c1"># ------------------------ SMUserList required ---------------------------#</span>
     <span class="nd">@staticmethod</span>
@@ -1338,15 +1387,15 @@
 
     <span class="k">def</span> <span class="nf">_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                 <span class="c1"># it&#39;s an se(2)</span>
                 <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
                 <span class="c1"># it&#39;s a twist vector</span>
                 <span class="k">return</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">ishom2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;bad type passed&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;bad type passed&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Twist2.isvalid"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1400,7 +1449,7 @@
 <span class="sd">        - ``Twist2.Revolute(q)`` is a 2D Twist object representing rotation about the 2D point ``q``.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist2</span>
@@ -1444,7 +1493,7 @@
 <span class="sd">        :return: dimension</span>
 <span class="sd">        :rtype: int</span>
 
-<span class="sd">        Dimension of the group is 2 for ``Twist2`` and corresponds to the </span>
+<span class="sd">        Dimension of the group is 2 for ``Twist2`` and corresponds to the</span>
 <span class="sd">        dimension of the space (2D in this case) to which these</span>
 <span class="sd">        rigid-body motions apply.</span>
 
@@ -1508,11 +1557,11 @@
 <span class="sd">        :return: the pole of the twist</span>
 <span class="sd">        :rtype: ndarray(2)</span>
 
-<span class="sd">        ``X.pole()`` is a point on the twist axis. For a pure translation </span>
+<span class="sd">        ``X.pole()`` is a point on the twist axis. For a pure translation</span>
 <span class="sd">        this point is at infinity.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1528,18 +1577,18 @@
 <div class="viewcode-block" id="Twist2.printline"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.printline">[docs]</a>    <span class="k">def</span> <span class="nf">printline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SE2</span><span class="p">()</span><span class="o">.</span><span class="n">printline</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Twist2.SE2"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.SE2">[docs]</a>    <span class="k">def</span> <span class="nf">SE2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist2.SE2"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.SE2">[docs]</a>    <span class="k">def</span> <span class="nf">SE2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert 2D twist to SE(2) matrix</span>
 
 <span class="sd">        :return: an SE(2) representation</span>
 <span class="sd">        :rtype: SE3 instance</span>
 
-<span class="sd">        ``S.SE2()`` is an SE2 object representing the homogeneous transformation </span>
+<span class="sd">        ``S.SE2()`` is an SE2 object representing the homogeneous transformation</span>
 <span class="sd">        equivalent to the Twist2. This is the exponentiation of the twist vector.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist2</span>
@@ -1548,8 +1597,10 @@
 
 <span class="sd">        :seealso: :func:`Twist3.exp`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">!=</span> <span class="s1">&#39;rad&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isprismatic</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Twist3.exp: using degree mode for a prismatic twist&#39;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
+
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;rad&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isprismatic</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Twist3.exp: using degree mode for a prismatic twist&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1570,10 +1621,10 @@
 
 <span class="sd">        ``X.skewa()`` is the twist as a 3x3 augmented skew-symmetric matrix</span>
 <span class="sd">        belonging to the group se(2). This is the Lie algebra of the</span>
-<span class="sd">        corresponding SE(2) element. </span>
+<span class="sd">        corresponding SE(2) element.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Twist2, base</span>
@@ -1587,7 +1638,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">S</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Twist2.exp"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist2.exp"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exponentiate a 2D twist</span>
 
@@ -1604,7 +1655,7 @@
 <span class="sd">          :math:`e^{\theta[S]}`</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE2, Twist2</span>
@@ -1615,18 +1666,19 @@
 
 <span class="sd">        .. note::</span>
 
-<span class="sd">            - For the second form, the twist must, if rotational, have a unit </span>
+<span class="sd">            - For the second form, the twist must, if rotational, have a unit</span>
 <span class="sd">              rotational component.</span>
 
 <span class="sd">        :seealso: :func:`spatialmath.base.trexp2`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
+
         <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">theta</span><span class="p">))</span></div>
-
 
 <div class="viewcode-block" id="Twist2.unit"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.unit">[docs]</a>    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1636,7 +1688,7 @@
 <span class="sd">          Twist ``S``.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1660,7 +1712,7 @@
 <span class="sd">          homogeneous transformation.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import SE3, Twist3</span>
@@ -1670,10 +1722,12 @@
 
 <span class="sd">        :seealso: SE3.Ad.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-                    <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)],</span> 
-                    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)]</span>
-                <span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)],</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">base</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Twist2.Tx"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.Tx">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Tx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -1698,8 +1752,7 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms2d.transl2`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">_x</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist2.Ty"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.Ty">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Ty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -1724,9 +1777,11 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms2d.transl2`</span>
 <span class="sd">        :SymPy: supported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">_y</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_y</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">y</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_y</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">y</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Twist2.__mul__"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="Twist2.__mul__"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span>
+    <span class="p">):</span>  <span class="c1"># lgtm[py/not-named-self] pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overloaded ``*`` operator</span>
 
@@ -1768,9 +1823,18 @@
 <span class="sd">         M          M             M    ``prod[i] = left[i] * right[i]``</span>
 <span class="sd">        =========   ==========   ====  ================================</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">Twist2</span><span class="p">):</span>
             <span class="c1"># twist composition -&gt; Twist</span>
-            <span class="k">return</span> <span class="n">Twist2</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">Twist2</span><span class="p">(</span>
+                <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span>
+                    <span class="n">right</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">trlog2</span><span class="p">(</span>
+                        <span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">SE2</span><span class="p">):</span>
             <span class="c1"># twist * SE2 -&gt; SE2</span>
             <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">y</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1778,13 +1842,13 @@
             <span class="c1"># return Twist(left.S * right)</span>
             <span class="k">return</span> <span class="n">Twist2</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Twist2 *, incorrect right operand&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Twist2 *, incorrect right operand&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__rmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">left</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Twist2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">left</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;twist *, incorrect left operand&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;twist *, incorrect left operand&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1802,7 +1866,7 @@
 <span class="sd">            &gt;&gt;&gt; x = Twist2([1,2,3])</span>
 <span class="sd">            &gt;&gt;&gt; print(x)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;(</span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">; </span><span class="si">{:.5g}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="o">.</span><span class="n">S</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;(</span><span class="si">{:.5g}</span><span class="s2"> </span><span class="si">{:.5g}</span><span class="s2">; </span><span class="si">{:.5g}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="o">.</span><span class="n">S</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1826,9 +1890,13 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Twist2([</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;Twist2([</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> \
-                <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;  [</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="o">.</span><span class="n">S</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span> <span class="o">+</span>\
-                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">])&quot;</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s2">&quot;Twist2([</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s2">&quot;  [</span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">, </span><span class="si">{:.5g}</span><span class="s2">}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">tw</span><span class="o">.</span><span class="n">S</span><span class="p">))</span> <span class="k">for</span> <span class="n">tw</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">])&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_repr_pretty_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1849,13 +1917,16 @@
                     <span class="n">p</span><span class="o">.</span><span class="n">break_</span><span class="p">()</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>   <span class="c1"># pragma: no cover</span>
 
-    <span class="n">tw</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 
-    <span class="c1"># import pathlib</span>
+    <span class="kn">import</span> <span class="nn">pathlib</span>
 
-    <span class="c1"># exec(open(pathlib.Path(__file__).parent.parent.absolute() / &quot;tests&quot; / &quot;test_twist.py&quot;).read())  # pylint: disable=exec-used</span>
+    <span class="n">exec</span><span class="p">(</span>
+        <span class="nb">open</span><span class="p">(</span>
+            <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_twist.py&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="p">)</span>  <span class="c1"># pylint: disable=exec-used</span>
 </pre></div>
 
            </div>
@@ -1866,7 +1937,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Jan-2023.
+      <span class="lastupdated">Last updated on 27-Feb-2023.
       </span></p>
   </div>
 

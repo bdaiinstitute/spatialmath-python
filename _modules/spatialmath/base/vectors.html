@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Spatial Maths package
-            <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Spatial Maths package
+              <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +64,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">spatialmath.base.vectors</li>
       <li class="wy-breadcrumbs-aside">
@@ -87,7 +91,8 @@
 
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getvector</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.argcheck</span> <span class="kn">import</span> <span class="n">getvector</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="c1"># print(&#39;Using SymPy&#39;)</span>
@@ -101,87 +106,7 @@
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
 
-<div class="viewcode-block" id="colvec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.colvec">[docs]</a><span class="k">def</span> <span class="nf">colvec</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a column vector</span>
-
-<span class="sd">    :param v: any vector</span>
-<span class="sd">    :type v: array_like(n)</span>
-<span class="sd">    :return: a column vector</span>
-<span class="sd">    :rtype: ndarray(n,1)</span>
-
-<span class="sd">    Convert input to a column vector.</span>
-
-<span class="sd">    .. runblock:: pycon</span>
-
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
-<span class="sd">        &gt;&gt;&gt; colvec([1, 2, 3])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="unitvec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unitvec">[docs]</a><span class="k">def</span> <span class="nf">unitvec</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a unit vector</span>
-
-<span class="sd">    :param v: any vector</span>
-<span class="sd">    :type v: array_like(n)</span>
-<span class="sd">    :return: a unit-vector parallel to ``v``.</span>
-<span class="sd">    :rtype: ndarray(n)</span>
-<span class="sd">    :raises ValueError: for zero length vector</span>
-
-<span class="sd">    ``unitvec(v)`` is a vector parallel to `v` of unit length.</span>
-
-<span class="sd">    .. runblock:: pycon</span>
-
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
-<span class="sd">        &gt;&gt;&gt; unitvec([3, 4])</span>
-
-<span class="sd">    :seealso: :func:`~numpy.linalg.norm`</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>  <span class="c1"># if greater than eps</span>
-        <span class="k">return</span> <span class="n">v</span> <span class="o">/</span> <span class="n">n</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="unitvec_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unitvec_norm">[docs]</a><span class="k">def</span> <span class="nf">unitvec_norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a unit vector</span>
-
-<span class="sd">    :param v: any vector</span>
-<span class="sd">    :type v: array_like(n)</span>
-<span class="sd">    :return: a unit-vector parallel to ``v`` and the norm</span>
-<span class="sd">    :rtype: (ndarray(n), float)</span>
-<span class="sd">    :raises ValueError: for zero length vector</span>
-
-<span class="sd">    ``unitvec(v)`` is a vector parallel to `v` of unit length.</span>
-
-<span class="sd">    .. runblock:: pycon</span>
-
-<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
-<span class="sd">        &gt;&gt;&gt; unitvec([3, 4])</span>
-
-<span class="sd">    :seealso: :func:`~numpy.linalg.norm`</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>  <span class="c1"># if greater than eps</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLikePure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Norm of vector</span>
 
@@ -214,7 +139,7 @@
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="normsq"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.normsq">[docs]</a><span class="k">def</span> <span class="nf">normsq</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="normsq"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.normsq">[docs]</a><span class="k">def</span> <span class="nf">normsq</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLikePure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Squared norm of vector</span>
 
@@ -245,7 +170,7 @@
     <span class="k">return</span> <span class="nb">sum</span></div>
 
 
-<div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.cross">[docs]</a><span class="k">def</span> <span class="nf">cross</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.cross">[docs]</a><span class="k">def</span> <span class="nf">cross</span><span class="p">(</span><span class="n">u</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cross product of vectors</span>
 
@@ -275,7 +200,87 @@
     <span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="isunitvec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.isunitvec">[docs]</a><span class="k">def</span> <span class="nf">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="colvec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.colvec">[docs]</a><span class="k">def</span> <span class="nf">colvec</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a column vector</span>
+
+<span class="sd">    :param v: any vector</span>
+<span class="sd">    :type v: array_like(n)</span>
+<span class="sd">    :return: a column vector</span>
+<span class="sd">    :rtype: ndarray(n,1)</span>
+
+<span class="sd">    Convert input to a column vector.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; colvec([1, 2, 3])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="unitvec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unitvec">[docs]</a><span class="k">def</span> <span class="nf">unitvec</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a unit vector</span>
+
+<span class="sd">    :param v: any vector</span>
+<span class="sd">    :type v: array_like(n)</span>
+<span class="sd">    :return: a unit-vector parallel to ``v``.</span>
+<span class="sd">    :rtype: ndarray(n)</span>
+<span class="sd">    :raises ValueError: for zero length vector</span>
+
+<span class="sd">    ``unitvec(v)`` is a vector parallel to `v` of unit length.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; unitvec([3, 4])</span>
+
+<span class="sd">    :seealso: :func:`~numpy.linalg.norm`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>  <span class="c1"># if greater than eps</span>
+        <span class="k">return</span> <span class="n">v</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;zero norm vector&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="unitvec_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unitvec_norm">[docs]</a><span class="k">def</span> <span class="nf">unitvec_norm</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a unit vector</span>
+
+<span class="sd">    :param v: any vector</span>
+<span class="sd">    :type v: array_like(n)</span>
+<span class="sd">    :return: a unit-vector parallel to ``v`` and the norm</span>
+<span class="sd">    :rtype: (ndarray(n), float)</span>
+<span class="sd">    :raises ValueError: for zero length vector</span>
+
+<span class="sd">    ``unitvec(v)`` is a vector parallel to `v` of unit length.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; unitvec([3, 4])</span>
+
+<span class="sd">    :seealso: :func:`~numpy.linalg.norm`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">nm</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nm</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>  <span class="c1"># if greater than eps</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">nm</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;zero norm vector&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="isunitvec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.isunitvec">[docs]</a><span class="k">def</span> <span class="nf">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if vector has unit length</span>
 
@@ -294,10 +299,10 @@
 
 <span class="sd">    :seealso: unit, iszerovec, isunittwist</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="iszerovec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.iszerovec">[docs]</a><span class="k">def</span> <span class="nf">iszerovec</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="iszerovec"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.iszerovec">[docs]</a><span class="k">def</span> <span class="nf">iszerovec</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if vector has zero length</span>
 
@@ -316,10 +321,10 @@
 
 <span class="sd">    :seealso: unit, isunitvec, isunittwist</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="iszero"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.iszero">[docs]</a><span class="k">def</span> <span class="nf">iszero</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="iszero"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.iszero">[docs]</a><span class="k">def</span> <span class="nf">iszero</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if scalar is zero</span>
 
@@ -338,10 +343,10 @@
 
 <span class="sd">    :seealso: unit, iszerovec, isunittwist</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isunittwist"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.isunittwist">[docs]</a><span class="k">def</span> <span class="nf">isunittwist</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="isunittwist"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.isunittwist">[docs]</a><span class="k">def</span> <span class="nf">isunittwist</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike6</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if vector represents a unit twist in SE(2) or SE(3)</span>
 
@@ -375,13 +380,13 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
         <span class="c1"># test for SE(3) twist</span>
         <span class="k">return</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span> <span class="ow">and</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+            <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span> <span class="ow">and</span> <span class="n">isunitvec</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span></div>
 
 
-<div class="viewcode-block" id="isunittwist2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.isunittwist2">[docs]</a><span class="k">def</span> <span class="nf">isunittwist2</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="isunittwist2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.isunittwist2">[docs]</a><span class="k">def</span> <span class="nf">isunittwist2</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if vector represents a unit twist in SE(2) or SE(3)</span>
 
@@ -420,7 +425,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span></div>
 
 
-<div class="viewcode-block" id="unittwist"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist">[docs]</a><span class="k">def</span> <span class="nf">unittwist</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="unittwist"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist">[docs]</a><span class="k">def</span> <span class="nf">unittwist</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike6</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">R6</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert twist to unit twist</span>
 
@@ -461,7 +466,7 @@
     <span class="k">return</span> <span class="n">S</span> <span class="o">/</span> <span class="n">th</span></div>
 
 
-<div class="viewcode-block" id="unittwist_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist_norm">[docs]</a><span class="k">def</span> <span class="nf">unittwist_norm</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="unittwist_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist_norm">[docs]</a><span class="k">def</span> <span class="nf">unittwist_norm</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">R6</span><span class="p">,</span> <span class="n">ArrayLike6</span><span class="p">],</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">R6</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert twist to unit twist and norm</span>
 
@@ -493,7 +498,7 @@
     <span class="n">S</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">iszerovec</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;zero norm&quot;</span><span class="p">)</span>
 
     <span class="n">v</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
@@ -506,7 +511,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span> <span class="o">/</span> <span class="n">th</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unittwist2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist2">[docs]</a><span class="k">def</span> <span class="nf">unittwist2</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="unittwist2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist2">[docs]</a><span class="k">def</span> <span class="nf">unittwist2</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert twist to unit twist</span>
 
@@ -540,7 +545,7 @@
     <span class="k">return</span> <span class="n">S</span> <span class="o">/</span> <span class="n">th</span></div>
 
 
-<div class="viewcode-block" id="unittwist2_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist2_norm">[docs]</a><span class="k">def</span> <span class="nf">unittwist2_norm</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<div class="viewcode-block" id="unittwist2_norm"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.unittwist2_norm">[docs]</a><span class="k">def</span> <span class="nf">unittwist2_norm</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">R3</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert twist to unit twist</span>
 
@@ -573,7 +578,8 @@
 
     <span class="k">return</span> <span class="p">(</span><span class="n">S</span> <span class="o">/</span> <span class="n">th</span><span class="p">,</span> <span class="n">th</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="wrap_0_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+
+<div class="viewcode-block" id="wrap_0_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap angle to range :math:`[0, \pi]`</span>
 
@@ -587,15 +593,21 @@
 
 <span class="sd">    :seealso: :func:`wrap_mpi2_pi2` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span></div>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-<div class="viewcode-block" id="wrap_mpi2_pi2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi2_pi2">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="wrap_mpi2_pi2"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi2_pi2">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap angle to range :math:`[-\pi/2, \pi/2]`</span>
 
@@ -608,15 +620,21 @@
 <span class="sd">    :seealso: :func:`wrap_0_pi` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span></div>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-<div class="viewcode-block" id="wrap_0_2pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_2pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_2pi</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">theta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="wrap_0_2pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_0_2pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_0_2pi</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap angle to range :math:`[0, 2\pi)`</span>
 
@@ -626,11 +644,15 @@
 
 <span class="sd">    :seealso: :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">return</span> <span class="n">theta</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span></div>
 
 
-<div class="viewcode-block" id="wrap_mpi_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi_pi</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+<div class="viewcode-block" id="wrap_mpi_pi"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.wrap_mpi_pi">[docs]</a><span class="k">def</span> <span class="nf">wrap_mpi_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap angle to range :math:`[-\pi, \pi)`</span>
 
@@ -640,7 +662,27 @@
 
 <span class="sd">    :seealso: :func:`wrap_0_2pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">angle</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span></div>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">theta</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+
+<span class="c1"># @overload</span>
+<span class="c1"># def angdiff(a:ArrayLike):</span>
+<span class="c1">#     ...</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">angdiff</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>
+<span class="k">def</span> <span class="nf">angdiff</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
+    <span class="o">...</span>
 
 
 <div class="viewcode-block" id="angdiff"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angdiff">[docs]</a><span class="k">def</span> <span class="nf">angdiff</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -678,12 +720,15 @@
 
 <span class="sd">    :seealso: :func:`vector_diff` :func:`wrap_mpi_pi`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span></div>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">-=</span> <span class="n">b</span>
 
-<div class="viewcode-block" id="angle_std"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_std">[docs]</a><span class="k">def</span> <span class="nf">angle_std</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span></div>
+
+
+<div class="viewcode-block" id="angle_std"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_std">[docs]</a><span class="k">def</span> <span class="nf">angle_std</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Standard deviation of angular values</span>
 
@@ -704,7 +749,8 @@
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="angle_mean"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_mean">[docs]</a><span class="k">def</span> <span class="nf">angle_mean</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+
+<div class="viewcode-block" id="angle_mean"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_mean">[docs]</a><span class="k">def</span> <span class="nf">angle_mean</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mean of angular values</span>
 
@@ -718,14 +764,15 @@
 <span class="sd">    .. math::</span>
 
 <span class="sd">        \bar{\theta} = \tan^{-1} \frac{\sum \sin \theta_i}{\sum \cos \theta_i} \in [-\pi, \pi)]</span>
-<span class="sd">    </span>
+
 <span class="sd">    :seealso: :func:`angle_std`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">artan2</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="angle_wrap"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_wrap">[docs]</a><span class="k">def</span> <span class="nf">angle_wrap</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;-pi:pi&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="angle_wrap"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_wrap">[docs]</a><span class="k">def</span> <span class="nf">angle_wrap</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;-pi:pi&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generalized angle-wrapping</span>
 
@@ -738,21 +785,22 @@
 
 <span class="sd">    .. note:: The modes ``&quot;0:pi&quot;`` and ``&quot;-pi/2:pi/2&quot;`` are used to wrap angles of</span>
 <span class="sd">        colatitude and latitude respectively.</span>
-<span class="sd"> </span>
+
 <span class="sd">    :seealso: :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;0:2pi&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">wrap_0_2pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;-pi:pi&quot;</span><span class="p">:</span>
-        <span class="k">return</span>  <span class="n">wrap_mpi_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrap_mpi_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;0:pi&quot;</span><span class="p">:</span>
-        <span class="k">return</span>  <span class="n">wrap_0_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrap_0_pi</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;0:pi&quot;</span><span class="p">:</span>
-        <span class="k">return</span>  <span class="n">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrap_mpi2_pi2</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad method specified&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad method specified&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="vector_diff"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.vector_diff">[docs]</a><span class="k">def</span> <span class="nf">vector_diff</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+
+<div class="viewcode-block" id="vector_diff"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.vector_diff">[docs]</a><span class="k">def</span> <span class="nf">vector_diff</span><span class="p">(</span><span class="n">v1</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">v2</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generalized vector differnce</span>
 
@@ -763,15 +811,15 @@
 <span class="sd">    :param mode: subtraction mode</span>
 <span class="sd">    :type mode: str of length n</span>
 
-<span class="sd">    ==============  ==================================== </span>
+<span class="sd">    ==============  ====================================</span>
 <span class="sd">    mode character  purpose</span>
-<span class="sd">    ==============  ==================================== </span>
+<span class="sd">    ==============  ====================================</span>
 <span class="sd">    r               real number, don&#39;t wrap</span>
 <span class="sd">    c               angle on circle, wrap to [-π, π)</span>
 <span class="sd">    C               angle on circle, wrap to [0, 2π)</span>
 <span class="sd">    l               latitude angle, wrap to [-π/2, π/2]</span>
 <span class="sd">    L               colatitude angle, wrap to [0, π]</span>
-<span class="sd">    ==============  ==================================== </span>
+<span class="sd">    ==============  ====================================</span>
 
 <span class="sd">    :seealso: :func:`angdiff` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -788,12 +836,12 @@
         <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
             <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_0_pi</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;bad mode character&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad mode character&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">v</span></div>
-         
 
-<div class="viewcode-block" id="removesmall"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.removesmall">[docs]</a><span class="k">def</span> <span class="nf">removesmall</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+
+<div class="viewcode-block" id="removesmall"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.removesmall">[docs]</a><span class="k">def</span> <span class="nf">removesmall</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set small values to zero</span>
 
@@ -816,7 +864,7 @@
 <span class="sd">        &gt;&gt;&gt; print(a[3])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -840,7 +888,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Jan-2023.
+      <span class="lastupdated">Last updated on 27-Feb-2023.
       </span></p>
   </div>
 

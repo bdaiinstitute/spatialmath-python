@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Spatial Maths package
-            <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Spatial Maths package
+              <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +64,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">spatialmath.geom2d</li>
       <li class="wy-breadcrumbs-aside">
@@ -79,29 +83,224 @@
 
 <span class="sd">@author: corkep</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">SE2</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">PathPatch</span>
 <span class="kn">from</span> <span class="nn">matplotlib.transforms</span> <span class="kn">import</span> <span class="n">Affine2D</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">SE2</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Points2</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">ArrayLike2</span><span class="p">,</span>
+    <span class="n">ArrayLike3</span><span class="p">,</span>
+    <span class="n">NDArray</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">R2</span><span class="p">,</span>
+    <span class="n">R3</span><span class="p">,</span>
+    <span class="n">R4</span><span class="p">,</span>
+    <span class="n">Iterator</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Self</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+
+<div class="viewcode-block" id="Line2"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2">[docs]</a><span class="k">class</span> <span class="nc">Line2</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to represent 2D lines</span>
+
+<span class="sd">    The internal representation is in homogeneous format</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">            ax + by + c = 0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Line2.__init__"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Line2.Join"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.Join">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Join</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create 2D line from two points</span>
+
+<span class="sd">        :param p1: point on the line</span>
+<span class="sd">        :type p1: array_like(2) or array_like(3)</span>
+<span class="sd">        :param p2: another point on the line</span>
+<span class="sd">        :type p2: array_like(2) or array_like(3)</span>
+
+<span class="sd">        The points can be given in Euclidean or homogeneous form.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Line2.TwoPoints"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.TwoPoints">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">TwoPoints</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;use Join method instead&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Join</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Line2.General"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.General">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">General</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create line from general line</span>
+
+<span class="sd">        :param m: line gradient</span>
+<span class="sd">        :type m: float</span>
+<span class="sd">        :param c: line intercept</span>
+<span class="sd">        :type c: float</span>
+<span class="sd">        :return: a 2D line</span>
+<span class="sd">        :rtype: a Line2 instance</span>
+
+<span class="sd">        Creates a line from the parameters of the general line :math:`y = mx + c`.</span>
+
+<span class="sd">        .. note:: A vertical line cannot be represented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">m</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Line2.general"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.general">[docs]</a>    <span class="k">def</span> <span class="nf">general</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters of general line</span>
+
+<span class="sd">        :return: parameters of general line (m, c)</span>
+<span class="sd">        :rtype: ndarray(2)</span>
+
+<span class="sd">        Return the parameters of a general line :math:`y = mx + c`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Line2: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="Line2.plot"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the line using matplotlib</span>
+
+<span class="sd">        :param kwargs: arguments passed to Matplotlib ``pyplot.plot``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base</span><span class="o">.</span><span class="n">plot_homline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Line2.intersect"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.intersect">[docs]</a>    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Line2</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Intersection with line</span>
+
+<span class="sd">        :param other: another 2D line</span>
+<span class="sd">        :type other: Line2</span>
+<span class="sd">        :return: intersection point in homogeneous form</span>
+<span class="sd">        :rtype: ndarray(3)</span>
+
+<span class="sd">        If the lines are parallel then the third element of the returned</span>
+<span class="sd">        homogeneous point will be zero (an ideal point).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># return intersection of 2 lines</span>
+        <span class="c1"># return mindist and points if no intersect</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
+
+<div class="viewcode-block" id="Line2.contains"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.contains">[docs]</a>    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test if point is in line</span>
+
+<span class="sd">        :param p1: point to test</span>
+<span class="sd">        :type p1: array_like(2) or array_like(3)</span>
+<span class="sd">        :return: True if point lies in the line</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span></div>
+
+    <span class="c1"># variant that gives lambda</span>
+
+<div class="viewcode-block" id="Line2.intersect_segment"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.intersect_segment">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test for line intersecting line segment</span>
+
+<span class="sd">        :param p1: start of line segment</span>
+<span class="sd">        :type p1: array_like(2) or array_like(3)</span>
+<span class="sd">        :param p2: end of line segment</span>
+<span class="sd">        :type p2: array_like(2) or array_like(3)</span>
+<span class="sd">        :return: True if they intersect</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        Tests whether the line intersects the line segment defined by endpoints</span>
+<span class="sd">        ``p1`` and ``p2`` which are given in Euclidean or homogeneous form.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">z1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+        <span class="n">z2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">p2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="c1"># these should have same names as for 3d case</span>
+<div class="viewcode-block" id="Line2.distance_line_line"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.distance_line_line">[docs]</a>    <span class="k">def</span> <span class="nf">distance_line_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Line2.distance_line_point"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.distance_line_point">[docs]</a>    <span class="k">def</span> <span class="nf">distance_line_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Line2.points_join"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.points_join">[docs]</a>    <span class="k">def</span> <span class="nf">points_join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Line2.intersect_polygon___line"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.intersect_polygon___line">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_polygon___line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Line2.contains_polygon_point"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.contains_polygon_point">[docs]</a>    <span class="k">def</span> <span class="nf">contains_polygon_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="LineSegment2"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.LineSegment2">[docs]</a><span class="k">class</span> <span class="nc">LineSegment2</span><span class="p">(</span><span class="n">Line2</span><span class="p">):</span>
+    <span class="c1"># line segment class that subclass</span>
+    <span class="c1"># has hom line + 2 values of lambda</span>
+    <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="Polygon2"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2">[docs]</a><span class="k">class</span> <span class="nc">Polygon2</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to represent 2D (planar) polygons</span>
 
-<span class="sd">    .. note:: Uses Matplotlib primitives to perform transformations and </span>
+<span class="sd">    .. note:: Uses Matplotlib primitives to perform transformations and</span>
 <span class="sd">        intersections.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Polygon2.__init__"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.__init__"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Points2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">close</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create planar polygon from vertices</span>
 
 <span class="sd">        :param vertices: vertices of polygon, defaults to None</span>
 <span class="sd">        :type vertices: ndarray(2, N), optional</span>
+<span class="sd">        :param close: closes the polygon, replicates the first vertex, defaults to True</span>
+<span class="sd">        :type closed: bool, optional</span>
 
 <span class="sd">        Create a polygon from a set of points provided as columns of the 2D</span>
 <span class="sd">        array ``vertices``.</span>
@@ -113,33 +312,34 @@
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 
 <span class="sd">        .. warning:: The points must be sequential around the perimeter and</span>
-<span class="sd">            counter clockwise.</span>
+<span class="sd">            counter clockwise, otherwise moments will be negative.</span>
 
 <span class="sd">        .. note:: The polygon is represented by a Matplotlib ``Path``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">vertices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ndarray must be 2xN&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ndarray must be 2xN&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">vertices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;expecting list of 2-tuples or ndarray(2,N)&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;expecting list of 2-tuples or ndarray(2,N)&quot;</span><span class="p">)</span>
 
         <span class="c1"># replicate the first vertex to make it closed.</span>
         <span class="c1"># setting closed=False and codes=None leads to a different</span>
         <span class="c1"># path which gives incorrect intersection results</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">vertices</span><span class="p">,</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]))</span>
-        
+        <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">vertices</span><span class="p">,</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">vertices</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span></div>
 
-<div class="viewcode-block" id="Polygon2.__str__"><a class="viewcode-back" href="../../2d_polygon.html#spatialmath.geom2d.Polygon2.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.__str__"><a class="viewcode-back" href="../../2d_polygon.html#spatialmath.geom2d.Polygon2.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Polygon to string</span>
 
@@ -156,7 +356,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Polygon2 with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> vertices&quot;</span></div>
 
-<div class="viewcode-block" id="Polygon2.__len__"><a class="viewcode-back" href="../../2d_polygon.html#spatialmath.geom2d.Polygon2.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.__len__"><a class="viewcode-back" href="../../2d_polygon.html#spatialmath.geom2d.Polygon2.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Number of vertices in polygon</span>
 
@@ -168,13 +368,117 @@
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 <span class="sd">            &gt;&gt;&gt; len(p)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="Polygon2.plot"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.moment"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.moment">[docs]</a>    <span class="k">def</span> <span class="nf">moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moments of polygon</span>
+
+<span class="sd">        :param p: moment order x</span>
+<span class="sd">        :type p: int</span>
+<span class="sd">        :param q: moment order y</span>
+<span class="sd">        :type q: int</span>
+
+<span class="sd">        Returns the pq&#39;th moment of the polygon</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
+<span class="sd">            &gt;&gt;&gt; p.moment(0, 0)  # area</span>
+<span class="sd">            &gt;&gt;&gt; p.moment(3, 0)</span>
+
+<span class="sd">        Note is negative for clockwise perimeter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">combin</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+            <span class="c1"># compute number of combinations of size r from set n</span>
+            <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">1</span>
+
+            <span class="k">return</span> <span class="n">prod</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">prod</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">l1</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span>
+            <span class="n">dxl</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span>
+            <span class="n">dyl</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span>
+            <span class="n">Al</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="n">dyl</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="n">dxl</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">combin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">combin</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+                        <span class="o">/</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">dxl</span><span class="o">**</span><span class="n">i</span>
+                        <span class="o">*</span> <span class="n">dyl</span><span class="o">**</span><span class="n">j</span>
+                    <span class="p">)</span>
+            <span class="n">m</span> <span class="o">+=</span> <span class="n">Al</span> <span class="o">*</span> <span class="n">s</span>
+
+        <span class="k">return</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">q</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Polygon2.area"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.area">[docs]</a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Area of polygon</span>
+
+<span class="sd">        :return: area</span>
+<span class="sd">        :rtype: float</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
+<span class="sd">            &gt;&gt;&gt; p.area()</span>
+
+<span class="sd">        :seealso: :meth:`moment`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Polygon2.centroid"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.centroid">[docs]</a>    <span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R2</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Centroid of polygon</span>
+
+<span class="sd">        :return: centroid</span>
+<span class="sd">        :rtype: ndarray(2)</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
+<span class="sd">            &gt;&gt;&gt; p.centroid()</span>
+
+<span class="sd">        :seealso: :meth:`moment`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Polygon2.plot"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot polygon</span>
 
@@ -194,7 +498,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="Polygon2.animate"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.animate">[docs]</a>    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.animate"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.animate">[docs]</a>    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Animate a polygon</span>
 
@@ -223,7 +527,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">patch</span> <span class="o">=</span> <span class="n">PathPatch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Polygon2.contains"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.contains">[docs]</a>    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.contains"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.contains">[docs]</a>    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test if point is inside polygon</span>
 
@@ -234,7 +538,7 @@
 <span class="sd">        :return: True if point is contained by polygon</span>
 <span class="sd">        :rtype: bool</span>
 
-<span class="sd">        ``radius`` can be used to inflate the polygon, or if negative, to </span>
+<span class="sd">        ``radius`` can be used to inflate the polygon, or if negative, to</span>
 <span class="sd">        deflated it.</span>
 
 <span class="sd">        Example:</span>
@@ -242,14 +546,14 @@
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 <span class="sd">            &gt;&gt;&gt; p.contains([0, 0])</span>
 <span class="sd">            &gt;&gt;&gt; p.contains([2, 3])</span>
 
 <span class="sd">        .. warning:: Returns True if the point is on the edge of the polygon</span>
 <span class="sd">            but False if the point is one of the vertices.</span>
 
-<span class="sd">        .. warning:: For a polygon with clockwise ordering of vertices the </span>
+<span class="sd">        .. warning:: For a polygon with clockwise ordering of vertices the</span>
 <span class="sd">            sign of ``radius`` is flipped.</span>
 
 <span class="sd">        :seealso: :func:`matplotlib.contains_point`</span>
@@ -263,7 +567,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Polygon2.bbox"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.bbox">[docs]</a>    <span class="k">def</span> <span class="nf">bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.bbox"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.bbox">[docs]</a>    <span class="k">def</span> <span class="nf">bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R4</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bounding box of polygon</span>
 
@@ -275,12 +579,12 @@
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 <span class="sd">            &gt;&gt;&gt; p.bbox()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_extents</span><span class="p">())</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_extents</span><span class="p">())</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Polygon2.radius"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.radius">[docs]</a>    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.radius"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.radius">[docs]</a>    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Radius of smallest enclosing circle</span>
 
@@ -295,44 +599,59 @@
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 <span class="sd">            &gt;&gt;&gt; p.radius()</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
         <span class="n">dmax</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vertex</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="n">dmax</span><span class="p">:</span>
-                <span class="n">dmax</span> <span class="o">=</span> <span class="n">d</span>
-        <span class="k">return</span> <span class="n">d</span></div>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vertex</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span>
+            <span class="n">dmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dmax</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dmax</span></div>
 
-<div class="viewcode-block" id="Polygon2.intersects"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.intersects">[docs]</a>    <span class="k">def</span> <span class="nf">intersects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.intersects"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.intersects">[docs]</a>    <span class="k">def</span> <span class="nf">intersects</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Polygon2</span><span class="p">,</span> <span class="n">Line2</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Polygon2</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Line2</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test for intersection</span>
 
 <span class="sd">        :param other: object to test for intersection</span>
-<span class="sd">        :type other: Polygon2 or Line2</span>
+<span class="sd">        :type other: Polygon2 or Line2 or list(Polygon2) or list(Line2)</span>
 <span class="sd">        :return: True if the polygon intersects ``other``</span>
 <span class="sd">        :rtype: bool</span>
+<span class="sd">        :raises ValueError:</span>
+
+<span class="sd">        Returns true if the polygon intersects the the given polygon or 2D</span>
+<span class="sd">        line. If ``other`` is a list, test against all in the list and return on the</span>
+<span class="sd">        first intersection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Polygon2</span><span class="p">):</span>
             <span class="c1"># polygon-polygon intersection is done by matplotlib</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">intersects_path</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Line2</span><span class="p">):</span>
             <span class="c1"># polygon-line intersection</span>
-            <span class="k">for</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>  <span class="c1"># type: ignore</span>
                 <span class="c1"># test each edge segment against the line</span>
                 <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">intersect_segment</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">islistof</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Polygon2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Polygon2</span><span class="p">],</span> <span class="n">other</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">intersects_path</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="kc">False</span></div>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">islistof</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Line2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Line2</span><span class="p">],</span> <span class="n">other</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+                    <span class="c1"># test each edge segment against the line</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">intersect_segment</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad type for other&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Polygon2.transformed"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.transformed">[docs]</a>    <span class="k">def</span> <span class="nf">transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.transformed"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.transformed">[docs]</a>    <span class="k">def</span> <span class="nf">transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">SE2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A transformed copy of polygon</span>
 
@@ -348,7 +667,7 @@
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2, SE2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 <span class="sd">            &gt;&gt;&gt; p.vertices()</span>
 <span class="sd">            &gt;&gt;&gt; p.transformed(SE2(10, 0, 0)).vertices() # shift by x+10</span>
 
@@ -357,310 +676,55 @@
         <span class="n">new</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">Affine2D</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">new</span></div>
 
-<div class="viewcode-block" id="Polygon2.area"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.area">[docs]</a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Area of polygon</span>
-
-<span class="sd">        :return: area</span>
-<span class="sd">        :rtype: float</span>
-
-<span class="sd">        Example:</span>
-
-<span class="sd">        .. runblock:: pycon</span>
-
-<span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
-<span class="sd">            &gt;&gt;&gt; p.area()</span>
-
-<span class="sd">        :seealso: :meth:`moment`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Polygon2.centroid"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.centroid">[docs]</a>    <span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Centroid of polygon</span>
-
-<span class="sd">        :return: centroid</span>
-<span class="sd">        :rtype: ndarray(2)</span>
-
-<span class="sd">        Example:</span>
-
-<span class="sd">        .. runblock:: pycon</span>
-
-<span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
-<span class="sd">            &gt;&gt;&gt; p.centroid()</span>
-
-<span class="sd">        :seealso: :meth:`moment`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">moment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Polygon2.vertices"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.vertices">[docs]</a>    <span class="k">def</span> <span class="nf">vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Polygon2.vertices"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.vertices">[docs]</a>    <span class="k">def</span> <span class="nf">vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Points2</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Vertices of polygon</span>
 
-<span class="sd">        :param closed: include first vertex twice, defaults to False</span>
-<span class="sd">        :type closed: bool, optional</span>
+<span class="sd">        :param unique: return only the unique vertices , defaults to True</span>
+<span class="sd">        :type unique: bool, optional</span>
 <span class="sd">        :return: vertices</span>
 <span class="sd">        :rtype: ndarray(2,n)</span>
 
-<span class="sd">        Returns the set of vertices.  If ``closed`` is True then the last</span>
-<span class="sd">        column is the same as the first, that is, the polygon is explicitly</span>
-<span class="sd">        closed.</span>
+<span class="sd">        Returns the set of vertices.  The polygon is always closed, that is, the first</span>
+<span class="sd">        and last vertices are the same.  The ``unique`` option does not include the last</span>
+<span class="sd">        vertex.</span>
 
 <span class="sd">        Example:</span>
 
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
+<span class="sd">            &gt;&gt;&gt; p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
 <span class="sd">            &gt;&gt;&gt; p.vertices()</span>
 <span class="sd">            &gt;&gt;&gt; p.vertices(closed=True)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>
-            <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span>
-            <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vertices</span><span class="p">,</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]])</span>
-            <span class="k">return</span> <span class="n">vertices</span><span class="o">.</span><span class="n">T</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">T</span></div>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Polygon2.edges"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">vertices</span></div>
+
+<div class="viewcode-block" id="Polygon2.edges"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterate over polygon edge segments</span>
 
 <span class="sd">        Creates an iterator that returns pairs of points representing the</span>
 <span class="sd">        end points of each segment.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-            <span class="k">yield</span><span class="p">(</span><span class="n">vertices</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span></div>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">vertices</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">])</span></div></div>
 
-<div class="viewcode-block" id="Polygon2.moment"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Polygon2.moment">[docs]</a>    <span class="k">def</span> <span class="nf">moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Moments of polygon</span>
-
-<span class="sd">        :param p: moment order x</span>
-<span class="sd">        :type p: int</span>
-<span class="sd">        :param q: moment order y</span>
-<span class="sd">        :type q: int</span>
-
-<span class="sd">        Returns the pq&#39;th moment of the polygon</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">        </span>
-<span class="sd">            M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q</span>
-
-<span class="sd">        Example:</span>
-
-<span class="sd">        .. runblock:: pycon</span>
-
-<span class="sd">            &gt;&gt;&gt; from spatialmath import Polygon2</span>
-<span class="sd">            &gt;&gt;&gt; p = Polygon2([[1, 3, 2], [2, 2, 4]])</span>
-<span class="sd">            &gt;&gt;&gt; p.moment(0, 0)  # area</span>
-<span class="sd">            &gt;&gt;&gt; p.moment(3, 0)</span>
-
-<span class="sd">        Note is negative for clockwise perimeter.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="nf">combin</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-            <span class="c1"># compute number of combinations of size r from set n</span>
-            <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="mi">1</span>
-
-            <span class="k">return</span> <span class="n">prod</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">prod</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-
-        <span class="n">vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-
-        <span class="n">m</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-            <span class="n">l1</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span>
-            <span class="n">dxl</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span>
-            <span class="n">dyl</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">l1</span><span class="p">]</span>
-            <span class="n">Al</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="n">dyl</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="n">dxl</span>
-            
-            <span class="n">s</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">)</span> \
-                        <span class="o">*</span> <span class="n">combin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> \
-                        <span class="o">*</span> <span class="n">combin</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="n">i</span><span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> \
-                        <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> \
-                        <span class="o">*</span> <span class="n">dxl</span><span class="o">**</span><span class="n">i</span> <span class="o">*</span> <span class="n">dyl</span><span class="o">**</span><span class="n">j</span>
-            <span class="n">m</span> <span class="o">+=</span> <span class="n">Al</span> <span class="o">*</span> <span class="n">s</span>
-
-        <span class="k">return</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">q</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span></div></div>
-<div class="viewcode-block" id="Line2"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2">[docs]</a><span class="k">class</span> <span class="nc">Line2</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class to represent 2D lines</span>
-
-<span class="sd">    The internal representation is in homogeneous format</span>
-<span class="sd">    </span>
-<span class="sd">    .. math::</span>
-
-<span class="sd">            ax + by + c = 0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Line2.__init__"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Line2.TwoPoints"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.TwoPoints">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">TwoPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create 2D line from two points</span>
-
-<span class="sd">        :param p1: point on the line</span>
-<span class="sd">        :type p1: array_like(2) or array_like(3)</span>
-<span class="sd">        :param p2: another point on the line</span>
-<span class="sd">        :type p2: array_like(2) or array_like(3)</span>
-
-<span class="sd">        The points can be given in Euclidean or homogeneous form.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">p1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">p2</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">Line2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Line2.General"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.General">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">General</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create line from general line</span>
-
-<span class="sd">        :param m: line gradient</span>
-<span class="sd">        :type m: float</span>
-<span class="sd">        :param c: line intercept</span>
-<span class="sd">        :type c: float</span>
-<span class="sd">        :return: a 2D line</span>
-<span class="sd">        :rtype: a Line2 instance</span>
-
-<span class="sd">        Creates a line from the parameters of the general line :math:`y = mx + c`.</span>
-
-<span class="sd">        .. note:: A vertical line cannot be represented.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Line2</span><span class="p">([</span><span class="n">m</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">])</span></div>
-
-<div class="viewcode-block" id="Line2.general"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.general">[docs]</a>    <span class="k">def</span> <span class="nf">general</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters of general line</span>
-
-<span class="sd">        :return: parameters of general line (m, c)</span>
-<span class="sd">        :rtype: ndarray(2)</span>
-
-<span class="sd">        Return the parameters of a general line :math:`y = mx + c`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Line2: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span>
-
-<div class="viewcode-block" id="Line2.plot"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Plot the line using matplotlib</span>
-
-<span class="sd">        :param kwargs: arguments passed to Matplotlib ``pyplot.plot``</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">plot_homline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Line2.intersect"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.intersect">[docs]</a>    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Intersection with line</span>
-
-<span class="sd">        :param other: another 2D line</span>
-<span class="sd">        :type other: Line2</span>
-<span class="sd">        :return: intersection point in homogeneous form</span>
-<span class="sd">        :rtype: ndarray(3)</span>
-
-<span class="sd">        If the lines are parallel then the third element of the returned </span>
-<span class="sd">        homogeneous point will be zero (an ideal point).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># return intersection of 2 lines</span>
-        <span class="c1"># return mindist and points if no intersect</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">line</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Line2.contains"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.contains">[docs]</a>    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Test if point is in line</span>
-
-<span class="sd">        :param p1: point to test</span>
-<span class="sd">        :type p1: array_like(2) or array_like(3)</span>
-<span class="sd">        :return: True if point lies in the line</span>
-<span class="sd">        :rtype: bool</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">iszero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span></div>
-
-    <span class="c1"># variant that gives lambda</span>
-
-<div class="viewcode-block" id="Line2.intersect_segment"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.intersect_segment">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Test for line intersecting line segment</span>
-
-<span class="sd">        :param p1: start of line segment</span>
-<span class="sd">        :type p1: array_like(2) or array_like(3)</span>
-<span class="sd">        :param p2: end of line segment</span>
-<span class="sd">        :type p2: array_like(2) or array_like(3)</span>
-<span class="sd">        :return: True if they intersect</span>
-<span class="sd">        :rtype: bool</span>
-
-<span class="sd">        Tests whether the line intersects the line segment defined by endpoints</span>
-<span class="sd">        ``p1`` and ``p2`` which are given in Euclidean or homogeneous form.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">p1</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">p2</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">p2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        
-
-        <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">*</span> <span class="n">p1</span>
-        <span class="n">z2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">*</span> <span class="n">p2</span>
-
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z2</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">p2</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
-
-    <span class="c1"># these should have same names as for 3d case</span>
-<div class="viewcode-block" id="Line2.distance_line_line"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.distance_line_line">[docs]</a>    <span class="k">def</span> <span class="nf">distance_line_line</span><span class="p">():</span>
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="Line2.distance_line_point"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.distance_line_point">[docs]</a>    <span class="k">def</span> <span class="nf">distance_line_point</span><span class="p">():</span>
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="Line2.points_join"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.points_join">[docs]</a>    <span class="k">def</span> <span class="nf">points_join</span><span class="p">():</span>
-
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="Line2.intersect_polygon___line"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.intersect_polygon___line">[docs]</a>    <span class="k">def</span> <span class="nf">intersect_polygon___line</span><span class="p">():</span>
-        <span class="k">pass</span></div>
-
-<div class="viewcode-block" id="Line2.contains_polygon_point"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Line2.contains_polygon_point">[docs]</a>    <span class="k">def</span> <span class="nf">contains_polygon_point</span><span class="p">():</span>
-        <span class="k">pass</span></div></div>
-
-<div class="viewcode-block" id="LineSegment2"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.LineSegment2">[docs]</a><span class="k">class</span> <span class="nc">LineSegment2</span><span class="p">(</span><span class="n">Line2</span><span class="p">):</span>
-    <span class="c1"># line segment class that subclass</span>
-    <span class="c1"># has hom line + 2 values of lambda</span>
-    <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Ellipse"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse">[docs]</a><span class="k">class</span> <span class="nc">Ellipse</span><span class="p">:</span>
+<div class="viewcode-block" id="Ellipse.Matrix"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.Matrix">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Matrix</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">centre</span><span class="p">:</span> <span class="n">ArrayLike2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Ellipse.__init__"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centre</span><span class="p">,</span> <span class="n">radii</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Ellipse.Parameters"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.Parameters">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">centre</span><span class="p">:</span> <span class="n">ArrayLike2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">orientation</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span> <span class="o">=</span> <span class="n">centre</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">radii</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">radii</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -678,17 +742,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">e2</span> <span class="o">=</span> <span class="n">e3</span> <span class="o">/</span> <span class="n">e0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">e3</span> <span class="o">=</span> <span class="n">e4</span> <span class="o">/</span> <span class="n">e0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">e4</span> <span class="o">=</span> <span class="n">e5</span> <span class="o">/</span> <span class="n">e0</span></div>
-        
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Ellipse.Polynomial"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.Polynomial">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">Polynomial</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Ellipse(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">e0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">e1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">e2</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">e3</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">e4</span><span class="si">}</span><span class="s2">)&quot;</span>
 
 <div class="viewcode-block" id="Ellipse.E"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.E">[docs]</a>    <span class="k">def</span> <span class="nf">E</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># return 3x3 ellipse matrix</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Ellipse.centre"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.centre">[docs]</a>    <span class="k">def</span> <span class="nf">centre</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Ellipse.centre"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.centre">[docs]</a>    <span class="k">def</span> <span class="nf">centre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R2</span><span class="p">:</span>
         <span class="c1"># return centre</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Ellipse.polynomial"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.polynomial">[docs]</a>    <span class="k">def</span> <span class="nf">polynomial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Ellipse.plot"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span></div></div>
+
 
 <span class="c1"># alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5 = symbols(&quot;alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5&quot;)</span>
 <span class="c1"># solve(eq, [alpha, beta, gamma, xc, yc])</span>
@@ -703,21 +778,21 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">Ellipse</span><span class="p">((</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)))</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">Polygon2</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
-    <span class="n">p</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">SE2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
+    <span class="k">pass</span>
+    <span class="c1"># print(Ellipse((500, 500), (100, 200)))</span>
+    <span class="c1"># p = Polygon2([(1, 2), (3, 2), (2, 4)])</span>
+    <span class="c1"># p.transformed(SE2(0, 0, np.pi / 2)).vertices()</span>
 
-    <span class="n">a</span> <span class="o">=</span> <span class="n">Line2</span><span class="o">.</span><span class="n">TwoPoints</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="c1"># a = Line2.TwoPoints((1, 2), (7, 5))</span>
+    <span class="c1"># print(a)</span>
 
-    <span class="n">p</span> <span class="o">=</span> <span class="n">Polygon2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]))</span>
-    <span class="n">base</span><span class="o">.</span><span class="n">plotvol2</span><span class="p">([</span><span class="mi">8</span><span class="p">])</span>
-    <span class="n">p</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">theta</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">SE2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
-
+    <span class="c1"># p = Polygon2(np.array([[4, 4, 6, 6], [2, 1, 1, 2]]))</span>
+    <span class="c1"># base.plotvol2([8])</span>
+    <span class="c1"># p.plot(color=&quot;b&quot;, alpha=0.3)</span>
+    <span class="c1"># for theta in np.linspace(0, 2 * np.pi, 100):</span>
+    <span class="c1">#     p.animate(SE2(0, 0, theta))</span>
+    <span class="c1">#     plt.show()</span>
+    <span class="c1">#     plt.pause(0.05)</span>
 
     <span class="c1"># print(p)</span>
     <span class="c1"># p.plot(alpha=0.5, color=&#39;b&#39;)</span>
@@ -743,8 +818,6 @@
 
     <span class="c1"># p.move(SE2(0, 0, 0.7))</span>
     <span class="c1"># plt.show(block=True)</span>
-
-
 </pre></div>
 
            </div>
@@ -755,7 +828,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Jan-2023.
+      <span class="lastupdated">Last updated on 27-Feb-2023.
       </span></p>
   </div>
 

@@ -26,15 +26,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Spatial Maths package
-            <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Spatial Maths package
+              <img src="../../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +64,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">spatialmath.base.transforms2d</li>
       <li class="wy-breadcrumbs-aside">
@@ -91,7 +95,17 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_matplotlib_exists</span> <span class="o">=</span> <span class="kc">False</span>
+
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">smb</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.transformsNd</span> <span class="kn">import</span> <span class="n">rt2tr</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -104,8 +118,9 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="n">_symbolics</span> <span class="o">=</span> <span class="kc">False</span>
 
+
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="rot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.rot2">[docs]</a><span class="k">def</span> <span class="nf">rot2</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="rot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.rot2">[docs]</a><span class="k">def</span> <span class="nf">rot2</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO2Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create SO(2) rotation</span>
 
@@ -137,7 +152,7 @@
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
-<div class="viewcode-block" id="trot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trot2">[docs]</a><span class="k">def</span> <span class="nf">trot2</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="trot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trot2">[docs]</a><span class="k">def</span> <span class="nf">trot2</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create SE(2) pure rotation</span>
 
@@ -172,7 +187,7 @@
     <span class="k">return</span> <span class="n">T</span></div>
 
 
-<div class="viewcode-block" id="xyt2tr"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.xyt2tr">[docs]</a><span class="k">def</span> <span class="nf">xyt2tr</span><span class="p">(</span><span class="n">xyt</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="xyt2tr"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.xyt2tr">[docs]</a><span class="k">def</span> <span class="nf">xyt2tr</span><span class="p">(</span><span class="n">xyt</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create SE(2) pure rotation</span>
 
@@ -201,7 +216,7 @@
     <span class="k">return</span> <span class="n">T</span></div>
 
 
-<div class="viewcode-block" id="tr2xyt"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tr2xyt">[docs]</a><span class="k">def</span> <span class="nf">tr2xyt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="tr2xyt"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tr2xyt">[docs]</a><span class="k">def</span> <span class="nf">tr2xyt</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert SE(2) to x, y, theta</span>
 
@@ -233,10 +248,24 @@
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">transl2</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">transl2</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">transl2</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R2</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
 <div class="viewcode-block" id="transl2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.transl2">[docs]</a><span class="k">def</span> <span class="nf">transl2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create SE(2) pure translation, or extract translation from SE(2) matrix</span>
-
 
 <span class="sd">    **Create a translational SE(2) matrix**</span>
 
@@ -282,14 +311,16 @@
 <span class="sd">    .. note:: This function is compatible with the MATLAB version of the Toolbox.  It</span>
 <span class="sd">        is unusual/weird in doing two completely different things inside the one</span>
 <span class="sd">        function.</span>
+
+<span class="sd">    :seealso: :func:`tr2pos2` :func:`pos2tr2`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
         <span class="c1"># (x, y) -&gt; SE(2)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
         <span class="c1"># R2 -&gt; SE(2)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">ismatrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
         <span class="c1"># SE(2) -&gt; R2</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
@@ -303,7 +334,74 @@
     <span class="k">return</span> <span class="n">T</span></div>
 
 
-<div class="viewcode-block" id="ishom2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ishom2">[docs]</a><span class="k">def</span> <span class="nf">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tr2pos2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tr2pos2">[docs]</a><span class="k">def</span> <span class="nf">tr2pos2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract translation from SE(2) matrix</span>
+
+<span class="sd">    :param x: SE(2) transform matrix</span>
+<span class="sd">    :type x: ndarray(3,3)</span>
+<span class="sd">    :return: translation elements of SE(2) matrix</span>
+<span class="sd">    :rtype: ndarray(2)</span>
+
+<span class="sd">    - ``t = transl2(T)`` is the translational part of the SE(3) matrix ``T`` as a</span>
+<span class="sd">      2-element NumPy array.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; T = np.array([[1, 0, 3], [0, 1, 4], [0, 0, 1]])</span>
+<span class="sd">        &gt;&gt;&gt; transl2(T)</span>
+
+<span class="sd">    :seealso: :func:`pos2tr2` :func:`transl2`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="pos2tr2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.pos2tr2">[docs]</a><span class="k">def</span> <span class="nf">pos2tr2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a translational SE(2) matrix</span>
+
+<span class="sd">    :param x: translation along X-axis</span>
+<span class="sd">    :type x: float</span>
+<span class="sd">    :param y: translation along Y-axis</span>
+<span class="sd">    :type y: float</span>
+<span class="sd">    :return: SE(2) matrix</span>
+<span class="sd">    :rtype: ndarray(3,3)</span>
+
+<span class="sd">    - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3)</span>
+<span class="sd">      representing a pure translation.</span>
+<span class="sd">    - ``T = transl2( V )`` as above but the translation is given by a 2-element</span>
+<span class="sd">      list, dict, or a numpy array, row or column vector.</span>
+
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import *</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; transl2(3, 4)</span>
+<span class="sd">        &gt;&gt;&gt; transl2([3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; transl2(np.array([3, 4]))</span>
+
+<span class="sd">    :seealso: :func:`tr2pos2` :func:`transl2`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="c1"># (x, y) -&gt; SE(2)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># R2 -&gt; SE(2)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad argument&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="k">return</span> <span class="n">T</span></div>
+
+
+<div class="viewcode-block" id="ishom2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ishom2">[docs]</a><span class="k">def</span> <span class="nf">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># TypeGuard(SE2):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to SE(2)</span>
 
@@ -335,14 +433,11 @@
     <span class="k">return</span> <span class="p">(</span>
         <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
         <span class="ow">and</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="n">check</span>
-            <span class="ow">or</span> <span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])))</span>
-        <span class="p">)</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))))</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isrot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.isrot2">[docs]</a><span class="k">def</span> <span class="nf">isrot2</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="isrot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.isrot2">[docs]</a><span class="k">def</span> <span class="nf">isrot2</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># TypeGuard(SO2):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to SO(2)</span>
 
@@ -370,15 +465,13 @@
 
 <span class="sd">    :seealso: isR, ishom2, isrot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 
 
-<div class="viewcode-block" id="trinv2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trinv2">[docs]</a><span class="k">def</span> <span class="nf">trinv2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<div class="viewcode-block" id="trinv2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trinv2">[docs]</a><span class="k">def</span> <span class="nf">trinv2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Invert an SE(2) matrix</span>
 
@@ -413,7 +506,52 @@
     <span class="k">return</span> <span class="n">Ti</span></div>
 
 
-<div class="viewcode-block" id="trlog2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trlog2">[docs]</a><span class="k">def</span> <span class="nf">trlog2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trlog2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">SO2Array</span><span class="p">,</span>
+    <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">so2Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trlog2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">,</span>
+    <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">se2Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trlog2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">SO2Array</span><span class="p">,</span>
+    <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trlog2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">,</span>
+    <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<div class="viewcode-block" id="trlog2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trlog2">[docs]</a><span class="k">def</span> <span class="nf">trlog2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">],</span>
+    <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">R3</span><span class="p">,</span> <span class="n">so2Array</span><span class="p">,</span> <span class="n">se2Array</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Logarithm of SO(2) or SE(2) matrix</span>
 
@@ -463,25 +601,24 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">st</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">ct</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">ct</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">st</span> <span class="o">/</span> <span class="n">ct</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
                 <span class="n">tr</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">st</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ct</span><span class="p">)],</span> <span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">ct</span><span class="p">,</span> <span class="n">st</span><span class="p">]])</span>
+                <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">st</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ct</span><span class="p">)],</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ct</span><span class="p">,</span> <span class="n">st</span><span class="p">]])</span>
                 <span class="n">tr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="o">@</span> <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">theta</span>
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">tr</span><span class="p">,</span> <span class="n">theta</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
-                    <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">tr</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]],</span> 
-                    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">))]</span>
-                <span class="p">])</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">(</span>
+                    <span class="p">[[</span><span class="n">smb</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">tr</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))]]</span>
+                <span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
         <span class="c1"># SO(2) rotation matrix</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">theta</span>
         <span class="k">else</span><span class="p">:</span>
@@ -491,13 +628,25 @@
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trexp2</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">so2Array</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO2Array</span><span class="p">:</span>
+    <span class="o">...</span>
 
 
-<div class="viewcode-block" id="trexp2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trexp2">[docs]</a><span class="k">def</span> <span class="nf">trexp2</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trexp2</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">se2Array</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<div class="viewcode-block" id="trexp2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trexp2">[docs]</a><span class="k">def</span> <span class="nf">trexp2</span><span class="p">(</span>
+    <span class="n">S</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">so2Array</span><span class="p">,</span> <span class="n">se2Array</span><span class="p">],</span>
+    <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exponential of so(2) or se(2) matrix</span>
 
-<span class="sd">    :param S: se(2), so(2) matrix or equivalent velctor</span>
+<span class="sd">    :param S: se(2), so(2) matrix or equivalent vector</span>
 <span class="sd">    :type T: ndarray(3,3) or ndarray(2,2)</span>
 <span class="sd">    :param theta: motion</span>
 <span class="sd">    :type theta: float</span>
@@ -515,7 +664,7 @@
 <span class="sd">    - ``trexp2(Σ, θ)`` as above but for an se(3) motion of Σθ, where ``Σ``</span>
 <span class="sd">      must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric</span>
 <span class="sd">      matrix.</span>
-<span class="sd">    - ``trexp2(S)`` is the matrix exponential of the se(3) element ``S`` represented as</span>
+<span class="sd">    - ``trexp2(S)`` is the matrix exponential of the se(2) element ``S`` represented as</span>
 <span class="sd">      a 3-vector which can be considered a screw motion.</span>
 <span class="sd">    - ``trexp2(S, θ)`` as above but for an se(2) motion of Sθ, where ``S``</span>
 <span class="sd">      must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric</span>
@@ -559,7 +708,7 @@
             <span class="c1"># augmentented skew matrix</span>
             <span class="k">if</span> <span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">smb</span><span class="o">.</span><span class="n">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument must be a valid se(2) element&quot;</span><span class="p">)</span>
-            <span class="n">tw</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+            <span class="n">tw</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">vexa</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">se2Array</span><span class="p">,</span> <span class="n">S</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 3 vector</span>
             <span class="n">tw</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
@@ -575,7 +724,7 @@
         <span class="n">t</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">tw</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">rot2</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
 
         <span class="n">skw</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">V</span> <span class="o">=</span> <span class="p">(</span>
@@ -597,34 +746,79 @@
             <span class="c1"># 1 vector</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">smb</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If theta is specified S must be a unit twist&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">smb</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If theta is specified S must be a unit twist&quot;</span><span class="p">)</span>
+            <span class="n">w</span> <span class="o">*=</span> <span class="n">theta</span>
 
-        <span class="c1"># do Rodrigues&#39; formula for rotation</span>
-        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">rodrigues</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="c1"># compute rotation matrix, simpler than Rodrigues for 2D case</span>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">rot2</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; First argument must be SO(2), 1-vector, SE(2) or 3-vector&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="adjoint2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.adjoint2">[docs]</a><span class="k">def</span> <span class="nf">adjoint2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">tradjoint2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SO2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R1x1</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">tradjoint2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<div class="viewcode-block" id="tradjoint2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tradjoint2">[docs]</a><span class="k">def</span> <span class="nf">tradjoint2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adjoint matrix in 2D</span>
+
+<span class="sd">    :param T: SE(2) or SO(2) matrix</span>
+<span class="sd">    :type T: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :return: adjoint matrix</span>
+<span class="sd">    :rtype: ndarray(3,3) or ndarray(1,1)</span>
+
+<span class="sd">    Computes an adjoint matrix that maps the Lie algebra between frames.</span>
+
+<span class="sd">    .. math:</span>
+
+<span class="sd">        Ad(\mat{T}) \vec{X} X = \vee \left( \mat{T} \skew{\vec{X} \mat{T}^{-1} \right)</span>
+
+<span class="sd">    where :math:`\mat{T} \in \SE2`.</span>
+
+<span class="sd">    ``tr2jac2(T)`` is an adjoint matrix (6x6) that maps spatial velocity or</span>
+<span class="sd">    differential motion between frame {B} to frame {A} which are attached to the</span>
+<span class="sd">    same moving body.  The pose of {B} relative to {A} is represented by the</span>
+<span class="sd">    homogeneous transform T = :math:`{}^A {\bf T}_B`.</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import tr2adjoint2, trot2</span>
+<span class="sd">        &gt;&gt;&gt; T = trot2(0.3, t=[1,2])</span>
+<span class="sd">        &gt;&gt;&gt; tr2adjoint2(T)</span>
+
+<span class="sd">    :Reference:</span>
+<span class="sd">        - Robotics, Vision &amp; Control for Python, Section 3, P. Corke, Springer 2023.</span>
+<span class="sd">        - `Lie groups for 2D and 3D Transformations &lt;http://ethaneade.com/lie.pdf&gt;_</span>
+
+<span class="sd">    :SymPy: supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># http://ethaneade.com/lie.pdf</span>
-    <span class="k">if</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
         <span class="c1"># SO(2) adjoint</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
         <span class="c1"># SE(2) adjoint</span>
-        <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SE3Array</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
         <span class="c1"># fmt: off</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
                 <span class="p">[</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">],</span> 
                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>           <span class="mi">1</span><span class="p">]</span>
-                <span class="p">])</span>
+                <span class="p">])</span>  <span class="c1"># type: ignore</span>
         <span class="c1"># fmt: on</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad argument&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tr2jac2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tr2jac2">[docs]</a><span class="k">def</span> <span class="nf">tr2jac2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<div class="viewcode-block" id="tr2jac2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tr2jac2">[docs]</a><span class="k">def</span> <span class="nf">tr2jac2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SE(2) Jacobian matrix</span>
 
@@ -658,7 +852,9 @@
     <span class="k">return</span> <span class="n">J</span></div>
 
 
-<div class="viewcode-block" id="trinterp2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trinterp2">[docs]</a><span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="trinterp2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trinterp2">[docs]</a><span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SE2Array</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolate SE(2) or SO(2) matrices</span>
 
@@ -742,10 +938,16 @@
 
         <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">rot2</span><span class="p">(</span><span class="n">th</span><span class="p">),</span> <span class="n">pr</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument must be SO(2) or SE(2)&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Argument must be SO(2) or SE(2)&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="trprint2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trprint2">[docs]</a><span class="k">def</span> <span class="nf">trprint2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3g}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="trprint2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trprint2">[docs]</a><span class="k">def</span> <span class="nf">trprint2</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">],</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:.3g}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compact display of SE(2) or SO(2) matrices</span>
 
@@ -794,12 +996,12 @@
 
     <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{:s}</span><span class="s2">: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
 
     <span class="c1"># print the translational part if it exists</span>
     <span class="k">if</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;t = </span><span class="si">{}</span><span class="s2">;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">transl2</span><span class="p">(</span><span class="n">T</span><span class="p">)))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;t = </span><span class="si">{}</span><span class="s2">;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">transl2</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SE2Array</span><span class="p">,</span> <span class="n">T</span><span class="p">))))</span>
 
     <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;deg&quot;</span><span class="p">:</span>
@@ -813,12 +1015,12 @@
     <span class="k">return</span> <span class="n">s</span></div>
 
 
-<span class="k">def</span> <span class="nf">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_vec2s</span><span class="p">(</span><span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ArrayLikePure</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
     <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
 
 
-<div class="viewcode-block" id="points2tr2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.points2tr2">[docs]</a><span class="k">def</span> <span class="nf">points2tr2</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+<div class="viewcode-block" id="points2tr2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.points2tr2">[docs]</a><span class="k">def</span> <span class="nf">points2tr2</span><span class="p">(</span><span class="n">p1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SE(2) transform from corresponding points</span>
 
@@ -832,18 +1034,20 @@
 <span class="sd">    Compute an SE(2) matrix that transforms the point set ``p1`` to ``p2``.</span>
 <span class="sd">    p1 and p2 must have the same number of columns, and columns correspond</span>
 <span class="sd">    to the same point.</span>
+
+<span class="sd">    :seealso: :func:`ICP2d`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># first find the centroids of both point clouds</span>
-    <span class="n">p1_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">p2_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">p1_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">p2_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># get the point clouds in reference to their centroids</span>
-    <span class="n">p1_centered</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p1_centroid</span>
-    <span class="n">p2_centered</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">-</span> <span class="n">p2_centroid</span>
+    <span class="n">p1_centered</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p1_centroid</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+    <span class="n">p2_centered</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">-</span> <span class="n">p2_centroid</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
     <span class="c1"># compute moment matrix</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p2_centered</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">p1_centered</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p2_centered</span><span class="p">,</span> <span class="n">p1_centered</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
     <span class="c1"># get singular value decomposition of the cross covariance matrix</span>
     <span class="n">U</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">VT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
@@ -856,73 +1060,121 @@
         <span class="n">R</span> <span class="o">=</span> <span class="n">VT</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">U</span><span class="o">.</span><span class="n">T</span>
 
     <span class="c1"># get the translation</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">p2_centroid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">p1_centroid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">p2_centroid</span> <span class="o">-</span> <span class="n">R</span> <span class="o">@</span> <span class="n">p1_centroid</span>
 
-    <span class="c1"># assemble translation and rotation into a transformation matrix</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-    <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-    <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
+    <span class="k">return</span> <span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span></div>
 
-    <span class="k">return</span> <span class="n">T</span></div>
 
-<span class="c1"># https://github.com/ClayFlannigan/icp/blob/master/icp.py</span>
-<span class="c1"># https://github.com/1988kramer/intel_dataset/blob/master/scripts/Align2D.py</span>
-<span class="c1"># hack below to use points2tr above</span>
-<span class="c1"># use ClayFlannigan&#39;s improved data association</span>
+<div class="viewcode-block" id="ICP2d"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ICP2d">[docs]</a><span class="k">def</span> <span class="nf">ICP2d</span><span class="p">(</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="n">Points2</span><span class="p">,</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">Points2</span><span class="p">,</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE2Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">min_delta_err</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterated closest point (ICP) in 2D</span>
 
-<span class="c1"># reference or target 2xN</span>
-<span class="c1"># source  2xN</span>
+<span class="sd">    :param reference: points (columns) to which the source points are to be aligned</span>
+<span class="sd">    :type reference: ndarray(2,N)</span>
+<span class="sd">    :param source: points (columns) to align to the reference set of points</span>
+<span class="sd">    :type source: ndarray(2,M)</span>
+<span class="sd">    :param T: initial pose , defaults to None</span>
+<span class="sd">    :type T: ndarray(3,3), optional</span>
+<span class="sd">    :param max_iter: max number of iterations, defaults to 20</span>
+<span class="sd">    :type max_iter: int, optional</span>
+<span class="sd">    :param min_delta_err: min_delta_err, defaults to 1e-4</span>
+<span class="sd">    :type min_delta_err: float, optional</span>
+<span class="sd">    :return: pose of source point cloud relative to the reference point cloud</span>
+<span class="sd">    :rtype: SE2Array</span>
 
-<span class="c1"># params:</span>
-<span class="c1">#   source_points: numpy array containing points to align to the reference set</span>
-<span class="c1">#                  points should be homogeneous, with one point per row</span>
-<span class="c1">#   reference_points: numpy array containing points to which the source points</span>
-<span class="c1">#                  are to be aligned, points should be homogeneous with one</span>
-<span class="c1">#                  point per row</span>
-<span class="c1">#   initial_T:     initial estimate of the transform between reference and source</span>
-<span class="c1"># def __init__(self, source_points, reference_points, initial_T):</span>
-<span class="c1"># 	self.source = source_points</span>
-<span class="c1"># 	self.reference = reference_points</span>
-<span class="c1"># 	self.init_T = initial_T</span>
-<span class="c1"># 	self.reference_tree = KDTree(reference_points[:,:2])</span>
-<span class="c1"># 	self.transform = self.AlignICP(30, 1.0e-4)</span>
+<span class="sd">    Uses the iterative closest point algorithm to find the transformation that</span>
+<span class="sd">    transforms the source point cloud to align with the reference point cloud, which</span>
+<span class="sd">    minimizes the sum of squared errors between nearest neighbors in the two point</span>
+<span class="sd">    clouds.</span>
 
-<span class="c1"># uses the iterative closest point algorithm to find the</span>
-<span class="c1"># transformation between the source and reference point clouds</span>
-<span class="c1"># that minimizes the sum of squared errors between nearest </span>
-<span class="c1"># neighbors in the two point clouds</span>
-<span class="c1"># params:</span>
-<span class="c1">#   max_iter: int, max number of iterations</span>
-<span class="c1">#   min_delta_err: float, minimum change in alignment error</span>
-<div class="viewcode-block" id="ICP2d"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ICP2d">[docs]</a><span class="k">def</span> <span class="nf">ICP2d</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_delta_err</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+<span class="sd">    .. note:: Point correspondence is not required and the two point clouds do not have</span>
+<span class="sd">        to have the same number of points.</span>
+
+<span class="sd">    .. warning:: The point cloud argument order is reversed compared to :func:`points2tr`.</span>
+
+<span class="sd">    :seealso: :func:`points2tr`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># https://github.com/ClayFlannigan/icp/blob/master/icp.py</span>
+    <span class="c1"># https://github.com/1988kramer/intel_dataset/blob/master/scripts/Align2D.py</span>
+    <span class="c1"># hack below to use points2tr above</span>
+    <span class="c1"># use ClayFlannigan&#39;s improved data association</span>
 
     <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">KDTree</span>
 
-    <span class="n">mean_sq_error</span> <span class="o">=</span> <span class="mf">1.0e6</span> <span class="c1"># initialize error as large number</span>
-    <span class="n">delta_err</span> <span class="o">=</span> <span class="mf">1.0e6</span>    <span class="c1"># change in error (used in stopping condition)</span>
-    <span class="n">num_iter</span> <span class="o">=</span> <span class="mi">0</span>         <span class="c1"># number of iterations</span>
+    <span class="k">def</span> <span class="nf">_FindCorrespondences</span><span class="p">(</span>
+        <span class="n">tree</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">reference</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
+        <span class="c1"># get distances to nearest neighbors and indices of nearest neighbors</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="c1"># remove multiple associatons from index list</span>
+        <span class="c1"># only retain closest associations</span>
+        <span class="n">unique</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">matched_src</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">unique</span><span class="p">:</span>
+            <span class="n">unique</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idxi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">idxi</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># could do this with np.nonzero</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">idxi</span> <span class="o">==</span> <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                            <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                            <span class="k">break</span>
+        <span class="c1"># build array of nearest neighbor reference points</span>
+        <span class="c1"># and remove unmatched source points</span>
+        <span class="n">point_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">src_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reference</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">])</span>
+                <span class="n">src_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">matched_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">matched_src</span><span class="p">,</span> <span class="n">src_idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">matched_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point_list</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">return</span> <span class="n">matched_ref</span><span class="p">,</span> <span class="n">matched_src</span><span class="p">,</span> <span class="n">indices</span>
+
+    <span class="n">mean_sq_error</span> <span class="o">=</span> <span class="mf">1.0e6</span>  <span class="c1"># initialize error as large number</span>
+    <span class="n">delta_err</span> <span class="o">=</span> <span class="mf">1.0e6</span>  <span class="c1"># change in error (used in stopping condition)</span>
+    <span class="n">num_iter</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># number of iterations</span>
     <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
     <span class="n">ref_kdtree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">tf_source</span> <span class="o">=</span> <span class="n">source</span>
 
     <span class="n">source_hom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">source</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
 
+    <span class="c1"># tf_source = source</span>
+    <span class="n">tf_source</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">source_hom</span>
+    <span class="n">tf_source</span> <span class="o">=</span> <span class="n">tf_source</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+
     <span class="k">while</span> <span class="n">delta_err</span> <span class="o">&gt;</span> <span class="n">min_delta_err</span> <span class="ow">and</span> <span class="n">num_iter</span> <span class="o">&lt;</span> <span class="n">max_iter</span><span class="p">:</span>
-
         <span class="c1"># find correspondences via nearest-neighbor search</span>
-        <span class="n">matched_ref_pts</span><span class="p">,</span> <span class="n">matched_source</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">_FindCorrespondences</span><span class="p">(</span><span class="n">ref_kdtree</span><span class="p">,</span> <span class="n">tf_source</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
+        <span class="n">matched_ref_pts</span><span class="p">,</span> <span class="n">matched_source</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">_FindCorrespondences</span><span class="p">(</span>
+            <span class="n">ref_kdtree</span><span class="p">,</span> <span class="n">tf_source</span><span class="p">,</span> <span class="n">reference</span>
+        <span class="p">)</span>
 
-        <span class="c1"># find alingment between source and corresponding reference points via SVD</span>
+        <span class="c1"># find alignment between source and corresponding reference points via SVD</span>
         <span class="c1"># note: svd step doesn&#39;t use homogeneous points</span>
-        <span class="n">new_T</span> <span class="o">=</span> <span class="n">_AlignSVD</span><span class="p">(</span><span class="n">matched_source</span><span class="p">,</span> <span class="n">matched_ref_pts</span><span class="p">)</span>
+        <span class="n">new_T</span> <span class="o">=</span> <span class="n">points2tr2</span><span class="p">(</span><span class="n">matched_source</span><span class="p">,</span> <span class="n">matched_ref_pts</span><span class="p">)</span>
 
         <span class="c1"># update transformation between point sets</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">new_T</span>
 
         <span class="c1"># apply transformation to the source points</span>
-        <span class="n">tf_source</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">source_hom</span>
+        <span class="n">tf_source</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span> <span class="o">@</span> <span class="n">source_hom</span>
         <span class="n">tf_source</span> <span class="o">=</span> <span class="n">tf_source</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
 
         <span class="c1"># find mean squared error between transformed source points and reference points</span>
@@ -931,386 +1183,315 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="n">diff</span> <span class="o">=</span> <span class="n">tf_source</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">reference</span><span class="p">[:,</span> <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-                <span class="n">new_err</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span><span class="n">diff</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="n">new_err</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">diff</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
         <span class="n">new_err</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matched_ref_pts</span><span class="p">))</span>
 
         <span class="c1"># update error and calculate delta error</span>
         <span class="n">delta_err</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mean_sq_error</span> <span class="o">-</span> <span class="n">new_err</span><span class="p">)</span>
         <span class="n">mean_sq_error</span> <span class="o">=</span> <span class="n">new_err</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ITER&#39;</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">delta_err</span><span class="p">,</span> <span class="n">mean_sq_error</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ITER&quot;</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">delta_err</span><span class="p">,</span> <span class="n">mean_sq_error</span><span class="p">)</span>
 
         <span class="n">num_iter</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">return</span> <span class="n">T</span></div>
 
 
-<span class="k">def</span> <span class="nf">_FindCorrespondences</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">_matplotlib_exists</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="c1"># from mpl_toolkits.axisartist import Axes</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
 
-    <span class="c1"># get distances to nearest neighbors and indices of nearest neighbors</span>
-    <span class="n">dist</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<div class="viewcode-block" id="trplot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trplot2">[docs]</a>    <span class="k">def</span> <span class="nf">trplot2</span><span class="p">(</span>
+        <span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">],</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+        <span class="n">frame</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">axislabel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">axissubscript</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">textcolor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">),</span>
+        <span class="n">length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">arrow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">originsize</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">rviz</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">block</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wtl</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">d1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">d2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.15</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot a 2D coordinate frame</span>
 
-    <span class="c1"># remove multiple associatons from index list</span>
-    <span class="c1"># only retain closest associations</span>
-    <span class="n">unique</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">matched_src</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">unique</span><span class="p">:</span>
-        <span class="n">unique</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idxi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">idxi</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="c1"># could do this with np.nonzero</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="n">idxi</span> <span class="o">==</span> <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
-                        <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                        <span class="k">break</span>
-    <span class="c1"># build array of nearest neighbor reference points</span>
-    <span class="c1"># and remove unmatched source points</span>
-    <span class="n">point_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">src_idx</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reference</span><span class="p">[:,</span><span class="n">idx</span><span class="p">])</span>
-            <span class="n">src_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="sd">        :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame</span>
+<span class="sd">        :type: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">        :param color: color of the lines defining the frame</span>
+<span class="sd">        :type color: str</span>
+<span class="sd">        :param textcolor: color of text labels for the frame, default color of lines above</span>
+<span class="sd">        :type textcolor: str</span>
+<span class="sd">        :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
+<span class="sd">        :type frame: str</span>
+<span class="sd">        :param axislabel: display labels on axes, default True</span>
+<span class="sd">        :type axislabel: bool</span>
+<span class="sd">        :param axissubscript: display subscripts on axis labels, default True</span>
+<span class="sd">        :type axissubscript: bool</span>
+<span class="sd">        :param labels: labels for the axes, defaults to X and Y</span>
+<span class="sd">        :type labels: 2-tuple of strings</span>
+<span class="sd">        :param length: length of coordinate frame axes, default 1</span>
+<span class="sd">        :type length: float</span>
+<span class="sd">        :param arrow: show arrow heads, default True</span>
+<span class="sd">        :type arrow: bool</span>
+<span class="sd">        :param ax: the axes to plot into, defaults to current axes</span>
+<span class="sd">        :type ax: Axes3D reference</span>
+<span class="sd">        :param block: run the GUI main loop until all windows are closed, default True</span>
+<span class="sd">        :type block: bool</span>
+<span class="sd">        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]</span>
+<span class="sd">        :type dims: array_like(4)</span>
+<span class="sd">        :param wtl: width-to-length ratio for arrows, default 0.2</span>
+<span class="sd">        :type wtl: float</span>
+<span class="sd">        :param rviz: show Rviz style arrows, default False</span>
+<span class="sd">        :type rviz: bool</span>
+<span class="sd">        :param width: width of lines, default 1</span>
+<span class="sd">        :type width: float</span>
+<span class="sd">        :param d1: distance of frame axis label text from origin, default 0.05</span>
+<span class="sd">        :type d1: float</span>
+<span class="sd">        :param d2: distance of frame label text from origin, default 1.15</span>
+<span class="sd">        :type d2: float</span>
+<span class="sd">        :return: axes containing the frame</span>
+<span class="sd">        :rtype: AxesSubplot</span>
+<span class="sd">        :raises ValueError: bad argument</span>
+
+<span class="sd">        Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
+
+<span class="sd">        The appearance of the coordinate frame depends on many parameters:</span>
+
+<span class="sd">        - coordinate axes depend on:</span>
+
+<span class="sd">            - ``color`` of axes</span>
+<span class="sd">            - ``width`` of line</span>
+<span class="sd">            - ``length`` of line</span>
+<span class="sd">            - ``arrow`` if True [default] draw the axis with an arrow head</span>
+
+<span class="sd">        - coordinate axis labels depend on:</span>
+
+<span class="sd">            - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z</span>
+<span class="sd">            - ``labels`` 2-list of alternative axis labels</span>
+<span class="sd">            - ``textcolor`` which defaults to ``color``</span>
+<span class="sd">            - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript</span>
+<span class="sd">            for each axis label</span>
+
+<span class="sd">        - coordinate frame label depends on:</span>
+
+<span class="sd">            - `frame` the label placed inside {...} near the origin of the frame</span>
+
+<span class="sd">        - a dot at the origin</span>
+
+<span class="sd">            - ``originsize`` size of the dot, if zero no dot</span>
+<span class="sd">            - ``origincolor`` color of the dot, defaults to ``color``</span>
+<span class="sd">            - If no current figure, one is created</span>
+<span class="sd">            - If current figure, but no axes, a 3d Axes is created</span>
+
+<span class="sd">        Examples::</span>
+
+<span class="sd">            trplot2(T, frame=&#39;A&#39;)</span>
+<span class="sd">            trplot2(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
+<span class="sd">            trplot2(T1, &#39;labels&#39;, &#39;AB&#39;);</span>
+
+<span class="sd">        .. plot::</span>
+
+<span class="sd">            import matplotlib.pyplot as plt</span>
+<span class="sd">            from spatialmath.base import trplot2, transl2, trot2</span>
+<span class="sd">            import math</span>
+<span class="sd">            fig, ax = plt.subplots(3,3, figsize=(10,10))</span>
+<span class="sd">            text_opts = dict(bbox=dict(boxstyle=&quot;round&quot;,</span>
+<span class="sd">                fc=&quot;w&quot;,</span>
+<span class="sd">                alpha=0.9),</span>
+<span class="sd">                zorder=20,</span>
+<span class="sd">                family=&#39;monospace&#39;,</span>
+<span class="sd">                fontsize=8,</span>
+<span class="sd">                verticalalignment=&#39;top&#39;)</span>
+<span class="sd">            T = transl2(2, 1)@trot2(math.pi/3)</span>
+<span class="sd">            trplot2(T, ax=ax[0][0], dims=[0,4,0,4])</span>
+<span class="sd">            ax[0][0].text(0.2, 3.8, &quot;trplot2(T)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)</span>
+<span class="sd">            ax[0][1].text(0.2, 3.8, &quot;trplot2(T, originsize=0)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)</span>
+<span class="sd">            ax[0][2].text(0.2, 3.8, &quot;trplot2(T, arrow=False)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)</span>
+<span class="sd">            ax[1][0].text(0.2, 3.8, &quot;trplot2(T, axislabel=False)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)</span>
+<span class="sd">            ax[1][1].text(0.2, 3.8, &quot;trplot2(T, width=3)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame=&#39;B&#39;)</span>
+<span class="sd">            ax[1][2].text(0.2, 3.8, &quot;trplot2(T, frame=&#39;B&#39;)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color=&#39;r&#39;, textcolor=&#39;k&#39;)</span>
+<span class="sd">            ax[2][0].text(0.2, 3.8, &quot;trplot2(T, color=&#39;r&#39;,textcolor=&#39;k&#39;)&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=(&quot;u&quot;, &quot;v&quot;))</span>
+<span class="sd">            ax[2][1].text(0.2, 3.8, &quot;trplot2(T, labels=(&#39;u&#39;, &#39;v&#39;))&quot;, **text_opts)</span>
+<span class="sd">            trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)</span>
+<span class="sd">            ax[2][2].text(0.2, 3.8, &quot;trplot2(T, rviz=True)&quot;, **text_opts)</span>
+
+
+<span class="sd">        :SymPy: not supported</span>
+
+<span class="sd">        :seealso: :func:`tranimate2` :func:`plotvol2` :func:`axes_logic`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># TODO</span>
+        <span class="c1"># animation</span>
+        <span class="c1"># style=&#39;line&#39;, &#39;arrow&#39;, &#39;rviz&#39;</span>
+
+        <span class="c1"># check input types</span>
+        <span class="k">if</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument is not valid SE(2) matrix&quot;</span><span class="p">)</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># if axes are an Animate object</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;_plotvol&quot;</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">dims</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;_plotvol&quot;</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+
+        <span class="c1"># create unit vectors in homogeneous form</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># draw the axes</span>
+
+        <span class="k">if</span> <span class="n">rviz</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lime&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">arrow</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
+                <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+                <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+                <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+                <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
+                <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+                <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+                <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+                <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">matched_src</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">matched_src</span><span class="p">,</span> <span class="n">src_idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
 
-    <span class="n">matched_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point_list</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="n">originsize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="n">originsize</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">matched_ref</span><span class="p">,</span> <span class="n">matched_src</span><span class="p">,</span> <span class="n">indices</span>
+        <span class="c1"># label the frame</span>
+        <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
 
-<span class="c1"># uses singular value decomposition to find the </span>
-<span class="c1"># transformation from the reference to the source point cloud</span>
-<span class="c1"># assumes source and reference point clounds are ordered such that </span>
-<span class="c1"># corresponding points are at the same indices in each array</span>
-<span class="c1">#</span>
-<span class="c1"># params:</span>
-<span class="c1">#   source: numpy array representing source pointcloud</span>
-<span class="c1">#   reference: numpy array representing reference pointcloud</span>
-<span class="c1"># returns:</span>
-<span class="c1">#   T: transformation between the two point clouds</span>
+            <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                <span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">o1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="sa">r</span><span class="s2">&quot;$\{&quot;</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\}$&quot;</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
+                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
 
-<span class="c1"># TODO: replace this func with </span>
-<span class="k">def</span> <span class="nf">_AlignSVD</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">axislabel</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
+            <span class="c1"># add the labels to each axis</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
 
-    <span class="c1"># first find the centroids of both point clouds</span>
-    <span class="n">src_centroid</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">ref_centroid</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">axissubscript</span><span class="p">:</span>
+                <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">$&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">_{{</span><span class="si">{:s}</span><span class="s2">}}$&quot;</span>
 
-    <span class="c1"># get the point clouds in reference to their centroids</span>
-    <span class="n">source_centered</span> <span class="o">=</span> <span class="n">source</span> <span class="o">-</span> <span class="n">src_centroid</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
-    <span class="n">reference_centered</span> <span class="o">=</span> <span class="n">reference</span> <span class="o">-</span> <span class="n">ref_centroid</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+                <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
 
-    <span class="c1"># compute the moment matrix</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">reference_centered</span> <span class="o">@</span> <span class="n">source_centered</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
+            <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
 
-    <span class="c1"># do the singular value decomposition</span>
-    <span class="n">U</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">V_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<div class="viewcode-block" id="tranimate2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tranimate2">[docs]</a>    <span class="k">def</span> <span class="nf">tranimate2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">SE2Array</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Animate a 2D coordinate frame</span>
 
-    <span class="c1"># get rotation between the two point clouds</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">U</span> <span class="o">@</span> <span class="n">V_t</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;bad rotation matrix&#39;</span><span class="p">)</span>
+<span class="sd">        :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame</span>
+<span class="sd">        :type: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">        :param nframes: number of steps in the animation [defaault 100]</span>
+<span class="sd">        :type nframes: int</span>
+<span class="sd">        :param repeat: animate in endless loop [default False]</span>
+<span class="sd">        :type repeat: bool</span>
+<span class="sd">        :param interval: number of milliseconds between frames [default 50]</span>
+<span class="sd">        :type interval: int</span>
+<span class="sd">        :param movie: name of file to write MP4 movie into</span>
+<span class="sd">        :type movie: str</span>
 
-    <span class="c1"># translation is the difference between the point clound centroids</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">ref_centroid</span> <span class="o">-</span> <span class="n">R</span> <span class="o">@</span> <span class="n">src_centroid</span>
+<span class="sd">        Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
 
-    <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-
-<div class="viewcode-block" id="trplot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trplot2">[docs]</a><span class="k">def</span> <span class="nf">trplot2</span><span class="p">(</span>
-    <span class="n">T</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
-    <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">axislabel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">axissubscript</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">textcolor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">),</span>
-    <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">arrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">originsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">rviz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">wtl</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">d1</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">d2</span><span class="o">=</span><span class="mf">1.15</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Plot a 2D coordinate frame</span>
-
-<span class="sd">    :param T: an SE(3) or SO(3) pose to be displayed as coordinate frame</span>
-<span class="sd">    :type: ndarray(3,3) or ndarray(2,2)</span>
-<span class="sd">    :param color: color of the lines defining the frame</span>
-<span class="sd">    :type color: str</span>
-<span class="sd">    :param textcolor: color of text labels for the frame, default color of lines above</span>
-<span class="sd">    :type textcolor: str</span>
-<span class="sd">    :param frame: label the frame, name is shown below the frame and as subscripts on the frame axis labels</span>
-<span class="sd">    :type frame: str</span>
-<span class="sd">    :param axislabel: display labels on axes, default True</span>
-<span class="sd">    :type axislabel: bool</span>
-<span class="sd">    :param axissubscript: display subscripts on axis labels, default True</span>
-<span class="sd">    :type axissubscript: bool</span>
-<span class="sd">    :param labels: labels for the axes, defaults to X and Y</span>
-<span class="sd">    :type labels: 2-tuple of strings</span>
-<span class="sd">    :param length: length of coordinate frame axes, default 1</span>
-<span class="sd">    :type length: float</span>
-<span class="sd">    :param arrow: show arrow heads, default True</span>
-<span class="sd">    :type arrow: bool</span>
-<span class="sd">    :param ax: the axes to plot into, defaults to current axes</span>
-<span class="sd">    :type ax: Axes3D reference</span>
-<span class="sd">    :param block: run the GUI main loop until all windows are closed, default True</span>
-<span class="sd">    :type block: bool</span>
-<span class="sd">    :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]</span>
-<span class="sd">    :type dims: array_like(4)</span>
-<span class="sd">    :param wtl: width-to-length ratio for arrows, default 0.2</span>
-<span class="sd">    :type wtl: float</span>
-<span class="sd">    :param rviz: show Rviz style arrows, default False</span>
-<span class="sd">    :type rviz: bool</span>
-<span class="sd">    :param width: width of lines, default 1</span>
-<span class="sd">    :type width: float</span>
-<span class="sd">    :param d1: distance of frame axis label text from origin, default 0.05</span>
-<span class="sd">    :type d1: float</span>
-<span class="sd">    :param d2: distance of frame label text from origin, default 1.15</span>
-<span class="sd">    :type d2: float</span>
-<span class="sd">    :return: axes containing the frame</span>
-<span class="sd">    :rtype: AxesSubplot</span>
-<span class="sd">    :raises ValueError: bad argument</span>
-
-<span class="sd">    Adds a 2D coordinate frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
-
-<span class="sd">    The appearance of the coordinate frame depends on many parameters:</span>
-
-<span class="sd">    - coordinate axes depend on:</span>
-
-<span class="sd">        - ``color`` of axes</span>
-<span class="sd">        - ``width`` of line</span>
-<span class="sd">        - ``length`` of line</span>
-<span class="sd">        - ``arrow`` if True [default] draw the axis with an arrow head</span>
-
-<span class="sd">    - coordinate axis labels depend on:</span>
-
-<span class="sd">        - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z</span>
-<span class="sd">        - ``labels`` 2-list of alternative axis labels</span>
-<span class="sd">        - ``textcolor`` which defaults to ``color``</span>
-<span class="sd">        - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript</span>
-<span class="sd">          for each axis label</span>
-
-<span class="sd">    - coordinate frame label depends on:</span>
-
-<span class="sd">        - `frame` the label placed inside {...} near the origin of the frame</span>
-
-<span class="sd">    - a dot at the origin</span>
-
-<span class="sd">        - ``originsize`` size of the dot, if zero no dot</span>
-<span class="sd">        - ``origincolor`` color of the dot, defaults to ``color``</span>
 <span class="sd">        - If no current figure, one is created</span>
 <span class="sd">        - If current figure, but no axes, a 3d Axes is created</span>
-<span class="sd">        </span>
-<span class="sd">    Examples::</span>
-
-<span class="sd">        trplot2(T, frame=&#39;A&#39;)</span>
-<span class="sd">        trplot2(T, frame=&#39;A&#39;, color=&#39;green&#39;)</span>
-<span class="sd">        trplot2(T1, &#39;labels&#39;, &#39;AB&#39;);</span>
-
-<span class="sd">    .. plot::</span>
-
-<span class="sd">        import matplotlib.pyplot as plt</span>
-<span class="sd">        from spatialmath.base import trplot2, transl2, trot2</span>
-<span class="sd">        import math</span>
-<span class="sd">        fig, ax = plt.subplots(3,3, figsize=(10,10))</span>
-<span class="sd">        text_opts = dict(bbox=dict(boxstyle=&quot;round&quot;, </span>
-<span class="sd">            fc=&quot;w&quot;, </span>
-<span class="sd">            alpha=0.9), </span>
-<span class="sd">            zorder=20,</span>
-<span class="sd">            family=&#39;monospace&#39;,</span>
-<span class="sd">            fontsize=8,</span>
-<span class="sd">            verticalalignment=&#39;top&#39;)</span>
-<span class="sd">        T = transl2(2, 1)@trot2(math.pi/3)</span>
-<span class="sd">        trplot2(T, ax=ax[0][0], dims=[0,4,0,4])</span>
-<span class="sd">        ax[0][0].text(0.2, 3.8, &quot;trplot2(T)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[0][1], dims=[0,4,0,4], originsize=0)</span>
-<span class="sd">        ax[0][1].text(0.2, 3.8, &quot;trplot2(T, originsize=0)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[0][2], dims=[0,4,0,4], arrow=False)</span>
-<span class="sd">        ax[0][2].text(0.2, 3.8, &quot;trplot2(T, arrow=False)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[1][0], dims=[0,4,0,4], axislabel=False)</span>
-<span class="sd">        ax[1][0].text(0.2, 3.8, &quot;trplot2(T, axislabel=False)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[1][1], dims=[0,4,0,4], width=3)</span>
-<span class="sd">        ax[1][1].text(0.2, 3.8, &quot;trplot2(T, width=3)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[1][2], dims=[0,4,0,4], frame=&#39;B&#39;)</span>
-<span class="sd">        ax[1][2].text(0.2, 3.8, &quot;trplot2(T, frame=&#39;B&#39;)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[2][0], dims=[0,4,0,4], color=&#39;r&#39;, textcolor=&#39;k&#39;)</span>
-<span class="sd">        ax[2][0].text(0.2, 3.8, &quot;trplot2(T, color=&#39;r&#39;,textcolor=&#39;k&#39;)&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[2][1], dims=[0,4,0,4], labels=(&quot;u&quot;, &quot;v&quot;))</span>
-<span class="sd">        ax[2][1].text(0.2, 3.8, &quot;trplot2(T, labels=(&#39;u&#39;, &#39;v&#39;))&quot;, **text_opts)</span>
-<span class="sd">        trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)</span>
-<span class="sd">        ax[2][2].text(0.2, 3.8, &quot;trplot2(T, rviz=True)&quot;, **text_opts)</span>
 
 
-<span class="sd">    :SymPy: not supported</span>
+<span class="sd">        Examples:</span>
 
-<span class="sd">    :seealso: :func:`tranimate2` :func:`plotvol2` :func:`axes_logic`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">                tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
+<span class="sd">                tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anim</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate2</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
 
-    <span class="c1"># TODO</span>
-    <span class="c1"># animation</span>
-    <span class="c1"># style=&#39;line&#39;, &#39;arrow&#39;, &#39;rviz&#39;</span>
-
-    <span class="c1"># check input types</span>
-    <span class="k">if</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument is not valid SE(2) matrix&quot;</span><span class="p">)</span>
-
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">():</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">():</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="k">pass</span>  <span class="c1"># if axes are an Animate object</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;_plotvol&quot;</span><span class="p">):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">dims</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;_plotvol&quot;</span><span class="p">):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
-
-    <span class="c1"># create unit vectors in homogeneous form</span>
-    <span class="n">o</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-
-    <span class="c1"># draw the axes</span>
-
-    <span class="k">if</span> <span class="n">rviz</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lime&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">arrow</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
-            <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-            <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-            <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
-            <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
-            <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-            <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
-            <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
-            <span class="n">facecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">edgecolor</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">originsize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">s</span><span class="o">=</span><span class="p">[</span><span class="n">originsize</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-
-    <span class="c1"># label the frame</span>
-    <span class="k">if</span> <span class="n">frame</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
-
-        <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-            <span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">o1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="sa">r</span><span class="s2">&quot;$\{&quot;</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\}$&quot;</span><span class="p">,</span>
-            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
-            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">axislabel</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="n">textcolor</span>
-        <span class="c1"># add the labels to each axis</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">o</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">o</span>
-
-        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">axissubscript</span><span class="p">:</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">$&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{:s}</span><span class="s2">_{{</span><span class="si">{:s}</span><span class="s2">}}$&quot;</span>
-
-        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-            <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
-            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-            <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="nb">format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame</span><span class="p">),</span>
-            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
-            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">block</span><span class="p">:</span>
-        <span class="c1"># calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ax</span></div>
-
-
-<div class="viewcode-block" id="tranimate2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.tranimate2">[docs]</a><span class="k">def</span> <span class="nf">tranimate2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Animate a 2D coordinate frame</span>
-
-<span class="sd">    :param T: an SE(2) or SO(2) pose to be displayed as coordinate frame</span>
-<span class="sd">    :type: ndarray(3,3) or ndarray(2,2)</span>
-<span class="sd">    :param nframes: number of steps in the animation [defaault 100]</span>
-<span class="sd">    :type nframes: int</span>
-<span class="sd">    :param repeat: animate in endless loop [default False]</span>
-<span class="sd">    :type repeat: bool</span>
-<span class="sd">    :param interval: number of milliseconds between frames [default 50]</span>
-<span class="sd">    :type interval: int</span>
-<span class="sd">    :param movie: name of file to write MP4 movie into</span>
-<span class="sd">    :type movie: str</span>
-
-<span class="sd">    Animates a 2D coordinate frame moving from the world frame to a frame represented by the SO(2) or SE(2) matrix to the current axes.</span>
-
-<span class="sd">    - If no current figure, one is created</span>
-<span class="sd">    - If current figure, but no axes, a 3d Axes is created</span>
-
-
-<span class="sd">    Examples:</span>
-
-<span class="sd">            tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5])</span>
-<span class="sd">            tranimate2(transl(1,2)@trot2(1), frame=&#39;A&#39;, arrow=False, dims=[0, 5], movie=&#39;spin.mp4&#39;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">anim</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">animate</span><span class="o">.</span><span class="n">Animate2</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="n">anim</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">anim</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">anim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -1323,9 +1504,9 @@
     <span class="c1"># plt.grid(True)</span>
 
     <span class="c1"># fig, ax = plt.subplots(3,3, figsize=(10,10))</span>
-    <span class="c1"># text_opts = dict(bbox=dict(boxstyle=&quot;round&quot;, </span>
-    <span class="c1">#     fc=&quot;w&quot;, </span>
-    <span class="c1">#     alpha=0.9), </span>
+    <span class="c1"># text_opts = dict(bbox=dict(boxstyle=&quot;round&quot;,</span>
+    <span class="c1">#     fc=&quot;w&quot;,</span>
+    <span class="c1">#     alpha=0.9),</span>
     <span class="c1">#     zorder=20,</span>
     <span class="c1">#     family=&#39;monospace&#39;,</span>
     <span class="c1">#     fontsize=8,</span>
@@ -1358,8 +1539,6 @@
     <span class="c1"># trplot2(T, ax=ax[2][2], dims=[0,4,0,4], rviz=True)</span>
     <span class="c1"># ax[2][2].text(0.2, 3.8, &quot;trplot2(T, rviz=True)&quot;, **text_opts)</span>
 
-
-
     <span class="n">exec</span><span class="p">(</span>
         <span class="nb">open</span><span class="p">(</span>
             <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
@@ -1378,7 +1557,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Jan-2023.
+      <span class="lastupdated">Last updated on 27-Feb-2023.
       </span></p>
   </div>
 

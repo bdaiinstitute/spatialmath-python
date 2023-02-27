@@ -36,15 +36,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Spatial Maths package
-            <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spatial Maths package
+              <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.0.5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -80,7 +84,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="functions.html">Function reference</a></li>
       <li class="breadcrumb-item active">Transforms in 2D</li>
       <li class="wy-breadcrumbs-aside">
@@ -105,12 +109,43 @@ tuple, numpy array, numpy row vector or numpy column vector.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.ICP2d">
 <span class="sig-name descname"><span class="pre">ICP2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_delta_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#ICP2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.ICP2d" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spatialmath.base.transforms2d.adjoint2">
-<span class="sig-name descname"><span class="pre">adjoint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#adjoint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.adjoint2" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Iterated closest point (ICP) in 2D</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em>) – points (columns) to which the source points are to be aligned</p></li>
+<li><p><strong>source</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>M</em><em>)</em>) – points (columns) to align to the reference set of points</p></li>
+<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em><em>, </em><em>optional</em>) – initial pose , defaults to None</p></li>
+<li><p><strong>max_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – max number of iterations, defaults to 20</p></li>
+<li><p><strong>min_delta_err</strong> (<em>float</em><em>, </em><em>optional</em>) – min_delta_err, defaults to 1e-4</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pose of source point cloud relative to the reference point cloud</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SE2Array</p>
+</dd>
+</dl>
+<p>Uses the iterative closest point algorithm to find the transformation that
+transforms the source point cloud to align with the reference point cloud, which
+minimizes the sum of squared errors between nearest neighbors in the two point
+clouds.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Point correspondence is not required and the two point clouds do not have
+to have the same number of points.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The point cloud argument order is reversed compared to <code class="xref py py-func docutils literal notranslate"><span class="pre">points2tr()</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">points2tr()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.ishom2">
@@ -222,6 +257,58 @@ rotation sub-matrix and validitity of the bottom row.</p></li>
 <p>Compute an SE(2) matrix that transforms the point set <code class="docutils literal notranslate"><span class="pre">p1</span></code> to <code class="docutils literal notranslate"><span class="pre">p2</span></code>.
 p1 and p2 must have the same number of columns, and columns correspond
 to the same point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms2d.ICP2d" title="spatialmath.base.transforms2d.ICP2d"><code class="xref py py-func docutils literal notranslate"><span class="pre">ICP2d()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.pos2tr2">
+<span class="sig-name descname"><span class="pre">pos2tr2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#pos2tr2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.pos2tr2" title="Permalink to this definition"></a></dt>
+<dd><p>Create a translational SE(2) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – translation along X-axis</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – translation along Y-axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2([X,</span> <span class="pre">Y])</span></code> is an SE(2) homogeneous transform (3x3)
+representing a pure translation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">transl2(</span> <span class="pre">V</span> <span class="pre">)</span></code> as above but the translation is given by a 2-element
+list, dict, or a numpy array, row or column vector.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
+<span class="go">array([[1., 0., 3.],</span>
+<span class="go">       [0., 1., 4.],</span>
+<span class="go">       [0., 0., 1.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms2d.tr2pos2" title="spatialmath.base.transforms2d.tr2pos2"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2pos2()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms2d.transl2" title="spatialmath.base.transforms2d.transl2"><code class="xref py py-func docutils literal notranslate"><span class="pre">transl2()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -296,6 +383,39 @@ elative to {A} is represented by the homogeneous transform T = <span class="math
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2pos2">
+<span class="sig-name descname"><span class="pre">tr2pos2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2pos2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2pos2" title="Permalink to this definition"></a></dt>
+<dd><p>Extract translation from SE(2) matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>)</em>) – SE(2) transform matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>translation elements of SE(2) matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(2)</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">transl2(T)</span></code> is the translational part of the SE(3) matrix <code class="docutils literal notranslate"><span class="pre">T</span></code> as a
+2-element NumPy array.</p></li>
+</ul>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transl2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">array([3, 4])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms2d.pos2tr2" title="spatialmath.base.transforms2d.pos2tr2"><code class="xref py py-func docutils literal notranslate"><span class="pre">pos2tr2()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms2d.transl2" title="spatialmath.base.transforms2d.transl2"><code class="xref py py-func docutils literal notranslate"><span class="pre">transl2()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.tr2xyt">
 <span class="sig-name descname"><span class="pre">tr2xyt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tr2xyt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tr2xyt" title="Permalink to this definition"></a></dt>
 <dd><p>Convert SE(2) to x, y, theta</p>
@@ -335,13 +455,54 @@ rotation for this SO(2) matrix.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.transforms2d.tradjoint2">
+<span class="sig-name descname"><span class="pre">tradjoint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tradjoint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tradjoint2" title="Permalink to this definition"></a></dt>
+<dd><p>Adjoint matrix in 2D</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – SE(2) or SO(2) matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>adjoint matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(3,3) or ndarray(1,1)</p>
+</dd>
+</dl>
+<p>Computes an adjoint matrix that maps the Lie algebra between frames.</p>
+<p>where <span class="math notranslate nohighlight">\(\mat{T} \in \SE2\)</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">tr2jac2(T)</span></code> is an adjoint matrix (6x6) that maps spatial velocity or
+differential motion between frame {B} to frame {A} which are attached to the
+same moving body.  The pose of {B} relative to {A} is represented by the
+homogeneous transform T = <span class="math notranslate nohighlight">\({}^A {\bf T}_B\)</span>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;&lt;input&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">NameError: name &#39;trot2&#39; is not defined</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">NameError</span>: <span class="n">name &#39;tr2adjoint2&#39; is not defined</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Reference</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Robotics, Vision &amp; Control for Python, Section 3, P. Corke, Springer 2023.</p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">`</span></a>Lie groups for 2D and 3D Transformations &lt;<a class="reference external" href="http://ethaneade.com/lie.pdf">http://ethaneade.com/lie.pdf</a>&gt;_</p></li>
+</ul>
+</dd>
+<dt class="field-even">SymPy</dt>
+<dd class="field-even"><p>supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.tranimate2">
 <span class="sig-name descname"><span class="pre">tranimate2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#tranimate2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.tranimate2" title="Permalink to this definition"></a></dt>
 <dd><p>Animate a 2D coordinate frame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> – an SE(2) or SO(2) pose to be displayed as coordinate frame</p></li>
+<li><p><strong>T</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ScalarType</span></code>, bound= <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.generic" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">generic</span></code></a>, covariant=True)]]) – an SE(2) or SO(2) pose to be displayed as coordinate frame</p></li>
 <li><p><strong>nframes</strong> (<em>int</em>) – number of steps in the animation [defaault 100]</p></li>
 <li><p><strong>repeat</strong> (<em>bool</em>) – animate in endless loop [default False]</p></li>
 <li><p><strong>interval</strong> (<em>int</em>) – number of milliseconds between frames [default 50]</p></li>
@@ -434,6 +595,11 @@ list, dict, or a numpy array, row or column vector.</p></li>
 is unusual/weird in doing two completely different things inside the one
 function.</p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.transforms2d.tr2pos2" title="spatialmath.base.transforms2d.tr2pos2"><code class="xref py py-func docutils literal notranslate"><span class="pre">tr2pos2()</span></code></a> <a class="reference internal" href="#spatialmath.base.transforms2d.pos2tr2" title="spatialmath.base.transforms2d.pos2tr2"><code class="xref py py-func docutils literal notranslate"><span class="pre">pos2tr2()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -443,7 +609,7 @@ function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>S</strong> – se(2), so(2) matrix or equivalent velctor</p></li>
+<li><p><strong>S</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ScalarType</span></code>, bound= <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.generic" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">generic</span></code></a>, covariant=True)]]) – se(2), so(2) matrix or equivalent vector</p></li>
 <li><p><strong>theta</strong> (<em>float</em>) – motion</p></li>
 </ul>
 </dd>
@@ -466,7 +632,7 @@ a 3x3 augmented skew-symmetric matrix.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">trexp2(Σ,</span> <span class="pre">θ)</span></code> as above but for an se(3) motion of Σθ, where <code class="docutils literal notranslate"><span class="pre">Σ</span></code>
 must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
 matrix.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S)</span></code> is the matrix exponential of the se(3) element <code class="docutils literal notranslate"><span class="pre">S</span></code> represented as
+<li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S)</span></code> is the matrix exponential of the se(2) element <code class="docutils literal notranslate"><span class="pre">S</span></code> represented as
 a 3-vector which can be considered a screw motion.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">trexp2(S,</span> <span class="pre">θ)</span></code> as above but for an se(2) motion of Sθ, where <code class="docutils literal notranslate"><span class="pre">S</span></code>
 must represent a unit-twist, ie. the rotational component is a unit-norm skew-symmetric
@@ -506,17 +672,17 @@ given by <code class="docutils literal notranslate"><span class="pre">θ</span><
 <span class="go">       [ 0.1411, -0.99  ,  0.7574],</span>
 <span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">(</span><span class="n">skewa</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># prismatic unit twist</span>
-<span class="go">array([[1., 0., 2.],</span>
-<span class="go">       [0., 1., 0.],</span>
-<span class="go">       [0., 0., 1.]])</span>
+<span class="go">array([[ 1., -0.,  2.],</span>
+<span class="go">       [ 0.,  1.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="go">array([[-0.99  , -0.1411, -1.2796],</span>
 <span class="go">       [ 0.1411, -0.99  ,  0.7574],</span>
 <span class="go">       [ 0.    ,  0.    ,  1.    ]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">trexp2</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">array([[1., 0., 2.],</span>
-<span class="go">       [0., 1., 0.],</span>
-<span class="go">       [0., 0., 1.]])</span>
+<span class="go">array([[ 1., -0.,  2.],</span>
+<span class="go">       [ 0.,  1.,  0.],</span>
+<span class="go">       [ 0.,  0.,  1.]])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -528,7 +694,7 @@ given by <code class="docutils literal notranslate"><span class="pre">θ</span><
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.trinterp2">
-<span class="sig-name descname"><span class="pre">trinterp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinterp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinterp2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trinterp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trinterp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trinterp2" title="Permalink to this definition"></a></dt>
 <dd><p>Interpolate SE(2) or SO(2) matrices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -550,13 +716,13 @@ given by <code class="docutils literal notranslate"><span class="pre">θ</span><
 </dl>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(None,</span> <span class="pre">T,</span> <span class="pre">S)</span></code> is an SE(2) matrix interpolated
-between identity when <cite>S`=0 and `T</cite>  when <a href="#id1"><span class="problematic" id="id2">`</span></a>S`=1.</p></li>
+between identity when <cite>S`=0 and `T</cite>  when <a href="#id3"><span class="problematic" id="id4">`</span></a>S`=1.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(T0,</span> <span class="pre">T1,</span> <span class="pre">S)</span></code> as above but interpolated
-between <cite>T0</cite> when <cite>S`=0 and `T1</cite> when <a href="#id3"><span class="problematic" id="id4">`</span></a>S`=1.</p></li>
+between <cite>T0</cite> when <cite>S`=0 and `T1</cite> when <a href="#id5"><span class="problematic" id="id6">`</span></a>S`=1.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(None,</span> <span class="pre">R,</span> <span class="pre">S)</span></code> is an SO(2) matrix interpolated
-between identity when <cite>S`=0 and `R</cite> when <a href="#id5"><span class="problematic" id="id6">`</span></a>S`=1.</p></li>
+between identity when <cite>S`=0 and `R</cite> when <a href="#id7"><span class="problematic" id="id8">`</span></a>S`=1.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">trinterp2(R0,</span> <span class="pre">R1,</span> <span class="pre">S)</span></code> as above but interpolated
-between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span class="problematic" id="id8">`</span></a>S`=1.</p></li>
+between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id9"><span class="problematic" id="id10">`</span></a>S`=1.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -639,7 +805,7 @@ between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.trlog2">
-<span class="sig-name descname"><span class="pre">trlog2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trlog2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trlog2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trlog2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">twist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trlog2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trlog2" title="Permalink to this definition"></a></dt>
 <dd><p>Logarithm of SO(2) or SE(2) matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -647,7 +813,7 @@ between <cite>R0</cite> when <cite>S`=0 and `R1</cite> when <a href="#id7"><span
 <li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>3</em><em>,</em><em>3</em><em>) or </em><em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – SE(2) or SO(2) matrix</p></li>
 <li><p><strong>check</strong> (<em>bool</em>) – check that matrix is valid</p></li>
 <li><p><strong>twist</strong> (<em>bool</em>) – return a twist vector instead of matrix [default]</p></li>
-<li><p><strong>tol</strong> – Tolerance in units of eps for zero-rotation case, defaults to 10</p></li>
+<li><p><strong>tol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Tolerance in units of eps for zero-rotation case, defaults to 10</p></li>
 </ul>
 </dd>
 <dt class="field-even">Type</dt>
@@ -704,7 +870,7 @@ w].</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta</strong> – rotation angle about X-axis</p></li>
+<li><p><strong>theta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – rotation angle about X-axis</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – angular units: ‘rad’ [default], or ‘deg’</p></li>
 <li><p><strong>t</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em>) – 2D translation vector, defaults to [0,0]</p></li>
 </ul>
@@ -751,7 +917,7 @@ set to a non-zero value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> – an SE(3) or SO(3) pose to be displayed as coordinate frame</p></li>
+<li><p><strong>T</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TypeVar</span></code>(<code class="docutils literal notranslate"><span class="pre">ScalarType</span></code>, bound= <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.generic" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">generic</span></code></a>, covariant=True)]]) – an SE(3) or SO(3) pose to be displayed as coordinate frame</p></li>
 <li><p><strong>color</strong> (<em>str</em>) – color of the lines defining the frame</p></li>
 <li><p><strong>textcolor</strong> (<em>str</em>) – color of text labels for the frame, default color of lines above</p></li>
 <li><p><strong>frame</strong> (<em>str</em>) – label the frame, name is shown below the frame and as subscripts on the frame axis labels</p></li>
@@ -802,9 +968,9 @@ set to a non-zero value.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">axislabel</span></code> if True [default] label the axis, default labels are X, Y, Z</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code> 2-list of alternative axis labels</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">textcolor</span></code> which defaults to <code class="docutils literal notranslate"><span class="pre">color</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">axissubscript</span></code> if True [default] add the frame label <code class="docutils literal notranslate"><span class="pre">frame</span></code> as a subscript
-for each axis label</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">axissubscript</span></code> if True [default] add the frame label <code class="docutils literal notranslate"><span class="pre">frame</span></code> as a subscript</p></li>
 </ul>
+<p>for each axis label</p>
 </div></blockquote>
 </li>
 <li><p>coordinate frame label depends on:</p>
@@ -847,7 +1013,7 @@ for each axis label</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.transforms2d.trprint2">
-<span class="sig-name descname"><span class="pre">trprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt='{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit='deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='UTF-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt='{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit='deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/transforms2d.html#trprint2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.transforms2d.trprint2" title="Permalink to this definition"></a></dt>
 <dd><p>Compact display of SE(2) or SO(2) matrices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -959,7 +1125,7 @@ single-line format and returns the string:</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Jan-2023.
+      <span class="lastupdated">Last updated on 27-Feb-2023.
       </span></p>
   </div>
 

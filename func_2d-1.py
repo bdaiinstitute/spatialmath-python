@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 from spatialmath.base import trplot2, transl2, trot2
 import math
 fig, ax = plt.subplots(3,3, figsize=(10,10))
-text_opts = dict(bbox=dict(boxstyle="round", 
-    fc="w", 
-    alpha=0.9), 
+text_opts = dict(bbox=dict(boxstyle="round",
+    fc="w",
+    alpha=0.9),
     zorder=20,
     family='monospace',
     fontsize=8,
