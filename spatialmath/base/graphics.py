@@ -488,7 +488,6 @@ try:
         fmt: Optional[Callable] = None,
         **kwargs,
     ) -> List[plt.Artist]:
-
         ax = axes_logic(ax, 2)
         if pose is not None:
             vertices = pose * vertices
@@ -1194,7 +1193,6 @@ try:
         color: Optional[Color] = None,
         **kwargs,
     ):
-
         # TODO:
         # handle pose in here
         # do the guts of plot_surface/wireframe but skip the auto scaling
@@ -1231,12 +1229,17 @@ try:
         :return: dimensionality of axes, either 2 or 3
         :rtype: int
         """
-        classname = ax.__class__.__name__
 
-        if classname in ("Axes3DSubplot", "Animate"):
-            return 3
-        elif classname in ("AxesSubplot", "Animate2"):
-            return 2
+        if hasattr(ax, "name"):
+            # handle the case of some kind of matplotlib Axes
+            return 3 if ax.name == "3d" else 2
+        else:
+            # handle the case of Animate objects pretending to be Axes
+            classname = ax.__class__.__name__
+            if classname == "Animate":
+                return 3
+            elif classname == "Animate2":
+                return 2
 
     def axes_get_limits(ax: plt.Axes) -> NDArray:
         return np.r_[ax.get_xlim(), ax.get_ylim()]
@@ -1295,6 +1298,8 @@ try:
             # need to be careful to not use gcf() or gca() since they
             # auto create fig/axes if none exist
             nfigs = len(plt.get_fignums())
+            # print(f"there are {nfigs} figures")
+
             if nfigs > 0:
                 # there are figures
                 fig = plt.gcf()  # get current figure
@@ -1302,11 +1307,13 @@ try:
                 # print(f"existing fig with {naxes} axes")
                 if naxes > 0:
                     ax = plt.gca()  # get current axes
+                    # print(f"ax has {_axes_dimensions(ax)} dimensions")
                     if _axes_dimensions(ax) == dimensions:
                         return ax
             # otherwise it doesnt exist or dimension mismatch, create new axes
-
+            # print("create new axes")
         else:
+            # print("no figs present, ax given")
             # axis was given
 
             if _axes_dimensions(ax) == dimensions:
