@@ -341,6 +341,7 @@ __all__ = [
     "numjac",
     "numhess",
     "array2str",
+    "str2array",
     "bresenham",
     "mpq_point",
     "gauss1d",

@@ -1,3 +1,4 @@
+import re
 import numpy as np
 from spatialmath import base
 from spatialmath.base.types import *
@@ -136,6 +137,17 @@ def array2str(
     :rtype: str
 
     Converts a small array to a compact single line representation.
+
+
+    .. runblock:: pycon
+
+        >>> array2str(np.random.rand(2,2))
+        >>> array2str(np.random.rand(2,2), rowsep="; ")  # MATLAB-like
+        >>> array2str(np.random.rand(3,))
+        >>> array2str(np.random.rand(3,1))
+
+
+    :seealso: :func:`array2str`
     """
     # convert to ndarray if not already
     if isinstance(X, (list, tuple)):
@@ -166,6 +178,38 @@ def array2str(
         s = brackets[0] + s + brackets[1]
     return s
 
+def str2array(s: str) -> NDArray:
+    """
+    Convert compact single line string to array
+
+    :param s: string to convert
+    :type s: str
+    :return: array
+    :rtype: ndarray
+
+    Convert a string containing a "MATLAB-like" matrix definition to a NumPy
+    array.  A scalar has no delimiting square brackets and becomes a 1x1 array.
+    A 2D array is delimited by square brackets, elements are separated by a comma,
+    and rows are separated by a semicolon.  Extra white spaces are ignored.
+
+
+    .. runblock:: pycon
+
+        >>> str2array("5")
+        >>> str2array("[1 2 3]")
+        >>> str2array("[1 2; 3 4]")
+        >>> str2array(" [  1  , 2 ; 3 4  ] ")
+        >>> str2array("[1; 2; 3]")
+
+    :seealso: :func:`array2str`
+    """
+
+    s = s.lstrip(" [")
+    s = s.rstrip(" ]")
+    values = []
+    for row in s.split(";"):
+        values.append([float(x) for x in re.split("[, ]+", row.strip())])
+    return np.array(values)
 
 def bresenham(p0: ArrayLike2, p1: ArrayLike2) -> Tuple[NDArray, NDArray]:
     """
