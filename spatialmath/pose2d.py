@@ -23,8 +23,7 @@ To use::
 import math
 import numpy as np
 
-from spatialmath.base import argcheck
-from spatialmath import base as base
+import spatialmath.base as smbase
 from spatialmath.baseposematrix import BasePoseMatrix
 
 # ============================== SO2 =====================================#
@@ -75,16 +74,16 @@ class SO2(BasePoseMatrix):
         super().__init__()
 
         if isinstance(arg, SE2):
-            self.data = [base.t2r(x) for x in arg.data]
+            self.data = [smbase.t2r(x) for x in arg.data]
 
         elif super().arghandler(arg, check=check):
             return
 
-        elif argcheck.isscalar(arg):
-            self.data = [base.rot2(arg, unit=unit)]
+        elif smbase.isscalar(arg):
+            self.data = [smbase.rot2(arg, unit=unit)]
 
-        elif argcheck.isvector(arg):
-            self.data = [base.rot2(x, unit=unit) for x in argcheck.getvector(arg)]
+        elif smbase.isvector(arg):
+            self.data = [smbase.rot2(x, unit=unit) for x in smbase.getvector(arg)]
 
         else:
             raise ValueError("bad argument to constructor")
@@ -128,7 +127,7 @@ class SO2(BasePoseMatrix):
         rand = np.random.uniform(
             low=arange[0], high=arange[1], size=N
         )  # random values in the range
-        return cls([base.rot2(x) for x in argcheck.getunit(rand, unit)])
+        return cls([smbase.rot2(x) for x in smbase.getunit(rand, unit)])
 
     @classmethod
     def Exp(cls, S, check=True):
@@ -148,9 +147,9 @@ class SO2(BasePoseMatrix):
         :seealso: :func:`spatialmath.base.transforms2d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
         if isinstance(S, (list, tuple)):
-            return cls([base.trexp2(s, check=check) for s in S])
+            return cls([smbase.trexp2(s, check=check) for s in S])
         else:
-            return cls(base.trexp2(S, check=check), check=False)
+            return cls(smbase.trexp2(S, check=check), check=False)
 
     @staticmethod
     def isvalid(x, check=True):
@@ -165,7 +164,7 @@ class SO2(BasePoseMatrix):
 
         :seealso: :func:`~spatialmath.base.transform3d.isrot`
         """
-        return not check or base.isrot2(x, check=True)
+        return not check or smbase.isrot2(x, check=True)
 
     def inv(self):
         """
@@ -231,7 +230,7 @@ class SO2(BasePoseMatrix):
         :rtype: SE2 instance
 
         """
-        return SE2(base.rt2tr(self.A, [0, 0]))
+        return SE2(smbase.rt2tr(self.A, [0, 0]))
 
 
 # ============================== SE2 =====================================#
@@ -297,16 +296,16 @@ class SE2(SO2):
                 return
 
             if isinstance(x, SO2):
-                self.data = [base.r2t(_x) for _x in x.data]
+                self.data = [smbase.r2t(_x) for _x in x.data]
 
-            elif argcheck.isscalar(x):
-                self.data = [base.trot2(x, unit=unit)]
+            elif smbase.isscalar(x):
+                self.data = [smbase.trot2(x, unit=unit)]
             elif len(x) == 2:
                 # SE2([x,y])
-                self.data = [base.transl2(x)]
+                self.data = [smbase.transl2(x)]
             elif len(x) == 3:
                 # SE2([x,y,theta])
-                self.data = [base.trot2(x[2], t=x[:2], unit=unit)]
+                self.data = [smbase.trot2(x[2], t=x[:2], unit=unit)]
 
             else:
                 raise ValueError("bad argument to constructor")
@@ -314,11 +313,11 @@ class SE2(SO2):
         elif x is not None:
             if y is not None and theta is None:
                 # SE2(x, y)
-                self.data = [base.transl2(x, y)]
+                self.data = [smbase.transl2(x, y)]
 
             elif y is not None and theta is not None:
                 # SE2(x, y, theta)
-                self.data = [base.trot2(theta, t=[x, y], unit=unit)]
+                self.data = [smbase.trot2(theta, t=[x, y], unit=unit)]
 
         else:
             raise ValueError("bad arguments to constructor")
@@ -381,8 +380,8 @@ class SE2(SO2):
         )  # random values in the range
         return cls(
             [
-                base.trot2(t, t=[x, y])
-                for (t, x, y) in zip(x, y, argcheck.getunit(theta, unit))
+                smbase.trot2(t, t=[x, y])
+                for (t, x, y) in zip(x, y, smbase.getunit(theta, unit))
             ]
         )
 
@@ -411,9 +410,9 @@ class SE2(SO2):
         :seealso: :func:`spatialmath.base.transforms2d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
         if isinstance(S, (list, tuple)):
-            return cls([base.trexp2(s) for s in S])
+            return cls([smbase.trexp2(s) for s in S])
         else:
-            return cls(base.trexp2(S), check=False)
+            return cls(smbase.trexp2(S), check=False)
 
     @classmethod
     def Rot(cls, theta, unit="rad"):
@@ -441,7 +440,8 @@ class SE2(SO2):
         :SymPy: supported
         """
         return cls(
-            [base.trot2(_th, unit=unit) for _th in base.getvector(theta)], check=False
+            [smbase.trot2(_th, unit=unit) for _th in smbase.getvector(theta)],
+            check=False,
         )
 
     @classmethod
@@ -467,7 +467,7 @@ class SE2(SO2):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([base.transl2(_x, 0) for _x in base.getvector(x)], check=False)
+        return cls([smbase.transl2(_x, 0) for _x in smbase.getvector(x)], check=False)
 
     @classmethod
     def Ty(cls, y):
@@ -491,7 +491,7 @@ class SE2(SO2):
         :seealso: :func:`~spatialmath.base.transforms3d.transl`
         :SymPy: supported
         """
-        return cls([base.transl2(0, _y) for _y in base.getvector(y)], check=False)
+        return cls([smbase.transl2(0, _y) for _y in smbase.getvector(y)], check=False)
 
     @staticmethod
     def isvalid(x, check=True):
@@ -506,7 +506,7 @@ class SE2(SO2):
 
         :seealso: :func:`~spatialmath.base.transform2d.ishom`
         """
-        return not check or base.ishom2(x, check=True)
+        return not check or smbase.ishom2(x, check=True)
 
     @property
     def t(self):
@@ -542,9 +542,9 @@ class SE2(SO2):
         - N>1, return an ndarray with shape=(N,3)
         """
         if len(self) == 1:
-            return base.tr2xyt(self.A)
+            return smbase.tr2xyt(self.A)
         else:
-            return [base.tr2xyt(x) for x in self.A]
+            return [smbase.tr2xyt(x) for x in self.A]
 
     def inv(self):
         r"""
@@ -562,9 +562,9 @@ class SE2(SO2):
 
         """
         if len(self) == 1:
-            return SE2(base.rt2tr(self.R.T, -self.R.T @ self.t), check=False)
+            return SE2(smbase.rt2tr(self.R.T, -self.R.T @ self.t), check=False)
         else:
-            return SE2([base.rt2tr(x.R.T, -x.R.T @ x.t) for x in self], check=False)
+            return SE2([smbase.rt2tr(x.R.T, -x.R.T @ x.t) for x in self], check=False)
 
     def SE3(self, z=0):
         """

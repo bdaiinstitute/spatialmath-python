@@ -6,10 +6,10 @@ Provide list super powers for spatial math objects.
 from __future__ import annotations
 from collections import UserList
 from abc import ABC, abstractproperty, abstractstaticmethod
-import numpy as np
-import spatialmath.base.argcheck as argcheck
-from spatialmath.base.types import *
 import copy
+import numpy as np
+from spatialmath.base.argcheck import isnumberlist, isscalar
+from spatialmath.base.types import *
 
 _numtypes = (int, np.int64, float, np.float64)
 
@@ -207,9 +207,7 @@ class BasePoseList(UserList, ABC):
                 self.data = [x.A for x in arg]
 
             elif (
-                argcheck.isnumberlist(arg)
-                and len(self.shape) == 1
-                and len(arg) == self.shape[0]
+                isnumberlist(arg) and len(self.shape) == 1 and len(arg) == self.shape[0]
             ):
                 self.data = [np.array(arg)]
 
@@ -561,7 +559,7 @@ class BasePoseList(UserList, ABC):
         # class * class
         if len(left) == 1:
             # singleton *
-            if argcheck.isscalar(right):
+            if isscalar(right):
                 if list1:
                     return [op(left._A, right)]
                 else:
@@ -577,7 +575,7 @@ class BasePoseList(UserList, ABC):
                 return [op(left.A, x) for x in right.A]
         else:
             # non-singleton *
-            if argcheck.isscalar(right):
+            if isscalar(right):
                 return [op(x, right) for x in left.A]
             elif len(right) == 1:
                 # non-singleton * singleton
