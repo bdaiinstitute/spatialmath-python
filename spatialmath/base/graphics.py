@@ -546,6 +546,8 @@ try:
         :type radius: float, optional
         :param resolution: number of points on circumferece, defaults to 50
         :type resolution: int, optional
+        :param closed: perimeter is closed, last point == first point, defaults to False
+        :type closed: bool
         :return: points on circumference
         :rtype: ndarray(2,N) or ndarray(3,N)
 
@@ -661,6 +663,8 @@ try:
         :type resolution: int, optional
         :param inverted: if :math:`\mat{E}^{-1}` is provided, defaults to False
         :type inverted: bool, optional
+        :param closed: perimeter is closed, last point == first point, defaults to False
+        :type closed: bool
         :raises ValueError: [description]
         :return: points on circumference
         :rtype: ndarray(2,N)
