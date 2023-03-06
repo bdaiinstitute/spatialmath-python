@@ -198,21 +198,17 @@ real and dual parts as specified.</p></li>
 the rigid-body motion described by the SE3 value <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitDualQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="go">  -0.5151    0.2701   -0.8135   -0.9937    </span>
-<span class="go">  -0.2135    0.8787    0.427     0.3028    </span>
-<span class="go">   0.8301    0.3937   -0.3949    0.9047    </span>
-<span class="go">   0         0         0         1         </span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="go">-0.4921 &lt;&lt;  0.0169,  0.8350,  0.2457 &gt;&gt; + ε -0.2292 &lt; -0.0960,  0.0552, -0.6400 &gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="go">&lt;class &#39;spatialmath.DualQuaternion.UnitDualQuaternion&#39;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">norm</span><span class="p">())</span>  <span class="c1"># norm is (1, 0)</span>
-<span class="go">(1.0, 0.0)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/quaternion.py&quot;, line 1618, in __mul__</span>
+<span class="go">    return right.__class__(left.binop(right, smb.qqmul))</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/quaternion.py&quot;, line 984, in __init__</span>
+<span class="go">    self.data = [smb.qunit(q) for q in self.data]</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/quaternion.py&quot;, line 984, in &lt;listcomp&gt;</span>
+<span class="go">    self.data = [smb.qunit(q) for q in self.data]</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/quaternions.py&quot;, line 134, in qunit</span>
+<span class="go">    q = smb.getvector(q, 4)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 435, in getvector</span>
+<span class="go">    raise TypeError(&quot;invalid input type&quot;)</span>
+<span class="go">TypeError: invalid input type</span>
 </pre></div>
 </div>
 <p>The dual number is stored internally as two quaternion, respectively

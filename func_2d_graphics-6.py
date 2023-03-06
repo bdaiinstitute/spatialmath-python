@@ -1,4 +1,6 @@
-from spatialmath import Ellipse
-from spatialmath.base import plotvol2
-plotvol2(5)
-plot_ellipse(np.array([[1, 1], [1, 2]])), 'b--')  # blue dashed ellipse
+from spatialmath.base import plotvol2, plot_text
+ax = plotvol2(5)
+plot_point((0, 0))
+plot_point((1,1), 'r*')
+plot_point((2,2), 'r*', 'foo')
+ax.grid()

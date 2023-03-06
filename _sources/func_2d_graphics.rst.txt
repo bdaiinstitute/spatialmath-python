@@ -4,4 +4,4 @@
 2d graphical primitives which build on Matplotlib.
 
 .. automodule:: spatialmath.base.graphics
-   :members: plot_point, plot_homline, plot_box, plot_circle, plot_ellipse, plotvol2
+   :members: plot_point, plot_text, plot_homline, plot_box, plot_arrow, plot_circle, plot_ellipse, plot_polygon, plotvol2
