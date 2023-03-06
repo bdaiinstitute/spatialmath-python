@@ -16,7 +16,7 @@ test:
 	pytest
 
 coverage:
-	coverage run --omit='tests/*.py,tests/base/*.py' -m pytest
+	coverage run --source='spatialmath' -m pytest
 	coverage report
 	coverage html
 	open htmlcov/index.html
