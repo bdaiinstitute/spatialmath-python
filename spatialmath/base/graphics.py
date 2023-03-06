@@ -936,9 +936,10 @@ try:
             E = np.linalg.inv(E)
 
         x, y, z = sphere()  # unit sphere
+        centre = smb.getvector(centre, 3, out="col")
         e = (
             scale * sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
-            + np.c_[centre]
+            + centre
         )
         return (
             e[0, :].reshape(x.shape),
