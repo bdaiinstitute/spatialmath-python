@@ -3,7 +3,7 @@
 from spatialmath.pose2d import SO2, SE2
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.baseposematrix import BasePoseMatrix
-from spatialmath.geom2d import Line2, Polygon2
+from spatialmath.geom2d import Line2, LineSegment2, Polygon2, Ellipse
 from spatialmath.geom3d import Line3, Plane3
 from spatialmath.twist import Twist3, Twist2
 from spatialmath.spatialvector import (
@@ -40,7 +40,9 @@ __all__ = [
     "Line3",
     "Plane3",
     "Line2",
+    "LineSegment2",
     "Polygon2",
+    "Ellipse",
 ]
 
 try:

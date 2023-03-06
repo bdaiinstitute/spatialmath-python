@@ -14,6 +14,7 @@ Function reference
    func_vector
    func_graphics
    func_args
+   func_numeric
 
 
 

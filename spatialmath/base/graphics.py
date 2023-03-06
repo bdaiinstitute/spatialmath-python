@@ -59,15 +59,21 @@ try:
         :return: the matplotlib object
         :rtype: list of Text instance
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plotvol2, plot_text
             >>> plotvol2(5)
             >>> plot_text((1,3), 'foo')
             >>> plot_text((2,2), 'bar', 'b')
             >>> plot_text((2,2), 'baz', fontsize=14, horizontalalignment='centre')
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_text
+            plotvol2(5)
+            plot_text((1,3), 'foo')
+            plot_text((2,2), 'bar', 'b')
+            plot_text((2,2), 'baz', fontsize=14, horizontalalignment='centre')
         """
 
         defaults = {"horizontalalignment": "left", "verticalalignment": "center"}
@@ -233,14 +239,19 @@ try:
 
         If ``lines`` is a 3xN array then ``N`` lines are drawn, one per column.
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plotvol2, plot_homline
             >>> plotvol2(5)
             >>> plot_homline((1, -2, 3))
             >>> plot_homline((1, -2, 3), 'k--') # dashed black line
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_homline
+            plotvol2(5)
+            plot_homline((1, -2, 3))
+            plot_homline((1, -2, 3), 'k--') # dashed black line
         """
         ax = axes_logic(ax, 2)
         # get plot limits from current graph
@@ -331,14 +342,19 @@ try:
         For plots where the y-axis is inverted (eg. for images) then top is the
         smaller vertical coordinate.
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plotvol2, plot_box
             >>> plotvol2(5)
             >>> plot_box('r', centre=(2,3), wh=1) # w=h=1
             >>> plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_box
+            plotvol2(5)
+            plot_box('r', centre=(2,3), wh=1) # w=h=1
+            plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
         """
 
         if wh is not None:
@@ -432,13 +448,18 @@ try:
         :type ax: Axes, optional
         :param kwargs: argumetns to pass to :class:`matplotlib.patches.Arrow`
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plotvol2, plot_arrow
             >>> plotvol2(5)
             >>> plot_arrow((-2, 2), (3, 4), color='r', width=0.1)  # red arrow
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_arrow
+            plotvol2(5)
+            plot_arrow((-2, 2), (3, 4), color='r', width=0.1)  # red arrow
+
         """
         ax = axes_logic(ax, 2)
 
@@ -465,14 +486,20 @@ try:
         :return: Matplotlib artist
         :rtype: line or patch
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plotvol2, plot_polygon
             >>> plotvol2(5)
             >>> vertices = np.array([[-1, 2, -1], [1, 0, -1]])
             >>> plot_polygon(vertices, filled=True, facecolor='g')  # green filled triangle
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_polygon
+            plotvol2(5)
+            vertices = np.array([[-1, 2, -1], [1, 0, -1]])
+            plot_polygon(vertices, filled=True, facecolor='g')  # green filled triangle
+
         """
 
         if close:
@@ -567,15 +594,34 @@ try:
         taken as the centre of a circle.  All circles have the same radius, color
         etc.
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plotvol2, plot_circle
             >>> plotvol2(5)
             >>> plot_circle(1, 'r')  # red circle
             >>> plot_circle(2, 'b--')  # blue dashed circle
             >>> plot_circle(0.5, filled=True, facecolor='y')  # yellow filled circle
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_circle
+            plotvol2(5)
+            plot_circle(1, 'r')  # red circle
+
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_circle
+            plotvol2(5)
+            plot_circle(2, 'b--')  # blue dashed circle
+
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_circle
+            plotvol2(5)
+            plot_circle(0.5, filled=True, facecolor='y')  # yellow filled circle
+
         """
         centres = smb.getmatrix(centre, (2, None))
 
@@ -693,14 +739,32 @@ try:
 
         Example:
 
-        .. runblock:: pycon
-
             >>> from spatialmath.base import plotvol2, plot_circle
             >>> plotvol2(5)
-            >>> plot_ellipse(np.diag((1,2)), 'r')  # red ellipse
-            >>> plot_ellipse(np.diag((1,2)), 'b--')  # blue dashed ellipse
-            >>> plot_ellipse(np.diag((1,2)), filled=True, facecolor='y')  # yellow filled ellipse
+            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), 'r')  # red ellipse
+            >>> plot_ellipse(np.array([[1, 1], [1, 2]])), 'b--')  # blue dashed ellipse
+            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), filled=True, facecolor='y')  # yellow filled ellipse
 
+        .. plot::
+
+            from spatialmath import Ellipse
+            from spatialmath.base import plotvol2
+            plotvol2(5)
+            plot_ellipse(np.array([[1, 1], [1, 2]]), 'r')  # red ellipse
+
+        .. plot::
+
+            from spatialmath import Ellipse
+            from spatialmath.base import plotvol2
+            plotvol2(5)
+            plot_ellipse(np.array([[1, 1], [1, 2]])), 'b--')  # blue dashed ellipse
+
+        .. plot::
+
+            from spatialmath import Ellipse
+            from spatialmath.base import plotvol2
+            plotvol2(5)
+            plot_ellipse(np.array([[1, 1], [1, 2]]), filled=True, facecolor='y')  # yellow filled ellipse
         """
         # allow for centre[2] to plot ellipse in a plane in a 3D plot
 
@@ -779,13 +843,27 @@ try:
         taken as the centre of a sphere.  All spheres have the same radius, color
         etc.
 
-        Example:
-
-        .. runblock:: pycon
+        Example::
 
             >>> from spatialmath.base import plot_sphere
-            >>> plot_sphere(radius=1, color='r')   # red sphere wireframe
+            >>> plot_sphere(radius=1, color="r", resolution=10)   # red sphere wireframe
             >>> plot_sphere(radius=1, centre=(1,1,1), filled=True, facecolor='b')
+
+
+        .. plot::
+
+            from spatialmath.base import plot_sphere, plotvol3
+
+            plotvol3(2)
+            plot_sphere(radius=1, color='r', resolution=5)   # red sphere wireframe
+
+        .. plot::
+
+            from spatialmath.base import plot_sphere, plotvol3
+
+            plotvol3(5)
+            plot_sphere(radius=1, centre=(1,1,1), filled=True, facecolor='b')
+
 
         :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
         """
@@ -855,8 +933,8 @@ try:
 
         x, y, z = sphere()  # unit sphere
         e = (
-            s * sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
-            + np.c_[centre].T
+            scale * sqrtm(E) @ np.array([x.flatten(), y.flatten(), z.flatten()])
+            + np.c_[centre]
         )
         return (
             e[0, :].reshape(x.shape),
@@ -865,7 +943,7 @@ try:
         )
 
     def plot_ellipsoid(
-        E: R2x2,
+        E: R3x3,
         centre: Optional[ArrayLike3] = (0, 0, 0),
         scale: Optional[float] = 1,
         confidence: Optional[float] = None,
@@ -896,16 +974,20 @@ try:
         :param stride: [description], defaults to 1
         :type stride: int, optional
 
-        ``plot_ellipse(E)`` draws the ellipsoid defined by :math:`x^T \mat{E} x = 0`
+        ``plot_ellipsoid(E)`` draws the ellipsoid defined by :math:`x^T \mat{E} x = 0`
         on the current plot.
 
         Example::
 
-            H = plot_ellipse(diag([1 2]), [3 4]', 'r'); % draw red ellipse
-            plot_ellipse(diag([1 2]), [5 6]', 'alter', H); % move the ellipse
-            plot_ellipse(diag([1 2]), [5 6]', 'alter', H, 'LineColor', 'k'); % change color
+            >>> plot_ellipsoid(np.diag([1, 2, 3]), [1, 1, 0], color="r", resolution=10); # draw red ellipsoid
 
-            plot_ellipse(COVAR, 'confidence', 0.95); % draw 95% confidence ellipse
+        .. plot::
+
+            from spatialmath.base import plot_ellipsoid, plotvol3
+            import numpy as np
+
+            plotvol3(4)
+            plot_ellipsoid(np.diag([1, 2, 3]), [1, 1, 0], color="r", resolution=5); # draw red ellipsoid
 
         .. note::
 
@@ -979,7 +1061,7 @@ try:
         :type height: float or array_like(2)
         :param resolution: number of points on circumference, defaults to 50
         :param centre: position of centre
-        :param pose: pose of sphere, defaults to None
+        :param pose: pose of cylinder, defaults to None
         :type pose: SE3, optional
         :param ax: axes to draw into, defaults to None
         :type ax: Axes3D, optional
@@ -995,6 +1077,18 @@ try:
 
         The cylinder can be positioned by setting ``centre``, or positioned
         and orientated by setting ``pose``.
+
+        Example::
+
+            >>> plot_cylinder(radius=1, height=(1,3))
+
+        .. plot::
+
+            from spatialmath.base import plot_cylinder, plotvol3
+
+            plotvol3(5)
+            plot_cylinder(radius=1, height=(1,3))
+
 
         :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
         """
@@ -1065,6 +1159,17 @@ try:
         The cylinder can be positioned by setting ``centre``, or positioned
         and orientated by setting ``pose``.
 
+        Example::
+
+            >>> plot_cone(radius=1, height=2)
+
+        .. plot::
+
+            from spatialmath.base import plot_cone, plotvol3
+
+            plotvol3(5)
+            plot_cone(radius=1, height=2)
+
         :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
         """
         ax = axes_logic(ax, 3)
@@ -1125,6 +1230,17 @@ try:
 
         :return: matplotlib collection
         :rtype: Line3DCollection or Poly3DCollection
+
+        Example::
+
+            >>> plot_cone(radius=1, height=2)
+
+        .. plot::
+
+            from spatialmath.base import plot_cuboid, plotvol3
+
+            plotvol3(5)
+            plot_cuboid(sides=(3,2,1), centre=(0,1,2))
 
         :seealso: :func:`~matplotlib.pyplot.plot_surface`, :func:`~matplotlib.pyplot.plot_wireframe`
         """

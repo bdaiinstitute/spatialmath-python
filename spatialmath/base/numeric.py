@@ -38,12 +38,20 @@ def numjac(
     If ``SO`` is 2 or 3, then it is assumed that the function returns
     an SO(N) matrix and the derivative is converted to a column vector
 
-    .. math:
+    .. math::
 
-        \vex \dmat{R} \mat{R}^T
+        \vex{\dmat{R} \mat{R}^T}
 
     If ``SE`` is 2 or 3, then it is assumed that the function returns
     an SE(N) matrix and the derivative is converted to a colun vector.
+
+    Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath.base import rotx, numjac
+            >>> numjac(rotx, [0])
+            >>> numjac(rotx, [0], SO=3)
 
     """
     x = np.array(x)
@@ -99,7 +107,6 @@ def numhess(J: Callable, x: NDArray, dx: float = 1e-8):
     Hcol = []
     J0 = J(x)
     for i in range(len(x)):
-
         Ji = J(x + I[:, i] * dx)
         Hi = (Ji - J0) / dx
 
@@ -138,9 +145,12 @@ def array2str(
 
     Converts a small array to a compact single line representation.
 
+    Example:
 
     .. runblock:: pycon
 
+        >>> from spatialmath.base import array2str
+        >>> import numpy as np
         >>> array2str(np.random.rand(2,2))
         >>> array2str(np.random.rand(2,2), rowsep="; ")  # MATLAB-like
         >>> array2str(np.random.rand(3,))
@@ -178,6 +188,7 @@ def array2str(
         s = brackets[0] + s + brackets[1]
     return s
 
+
 def str2array(s: str) -> NDArray:
     """
     Convert compact single line string to array
@@ -192,9 +203,11 @@ def str2array(s: str) -> NDArray:
     A 2D array is delimited by square brackets, elements are separated by a comma,
     and rows are separated by a semicolon.  Extra white spaces are ignored.
 
+    Example:
 
     .. runblock:: pycon
 
+        >>> from spatialmath.base import str2array
         >>> str2array("5")
         >>> str2array("[1 2 3]")
         >>> str2array("[1 2; 3 4]")
@@ -211,6 +224,7 @@ def str2array(s: str) -> NDArray:
         values.append([float(x) for x in re.split("[, ]+", row.strip())])
     return np.array(values)
 
+
 def bresenham(p0: ArrayLike2, p1: ArrayLike2) -> Tuple[NDArray, NDArray]:
     """
     Line drawing in a grid
@@ -225,7 +239,28 @@ def bresenham(p0: ArrayLike2, p1: ArrayLike2) -> Tuple[NDArray, NDArray]:
     Return x and y coordinate vectors for points in a grid that lie on
     a line from ``p0`` to ``p1`` inclusive.
 
-    The end points, and all points along the line are integers.
+    * The end points, and all points along the line are integers.
+    * Points are always adjacent, but the slope from point to point is not constant.
+
+
+    Example:
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import bresenham
+        >>> bresenham((2, 4), (10, 10))
+
+    .. plot::
+
+        from spatialmath.base import bresenham
+        import matplotlib.pyplot as plt
+        p = bresenham((2, 4), (10, 10))
+        plt.plot((2, 10), (4, 10))
+        plt.plot(p[0], p[1], 'ok')
+        plt.plot(p[0], p[1], 'k', drawstyle='steps-post')
+        ax = plt.gca()
+        ax.grid()
+
 
     .. note:: The API is similar to the Bresenham algorithm but this
         implementation uses NumPy vectorised arithmetic which makes it
@@ -292,12 +327,13 @@ def mpq_point(data: Points2, p: int, q: int) -> float:
 
     .. runblock:: pycon
 
-        >>> from spatialmath import Polygon2
-        >>> p = Polygon2([[1, 3, 2], [2, 2, 4]])
-        >>> p.moment(0, 0)  # area
-        >>> p.moment(3, 0)
+        >>> from spatialmath.base import mpq_point
+        >>> import numpy as np
+        >>> p = np.array([[1, 3, 2], [2, 2, 4]])
+        >>> mpq_point(p, 0, 0)  # area
+        >>> mpq_point(p, 3, 0)
 
-    Note is negative for clockwise perimeter.
+    .. note:: is negative for clockwise perimeter.
     """
     x = data[0, :]
     y = data[1, :]
@@ -317,6 +353,20 @@ def gauss1d(mu: float, var: float, x: ArrayLike):
     :type x: array_like(n)
     :return: Gaussian :math:`G(x)`
     :rtype: ndarray(n)
+
+    Example::
+
+        >>> g = gauss1d(5, 2, np.linspace(0, 10, 100))
+
+    .. plot::
+
+        from spatialmath.base import gauss1d
+        import matplotlib.pyplot as plt
+        import numpy as np
+        x = np.linspace(0, 10, 100)
+        g = gauss1d(5, 2, x)
+        plt.plot(x, g)
+        plt.grid()
 
     :seealso: :func:`gauss2d`
     """
@@ -347,6 +397,25 @@ def gauss2d(mu: ArrayLike2, P: NDArray, X: NDArray, Y: NDArray) -> NDArray:
 
     Computed :math:`g_{i,j} = G(x_{i,j}, y_{i,j})`
 
+    Example (RVC3 Fig G.2)::
+
+        >>> a = np.linspace(-5, 5, 100)
+        >>> X, Y = np.meshgrid(a, a)
+        >>> P = np.diag([1, 2])**2;
+        >>> g = gauss2d(X, Y, [0, 0], P)
+
+    .. plot::
+
+        from spatialmath.base import gauss2d, plotvol3
+        import matplotlib.pyplot as plt
+        import numpy as np
+        a = np.linspace(-5, 5, 100)
+        x, y = np.meshgrid(a, a)
+        P = np.diag([1, 2])**2;
+        g = gauss2d([0, 0], P, x, y)
+        ax = plotvol3()
+        ax.plot_surface(x, y, g)
+
     :seealso: :func:`gauss1d`
     """
 
@@ -363,7 +432,6 @@ def gauss2d(mu: ArrayLike2, P: NDArray, X: NDArray, Y: NDArray) -> NDArray:
 
 
 if __name__ == "__main__":
-
     r = np.linspace(-4, 4, 6)
     x, y = np.meshgrid(r, r)
     print(gauss2d([0, 0], np.diag([1, 2]), x, y))

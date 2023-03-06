@@ -99,4 +99,6 @@ Geometry in 2D
    :maxdepth: 2
 
    2d_line
+   2d_linesegment
    2d_polygon
+   2d_ellipse
