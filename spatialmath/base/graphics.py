@@ -64,16 +64,19 @@ try:
             >>> from spatialmath.base import plotvol2, plot_text
             >>> plotvol2(5)
             >>> plot_text((1,3), 'foo')
-            >>> plot_text((2,2), 'bar', 'b')
+            >>> plot_text((2,2), 'bar', color='b')
             >>> plot_text((2,2), 'baz', fontsize=14, horizontalalignment='centre')
 
         .. plot::
 
             from spatialmath.base import plotvol2, plot_text
-            plotvol2(5)
-            plot_text((1,3), 'foo')
-            plot_text((2,2), 'bar', 'b')
-            plot_text((2,2), 'baz', fontsize=14, horizontalalignment='centre')
+            ax = plotvol2(5)
+            plot_text((0,0), 'foo')
+            plot_text((1,1), 'bar', color='b')
+            plot_text((2,2), 'baz', fontsize=14, horizontalalignment='center')
+            ax.grid()
+
+        :seealso: :func:`plot_point`
         """
 
         defaults = {"horizontalalignment": "left", "verticalalignment": "center"}
@@ -134,21 +137,62 @@ try:
             will label each point with its index (argument 0) and consecutive
             elements of ``a`` and ``b`` which are arguments 1 and 2 respectively.
 
-        Examples:
+        Example::
 
-        - ``plot_point((1,2))`` plot default marker at coordinate (1,2)
-        - ``plot_point((1,2), 'r*')`` plot red star at coordinate (1,2)
-        - ``plot_point((1,2), 'r*', 'foo')`` plot red star at coordinate (1,2) and
+            >>> from spatialmath.base import plotvol2, plot_text
+            >>> plotvol2(5)
+            >>> plot_point((0, 0))        # plot default marker at coordinate (1,2)
+            >>> plot_point((1,1), 'r*')  # plot red star at coordinate (1,2)
+            >>> plot_point((2,2), 'r*', 'foo')  # plot red star at coordinate (1,2) and
         label it as 'foo'
-        - ``plot_point(p, 'r*')`` plot red star at points defined by columns of
-        ``p``.
-        - ``plot_point(p, 'r*', 'foo')`` plot red star at points defined by columns
-        of ``p`` and label them all as 'foo'
-        - ``plot_point(p, 'r*', '{0}')`` plot red star at points defined by columns
-        of ``p`` and label them sequentially from 0
-        - ``plot_point(p, 'r*', ('{1:.1f}', z))`` plot red star at points defined by
-        columns of ``p`` and label them all with successive elements of ``z``.
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_text
+            ax = plotvol2(5)
+            plot_point((0, 0))
+            plot_point((1,1), 'r*')
+            plot_point((2,2), 'r*', 'foo')
+            ax.grid()
+
+        Plot red star at points defined by columns of ``p`` and label them sequentially
+        from 0::
+
+            >>> p = np.random.uniform(size=(2,10), low=-5, high=5)
+            >>> plotvol2(5)
+            >>> plot_point(p, 'r*', '{0}')
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_point
+            import numpy as np
+            p = np.random.uniform(size=(2,10), low=-5, high=5)
+            ax = plotvol2(5)
+            plot_point(p, 'r*', '{0}')
+            ax.grid()
+
+        Plot red star at points defined by columns of ``p`` and label them all with
+        successive elements of ``z``
+
+            >>> p = np.random.uniform(size=(2,10), low=-5, high=5)
+            >>> value = np.random.uniform(size=(1,10))
+            >>> plotvol2(5)
+            >>> plot_point(p, 'r*', ('{1:.2f}', value))
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_point
+            import numpy as np
+            p = np.random.uniform(size=(2,10), low=-5, high=5)
+            value = np.random.uniform(size=(10,))
+            ax = plotvol2(5)
+            plot_point(p, 'r*', ('{1:.2f}', value))
+            ax.grid()
+
+        :seealso: :func:`plot_text`
         """
+
+        defaults = {"horizontalalignment": "left", "verticalalignment": "center"}
 
         if isinstance(pos, np.ndarray):
             if pos.ndim == 1:
@@ -201,12 +245,16 @@ try:
                 for i, (x, y) in enumerate(xy):
                     handles.append(ax.text(x, y, " " + text.format(i), **textopts))
             elif isinstance(text, (tuple, list)):
+                (
+                    fmt,
+                    *values,
+                ) = text  # unpack (fmt, values...)  values is iterable, one per point
                 for i, (x, y) in enumerate(xy):
                     handles.append(
                         ax.text(
                             x,
                             y,
-                            " " + text[0].format(i, *[d[i] for d in text[1:]]),
+                            " " + fmt.format(i, *[d[i] for d in values]),
                             **textopts,
                         )
                     )
@@ -249,9 +297,12 @@ try:
         .. plot::
 
             from spatialmath.base import plotvol2, plot_homline
-            plotvol2(5)
+            ax = plotvol2(5)
             plot_homline((1, -2, 3))
             plot_homline((1, -2, 3), 'k--') # dashed black line
+            ax.grid()
+
+        :seealso: :func:`plot_arrow`
         """
         ax = axes_logic(ax, 2)
         # get plot limits from current graph
@@ -297,14 +348,14 @@ try:
         """
         Plot a 2D box using matplotlib
 
-        :param bl: bottom-left corner, defaults to None
-        :type bl: array_like(2), optional
-        :param tl: top-left corner, defaults to None
-        :type tl: array_like(2), optional
-        :param br: bottom-right corner, defaults to None
-        :type br: array_like(2), optional
-        :param tr: top-right corner, defaults to None
-        :type tr: array_like(2), optional
+        :param lb: left-bottom corner, defaults to None
+        :type lb: array_like(2), optional
+        :param lt: left-top corner, defaults to None
+        :type lt: array_like(2), optional
+        :param rb: right-bottom corner, defaults to None
+        :type rb: array_like(2), optional
+        :param rt: right-top corner, defaults to None
+        :type rt: array_like(2), optional
         :param wh: width and height, if both are the same provide scalar, defaults to None
         :type wh: scalar, array_like(2), optional
         :param centre: centre of box, defaults to None
@@ -326,35 +377,34 @@ try:
         :param thickness: line thickness, defaults to None
         :type thickness: float, optional
         :return: the matplotlib object
-        :rtype: list of Line2D or Patch.Rectangle instance
+        :rtype: Patch.Rectangle instance
 
         The box can be specified in many ways:
 
-        - bounding box which is a 2x2 matrix [xmin, xmax, ymin, ymax]
         - bounding box [xmin, xmax, ymin, ymax]
         - alternative box [xmin, ymin, xmax, ymax]
         - centre and width+height
-        - bottom-left and top-right corners
-        - bottom-left corner and width+height
-        - top-right corner and width+height
-        - top-left corner and width+height
+        - left-bottom and right-top corners
+        - left-bottom corner and width+height
+        - right-top corner and width+height
+        - left-top corner and width+height
 
         For plots where the y-axis is inverted (eg. for images) then top is the
         smaller vertical coordinate.
 
         Example::
 
-            >>> from spatialmath.base import plotvol2, plot_box
             >>> plotvol2(5)
-            >>> plot_box('r', centre=(2,3), wh=1) # w=h=1
-            >>> plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
+            >>> plot_box("b--", centre=(2, 3), wh=1)  # w=h=1
+            >>> plot_box(lt=(0, 0), rb=(3, -2), filled=True, color="r")
 
         .. plot::
 
             from spatialmath.base import plotvol2, plot_box
-            plotvol2(5)
-            plot_box('r', centre=(2,3), wh=1) # w=h=1
-            plot_box(tl=(1,1), br=(0,2), filled=True, color='b')
+            ax = plotvol2(5)
+            plot_box("b--", centre=(2, 3), wh=1)  # w=h=1
+            plot_box(lt=(0, 0), rb=(3, -2), filled=True, hatch="/", edgecolor="k", color="r")
+            ax.grid()
         """
 
         if wh is not None:
@@ -423,13 +473,28 @@ try:
 
         # we only need lb, wh
         ax = axes_logic(ax, 2)
+
         if filled:
-            r = plt.Rectangle(lb, w, h, clip_on=True, **kwargs)
+            r = plt.Rectangle(lb, w, h, fill=True, clip_on=True, **kwargs)
         else:
+            if len(fmt) > 0:
+                colors = "rgbcmywk"
+                ec = None
+                ls = ""
+                for f in fmt[0]:
+                    if f in colors:
+                        ec = f
+                    else:
+                        ls += f
+                if ls == "":
+                    ls = None
+
             if "color" in kwargs:
-                kwargs["edgecolor"] = kwargs["color"]
+                ec = kwargs["color"]
                 del kwargs["color"]
-            r = plt.Rectangle(lb, w, h, clip_on=True, facecolor="None", **kwargs)
+            r = plt.Rectangle(
+                lb, w, h, clip_on=True, linestyle=ls, edgecolor=ec, fill=False, **kwargs
+            )
         ax.add_patch(r)
 
         return r
@@ -457,9 +522,11 @@ try:
         .. plot::
 
             from spatialmath.base import plotvol2, plot_arrow
-            plotvol2(5)
+            ax = plotvol2(5)
             plot_arrow((-2, 2), (3, 4), color='r', width=0.1)  # red arrow
+            ax.grid()
 
+        :seealso: :func:`plot_homline`
         """
         ax = axes_logic(ax, 2)
 
@@ -496,10 +563,10 @@ try:
         .. plot::
 
             from spatialmath.base import plotvol2, plot_polygon
-            plotvol2(5)
+            ax = plotvol2(5)
             vertices = np.array([[-1, 2, -1], [1, 0, -1]])
             plot_polygon(vertices, filled=True, facecolor='g')  # green filled triangle
-
+            ax.grid()
         """
 
         if close:
@@ -600,30 +667,18 @@ try:
 
             >>> from spatialmath.base import plotvol2, plot_circle
             >>> plotvol2(5)
-            >>> plot_circle(1, 'r')  # red circle
-            >>> plot_circle(2, 'b--')  # blue dashed circle
-            >>> plot_circle(0.5, filled=True, facecolor='y')  # yellow filled circle
+            >>> plot_circle(1, (0,0), 'r')  # red circle
+            >>> plot_circle(2, (1, 2), 'b--')  # blue dashed circle
+            >>> plot_circle(0.5, (3,4), filled=True, facecolor='y')  # yellow filled circle
 
         .. plot::
 
             from spatialmath.base import plotvol2, plot_circle
-            plotvol2(5)
-            plot_circle(1, 'r')  # red circle
-
-
-        .. plot::
-
-            from spatialmath.base import plotvol2, plot_circle
-            plotvol2(5)
-            plot_circle(2, 'b--')  # blue dashed circle
-
-
-        .. plot::
-
-            from spatialmath.base import plotvol2, plot_circle
-            plotvol2(5)
-            plot_circle(0.5, filled=True, facecolor='y')  # yellow filled circle
-
+            ax = plotvol2(5)
+            plot_circle(1, (0,0), 'r')  # red circle
+            plot_circle(2, (1, 2), 'b--')  # blue dashed circle
+            plot_circle(0.5, (3,4), filled=True, facecolor='y')  # yellow filled circle
+            ax.grid()
         """
         centres = smb.getmatrix(centre, (2, None))
 
@@ -703,8 +758,8 @@ try:
 
     def plot_ellipse(
         E: R2x2,
+        centre: ArrayLike2,
         *fmt: Optional[str],
-        centre: Optional[ArrayLike2] = (0, 0),
         scale: Optional[float] = 1,
         confidence: Optional[float] = None,
         resolution: Optional[int] = 40,
@@ -743,32 +798,20 @@ try:
 
         Example:
 
-            >>> from spatialmath.base import plotvol2, plot_circle
+            >>> from spatialmath.base import plotvol2, plot_ellipse
             >>> plotvol2(5)
-            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), 'r')  # red ellipse
-            >>> plot_ellipse(np.array([[1, 1], [1, 2]])), 'b--')  # blue dashed ellipse
-            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), filled=True, facecolor='y')  # yellow filled ellipse
+            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), [0,0], 'r')  # red ellipse
+            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), [1, 2], 'b--')  # blue dashed ellipse
+            >>> plot_ellipse(np.array([[1, 1], [1, 2]]), [-2, -1], filled=True, facecolor='y')  # yellow filled ellipse
 
         .. plot::
 
-            from spatialmath import Ellipse
-            from spatialmath.base import plotvol2
-            plotvol2(5)
-            plot_ellipse(np.array([[1, 1], [1, 2]]), 'r')  # red ellipse
-
-        .. plot::
-
-            from spatialmath import Ellipse
-            from spatialmath.base import plotvol2
-            plotvol2(5)
-            plot_ellipse(np.array([[1, 1], [1, 2]])), 'b--')  # blue dashed ellipse
-
-        .. plot::
-
-            from spatialmath import Ellipse
-            from spatialmath.base import plotvol2
-            plotvol2(5)
-            plot_ellipse(np.array([[1, 1], [1, 2]]), filled=True, facecolor='y')  # yellow filled ellipse
+            from spatialmath.base import plotvol2, plot_ellipse
+            ax = plotvol2(5)
+            plot_ellipse(np.array([[1, 1], [1, 2]]), [0,0], 'r')  # red ellipse
+            plot_ellipse(np.array([[1, 1], [1, 2]]), [1, 2], 'b--')  # blue dashed ellipse
+            plot_ellipse(np.array([[1, 1], [1, 2]]), [-2, -1], filled=True, facecolor='y')  # yellow filled ellipse
+            ax.grid()
         """
         # allow for centre[2] to plot ellipse in a plane in a 3D plot
 
