@@ -34,7 +34,7 @@
               <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.0.5
+                1.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -96,7 +96,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Type</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">smb</span>
 <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SO3</span><span class="p">,</span> <span class="n">SE3</span>
 <span class="kn">from</span> <span class="nn">spatialmath.baseposelist</span> <span class="kn">import</span> <span class="n">BasePoseList</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
@@ -160,12 +160,12 @@
             <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                 <span class="k">return</span>
 
-            <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
 
-        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="c1"># Quaternion(s, v)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)]]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)]]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad argument to Quaternion constructor&quot;</span><span class="p">)</span></div>
@@ -189,7 +189,7 @@
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Quaternion</span>
 <span class="sd">            &gt;&gt;&gt; print(Quaternion.Pure([1,2,3]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_identity</span><span class="p">():</span>
@@ -364,7 +364,7 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qmatrix`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">qmatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">qmatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Quaternion.conj"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.conj">[docs]</a>    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -385,7 +385,7 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qconj`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qconj</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qconj</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="Quaternion.norm"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.norm">[docs]</a>    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -408,9 +408,9 @@
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qnorm`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">qnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">qnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qnorm</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qnorm</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="Quaternion.unit"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.unit">[docs]</a>    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitQuaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -436,7 +436,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qnorm`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">UnitQuaternion</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">],</span> <span class="n">norm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">UnitQuaternion</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">],</span> <span class="n">norm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Quaternion.log"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -471,7 +471,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">/</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">/</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="n">smb</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Quaternion.exp"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
@@ -508,7 +508,7 @@
 <span class="sd">        :seealso: :meth:`Quaternion.log` :meth:`UnitQuaternion.log` :meth:`UnitQuaternion.AngVec` :meth:`UnitQuaternion.EulerVec`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">exp_s</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
-        <span class="n">norm_v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">norm_v</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">exp_s</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">norm_v</span><span class="p">)</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">exp_s</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">/</span> <span class="n">norm_v</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">norm_v</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
@@ -541,7 +541,7 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
             <span class="n">other</span><span class="p">,</span> <span class="n">Quaternion</span>
         <span class="p">),</span> <span class="s2">&quot;operands to inner must be Quaternion subclass&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">qinner</span><span class="p">,</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">qinner</span><span class="p">,</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
     <span class="c1"># -------------------------------------------- operators</span>
 
@@ -571,7 +571,7 @@
 <span class="sd">        :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">)),</span> <span class="s2">&quot;operands to == are of different types&quot;</span>
-        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">qisequal</span><span class="p">,</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">qisequal</span><span class="p">,</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Quaternion.__ne__"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Quaternion</span>
@@ -598,7 +598,7 @@
 <span class="sd">        :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">)),</span> <span class="s2">&quot;operands to == are of different types&quot;</span>
-        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">qisequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">not</span> <span class="n">smb</span><span class="o">.</span><span class="n">qisequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Quaternion.__mul__"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Quaternion</span>
@@ -653,9 +653,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="c1"># quaternion * [unit]quaternion case</span>
-            <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">qqmul</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">qqmul</span><span class="p">))</span>
 
-        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
             <span class="c1"># quaternion * scalar case</span>
             <span class="c1"># print(&#39;scalar * quat&#39;)</span>
             <span class="k">return</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">right</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_A</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">left</span><span class="p">])</span>
@@ -736,7 +736,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qpow`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qpow</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qpow</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
     <span class="k">def</span> <span class="fm">__ipow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -970,7 +970,7 @@
             <span class="n">delim</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&lt;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">delim</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="n">delim</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="n">delim</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
 
 
 <span class="c1"># ========================================================================= #</span>
@@ -1059,7 +1059,7 @@
             <span class="c1"># single argument</span>
             <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">arghandler</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
                 <span class="c1"># create unit quaternion</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
 
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
                 <span class="c1"># passed a NumPy array, it could be:</span>
@@ -1067,38 +1067,38 @@
                 <span class="c1">#  a quaternion as a 1D array</span>
                 <span class="c1">#  an array of quaternions as an nx4 array</span>
 
-                <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
                     <span class="c1"># UnitQuaternion(R) R is 3x3 rotation matrix</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
                 <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,):</span>
                     <span class="c1"># passed a 4-vector</span>
                     <span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># self.data = [base.qpositive(x) for x in s]</span>
+                        <span class="c1"># self.data = [smb.qpositive(x) for x in s]</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
 
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SO3</span><span class="p">):</span>
                 <span class="c1"># UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">R</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">R</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
 
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">SO3</span><span class="p">):</span>
                 <span class="c1"># list of SO3 or SE3</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">R</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">R</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad argument to UnitQuaternion constructor&quot;</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="c1"># UnitQuaternion(s, v)   s is scalar, v is 3-vector</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -1106,7 +1106,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_identity</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">qeye</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">qeye</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UnitQuaternion.isvalid"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1129,7 +1129,7 @@
 <span class="sd">            &gt;&gt;&gt; UnitQuaternion.isvalid(np.r_[1, 0, 0, 0])</span>
 <span class="sd">            &gt;&gt;&gt; UnitQuaternion.isvalid(np.r_[1, 2, 3, 4])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">base</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">smb</span><span class="o">.</span><span class="n">isunitvec</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">R</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
@@ -1159,9 +1159,9 @@
 <span class="sd">            rotation matrix is ``x(:,:,i)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vec3</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
@@ -1192,7 +1192,7 @@
 
 <span class="sd">        :seealso: :meth:`UnitQuaternion.Vec3`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">q2v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">q2v</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span>
 
     <span class="c1"># -------------------------------------------- constructor variants</span>
 <div class="viewcode-block" id="UnitQuaternion.Rx"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.Rx">[docs]</a>    <span class="nd">@classmethod</span>
@@ -1220,7 +1220,7 @@
 <span class="sd">            &gt;&gt;&gt; print(UQ.Rx(0.3))</span>
 <span class="sd">            &gt;&gt;&gt; print(UQ.Rx([0, 0.3, 0.6]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
@@ -1250,7 +1250,7 @@
 <span class="sd">            &gt;&gt;&gt; print(UQ.Ry(0.3))</span>
 <span class="sd">            &gt;&gt;&gt; print(UQ.Ry([0, 0.3, 0.6]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
@@ -1280,7 +1280,7 @@
 <span class="sd">            &gt;&gt;&gt; print(UQ.Rz(0.3))</span>
 <span class="sd">            &gt;&gt;&gt; print(UQ.Rz([0, 0.3, 0.6]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
@@ -1309,7 +1309,7 @@
 
 <span class="sd">        :seealso: :meth:`UnitQuaternion.Rand`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qrand</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qrand</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.Eul"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.Eul">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitQuaternion</span><span class="p">:</span>
@@ -1343,7 +1343,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">eul2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">eul2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.RPY"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.RPY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span>
@@ -1398,7 +1398,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">rpy2r</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.OA"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.OA">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">OA</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">o</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitQuaternion</span><span class="p">:</span>
@@ -1433,7 +1433,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.oa2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">oa2r</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">oa2r</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.AngVec"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.AngVec">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">AngVec</span><span class="p">(</span>
@@ -1467,9 +1467,9 @@
 
 <span class="sd">        :seealso: :meth:`UnitQuaternion.angvec` :meth:`UnitQuaternion.exp` :func:`~spatialmath.base.transforms3d.angvec2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">s</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">v</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
@@ -1500,11 +1500,11 @@
 
 <span class="sd">        :seealso: :meth:`SE3.angvec` :func:`~spatialmath.base.transforms3d.angvec2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;w must be a 3-vector&quot;</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;w must be a 3-vector&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">smb</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.Vec3"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.Vec3">[docs]</a>    <span class="nd">@classmethod</span>
@@ -1536,7 +1536,7 @@
 
 <span class="sd">        :seealso: :meth:`UnitQuaternion.vec3`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">v2q</span><span class="p">(</span><span class="n">vec</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">v2q</span><span class="p">(</span><span class="n">vec</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.inv"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.inv">[docs]</a>    <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitQuaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1559,7 +1559,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qinv`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">UnitQuaternion</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qconj</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">UnitQuaternion</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qconj</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">_A</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.qvmul"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.qvmul">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">qvmul</span><span class="p">(</span><span class="n">qv1</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">qv2</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
@@ -1591,7 +1591,7 @@
 
 <span class="sd">        :seealso: :meth:`UnitQuaternion.vec3` :meth:`UnitQuaternion.Vec3`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">vvmul</span><span class="p">(</span><span class="n">qv1</span><span class="p">,</span> <span class="n">qv2</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">vvmul</span><span class="p">(</span><span class="n">qv1</span><span class="p">,</span> <span class="n">qv2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.dot"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.dot">[docs]</a>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R4</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1608,7 +1608,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qdot`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">qdot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">omega</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">qdot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">omega</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.dotb"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.dotb">[docs]</a>    <span class="k">def</span> <span class="nf">dotb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R4</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1625,7 +1625,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.quaternions.qdotb`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">qdotb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">omega</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">qdotb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">omega</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.__mul__"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">UnitQuaternion</span>
@@ -1693,9 +1693,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="c1"># quaternion * quaternion case (same class)</span>
-            <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">qqmul</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">qqmul</span><span class="p">))</span>
 
-        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
             <span class="c1"># quaternion * scalar case</span>
             <span class="c1"># print(&#39;scalar * quat&#39;)</span>
             <span class="k">return</span> <span class="n">Quaternion</span><span class="p">([</span><span class="n">right</span> <span class="o">*</span> <span class="n">q</span><span class="o">.</span><span class="n">_A</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">left</span><span class="p">])</span>
@@ -1703,23 +1703,23 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="c1"># unit quaternion * vector</span>
             <span class="c1"># print(&#39;*: pose x array&#39;)</span>
-            <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="n">v</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="c1"># pose x vector</span>
                     <span class="c1"># print(&#39;*: pose x vector&#39;)</span>
-                    <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">qvmul</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">qvmul</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                     <span class="c1"># pose array x vector</span>
                     <span class="c1"># print(&#39;*: pose array x vector&#39;)</span>
-                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qvmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qvmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 
             <span class="k">elif</span> <span class="p">(</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span>
             <span class="p">):</span>
                 <span class="c1"># pose x stack of vectors</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">qvmul</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">right</span><span class="o">.</span><span class="n">T</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">qvmul</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">right</span><span class="o">.</span><span class="n">T</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad operands&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1806,9 +1806,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">UnitQuaternion</span><span class="p">(</span>
-                <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">qconj</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+                <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">smb</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">smb</span><span class="o">.</span><span class="n">qconj</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">base</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bad operands&quot;</span><span class="p">)</span></div>
@@ -1841,7 +1841,7 @@
 <span class="sd">        :seealso: :func:`__ne__` :func:`~spatialmath.base.quaternions.qisequal`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span>
-            <span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">qisequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span>
+            <span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">smb</span><span class="o">.</span><span class="n">qisequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.__ne__"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span>
@@ -1872,7 +1872,7 @@
 <span class="sd">        :seealso: :func:`__eq__` :func:`~spatialmath.base.quaternions.qisequal`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span>
-            <span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">qisequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span>
+            <span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="ow">not</span> <span class="n">smb</span><span class="o">.</span><span class="n">qisequal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unitq</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">list1</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__matmul__</span><span class="p">(</span>
@@ -1893,7 +1893,7 @@
 <span class="sd">            over many cycles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
-            <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
+            <span class="n">left</span><span class="o">.</span><span class="n">binop</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="UnitQuaternion.interp"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.interp">[docs]</a>    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span>
@@ -1943,7 +1943,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># enforce valid values</span>
 
         <span class="c1"># 2 quaternion form</span>
@@ -1951,7 +1951,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;end argument must be a UnitQuaternion&quot;</span><span class="p">)</span>
         <span class="n">q1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec</span>
         <span class="n">q2</span> <span class="o">=</span> <span class="n">end</span><span class="o">.</span><span class="n">vec</span>
-        <span class="n">dot</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">qinner</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+        <span class="n">dot</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qinner</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 
         <span class="c1"># If the dot product is negative, the quaternions</span>
         <span class="c1"># have opposite handed-ness and slerp won&#39;t take</span>
@@ -2019,7 +2019,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># enforce valid values</span>
 
         <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec</span>
@@ -2063,7 +2063,7 @@
 
         <span class="c1"># is (v, theta) or None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">v</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+            <span class="n">v</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">unitvec_norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="c1"># zero update</span>
             <span class="k">return</span>
@@ -2071,9 +2071,9 @@
         <span class="n">ds</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">dv</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span>
 
-        <span class="n">updated</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ds</span><span class="p">,</span> <span class="n">dv</span><span class="p">])</span>
+        <span class="n">updated</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qqmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ds</span><span class="p">,</span> <span class="n">dv</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-            <span class="n">updated</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">updated</span><span class="p">)</span>
+            <span class="n">updated</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">qunit</span><span class="p">(</span><span class="n">updated</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">updated</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.plot"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2092,7 +2092,7 @@
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.transforms3d.trplot`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">smb</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.animate"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.animate">[docs]</a>    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2118,9 +2118,9 @@
 <span class="sd">        :see :func:`~spatialmath.base.transforms3d.tranimate` :func:`~spatialmath.base.transforms3d.trplot`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">base</span><span class="o">.</span><span class="n">tranimate</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">smb</span><span class="o">.</span><span class="n">tranimate</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">base</span><span class="o">.</span><span class="n">tranimate</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+            <span class="n">smb</span><span class="o">.</span><span class="n">tranimate</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">q2r</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.rpy"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.rpy">[docs]</a>    <span class="k">def</span> <span class="nf">rpy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span>
@@ -2165,9 +2165,9 @@
 <span class="sd">        :seealso: :meth:`SE3.RPY` :func:`~spatialmath.base.transforms3d.tr2rpy`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">tr2rpy</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.eul"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.eul">[docs]</a>    <span class="k">def</span> <span class="nf">eul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">R3</span><span class="p">,</span> <span class="n">RNx3</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2201,9 +2201,9 @@
 <span class="sd">        :seealso: :meth:`SE3.Eul` :func:`~spatialmath.base.transforms3d.tr2eul`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">base</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">tr2eul</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="UnitQuaternion.angvec"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.angvec">[docs]</a>    <span class="k">def</span> <span class="nf">angvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">R3</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2229,7 +2229,7 @@
 
 <span class="sd">        :seealso: :meth:`Quaternion.AngVec` :meth:`UnitQuaternion.log` :func:`~spatialmath.base.transforms3d.angvec2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2angvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2angvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span></div>
 
     <span class="c1"># def log(self):</span>
     <span class="c1">#     r&quot;&quot;&quot;</span>
@@ -2255,7 +2255,7 @@
 
     <span class="c1">#     :seealso: :meth:`Quaternion.Quaternion.log`, `~spatialmath.quaternion.Quaternion.exp`</span>
     <span class="c1">#     &quot;&quot;&quot;</span>
-    <span class="c1">#     return Quaternion(s=0, v=math.acos(self.s) * base.unitvec(self.v))</span>
+    <span class="c1">#     return Quaternion(s=0, v=math.acos(self.s) * smb.unitvec(self.v))</span>
 
 <div class="viewcode-block" id="UnitQuaternion.angdist"><a class="viewcode-back" href="../../3d_orient_unitquaternion.html#spatialmath.quaternion.UnitQuaternion.angdist">[docs]</a>    <span class="k">def</span> <span class="nf">angdist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">UnitQuaternion</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2318,8 +2318,8 @@
         <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
 
             <span class="k">def</span> <span class="nf">metric3</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
-                <span class="n">y</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span><span class="p">:</span>
                     <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">y</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2373,7 +2373,7 @@
 <span class="sd">            &gt;&gt;&gt; UQ.Rz(0.3).SE3()</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -2398,7 +2398,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 27-Feb-2023.
+      <span class="lastupdated">Last updated on 06-Mar-2023.
       </span></p>
   </div>
 

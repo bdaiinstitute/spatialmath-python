@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <link rel="icon" sizes="16x16" type="image/png" href="_static/favicon-16x16.png">
+    <link rel="icon" sizes="32x32" type="image/png" href="_static/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" type="image/png" href="_static/apple-touch-icon.png">
+    <link rel="android-chrome" sizes="192x192" type="image/png" href="_static/android-chrome-192x192.png ">
+    <link rel="android-chrome" sizes="512x512" type="image/png" href="_static/android-chrome-512x512.png ">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numerical utility functions &mdash; Spatial Maths package  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"macros": {"presup": ["\\,{}^{\\scriptscriptstyle #1}\\!", 1], "SE": ["\\mathbf{SE}(#1)", 1], "SO": ["\\mathbf{SO}(#1)", 1], "se": ["\\mathbf{se}(#1)", 1], "so": ["\\mathbf{so}(#1)", 1], "vec": ["\\boldsymbol{#1}", 1], "dvec": ["\\dot{\\boldsymbol{#1}}", 1], "ddvec": ["\\ddot{\\boldsymbol{#1}}", 1], "fvec": ["\\presup{#1}\\boldsymbol{#2}", 2], "fdvec": ["\\presup{#1}\\dot{\\boldsymbol{#2}}", 2], "fddvec": ["\\presup{#1}\\ddot{\\boldsymbol{#2}}", 2], "norm": ["\\Vert #1 \\Vert", 1], "mat": ["\\mathbf{#1}", 1], "dmat": ["\\dot{\\mathbf{#1}}", 1], "fmat": ["\\presup{#1}\\mathbf{#2}", 2], "sk": ["\\left[#1\\right]", 1], "skx": ["\\left[#1\\right]_{\\times}", 1], "vex": ["\\vee\\left( #1\\right)", 1], "vexx": ["\\vee_{\\times}\\left( #1\\right)", 1], "q": "\\mathring{q}", "fq": ["\\presup{#1}\\mathring{q}", 1]}}}</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Indices" href="indices.html" />
+    <link rel="prev" title="Argument checking" href="func_args.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spatial Maths package
+              <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                1.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatialmath.html">Class reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="functions.html">Function reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="func_2d.html">Transforms in 2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_3d.html">Transforms in 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_nd.html">Transforms in ND</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_quat.html">Quaternions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_symbolic.html">Symbolic computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_vector.html">Vectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_graphics.html">Graphics and animation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="func_args.html">Argument checking</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Numerical utility functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indices.html">Indices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spatial Maths package</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="functions.html">Function reference</a></li>
+      <li class="breadcrumb-item active">Numerical utility functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/func_numeric.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="func_args.html" class="btn btn-neutral float-left" title="Argument checking" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="indices.html" class="btn btn-neutral float-right" title="Indices" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-spatialmath.base.numeric">
+<span id="numerical-utility-functions"></span><h1>Numerical utility functions<a class="headerlink" href="#module-spatialmath.base.numeric" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.array2str">
+<span class="sig-name descname"><span class="pre">array2str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valuesep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">',</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowsep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">|</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{:.3g}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">brackets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('[</span> <span class="pre">',</span> <span class="pre">'</span> <span class="pre">]')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_small</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#array2str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.array2str" title="Permalink to this definition"></a></dt>
+<dd><p>Convert array to single line string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em><em>(</em><em>N</em><em>,</em><em>M</em><em>)</em><em>, </em><em>array_like</em><em>(</em><em>N</em><em>)</em>) – 1D or 2D array to convert</p></li>
+<li><p><strong>valuesep</strong> (<em>str</em><em>, </em><em>optional</em>) – separator between numbers, defaults to “, “</p></li>
+<li><p><strong>rowsep</strong> (<em>str</em><em>, </em><em>optional</em>) – separator between rows, defaults to ” | “</p></li>
+<li><p><strong>format</strong> – format string, defaults to “{:.3g}”</p></li>
+<li><p><strong>brackets</strong> (<em>list</em><em>, </em><em>tuple of str</em>) – strings to be added to start and end of the string,
+defaults to (”[ “, ” ]”).  Set to None to suppress brackets.</p></li>
+<li><p><strong>suppress_small</strong> (<em>bool</em><em>, </em><em>optional</em>) – small values (<span class="math notranslate nohighlight">\(|x| &lt; 10^{-12}\)</span> are converted
+to zero, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>compact string representation of array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p>Converts a small array to a compact single line representation.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">array2str</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">&#39;[ 0.597, 0.0485 | 0.884, 0.568 ]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">rowsep</span><span class="o">=</span><span class="s2">&quot;; &quot;</span><span class="p">)</span>  <span class="c1"># MATLAB-like</span>
+<span class="go">&#39;[ 0.838, 0.52; 0.159, 0.886 ]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
+<span class="go">&#39;[ 0.548, 0.803, 0.113 ]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">&#39;[ 0.497 | 0.579 | 0.593 ]&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.numeric.array2str" title="spatialmath.base.numeric.array2str"><code class="xref py py-func docutils literal notranslate"><span class="pre">array2str()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.bresenham">
+<span class="sig-name descname"><span class="pre">bresenham</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#bresenham"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.bresenham" title="Permalink to this definition"></a></dt>
+<dd><p>Line drawing in a grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p0</strong> (<em>array_like</em><em>(</em><em>2</em><em>) </em><em>of int</em>) – initial point</p></li>
+<li><p><strong>p1</strong> (<em>array_like</em><em>(</em><em>2</em><em>) </em><em>of int</em>) – end point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>arrays of x and y coordinates for points along the line</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(N), ndarray(N) of int</p>
+</dd>
+</dl>
+<p>Return x and y coordinate vectors for points in a grid that lie on
+a line from <code class="docutils literal notranslate"><span class="pre">p0</span></code> to <code class="docutils literal notranslate"><span class="pre">p1</span></code> inclusive.</p>
+<ul class="simple">
+<li><p>The end points, and all points along the line are integers.</p></li>
+<li><p>Points are always adjacent, but the slope from point to point is not constant.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">bresenham</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bresenham</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="go">(array([ 2,  3,  4,  5,  6,  7,  8,  9, 10]), array([ 4,  5,  6,  6,  7,  8,  8,  9, 10]))</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//func_numeric-1.py">Source code</a>, <a class="reference external" href=".//func_numeric-1.png">png</a>, <a class="reference external" href=".//func_numeric-1.hires.png">hires.png</a>, <a class="reference external" href=".//func_numeric-1.pdf">pdf</a>)</p>
+<figure class="align-default">
+<img alt="_images/func_numeric-1.png" class="plot-directive" src="_images/func_numeric-1.png" />
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The API is similar to the Bresenham algorithm but this
+implementation uses NumPy vectorised arithmetic which makes it
+faster than the Bresenham algorithm in Python.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.gauss1d">
+<span class="sig-name descname"><span class="pre">gauss1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#gauss1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.gauss1d" title="Permalink to this definition"></a></dt>
+<dd><p>Gaussian function in 1D</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> (<em>float</em>) – mean</p></li>
+<li><p><strong>var</strong> (<em>float</em>) – variance</p></li>
+<li><p><strong>x</strong> (<em>array_like</em><em>(</em><em>n</em><em>)</em>) – x-coordinate values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gaussian <span class="math notranslate nohighlight">\(G(x)\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(n)</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">gauss1d</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//func_numeric-2.py">Source code</a>, <a class="reference external" href=".//func_numeric-2.png">png</a>, <a class="reference external" href=".//func_numeric-2.hires.png">hires.png</a>, <a class="reference external" href=".//func_numeric-2.pdf">pdf</a>)</p>
+<figure class="align-default">
+<img alt="_images/func_numeric-2.png" class="plot-directive" src="_images/func_numeric-2.png" />
+</figure>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.numeric.gauss2d" title="spatialmath.base.numeric.gauss2d"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss2d()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.gauss2d">
+<span class="sig-name descname"><span class="pre">gauss2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#gauss2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.gauss2d" title="Permalink to this definition"></a></dt>
+<dd><p>Gaussian function in 2D</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em>) – mean</p></li>
+<li><p><strong>P</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>2</em><em>)</em>) – covariance matrix</p></li>
+<li><p><strong>X</strong> (<em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – array of x-coordinates</p></li>
+<li><p><strong>Y</strong> (<em>ndarray</em><em>(</em><em>n</em><em>,</em><em>m</em><em>)</em>) – array of y-coordinates</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gaussian <span class="math notranslate nohighlight">\(g(x,y)\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(n,m)</p>
+</dd>
+</dl>
+<p>Computed <span class="math notranslate nohighlight">\(g_{i,j} = G(x_{i,j}, y_{i,j})\)</span></p>
+<p>Example (RVC3 Fig G.2):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">gauss2d</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">P</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href=".//func_numeric-3.py">Source code</a>, <a class="reference external" href=".//func_numeric-3.png">png</a>, <a class="reference external" href=".//func_numeric-3.hires.png">hires.png</a>, <a class="reference external" href=".//func_numeric-3.pdf">pdf</a>)</p>
+<figure class="align-default">
+<img alt="_images/func_numeric-3.png" class="plot-directive" src="_images/func_numeric-3.png" />
+</figure>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.numeric.gauss1d" title="spatialmath.base.numeric.gauss1d"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss1d()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.mpq_point">
+<span class="sig-name descname"><span class="pre">mpq_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#mpq_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.mpq_point" title="Permalink to this definition"></a></dt>
+<dd><p>Moments of polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em><em>(</em><em>2</em><em>,</em><em>N</em><em>)</em>) – polygon vertices, points as columns</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – moment order x</p></li>
+<li><p><strong>q</strong> (<em>int</em>) – moment order y</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns the pq’th moment of the polygon</p>
+<div class="math notranslate nohighlight">
+\[M(p, q) = \sum_{i=0}^{n-1} x_i^p y_i^q\]</div>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">mpq_point</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mpq_point</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># area</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mpq_point</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">36</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>is negative for clockwise perimeter.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.numhess">
+<span class="sig-name descname"><span class="pre">numhess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#numhess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.numhess" title="Permalink to this definition"></a></dt>
+<dd><p>Numerically compute Hessian given Jacobian function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>J</strong> (<em>callable</em>) – the Jacobian function, returns an ndarray(m,n)</p></li>
+<li><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>n</em><em>)</em>) – function argument</p></li>
+<li><p><strong>dx</strong> (<em>float</em><em>, </em><em>optional</em>) – the numerical perturbation, defaults to 1e-8</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Hessian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(m,n,n)</p>
+</dd>
+</dl>
+<p>Computes a numerical approximation to the Hessian for <code class="docutils literal notranslate"><span class="pre">J(x)</span></code> where
+<span class="math notranslate nohighlight">\(f: \mathbb{R}^n  \mapsto \mathbb{R}^{m \times n}\)</span>.</p>
+<p>The result is a 3D array where</p>
+<div class="math notranslate nohighlight">
+\[H_{i,j,k} = \frac{\partial J_{j,k}}{\partial x_i}\]</div>
+<p>Uses first-order difference <span class="math notranslate nohighlight">\(H[:,:,i] = (J(x + dx) - J(x)) / dx\)</span>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.numjac">
+<span class="sig-name descname"><span class="pre">numjac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SO</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#numjac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.numjac" title="Permalink to this definition"></a></dt>
+<dd><p>Numerically compute Jacobian of function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>callable</em>) – the function, returns an m-vector</p></li>
+<li><p><strong>x</strong> (<em>ndarray</em><em>(</em><em>n</em><em>)</em>) – function argument</p></li>
+<li><p><strong>dx</strong> (<em>float</em><em>, </em><em>optional</em>) – the numerical perturbation, defaults to 1e-8</p></li>
+<li><p><strong>SO</strong> (<em>int</em><em>, </em><em>optional</em>) – function returns SO(N) matrix, defaults to 0</p></li>
+<li><p><strong>SE</strong> (<em>int</em><em>, </em><em>optional</em>) – function returns SE(N) matrix, defaults to 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jacobian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(m,n)</p>
+</dd>
+</dl>
+<p>Computes a numerical approximation to the Jacobian for <code class="docutils literal notranslate"><span class="pre">f(x)</span></code> where
+<span class="math notranslate nohighlight">\(f: \mathbb{R}^n \mapsto \mathbb{R}^m\)</span>.</p>
+<p>Uses first-order difference <span class="math notranslate nohighlight">\(J[:,i] = (f(x + dx) - f(x)) / dx\)</span>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">SO</span></code> is 2 or 3, then it is assumed that the function returns
+an SO(N) matrix and the derivative is converted to a column vector</p>
+<div class="math notranslate nohighlight">
+\[\vex{\dmat{R} \mat{R}^T}\]</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">SE</span></code> is 2 or 3, then it is assumed that the function returns
+an SE(N) matrix and the derivative is converted to a colun vector.</p>
+<p>Example:</p>
+<blockquote>
+<div><div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">rotx</span><span class="p">,</span> <span class="n">numjac</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numjac</span><span class="p">(</span><span class="n">rotx</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">array([[[ 0.],</span>
+<span class="go">        [ 0.],</span>
+<span class="go">        [ 0.]],</span>
+
+<span class="go">       [[ 0.],</span>
+<span class="go">        [ 0.],</span>
+<span class="go">        [ 1.]],</span>
+
+<span class="go">       [[ 0.],</span>
+<span class="go">        [-1.],</span>
+<span class="go">        [ 0.]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numjac</span><span class="p">(</span><span class="n">rotx</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">SO</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">array([[1.],</span>
+<span class="go">       [0.],</span>
+<span class="go">       [0.]])</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spatialmath.base.numeric.str2array">
+<span class="sig-name descname"><span class="pre">str2array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/numeric.html#str2array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.numeric.str2array" title="Permalink to this definition"></a></dt>
+<dd><p>Convert compact single line string to array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – string to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p>Convert a string containing a “MATLAB-like” matrix definition to a NumPy
+array.  A scalar has no delimiting square brackets and becomes a 1x1 array.
+A 2D array is delimited by square brackets, elements are separated by a comma,
+and rows are separated by a semicolon.  Extra white spaces are ignored.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">str2array</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">str2array</span><span class="p">(</span><span class="s2">&quot;5&quot;</span><span class="p">)</span>
+<span class="go">array([[5.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">str2array</span><span class="p">(</span><span class="s2">&quot;[1 2 3]&quot;</span><span class="p">)</span>
+<span class="go">array([[1., 2., 3.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">str2array</span><span class="p">(</span><span class="s2">&quot;[1 2; 3 4]&quot;</span><span class="p">)</span>
+<span class="go">array([[1., 2.],</span>
+<span class="go">       [3., 4.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">str2array</span><span class="p">(</span><span class="s2">&quot; [  1  , 2 ; 3 4  ] &quot;</span><span class="p">)</span>
+<span class="go">array([[1., 2.],</span>
+<span class="go">       [3., 4.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">str2array</span><span class="p">(</span><span class="s2">&quot;[1; 2; 3]&quot;</span><span class="p">)</span>
+<span class="go">array([[1.],</span>
+<span class="go">       [2.],</span>
+<span class="go">       [3.]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#spatialmath.base.numeric.array2str" title="spatialmath.base.numeric.array2str"><code class="xref py py-func docutils literal notranslate"><span class="pre">array2str()</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="func_args.html" class="btn btn-neutral float-left" title="Argument checking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="indices.html" class="btn btn-neutral float-right" title="Indices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-, Peter Corke..
+      <span class="lastupdated">Last updated on 06-Mar-2023.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-11Q6WJM565"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-11Q6WJM565', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
