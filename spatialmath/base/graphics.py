@@ -477,17 +477,17 @@ try:
         if filled:
             r = plt.Rectangle(lb, w, h, fill=True, clip_on=True, **kwargs)
         else:
+            ec = None
+            ls = ""
             if len(fmt) > 0:
                 colors = "rgbcmywk"
-                ec = None
-                ls = ""
                 for f in fmt[0]:
                     if f in colors:
                         ec = f
                     else:
                         ls += f
-                if ls == "":
-                    ls = None
+            if ls == "":
+                ls = None
 
             if "color" in kwargs:
                 ec = kwargs["color"]

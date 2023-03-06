@@ -42,8 +42,8 @@ class TestGraphics(unittest.TestCase):
         plot_circle(0.5, (0, 0), filled=True, color="y")  # yellow filled circle
 
     def test_ellipse(self):
-        plot_ellipse(np.diag((1, 2)), "r")  # red ellipse
-        plot_ellipse(np.diag((1, 2)), "b--")  # blue dashed ellipse
+        plot_ellipse(np.diag((1, 2)), (0, 0), "r")  # red ellipse
+        plot_ellipse(np.diag((1, 2)), (0, 0), "b--")  # blue dashed ellipse
         plot_ellipse(
             np.diag((1, 2)), centre=(1, 1), filled=True, color="y"
         )  # yellow filled ellipse
