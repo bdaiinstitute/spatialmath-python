@@ -13,20 +13,23 @@
 #
 import os
 import sys
+
 # sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'Spatial Maths package'
-copyright = '2020-, Peter Corke.'
-author = 'Peter Corke'
+project = "Spatial Maths package"
+copyright = "2020-, Peter Corke."
+author = "Peter Corke"
 try:
     import spatialmath
+
     version = spatialmath.__version__
 except AttributeError:
     import re
+
     with open("../../pyproject.toml", "r") as f:
         m = re.compile(r'version\s*=\s*"([0-9\.]+)"').search(f.read())
         version = m[1]
@@ -36,90 +39,89 @@ except AttributeError:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [ 
-    'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.viewcode', 
-    'sphinx.ext.mathjax',
-    'sphinx.ext.coverage',
-    'sphinx.ext.doctest',
-    'sphinx.ext.inheritance_diagram',
-    'matplotlib.sphinxext.plot_directive',
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.coverage",
+    "sphinx.ext.doctest",
+    "sphinx.ext.inheritance_diagram",
+    "matplotlib.sphinxext.plot_directive",
     "sphinx_autodoc_typehints",
-    'sphinx_autorun',
+    "sphinx_autorun",
     "sphinx.ext.intersphinx",
-    "sphinx-favicon",
-    ]
-    #'sphinx.ext.autosummary',
+    "sphinx_favicon",
+]
+#'sphinx.ext.autosummary',
 # typehints_use_signature_return = True
 
 # inheritance_node_attrs = dict(style='rounded,filled', fillcolor='lightblue')
-inheritance_node_attrs = dict(style='rounded')
+inheritance_node_attrs = dict(style="rounded")
 
 autosummary_generate = True
-autodoc_member_order = 'groupwise'
+autodoc_member_order = "groupwise"
 # bysource
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['test_*']
+exclude_patterns = ["test_*"]
 
-add_module_names = False 
+add_module_names = False
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-#html_theme = 'alabaster'
-#html_theme = 'pyramid'
-#html_theme = 'sphinxdoc'
+html_theme = "sphinx_rtd_theme"
+# html_theme = 'alabaster'
+# html_theme = 'pyramid'
+# html_theme = 'sphinxdoc'
 
 html_theme_options = {
     #'github_user': 'petercorke',
     #'github_repo': 'spatialmath-python',
     #'logo_name': False,
-    'logo_only': False,
+    "logo_only": False,
     #'description': 'Spatial maths and geometry for Python',
-    'display_version': True,
-    'prev_next_buttons_location': 'both',
-    'analytics_id': 'G-11Q6WJM565',
-
-    }
-html_logo = '../figs/CartesianSnakes_LogoW.png'
+    "display_version": True,
+    "prev_next_buttons_location": "both",
+    "analytics_id": "G-11Q6WJM565",
+}
+html_logo = "../figs/CartesianSnakes_LogoW.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 
-# autodoc_mock_imports = ["numpy", "scipy"] 
-html_last_updated_fmt = '%d-%b-%Y'
+# autodoc_mock_imports = ["numpy", "scipy"]
+html_last_updated_fmt = "%d-%b-%Y"
 # extensions = ['rst2pdf.pdfbuilder']
 # pdf_documents = [('index', u'rst2pdf', u'Sample rst2pdf doc', u'Your Name'),]
-latex_engine = 'xelatex'
+latex_engine = "xelatex"
 # maybe need to set graphics path in here somewhere
 # \graphicspath{{figures/}{../figures/}{C:/Users/me/Documents/project/figures/}}
 # https://stackoverflow.com/questions/63452024/how-to-include-image-files-in-sphinx-latex-pdf-files
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    'papersize': 'a4paper',
+    "papersize": "a4paper",
     #'releasename':" ",
     # Sonny, Lenny, Glenn, Conny, Rejne, Bjarne and Bjornstrup
     # 'fncychap': '\\usepackage[Lenny]{fncychap}',
-    'fncychap': '\\usepackage{fncychap}',
+    "fncychap": "\\usepackage{fncychap}",
 }
 
 # -------- RVC maths notation -------------------------------------------------------#
 
 # see https://stackoverflow.com/questions/9728292/creating-latex-math-macros-within-sphinx
 mathjax3_config = {
-    'tex': {
-        'macros': {
+    "tex": {
+        "macros": {
             # RVC Math notation
             #  - not possible to do the if/then/else approach
             #  - subset only
@@ -149,16 +151,17 @@ mathjax3_config = {
             # quaternions
             "q": r"\mathring{q}",
             "fq": [r"\presup{#1}\mathring{q}", 1],
-
         }
-   }
+    }
 }
 
 
 autorun_languages = {}
-autorun_languages['pycon_output_encoding'] = 'UTF-8'
-autorun_languages['pycon_input_encoding'] = 'UTF-8'
-autorun_languages['pycon_runfirst'] = """
+autorun_languages["pycon_output_encoding"] = "UTF-8"
+autorun_languages["pycon_input_encoding"] = "UTF-8"
+autorun_languages[
+    "pycon_runfirst"
+] = """
 from spatialmath import SE3
 SE3._color = False
 import numpy as np
@@ -208,4 +211,4 @@ favicons = [
     },
 ]
 
-autodoc_type_aliases = {'SO3Array': 'SO3Array'}
+autodoc_type_aliases = {"SO3Array": "SO3Array"}
