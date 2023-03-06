@@ -3,7 +3,7 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 import numpy as np
-import spatialmath.base as smbase
+import spatialmath.base as smb
 from spatialmath.baseposelist import BasePoseList
 from spatialmath.geom3d import Line3
 
@@ -103,9 +103,9 @@ class BaseTwist(BasePoseList):
 
         """
         if len(self) == 1:
-            return smbase.iszerovec(self.w)
+            return smb.iszerovec(self.w)
         else:
-            return [smbase.iszerovec(x.w) for x in self.data]
+            return [smb.iszerovec(x.w) for x in self.data]
 
     @property
     def isrevolute(self):
@@ -129,9 +129,9 @@ class BaseTwist(BasePoseList):
 
         """
         if len(self) == 1:
-            return smbase.iszerovec(self.v)
+            return smb.iszerovec(self.v)
         else:
-            return [smbase.iszerovec(x.v) for x in self.data]
+            return [smb.iszerovec(x.v) for x in self.data]
 
     @property
     def isunit(self):
@@ -155,9 +155,9 @@ class BaseTwist(BasePoseList):
 
         """
         if len(self) == 1:
-            return smbase.isunitvec(self.S)
+            return smb.isunitvec(self.S)
         else:
-            return [smbase.isunitvec(x) for x in self.data]
+            return [smb.isunitvec(x) for x in self.data]
 
     @property
     def theta(self):
@@ -170,7 +170,7 @@ class BaseTwist(BasePoseList):
         if self.N == 2:
             return abs(self.w)
         else:
-            return smbase.norm(np.array(self.w))
+            return smb.norm(np.array(self.w))
 
     def inv(self):
         """
@@ -215,11 +215,11 @@ class BaseTwist(BasePoseList):
             >>> Twist3.Rx(0.9)
         """
         if self.N == 2:
-            log = smbase.trlog2
-            exp = smbase.trexp2
+            log = smb.trlog2
+            exp = smb.trexp2
         else:
-            log = smbase.trlog
-            exp = smbase.trexp
+            log = smb.trlog
+            exp = smb.trexp
 
         twprod = exp(self.data[0])
         for tw in self.data[1:]:
@@ -280,7 +280,7 @@ class BaseTwist(BasePoseList):
     def __truediv__(
         left, right
     ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-        if smbase.isscalar(right):
+        if smb.isscalar(right):
             return left.__class__(left.S / right)
         else:
             raise ValueError("Twist /, incorrect right operand")
@@ -334,7 +334,7 @@ class Twist3(BaseTwist):
             elif isinstance(arg, SE3):
                 self.data = [arg.twist().A]
 
-        elif w is not None and smbase.isvector(w, 3) and smbase.isvector(arg, 3):
+        elif w is not None and smb.isvector(w, 3) and smb.isvector(arg, 3):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
             return
@@ -352,12 +352,12 @@ class Twist3(BaseTwist):
         if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
             if value.shape == (4, 4):
                 # it's an se(3)
-                return smbase.vexa(value)
+                return smb.vexa(value)
             elif value.shape == (6,):
                 # it's a twist vector
                 return value
-        elif smbase.ishom(value, check=check):
-            return smbase.trlog(value, twist=True, check=False)
+        elif smb.ishom(value, check=check):
+            return smb.trlog(value, twist=True, check=False)
         raise TypeError("bad type passed")
 
     @staticmethod
@@ -378,20 +378,20 @@ class Twist3(BaseTwist):
             >>> from spatialmath import Twist3, base
             >>> import numpy as np
             >>> Twist3.isvalid([1, 2, 3, 4, 5, 6])
-            >>> a = smbase.skewa([1, 2, 3, 4, 5, 6])
+            >>> a = smb.skewa([1, 2, 3, 4, 5, 6])
             >>> a
             >>> Twist3.isvalid(a)
             >>> Twist3.isvalid(np.random.rand(4,4))
         """
-        if smbase.isvector(v, 6):
+        if smb.isvector(v, 6):
             return True
-        elif smbase.ismatrix(v, (4, 4)):
+        elif smb.ismatrix(v, (4, 4)):
             # maybe be an se(3)
-            if not smbase.iszerovec(v.diagonal()):  # check diagonal is zero
+            if not smb.iszerovec(v.diagonal()):  # check diagonal is zero
                 return False
-            if not smbase.iszerovec(v[3, :]):  # check bottom row is zero
+            if not smb.iszerovec(v[3, :]):  # check bottom row is zero
                 return False
-            if check and not smbase.isskew(v[:3, :3]):
+            if check and not smb.isskew(v[:3, :3]):
                 # top left 3x3 is skew symmetric
                 return False
             return True
@@ -497,8 +497,8 @@ class Twist3(BaseTwist):
             >>> Twist3.Revolute([0, 0, 1], [1, 2, 0])
 
         """
-        w = smbase.unitvec(smbase.getvector(a, 3))
-        v = -np.cross(w, smbase.getvector(q, 3))
+        w = smb.unitvec(smb.getvector(a, 3))
+        v = -np.cross(w, smb.getvector(q, 3))
         if pitch is not None:
             v = v + pitch * w
         return cls(v, w)
@@ -522,7 +522,7 @@ class Twist3(BaseTwist):
 
         """
         w = np.r_[0, 0, 0]
-        v = smbase.unitvec(smbase.getvector(a, 3))
+        v = smb.unitvec(smb.getvector(a, 3))
 
         return cls(v, w)
 
@@ -552,10 +552,10 @@ class Twist3(BaseTwist):
             >>> Twist3.Rx(0.3)
             >>> Twist3.Rx([0.3, 0.4])
 
-        :seealso: :func:`~spatialmath.smbase.transforms3d.trotx`
+        :seealso: :func:`~spatialmath.smb.transforms3d.trotx`
         :SymPy: supported
         """
-        return cls([np.r_[0, 0, 0, x, 0, 0] for x in smbase.getunit(theta, unit=unit)])
+        return cls([np.r_[0, 0, 0, x, 0, 0] for x in smb.getunit(theta, unit=unit)])
 
     @classmethod
     def Ry(cls, theta, unit="rad", t=None):
@@ -583,10 +583,10 @@ class Twist3(BaseTwist):
             >>> Twist3.Ry(0.3)
             >>> Twist3.Ry([0.3, 0.4])
 
-        :seealso: :func:`~spatialmath.smbase.transforms3d.troty`
+        :seealso: :func:`~spatialmath.smb.transforms3d.troty`
         :SymPy: supported
         """
-        return cls([np.r_[0, 0, 0, 0, x, 0] for x in smbase.getunit(theta, unit=unit)])
+        return cls([np.r_[0, 0, 0, 0, x, 0] for x in smb.getunit(theta, unit=unit)])
 
     @classmethod
     def Rz(cls, theta, unit="rad", t=None):
@@ -614,10 +614,10 @@ class Twist3(BaseTwist):
             >>> Twist3.Rz(0.3)
             >>> Twist3.Rz([0.3, 0.4])
 
-        :seealso: :func:`~spatialmath.smbase.transforms3d.trotz`
+        :seealso: :func:`~spatialmath.smb.transforms3d.trotz`
         :SymPy: supported
         """
-        return cls([np.r_[0, 0, 0, 0, 0, x] for x in smbase.getunit(theta, unit=unit)])
+        return cls([np.r_[0, 0, 0, 0, 0, x] for x in smb.getunit(theta, unit=unit)])
 
     @classmethod
     def RPY(cls, *pos, **kwargs):
@@ -692,12 +692,10 @@ class Twist3(BaseTwist):
             >>> Twist3.Tx([2,3])
 
 
-        :seealso: :func:`~spatialmath.smbase.transforms3d.transl`
+        :seealso: :func:`~spatialmath.smb.transforms3d.transl`
         :SymPy: supported
         """
-        return cls(
-            [np.r_[_x, 0, 0, 0, 0, 0] for _x in smbase.getvector(x)], check=False
-        )
+        return cls([np.r_[_x, 0, 0, 0, 0, 0] for _x in smb.getvector(x)], check=False)
 
     @classmethod
     def Ty(cls, y):
@@ -719,12 +717,10 @@ class Twist3(BaseTwist):
             >>> Twist3.Ty([2, 3])
 
 
-        :seealso: :func:`~spatialmath.smbase.transforms3d.transl`
+        :seealso: :func:`~spatialmath.smb.transforms3d.transl`
         :SymPy: supported
         """
-        return cls(
-            [np.r_[0, _y, 0, 0, 0, 0] for _y in smbase.getvector(y)], check=False
-        )
+        return cls([np.r_[0, _y, 0, 0, 0, 0] for _y in smb.getvector(y)], check=False)
 
     @classmethod
     def Tz(cls, z):
@@ -745,12 +741,10 @@ class Twist3(BaseTwist):
             >>> Twist3.Tz(2)
             >>> Twist3.Tz([2, 3])
 
-        :seealso: :func:`~spatialmath.smbase.transforms3d.transl`
+        :seealso: :func:`~spatialmath.smb.transforms3d.transl`
         :SymPy: supported
         """
-        return cls(
-            [np.r_[0, 0, _z, 0, 0, 0] for _z in smbase.getvector(z)], check=False
-        )
+        return cls([np.r_[0, 0, _z, 0, 0, 0] for _z in smb.getvector(z)], check=False)
 
     @classmethod
     def Rand(
@@ -799,8 +793,8 @@ class Twist3(BaseTwist):
         R = SO3.Rand(N=N)
 
         def _twist(x, y, z, r):
-            T = smbase.transl(x, y, z) @ smbase.r2t(r.A)
-            return smbase.trlog(T, twist=True)
+            T = smb.transl(x, y, z) @ smb.r2t(r.A)
+            return smb.trlog(T, twist=True)
 
         return cls(
             [_twist(x, y, z, r) for (x, y, z, r) in zip(X, Y, Z, R)], check=False
@@ -827,12 +821,12 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.unit()
         """
-        if smbase.iszerovec(self.w):
+        if smb.iszerovec(self.w):
             # rotational twist
-            return Twist3(self.S / smbase.norm(S.w))
+            return Twist3(self.S / smb.norm(S.w))
         else:
             # prismatic twist
-            return Twist3(smbase.unitvec(self.v), [0, 0, 0])
+            return Twist3(smb.unitvec(self.v), [0, 0, 0])
 
     def ad(self):
         """
@@ -862,8 +856,8 @@ class Twist3(BaseTwist):
         """
         return np.block(
             [
-                [smbase.skew(self.w), smbase.skew(self.v)],
-                [np.zeros((3, 3)), smbase.skew(self.w)],
+                [smb.skew(self.w), smb.skew(self.v)],
+                [np.zeros((3, 3)), smb.skew(self.w)],
             ]
         )
 
@@ -914,12 +908,12 @@ class Twist3(BaseTwist):
             >>> S = Twist3.Rx(0.3)
             >>> se = S.skewa()
             >>> se
-            >>> smbase.trexp(se)
+            >>> smb.trexp(se)
         """
         if len(self) == 1:
-            return smbase.skewa(self.S)
+            return smb.skewa(self.S)
         else:
-            return [smbase.skewa(x.S) for x in self]
+            return [smb.skewa(x.S) for x in self]
 
     @property
     def pitch(self):
@@ -1012,17 +1006,17 @@ class Twist3(BaseTwist):
         """
         from spatialmath.pose3d import SE3
 
-        theta = smbase.getunit(theta, unit)
+        theta = smb.getunit(theta, unit)
 
-        if smbase.isscalar(theta):
+        if smb.isscalar(theta):
             # theta is a scalar
-            return SE3(smbase.trexp(self.S * theta))
+            return SE3(smb.trexp(self.S * theta))
         else:
             # theta is a vector
             if len(self) == 1:
-                return SE3([smbase.trexp(self.S * t) for t in theta])
+                return SE3([smb.trexp(self.S * t) for t in theta])
             elif len(self) == len(theta):
-                return SE3([smbase.trexp(S * t) for S, t in zip(self.data, theta)])
+                return SE3([smb.trexp(S * t) for S, t in zip(self.data, theta)])
             else:
                 raise ValueError("length of twist and theta not consistent")
 
@@ -1066,18 +1060,16 @@ class Twist3(BaseTwist):
             - For the second form, the twist must, if rotational, have a unit
               rotational component.
 
-        :seealso: :func:`spatialmath.smbase.trexp`
+        :seealso: :func:`spatialmath.smb.trexp`
         """
         from spatialmath.pose3d import SE3
 
-        theta = np.r_[smbase.getunit(theta, unit)]
+        theta = np.r_[smb.getunit(theta, unit)]
 
         if len(self) == 1:
-            return SE3([smbase.trexp(self.S * t) for t in theta], check=False)
+            return SE3([smb.trexp(self.S * t) for t in theta], check=False)
         elif len(self) == len(theta):
-            return SE3(
-                [smbase.trexp(s * t) for s, t in zip(self.S, theta)], check=False
-            )
+            return SE3([smb.trexp(s * t) for s, t in zip(self.S, theta)], check=False)
         else:
             raise ValueError("length mismatch")
 
@@ -1139,15 +1131,13 @@ class Twist3(BaseTwist):
             return Twist3(
                 left.binop(
                     right,
-                    lambda x, y: smbase.trlog(
-                        smbase.trexp(x) @ smbase.trexp(y), twist=True
-                    ),
+                    lambda x, y: smb.trlog(smb.trexp(x) @ smb.trexp(y), twist=True),
                 )
             )
         elif isinstance(right, SE3):
             # twist * SE3 -> SE3
-            return SE3(left.binop(right, lambda x, y: smbase.trexp(x) @ y), check=False)
-        elif smbase.isscalar(right):
+            return SE3(left.binop(right, lambda x, y: smb.trexp(x) @ y), check=False)
+        elif smb.isscalar(right):
             # return Twist(left.S * right)
             return Twist3(left.binop(right, lambda x, y: x * y))
         else:
@@ -1168,7 +1158,7 @@ class Twist3(BaseTwist):
 
         - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
         """
-        if smbase.isscalar(left):
+        if smb.isscalar(left):
             return Twist3(right.S * left)
         else:
             raise ValueError("Twist3 *, incorrect left operand")
@@ -1193,7 +1183,7 @@ class Twist3(BaseTwist):
         return "\n".join(
             [
                 "({:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g})".format(
-                    *list(smbase.removesmall(tw.S))
+                    *list(smb.removesmall(tw.S))
                 )
                 for tw in self
             ]
@@ -1295,7 +1285,7 @@ class Twist2(BaseTwist):
             if super().arghandler(arg, convertfrom=(SE2,), check=check):
                 return
 
-        elif w is not None and smbase.isscalar(w) and smbase.isvector(arg, 2):
+        elif w is not None and smb.isscalar(w) and smb.isvector(arg, 2):
             # Twist(v, w)
             self.data = [np.r_[arg, w]]
             return
@@ -1321,12 +1311,12 @@ class Twist2(BaseTwist):
         if isinstance(value, np.ndarray) and self.isvalid(value, check=check):
             if value.shape == (3, 3):
                 # it's an se(2)
-                return smbase.vexa(value)
+                return smb.vexa(value)
             elif value.shape == (3,):
                 # it's a twist vector
                 return value
-        elif smbase.ishom2(value, check=check):
-            return smbase.trlog2(value, twist=True, check=False)
+        elif smb.ishom2(value, check=check):
+            return smb.trlog2(value, twist=True, check=False)
         raise TypeError("bad type passed")
 
     @staticmethod
@@ -1347,20 +1337,20 @@ class Twist2(BaseTwist):
             >>> from spatialmath import Twist2, base
             >>> import numpy as np
             >>> Twist2.isvalid([1, 2, 3])
-            >>> a = smbase.skewa([1, 2, 3])
+            >>> a = smb.skewa([1, 2, 3])
             >>> a
             >>> Twist2.isvalid(a)
             >>> Twist2.isvalid(np.random.rand(3,3))
         """
-        if smbase.isvector(v, 3):
+        if smb.isvector(v, 3):
             return True
-        elif smbase.ismatrix(v, (3, 3)):
+        elif smb.ismatrix(v, (3, 3)):
             # maybe be an se(2)
-            if not smbase.iszerovec(v.diagonal()):  # check diagonal is zero
+            if not smb.iszerovec(v.diagonal()):  # check diagonal is zero
                 return False
-            if not smbase.iszerovec(v[2, :]):  # check bottom row is zero
+            if not smb.iszerovec(v[2, :]):  # check bottom row is zero
                 return False
-            if check and not smbase.isskew(v[:2, :2]):
+            if check and not smb.isskew(v[:2, :2]):
                 # top left 2x2 is skew symmetric
                 return False
             return True
@@ -1388,7 +1378,7 @@ class Twist2(BaseTwist):
             >>> Twist2.Revolute([0, 1])
         """
 
-        q = smbase.getvector(q, 2)
+        q = smb.getvector(q, 2)
         v = -np.cross(np.r_[0.0, 0.0, 1.0], np.r_[q, 0.0])
         return cls(v[:2], 1)
 
@@ -1412,7 +1402,7 @@ class Twist2(BaseTwist):
             >>> Twist2.Prismatic([1, 2])
         """
         w = 0
-        v = smbase.unitvec(smbase.getvector(a, 2))
+        v = smb.unitvec(smb.getvector(a, 2))
         return cls(v, w)
 
     # ------------------------ properties ---------------------------#
@@ -1537,12 +1527,12 @@ class Twist2(BaseTwist):
         if theta is None:
             theta = 1
         else:
-            theta = smbase.getunit(theta, unit)
+            theta = smb.getunit(theta, unit)
 
-        if smbase.isscalar(theta):
-            return SE2(smbase.trexp2(self.S * theta))
+        if smb.isscalar(theta):
+            return SE2(smb.trexp2(self.S * theta))
         else:
-            return SE2([smbase.trexp2(self.S * t) for t in theta])
+            return SE2([smb.trexp2(self.S * t) for t in theta])
 
     def skewa(self):
         """
@@ -1563,12 +1553,12 @@ class Twist2(BaseTwist):
             >>> S = Twist2([1,2,3])
             >>> se = S.skewa()
             >>> se
-            >>> smbase.trexp2(se)
+            >>> smb.trexp2(se)
         """
         if len(self) == 1:
-            return smbase.skewa(self.S)
+            return smb.skewa(self.S)
         else:
-            return [smbase.skewa(x.S) for x in self]
+            return [smb.skewa(x.S) for x in self]
 
     def exp(self, theta=None, unit="rad"):
         r"""
@@ -1601,16 +1591,16 @@ class Twist2(BaseTwist):
             - For the second form, the twist must, if rotational, have a unit
               rotational component.
 
-        :seealso: :func:`spatialmath.smbase.trexp2`
+        :seealso: :func:`spatialmath.smb.trexp2`
         """
         from spatialmath.pose2d import SE2
 
         if theta is None:
             theta = 1.0
         else:
-            theta = smbase.getunit(theta, unit)
+            theta = smb.getunit(theta, unit)
 
-        return SE2(smbase.trexp2(self.S * theta))
+        return SE2(smb.trexp2(self.S * theta))
 
     def unit(self):
         """
@@ -1628,12 +1618,12 @@ class Twist2(BaseTwist):
             >>> S = Twist2(T)
             >>> S.unit()
         """
-        if smbase.iszerovec(self.w):
+        if smb.iszerovec(self.w):
             # rotational twist
-            return Twist2(self.S / smbase.norm(S.w))
+            return Twist2(self.S / smb.norm(S.w))
         else:
             # prismatic twist
-            return Twist2(smbase.unitvec(self.v), [0, 0, 0])
+            return Twist2(smb.unitvec(self.v), [0, 0, 0])
 
     @property
     def ad(self):
@@ -1656,8 +1646,8 @@ class Twist2(BaseTwist):
         """
         return np.array(
             [
-                [smbase.skew(self.w), smbase.skew(self.v)],
-                [np.zeros((3, 3)), smbase.skew(self.w)],
+                [smb.skew(self.w), smb.skew(self.v)],
+                [np.zeros((3, 3)), smb.skew(self.w)],
             ]
         )
 
@@ -1681,10 +1671,10 @@ class Twist2(BaseTwist):
             >>> Twist2.Tx([2,3])
 
 
-        :seealso: :func:`~spatialmath.smbase.transforms2d.transl2`
+        :seealso: :func:`~spatialmath.smb.transforms2d.transl2`
         :SymPy: supported
         """
-        return cls([np.r_[_x, 0, 0] for _x in smbase.getvector(x)], check=False)
+        return cls([np.r_[_x, 0, 0] for _x in smb.getvector(x)], check=False)
 
     @classmethod
     def Ty(cls, y):
@@ -1706,10 +1696,10 @@ class Twist2(BaseTwist):
             >>> Twist2.Ty([2, 3])
 
 
-        :seealso: :func:`~spatialmath.smbase.transforms2d.transl2`
+        :seealso: :func:`~spatialmath.smb.transforms2d.transl2`
         :SymPy: supported
         """
-        return cls([np.r_[0, _y, 0] for _y in smbase.getvector(y)], check=False)
+        return cls([np.r_[0, _y, 0] for _y in smb.getvector(y)], check=False)
 
     def __mul__(
         left, right
@@ -1762,24 +1752,20 @@ class Twist2(BaseTwist):
             return Twist2(
                 left.binop(
                     right,
-                    lambda x, y: smbase.trlog2(
-                        smbase.trexp2(x) @ smbase.trexp2(y), twist=True
-                    ),
+                    lambda x, y: smb.trlog2(smb.trexp2(x) @ smb.trexp2(y), twist=True),
                 )
             )
         elif isinstance(right, SE2):
             # twist * SE2 -> SE2
-            return SE2(
-                left.binop(right, lambda x, y: smbase.trexp2(x) @ y), check=False
-            )
-        elif smbase.isscalar(right):
+            return SE2(left.binop(right, lambda x, y: smb.trexp2(x) @ y), check=False)
+        elif smb.isscalar(right):
             # return Twist(left.S * right)
             return Twist2(left.binop(right, lambda x, y: x * y))
         else:
             raise ValueError("Twist2 *, incorrect right operand")
 
     def __rmul(self, left):
-        if smbase.isscalar(left):
+        if smb.isscalar(left):
             return Twist2(self.S * left)
         else:
             raise ValueError("twist *, incorrect left operand")

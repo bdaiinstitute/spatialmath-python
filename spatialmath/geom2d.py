@@ -15,7 +15,8 @@ from matplotlib.patches import PathPatch
 from matplotlib.transforms import Affine2D
 import numpy as np
 
-from spatialmath import base, SE2
+from spatialmath import SE2
+import spatialmath.base as smb
 from spatialmath.base import plot_ellipse
 from spatialmath.base.types import (
     Points2,
@@ -51,8 +52,7 @@ class Line2:
     """
 
     def __init__(self, line: ArrayLike3):
-
-        self.line = base.getvector(line, 3)
+        self.line = smb.getvector(line, 3)
 
     @classmethod
     def Join(cls, p1: ArrayLike2, p2: ArrayLike2) -> Self:
@@ -67,10 +67,10 @@ class Line2:
         The points can be given in Euclidean or homogeneous form.
         """
 
-        p1 = base.getvector(p1)
+        p1 = smb.getvector(p1)
         if len(p1) == 2:
             p1 = np.r_[p1, 1]
-        p2 = base.getvector(p2)
+        p2 = smb.getvector(p2)
         if len(p2) == 2:
             p2 = np.r_[p2, 1]
 
@@ -119,7 +119,7 @@ class Line2:
 
         :param kwargs: arguments passed to Matplotlib ``pyplot.plot``
         """
-        base.plot_homline(self.line, **kwargs)
+        smb.plot_homline(self.line, **kwargs)
 
     def intersect(self, other: Line2, tol: float = 10) -> R3:
         """
@@ -147,7 +147,7 @@ class Line2:
         :return: True if point lies in the line
         :rtype: bool
         """
-        p = base.getvector(p)
+        p = smb.getvector(p)
         if len(p) == 2:
             p = np.r_[p, 1]
         return abs(np.dot(self.line, p)) < tol * _eps
@@ -168,10 +168,10 @@ class Line2:
         Tests whether the line intersects the line segment defined by endpoints
         ``p1`` and ``p2`` which are given in Euclidean or homogeneous form.
         """
-        p1 = base.getvector(p1)
+        p1 = smb.getvector(p1)
         if len(p1) == 2:
             p1 = np.r_[p1, 1]
-        p2 = base.getvector(p2)
+        p2 = smb.getvector(p2)
         if len(p2) == 2:
             p2 = np.r_[p2, 1]
 
@@ -192,7 +192,6 @@ class Line2:
         pass
 
     def points_join(self):
-
         pass
 
     def intersect_polygon___line(self):
@@ -412,10 +411,35 @@ class Polygon2:
         A Matplotlib Patch is created with the passed options ``**kwargs`` and
         added to the axes.
 
+        Examples::
+
+            >>> from spatialmath.base import plotvol2, plot_polygon
+            >>> plotvol2(5)
+            >>> p = Polygon2([(1, 2), (3, 2), (2, 4)])
+            >>> p.plot(fill=False)
+            >>> p.plot(facecolor="g", edgecolor="none")  # green filled triangle
+
+        .. plot::
+
+            from spatialmath import Polygon2
+            from spatialmath.base import plotvol2
+            p = Polygon2([(1, 2), (3, 2), (2, 4)])
+            plotvol2(5)
+            p.plot(fill=False)
+
+        .. plot::
+
+            from spatialmath import Polygon2
+            from spatialmath.base import plotvol2
+            p = Polygon2([(1, 2), (3, 2), (2, 4)])
+            plotvol2(5)
+            p.plot(facecolor="g", edgecolor="none")  # green filled triangle
+
+
         :seealso: :meth:`animate` :func:`matplotlib.PathPatch`
         """
         self.patch = PathPatch(self.path, **kwargs)
-        ax = base.axes_logic(ax, 2)
+        ax = smb.axes_logic(ax, 2)
         ax.add_patch(self.patch)
         plt.draw()
         self.kwargs = kwargs
@@ -529,7 +553,7 @@ class Polygon2:
         c = self.centroid()
         dmax = -np.inf
         for vertex in self.path.vertices:
-            d = base.norm(vertex - c)
+            d = smb.norm(vertex - c)
             dmax = max(dmax, d)
         return dmax
 
@@ -559,12 +583,12 @@ class Polygon2:
                 if other.intersect_segment(p1, p2):
                     return True
             return False
-        elif base.islistof(other, Polygon2):
+        elif smb.islistof(other, Polygon2):
             for polygon in cast(List[Polygon2], other):
                 if self.path.intersects_path(polygon.path, filled=True):
                     return True
             return False
-        elif base.islistof(other, Line2):
+        elif smb.islistof(other, Line2):
             for line in cast(List[Line2], other):
                 for p1, p2 in self.edges():
                     # test each edge segment against the line
@@ -997,7 +1021,6 @@ class Ellipse:
 # ]
 
 if __name__ == "__main__":
-
     pass
     # print(Ellipse((500, 500), (100, 200)))
     # p = Polygon2([(1, 2), (3, 2), (2, 4)])

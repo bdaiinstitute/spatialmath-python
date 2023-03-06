@@ -14,7 +14,7 @@ import numpy as np
 # except ImportError:  # pragma: no cover
 #     _symbolics = False
 
-import spatialmath.base as smbase
+import spatialmath.base as smb
 from spatialmath.base.types import *
 from spatialmath.baseposelist import BasePoseList
 
@@ -369,9 +369,9 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: not supported
         """
         if self.N == 2:
-            log = [smbase.trlog2(x, twist=twist) for x in self.data]
+            log = [smb.trlog2(x, twist=twist) for x in self.data]
         else:
-            log = [smbase.trlog(x, twist=twist) for x in self.data]
+            log = [smb.trlog(x, twist=twist) for x in self.data]
         if len(log) == 1:
             return log[0]
         else:
@@ -418,7 +418,7 @@ class BasePoseMatrix(BasePoseList):
         if isinstance(s, int) and s > 1:
             s = np.linspace(0, 1, s)
         else:
-            s = smbase.getvector(s)
+            s = smb.getvector(s)
             s = np.clip(s, 0, 1)
 
         if len(self) > 1:
@@ -432,13 +432,13 @@ class BasePoseMatrix(BasePoseList):
         if self.N == 2:
             # SO(2) or SE(2)
             return self.__class__(
-                [smbase.trinterp2(start=self.A, end=end, s=_s) for _s in s]
+                [smb.trinterp2(start=self.A, end=end, s=_s) for _s in s]
             )
 
         elif self.N == 3:
             # SO(3) or SE(3)
             return self.__class__(
-                [smbase.trinterp(start=self.A, end=end, s=_s) for _s in s]
+                [smb.trinterp(start=self.A, end=end, s=_s) for _s in s]
             )
 
     def interp1(self, s: float = None) -> Self:
@@ -488,32 +488,30 @@ class BasePoseMatrix(BasePoseList):
 
         #. For SO3 and SE3 rotation is interpolated using quaternion spherical linear interpolation (slerp).
 
-        :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.qslerp`, :func:`~spatialmath.smbase.transforms2d.trinterp2`
+        :seealso: :func:`interp`, :func:`~spatialmath.base.transforms3d.trinterp`, :func:`~spatialmath.base.quaternions.qslerp`, :func:`~spatialmath.smb.transforms2d.trinterp2`
 
         :SymPy: not supported
         """
-        s = smbase.getvector(s)
+        s = smb.getvector(s)
         s = np.clip(s, 0, 1)
 
         if self.N == 2:
             # SO(2) or SE(2)
             if len(s) > 1:
                 assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
-                return self.__class__(
-                    [smbase.trinterp2(start, self.A, s=_s) for _s in s]
-                )
+                return self.__class__([smb.trinterp2(start, self.A, s=_s) for _s in s])
             else:
                 return self.__class__(
-                    [smbase.trinterp2(start, x, s=s[0]) for x in self.data]
+                    [smb.trinterp2(start, x, s=s[0]) for x in self.data]
                 )
         elif self.N == 3:
             # SO(3) or SE(3)
             if len(s) > 1:
                 assert len(self) == 1, "if len(s) > 1, len(X) must == 1"
-                return self.__class__([smbase.trinterp(None, self.A, s=_s) for _s in s])
+                return self.__class__([smb.trinterp(None, self.A, s=_s) for _s in s])
             else:
                 return self.__class__(
-                    [smbase.trinterp(None, x, s=s[0]) for x in self.data]
+                    [smb.trinterp(None, x, s=s[0]) for x in self.data]
                 )
 
     def norm(self) -> Self:
@@ -546,9 +544,9 @@ class BasePoseMatrix(BasePoseList):
         :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`
         """
         if self.N == 2:
-            return self.__class__([smbase.trnorm2(x) for x in self.data])
+            return self.__class__([smb.trnorm2(x) for x in self.data])
         else:
-            return self.__class__([smbase.trnorm(x) for x in self.data])
+            return self.__class__([smb.trnorm(x) for x in self.data])
 
     def simplify(self) -> Self:
         """
@@ -580,7 +578,7 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: supported
         """
 
-        vf = np.vectorize(smbase.sym.simplify)
+        vf = np.vectorize(smb.sym.simplify)
         return self.__class__([vf(x) for x in self.data], check=False)
 
     def stack(self) -> NDArray:
@@ -682,10 +680,10 @@ class BasePoseMatrix(BasePoseList):
         """
         if self.N == 2:
             for x in self.data:
-                smbase.trprint2(x, *args, **kwargs)
+                smb.trprint2(x, *args, **kwargs)
         else:
             for x in self.data:
-                smbase.trprint(x, *args, **kwargs)
+                smb.trprint(x, *args, **kwargs)
 
     def strline(self, *args, **kwargs) -> str:
         """
@@ -744,10 +742,10 @@ class BasePoseMatrix(BasePoseList):
         s = ""
         if self.N == 2:
             for x in self.data:
-                s += smbase.trprint2(x, *args, file=False, **kwargs)
+                s += smb.trprint2(x, *args, file=False, **kwargs)
         else:
             for x in self.data:
-                s += smbase.trprint(x, *args, file=False, **kwargs)
+                s += smb.trprint(x, *args, file=False, **kwargs)
         return s
 
     def __repr__(self) -> str:
@@ -773,7 +771,7 @@ class BasePoseMatrix(BasePoseList):
             if x.dtype == "O":
                 return x
             else:
-                return smbase.removesmall(x)
+                return smb.removesmall(x)
 
         name = type(self).__name__
         if len(self) == 0:
@@ -901,7 +899,7 @@ class BasePoseMatrix(BasePoseList):
                 rowstr = " "
                 # format the columns
                 for colnum, element in enumerate(row):
-                    if smbase.sym.issymbol(element):
+                    if smb.sym.issymbol(element):
                         s = "{:<12s}".format(str(element))
                     else:
                         if (
@@ -971,9 +969,9 @@ class BasePoseMatrix(BasePoseList):
         :seealso: :func:`~spatialmath.base.transforms3d.trplot`, :func:`~spatialmath.base.transforms2d.trplot2`
         """
         if self.N == 2:
-            smbase.trplot2(self.A, *args, **kwargs)
+            smb.trplot2(self.A, *args, **kwargs)
         else:
-            smbase.trplot(self.A, *args, **kwargs)
+            smb.trplot(self.A, *args, **kwargs)
 
     def animate(self, *args, start=None, **kwargs) -> None:
         """
@@ -1004,15 +1002,15 @@ class BasePoseMatrix(BasePoseList):
         if len(self) > 1:
             # trajectory case
             if self.N == 2:
-                smbase.tranimate2(self.data, *args, **kwargs)
+                smb.tranimate2(self.data, *args, **kwargs)
             else:
-                smbase.tranimate(self.data, *args, **kwargs)
+                smb.tranimate(self.data, *args, **kwargs)
         else:
             # singleton case
             if self.N == 2:
-                smbase.tranimate2(self.A, start=start, *args, **kwargs)
+                smb.tranimate2(self.A, start=start, *args, **kwargs)
             else:
-                smbase.tranimate(self.A, start=start, *args, **kwargs)
+                smb.tranimate(self.A, start=start, *args, **kwargs)
 
     # ------------------------------------------------------------------------ #
     def prod(self) -> Self:
@@ -1157,13 +1155,13 @@ class BasePoseMatrix(BasePoseList):
         elif isinstance(right, (list, tuple, np.ndarray)):
             # print('*: pose x array')
             if len(left) == 1:
-                if smbase.isvector(right, left.N):
+                if smb.isvector(right, left.N):
                     # pose x vector
                     # print('*: pose x vector')
-                    v = smbase.getvector(right, out="col")
+                    v = smb.getvector(right, out="col")
                     if left.isSE:
                         # SE(n) x vector
-                        return smbase.h2e(left.A @ smbase.e2h(v))
+                        return smb.h2e(left.A @ smb.e2h(v))
                     else:
                         # SO(n) x vector
                         return left.A @ v
@@ -1173,19 +1171,19 @@ class BasePoseMatrix(BasePoseList):
                 else:
                     if left.isSE:
                         # SE(n) x [set of vectors]
-                        return smbase.h2e(left.A @ smbase.e2h(right))
+                        return smb.h2e(left.A @ smb.e2h(right))
                     else:
                         # SO(n) x [set of vectors]
                         return left.A @ right
 
-            elif len(left) > 1 and smbase.isvector(right, left.N):
+            elif len(left) > 1 and smb.isvector(right, left.N):
                 # pose array x vector
                 # print('*: pose array x vector')
-                v = smbase.getvector(right)
+                v = smb.getvector(right)
                 if left.isSE:
                     # SE(n) x vector
-                    v = smbase.e2h(v)
-                    return np.array([smbase.h2e(x @ v).flatten() for x in left.A]).T
+                    v = smb.e2h(v)
+                    return np.array([smb.h2e(x @ v).flatten() for x in left.A]).T
                 else:
                     # SO(n) x vector
                     return np.array([(x @ v).flatten() for x in left.A]).T
@@ -1205,7 +1203,7 @@ class BasePoseMatrix(BasePoseList):
                 and right.shape[0] == left.N
             ):
                 # SE(n) x matrix
-                return smbase.h2e(left.A @ smbase.e2h(right))
+                return smb.h2e(left.A @ smb.e2h(right))
             elif (
                 isinstance(right, np.ndarray)
                 and left.isSO
@@ -1222,11 +1220,11 @@ class BasePoseMatrix(BasePoseList):
             ):
                 # SE(n) x matrix
                 return np.c_[
-                    [smbase.h2e(x.A @ smbase.e2h(y)) for x, y in zip(right, left.T)]
+                    [smb.h2e(x.A @ smb.e2h(y)) for x, y in zip(right, left.T)]
                 ].T
             else:
                 raise ValueError("bad operands")
-        elif smbase.isscalar(right):
+        elif smb.isscalar(right):
             return left._op2(right, lambda x, y: x * y)
         else:
             return NotImplemented
@@ -1252,7 +1250,7 @@ class BasePoseMatrix(BasePoseList):
         if isinstance(left, right.__class__):
             # print('*: pose x pose')
             return left.__class__(
-                left._op2(right, lambda x, y: smbase.trnorm(x @ y)), check=False
+                left._op2(right, lambda x, y: smb.trnorm(x @ y)), check=False
             )
         else:
             raise TypeError("@ only applies to pose composition")
@@ -1346,7 +1344,7 @@ class BasePoseMatrix(BasePoseList):
             return left.__class__(
                 left._op2(right.inv(), lambda x, y: x @ y), check=False
             )
-        elif smbase.isscalar(right):
+        elif smb.isscalar(right):
             return left._op2(right, lambda x, y: x / y)
         else:
             raise ValueError("bad operands")
@@ -1637,7 +1635,7 @@ class BasePoseMatrix(BasePoseList):
                     return [op(x, y) for (x, y) in zip(left.A, right.A)]
                 else:
                     raise ValueError("length of lists to == must be same length")
-        elif smbase.isscalar(right) or (
+        elif smb.isscalar(right) or (
             isinstance(right, np.ndarray) and right.shape == left.shape
         ):
             # class by matrix
