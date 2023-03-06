@@ -840,7 +840,7 @@ class Ellipse:
 
     @property
     def E(self):
-        """
+        r"""
         Return ellipse matrix
 
         :return: ellipse matrix
