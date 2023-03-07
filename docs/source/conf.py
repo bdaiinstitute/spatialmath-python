@@ -182,31 +182,31 @@ favicons = [
     {
         "rel": "icon",
         "sizes": "16x16",
-        "static-file": "favicon-16x16.png",
+        "href": "favicon-16x16.png",
         "type": "image/png",
     },
     {
         "rel": "icon",
         "sizes": "32x32",
-        "static-file": "favicon-32x32.png",
+        "href": "favicon-32x32.png",
         "type": "image/png",
     },
     {
         "rel": "apple-touch-icon",
         "sizes": "180x180",
-        "static-file": "apple-touch-icon.png",
+        "href": "apple-touch-icon.png",
         "type": "image/png",
     },
     {
         "rel": "android-chrome",
         "sizes": "192x192",
-        "static-file": "android-chrome-192x192.png ",
+        "href": "android-chrome-192x192.png",
         "type": "image/png",
     },
     {
         "rel": "android-chrome",
         "sizes": "512x512",
-        "static-file": "android-chrome-512x512.png ",
+        "href": "android-chrome-512x512.png",
         "type": "image/png",
     },
 ]
