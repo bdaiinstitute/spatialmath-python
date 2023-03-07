@@ -2,11 +2,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-    <link rel="icon" sizes="16x16" type="image/png" href="_static/favicon-16x16.png">
-    <link rel="icon" sizes="32x32" type="image/png" href="_static/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" type="image/png" href="_static/apple-touch-icon.png">
-    <link rel="android-chrome" sizes="192x192" type="image/png" href="_static/android-chrome-192x192.png ">
-    <link rel="android-chrome" sizes="512x512" type="image/png" href="_static/android-chrome-512x512.png ">
+    <link rel="icon" sizes="16x16" href="_static/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="_static/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="_static/apple-touch-icon.png" type="image/png">
+    <link rel="android-chrome" sizes="192x192" href="_static/android-chrome-192x192.png" type="image/png">
+    <link rel="android-chrome" sizes="512x512" href="_static/android-chrome-512x512.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unit dual quaternion &mdash; Spatial Maths package  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -198,17 +198,21 @@ real and dual parts as specified.</p></li>
 the rigid-body motion described by the SE3 value <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/quaternion.py&quot;, line 1618, in __mul__</span>
-<span class="go">    return right.__class__(left.binop(right, smb.qqmul))</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/quaternion.py&quot;, line 984, in __init__</span>
-<span class="go">    self.data = [smb.qunit(q) for q in self.data]</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/quaternion.py&quot;, line 984, in &lt;listcomp&gt;</span>
-<span class="go">    self.data = [smb.qunit(q) for q in self.data]</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/quaternions.py&quot;, line 134, in qunit</span>
-<span class="go">    q = smb.getvector(q, 4)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 435, in getvector</span>
-<span class="go">    raise TypeError(&quot;invalid input type&quot;)</span>
-<span class="go">TypeError: invalid input type</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitDualQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="go">  -0.09686  -0.6319   -0.7689    0.7532    </span>
+<span class="go">  -0.3992    0.7324   -0.5516   -0.5669    </span>
+<span class="go">   0.9117    0.2536   -0.3232    0.1943    </span>
+<span class="go">   0         0         0         1         </span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">-0.5728 &lt;&lt; -0.3514,  0.7336, -0.1016 &gt;&gt; + ε  0.3502 &lt; -0.2582,  0.1665,  0.1210 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">&lt;class &#39;spatialmath.DualQuaternion.UnitDualQuaternion&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">norm</span><span class="p">())</span>  <span class="c1"># norm is (1, 0)</span>
+<span class="go">(1.0, 0.0)</span>
 </pre></div>
 </div>
 <p>The dual number is stored internally as two quaternion, respectively
@@ -385,7 +389,7 @@ number (1,0).</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 06-Mar-2023.
+      <span class="lastupdated">Last updated on 07-Mar-2023.
       </span></p>
   </div>
 
