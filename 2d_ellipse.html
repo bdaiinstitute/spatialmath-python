@@ -123,6 +123,22 @@
 <dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse" title="spatialmath.geom2d.Ellipse">Ellipse</a></p>
 </dd>
 </dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eref</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="n">centre</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">perim</span> <span class="o">=</span> <span class="n">eref</span><span class="o">.</span><span class="n">points</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">perim</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(2, 20)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ellipse</span><span class="o">.</span><span class="n">FromPerimeter</span><span class="p">(</span><span class="n">perim</span><span class="p">)</span>
+<span class="go">Ellipse(radii=[1. 2.], centre=[3. 4.], theta=0.7853981633974324)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.points" title="spatialmath.geom2d.Ellipse.points"><code class="xref py py-meth docutils literal notranslate"><span class="pre">points()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -150,11 +166,14 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.geom2d.Ellipse.Polynomial">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Polynomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Ellipse.Polynomial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Ellipse.Polynomial" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Polynomial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Ellipse.Polynomial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Ellipse.Polynomial" title="Permalink to this definition"></a></dt>
 <dd><p>Create an ellipse from polynomial</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>e</strong> (<em>arraylike</em><em>(</em><em>4</em><em>) or </em><em>arraylike</em><em>(</em><em>5</em><em>)</em>) – polynomial coeffients <span class="math notranslate nohighlight">\(e\)</span> or <span class="math notranslate nohighlight">\(\eta\)</span></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>e</strong> (<em>arraylike</em><em>(</em><em>4</em><em>) or </em><em>arraylike</em><em>(</em><em>5</em><em>)</em>) – polynomial coeffients <span class="math notranslate nohighlight">\(e\)</span> or <span class="math notranslate nohighlight">\(\eta\)</span></p></li>
+<li><p><strong>p</strong> (<em>array_like</em><em>(</em><em>2</em><em>)</em><em>, </em><em>optional</em>) – point to set scale</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>an ellipse instance</p>
@@ -163,14 +182,28 @@
 <dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse" title="spatialmath.geom2d.Ellipse">Ellipse</a></p>
 </dd>
 </dl>
-<p>An ellipse can be specified by a polynomial</p>
+<p>An ellipse can be specified by a polynomial <span class="math notranslate nohighlight">\(\vec{e} \in \mathbb{R}^6\)</span></p>
 <div class="math notranslate nohighlight">
 \[e_0 x^2 + e_1 y^2 + e_2 xy + e_3 x + e_4 y + e_5 = 0\]</div>
-<p>or</p>
+<p>or <span class="math notranslate nohighlight">\(\vec{\epsilon} \in \mathbb{R}^5\)</span> where the leading coefficient is
+implicitly one</p>
 <div class="math notranslate nohighlight">
-\[x^2 + \eta_1 y^2 + \eta_2 xy + \eta_3 x + \eta_4 y + \eta_5 = 0\]</div>
-<p>The ellipse matrix and centre coordinate are determined from the polynomial
-coefficients.</p>
+\[x^2 + \epsilon_1 y^2 + \epsilon_2 xy + \epsilon_3 x + \epsilon_4 y + \epsilon_5 = 0\]</div>
+<p>In this latter case, position, orientation and aspect ratio of the
+ellipse will be correct, but the overall scale of the ellipse is not
+determined.  To correct this, we can pass in a single point <code class="docutils literal notranslate"><span class="pre">p</span></code> that
+we know lies on the perimeter of the ellipse.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ellipse</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">([</span><span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.625</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.25</span><span class="p">,</span> <span class="mf">24.625</span><span class="p">])</span>
+<span class="go">Ellipse(radii=[1. 2.], centre=[3. 4.], theta=0.7853981633974483)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.polynomial" title="spatialmath.geom2d.Ellipse.polynomial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">polynomial()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -190,14 +223,19 @@ coefficients.</p>
 <dd class="field-even"><p><strong>ValueError</strong> – bad parameters</p>
 </dd>
 </dl>
-<p>The ellipse shape can be specified by <code class="docutils literal notranslate"><span class="pre">radii</span></code> and <code class="docutils literal notranslate"><span class="pre">theta</span></code> or by a 2x2
-matrix <code class="docutils literal notranslate"><span class="pre">E</span></code>.</p>
-<p>Internally the ellipse is represented by a 2x2 matrix and the centre coordinate
-such that</p>
+<p>The ellipse shape can be specified by <code class="docutils literal notranslate"><span class="pre">radii</span></code> and <code class="docutils literal notranslate"><span class="pre">theta</span></code> or by a
+symmetric 2x2 matrix <code class="docutils literal notranslate"><span class="pre">E</span></code>.</p>
+<p>Internally the ellipse is represented by a symmetric matrix <span class="math notranslate nohighlight">\(\mat{E} \in \mathbb{R}^{2\times 2}\)</span>
+and its centre coordinate <span class="math notranslate nohighlight">\(\vec{x}_0 \in \mathbb{R}^2\)</span> such that</p>
 <div class="math notranslate nohighlight">
-\[(\vec{x} - \vec{x}_0)^T \mat{E} (\vec{x} - \vec{x}_0) = 1\]</div>
+\[(\vec{x} - \vec{x}_0)^{\top} \mat{E} \, (\vec{x} - \vec{x}_0) = 1\]</div>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">Ellipse(radii=[1. 2.], centre=(0, 0), theta=0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ellipse</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]))</span>
+<span class="go">Ellipse(radii=[1.618 0.618], centre=(0, 0), theta=1.0172219678978514)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -228,6 +266,15 @@ such that</p>
 <dd class="field-odd"><p>bool or list(bool)</p>
 </dd>
 </dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">contains</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">contains</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -236,7 +283,7 @@ such that</p>
 <dd><p>Plot ellipse</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – arguments passed to :func:<a href="#id1"><span class="problematic" id="id2">`</span></a>~spatialmath.base.graphics.plot_ellipse</p>
+<dd class="field-odd"><p><strong>kwargs</strong> – arguments passed to <a class="reference internal" href="func_2d_graphics.html#spatialmath.base.graphics.plot_ellipse" title="spatialmath.base.graphics.plot_ellipse"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_ellipse()</span></code></a></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>list of artists</p>
@@ -284,11 +331,50 @@ such that</p>
 <dd class="field-odd"><p>Points2</p>
 </dd>
 </dl>
-<p>Return a set of <cite>resolution</cite> points on the perimeter of the ellipse.  The perimeter
+<p>Return a set of <code class="docutils literal notranslate"><span class="pre">resolution</span></code> points on the perimeter of the ellipse.  The perimeter
 set is not closed, that is, last point != first point.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">points</span><span class="p">()[:,:</span><span class="mi">5</span><span class="p">]</span>  <span class="c1"># first 5 points</span>
+<span class="go">array([[4.2298, 4.0396, 3.7477, 3.3825, 2.9799],</span>
+<span class="go">       [3.5793, 4.1469, 4.7001, 5.1848, 5.5535]])</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><code class="xref py py-func docutils literal notranslate"><span class="pre">ellipse()</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.polygon" title="spatialmath.geom2d.Ellipse.polygon"><code class="xref py py-meth docutils literal notranslate"><span class="pre">polygon()</span></code></a> <code class="xref py py-func docutils literal notranslate"><span class="pre">ellipse()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.geom2d.Ellipse.polygon">
+<span class="sig-name descname"><span class="pre">polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/geom2d.html#Ellipse.polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.geom2d.Ellipse.polygon" title="Permalink to this definition"></a></dt>
+<dd><p>Approximate with a polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>resolution</strong> (<em>int</em><em>, </em><em>optional</em>) – number of polygon vertices, defaults to 10</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a polygon approximating the ellipse</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Polygon2" title="spatialmath.geom2d.Polygon2"><code class="xref py py-class docutils literal notranslate"><span class="pre">Polygon2</span></code></a> instance</p>
+</dd>
+</dl>
+<p>Return a polygon instance with <code class="docutils literal notranslate"><span class="pre">resolution</span></code> vertices.  A <code class="xref py py-class docutils literal notranslate"><span class="pre">Polygon2`</span></code> can be
+used for intersection testing with lines or other polygons.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">polygon</span><span class="p">()</span>
+<span class="go">Polygon2 with 10 vertices</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.points" title="spatialmath.geom2d.Ellipse.points"><code class="xref py py-meth docutils literal notranslate"><span class="pre">points()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -305,14 +391,23 @@ set is not closed, that is, last point != first point.</p>
 <dd class="field-even"><p>ndarray(2,2)</p>
 </dd>
 </dl>
-<p>The matrix <code class="docutils literal notranslate"><span class="pre">E</span></code> describes the shape of the ellipse</p>
+<p>The symmetric matrix <span class="math notranslate nohighlight">\(\mat{E} \in \mathbb{R}^{2\times 2}\)</span> determines the radii and
+the orientation of the ellipse</p>
 <div class="math notranslate nohighlight">
-\[(\vec{x} - \vec{x}_0)^T \mat{E} (\vec{x} - \vec{x}_0) = 1\]</div>
+\[(\vec{x} - \vec{x}_0)^{\top} \mat{E} \, (\vec{x} - \vec{x}_0) = 1\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.centre" title="spatialmath.geom2d.Ellipse.centre"><code class="xref py py-meth docutils literal notranslate"><span class="pre">centre()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.theta" title="spatialmath.geom2d.Ellipse.theta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">theta()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.radii" title="spatialmath.geom2d.Ellipse.radii"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radii()</span></code></a></p>
 </dd>
 </dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">E</span>
+<span class="go">array([[0.8276, 0.3156],</span>
+<span class="go">       [0.3156, 0.4224]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -327,6 +422,13 @@ set is not closed, that is, last point != first point.</p>
 <dd class="field-even"><p>float</p>
 </dd>
 </dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">area</span>
+<span class="go">6.283185307179586</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -340,6 +442,15 @@ set is not closed, that is, last point != first point.</p>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>ndarray(2)</p>
 </dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">centre</span>
+<span class="go">(3, 4)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.radii" title="spatialmath.geom2d.Ellipse.radii"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radii()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.theta" title="spatialmath.geom2d.Ellipse.theta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">theta()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.E" title="spatialmath.geom2d.Ellipse.E"><code class="xref py py-meth docutils literal notranslate"><span class="pre">E()</span></code></a></p>
 </dd>
@@ -358,8 +469,22 @@ set is not closed, that is, last point != first point.</p>
 <dd class="field-even"><p>ndarray(6)</p>
 </dd>
 </dl>
+<p>An ellipse can be described by <span class="math notranslate nohighlight">\(\vec{e} \in \mathbb{R}^6\)</span> which are the
+coefficents of a quadratic in <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span></p>
 <div class="math notranslate nohighlight">
 \[e_0 x^2 + e_1 y^2 + e_2 xy + e_3 x + e_4 y + e_5 = 0\]</div>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">polynomial</span>
+<span class="go">array([ 0.8276,  0.4224,  0.6311, -7.4901, -5.2724, 21.7799])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Seealso</dt>
+<dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.Polynomial" title="spatialmath.geom2d.Ellipse.Polynomial"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Polynomial()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -373,6 +498,15 @@ set is not closed, that is, last point != first point.</p>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>ndarray(2)</p>
 </dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">radii</span>
+<span class="go">array([1., 2.])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.centre" title="spatialmath.geom2d.Ellipse.centre"><code class="xref py py-meth docutils literal notranslate"><span class="pre">centre()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.theta" title="spatialmath.geom2d.Ellipse.theta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">theta()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.E" title="spatialmath.geom2d.Ellipse.E"><code class="xref py py-meth docutils literal notranslate"><span class="pre">E()</span></code></a></p>
 </dd>
@@ -390,6 +524,15 @@ set is not closed, that is, last point != first point.</p>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>float</p>
 </dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">radii</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">centre</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">theta</span>
+<span class="go">0.5</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
 <dd class="field-odd"><p><a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.centre" title="spatialmath.geom2d.Ellipse.centre"><code class="xref py py-meth docutils literal notranslate"><span class="pre">centre()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.radii" title="spatialmath.geom2d.Ellipse.radii"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radii()</span></code></a> <a class="reference internal" href="classes-2d.html#spatialmath.geom2d.Ellipse.E" title="spatialmath.geom2d.Ellipse.E"><code class="xref py py-meth docutils literal notranslate"><span class="pre">E()</span></code></a></p>
 </dd>
@@ -412,7 +555,7 @@ set is not closed, that is, last point != first point.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 07-Mar-2023.
+      <span class="lastupdated">Last updated on 08-Mar-2023.
       </span></p>
   </div>
 

@@ -356,6 +356,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Polygon2 with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> vertices&quot;</span></div>
 
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Polygon2.__len__"><a class="viewcode-back" href="../../2d_polygon.html#spatialmath.geom2d.Polygon2.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Number of vertices in polygon</span>
@@ -749,7 +752,7 @@
         <span class="n">radii</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">E</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">centre</span><span class="p">:</span> <span class="n">ArrayLike2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an ellipse</span>
@@ -764,22 +767,23 @@
 <span class="sd">        :type theta: float, optional</span>
 <span class="sd">        :raises ValueError: bad parameters</span>
 
-<span class="sd">        The ellipse shape can be specified by ``radii`` and ``theta`` or by a 2x2</span>
-<span class="sd">        matrix ``E``.</span>
+<span class="sd">        The ellipse shape can be specified by ``radii`` and ``theta`` or by a</span>
+<span class="sd">        symmetric 2x2 matrix ``E``.</span>
 
-<span class="sd">        Internally the ellipse is represented by a 2x2 matrix and the centre coordinate</span>
-<span class="sd">        such that</span>
+<span class="sd">        Internally the ellipse is represented by a symmetric matrix :math:`\mat{E} \in \mathbb{R}^{2\times 2}`</span>
+<span class="sd">        and its centre coordinate :math:`\vec{x}_0 \in \mathbb{R}^2` such that</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            (\vec{x} - \vec{x}_0)^T \mat{E} (\vec{x} - \vec{x}_0) = 1</span>
+<span class="sd">            (\vec{x} - \vec{x}_0)^{\top} \mat{E} \, (\vec{x} - \vec{x}_0) = 1</span>
 
 <span class="sd">        Example:</span>
 
 <span class="sd">        .. runblock:: pycon</span>
 
 <span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
-<span class="sd">            &gt;&gt;&gt; Ellipse(radii=(1,2), theta=0</span>
+<span class="sd">            &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">            &gt;&gt;&gt; Ellipse(radii=(1,2), theta=0)</span>
 <span class="sd">            &gt;&gt;&gt; Ellipse(E=np.array([[1, 1], [1, 2]]))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -802,30 +806,43 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_centre</span> <span class="o">=</span> <span class="n">centre</span></div>
 
 <div class="viewcode-block" id="Ellipse.Polynomial"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.Polynomial">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Polynomial</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">Polynomial</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an ellipse from polynomial</span>
 
 <span class="sd">        :param e: polynomial coeffients :math:`e` or :math:`\eta`</span>
 <span class="sd">        :type e: arraylike(4) or arraylike(5)</span>
+<span class="sd">        :param p: point to set scale</span>
+<span class="sd">        :type p: array_like(2), optional</span>
 <span class="sd">        :return: an ellipse instance</span>
 <span class="sd">        :rtype: Ellipse</span>
 
-<span class="sd">        An ellipse can be specified by a polynomial</span>
+<span class="sd">        An ellipse can be specified by a polynomial :math:`\vec{e} \in \mathbb{R}^6`</span>
 
 <span class="sd">        .. math::</span>
 
 <span class="sd">            e_0 x^2 + e_1 y^2 + e_2 xy + e_3 x + e_4 y + e_5 = 0</span>
 
-<span class="sd">        or</span>
+<span class="sd">        or :math:`\vec{\epsilon} \in \mathbb{R}^5` where the leading coefficient is</span>
+<span class="sd">        implicitly one</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            x^2 + \eta_1 y^2 + \eta_2 xy + \eta_3 x + \eta_4 y + \eta_5 = 0</span>
+<span class="sd">            x^2 + \epsilon_1 y^2 + \epsilon_2 xy + \epsilon_3 x + \epsilon_4 y + \epsilon_5 = 0</span>
 
-<span class="sd">        The ellipse matrix and centre coordinate are determined from the polynomial</span>
-<span class="sd">        coefficients.</span>
+<span class="sd">        In this latter case, position, orientation and aspect ratio of the</span>
+<span class="sd">        ellipse will be correct, but the overall scale of the ellipse is not</span>
+<span class="sd">        determined.  To correct this, we can pass in a single point ``p`` that</span>
+<span class="sd">        we know lies on the perimeter of the ellipse.</span>
 
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; Ellipse.Polynomial([0.625, 0.625, 0.75, -6.75, -7.25, 24.625])</span>
+
+<span class="sd">        :seealso: :meth:`polynomial`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
@@ -843,15 +860,13 @@
         <span class="c1"># fmt: on</span>
 
         <span class="c1"># solve for the centre</span>
-        <span class="c1"># fmt: off</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
-            <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">b</span><span class="p">],</span>
-        <span class="p">])</span>
-        <span class="c1"># fmt: on</span>
-        <span class="n">centre</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">centre</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">E</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">z</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">centre</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">centre</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># point was passed in, use this to set the scale</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">centre</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">p</span> <span class="o">@</span> <span class="n">E</span> <span class="o">@</span> <span class="n">p</span>
+            <span class="n">E</span> <span class="o">/=</span> <span class="n">s</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">centre</span><span class="o">=</span><span class="n">centre</span><span class="p">)</span></div>
 
@@ -897,6 +912,19 @@
 <span class="sd">        :type p: ndarray(2,N)</span>
 <span class="sd">        :return: an ellipse instance</span>
 <span class="sd">        :rtype: Ellipse</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">            &gt;&gt;&gt; eref = Ellipse(radii=(1, 2), theta=np.pi / 4, centre=[3, 4])</span>
+<span class="sd">            &gt;&gt;&gt; perim = eref.points()</span>
+<span class="sd">            &gt;&gt;&gt; print(perim.shape)</span>
+<span class="sd">            &gt;&gt;&gt; Ellipse.FromPerimeter(perim)</span>
+
+<span class="sd">        :seealso: :meth:`points`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="p">[]</span>
@@ -907,8 +935,8 @@
         <span class="c1">#  x^2 + eta[0] y^2 + eta[1] xy + eta[2] x + eta[3] y + eta[4] = 0</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># solve for the quadratic term</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+        <span class="c1"># create ellipse from the polynomial, using one point to set scale</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">p</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="Ellipse.__str__"><a class="viewcode-back" href="../../2d_ellipse.html#spatialmath.geom2d.Ellipse.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Ellipse(radii=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">radii</span><span class="si">}</span><span class="s2">, centre=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">centre</span><span class="si">}</span><span class="s2">, theta=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="si">}</span><span class="s2">)&quot;</span></div>
@@ -924,13 +952,22 @@
 <span class="sd">        :return: ellipse matrix</span>
 <span class="sd">        :rtype: ndarray(2,2)</span>
 
-<span class="sd">        The matrix ``E`` describes the shape of the ellipse</span>
+<span class="sd">        The symmetric matrix :math:`\mat{E} \in \mathbb{R}^{2\times 2}` determines the radii and</span>
+<span class="sd">        the orientation of the ellipse</span>
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">            (\vec{x} - \vec{x}_0)^T \mat{E} (\vec{x} - \vec{x}_0) = 1</span>
+<span class="sd">            (\vec{x} - \vec{x}_0)^{\top} \mat{E} \, (\vec{x} - \vec{x}_0) = 1</span>
 
 <span class="sd">        :seealso: :meth:`centre` :meth:`theta` :meth:`radii`</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.E</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># return 2x2 ellipse matrix</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span>
@@ -942,6 +979,14 @@
 
 <span class="sd">        :return: centre of the ellipse</span>
 <span class="sd">        :rtype: ndarray(2)</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.centre</span>
 
 <span class="sd">        :seealso: :meth:`radii` :meth:`theta` :meth:`E`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -956,6 +1001,14 @@
 <span class="sd">        :return: radii of the ellipse</span>
 <span class="sd">        :rtype: ndarray(2)</span>
 
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.radii</span>
+
 <span class="sd">        :seealso: :meth:`centre` :meth:`theta` :meth:`E`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
@@ -967,6 +1020,14 @@
 
 <span class="sd">        :return: orientation in radians, in the interval [-pi, pi)</span>
 <span class="sd">        :rtype: float</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.theta</span>
 
 <span class="sd">        :seealso: :meth:`centre` :meth:`radii` :meth:`E`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -981,20 +1042,41 @@
 
 <span class="sd">        :return: area</span>
 <span class="sd">        :rtype: float</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.area</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">polynomial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return ellipse as a polynomial</span>
 
 <span class="sd">        :return: polynomial</span>
 <span class="sd">        :rtype: ndarray(6)</span>
 
+<span class="sd">        An ellipse can be described by :math:`\vec{e} \in \mathbb{R}^6` which are the</span>
+<span class="sd">        coefficents of a quadratic in :math:`x` and :math:`y`</span>
+
 <span class="sd">        .. math::</span>
 
 <span class="sd">            e_0 x^2 + e_1 y^2 + e_2 xy + e_3 x + e_4 y + e_5 = 0</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.polynomial</span>
+
+<span class="sd">        :seealso: :meth:`Polynomial`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -1008,7 +1090,7 @@
                 <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span>
                 <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">y_0</span><span class="p">,</span>
                 <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y_0</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x_0</span><span class="p">,</span>
-                <span class="n">a</span> <span class="o">*</span> <span class="n">x_0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y_0</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">a</span> <span class="o">*</span> <span class="n">x_0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y_0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x_0</span> <span class="o">*</span> <span class="n">y_0</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="p">)</span>
 
@@ -1016,7 +1098,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot ellipse</span>
 
-<span class="sd">        :param kwargs: arguments passed to :func:`~spatialmath.base.graphics.plot_ellipse</span>
+<span class="sd">        :param kwargs: arguments passed to :func:`~spatialmath.base.graphics.plot_ellipse`</span>
 <span class="sd">        :return: list of artists</span>
 <span class="sd">        :rtype: _type_</span>
 
@@ -1034,17 +1116,19 @@
 
 <span class="sd">            from spatialmath import Ellipse</span>
 <span class="sd">            from spatialmath.base import plotvol2</span>
-<span class="sd">            plotvol2(5)</span>
+<span class="sd">            ax = plotvol2(5)</span>
 <span class="sd">            e = Ellipse(E=np.array([[1, 1], [1, 2]]))</span>
 <span class="sd">            e.plot()</span>
+<span class="sd">            ax.grid()</span>
 
 <span class="sd">        .. plot::</span>
 
 <span class="sd">            from spatialmath import Ellipse</span>
 <span class="sd">            from spatialmath.base import plotvol2</span>
-<span class="sd">            plotvol2(5)</span>
+<span class="sd">            ax = plotvol2(5)</span>
 <span class="sd">            e = Ellipse(E=np.array([[1, 1], [1, 2]]))</span>
 <span class="sd">            e.plot(filled=True, color=&#39;r&#39;)</span>
+<span class="sd">            ax.grid()</span>
 
 <span class="sd">        :seealso: :func:`~spatialmath.base.graphics.plot_ellipse`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1058,6 +1142,16 @@
 <span class="sd">        :type p: arraylike(2), ndarray(2,N)</span>
 <span class="sd">        :return: true if point is contained within ellipse</span>
 <span class="sd">        :rtype: bool or list(bool)</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.contains((3,4))</span>
+<span class="sd">            &gt;&gt;&gt; e.contains((0,0))</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">inside</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -1079,24 +1173,46 @@
 <span class="sd">        :return: set of perimeter points</span>
 <span class="sd">        :rtype: Points2</span>
 
-<span class="sd">        Return a set of `resolution` points on the perimeter of the ellipse.  The perimeter</span>
+<span class="sd">        Return a set of ``resolution`` points on the perimeter of the ellipse.  The perimeter</span>
 <span class="sd">        set is not closed, that is, last point != first point.</span>
 
-<span class="sd">        :seealso: :func:`~spatialmath.base.graphics.ellipse`</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.points()[:,:5]  # first 5 points</span>
+
+<span class="sd">        :seealso: :meth:`polygon` :func:`~spatialmath.base.graphics.ellipse`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">ellipse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">ellipse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Ellipse.polygon"><a class="viewcode-back" href="../../classes-2d.html#spatialmath.geom2d.Ellipse.polygon">[docs]</a>    <span class="k">def</span> <span class="nf">polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon2</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Approximate with a polygon</span>
 
-<span class="c1"># alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5 = symbols(&quot;alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5&quot;)</span>
-<span class="c1"># solve(eq, [alpha, beta, gamma, xc, yc])</span>
-<span class="c1"># eq = [</span>
-<span class="c1">#     alpha - e0,</span>
-<span class="c1">#     beta- e1,</span>
-<span class="c1">#     2 * gamma - e2,</span>
-<span class="c1">#     -2 * (alpha * xc + gamma * yc) - e3,</span>
-<span class="c1">#     -2 * (beta * yc + gamma * xc) - e4,</span>
-<span class="c1">#     alpha * xc**2 + beta * yc**2 + 2 * gamma * xc * yc - 1 - e5</span>
-<span class="c1"># ]</span>
+<span class="sd">        :param resolution: number of polygon vertices, defaults to 10</span>
+<span class="sd">        :type resolution: int, optional</span>
+<span class="sd">        :return: a polygon approximating the ellipse</span>
+<span class="sd">        :rtype: :class:`Polygon2` instance</span>
+
+<span class="sd">        Return a polygon instance with ``resolution`` vertices.  A :class:`Polygon2`` can be</span>
+<span class="sd">        used for intersection testing with lines or other polygons.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import Ellipse</span>
+<span class="sd">            &gt;&gt;&gt; e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)</span>
+<span class="sd">            &gt;&gt;&gt; e.polygon()</span>
+
+<span class="sd">        :seealso: :meth:`points`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Polygon2</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">ellipse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div></div>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="k">pass</span>
@@ -1149,7 +1265,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 07-Mar-2023.
+      <span class="lastupdated">Last updated on 08-Mar-2023.
       </span></p>
   </div>
 
