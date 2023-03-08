@@ -278,6 +278,9 @@ class Polygon2:
         """
         return f"Polygon2 with {len(self.path)} vertices"
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def __len__(self) -> int:
         """
         Number of vertices in polygon
@@ -671,7 +674,7 @@ class Ellipse:
         radii: Optional[ArrayLike2] = None,
         E: Optional[NDArray] = None,
         centre: ArrayLike2 = (0, 0),
-        theta: float = None,
+        theta: Optional[float] = None,
     ):
         r"""
         Create an ellipse
@@ -686,22 +689,23 @@ class Ellipse:
         :type theta: float, optional
         :raises ValueError: bad parameters
 
-        The ellipse shape can be specified by ``radii`` and ``theta`` or by a 2x2
-        matrix ``E``.
+        The ellipse shape can be specified by ``radii`` and ``theta`` or by a
+        symmetric 2x2 matrix ``E``.
 
-        Internally the ellipse is represented by a 2x2 matrix and the centre coordinate
-        such that
+        Internally the ellipse is represented by a symmetric matrix :math:`\mat{E} \in \mathbb{R}^{2\times 2}`
+        and its centre coordinate :math:`\vec{x}_0 \in \mathbb{R}^2` such that
 
         .. math::
 
-            (\vec{x} - \vec{x}_0)^T \mat{E} (\vec{x} - \vec{x}_0) = 1
+            (\vec{x} - \vec{x}_0)^{\top} \mat{E} \, (\vec{x} - \vec{x}_0) = 1
 
         Example:
 
         .. runblock:: pycon
 
             >>> from spatialmath import Ellipse
-            >>> Ellipse(radii=(1,2), theta=0
+            >>> import numpy as np
+            >>> Ellipse(radii=(1,2), theta=0)
             >>> Ellipse(E=np.array([[1, 1], [1, 2]]))
 
         """
@@ -724,30 +728,43 @@ class Ellipse:
         self._centre = centre
 
     @classmethod
-    def Polynomial(cls, e: ArrayLike) -> Self:
+    def Polynomial(cls, e: ArrayLike, p: Optional[ArrayLike2] = None) -> Self:
         r"""
         Create an ellipse from polynomial
 
         :param e: polynomial coeffients :math:`e` or :math:`\eta`
         :type e: arraylike(4) or arraylike(5)
+        :param p: point to set scale
+        :type p: array_like(2), optional
         :return: an ellipse instance
         :rtype: Ellipse
 
-        An ellipse can be specified by a polynomial
+        An ellipse can be specified by a polynomial :math:`\vec{e} \in \mathbb{R}^6`
 
         .. math::
 
             e_0 x^2 + e_1 y^2 + e_2 xy + e_3 x + e_4 y + e_5 = 0
 
-        or
+        or :math:`\vec{\epsilon} \in \mathbb{R}^5` where the leading coefficient is
+        implicitly one
 
         .. math::
 
-            x^2 + \eta_1 y^2 + \eta_2 xy + \eta_3 x + \eta_4 y + \eta_5 = 0
+            x^2 + \epsilon_1 y^2 + \epsilon_2 xy + \epsilon_3 x + \epsilon_4 y + \epsilon_5 = 0
 
-        The ellipse matrix and centre coordinate are determined from the polynomial
-        coefficients.
+        In this latter case, position, orientation and aspect ratio of the
+        ellipse will be correct, but the overall scale of the ellipse is not
+        determined.  To correct this, we can pass in a single point ``p`` that
+        we know lies on the perimeter of the ellipse.
 
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> Ellipse.Polynomial([0.625, 0.625, 0.75, -6.75, -7.25, 24.625])
+
+        :seealso: :meth:`polynomial`
         """
         e = np.array(e)
         if len(e) == 5:
@@ -765,15 +782,13 @@ class Ellipse:
         # fmt: on
 
         # solve for the centre
-        # fmt: off
-        M = -2 * np.array([
-            [a, c],
-            [c, b],
-        ])
-        # fmt: on
-        centre = np.linalg.lstsq(M, e[3:5], rcond=None)[0]
+        centre = np.linalg.lstsq(-2 * E, e[3:5], rcond=None)[0]
 
-        z = e[5] - a * centre[0] ** 2 - b * centre[1] ** 2 - 2 * c * np.prod(centre)
+        if p is not None:
+            # point was passed in, use this to set the scale
+            p = smb.getvector(p, 2) - centre
+            s = p @ E @ p
+            E /= s
 
         return cls(E=E, centre=centre)
 
@@ -819,6 +834,19 @@ class Ellipse:
         :type p: ndarray(2,N)
         :return: an ellipse instance
         :rtype: Ellipse
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> import numpy as np
+            >>> eref = Ellipse(radii=(1, 2), theta=np.pi / 4, centre=[3, 4])
+            >>> perim = eref.points()
+            >>> print(perim.shape)
+            >>> Ellipse.FromPerimeter(perim)
+
+        :seealso: :meth:`points`
         """
         A = []
         b = []
@@ -829,8 +857,8 @@ class Ellipse:
         #  x^2 + eta[0] y^2 + eta[1] xy + eta[2] x + eta[3] y + eta[4] = 0
         e = np.linalg.lstsq(A, b, rcond=None)[0]
 
-        # solve for the quadratic term
-        return cls.Polynomial(e)
+        # create ellipse from the polynomial, using one point to set scale
+        return cls.Polynomial(e, p[:, 0])
 
     def __str__(self) -> str:
         return f"Ellipse(radii={self.radii}, centre={self.centre}, theta={self.theta})"
@@ -846,13 +874,22 @@ class Ellipse:
         :return: ellipse matrix
         :rtype: ndarray(2,2)
 
-        The matrix ``E`` describes the shape of the ellipse
+        The symmetric matrix :math:`\mat{E} \in \mathbb{R}^{2\times 2}` determines the radii and
+        the orientation of the ellipse
 
         .. math::
 
-            (\vec{x} - \vec{x}_0)^T \mat{E} (\vec{x} - \vec{x}_0) = 1
+            (\vec{x} - \vec{x}_0)^{\top} \mat{E} \, (\vec{x} - \vec{x}_0) = 1
 
         :seealso: :meth:`centre` :meth:`theta` :meth:`radii`
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.E
         """
         # return 2x2 ellipse matrix
         return self._E
@@ -864,6 +901,14 @@ class Ellipse:
 
         :return: centre of the ellipse
         :rtype: ndarray(2)
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.centre
 
         :seealso: :meth:`radii` :meth:`theta` :meth:`E`
         """
@@ -878,6 +923,14 @@ class Ellipse:
         :return: radii of the ellipse
         :rtype: ndarray(2)
 
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.radii
+
         :seealso: :meth:`centre` :meth:`theta` :meth:`E`
         """
         return np.linalg.eigvals(self.E) ** (-0.5)
@@ -889,6 +942,14 @@ class Ellipse:
 
         :return: orientation in radians, in the interval [-pi, pi)
         :rtype: float
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.theta
 
         :seealso: :meth:`centre` :meth:`radii` :meth:`E`
         """
@@ -903,20 +964,41 @@ class Ellipse:
 
         :return: area
         :rtype: float
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.area
         """
         return np.pi / np.sqrt(np.linalg.det(self.E))
 
     @property
     def polynomial(self):
-        """
+        r"""
         Return ellipse as a polynomial
 
         :return: polynomial
         :rtype: ndarray(6)
 
+        An ellipse can be described by :math:`\vec{e} \in \mathbb{R}^6` which are the
+        coefficents of a quadratic in :math:`x` and :math:`y`
+
         .. math::
 
             e_0 x^2 + e_1 y^2 + e_2 xy + e_3 x + e_4 y + e_5 = 0
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.polynomial
+
+        :seealso: :meth:`Polynomial`
         """
         a = self._E[0, 0]
         b = self._E[1, 1]
@@ -930,7 +1012,7 @@ class Ellipse:
                 2 * c,
                 -2 * a * x_0 - 2 * c * y_0,
                 -2 * b * y_0 - 2 * c * x_0,
-                a * x_0**2 + b * y_0**2,
+                a * x_0**2 + b * y_0**2 + 2 * c * x_0 * y_0,
             ]
         )
 
@@ -938,7 +1020,7 @@ class Ellipse:
         """
         Plot ellipse
 
-        :param kwargs: arguments passed to :func:`~spatialmath.base.graphics.plot_ellipse
+        :param kwargs: arguments passed to :func:`~spatialmath.base.graphics.plot_ellipse`
         :return: list of artists
         :rtype: _type_
 
@@ -956,17 +1038,19 @@ class Ellipse:
 
             from spatialmath import Ellipse
             from spatialmath.base import plotvol2
-            plotvol2(5)
+            ax = plotvol2(5)
             e = Ellipse(E=np.array([[1, 1], [1, 2]]))
             e.plot()
+            ax.grid()
 
         .. plot::
 
             from spatialmath import Ellipse
             from spatialmath.base import plotvol2
-            plotvol2(5)
+            ax = plotvol2(5)
             e = Ellipse(E=np.array([[1, 1], [1, 2]]))
             e.plot(filled=True, color='r')
+            ax.grid()
 
         :seealso: :func:`~spatialmath.base.graphics.plot_ellipse`
         """
@@ -980,6 +1064,16 @@ class Ellipse:
         :type p: arraylike(2), ndarray(2,N)
         :return: true if point is contained within ellipse
         :rtype: bool or list(bool)
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.contains((3,4))
+            >>> e.contains((0,0))
+
         """
         inside = []
         p = smb.getmatrix(p, (2, None))
@@ -1001,24 +1095,46 @@ class Ellipse:
         :return: set of perimeter points
         :rtype: Points2
 
-        Return a set of `resolution` points on the perimeter of the ellipse.  The perimeter
+        Return a set of ``resolution`` points on the perimeter of the ellipse.  The perimeter
         set is not closed, that is, last point != first point.
 
-        :seealso: :func:`~spatialmath.base.graphics.ellipse`
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.points()[:,:5]  # first 5 points
+
+        :seealso: :meth:`polygon` :func:`~spatialmath.base.graphics.ellipse`
         """
         return smb.ellipse(self.E, self.centre, resolution=resolution)
 
+    def polygon(self, resolution=10) -> Polygon2:
+        """
+        Approximate with a polygon
 
-# alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5 = symbols("alpha, beta, gamma, xc, yc, e0, e1, e2, e3, e4, e5")
-# solve(eq, [alpha, beta, gamma, xc, yc])
-# eq = [
-#     alpha - e0,
-#     beta- e1,
-#     2 * gamma - e2,
-#     -2 * (alpha * xc + gamma * yc) - e3,
-#     -2 * (beta * yc + gamma * xc) - e4,
-#     alpha * xc**2 + beta * yc**2 + 2 * gamma * xc * yc - 1 - e5
-# ]
+        :param resolution: number of polygon vertices, defaults to 10
+        :type resolution: int, optional
+        :return: a polygon approximating the ellipse
+        :rtype: :class:`Polygon2` instance
+
+        Return a polygon instance with ``resolution`` vertices.  A :class:`Polygon2`` can be
+        used for intersection testing with lines or other polygons.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Ellipse
+            >>> e = Ellipse(radii=(1,2), centre=(3,4), theta=0.5)
+            >>> e.polygon()
+
+        :seealso: :meth:`points`
+        """
+        return Polygon2(smb.ellipse(self.E, self.centre, resolution=resolution - 1))
+
 
 if __name__ == "__main__":
     pass

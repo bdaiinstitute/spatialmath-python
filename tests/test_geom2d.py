@@ -195,7 +195,7 @@ class EllipseTest(unittest.TestCase):
         p = eref.points()
 
         e = Ellipse.FromPerimeter(p)
-        # nt.assert_almost_equal(e.radii, eref.radii)  # HACK
+        nt.assert_almost_equal(e.radii, eref.radii)
         nt.assert_almost_equal(e.centre, eref.centre)
         nt.assert_almost_equal(e.theta, eref.theta)
 
