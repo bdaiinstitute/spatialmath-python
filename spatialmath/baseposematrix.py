@@ -1002,15 +1002,15 @@ class BasePoseMatrix(BasePoseList):
         if len(self) > 1:
             # trajectory case
             if self.N == 2:
-                smb.tranimate2(self.data, *args, **kwargs)
+                return smb.tranimate2(self.data, *args, **kwargs)
             else:
-                smb.tranimate(self.data, *args, **kwargs)
+                return smb.tranimate(self.data, *args, **kwargs)
         else:
             # singleton case
             if self.N == 2:
-                smb.tranimate2(self.A, start=start, *args, **kwargs)
+                return smb.tranimate2(self.A, start=start, *args, **kwargs)
             else:
-                smb.tranimate(self.A, start=start, *args, **kwargs)
+                return smb.tranimate(self.A, start=start, *args, **kwargs)
 
     # ------------------------------------------------------------------------ #
     def prod(self) -> Self:

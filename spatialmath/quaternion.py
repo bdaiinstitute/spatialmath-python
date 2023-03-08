@@ -2040,9 +2040,9 @@ class UnitQuaternion(Quaternion):
         :see :func:`~spatialmath.base.transforms3d.tranimate` :func:`~spatialmath.base.transforms3d.trplot`
         """
         if len(self) > 1:
-            smb.tranimate([smb.q2r(q) for q in self.data], *args, **kwargs)
+            return smb.tranimate([smb.q2r(q) for q in self.data], *args, **kwargs)
         else:
-            smb.tranimate(smb.q2r(self._A), *args, **kwargs)
+            return smb.tranimate(smb.q2r(self._A), *args, **kwargs)
 
     def rpy(
         self, unit: Optional[str] = "rad", order: Optional[str] = "zyx"
