@@ -148,6 +148,7 @@ Using classes ensures type safety, for example it stops us mixing a 2D homogeneo
 For example, to create an object representing a rotation of 0.3 radians about the x-axis is simply
 
 ```python
+>>> from spatialmath import SO3, SE3
 >>> R1 = SO3.Rx(0.3)
 >>> R1
    1         0         0          
@@ -182,7 +183,7 @@ array([-1.57079633,  0.52359878,  2.0943951 ])
 Frequently in robotics we want a sequence, a trajectory, of rotation matrices or poses. These pose classes inherit capability from the `list` class
 
 ```python
->>> R = SO3()   # the identity
+>>> R = SO3()   # the null rotation or identity matrix
 >>> R.append(R1)
 >>> R.append(R2)
 >>> len(R)
@@ -287,18 +288,18 @@ You can browse it statically through the links above, or clone the toolbox and r
 Import the low-level transform functions
 
 ```
->>> import spatialmath.base as tr
+>>> from spatialmath.base import *
 ```
 
 We can create a 3D rotation matrix
 
 ```
->>> tr.rotx(0.3)
+>>> rotx(0.3)
 array([[ 1.        ,  0.        ,  0.        ],
        [ 0.        ,  0.95533649, -0.29552021],
        [ 0.        ,  0.29552021,  0.95533649]])
 
->>> tr.rotx(30, unit='deg')
+>>> rotx(30, unit='deg')
 array([[ 1.       ,  0.       ,  0.       ],
        [ 0.       ,  0.8660254, -0.5      ],
        [ 0.       ,  0.5      ,  0.8660254]])
@@ -374,13 +375,13 @@ trplot( transl(4, 3, 1)@trotx(math.pi/3), color='green', frame='c', dims=[0,4,0,
 Animation is straightforward
 
 ```
-tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200)
+tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame='A', arrow=False, dims=[0, 5], nframes=200)
 ```
 
 and it can be saved to a file by
 
 ```
-tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame=' arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
+tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame='A', arrow=False, dims=[0, 5], nframes=200, movie='out.mp4')
 ```
 
 ![animation video](./docs/figs/animate.gif)
@@ -390,6 +391,14 @@ At the moment we can only save as an MP4, but the following incantation will cov
 ```
 ffmpeg -i out -r 20 -vf "fps=10,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" out.gif
 ```
+
+For use in a Jupyter notebook, or on Colab, you can display an animation by
+```
+from IPython.core.display import HTML
+HTML(tranimate(transl(4, 3, 4)@trotx(2)@troty(-2), frame='A', arrow=False, dims=[0, 5], nframes=200, movie=True))
+```
+The `movie=True` option causes `tranimate` to output an HTML5 fragment which
+is displayed inline by the `HTML` function.
 
 ## Symbolic support
 
