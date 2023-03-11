@@ -2933,7 +2933,6 @@ if _matplotlib_exists:
         :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same
         :param style: axis style: 'arrow' [default], 'line', 'rgb', 'rviz' (Rviz style)
         :type style: str
-
         :param color: color of the lines defining the frame
         :type color: str or list(3) or tuple(3) of str
         :param textcolor: color of text labels for the frame, default ``color``
@@ -3144,6 +3143,7 @@ if _matplotlib_exists:
             if width is None:
                 width = 8
             style = "line"
+            axislabel = False
         elif style == "rgb":
             if originsize is None:
                 originsize = 0
@@ -3459,6 +3459,10 @@ if __name__ == "__main__":  # pragma: no cover
             [0, 0, 0, 1],
         ]
     )
-    theta, vec = tr2angvec(T)
-    print(theta, vec)
-    print(trlog(T, twist=True))
+    # theta, vec = tr2angvec(T)
+    # print(theta, vec)
+    # print(trlog(T, twist=True))
+
+    X = transl(3, 4, -4)
+    trplot(X, width=2, style="rviz", block=True)
+    pass
