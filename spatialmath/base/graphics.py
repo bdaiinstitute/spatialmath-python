@@ -500,7 +500,12 @@ try:
         return r
 
     def plot_arrow(
-        start: ArrayLike2, end: ArrayLike2, ax: Optional[plt.Axes] = None, **kwargs
+        start: ArrayLike2,
+        end: ArrayLike2,
+        label: Optional[str] = None,
+        label_pos: str = "above:0.5",
+        ax: Optional[plt.Axes] = None,
+        **kwargs,
     ) -> List[plt.Artist]:
         """
         Plot 2D arrow
@@ -509,9 +514,22 @@ try:
         :type start: array_like(2)
         :param end: end point, arrow head
         :type end: array_like(2)
+        :param label: arrow label text, optional
+        :type label: str
+        :param label_pos: position of arrow label "above|below:fraction", optional
+        :type label_pos: str
         :param ax: axes to draw into, defaults to None
         :type ax: Axes, optional
         :param kwargs: argumetns to pass to :class:`matplotlib.patches.Arrow`
+
+        Draws an arrow from ``start`` to ``end``.
+
+        A ``label``, if given, is drawn above or below the arrow.  The position of the
+        label is controlled by ``label_pos`` which is of the form
+        ``"position:fraction"`` where ``position`` is either ``"above"`` or ``"below"``
+        the arrow, and ``fraction`` is a float between 0 (tail) and 1 (head) indicating
+        the distance along the arrow where the label will be placed.  The text is
+        suitably justified to not overlap the arrow.
 
         Example::
 
@@ -526,18 +544,59 @@ try:
             plot_arrow((-2, 2), (3, 4), color='r', width=0.1)  # red arrow
             ax.grid()
 
+        Example::
+
+            >>> from spatialmath.base import plotvol2, plot_arrow
+            >>> plotvol2(5)
+            >>> plot_arrow((-2, -2), (2, 4), label="$\mathit{p}_3$", color='r', width=0.1)
+
+        .. plot::
+
+            from spatialmath.base import plotvol2, plot_arrow
+            ax = plotvol2(5)
+            ax.grid()
+            plot_arrow(
+                (-2, 2), (3, 4), label="$\mathit{p}_3$", color="r", width=0.1
+            )
+            plt.show(block=True)
+
         :seealso: :func:`plot_homline`
         """
         ax = axes_logic(ax, 2)
 
+        dx = end[0] - start[0]
+        dy = end[1] - start[1]
         ax.arrow(
             start[0],
             start[1],
-            end[0] - start[0],
-            end[1] - start[1],
+            dx,
+            dy,
             length_includes_head=True,
             **kwargs,
         )
+
+        if label is not None:
+            # add a label
+            label_pos = label_pos.split(":")
+            if label_pos[0] == "below":
+                above = False
+            try:
+                fraction = float(label_pos[1])
+            except:
+                fraction = 0.5
+
+            theta = np.arctan2(dy, dx)
+            quadrant = theta // (np.pi / 2)
+            pos = [start[0] + fraction * dx, start[1] + fraction * dy]
+            if quadrant in (0, 2):
+                # quadrants 1 and 3, line is sloping up to right or down to left
+                opt = {"verticalalignment": "bottom", "horizontalalignment": "right"}
+                label = label + " "
+            else:
+                # quadrants 2 and 4, line is sloping up to left or down to right
+                opt = {"verticalalignment": "top", "horizontalalignment": "left"}
+                label = " " + label
+            ax.text(*pos, label, **opt)
 
     def plot_polygon(
         vertices: NDArray, *fmt, close: Optional[bool] = False, **kwargs
