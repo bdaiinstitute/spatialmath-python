@@ -3011,7 +3011,6 @@
 <span class="sd">        :type T: ndarray(4,4) or ndarray(3,3) or an iterable returning same</span>
 <span class="sd">        :param style: axis style: &#39;arrow&#39; [default], &#39;line&#39;, &#39;rgb&#39;, &#39;rviz&#39; (Rviz style)</span>
 <span class="sd">        :type style: str</span>
-
 <span class="sd">        :param color: color of the lines defining the frame</span>
 <span class="sd">        :type color: str or list(3) or tuple(3) of str</span>
 <span class="sd">        :param textcolor: color of text labels for the frame, default ``color``</span>
@@ -3222,6 +3221,7 @@
             <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">width</span> <span class="o">=</span> <span class="mi">8</span>
             <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;line&quot;</span>
+            <span class="n">axislabel</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">elif</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;rgb&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">originsize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">originsize</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3537,9 +3537,13 @@
             <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
         <span class="p">]</span>
     <span class="p">)</span>
-    <span class="n">theta</span><span class="p">,</span> <span class="n">vec</span> <span class="o">=</span> <span class="n">tr2angvec</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="c1"># theta, vec = tr2angvec(T)</span>
+    <span class="c1"># print(theta, vec)</span>
+    <span class="c1"># print(trlog(T, twist=True))</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">trplot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;rviz&quot;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">pass</span>
 </pre></div>
 
            </div>
@@ -3550,7 +3554,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 08-Mar-2023.
+      <span class="lastupdated">Last updated on 11-Mar-2023.
       </span></p>
   </div>
 

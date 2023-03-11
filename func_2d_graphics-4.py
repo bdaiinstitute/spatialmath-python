@@ -1,6 +1,6 @@
-from spatialmath.base import plotvol2, plot_ellipse
+from spatialmath.base import plotvol2, plot_circle
 ax = plotvol2(5)
-plot_ellipse(np.array([[1, 1], [1, 2]]), [0,0], 'r')  # red ellipse
-plot_ellipse(np.array([[1, 1], [1, 2]]), [1, 2], 'b--')  # blue dashed ellipse
-plot_ellipse(np.array([[1, 1], [1, 2]]), [-2, -1], filled=True, facecolor='y')  # yellow filled ellipse
+plot_circle(1, (0,0), 'r')  # red circle
+plot_circle(2, (1, 2), 'b--')  # blue dashed circle
+plot_circle(0.5, (3,4), filled=True, facecolor='y')  # yellow filled circle
 ax.grid()

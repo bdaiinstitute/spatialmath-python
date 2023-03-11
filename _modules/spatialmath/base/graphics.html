@@ -578,7 +578,12 @@
         <span class="k">return</span> <span class="n">r</span>
 
     <span class="k">def</span> <span class="nf">plot_arrow</span><span class="p">(</span>
-        <span class="n">start</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">ArrayLike2</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">label_pos</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;above:0.5&quot;</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Artist</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot 2D arrow</span>
@@ -587,9 +592,22 @@
 <span class="sd">        :type start: array_like(2)</span>
 <span class="sd">        :param end: end point, arrow head</span>
 <span class="sd">        :type end: array_like(2)</span>
+<span class="sd">        :param label: arrow label text, optional</span>
+<span class="sd">        :type label: str</span>
+<span class="sd">        :param label_pos: position of arrow label &quot;above|below:fraction&quot;, optional</span>
+<span class="sd">        :type label_pos: str</span>
 <span class="sd">        :param ax: axes to draw into, defaults to None</span>
 <span class="sd">        :type ax: Axes, optional</span>
 <span class="sd">        :param kwargs: argumetns to pass to :class:`matplotlib.patches.Arrow`</span>
+
+<span class="sd">        Draws an arrow from ``start`` to ``end``.</span>
+
+<span class="sd">        A ``label``, if given, is drawn above or below the arrow.  The position of the</span>
+<span class="sd">        label is controlled by ``label_pos`` which is of the form</span>
+<span class="sd">        ``&quot;position:fraction&quot;`` where ``position`` is either ``&quot;above&quot;`` or ``&quot;below&quot;``</span>
+<span class="sd">        the arrow, and ``fraction`` is a float between 0 (tail) and 1 (head) indicating</span>
+<span class="sd">        the distance along the arrow where the label will be placed.  The text is</span>
+<span class="sd">        suitably justified to not overlap the arrow.</span>
 
 <span class="sd">        Example::</span>
 
@@ -604,18 +622,59 @@
 <span class="sd">            plot_arrow((-2, 2), (3, 4), color=&#39;r&#39;, width=0.1)  # red arrow</span>
 <span class="sd">            ax.grid()</span>
 
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath.base import plotvol2, plot_arrow</span>
+<span class="sd">            &gt;&gt;&gt; plotvol2(5)</span>
+<span class="sd">            &gt;&gt;&gt; plot_arrow((-2, -2), (2, 4), label=&quot;$\mathit{p}_3$&quot;, color=&#39;r&#39;, width=0.1)</span>
+
+<span class="sd">        .. plot::</span>
+
+<span class="sd">            from spatialmath.base import plotvol2, plot_arrow</span>
+<span class="sd">            ax = plotvol2(5)</span>
+<span class="sd">            ax.grid()</span>
+<span class="sd">            plot_arrow(</span>
+<span class="sd">                (-2, 2), (3, 4), label=&quot;$\mathit{p}_3$&quot;, color=&quot;r&quot;, width=0.1</span>
+<span class="sd">            )</span>
+<span class="sd">            plt.show(block=True)</span>
+
 <span class="sd">        :seealso: :func:`plot_homline`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span>
             <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">dx</span><span class="p">,</span>
+            <span class="n">dy</span><span class="p">,</span>
             <span class="n">length_includes_head</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># add a label</span>
+            <span class="n">label_pos</span> <span class="o">=</span> <span class="n">label_pos</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">label_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;below&quot;</span><span class="p">:</span>
+                <span class="n">above</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fraction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">label_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">fraction</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dy</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+            <span class="n">quadrant</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">//</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">fraction</span> <span class="o">*</span> <span class="n">dx</span><span class="p">,</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">fraction</span> <span class="o">*</span> <span class="n">dy</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">quadrant</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="c1"># quadrants 1 and 3, line is sloping up to right or down to left</span>
+                <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;verticalalignment&quot;</span><span class="p">:</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;horizontalalignment&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">}</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># quadrants 2 and 4, line is sloping up to left or down to right</span>
+                <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;verticalalignment&quot;</span><span class="p">:</span> <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;horizontalalignment&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">}</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">label</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="o">**</span><span class="n">opt</span><span class="p">)</span>
 
 <div class="viewcode-block" id="plot_polygon"><a class="viewcode-back" href="../../../func_2d_graphics.html#spatialmath.base.graphics.plot_polygon">[docs]</a>    <span class="k">def</span> <span class="nf">plot_polygon</span><span class="p">(</span>
         <span class="n">vertices</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="n">close</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -1807,7 +1866,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 08-Mar-2023.
+      <span class="lastupdated">Last updated on 11-Mar-2023.
       </span></p>
   </div>
 

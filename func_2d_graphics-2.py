@@ -1,5 +1,7 @@
-from spatialmath.base import plotvol2, plot_box
+from spatialmath.base import plotvol2, plot_arrow
 ax = plotvol2(5)
-plot_box("b--", centre=(2, 3), wh=1)  # w=h=1
-plot_box(lt=(0, 0), rb=(3, -2), filled=True, hatch="/", edgecolor="k", color="r")
 ax.grid()
+plot_arrow(
+    (-2, 2), (3, 4), label="$\mathit{p}_3$", color="r", width=0.1
+)
+plt.show(block=True)

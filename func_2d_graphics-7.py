@@ -1,6 +1,6 @@
-from spatialmath.base import plotvol2, plot_point
-import numpy as np
-p = np.random.uniform(size=(2,10), low=-5, high=5)
+from spatialmath.base import plotvol2, plot_text
 ax = plotvol2(5)
-plot_point(p, 'r*', '{0}')
+plot_point((0, 0))
+plot_point((1,1), 'r*')
+plot_point((2,2), 'r*', 'foo')
 ax.grid()

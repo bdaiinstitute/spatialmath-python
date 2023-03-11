@@ -1,6 +1,5 @@
-from spatialmath.base import plotvol2, plot_circle
+from spatialmath.base import plotvol2, plot_box
 ax = plotvol2(5)
-plot_circle(1, (0,0), 'r')  # red circle
-plot_circle(2, (1, 2), 'b--')  # blue dashed circle
-plot_circle(0.5, (3,4), filled=True, facecolor='y')  # yellow filled circle
+plot_box("b--", centre=(2, 3), wh=1)  # w=h=1
+plot_box(lt=(0, 0), rb=(3, -2), filled=True, hatch="/", edgecolor="k", color="r")
 ax.grid()
