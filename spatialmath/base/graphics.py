@@ -1216,10 +1216,11 @@ try:
         handles = []
         handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
         handles.append(
-            _render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, **kwargs)
+            _render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, pose=pose, **kwargs)
         )
 
         if ends and kwargs.get("filled", default=False):
+            # TODO: this should handle the pose argument, zdir can be a 3-tuple
             floor = Circle(centre[:2], radius, **kwargs)
             handles.append(ax.add_patch(floor))
             pathpatch_2d_to_3d(floor, z=height[0], zdir="z")
