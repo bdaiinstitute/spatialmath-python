@@ -1458,14 +1458,16 @@ try:
 
         if hasattr(ax, "name"):
             # handle the case of some kind of matplotlib Axes
-            return 3 if ax.name == "3d" else 2
+            ret = 3 if ax.name == "3d" else 2
         else:
             # handle the case of Animate objects pretending to be Axes
             classname = ax.__class__.__name__
             if classname == "Animate":
-                return 3
+                ret = 3
             elif classname == "Animate2":
-                return 2
+                ret = 2
+        print("_axes_dimensions ", ax, ret)
+        return ret
 
     def axes_get_limits(ax: plt.Axes) -> NDArray:
         return np.r_[ax.get_xlim(), ax.get_ylim()]
@@ -1563,7 +1565,7 @@ try:
             ax = plt.axes(projection="3d", proj_type=projection)
 
         plt.sca(ax)
-        plt.axes(ax)
+        # plt.axes(ax)
 
         return ax
 
