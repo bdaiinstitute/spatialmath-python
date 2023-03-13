@@ -1294,10 +1294,11 @@
         <span class="n">handles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_render3D</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="n">filled</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="n">handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">_render3D</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Y</span><span class="p">),</span> <span class="n">Z</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="n">filled</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">_render3D</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Y</span><span class="p">),</span> <span class="n">Z</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="n">filled</span><span class="p">,</span> <span class="n">pose</span><span class="o">=</span><span class="n">pose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ends</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filled&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="c1"># TODO: this should handle the pose argument, zdir can be a 3-tuple</span>
             <span class="n">floor</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">centre</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">floor</span><span class="p">))</span>
             <span class="n">pathpatch_2d_to_3d</span><span class="p">(</span><span class="n">floor</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">height</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">zdir</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
@@ -1535,14 +1536,16 @@
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
             <span class="c1"># handle the case of some kind of matplotlib Axes</span>
-            <span class="k">return</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;3d&quot;</span> <span class="k">else</span> <span class="mi">2</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">ax</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;3d&quot;</span> <span class="k">else</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># handle the case of Animate objects pretending to be Axes</span>
             <span class="n">classname</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="k">if</span> <span class="n">classname</span> <span class="o">==</span> <span class="s2">&quot;Animate&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">3</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">3</span>
             <span class="k">elif</span> <span class="n">classname</span> <span class="o">==</span> <span class="s2">&quot;Animate2&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">2</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;_axes_dimensions &quot;</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">axes_get_limits</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">(),</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()]</span>
@@ -1573,6 +1576,7 @@
         <span class="n">dimensions</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">projection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ortho&quot;</span><span class="p">,</span>
         <span class="n">autoscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">Axes3D</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Axis creation logic</span>
@@ -1583,6 +1587,8 @@
 <span class="sd">        :type dimensions: int</span>
 <span class="sd">        :param projection: 3D projection type, defaults to &#39;ortho&#39;</span>
 <span class="sd">        :type projection: str, optional</span>
+<span class="sd">        :param new: create a new figure, defaults to False</span>
+<span class="sd">        :type new: bool</span>
 <span class="sd">        :return: axes to draw in</span>
 <span class="sd">        :rtype: Axes3DSubplot or AxesSubplot</span>
 
@@ -1591,6 +1597,9 @@
 
 <span class="sd">        If the dimensions do not match, or no figure/axes currently exist,</span>
 <span class="sd">        then ``plt.axes()`` is called to create one.</span>
+
+<span class="sd">        If ``new`` is True then a new 3D axes is created regardless of whether the</span>
+<span class="sd">        current axis is 3D.</span>
 
 <span class="sd">        Used by all plot_xxx() functions in this module.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1611,7 +1620,7 @@
                 <span class="k">if</span> <span class="n">naxes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>  <span class="c1"># get current axes</span>
                     <span class="c1"># print(f&quot;ax has {_axes_dimensions(ax)} dimensions&quot;)</span>
-                    <span class="k">if</span> <span class="n">_axes_dimensions</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">==</span> <span class="n">dimensions</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_axes_dimensions</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">==</span> <span class="n">dimensions</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">new</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">ax</span>
             <span class="c1"># otherwise it doesnt exist or dimension mismatch, create new axes</span>
             <span class="c1"># print(&quot;create new axes&quot;)</span>
@@ -1634,7 +1643,7 @@
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">,</span> <span class="n">proj_type</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="c1"># plt.axes(ax)</span>
 
         <span class="k">return</span> <span class="n">ax</span>
 
@@ -1644,6 +1653,7 @@
         <span class="n">equal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">grid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create 2D plot area</span>
@@ -1667,9 +1677,11 @@
 
 <span class="sd">        :seealso: :func:`plotvol3`, :func:`expand_dims`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="n">new</span><span class="p">)</span>
+
         <span class="n">dims</span> <span class="o">=</span> <span class="n">expand_dims</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">()</span>
+        <span class="c1"># if ax is None:</span>
+        <span class="c1">#     ax = plt.subplot()</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">labels</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
@@ -1692,6 +1704,7 @@
         <span class="n">grid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">projection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ortho&quot;</span><span class="p">,</span>
+        <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create 3D plot volume</span>
@@ -1716,7 +1729,7 @@
 <span class="sd">        :seealso: :func:`plotvol2`, :func:`expand_dims`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># create an axis if none existing</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">axes_logic</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="n">new</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -1868,7 +1881,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 11-Mar-2023.
+      <span class="lastupdated">Last updated on 13-Mar-2023.
       </span></p>
   </div>
 
