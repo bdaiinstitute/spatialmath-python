@@ -1495,6 +1495,7 @@ try:
         dimensions: int,
         projection: Optional[str] = "ortho",
         autoscale: Optional[bool] = True,
+        new: Optional[bool] = False,
     ) -> Union[plt.Axes, Axes3D]:
         """
         Axis creation logic
@@ -1505,6 +1506,8 @@ try:
         :type dimensions: int
         :param projection: 3D projection type, defaults to 'ortho'
         :type projection: str, optional
+        :param new: create a new figure, defaults to False
+        :type new: bool
         :return: axes to draw in
         :rtype: Axes3DSubplot or AxesSubplot
 
@@ -1513,6 +1516,9 @@ try:
 
         If the dimensions do not match, or no figure/axes currently exist,
         then ``plt.axes()`` is called to create one.
+
+        If ``new`` is True then a new 3D axes is created regardless of whether the
+        current axis is 3D.
 
         Used by all plot_xxx() functions in this module.
         """
@@ -1533,7 +1539,7 @@ try:
                 if naxes > 0:
                     ax = plt.gca()  # get current axes
                     # print(f"ax has {_axes_dimensions(ax)} dimensions")
-                    if _axes_dimensions(ax) == dimensions:
+                    if _axes_dimensions(ax) == dimensions and not new:
                         return ax
             # otherwise it doesnt exist or dimension mismatch, create new axes
             # print("create new axes")
@@ -1566,6 +1572,7 @@ try:
         equal: Optional[bool] = True,
         grid: Optional[bool] = False,
         labels: Optional[bool] = True,
+        new: Optional[bool] = False,
     ) -> plt.Axes:
         """
         Create 2D plot area
@@ -1589,9 +1596,11 @@ try:
 
         :seealso: :func:`plotvol3`, :func:`expand_dims`
         """
+        ax = axes_logic(ax, 2, new=new)
+
         dims = expand_dims(dim, 2)
-        if ax is None:
-            ax = plt.subplot()
+        # if ax is None:
+        #     ax = plt.subplot()
         ax.axis(dims)
         if labels:
             ax.set_xlabel("X")
@@ -1614,6 +1623,7 @@ try:
         grid: Optional[bool] = False,
         labels: Optional[bool] = True,
         projection: Optional[str] = "ortho",
+        new: Optional[bool] = False,
     ) -> Axes3D:
         """
         Create 3D plot volume
@@ -1638,7 +1648,7 @@ try:
         :seealso: :func:`plotvol2`, :func:`expand_dims`
         """
         # create an axis if none existing
-        ax = axes_logic(ax, 3, projection=projection)
+        ax = axes_logic(ax, 3, projection=projection, new=new)
 
         if dim is None:
             ax.autoscale(True)
