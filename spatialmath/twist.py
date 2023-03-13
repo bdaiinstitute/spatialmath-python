@@ -960,7 +960,7 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.line()
         """
-        return Line3([Line3(-tw.v - tw.pitch * tw.w, tw.w) for tw in self])
+        return Line3([Line3(-tw.v + tw.pitch * tw.w, tw.w) for tw in self])
 
     @property
     def pole(self):
