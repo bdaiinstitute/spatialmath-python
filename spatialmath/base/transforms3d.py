@@ -2916,7 +2916,7 @@ if _matplotlib_exists:
         originsize: float = 20,
         origincolor: str = "",
         projection: str = "ortho",
-        block: bool = False,
+        block: Optional[bool] = None,
         anaglyph: Optional[Union[bool, str, Tuple[str, float]]] = None,
         wtl: float = 0.2,
         width: Optional[float] = None,
@@ -3353,7 +3353,7 @@ if _matplotlib_exists:
         if originsize > 0:
             ax.scatter(xs=[o[0]], ys=[o[1]], zs=[o[2]], color=origincolor, s=originsize)
 
-        if block:
+        if block is not None:
             # calling this at all, causes FuncAnimation to fail so when invoked from tranimate skip this bit
             import matplotlib.pyplot as plt
 
@@ -3417,8 +3417,6 @@ if _matplotlib_exists:
 
         anim.trplot(T, **kwargs)
         return anim.run(**kwargs)
-
-        # plt.show(block=block)
 
 
 if __name__ == "__main__":  # pragma: no cover

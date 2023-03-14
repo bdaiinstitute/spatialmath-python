@@ -1466,7 +1466,7 @@ try:
                 ret = 3
             elif classname == "Animate2":
                 ret = 2
-        print("_axes_dimensions ", ax, ret)
+        # print("_axes_dimensions ", ax, ret)
         return ret
 
     def axes_get_limits(ax: plt.Axes) -> NDArray:
@@ -1545,18 +1545,16 @@ try:
                     if _axes_dimensions(ax) == dimensions and not new:
                         return ax
             # otherwise it doesnt exist or dimension mismatch, create new axes
-            # print("create new axes")
         else:
-            # print("no figs present, ax given")
+            # print("ax given", ax)
             # axis was given
 
             if _axes_dimensions(ax) == dimensions:
                 # print("use existing axes")
                 return ax
-            # mismatch in dimensions, create new axes
-        # print('create new axes')
+            # print("mismatch in dimensions, create new axes")
+        # print("create new axes")
         plt.figure()
-        # no axis specified
         if dimensions == 2:
             ax = plt.axes()
             if autoscale:

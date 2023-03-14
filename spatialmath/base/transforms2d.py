@@ -1121,6 +1121,7 @@ def ICP2d(
 
 if _matplotlib_exists:
     import matplotlib.pyplot as plt
+
     # from mpl_toolkits.axisartist import Axes
     from matplotlib.axes import Axes
 
@@ -1137,7 +1138,7 @@ if _matplotlib_exists:
         originsize: float = 20,
         rviz: bool = False,
         ax: Optional[Axes] = None,
-        block: bool = False,
+        block: Optional[bool] = None,
         dims: Optional[ArrayLike] = None,
         wtl: float = 0.2,
         width: float = 1,
@@ -1168,7 +1169,7 @@ if _matplotlib_exists:
         :type arrow: bool
         :param ax: the axes to plot into, defaults to current axes
         :type ax: Axes3D reference
-        :param block: run the GUI main loop until all windows are closed, default True
+        :param block: run the GUI main loop until all windows are closed, default None
         :type block: bool
         :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax]
         :type dims: array_like(4)
@@ -1375,7 +1376,7 @@ if _matplotlib_exists:
                 verticalalignment="center",
             )
 
-        if block:
+        if block is not None:
             # calling this at all, causes FuncAnimation to fail so when invoked from tranimate2 skip this bit
             plt.show(block=block)
         return ax
