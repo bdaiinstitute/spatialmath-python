@@ -699,15 +699,14 @@ to the list</p>
 <p>Compute the inverse of each of the values within the twist instance.
 The inverse is the negative of the twist vector.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/baseposelist.py&quot;, line 570, in binop</span>
-<span class="go">    return [op(left._A, right._A)]</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/twist.py&quot;, line 1134, in &lt;lambda&gt;</span>
-<span class="go">    lambda x, y: smb.trlog(smb.trexp(x) @ smb.trexp(y), twist=True),</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 1338, in trlog</span>
-<span class="go">    S = trlog(cast(SO3Array, R), check=False)  # recurse</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 1379, in trlog</span>
-<span class="go">    theta = math.acos((np.trace(R) - 1) / 2)</span>
-<span class="go">ValueError: math domain error</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
+<span class="go">Twist3([0.55455, 0.13246, -0.83784, 1.4124, -0.017458, 0.90457])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+<span class="go">Twist3([-0.55455, -0.13246, 0.83784, -1.4124, 0.017458, -0.90457])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+<span class="go">Twist3([5.5511e-17, -5.2924e-34, -5.5511e-17, -2.7756e-17, 3.9712e-17, 4.6823e-17])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1126,7 +1125,7 @@ this point is at infinity.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 13-Mar-2023.
+      <span class="lastupdated">Last updated on 14-Mar-2023.
       </span></p>
   </div>
 
