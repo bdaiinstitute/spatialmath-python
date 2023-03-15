@@ -28,7 +28,6 @@ class Test_check(unittest.TestCase):
         self.assertFalse(ismatrix(1, (-1, -1)))
 
     def test_assertmatrix(self):
-
         with self.assertRaises(TypeError):
             assertmatrix(3)
         with self.assertRaises(TypeError):
@@ -53,7 +52,6 @@ class Test_check(unittest.TestCase):
             assertmatrix(a, (None, 4))
 
     def test_getmatrix(self):
-
         a = np.random.rand(4, 3)
         self.assertEqual(getmatrix(a, (4, 3)).shape, (4, 3))
         self.assertEqual(getmatrix(a, (None, 3)).shape, (4, 3))
@@ -124,19 +122,26 @@ class Test_check(unittest.TestCase):
             verifymatrix(a, (3, 4))
 
     def test_unit(self):
+        self.assertIsInstance(getunit(1), np.ndarray)
+        self.assertIsInstance(getunit([1, 2]), np.ndarray)
+        self.assertIsInstance(getunit((1, 2)), np.ndarray)
+        self.assertIsInstance(getunit(np.r_[1, 2]), np.ndarray)
+        self.assertIsInstance(getunit(1.0, dim=0), float)
+
         nt.assert_equal(getunit(5, "rad"), 5)
         nt.assert_equal(getunit(5, "deg"), 5 * math.pi / 180.0)
         nt.assert_equal(getunit([3, 4, 5], "rad"), [3, 4, 5])
-        nt.assert_equal(
+        nt.assert_almost_equal(
             getunit([3, 4, 5], "deg"), [x * math.pi / 180.0 for x in [3, 4, 5]]
         )
         nt.assert_equal(getunit((3, 4, 5), "rad"), [3, 4, 5])
-        nt.assert_equal(
-            getunit((3, 4, 5), "deg"), [x * math.pi / 180.0 for x in [3, 4, 5]]
+        nt.assert_almost_equal(
+            getunit((3, 4, 5), "deg"),
+            np.array([x * math.pi / 180.0 for x in [3, 4, 5]]),
         )
 
         nt.assert_equal(getunit(np.array([3, 4, 5]), "rad"), [3, 4, 5])
-        nt.assert_equal(
+        nt.assert_almost_equal(
             getunit(np.array([3, 4, 5]), "deg"),
             [x * math.pi / 180.0 for x in [3, 4, 5]],
         )
@@ -439,7 +444,6 @@ class Test_check(unittest.TestCase):
         self.assertFalse(isvectorlist(a, 2))
 
     def test_islistof(self):
-
         a = [3, 4, 5]
         self.assertTrue(islistof(a, int))
         self.assertFalse(islistof(a, float))
@@ -457,5 +461,4 @@ class Test_check(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":  # pragma: no cover
-
     unittest.main()

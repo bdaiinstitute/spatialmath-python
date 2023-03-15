@@ -13,6 +13,7 @@ that can be passed.
 
 import math
 import numpy as np
+from collections.abc import Iterable
 
 # from spatialmath.base import symbolic as sym # HACK
 from spatialmath.base.symbolic import issymbol, symtype
@@ -371,6 +372,8 @@ def getvector(
         >>> getvector(1)  # scalar
         >>> getvector([1])
         >>> getvector([[1]])
+        >>> getvector([1,2], 2)
+        >>> # getvector([1,2], 3)  --> ValueError
 
     .. note::
         - For 'array', 'row' or 'col' output the NumPy dtype defaults to the
@@ -519,68 +522,62 @@ def isvector(v: Any, dim: Optional[int] = None) -> bool:
     return False
 
 
-@overload
-def getunit(v: float, unit: str = "rad") -> float:  # pragma: no cover
-    ...
-
-
-@overload
-def getunit(v: NDArray, unit: str = "rad") -> NDArray:  # pragma: no cover
-    ...
-
-
-@overload
-def getunit(v: List[float], unit: str = "rad") -> List[float]:  # pragma: no cover
-    ...
-
-
-@overload
-def getunit(v: Tuple[float, ...], unit: str = "rad") -> List[float]:  # pragma: no cover
-    ...
-
-
-def getunit(
-    v: Union[float, NDArray, Tuple[float, ...], List[float]], unit: str = "rad"
-) -> Union[float, NDArray, List[float]]:
+def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> Union[float, NDArray]:
     """
-    Convert value according to angular units
+    Convert values according to angular units
 
     :param v: the value in radians or degrees
-    :type v: array_like(m) or ndarray(m)
+    :type v: array_like(m)
     :param unit: the angular unit, "rad" or "deg"
     :type unit: str
+    :param dim: expected dimension of input, defaults to None
+    :type dim: int, optional
     :return: the converted value in radians
-    :rtype: list(m) or ndarray(m)
+    :rtype: ndarray(m) or float
     :raises ValueError: argument is not a valid angular unit
 
-    The input can be a list or ndarray() and the output is the same type.
+    The input value is assumed to be in units of ``unit`` and is converted to radians.
 
     .. runblock:: pycon
 
         >>> from spatialmath.base import getunit
         >>> import numpy as np
         >>> getunit(1.5, 'rad')
+        >>> getunit(1.5, 'rad', dim=0)
+        >>> # getunit([1.5], 'rad', dim=0)  --> ValueError
         >>> getunit(90, 'deg')
         >>> getunit([90, 180], 'deg')
         >>> getunit(np.r_[0.5, 1], 'rad')
         >>> getunit(np.r_[90, 180], 'deg')
-    """
-    if unit == "rad":
-        if isinstance(v, tuple):
-            return list(v)
-        else:
-            return v
-    elif unit == "deg":
-        if isinstance(v, np.ndarray) or np.isscalar(v):
-            return v * math.pi / 180  # type: ignore
-        elif isinstance(v, (list, tuple)):
-            return [x * math.pi / 180 for x in v]
-        else:
-            raise ValueError("bad argument")
-    else:
-        raise ValueError("invalid angular units")
+        >>> getunit(np.r_[90, 180], 'deg', dim=2)
+        >>> # getunit([90, 180], 'deg', dim=3)  --> ValueError
 
-    return ret
+    :note:
+        - the input value is processed by :func:`getvector` and the argument ``dim`` can
+          be used to check that ``v`` is the desired length.
+        - the output is always an ndarray except if the input is a scalar and ``dim=0``.
+
+    :seealso: :func:`getvector`
+    """
+    if not isinstance(v, Iterable) and dim == 0:
+        # scalar in, scalar out
+        if unit == "rad":
+            return v
+        elif unit == "deg":
+            return np.deg2rad(v)
+        else:
+            raise ValueError("invalid angular units")
+
+    else:
+        # scalar or iterable in, ndarray out
+        # iterable passed in
+        v = getvector(v, dim=dim)
+        if unit == "rad":
+            return v
+        elif unit == "deg":
+            return np.deg2rad(v)
+        else:
+            raise ValueError("invalid angular units")
 
 
 def isnumberlist(x: Any) -> bool:

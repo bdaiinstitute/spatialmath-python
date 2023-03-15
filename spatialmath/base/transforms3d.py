@@ -79,7 +79,7 @@ def rotx(theta: float, unit: str = "rad") -> SO3Array:
     :SymPy: supported
     """
 
-    theta = getunit(theta, unit)
+    theta = getunit(theta, unit, dim=0)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -118,7 +118,7 @@ def roty(theta: float, unit: str = "rad") -> SO3Array:
     :SymPy: supported
     """
 
-    theta = getunit(theta, unit)
+    theta = getunit(theta, unit, dim=0)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -152,7 +152,7 @@ def rotz(theta: float, unit: str = "rad") -> SO3Array:
     :seealso: :func:`~trotz`
     :SymPy: supported
     """
-    theta = getunit(theta, unit)
+    theta = getunit(theta, unit, dim=0)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off

@@ -24,12 +24,11 @@ import matplotlib.pyplot as plt
 
 class TestVelocity(unittest.TestCase):
     def test_numjac(self):
-
         # test on algebraic example
         def f(X):
             x = X[0]
             y = X[1]
-            return np.r_[x, x ** 2, x * y ** 2]
+            return np.r_[x, x**2, x * y**2]
 
         nt.assert_array_almost_equal(
             numjac(f, [2, 3]),
@@ -37,18 +36,19 @@ class TestVelocity(unittest.TestCase):
         )
 
         # test on rotation matrix
-        nt.assert_array_almost_equal(numjac(rotx, [0], SO=3), np.array([[1, 0, 0]]).T)
+        J = numjac(lambda theta: rotx(theta[0]), [0], SO=3)
+        nt.assert_array_almost_equal(J, np.array([[1, 0, 0]]).T)
 
-        nt.assert_array_almost_equal(
-            numjac(rotx, [pi / 2], SO=3), np.array([[1, 0, 0]]).T
-        )
+        J = numjac(lambda theta: rotx(theta[0]), [pi / 2], SO=3)
+        nt.assert_array_almost_equal(J, np.array([[1, 0, 0]]).T)
 
-        nt.assert_array_almost_equal(numjac(roty, [0], SO=3), np.array([[0, 1, 0]]).T)
+        J = numjac(lambda theta: roty(theta[0]), [0], SO=3)
+        nt.assert_array_almost_equal(J, np.array([[0, 1, 0]]).T)
 
-        nt.assert_array_almost_equal(numjac(rotz, [0], SO=3), np.array([[0, 0, 1]]).T)
+        J = numjac(lambda theta: rotz(theta[0]), [0], SO=3)
+        nt.assert_array_almost_equal(J, np.array([[0, 0, 1]]).T)
 
     def test_rpy2jac(self):
-
         # ZYX order
         gamma = [0, 0, 0]
         nt.assert_array_almost_equal(rpy2jac(gamma), numjac(rpy2r, gamma, SO=3))
@@ -75,7 +75,6 @@ class TestVelocity(unittest.TestCase):
         )
 
     def test_eul2jac(self):
-
         # ZYX order
         gamma = [0, 0, 0]
         nt.assert_array_almost_equal(eul2jac(gamma), numjac(eul2r, gamma, SO=3))
@@ -85,7 +84,6 @@ class TestVelocity(unittest.TestCase):
         nt.assert_array_almost_equal(eul2jac(gamma), numjac(eul2r, gamma, SO=3))
 
     def test_exp2jac(self):
-
         # ZYX order
         gamma = np.r_[1, 0, 0]
         nt.assert_array_almost_equal(exp2jac(gamma), numjac(exp2r, gamma, SO=3))
@@ -161,61 +159,73 @@ class TestVelocity(unittest.TestCase):
         gamma = [0.1, 0.2, 0.3]
         A = rotvelxform(gamma, full=True, representation="rpy/zyx")
         Ai = rotvelxform(gamma, full=True, inverse=True, representation="rpy/zyx")
-        nt.assert_array_almost_equal(A[3:,3:], rpy2jac(gamma, order="zyx"))
+        nt.assert_array_almost_equal(A[3:, 3:], rpy2jac(gamma, order="zyx"))
         nt.assert_array_almost_equal(A @ Ai, np.eye(6))
 
         gamma = [0.1, 0.2, 0.3]
         A = rotvelxform(gamma, full=True, representation="rpy/xyz")
         Ai = rotvelxform(gamma, full=True, inverse=True, representation="rpy/xyz")
-        nt.assert_array_almost_equal(A[3:,3:], rpy2jac(gamma, order="xyz"))
+        nt.assert_array_almost_equal(A[3:, 3:], rpy2jac(gamma, order="xyz"))
         nt.assert_array_almost_equal(A @ Ai, np.eye(6))
 
         gamma = [0.1, 0.2, 0.3]
         A = rotvelxform(gamma, full=True, representation="eul")
         Ai = rotvelxform(gamma, full=True, inverse=True, representation="eul")
-        nt.assert_array_almost_equal(A[3:,3:], eul2jac(gamma))
+        nt.assert_array_almost_equal(A[3:, 3:], eul2jac(gamma))
         nt.assert_array_almost_equal(A @ Ai, np.eye(6))
 
         gamma = [0.1, 0.2, 0.3]
         A = rotvelxform(gamma, full=True, representation="exp")
         Ai = rotvelxform(gamma, full=True, inverse=True, representation="exp")
-        nt.assert_array_almost_equal(A[3:,3:], exp2jac(gamma))
+        nt.assert_array_almost_equal(A[3:, 3:], exp2jac(gamma))
         nt.assert_array_almost_equal(A @ Ai, np.eye(6))
 
     def test_angvelxform_inv_dot_eul(self):
-        rep = 'eul'
+        rep = "eul"
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, -3, 4]
-        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
+        H = numhess(
+            lambda g: rotvelxform(g, representation=rep, inverse=True, full=False),
+            gamma,
+        )
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     def test_angvelxform_dot_rpy_xyz(self):
-        rep = 'rpy/xyz'
+        rep = "rpy/xyz"
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, -3, 4]
-        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
+        H = numhess(
+            lambda g: rotvelxform(g, representation=rep, inverse=True, full=False),
+            gamma,
+        )
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     def test_angvelxform_dot_rpy_zyx(self):
-        rep = 'rpy/zyx'
+        rep = "rpy/zyx"
         gamma = [0.1, 0.2, 0.3]
         gamma_d = [2, -3, 4]
-        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
+        H = numhess(
+            lambda g: rotvelxform(g, representation=rep, inverse=True, full=False),
+            gamma,
+        )
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
     # @unittest.skip("bug in angvelxform_dot for exponential coordinates")
     def test_angvelxform_dot_exp(self):
-        rep = 'exp'
+        rep = "exp"
         gamma = [0.1, 0.2, 0.3]
         gamma /= np.linalg.norm(gamma)
         gamma_d = [2, -3, 4]
-        H = numhess(lambda g: rotvelxform(g, representation=rep, inverse=True, full=False), gamma)
+        H = numhess(
+            lambda g: rotvelxform(g, representation=rep, inverse=True, full=False),
+            gamma,
+        )
         Adot = np.tensordot(H, gamma_d, (0, 0))
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
@@ -228,30 +238,29 @@ class TestVelocity(unittest.TestCase):
         x = tr2x(T)
         nt.assert_array_almost_equal(x2tr(x), T)
 
-        x = tr2x(T, representation='eul')
-        nt.assert_array_almost_equal(x2tr(x, representation='eul'), T)
+        x = tr2x(T, representation="eul")
+        nt.assert_array_almost_equal(x2tr(x, representation="eul"), T)
 
-        x = tr2x(T, representation='rpy/xyz')
-        nt.assert_array_almost_equal(x2tr(x, representation='rpy/xyz'), T)
+        x = tr2x(T, representation="rpy/xyz")
+        nt.assert_array_almost_equal(x2tr(x, representation="rpy/xyz"), T)
 
-        x = tr2x(T, representation='rpy/zyx')
-        nt.assert_array_almost_equal(x2tr(x, representation='rpy/zyx'), T)
+        x = tr2x(T, representation="rpy/zyx")
+        nt.assert_array_almost_equal(x2tr(x, representation="rpy/zyx"), T)
 
-        x = tr2x(T, representation='exp')
-        nt.assert_array_almost_equal(x2tr(x, representation='exp'), T)
+        x = tr2x(T, representation="exp")
+        nt.assert_array_almost_equal(x2tr(x, representation="exp"), T)
 
-        x = tr2x(T, representation='eul')
-        nt.assert_array_almost_equal(x2tr(x, representation='eul'), T)
+        x = tr2x(T, representation="eul")
+        nt.assert_array_almost_equal(x2tr(x, representation="eul"), T)
 
-        x = tr2x(T, representation='arm')
-        nt.assert_array_almost_equal(x2tr(x, representation='rpy/xyz'), T)
+        x = tr2x(T, representation="arm")
+        nt.assert_array_almost_equal(x2tr(x, representation="rpy/xyz"), T)
 
-        x = tr2x(T, representation='vehicle')
-        nt.assert_array_almost_equal(x2tr(x, representation='rpy/zyx'), T)
+        x = tr2x(T, representation="vehicle")
+        nt.assert_array_almost_equal(x2tr(x, representation="rpy/zyx"), T)
 
-        x = tr2x(T, representation='exp')
-        nt.assert_array_almost_equal(x2tr(x, representation='exp'), T)
-
+        x = tr2x(T, representation="exp")
+        nt.assert_array_almost_equal(x2tr(x, representation="exp"), T)
 
     # def test_angvelxform_dot(self):
 
@@ -265,5 +274,4 @@ class TestVelocity(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()

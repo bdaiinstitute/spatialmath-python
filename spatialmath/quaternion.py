@@ -1118,12 +1118,12 @@ class UnitQuaternion(Quaternion):
 
     # -------------------------------------------- constructor variants
     @classmethod
-    def Rx(cls, angle: float, unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Rx(cls, angles: ArrayLike, unit: Optional[str] = "rad") -> UnitQuaternion:
         """
         Construct a UnitQuaternion object representing rotation about the X-axis
 
         :arg θ: rotation angle
-        :type θ: float or array_like
+        :type θ: array_like
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
         :return: unit-quaternion
@@ -1142,18 +1142,18 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Rx(0.3))
             >>> print(UQ.Rx([0, 0.3, 0.6]))
         """
-        angles = smb.getunit(smb.getvector(angle), unit)
+        angles = smb.getunit(angles, unit)
         return cls(
             [np.r_[math.cos(a / 2), math.sin(a / 2), 0, 0] for a in angles], check=False
         )
 
     @classmethod
-    def Ry(cls, angle: float, unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Ry(cls, angles: ArrayLike, unit: Optional[str] = "rad") -> UnitQuaternion:
         """
         Construct a UnitQuaternion object representing rotation about the Y-axis
 
         :arg θ: rotation angle
-        :type θ: float or array_like
+        :type θ: array_like
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
         :return: unit-quaternion
@@ -1172,18 +1172,18 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Ry(0.3))
             >>> print(UQ.Ry([0, 0.3, 0.6]))
         """
-        angles = smb.getunit(smb.getvector(angle), unit)
+        angles = smb.getunit(angles, unit)
         return cls(
             [np.r_[math.cos(a / 2), 0, math.sin(a / 2), 0] for a in angles], check=False
         )
 
     @classmethod
-    def Rz(cls, angle: float, unit: Optional[str] = "rad") -> UnitQuaternion:
+    def Rz(cls, angles: ArrayLike, unit: Optional[str] = "rad") -> UnitQuaternion:
         """
         Construct a UnitQuaternion object representing rotation about the Z-axis
 
         :arg θ: rotation angle
-        :type θ: float or array_like
+        :type θ: array_like
         :arg unit: rotation unit 'rad' [default] or 'deg'
         :type unit: str
         :return: unit-quaternion
@@ -1202,7 +1202,7 @@ class UnitQuaternion(Quaternion):
             >>> print(UQ.Rz(0.3))
             >>> print(UQ.Rz([0, 0.3, 0.6]))
         """
-        angles = smb.getunit(smb.getvector(angle), unit)
+        angles = smb.getunit(angles, unit)
         return cls(
             [np.r_[math.cos(a / 2), 0, 0, math.sin(a / 2)] for a in angles], check=False
         )
@@ -1390,8 +1390,7 @@ class UnitQuaternion(Quaternion):
         :seealso: :meth:`UnitQuaternion.angvec` :meth:`UnitQuaternion.exp` :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         v = smb.getvector(v, 3)
-        smb.isscalar(theta)
-        theta = smb.getunit(theta, unit)
+        theta = smb.getunit(theta, unit, dim=0)
         return cls(
             s=math.cos(theta / 2), v=math.sin(theta / 2) * v, norm=False, check=False
         )

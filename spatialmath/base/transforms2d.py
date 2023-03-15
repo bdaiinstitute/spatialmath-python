@@ -62,7 +62,7 @@ def rot2(theta: float, unit: str = "rad") -> SO2Array:
         >>> rot2(0.3)
         >>> rot2(45, 'deg')
     """
-    theta = smb.getunit(theta, unit)
+    theta = smb.getunit(theta, unit, dim=0)
     ct = smb.sym.cos(theta)
     st = smb.sym.sin(theta)
     # fmt: off

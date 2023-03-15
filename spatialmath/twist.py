@@ -1008,7 +1008,7 @@ class Twist3(BaseTwist):
 
         theta = smb.getunit(theta, unit)
 
-        if smb.isscalar(theta):
+        if len(theta) == 1:
             # theta is a scalar
             return SE3(smb.trexp(self.S * theta))
         else:
@@ -1064,7 +1064,7 @@ class Twist3(BaseTwist):
         """
         from spatialmath.pose3d import SE3
 
-        theta = np.r_[smb.getunit(theta, unit)]
+        theta = smb.getunit(theta, unit)
 
         if len(self) == 1:
             return SE3([smb.trexp(self.S * t) for t in theta], check=False)
@@ -1524,12 +1524,9 @@ class Twist2(BaseTwist):
         if unit != "rad" and self.isprismatic:
             print("Twist3.exp: using degree mode for a prismatic twist")
 
-        if theta is None:
-            theta = 1
-        else:
-            theta = smb.getunit(theta, unit)
+        theta = smb.getunit(theta, unit)
 
-        if smb.isscalar(theta):
+        if len(theta) == 1:
             return SE2(smb.trexp2(self.S * theta))
         else:
             return SE2([smb.trexp2(self.S * t) for t in theta])
@@ -1560,7 +1557,7 @@ class Twist2(BaseTwist):
         else:
             return [smb.skewa(x.S) for x in self]
 
-    def exp(self, theta=None, unit="rad"):
+    def exp(self, theta=1, unit="rad"):
         r"""
         Exponentiate a 2D twist
 
@@ -1595,12 +1592,14 @@ class Twist2(BaseTwist):
         """
         from spatialmath.pose2d import SE2
 
-        if theta is None:
-            theta = 1.0
-        else:
-            theta = smb.getunit(theta, unit)
+        theta = smb.getunit(theta, unit)
 
-        return SE2(smb.trexp2(self.S * theta))
+        if len(self) == 1:
+            return SE2([smb.trexp2(self.S * t) for t in theta], check=False)
+        elif len(self) == len(theta):
+            return SE2([smb.trexp2(s * t) for s, t in zip(self.S, theta)], check=False)
+        else:
+            raise ValueError("length mismatch")
 
     def unit(self):
         """
