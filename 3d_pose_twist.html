@@ -117,8 +117,8 @@ algebra se(3) of the corresponding SE(3) matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">References</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Robotics, Vision &amp; Control</strong>, Corke, Springer 2017.</p></li>
-<li><p><strong>Modern Robotics, Lynch &amp; Park</strong>, Cambridge 2017</p></li>
+<li><p>Robotics, Vision &amp; Control for Python, Section 2.3.2.3, P. Corke, Springer 2023.</p></li>
+<li><p>Modern Robotics, Lynch &amp; Park, Cambridge 2017</p></li>
 </ul>
 </dd>
 </dl>
@@ -145,10 +145,15 @@ homogeneous transformation.</p>
 <p>For a twist representing motion from frame {B} to {A}, the adjoint will
 transform a twist relative to frame {A} to one relative to frame {B}.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">Ad</span><span class="p">()</span>
+<span class="go">array([[ 1.    ,  0.    ,  0.    ,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.9553, -0.2955,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.2955,  0.9553,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ,  0.    ,  0.    ],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  0.    ,  0.9553, -0.2955],</span>
+<span class="go">       [ 0.    ,  0.    ,  0.    ,  0.    ,  0.2955,  0.9553]])</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -316,8 +321,8 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">Twist3([</span>
-<span class="go">  [-1.2315, -0.65781, -1.0426, -2.7702, 0.63821, 0.41866],</span>
-<span class="go">  [-0.68056, -1.4274, 0.72038, 1.639, -0.90272, -0.59665]</span>
+<span class="go">  [0.91105, 0.62175, 0.64427, -0.34265, 1.152, 0.4222],</span>
+<span class="go">  [-0.25401, 0.58728, 0.42484, 1.9355, 1.8401, -0.52434]</span>
 <span class="go">])</span>
 </pre></div>
 </div>
@@ -353,7 +358,14 @@ poses.</p></li>
 <p>If <code class="docutils literal notranslate"><span class="pre">θ</span></code> is an array then the result is a sequence of rotations defined
 by consecutive elements.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">Twist3([0, 0, 0, 0.3, 0, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="go">Twist3([</span>
+<span class="go">  [0, 0, 0, 0.3, 0, 0],</span>
+<span class="go">  [0, 0, 0, 0.4, 0, 0]</span>
+<span class="go">])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -391,7 +403,14 @@ by consecutive elements.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">θ</span></code> is an array then the result is a sequence of rotations defined
 by consecutive elements.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">Twist3([0, 0, 0, 0, 0.3, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Ry</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="go">Twist3([</span>
+<span class="go">  [0, 0, 0, 0, 0.3, 0],</span>
+<span class="go">  [0, 0, 0, 0, 0.4, 0]</span>
+<span class="go">])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -429,7 +448,14 @@ by consecutive elements.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">θ</span></code> is an array then the result is a sequence of rotations defined
 by consecutive elements.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="go">Twist3([0, 0, 0, 0, 0, 0.3])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rz</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="go">Twist3([</span>
+<span class="go">  [0, 0, 0, 0, 0, 0.3],</span>
+<span class="go">  [0, 0, 0, 0, 0, 0.4]</span>
+<span class="go">])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -457,10 +483,13 @@ by consecutive elements.</p>
 <p><code class="docutils literal notranslate"><span class="pre">S.SE3()</span></code> is an SE3 object representing the homogeneous transformation
 equivalent to the Twist3. This is the exponentiation of the twist vector.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">SE3</span><span class="p">()</span>
+<span class="go">SE3(array([[ 1.    ,  0.    ,  0.    ,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.9553, -0.2955,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.2955,  0.9553,  0.    ],</span>
+<span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -828,10 +857,15 @@ corresponding homogeneous transformation.</p>
 <p>For a twist representing motion from frame {B} to {A}, the adjoint will
 transform a twist relative to frame {A} to one relative to frame {B}.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">ad</span><span class="p">()</span>
+<span class="go">array([[ 0. , -0. ,  0. ,  0. , -0. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. , -0.3,  0. ,  0. , -0. ],</span>
+<span class="go">       [-0. ,  0.3,  0. , -0. ,  0. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. ,  0. ,  0. , -0. ,  0. ],</span>
+<span class="go">       [ 0. ,  0. ,  0. ,  0. ,  0. , -0.3],</span>
+<span class="go">       [ 0. ,  0. ,  0. , -0. ,  0.3,  0. ]])</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1030,11 +1064,11 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([-0.41487, 0.84245, 1.3962, -1.9019, 1.6243, -1.3652])</span>
+<span class="go">Twist3([0.61992, 0.37872, 1.1822, -0.41098, -2.3891, 0.68862])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([0.41487, -0.84245, -1.3962, 1.9019, -1.6243, 1.3652])</span>
+<span class="go">Twist3([-0.61992, -0.37872, -1.1822, 0.41098, 2.3891, -0.68862])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([1.1102e-16, 2.2204e-16, 2.7756e-17, 0, 0, 0])</span>
+<span class="go">Twist3([-1.1102e-16, -5.5511e-17, -1.1102e-16, 0, 0, 0])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1143,7 +1177,14 @@ instance is modified.</p>
 <p>For a twist instance with N values return the matrix product of those
 elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</span>.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
+<span class="go">Twist3([0, 0, 0, 0.9, 0, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">Twist3([0, 0, 0, 0.9, 0, 0])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1170,16 +1211,7 @@ elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</spa
 belonging to the group se(3). This is the Lie algebra of the
 corresponding SE(3) element.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;S&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;se&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;smb&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1485,7 +1517,7 @@ this point is at infinity.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 14-Mar-2023.
+      <span class="lastupdated">Last updated on 15-Mar-2023.
       </span></p>
   </div>
 

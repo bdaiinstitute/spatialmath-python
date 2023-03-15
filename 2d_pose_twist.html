@@ -365,8 +365,8 @@ moment vector (1 element) and direction vector (2 elements).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">References</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Robotics, Vision &amp; Control</strong>, Corke, Springer 2017.</p></li>
-<li><p><strong>Modern Robotics, Lynch &amp; Park</strong>, Cambridge 2017</p></li>
+<li><p>Robotics, Vision &amp; Control for Python, Section 2.2.2.4, P. Corke, Springer 2023.</p></li>
+<li><p>Modern Robotics, Lynch &amp; Park, Cambridge 2017</p></li>
 </ul>
 </dd>
 </dl>
@@ -563,7 +563,7 @@ operation so the result will be a matrix
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.Twist2.exp">
-<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist2.exp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/twist.html#Twist2.exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.Twist2.exp" title="Permalink to this definition"></a></dt>
 <dd><p>Exponentiate a 2D twist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -702,11 +702,11 @@ The inverse is the negative of the twist vector.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
-<span class="go">Twist3([0.55455, 0.13246, -0.83784, 1.4124, -0.017458, 0.90457])</span>
+<span class="go">Twist3([-0.11787, 0.74914, 0.33872, 0.28374, 0.42794, -1.7238])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([-0.55455, -0.13246, 0.83784, -1.4124, 0.017458, -0.90457])</span>
+<span class="go">Twist3([0.11787, -0.74914, -0.33872, -0.28374, -0.42794, 1.7238])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-<span class="go">Twist3([5.5511e-17, -5.2924e-34, -5.5511e-17, -2.7756e-17, 3.9712e-17, 4.6823e-17])</span>
+<span class="go">Twist3([5.5511e-17, -1.1102e-16, -5.5511e-17, 0, 0, 0])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -792,7 +792,14 @@ instance is modified.</p>
 <p>For a twist instance with N values return the matrix product of those
 elements <span class="math notranslate nohighlight">\(\prod_i=0^{N-1} S_i\)</span>.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">TypeError: &#39;float&#39; object is not iterable</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
+<span class="go">Twist3([0, 0, 0, 0.9, 0, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="go">Twist3([0, 0, 0, 0.9, 0, 0])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1125,7 +1132,7 @@ this point is at infinity.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 14-Mar-2023.
+      <span class="lastupdated">Last updated on 15-Mar-2023.
       </span></p>
   </div>
 

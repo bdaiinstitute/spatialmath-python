@@ -254,40 +254,59 @@ attempt to reshape <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="spatialmath.base.argcheck.getunit">
-<span class="sig-name descname"><span class="pre">getunit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#getunit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.argcheck.getunit" title="Permalink to this definition"></a></dt>
-<dd><p>Convert value according to angular units</p>
+<span class="sig-name descname"><span class="pre">getunit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rad'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/base/argcheck.html#getunit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.base.argcheck.getunit" title="Permalink to this definition"></a></dt>
+<dd><p>Convert values according to angular units</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<em>array_like</em><em>(</em><em>m</em><em>) or </em><em>ndarray</em><em>(</em><em>m</em><em>)</em>) – the value in radians or degrees</p></li>
+<li><p><strong>v</strong> (<em>array_like</em><em>(</em><em>m</em><em>)</em>) – the value in radians or degrees</p></li>
 <li><p><strong>unit</strong> (<em>str</em>) – the angular unit, “rad” or “deg”</p></li>
+<li><p><strong>dim</strong> (<em>int</em><em>, </em><em>optional</em>) – expected dimension of input, defaults to None</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>the converted value in radians</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list(m) or ndarray(m)</p>
+<dd class="field-odd"><p>ndarray(m) or float</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – argument is not a valid angular unit</p>
 </dd>
 </dl>
-<p>The input can be a list or ndarray() and the output is the same type.</p>
+<p>The input value is assumed to be in units of <code class="docutils literal notranslate"><span class="pre">unit</span></code> and is converted to radians.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">getunit</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+<span class="go">array([1.5])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">1.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># getunit([1.5], &#39;rad&#39;, dim=0)  --&gt; ValueError</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
-<span class="go">1.5707963267948966</span>
+<span class="go">array([1.5708])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
-<span class="go">[1.5707963267948966, 3.141592653589793]</span>
+<span class="go">array([1.5708, 3.1416])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;rad&#39;</span><span class="p">)</span>
 <span class="go">array([0.5, 1. ])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
 <span class="go">array([1.5708, 3.1416])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getunit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">],</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([1.5708, 3.1416])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># getunit([90, 180], &#39;deg&#39;, dim=3)  --&gt; ValueError</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Note</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>the input value is processed by <a class="reference internal" href="#spatialmath.base.argcheck.getvector" title="spatialmath.base.argcheck.getvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">getvector()</span></code></a> and the argument <code class="docutils literal notranslate"><span class="pre">dim</span></code> can
+be used to check that <code class="docutils literal notranslate"><span class="pre">v</span></code> is the desired length.</p></li>
+<li><p>the output is always an ndarray except if the input is a scalar and <code class="docutils literal notranslate"><span class="pre">dim=0</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Seealso</dt>
+<dd class="field-even"><p><a class="reference internal" href="#spatialmath.base.argcheck.getvector" title="spatialmath.base.argcheck.getvector"><code class="xref py py-func docutils literal notranslate"><span class="pre">getvector()</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -379,6 +398,9 @@ or (N,1)</p></li>
 <span class="go">array([1.])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([[</span><span class="mi">1</span><span class="p">]])</span>
 <span class="go">array([[1.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getvector</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">array([1., 2.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># getvector([1,2], 3)  --&gt; ValueError</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -700,7 +722,7 @@ dimensions.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 14-Mar-2023.
+      <span class="lastupdated">Last updated on 15-Mar-2023.
       </span></p>
   </div>
 

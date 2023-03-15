@@ -376,8 +376,8 @@
 <span class="sd">    algebra se(3) of the corresponding SE(3) matrix.</span>
 
 <span class="sd">    :References:</span>
-<span class="sd">        - **Robotics, Vision &amp; Control**, Corke, Springer 2017.</span>
-<span class="sd">        - **Modern Robotics, Lynch &amp; Park**, Cambridge 2017</span>
+<span class="sd">        - Robotics, Vision &amp; Control for Python, Section 2.3.2.3, P. Corke, Springer 2023.</span>
+<span class="sd">        - Modern Robotics, Lynch &amp; Park, Cambridge 2017</span>
 
 <span class="sd">    .. note:: Compared to Lynch &amp; Park this module implements twist vectors</span>
 <span class="sd">        with the translational components first, followed by rotational</span>
@@ -1086,7 +1086,7 @@
 
         <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># theta is a scalar</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">theta</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1142,7 +1142,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">spatialmath.pose3d</span> <span class="kn">import</span> <span class="n">SE3</span>
 
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)]</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1347,8 +1347,8 @@
 <span class="sd">              moment vector (1 element) and direction vector (2 elements).</span>
 
 <span class="sd">        :References:</span>
-<span class="sd">            - **Robotics, Vision &amp; Control**, Corke, Springer 2017.</span>
-<span class="sd">            - **Modern Robotics, Lynch &amp; Park**, Cambridge 2017</span>
+<span class="sd">            - Robotics, Vision &amp; Control for Python, Section 2.2.2.4, P. Corke, Springer 2023.</span>
+<span class="sd">            - Modern Robotics, Lynch &amp; Park, Cambridge 2017</span>
 
 <span class="sd">        .. note:: Compared to Lynch &amp; Park this module implements twist vectors</span>
 <span class="sd">            with the translational components first, followed by rotational</span>
@@ -1602,12 +1602,9 @@
         <span class="k">if</span> <span class="n">unit</span> <span class="o">!=</span> <span class="s2">&quot;rad&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isprismatic</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Twist3.exp: using degree mode for a prismatic twist&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">theta</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE2</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span><span class="p">])</span></div>
@@ -1638,7 +1635,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">skewa</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">S</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Twist2.exp"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Twist2.exp"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exponentiate a 2D twist</span>
 
@@ -1673,12 +1670,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
 
-        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">theta</span><span class="p">))</span></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SE2</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">SE2</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp2</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">theta</span><span class="p">)],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length mismatch&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Twist2.unit"><a class="viewcode-back" href="../../2d_pose_twist.html#spatialmath.Twist2.unit">[docs]</a>    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1934,7 +1933,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 14-Mar-2023.
+      <span class="lastupdated">Last updated on 15-Mar-2023.
       </span></p>
   </div>
 
