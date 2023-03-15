@@ -298,8 +298,8 @@ class Twist3(BaseTwist):
     algebra se(3) of the corresponding SE(3) matrix.
 
     :References:
-        - **Robotics, Vision & Control**, Corke, Springer 2017.
-        - **Modern Robotics, Lynch & Park**, Cambridge 2017
+        - Robotics, Vision & Control for Python, Section 2.3.2.3, P. Corke, Springer 2023.
+        - Modern Robotics, Lynch & Park, Cambridge 2017
 
     .. note:: Compared to Lynch & Park this module implements twist vectors
         with the translational components first, followed by rotational
@@ -1269,8 +1269,8 @@ class Twist2(BaseTwist):
               moment vector (1 element) and direction vector (2 elements).
 
         :References:
-            - **Robotics, Vision & Control**, Corke, Springer 2017.
-            - **Modern Robotics, Lynch & Park**, Cambridge 2017
+            - Robotics, Vision & Control for Python, Section 2.2.2.4, P. Corke, Springer 2023.
+            - Modern Robotics, Lynch & Park, Cambridge 2017
 
         .. note:: Compared to Lynch & Park this module implements twist vectors
             with the translational components first, followed by rotational

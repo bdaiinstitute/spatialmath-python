@@ -1070,7 +1070,7 @@ class SE3(SO3):
             - can be considered as an approximation to the effect of spatial velocity over a
               a time interval, ie. the average spatial velocity multiplied by time.
 
-        :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+        :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
 
         :seealso: :func:`~spatialmath.base.transforms3d.tr2delta`
         """
@@ -1099,7 +1099,7 @@ class SE3(SO3):
         .. note:: Use this method to map velocities between two frames on
             the same rigid-body.
 
-        :reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+        :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
         :seealso: SE3.jacob, Twist.ad, :func:`~spatialmath.base.tr2jac`
         :SymPy: supported
         """
@@ -1126,7 +1126,7 @@ class SE3(SO3):
             on the same rigid-body.
 
         :seealso: SE3.Ad, Twist.ad, :func:`~spatialmath.base.tr2jac`
-        :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+        :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
         :SymPy: supported
         """
         return smb.tr2jac(self.A)
@@ -1627,7 +1627,7 @@ class SE3(SO3):
         ``SE3.Delta2tr(d)`` is an SE(3) representing differential
         motion :math:`d = [\delta_x, \delta_y, \delta_z, \theta_x, \theta_y, \theta_z]`.
 
-        :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+        :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
 
         :seealso: :meth:`~delta` :func:`~spatialmath.base.transform3d.delta2tr`
         :SymPy: supported

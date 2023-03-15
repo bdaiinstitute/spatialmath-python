@@ -1700,7 +1700,7 @@ def delta2tr(d: R6) -> SE3Array:
         >>> from spatialmath.base import delta2tr
         >>> delta2tr([0.001, 0, 0, 0, 0.002, 0])
 
-    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+    :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
 
     :seealso: :func:`~tr2delta`
     :SymPy: supported
@@ -1782,7 +1782,7 @@ def tr2delta(T0: SE3Array, T1: Optional[SE3Array] = None) -> R6:
         - Can be considered as an approximation to the effect of spatial velocity over a
           a time interval, average spatial velocity multiplied by time.
 
-    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p67.
+    :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
 
     :seealso: :func:`~delta2tr`
     :SymPy: supported
@@ -1825,7 +1825,7 @@ def tr2jac(T: SE3Array) -> R6x6:
         >>> T = trotx(0.3, t=[4,5,6])
         >>> tr2jac(T)
 
-    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+    :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
     :SymPy: supported
     """
 
@@ -1863,8 +1863,7 @@ def eul2jac(angles: ArrayLike3) -> R3x3:
         - Used in the creation of an analytical Jacobian.
         - Angles in radians, rates in radians/sec.
 
-    Reference::
-    - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p232-3.
+    :Reference: Robotics, Vision & Control for Python, Section 8.1.3, P. Corke, Springer 2023.
 
     :SymPy: supported
 
@@ -1922,8 +1921,7 @@ def rpy2jac(angles: ArrayLike3, order: str = "zyx") -> R3x3:
         - Used in the creation of an analytical Jacobian.
         - Angles in radians, rates in radians/sec.
 
-    Reference::
-    - Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p232-3.
+    :Reference: Robotics, Vision & Control for Python, Section 8.1.3, P. Corke, Springer 2023.
 
     :SymPy: supported
 

@@ -718,7 +718,7 @@ def tradjoint2(T):
         >>> tr2adjoint2(T)
 
     :Reference:
-        - Robotics, Vision & Control for Python, Section 3, P. Corke, Springer 2023.
+        - Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
         - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>_
 
     :SymPy: supported
@@ -762,7 +762,7 @@ def tr2jac2(T: SE2Array) -> R3x3:
         >>> T = trot2(0.3, t=[4,5])
         >>> tr2jac2(T)
 
-    :Reference: Robotics, Vision & Control: Second Edition, P. Corke, Springer 2016; p65.
+    :Reference: Robotics, Vision & Control for Python, Section 3.1, P. Corke, Springer 2023.
     :SymPy: supported
     """
 
