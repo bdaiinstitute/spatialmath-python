@@ -354,6 +354,7 @@ class SO3(BasePoseMatrix):
         .. runblock:: pycon
 
             >>> from spatialmath import SO3
+            >>> import numpy as np
             >>> x = SO3.Rx(np.linspace(0, math.pi, 20))
             >>> len(x)
             >>> x[7]
@@ -383,7 +384,8 @@ class SO3(BasePoseMatrix):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion
+            >>> from spatialmath import SO3
+            >>> import numpy as np
             >>> x = SO3.Ry(np.linspace(0, math.pi, 20))
             >>> len(x)
             >>> x[7]
@@ -413,8 +415,9 @@ class SO3(BasePoseMatrix):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import SE3
-            >>> x = SE3.Rz(np.linspace(0, math.pi, 20))
+            >>> from spatialmath import SO3
+            >>> import numpy as np
+            >>> x = SO3.Rz(np.linspace(0, math.pi, 20))
             >>> len(x)
             >>> x[7]
 
@@ -484,7 +487,7 @@ class SO3(BasePoseMatrix):
             >>> from spatialmath import SO3
             >>> SO3.Eul(0.1, 0.2, 0.3)
             >>> SO3.Eul([0.1, 0.2, 0.3])
-            >>> SO3.Eul(10, 20, 30, 'deg')
+            >>> SO3.Eul(10, 20, 30, unit="deg")
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         """
@@ -555,7 +558,7 @@ class SO3(BasePoseMatrix):
             >>> SO3.RPY(0.1, 0.2, 0.3)
             >>> SO3.RPY([0.1, 0.2, 0.3])
             >>> SO3.RPY(0.1, 0.2, 0.3, order='xyz')
-            >>> SO3.RPY(10, 20, 30, 'deg')
+            >>> SO3.RPY(10, 20, 30, unit="deg")
 
 
         :seealso: :func:`~spatialmath.pose3d.SE3.rpy`, :func:`~spatialmath.pose3d.SE3.RPY`, :func:`spatialmath.base.transforms3d.rpy2r`
@@ -1392,7 +1395,7 @@ class SE3(SO3):
             >>> from spatialmath import SE3
             >>> SE3.Eul(0.1, 0.2, 0.3)
             >>> SE3.Eul([0.1, 0.2, 0.3])
-            >>> SE3.Eul(10, 20, 30, unit='deg')
+            >>> SE3.Eul(10, 20, 30, unit="deg")
 
         :seealso: :func:`~spatialmath.pose3d.SE3.eul`, :func:`~spatialmath.base.transforms3d.eul2r`
         :SymPy: supported
