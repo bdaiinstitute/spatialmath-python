@@ -1648,12 +1648,12 @@ def trinterp(start, end, s):
 
         if start is None:
             # 	TRINTERP(T, s)
-            q0 = r2q(t2r(end))
+            q0 = r2q(end)
             qr = qslerp(qeye(), q0, s)
         else:
             # 	TRINTERP(T0, T1, s)
-            q0 = r2q(t2r(start))
-            q1 = r2q(t2r(end))
+            q0 = r2q(start)
+            q1 = r2q(end)
             qr = qslerp(q0, q1, s)
 
         return q2r(qr)
@@ -3458,7 +3458,7 @@ if __name__ == "__main__":  # pragma: no cover
     # theta, vec = tr2angvec(T)
     # print(theta, vec)
     # print(trlog(T, twist=True))
-
-    X = transl(3, 4, -4)
-    trplot(X, width=2, style="rviz", block=True)
-    pass
+    R = rotx(np.pi / 2)
+    s = tranimate(R, movie=True)
+    with open("z.html", "w") as f:
+        print(f"<html>{s}</html", file=f)

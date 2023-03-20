@@ -521,12 +521,29 @@ class Test3D(unittest.TestCase):
         self.assertFalse("zyx" in s)
 
     def test_trinterp(self):
+        R0 = rotx(-0.3)
+        R1 = rotx(0.3)
+
+        nt.assert_array_almost_equal(trinterp(start=R0, end=R1, s=0), R0)
+        nt.assert_array_almost_equal(trinterp(start=R0, end=R1, s=1), R1)
+        nt.assert_array_almost_equal(trinterp(start=R0, end=R1, s=0.5), np.eye(3))
+
+        nt.assert_array_almost_equal(trinterp(start=None, end=R1, s=0), np.eye(3))
+        nt.assert_array_almost_equal(trinterp(start=None, end=R1, s=1), R1)
+        nt.assert_array_almost_equal(trinterp(start=None, end=R1, s=0.5), rotx(0.3 / 2))
+
         T0 = trotx(-0.3)
         T1 = trotx(0.3)
 
         nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0), T0)
         nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=1), T1)
         nt.assert_array_almost_equal(trinterp(start=T0, end=T1, s=0.5), np.eye(4))
+
+        nt.assert_array_almost_equal(trinterp(start=None, end=T1, s=0), np.eye(4))
+        nt.assert_array_almost_equal(trinterp(start=None, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(
+            trinterp(start=None, end=T1, s=0.5), trotx(0.3 / 2)
+        )
 
         T0 = transl(-1, -2, -3)
         T1 = transl(1, 2, 3)

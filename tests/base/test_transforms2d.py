@@ -110,18 +110,15 @@ class Test2D(unittest.TestCase):
         nt.assert_array_almost_equal(T, rt2tr(rot2(0.2), [1, 2]))
 
     def test_trinv2(self):
-
         T = rt2tr(rot2(0.2), [1, 2])
         nt.assert_array_almost_equal(trinv2(T) @ T, np.eye(3))
 
     def test_tradjoint2(self):
-
         T = xyt2tr([1, 2, 0.2])
         X = [1, 2, 3]
         nt.assert_almost_equal(tradjoint2(T) @ X, vexa(T @ skewa(X) @ trinv2(T)))
 
     def test_points2tr2(self):
-
         p1 = np.random.uniform(size=(2, 5))
         T = xyt2tr([1, 2, 0.2])
         p2 = homtrans(T, p1)
@@ -129,7 +126,6 @@ class Test2D(unittest.TestCase):
         nt.assert_almost_equal(T, T2)
 
     def test_icp2d(self):
-
         p1 = np.random.uniform(size=(2, 30))
         T = xyt2tr([1, 2, 0.2])
 
@@ -141,7 +137,6 @@ class Test2D(unittest.TestCase):
         nt.assert_almost_equal(T, T2)
 
     def test_print2(self):
-
         T = transl2(1, 2) @ trot2(0.3)
 
         s = trprint2(T, file=None)
@@ -198,6 +193,20 @@ class Test2D(unittest.TestCase):
         nt.assert_equal(ishom2(T, True), False)
 
     def test_trinterp2(self):
+        R0 = rot2(-0.3)
+        R1 = rot2(0.3)
+
+        nt.assert_array_almost_equal(trinterp2(start=None, end=R1, s=0), np.eye(2))
+        nt.assert_array_almost_equal(trinterp2(start=None, end=R1, s=1), R1)
+        nt.assert_array_almost_equal(
+            trinterp2(start=None, end=R1, s=0.5), rot2(0.3 / 2)
+        )
+
+        nt.assert_array_almost_equal(trinterp2(start=None, end=R1, s=0), np.eye(2))
+        nt.assert_array_almost_equal(trinterp2(start=None, end=R1, s=1), R1)
+        nt.assert_array_almost_equal(
+            trinterp2(start=None, end=R1, s=0.5), rot2(0.3 / 2)
+        )
 
         T0 = trot2(-0.3)
         T1 = trot2(0.3)
@@ -205,6 +214,12 @@ class Test2D(unittest.TestCase):
         nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0), T0)
         nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=1), T1)
         nt.assert_array_almost_equal(trinterp2(start=T0, end=T1, s=0.5), np.eye(3))
+
+        nt.assert_array_almost_equal(trinterp2(start=None, end=T1, s=0), np.eye(3))
+        nt.assert_array_almost_equal(trinterp2(start=None, end=T1, s=1), T1)
+        nt.assert_array_almost_equal(
+            trinterp2(start=None, end=T1, s=0.5), trot2(0.3 / 2)
+        )
 
         T0 = transl2(-1, -2)
         T1 = transl2(1, 2)
@@ -242,5 +257,4 @@ class Test2D(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()
