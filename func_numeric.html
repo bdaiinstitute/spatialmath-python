@@ -130,13 +130,13 @@ to zero, defaults to True</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="n">array2str</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="go">&#39;[ 0.597, 0.157 | 0.277, 0.368 ]&#39;</span>
+<span class="go">&#39;[ 0.969, 0.147 | 0.369, 0.497 ]&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">rowsep</span><span class="o">=</span><span class="s2">&quot;; &quot;</span><span class="p">)</span>  <span class="c1"># MATLAB-like</span>
-<span class="go">&#39;[ 0.205, 0.372; 0.734, 0.664 ]&#39;</span>
+<span class="go">&#39;[ 0.424, 0.716; 0.702, 0.403 ]&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
-<span class="go">&#39;[ 0.239, 0.56, 0.978 ]&#39;</span>
+<span class="go">&#39;[ 0.921, 0.0453, 0.549 ]&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">array2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">&#39;[ 0.176 | 0.855 | 0.295 ]&#39;</span>
+<span class="go">&#39;[ 0.375 | 0.932 | 0.997 ]&#39;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -357,24 +357,20 @@ an SO(N) matrix and the derivative is converted to a column vector</p>
 an SE(N) matrix and the derivative is converted to a colun vector.</p>
 <p>Example:</p>
 <blockquote>
-<div><div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 82, in rotx</span>
+<div><div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;, line 82, in rotx</span>
 <span class="go">    theta = getunit(theta, unit, dim=0)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 574, in getunit</span>
-<span class="go">    v = getvector(v, dim=dim)</span>
-<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 419, in getvector</span>
-<span class="go">    &quot;incorrect vector length: expected {}, got {}&quot;.format(dim, s)</span>
-<span class="go">ValueError: incorrect vector length: expected 0, got (1,)</span>
+<span class="go">  File &quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;, line 575, in getunit</span>
+<span class="go">    raise ValueError(&quot;for dim==0 input must be a scalar&quot;)</span>
+<span class="go">ValueError: for dim==0 input must be a scalar</span>
 <span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/numeric.py&quot;</span>, line <span class="m">59</span>, in <span class="n">numjac</span>
+  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/numeric.py&quot;</span>, line <span class="m">59</span>, in <span class="n">numjac</span>
 <span class="w">    </span><span class="n">J0</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;</span>, line <span class="m">82</span>, in <span class="n">rotx</span>
+  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;</span>, line <span class="m">82</span>, in <span class="n">rotx</span>
 <span class="w">    </span><span class="n">theta</span> <span class="o">=</span> <span class="n">getunit</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;</span>, line <span class="m">574</span>, in <span class="n">getunit</span>
-<span class="w">    </span><span class="n">v</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.15/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;</span>, line <span class="m">419</span>, in <span class="n">getvector</span>
-<span class="w">    </span><span class="s2">&quot;incorrect vector length: expected </span><span class="si">{}</span><span class="s2">, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-<span class="gr">ValueError</span>: <span class="n">incorrect vector length: expected 0, got (1,)</span>
+  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/argcheck.py&quot;</span>, line <span class="m">575</span>, in <span class="n">getunit</span>
+<span class="w">    </span><span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;for dim==0 input must be a scalar&quot;</span><span class="p">)</span>
+<span class="gr">ValueError</span>: <span class="n">for dim==0 input must be a scalar</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -438,7 +434,7 @@ and rows are separated by a semicolon.  Extra white spaces are ignored.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Mar-2023.
+      <span class="lastupdated">Last updated on 21-Mar-2023.
       </span></p>
   </div>
 

@@ -91,7 +91,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">smb</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -109,6 +109,7 @@
 <span class="sd">    - ``plot``</span>
 <span class="sd">    - ``quiver``</span>
 <span class="sd">    - ``text``</span>
+<span class="sd">    - ``scatter``</span>
 
 <span class="sd">    which renders them and also places corresponding objects into a display</span>
 <span class="sd">    list. These objects are ``Line``, ``Quiver`` and ``Text``.  Only these</span>
@@ -121,13 +122,13 @@
 
 <span class="sd">        anim = animate.Animate(dims=[0,2]) # set up the 3D axes</span>
 <span class="sd">        anim.trplot(T, frame=&#39;A&#39;, color=&#39;green&#39;)  # draw the frame</span>
-<span class="sd">        anim.run(loop=True)  # animate it</span>
+<span class="sd">        anim.run(repeat=True)  # animate it</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Animate.__init__"><a class="viewcode-back" href="../../../func_animation.html#spatialmath.base.animate.Animate.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">dims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">projection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ortho&quot;</span><span class="p">,</span>
         <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -135,12 +136,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an Animate object</span>
 
-<span class="sd">        :param axes: the axes to plot into, defaults to current axes</span>
-<span class="sd">        :type axes: Axes3D reference</span>
-<span class="sd">        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,</span>
+<span class="sd">        :param ax: the axes to plot into, defaults to current axes</span>
+<span class="sd">        :type ax: Axes3D reference</span>
+<span class="sd">        :param dim: dimension of plot volume as [xmin, xmax, ymin, ymax,</span>
 <span class="sd">            zmin, zmax]. If dims is [min, max] those limits are applied</span>
 <span class="sd">            to the x-, y- and z-axes.</span>
-<span class="sd">        :type dims: array_like(6) or array_like(2)</span>
+<span class="sd">        :type dim: array_like(6) or array_like(2)</span>
 <span class="sd">        :param projection: 3D projection: ortho [default] or persp</span>
 <span class="sd">        :type projection: str</span>
 <span class="sd">        :param labels: labels for the axes, defaults to X, Y and Z</span>
@@ -152,36 +153,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">displaylist</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># no axes specified</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#     # no axes specified</span>
 
-            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-            <span class="c1"># check any current axes</span>
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;3d&quot;</span><span class="p">:</span>
-                    <span class="c1"># if they are not 3D axes, remove them, otherwise will</span>
-                    <span class="c1"># get plot errors</span>
-                    <span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># no axes in the figure, create a 3D axes</span>
-                <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">,</span> <span class="n">proj_type</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
-                <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">axes</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                <span class="n">axes</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># reuse an existing axis</span>
-                <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+            <span class="c1">#     fig = plt.gcf()</span>
+            <span class="c1">#     # check any current axes</span>
+            <span class="c1">#     for a in fig.axes:</span>
+            <span class="c1">#         if a.name != &quot;3d&quot;:</span>
+            <span class="c1">#             # if they are not 3D axes, remove them, otherwise will</span>
+            <span class="c1">#             # get plot errors</span>
+            <span class="c1">#             a.remove()</span>
+            <span class="c1">#     if len(fig.axes) == 0:</span>
+            <span class="c1">#         # no axes in the figure, create a 3D axes</span>
+            <span class="c1">#         axes = fig.add_subplot(111, projection=&quot;3d&quot;, proj_type=projection)</span>
+            <span class="c1">#         ax.set_xlabel(labels[0])</span>
+            <span class="c1">#         ax.set_ylabel(labels[1])</span>
+            <span class="c1">#         ax.set_zlabel(labels[2])</span>
+            <span class="c1">#         ax.autoscale(enable=True, axis=&quot;both&quot;)</span>
+            <span class="c1">#     else:</span>
+            <span class="c1">#         # reuse an existing axis</span>
+            <span class="c1">#         axes = plt.gca()</span>
 
-        <span class="k">if</span> <span class="n">dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">dims</span> <span class="o">=</span> <span class="n">dims</span> <span class="o">*</span> <span class="mi">3</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
-            <span class="n">axes</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="n">dims</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
-            <span class="c1"># ax.set_aspect(&#39;equal&#39;)</span>
+            <span class="c1"># if dims is not None:</span>
+            <span class="c1">#     if len(dims) == 2:</span>
+            <span class="c1">#         dims = dims * 3</span>
+            <span class="c1">#     ax.set_xlim(dims[0:2])</span>
+            <span class="c1">#     ax.set_ylim(dims[2:4])</span>
+            <span class="c1">#     ax.set_zlim(dims[4:6])</span>
+            <span class="c1">#     # ax.set_aspect(&#39;equal&#39;)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">plotvol3</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span></div>
 
         <span class="c1"># TODO set flag for 2d or 3d axes, flag errors on the methods called later</span>
 
@@ -218,21 +220,21 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">end</span>
 
         <span class="c1"># stash the final value</span>
-        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
 
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
 
         <span class="c1"># draw axes at the origin</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">smb</span><span class="o">.</span><span class="n">trplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Animate.set_proj_type"><a class="viewcode-back" href="../../../func_animation.html#spatialmath.base.animate.Animate.set_proj_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_proj_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_proj_type</span><span class="p">(</span><span class="n">proj_type</span><span class="p">)</span></div>
@@ -241,10 +243,10 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">movie</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">repeat</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
-        <span class="n">nframes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="n">wait</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">nframes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -283,21 +285,17 @@
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
                 <span class="c1"># passed a single transform, interpolate it</span>
-                <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+                <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">trinterp</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># assume it is an SO(3) or SE(3)</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="n">frame</span>
-
             <span class="c1"># ensure result is SE(3)</span>
             <span class="k">if</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+                <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 
             <span class="c1"># update the scene</span>
             <span class="n">animation</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># say we&#39;re still running</span>
-
-            <span class="k">return</span> <span class="n">animation</span><span class="o">.</span><span class="n">artists</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">movie</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">repeat</span> <span class="o">=</span> <span class="kc">False</span>
@@ -312,13 +310,13 @@
             <span class="n">frames</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nframes</span><span class="p">))</span>
 
         <span class="k">global</span> <span class="n">_ani</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
         <span class="n">_ani</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span>
             <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
             <span class="n">func</span><span class="o">=</span><span class="n">update</span><span class="p">,</span>
             <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
             <span class="n">fargs</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="p">,),</span>
-            <span class="n">blit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># blit leaves a trail and first frame, set to False</span>
+            <span class="c1"># blit=False,  # blit leaves a trail and first frame, set to False</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
             <span class="n">repeat</span><span class="o">=</span><span class="n">repeat</span><span class="p">,</span>
             <span class="n">save_count</span><span class="o">=</span><span class="n">nframes</span><span class="p">,</span>
@@ -658,30 +656,37 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">end</span>
 
         <span class="c1"># stash the final value</span>
-        <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
 
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">base</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot2</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
 
         <span class="c1"># draw axes at the origin</span>
-        <span class="n">base</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">smb</span><span class="o">.</span><span class="n">trplot2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Animate2.run"><a class="viewcode-back" href="../../../func_animation.html#spatialmath.base.animate.Animate2.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">movie</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">nframes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+        <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the animation</span>
 
 <span class="sd">        :param axes: the axes to plot into, defaults to current axes</span>
-<span class="sd">        :type axes: Axes3D reference</span>
+<span class="sd">        :type axes: Axes reference</span>
 <span class="sd">        :param nframes: number of steps in the animation [defaault 100]</span>
 <span class="sd">        :type nframes: int</span>
 <span class="sd">        :param repeat: animate in endless loop [default False]</span>
@@ -694,7 +699,7 @@
 <span class="sd">        :rtype: Matplotlib animation object</span>
 
 <span class="sd">        Animates a 3D coordinate frame moving from the world frame to a frame</span>
-<span class="sd">        represented by the SO(3) or SE(3) matrix to the current axes.</span>
+<span class="sd">        represented by the SO(2) or SE(2) matrix to the current axes.</span>
 
 <span class="sd">        .. note::</span>
 
@@ -705,35 +710,50 @@
 <span class="sd">            - invokes the draw() method of every object in the display list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-            <span class="c1"># if contains trajectory:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span> <span class="o">/</span> <span class="n">nframes</span><span class="p">)</span>
-            <span class="n">a</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="n">nframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">a</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">artists</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">animation</span><span class="p">):</span>
+            <span class="c1"># frame is the result of calling next() on a iterator or generator</span>
+            <span class="c1"># seemingly the animation framework isn&#39;t checking StopException</span>
+            <span class="c1"># so there is no way to know when this is no longer called.</span>
+            <span class="c1"># we implement a rather hacky heartbeat style timeout</span>
 
-        <span class="c1"># blit leaves a trail and first frame</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="c1"># passed a single transform, interpolate it</span>
+                <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># assume it is an SO(2) or SE(2)</span>
+                <span class="n">T</span> <span class="o">=</span> <span class="n">frame</span>
+            <span class="c1"># ensure result is SE(2)</span>
+            <span class="k">if</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+            <span class="c1"># update the scene</span>
+            <span class="n">animation</span><span class="o">.</span><span class="n">_draw</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># say we&#39;re still running</span>
+
+
         <span class="k">if</span> <span class="n">movie</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">repeat</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">):</span>
+                <span class="c1"># make it iterable, eg. if a list or tuple</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nframes</span><span class="p">))</span>
 
         <span class="k">global</span> <span class="n">_ani</span>
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
         <span class="n">_ani</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span>
             <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
             <span class="n">func</span><span class="o">=</span><span class="n">update</span><span class="p">,</span>
-            <span class="n">frames</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nframes</span><span class="p">),</span>
+            <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
             <span class="n">fargs</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="p">,),</span>
-            <span class="n">blit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="c1"># blit=False,</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
             <span class="n">repeat</span><span class="o">=</span><span class="n">repeat</span><span class="p">,</span>
+            <span class="n">save_count</span><span class="o">=</span><span class="n">nframes</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">movie</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -745,8 +765,16 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;overwriting movie&quot;</span><span class="p">,</span> <span class="n">movie</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;creating movie&quot;</span><span class="p">,</span> <span class="n">movie</span><span class="p">)</span>
-            <span class="n">FFwriter</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FFMpegWriter</span><span class="p">(</span><span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">extra_args</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-vcodec&quot;</span><span class="p">,</span> <span class="s2">&quot;libx264&quot;</span><span class="p">])</span>
+            <span class="n">FFwriter</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FFMpegWriter</span><span class="p">(</span><span class="n">fps</span><span class="o">=</span><span class="mi">1000</span> <span class="o">/</span> <span class="n">interval</span><span class="p">,</span> <span class="n">extra_args</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-vcodec&quot;</span><span class="p">,</span> <span class="s2">&quot;libx264&quot;</span><span class="p">])</span>
             <span class="n">_ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">movie</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">FFwriter</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="c1"># wait for the animation to finish.  Dig into the timer for this</span>
+            <span class="c1"># animation and wait for its callback to be deregistered.</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">_ani</span><span class="o">.</span><span class="n">event_source</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">_ani</span><span class="o">.</span><span class="n">event_source</span><span class="o">.</span><span class="n">callbacks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
 
         <span class="k">return</span> <span class="n">_ani</span></div>
 
@@ -835,7 +863,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">u</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">v</span> <span class="o">-</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-            <span class="n">R</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">R</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2rt</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">R</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
             <span class="c1"># specific to a single Quiver</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># shift the origin</span>
@@ -943,11 +971,17 @@
 
     <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
 
-    <span class="c1"># T = base.rpy2r(0.3, 0.4, 0.5)</span>
-    <span class="c1"># base.tranimate(T, wait=True)</span>
+    <span class="c1"># T = smb.rpy2r(0.3, 0.4, 0.5)</span>
+    <span class="c1"># # smb.tranimate(T, wait=True)</span>
+    <span class="c1"># s = smb.tranimate(T, movie=True)</span>
+    <span class="c1"># with open(&quot;zz.html&quot;, &quot;w&quot;) as f:</span>
+    <span class="c1">#     print(f&quot;&lt;html&gt;{s}&lt;/html&gt;&quot;, file=f)</span>
 
-    <span class="n">T</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">rot2</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">base</span><span class="o">.</span><span class="n">tranimate2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">rot2</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># smb.tranimate2(T, wait=True)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">tranimate2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;zz.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;html&gt;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&lt;/html&gt;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -958,7 +992,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Mar-2023.
+      <span class="lastupdated">Last updated on 21-Mar-2023.
       </span></p>
   </div>
 

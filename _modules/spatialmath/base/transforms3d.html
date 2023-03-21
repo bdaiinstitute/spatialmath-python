@@ -1726,12 +1726,12 @@
 
         <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># 	TRINTERP(T, s)</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">r2q</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">r2q</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
             <span class="n">qr</span> <span class="o">=</span> <span class="n">qslerp</span><span class="p">(</span><span class="n">qeye</span><span class="p">(),</span> <span class="n">q0</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># 	TRINTERP(T0, T1, s)</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">r2q</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
-            <span class="n">q1</span> <span class="o">=</span> <span class="n">r2q</span><span class="p">(</span><span class="n">t2r</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">r2q</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="n">q1</span> <span class="o">=</span> <span class="n">r2q</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
             <span class="n">qr</span> <span class="o">=</span> <span class="n">qslerp</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">q2r</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
@@ -3366,15 +3366,6 @@
 
         <span class="c1"># label the frame</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">textcolor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">textcolor</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">textcolor</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
-            <span class="k">if</span> <span class="n">origincolor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">origincolor</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">origincolor</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span>
-
             <span class="n">o1</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">flo</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
                 <span class="n">o1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -3482,9 +3473,6 @@
 
 <span class="sd">        :seealso: `trplot`, `plotvol3`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;block&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;block&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
         <span class="n">anim</span> <span class="o">=</span> <span class="n">Animate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
@@ -3536,10 +3524,10 @@
     <span class="c1"># theta, vec = tr2angvec(T)</span>
     <span class="c1"># print(theta, vec)</span>
     <span class="c1"># print(trlog(T, twist=True))</span>
-
-    <span class="n">X</span> <span class="o">=</span> <span class="n">transl</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">trplot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;rviz&quot;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">pass</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">rotx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">tranimate</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;z.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;html&gt;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&lt;/html&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -3550,7 +3538,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Mar-2023.
+      <span class="lastupdated">Last updated on 21-Mar-2023.
       </span></p>
   </div>
 
