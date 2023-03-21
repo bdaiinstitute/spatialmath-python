@@ -1420,7 +1420,7 @@ if _matplotlib_exists:
             pass
 
         anim.trplot2(T, **kwargs)
-        anim.run(**kwargs)
+        return anim.run(**kwargs)
 
 
 if __name__ == "__main__":  # pragma: no cover
