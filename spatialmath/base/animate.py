@@ -13,7 +13,7 @@ import os.path
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from spatialmath import base
+import spatialmath.base as smb
 from collections.abc import Iterable, Iterator
 from spatialmath.base.types import *
 
@@ -140,21 +140,21 @@ class Animate:
                 self.trajectory = end
 
         # stash the final value
-        if base.isrot(end):
-            self.end = base.r2t(end)
+        if smb.isrot(end):
+            self.end = smb.r2t(end)
         else:
             self.end = end
 
         if start is None:
             self.start = np.identity(4)
         else:
-            if base.isrot(start):
-                self.start = base.r2t(start)
+            if smb.isrot(start):
+                self.start = smb.r2t(start)
             else:
                 self.start = start
 
         # draw axes at the origin
-        base.trplot(self.start, ax=self, **kwargs)
+        smb.trplot(self.start, ax=self, **kwargs)
 
     def set_proj_type(self, proj_type: str):
         self.ax.set_proj_type(proj_type)
@@ -205,14 +205,14 @@ class Animate:
 
             if isinstance(frame, float):
                 # passed a single transform, interpolate it
-                T = base.trinterp(start=self.start, end=self.end, s=frame)
+                T = smb.trinterp(start=self.start, end=self.end, s=frame)
             else:
                 # assume it is an SO(3) or SE(3)
                 T = frame
 
             # ensure result is SE(3)
             if T.shape == (3, 3):
-                T = base.r2t(T)
+                T = smb.r2t(T)
 
             # update the scene
             animation._draw(T)
@@ -580,21 +580,21 @@ class Animate2:
                 self.trajectory = end
 
         # stash the final value
-        if base.isrot2(end):
-            self.end = base.r2t(end)
+        if smb.isrot2(end):
+            self.end = smb.r2t(end)
         else:
             self.end = end
 
         if start is None:
             self.start = np.identity(3)
         else:
-            if base.isrot2(start):
-                self.start = base.r2t(start)
+            if smb.isrot2(start):
+                self.start = smb.r2t(start)
             else:
                 self.start = start
 
         # draw axes at the origin
-        base.trplot2(self.start, ax=self, block=False, **kwargs)
+        smb.trplot2(self.start, ax=self, block=False, **kwargs)
 
     def run(
         self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs
@@ -757,7 +757,7 @@ class Animate2:
             self.p = np.c_[u - x, v - y].T
 
         def draw(self, T):
-            R, t = base.tr2rt(T)
+            R, t = smb.tr2rt(T)
             p = R @ self.p
             # specific to a single Quiver
             self.h.set_offsets(t)  # shift the origin
