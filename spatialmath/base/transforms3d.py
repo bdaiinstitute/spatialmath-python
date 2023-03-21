@@ -3404,9 +3404,6 @@ if _matplotlib_exists:
 
         :seealso: `trplot`, `plotvol3`
         """
-
-        kwargs["block"] = kwargs.get("block", False)
-
         anim = Animate(**kwargs)
         try:
             del kwargs["dims"]
