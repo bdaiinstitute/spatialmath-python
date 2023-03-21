@@ -571,6 +571,8 @@ def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> Union[float, NDArray]:
     else:
         # scalar or iterable in, ndarray out
         # iterable passed in
+        if dim == 0:
+            raise ValueError("for dim==0 input must be a scalar")
         v = getvector(v, dim=dim)
         if unit == "rad":
             return v
