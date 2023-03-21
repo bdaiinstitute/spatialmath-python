@@ -31,6 +31,7 @@ class Animate:
     - ``plot``
     - ``quiver``
     - ``text``
+    - ``scatter``
 
     which renders them and also places corresponding objects into a display
     list. These objects are ``Line``, ``Quiver`` and ``Text``.  Only these
@@ -43,13 +44,13 @@ class Animate:
 
         anim = animate.Animate(dims=[0,2]) # set up the 3D axes
         anim.trplot(T, frame='A', color='green')  # draw the frame
-        anim.run(loop=True)  # animate it
+        anim.run(repeat=True)  # animate it
     """
 
     def __init__(
         self,
-        axes: Optional[plt.Axes] = None,
-        dims: Optional[ArrayLike] = None,
+        ax: Optional[plt.Axes] = None,
+        dim: Optional[ArrayLike] = None,
         projection: Optional[str] = "ortho",
         labels: Optional[Tuple[str, str, str]] = ("X", "Y", "Z"),
         **kwargs,
@@ -57,12 +58,12 @@ class Animate:
         """
         Construct an Animate object
 
-        :param axes: the axes to plot into, defaults to current axes
-        :type axes: Axes3D reference
-        :param dims: dimension of plot volume as [xmin, xmax, ymin, ymax,
+        :param ax: the axes to plot into, defaults to current axes
+        :type ax: Axes3D reference
+        :param dim: dimension of plot volume as [xmin, xmax, ymin, ymax,
             zmin, zmax]. If dims is [min, max] those limits are applied
             to the x-, y- and z-axes.
-        :type dims: array_like(6) or array_like(2)
+        :type dim: array_like(6) or array_like(2)
         :param projection: 3D projection: ortho [default] or persp
         :type projection: str
         :param labels: labels for the axes, defaults to X, Y and Z
@@ -74,36 +75,37 @@ class Animate:
         self.trajectory = None
         self.displaylist = []
 
-        if axes is None:
-            # no axes specified
+        if ax is None:
+            #     # no axes specified
 
-            fig = plt.gcf()
-            # check any current axes
-            for a in fig.axes:
-                if a.name != "3d":
-                    # if they are not 3D axes, remove them, otherwise will
-                    # get plot errors
-                    a.remove()
-            if len(fig.axes) == 0:
-                # no axes in the figure, create a 3D axes
-                axes = fig.add_subplot(111, projection="3d", proj_type=projection)
-                axes.set_xlabel(labels[0])
-                axes.set_ylabel(labels[1])
-                axes.set_zlabel(labels[2])
-                axes.autoscale(enable=True, axis="both")
-            else:
-                # reuse an existing axis
-                axes = plt.gca()
+            #     fig = plt.gcf()
+            #     # check any current axes
+            #     for a in fig.axes:
+            #         if a.name != "3d":
+            #             # if they are not 3D axes, remove them, otherwise will
+            #             # get plot errors
+            #             a.remove()
+            #     if len(fig.axes) == 0:
+            #         # no axes in the figure, create a 3D axes
+            #         axes = fig.add_subplot(111, projection="3d", proj_type=projection)
+            #         ax.set_xlabel(labels[0])
+            #         ax.set_ylabel(labels[1])
+            #         ax.set_zlabel(labels[2])
+            #         ax.autoscale(enable=True, axis="both")
+            #     else:
+            #         # reuse an existing axis
+            #         axes = plt.gca()
 
-        if dims is not None:
-            if len(dims) == 2:
-                dims = dims * 3
-            axes.set_xlim(dims[0:2])
-            axes.set_ylim(dims[2:4])
-            axes.set_zlim(dims[4:6])
-            # ax.set_aspect('equal')
+            # if dims is not None:
+            #     if len(dims) == 2:
+            #         dims = dims * 3
+            #     ax.set_xlim(dims[0:2])
+            #     ax.set_ylim(dims[2:4])
+            #     ax.set_zlim(dims[4:6])
+            #     # ax.set_aspect('equal')
+            ax = smb.plotvol3(ax=ax, dim=dim)
 
-        self.ax = axes
+        self.ax = ax
 
         # TODO set flag for 2d or 3d axes, flag errors on the methods called later
 
@@ -163,10 +165,10 @@ class Animate:
         self,
         movie: Optional[str] = None,
         axes: Optional[plt.Axes] = None,
-        repeat: Optional[bool] = False,
-        interval: Optional[int] = 50,
-        nframes: Optional[int] = 100,
-        wait: Optional[bool] = False,
+        repeat: bool = False,
+        interval: int = 50,
+        nframes: int = 100,
+        wait: bool = False,
         **kwargs,
     ):
         """
@@ -209,17 +211,13 @@ class Animate:
             else:
                 # assume it is an SO(3) or SE(3)
                 T = frame
-
             # ensure result is SE(3)
             if T.shape == (3, 3):
                 T = smb.r2t(T)
 
             # update the scene
             animation._draw(T)
-
             self.count += 1  # say we're still running
-
-            return animation.artists()
 
         if movie is not None:
             repeat = False
@@ -234,13 +232,13 @@ class Animate:
             frames = iter(np.linspace(0, 1, nframes))
 
         global _ani
-        fig = plt.gcf()
+        fig = self.ax.get_figure()
         _ani = animation.FuncAnimation(
             fig=fig,
             func=update,
             frames=frames,
             fargs=(self,),
-            blit=False,  # blit leaves a trail and first frame, set to False
+            # blit=False,  # blit leaves a trail and first frame, set to False
             interval=interval,
             repeat=repeat,
             save_count=nframes,
@@ -597,13 +595,20 @@ class Animate2:
         smb.trplot2(self.start, ax=self, block=False, **kwargs)
 
     def run(
-        self, movie=None, axes=None, repeat=False, interval=50, nframes=100, **kwargs
+        self, 
+        movie: Optional[str] = None,
+        axes: Optional[plt.Axes] = None,
+        repeat: bool = False,
+        interval: int = 50,
+        nframes: int = 100,
+        wait: bool = False, 
+        **kwargs
     ):
         """
         Run the animation
 
         :param axes: the axes to plot into, defaults to current axes
-        :type axes: Axes3D reference
+        :type axes: Axes reference
         :param nframes: number of steps in the animation [defaault 100]
         :type nframes: int
         :param repeat: animate in endless loop [default False]
@@ -616,7 +621,7 @@ class Animate2:
         :rtype: Matplotlib animation object
 
         Animates a 3D coordinate frame moving from the world frame to a frame
-        represented by the SO(3) or SE(3) matrix to the current axes.
+        represented by the SO(2) or SE(2) matrix to the current axes.
 
         .. note::
 
@@ -627,35 +632,50 @@ class Animate2:
             - invokes the draw() method of every object in the display list
         """
 
-        def update(frame, a):
-            # if contains trajectory:
-            if self.trajectory is not None:
-                T = self.trajectory[frame]
-            else:
-                T = base.trinterp2(start=self.start, end=self.end, s=frame / nframes)
-            a._draw(T)
-            if frame == nframes - 1:
-                a.done = True
-            return a.artists()
+        def update(frame, animation):
+            # frame is the result of calling next() on a iterator or generator
+            # seemingly the animation framework isn't checking StopException
+            # so there is no way to know when this is no longer called.
+            # we implement a rather hacky heartbeat style timeout
 
-        # blit leaves a trail and first frame
+            if isinstance(frame, float):
+                # passed a single transform, interpolate it
+                T = smb.trinterp2(start=self.start, end=self.end, s=frame)
+            else:
+                # assume it is an SO(2) or SE(2)
+                T = frame
+            # ensure result is SE(2)
+            if T.shape == (2, 2):
+                T = smb.r2t(T)
+
+            # update the scene
+            animation._draw(T)
+            self.count += 1  # say we're still running
+
+
         if movie is not None:
             repeat = False
 
-        self.done = False
+        self.count = 1
         if self.trajectory is not None:
-            nframes = len(self.trajectory)
+            if not isinstance(self.trajectory, Iterator):
+                # make it iterable, eg. if a list or tuple
+                self.trajectory = iter(self.trajectory)
+            frames = self.trajectory
+        else:
+            frames = iter(np.linspace(0, 1, nframes))
 
         global _ani
-        fig = plt.gcf()
+        fig = self.ax.get_figure()
         _ani = animation.FuncAnimation(
             fig=fig,
             func=update,
-            frames=range(0, nframes),
+            frames=frames,
             fargs=(self,),
-            blit=False,
+            # blit=False,
             interval=interval,
             repeat=repeat,
+            save_count=nframes,
         )
 
         if movie is True:
@@ -667,8 +687,16 @@ class Animate2:
                 print("overwriting movie", movie)
             else:
                 print("creating movie", movie)
-            FFwriter = animation.FFMpegWriter(fps=10, extra_args=["-vcodec", "libx264"])
+            FFwriter = animation.FFMpegWriter(fps=1000 / interval, extra_args=["-vcodec", "libx264"])
             _ani.save(movie, writer=FFwriter)
+
+        if wait:
+            # wait for the animation to finish.  Dig into the timer for this
+            # animation and wait for its callback to be deregistered.
+            while True:
+                plt.pause(0.25)
+                if _ani.event_source is None or len(_ani.event_source.callbacks) == 0:
+                    break
 
         return _ani
 
@@ -865,8 +893,14 @@ if __name__ == "__main__":
 
     from spatialmath import base
 
-    # T = base.rpy2r(0.3, 0.4, 0.5)
-    # base.tranimate(T, wait=True)
+    # T = smb.rpy2r(0.3, 0.4, 0.5)
+    # # smb.tranimate(T, wait=True)
+    # s = smb.tranimate(T, movie=True)
+    # with open("zz.html", "w") as f:
+    #     print(f"<html>{s}</html>", file=f)
 
-    T = base.rot2(2)
-    base.tranimate2(T, wait=True)
+    T = smb.rot2(2)
+    # smb.tranimate2(T, wait=True)
+    s = smb.tranimate2(T, movie=True)
+    with open("zz.html", "w") as f:
+        print(f"<html>{s}</html>", file=f)
