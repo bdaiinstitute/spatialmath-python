@@ -773,10 +773,16 @@ def tr2jac2(T: SE2Array) -> R3x3:
     J[:2, :2] = smb.t2r(T)
     return J
 
+@overload
+def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float) -> SO2Array:
+    ...
 
-def trinterp2(
-    start: Union[SE2Array, None], end: SE2Array, s: float
-) -> Union[SO2Array, SE2Array]:
+
+@overload
+def trinterp2(start: Optional[SE2Array], end: SE2Array, s: float) -> SE2Array:
+    ...
+
+def trinterp2(start, end, s):
     """
     Interpolate SE(2) or SO(2) matrices
 
