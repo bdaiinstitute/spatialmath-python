@@ -773,6 +773,7 @@ def tr2jac2(T: SE2Array) -> R3x3:
     J[:2, :2] = smb.t2r(T)
     return J
 
+
 @overload
 def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float) -> SO2Array:
     ...
@@ -781,6 +782,7 @@ def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float) -> SO2Array:
 @overload
 def trinterp2(start: Optional[SE2Array], end: SE2Array, s: float) -> SE2Array:
     ...
+
 
 def trinterp2(start, end, s):
     """
@@ -977,15 +979,12 @@ def points2tr2(p1: NDArray, p2: NDArray) -> SE2Array:
     # compute moment matrix
     M = np.dot(p2_centered, p1_centered.T)
 
-    # get singular value decomposition of the cross covariance matrix
+    # get singular value decomposition of the cross covariance matrix, use Umeyama trick
     U, W, VT = np.linalg.svd(M)
 
     # get rotation between the two point clouds
-    R = U @ VT
-    # special reflection case
-    if np.linalg.det(R) < 0:
-        VT[-1, :] *= -1
-        R = VT.T @ U.T
+    s = [1, np.linalg.det(U) * np.linalg.det(VT)]
+    R = U @ np.diag(s) @ VT
 
     # get the translation
     t = p2_centroid - R @ p1_centroid
