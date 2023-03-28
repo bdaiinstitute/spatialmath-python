@@ -230,6 +230,11 @@ class TestVector(unittest.TestCase):
         self.assertEqual(angdiff(-pi, pi), 0)
 
         nt.assert_array_almost_equal(angdiff([0, -pi, pi], 0), [0, -pi, -pi])
+        nt.assert_array_almost_equal(angdiff([0, -pi, pi], pi), [-pi, 0, 0])
+
+        nt.assert_array_almost_equal(angdiff(0, [0, -pi, pi]), [0, -pi, -pi])
+        nt.assert_array_almost_equal(angdiff(pi, [0, -pi, pi]), [-pi, 0, 0])
+
         nt.assert_array_almost_equal(angdiff([1, 2, 3], [1, 2, 3]), [0, 0, 0])
 
     def test_wrap(self):
