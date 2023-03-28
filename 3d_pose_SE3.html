@@ -595,13 +595,13 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">SE3([</span>
-<span class="go">array([[-0.0232,  0.6756, -0.7369, -0.4228],</span>
-<span class="go">       [ 0.5479, -0.608 , -0.5746, -0.2728],</span>
-<span class="go">       [-0.8362, -0.4171, -0.356 , -0.3974],</span>
+<span class="go">array([[ 0.6825,  0.6875,  0.2479,  0.135 ],</span>
+<span class="go">       [ 0.677 , -0.7226,  0.1401, -0.0953],</span>
+<span class="go">       [ 0.2755,  0.0722, -0.9586,  0.3279],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]),</span>
-<span class="go">array([[-0.887 ,  0.1009,  0.4507, -0.9271],</span>
-<span class="go">       [ 0.4601,  0.2785,  0.8431,  0.1206],</span>
-<span class="go">       [-0.0405,  0.9551, -0.2934,  0.437 ],</span>
+<span class="go">array([[-0.5713,  0.009 , -0.8207,  0.333 ],</span>
+<span class="go">       [ 0.4468, -0.8354, -0.3202, -0.8919],</span>
+<span class="go">       [-0.6885, -0.5496,  0.4732,  0.1259],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]) ])</span>
 </pre></div>
 </div>
@@ -1892,6 +1892,38 @@ many options, see the links below.</p></li>
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">--</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#spatialmath.pose3d.SE3.clear" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.pose3d.SE3.conjugation">
+<span class="sig-name descname"><span class="pre">conjugation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose3d.SE3.conjugation" title="Permalink to this definition"></a></dt>
+<dd><p>Matrix conjugation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>A</strong> (<em>ndarray</em>) – matrix to conjugate</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>conjugated matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+<p>Compute the conjugation <span class="math notranslate nohighlight">\(\mat{X} \mat{A} \mat{X}^{-1}\)</span> where <span class="math notranslate nohighlight">\(\mat{X}\)</span>
+is the current object.</p>
+<p>Example:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SO2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">SO2</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">inv</span><span class="p">())</span>
+<span class="go">[[7.9314 3.7866]</span>
+<span class="go"> [3.7866 3.0686]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">conjugation</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+<span class="go">[[7.9314 3.7866]</span>
+<span class="go"> [3.7866 3.0686]]</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.delta">
