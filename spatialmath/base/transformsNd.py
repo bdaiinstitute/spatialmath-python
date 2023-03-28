@@ -295,7 +295,7 @@ def rt2tr(R, t, check=False):
             T[:3, :3] = R
             T[:3, 3] = t
         else:
-            raise ValueError("R must be an SO2 or SO3 rotation matrix")
+            raise ValueError(f"R must be an SO(2) or SO(3) rotation matrix, not {R.shape}")
 
     return T
 
