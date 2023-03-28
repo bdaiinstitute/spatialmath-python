@@ -3281,10 +3281,8 @@ if _matplotlib_exists:
         if textcolor == "":
             textcolor = color[0]
 
-        if origincolor != "":
+        if origincolor == "":
             origincolor = color[0]
-        else:
-            origincolor = "black"
 
         # label the frame
         if frame != "":
