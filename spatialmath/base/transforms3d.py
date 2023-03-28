@@ -3220,7 +3220,7 @@ if _matplotlib_exists:
                 arrow_length_ratio=wtl,
                 linewidth=width,
                 facecolor=color[0],
-                edgecolor=color[1],
+                edgecolor=color[0],
             )
             ax.quiver(
                 o[0],
