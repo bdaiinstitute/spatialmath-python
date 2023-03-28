@@ -645,7 +645,7 @@ def angdiff(a, b=None):
     a = getvector(a)
     if b is not None:
         b = getvector(b)
-        a -= b
+        a = a - b  # cannot use -= here, numpy wont broadcast
 
     return np.mod(a + math.pi, 2 * math.pi) - math.pi
 
