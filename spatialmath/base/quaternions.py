@@ -629,7 +629,7 @@ def r2q(
     else:
         e[0] = math.copysign(e[0], R[1, 0] - R[0, 1])
         e[1] = math.copysign(e[1], R[0, 2] + R[2, 0])
-        e[2] = math.copysign(e[1], R[2, 1] + R[1, 2])
+        e[2] = math.copysign(e[2], R[2, 1] + R[1, 2])
 
     if order == "sxyz":
         return e
