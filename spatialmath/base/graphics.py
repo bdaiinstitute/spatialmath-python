@@ -1481,6 +1481,7 @@ try:
         ax: Union[plt.Axes, None],
         dimensions: int = 2,
         autoscale: Optional[bool] = True,
+        new: Optional[bool] = False,
     ) -> plt.Axes:
         ...
 
@@ -1490,6 +1491,7 @@ try:
         dimensions: int = 3,
         projection: Optional[str] = "ortho",
         autoscale: Optional[bool] = True,
+        new: Optional[bool] = False,
     ) -> Axes3D:
         ...
 
