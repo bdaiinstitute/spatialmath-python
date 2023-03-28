@@ -594,6 +594,34 @@ class BasePoseMatrix(BasePoseList):
         """
         return np.dstack(self.data)
 
+    def conjugation(self, A: NDArray) -> NDArray:
+        """
+        Matrix conjugation
+
+        :param A: matrix to conjugate
+        :type A: ndarray
+        :return: conjugated matrix
+        :rtype: ndarray
+
+        Compute the conjugation :math:`\mat{X} \mat{A} \mat{X}^{-1}` where :math:`\mat{X}`
+        is the current object.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SO2
+            >>> import numpy as np
+            >>> R = SO2(0.5)
+            >>> A = np.array([[10, 0], [0, 1]])
+            >>> print(R * A * R.inv())
+            >>> print(R.conjugation(A))
+        """
+        if self.isSO:
+            return self.A @ A @ self.A.T
+        else:
+            return self.A @ A @ self.inv().A.T
+
     # ----------------------- i/o stuff
 
     def print(self, label: Optional[str] = None, file: Optional[TextIO] = None) -> None:
@@ -1263,23 +1291,26 @@ class BasePoseMatrix(BasePoseList):
         :rtype: Pose instance or NumPy array
         :raises NotImplemented: for incompatible arguments
 
-        Left-multiplication by a scalar
+        Left-multiplication
 
-        - ``s * X`` performs elementwise multiplication of the elements of ``X`` by ``s``
-
-        Notes:
-
-        #. For other left-operands return ``NotImplemented``.  Other classes
-          such as ``Plucker`` and ``Twist`` implement left-multiplication by
-          an ``SE3`` using their own ``__rmul__`` methods.
+        - ``s * X`` where ``s`` is a scalar, performs elementwise multiplication of the
+          elements of ``X`` by ``s`` and the result is a NumPy array.
+        - ``A * X`` where ``A`` is a conforming matrix, performs matrix multiplication
+          of ``A`` and ``X`` and the result is a NumPy array.
 
         :seealso: :func:`__mul__`
         """
-        # if base.isscalar(left):
-        #     return right.__mul__(left)
-        # else:
-        #     return NotImplemented
-        return right.__mul__(left)
+        if isinstance(left, np.ndarray) and left.shape[-1] == right.A.shape[0]:
+            # left multiply by conforming matrix
+            return left @ right.A
+        elif smb.isscalar(left):
+            # left multiply by scalar
+            return right.__mul__(left)
+        else:
+            # For other left-operands return ``NotImplemented``.  Other classes
+            # such as ``Plucker`` and ``Twist`` implement left-multiplication by
+            # an ``SE3`` using their own ``__rmul__`` methods.
+            return NotImplemented
 
     def __imul__(left, right):  # noqa
         """
@@ -1646,13 +1677,20 @@ class BasePoseMatrix(BasePoseList):
 
 
 if __name__ == "__main__":
-    from spatialmath import SE3, SE2
+    from spatialmath import SE3, SE2, SO2
 
-    x = SE3.Rand(N=6)
+    C = SO2(0.5)
+    A = np.array([[10, 0], [0, 1]])
 
-    x.printline(orient="rpy/xyz", fmt="{:8.3g}")
+    print(C * A)
+    print(C * A * C.inv())
+    print(C.conjugation(A))
 
-    d = np.diag([0.25, 0.25, 1])
-    a = SE2()
-    print(a)
-    print(d * a)
+    # x = SE3.Rand(N=6)
+
+    # x.printline(orient="rpy/xyz", fmt="{:8.3g}")
+
+    # d = np.diag([0.25, 0.25, 1])
+    # a = SE2()
+    # print(a)
+    # print(d * a)
