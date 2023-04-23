@@ -1570,7 +1570,7 @@ try:
         return ax
 
     def plotvol2(
-        dim: ArrayLike,
+        dim: ArrayLike = None,
         ax: Optional[plt.Axes] = None,
         equal: Optional[bool] = True,
         grid: Optional[bool] = False,
@@ -1601,10 +1601,15 @@ try:
         """
         ax = axes_logic(ax, 2, new=new)
 
-        dims = expand_dims(dim, 2)
+        if dim is None:
+            ax.autoscale(True)
+        else:
+            dims = expand_dims(dim, 2)
+            ax.axis(dims)
+
         # if ax is None:
         #     ax = plt.subplot()
-        ax.axis(dims)
+
         if labels:
             ax.set_xlabel("X")
             ax.set_ylabel("Y")
