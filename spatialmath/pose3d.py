@@ -1093,7 +1093,7 @@ class SE3(SO3):
 
         If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`
         and the SE(3) represents the pose of {B} relative to {A},
-        ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then
+        ie. :math:`{}^A {\bf T}_B`, and the adjoint is :math:`\mathbf{A}` then
         :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.
 
         .. warning:: Do not use this method to map velocities
