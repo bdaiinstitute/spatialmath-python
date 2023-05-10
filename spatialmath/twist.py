@@ -661,12 +661,6 @@ class Twist3(BaseTwist):
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3
-            >>> Twist3.Rx(0.3)
-            >>> Twist3.Rx([0.3, 0.4])
-
-        .. runblock:: pycon
-
-            >>> from spatialmath import Twist3
             >>> Twist3.RPY(0.1, 0.2, 0.3)
             >>> Twist3.RPY([0.1, 0.2, 0.3])
             >>> Twist3.RPY(0.1, 0.2, 0.3, order='xyz')
