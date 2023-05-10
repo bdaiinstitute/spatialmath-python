@@ -556,7 +556,7 @@ class BasePoseMatrix(BasePoseList):
         :rtype: pose instance
 
         Apply symbolic simplification to every element of every value in the
-        pose instane.
+        pose instance.
 
         Example::
 
@@ -1041,10 +1041,14 @@ class BasePoseMatrix(BasePoseList):
                 return smb.tranimate(self.A, start=start, *args, **kwargs)
 
     # ------------------------------------------------------------------------ #
-    def prod(self) -> Self:
+    def prod(self, norm=False, check=True) -> Self:
         r"""
         Product of elements (superclass method)
 
+        :param norm: normalize the product, defaults to False
+        :type norm: bool, optional
+        :param check: check that computed matrix is valid member of group, default True
+        :bool check: bool, optional
         :return: Product of elements
         :rtype: pose instance
 
@@ -1056,11 +1060,18 @@ class BasePoseMatrix(BasePoseList):
             >>> from spatialmath import SE3
             >>> x = SE3.Rx([0, 0.1, 0.2, 0.3])
             >>> x.prod()
+
+        .. note:: When compounding many transformations the product may become
+            denormalized resulting in a result that is not a proper member of the
+            group.  You can either disable membership checking by ``check=False``
+            which is risky, or normalize the result by ``norm=True``.
         """
         Tprod = self.__class__._identity()  # identity value
         for T in self.data:
             Tprod = Tprod @ T
-        return self.__class__(Tprod)
+        if norm:
+            Tprod = smb.trnorm(Tprod)
+        return self.__class__(Tprod, check=check)
 
     def __pow__(self, n: int) -> Self:
         """
