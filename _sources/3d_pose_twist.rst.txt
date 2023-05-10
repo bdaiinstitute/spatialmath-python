@@ -1,7 +1,7 @@
 se(3) twist 
 ^^^^^^^^^^^
 
-.. autoclass:: spatialmath.Twist3
+.. autoclass:: spatialmath.twist.Twist3
    :members:
    :undoc-members:
    :show-inheritance:

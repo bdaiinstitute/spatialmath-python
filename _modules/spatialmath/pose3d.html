@@ -34,7 +34,7 @@
               <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.1.1
+                1.1.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -96,7 +96,7 @@
 <span class="sd">    :top-classes: collections.UserList</span>
 <span class="sd">    :parts: 1</span>
 <span class="sd">    </span>
-<span class="sd">.. image:: figs/pose-values.png</span>
+<span class="sd">.. image:: ../figs/pose-values.png</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
@@ -364,14 +364,11 @@
 
 <span class="sd">        :param unit: angular units: &#39;rad&#39; [default], or &#39;deg&#39;</span>
 <span class="sd">        :type unit: str</span>
-<span class="sd">        :param check: check that rotation matrix is valid</span>
-<span class="sd">        :type check: bool</span>
-<span class="sd">        :return: :math:`(\theta, {\bf v})`</span>
+<span class="sd">        :return: :math:`(\theta, \hat{\bf v})`</span>
 <span class="sd">        :rtype: float or ndarray(3)</span>
 
-<span class="sd">        ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation</span>
-<span class="sd">        angle and a rotation axis which is equivalent to the rotation of</span>
-<span class="sd">        the unit quaternion ``q``.</span>
+<span class="sd">        ``x.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation</span>
+<span class="sd">        angle and a rotation axis.</span>
 
 <span class="sd">        By default the angle is in radians but can be changed setting `unit=&#39;deg&#39;`.</span>
 
@@ -383,13 +380,42 @@
 
 <span class="sd">        .. runblock:: pycon</span>
 
-<span class="sd">            &gt;&gt;&gt; from spatialmath import UnitQuaternion</span>
-<span class="sd">            &gt;&gt;&gt; UnitQuaternion.Rz(0.3).angvec()</span>
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SO3</span>
+<span class="sd">            &gt;&gt;&gt; R = SO3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; R.angvec()</span>
 
-<span class="sd">        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`</span>
+<span class="sd">        :seealso: :meth:`eulervec` :meth:`AngVec` :meth:`~spatialmath.quaternion.UnitQuaternion.angvec` :meth:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2angvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="SO3.eulervec"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.eulervec">[docs]</a>    <span class="k">def</span> <span class="nf">eulervec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        SO(3) or SE(3) as Euler vector (exponential coordinates)</span>
+
+<span class="sd">        :return: :math:`\theta \hat{\bf v}`</span>
+<span class="sd">        :rtype: ndarray(3)</span>
+
+<span class="sd">        ``x.eulervec()`` is the Euler vector (or exponential coordinates) which</span>
+<span class="sd">        is related to angle-axis notation and is the product of the rotation</span>
+<span class="sd">        angle and the rotation axis.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. runblock:: pycon</span>
+
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SO3</span>
+<span class="sd">            &gt;&gt;&gt; R = SO3.Rx(0.3)</span>
+<span class="sd">            &gt;&gt;&gt; R.eulervec()</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            - If the input is SE(3) the translation component is ignored.</span>
+
+<span class="sd">        :seealso: :meth:`angvec` :func:`~angvec2r`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2angvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">v</span></div>
+    
     <span class="c1"># ------------------------------------------------------------------------ #</span>
 
 <div class="viewcode-block" id="SO3.isvalid"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -843,6 +869,7 @@
 <span class="sd">        :param S: Lie algebra so(3)</span>
 <span class="sd">        :type S: ndarray(3,3), ndarray(n,3)</span>
 <span class="sd">        :param check: check that passed matrix is valid so(3), default True</span>
+<span class="sd">        :bool check: bool, optional</span>
 <span class="sd">        :param so3: the input is interpretted as an so(3) matrix not a stack of three twists, default True</span>
 <span class="sd">        :return: SO(3) rotation</span>
 <span class="sd">        :rtype: SO3 instance</span>
@@ -1171,7 +1198,7 @@
 
 <span class="sd">        If spatial velocity :math:`\nu = (v_x, v_y, v_z, \omega_x, \omega_y, \omega_z)^T`</span>
 <span class="sd">        and the SE(3) represents the pose of {B} relative to {A},</span>
-<span class="sd">        ie. :math:`{}^A {\bf T}_B, and the adjoint is :math:`\mathbf{A}` then</span>
+<span class="sd">        ie. :math:`{}^A {\bf T}_B`, and the adjoint is :math:`\mathbf{A}` then</span>
 <span class="sd">        :math:`{}^{A}\!\nu = \mathbf{A} {}^{B}\!\nu`.</span>
 
 <span class="sd">        .. warning:: Do not use this method to map velocities</span>
@@ -1962,7 +1989,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 28-Mar-2023.
+      <span class="lastupdated">Last updated on 10-May-2023.
       </span></p>
   </div>
 

@@ -43,7 +43,7 @@
               <img src="_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                1.1.1
+                1.1.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -106,11 +106,9 @@
 <dt class="sig sig-object py" id="spatialmath.pose2d.SO2">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SO2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose2d.html#SO2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose2d.SO2" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">spatialmath.baseposematrix.BasePoseMatrix</span></code></p>
-<blockquote>
-<div><p>SO(2) matrix class</p>
+<p>SO(2) matrix class</p>
 <p>This subclass represents rotations in 2D space.  Internally it is a 2x2 orthogonal matrix belonging
 to the group SO(2).</p>
-</div></blockquote>
 <div class="graphviz"><img src="_images/inheritance-3ef304a8bc96fc792d4666c6cbaefe0c73eb849b.png" alt="Inheritance diagram of spatialmath.pose2d.SO2" usemap="#inheritance369a13d465" class="inheritance graphviz" /></div>
 <map id="inheritance369a13d465" name="inheritance369a13d465">
 <area shape="rect" id="node5" href="#spatialmath.pose2d.SO2" target="_top" title="SO(2) matrix class" alt="" coords="459,31,531,56"/>
@@ -1904,9 +1902,18 @@ values, print one per line.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose2d.SO2.prod">
-<span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose2d.SO2.prod" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spatialmath.pose2d.SO2.prod" title="Permalink to this definition"></a></dt>
 <dd><p>Product of elements (superclass method)</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>norm</strong> (<em>bool</em><em>, </em><em>optional</em>) – normalize the product, defaults to False</p></li>
+<li><p><strong>check</strong> – check that computed matrix is valid member of group, default True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Bool check</dt>
+<dd class="field-even"><p>bool, optional</p>
+</dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Product of elements</p>
 </dd>
@@ -1924,6 +1931,13 @@ values, print one per line.</p>
 <span class="go">           [ 0.    ,  0.5646,  0.8253,  0.    ],</span>
 <span class="go">           [ 0.    ,  0.    ,  0.    ,  1.    ]]))</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When compounding many transformations the product may become
+denormalized resulting in a result that is not a proper member of the
+group.  You can either disable membership checking by <code class="docutils literal notranslate"><span class="pre">check=False</span></code>
+which is risky, or normalize the result by <code class="docutils literal notranslate"><span class="pre">norm=True</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -1946,7 +1960,7 @@ values, print one per line.</p>
 </dd>
 </dl>
 <p>Apply symbolic simplification to every element of every value in the
-pose instane.</p>
+pose instance.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span>
@@ -2303,7 +2317,7 @@ example:</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 28-Mar-2023.
+      <span class="lastupdated">Last updated on 10-May-2023.
       </span></p>
   </div>
 
