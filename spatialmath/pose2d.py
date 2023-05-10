@@ -31,10 +31,10 @@ from spatialmath.baseposematrix import BasePoseMatrix
 
 class SO2(BasePoseMatrix):
     """
-       SO(2) matrix class
+    SO(2) matrix class
 
-       This subclass represents rotations in 2D space.  Internally it is a 2x2 orthogonal matrix belonging
-       to the group SO(2).
+    This subclass represents rotations in 2D space.  Internally it is a 2x2 orthogonal matrix belonging
+    to the group SO(2).
 
     .. inheritance-diagram:: spatialmath.pose2d.SO2
        :top-classes: collections.UserList

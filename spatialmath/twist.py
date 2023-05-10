@@ -96,9 +96,9 @@ class BaseTwist(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3
-            >>> x = Twist3.Prismatic([1,2,3])
+            >>> x = Twist3.UnitPrismatic([1,2,3])
             >>> x.isprismatic
-            >>> x = Twist3.Revolute([1,2,3], [4,5,6])
+            >>> x = Twist3.UnitRevolute([1,2,3], [4,5,6])
             >>> x.isprismatic
 
         """
@@ -122,9 +122,9 @@ class BaseTwist(BasePoseList):
         .. runblock:: pycon
 
             >>> from spatialmath import Twist3
-            >>> x = Twist3.Prismatic([1,2,3])
+            >>> x = Twist3.UnitPrismatic([1,2,3])
             >>> x.isrevolute
-            >>> x = Twist3.Revolute([1,2,3], [0,0,0])
+            >>> x = Twist3.UnitRevolute([1,2,3], [0,0,0])
             >>> x.isrevolute
 
         """
@@ -150,7 +150,7 @@ class BaseTwist(BasePoseList):
             >>> from spatialmath import Twist3
             >>> S = Twist3([1,2,3,4,5,6])
             >>> S.isunit()
-            >>> S = Twist3.Revolute([1,2,3], [4,5,6])
+            >>> S = Twist3.UnitRevolute([1,2,3], [4,5,6])
             >>> S.isunit()
 
         """
@@ -264,11 +264,11 @@ class BaseTwist(BasePoseList):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import Twist2
-            >>> S1 = Twist([1,2,3,4,5,6])
-            >>> S2 = Twist([1,2,3,4,5,6])
+            >>> from spatialmath import Twist3
+            >>> S1 = Twist3([1,2,3,4,5,6])
+            >>> S2 = Twist3([1,2,3,4,5,6])
             >>> S1 != S2
-            >>> S2 = Twist([1,2,3,4,5,7])
+            >>> S2 = Twist3([1,2,3,4,5,7])
             >>> S1 != S2
 
         :seealso: :func:`__ne__`
@@ -375,10 +375,11 @@ class Twist3(BaseTwist):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import Twist3, base
+            >>> from spatialmath import Twist3
+            >>> from spatialmath.base import skewa
             >>> import numpy as np
             >>> Twist3.isvalid([1, 2, 3, 4, 5, 6])
-            >>> a = smb.skewa([1, 2, 3, 4, 5, 6])
+            >>> a = skewa([1, 2, 3, 4, 5, 6])
             >>> a
             >>> Twist3.isvalid(a)
             >>> Twist3.isvalid(np.random.rand(4,4))
@@ -653,12 +654,19 @@ class Twist3(BaseTwist):
         - ``Twist3.RPY(⍺, β, 𝛾)`` as above but the angles are provided as three
           scalars.
 
-
+        Foo bar!
+        
         Example:
 
         .. runblock:: pycon
 
-            >>> from spatialmath import SE3
+            >>> from spatialmath import Twist3
+            >>> Twist3.Rx(0.3)
+            >>> Twist3.Rx([0.3, 0.4])
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import Twist3
             >>> Twist3.RPY(0.1, 0.2, 0.3)
             >>> Twist3.RPY([0.1, 0.2, 0.3])
             >>> Twist3.RPY(0.1, 0.2, 0.3, order='xyz')
@@ -688,6 +696,7 @@ class Twist3(BaseTwist):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import Twist3
             >>> Twist3.Tx(2)
             >>> Twist3.Tx([2,3])
 
@@ -713,6 +722,7 @@ class Twist3(BaseTwist):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import Twist3
             >>> Twist3.Ty(2)
             >>> Twist3.Ty([2, 3])
 
@@ -738,6 +748,7 @@ class Twist3(BaseTwist):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import Twist3
             >>> Twist3.Tz(2)
             >>> Twist3.Tz([2, 3])
 
@@ -1110,7 +1121,7 @@ class Twist3(BaseTwist):
             operation so the result will be a matrix
             #. Any other input combinations result in a ValueError.
 
-            For pose composition the ``left`` and ``right`` operands may be a sequence
+        For pose composition the ``left`` and ``right`` operands may be a sequence
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation
@@ -1666,6 +1677,7 @@ class Twist2(BaseTwist):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import Twist2
             >>> Twist2.Tx(2)
             >>> Twist2.Tx([2,3])
 
@@ -1691,6 +1703,7 @@ class Twist2(BaseTwist):
 
         .. runblock:: pycon
 
+            >>> from spatialmath import Twist2
             >>> Twist2.Ty(2)
             >>> Twist2.Ty([2, 3])
 
@@ -1733,7 +1746,7 @@ class Twist2(BaseTwist):
             operation so the result will be a matrix
             #. Any other input combinations result in a ValueError.
 
-            For pose composition the ``left`` and ``right`` operands may be a sequence
+        For pose composition the ``left`` and ``right`` operands may be a sequence
 
         =========   ==========   ====  ================================
         len(left)   len(right)   len     operation

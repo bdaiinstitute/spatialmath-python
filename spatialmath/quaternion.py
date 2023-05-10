@@ -1473,7 +1473,7 @@ class UnitQuaternion(Quaternion):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternio
+            >>> from spatialmath import UnitQuaternion
             >>> print(UQ.Rx(0.3).inv())
             >>> print(UQ.Rx(0.3).inv() * UQ.Rx(0.3))
             >>> print(UQ.Rx([0.3, 0.6]).inv())
@@ -1606,7 +1606,7 @@ class UnitQuaternion(Quaternion):
             >>> q = UQ.Rx(0.3)
             >>> q *= UQ.Rx(0.4))
             >>> print(q)
-            >>> print(UQ.Rx(0.3) * UQ.Rx([0.4, 0.6])
+            >>> print(UQ.Rx(0.3) * UQ.Rx([0.4, 0.6]))
             >>> print(UQ.Rx([0.3, 0.6]) * UQ.Rx(0.3))
             >>> print(UQ.Rx([0.3, 0.6]) * UQ.Rx([0.3, 0.6]))
 
@@ -1900,7 +1900,7 @@ class UnitQuaternion(Quaternion):
 
     def interp1(self, s: float = 0, shortest: Optional[bool] = False) -> UnitQuaternion:
         """
-        Interpolate a unit quaternions
+        Interpolate a unit quaternion
 
         :param shortest: Take the shortest path along the great circle
         :param s: interpolation coefficient, range 0 to 1, or number of steps
@@ -1926,7 +1926,7 @@ class UnitQuaternion(Quaternion):
             >>> q.interp1(0)    # this is identity
             >>> q.interp1(1)    # this is q
             >>> q.interp1(0.5)  # this is in between
-            >>> qi = q.interp1(q2, 11)  # in 11 steps
+            >>> qi = q.interp1(11)  # in 11 steps
             >>> len(qi)
             >>> qi[0]                # this is q1
             >>> qi[5]                # this is in between

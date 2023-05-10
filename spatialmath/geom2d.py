@@ -273,7 +273,8 @@ class Polygon2:
         .. runblock:: pycon
 
             >>> from spatialmath import Polygon2
-            >>> p = Polygon2([[1, 3, 2], [2, 2, 4]])
+            >>> import numpy as np
+            >>> p = Polygon2(np.array([[1, 3, 2], [2, 2, 4]]))
             >>> print(p)
         """
         return f"Polygon2 with {len(self.path)} vertices"

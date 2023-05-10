@@ -968,8 +968,8 @@ class Line3(BasePoseList):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import Join
-            >>> line1 = Join.Join([0, 0, 0], [2, 2, 3])
+            >>> from spatialmath import Line3
+            >>> line1 = Line3.Join([0, 0, 0], [2, 2, 3])
             >>> line1.closest_to_point([1, 1, 1])
 
         :seealso: meth:`point`

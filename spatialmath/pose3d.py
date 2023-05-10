@@ -18,7 +18,7 @@ To use::
     :top-classes: collections.UserList
     :parts: 1
     
-.. image:: figs/pose-values.png
+.. image:: ../figs/pose-values.png
 """
 from __future__ import annotations
 
@@ -286,14 +286,11 @@ class SO3(BasePoseMatrix):
 
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :param check: check that rotation matrix is valid
-        :type check: bool
-        :return: :math:`(\theta, {\bf v})`
+        :return: :math:`(\theta, \hat{\bf v})`
         :rtype: float or ndarray(3)
 
-        ``q.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation
-        angle and a rotation axis which is equivalent to the rotation of
-        the unit quaternion ``q``.
+        ``x.angvec()`` is a tuple :math:`(\theta, v)` containing the rotation
+        angle and a rotation axis.
 
         By default the angle is in radians but can be changed setting `unit='deg'`.
 
@@ -305,10 +302,11 @@ class SO3(BasePoseMatrix):
 
         .. runblock:: pycon
 
-            >>> from spatialmath import UnitQuaternion
-            >>> UnitQuaternion.Rz(0.3).angvec()
+            >>> from spatialmath import SO3
+            >>> R = SO3.Rx(0.3)
+            >>> R.angvec()
 
-        :seealso: :func:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
+        :seealso: :meth:`eulervec` :meth:`AngVec` :meth:`~spatialmath.quaternion.UnitQuaternion.angvec` :meth:`~spatialmath.quaternion.AngVec`, :func:`~angvec2r`
         """
         return smb.tr2angvec(self.R, unit=unit)
 

@@ -301,7 +301,6 @@ class UnitDualQuaternion(DualQuaternion):
             >>> d = UnitDualQuaternion(T)
             >>> print(d)
             >>> type(d)
-            >>> print(d.norm())  # norm is (1, 0)
 
         The dual number is stored internally as two quaternion, respectively
         called ``real`` and ``dual``.  For a unit dual quaternion they are
