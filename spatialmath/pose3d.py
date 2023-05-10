@@ -310,6 +310,34 @@ class SO3(BasePoseMatrix):
         """
         return smb.tr2angvec(self.R, unit=unit)
 
+    def eulervec(self) -> R3:
+        r"""
+        SO(3) or SE(3) as Euler vector (exponential coordinates)
+
+        :return: :math:`\theta \hat{\bf v}`
+        :rtype: ndarray(3)
+
+        ``x.eulervec()`` is the Euler vector (or exponential coordinates) which
+        is related to angle-axis notation and is the product of the rotation
+        angle and the rotation axis.
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SO3
+            >>> R = SO3.Rx(0.3)
+            >>> R.eulervec()
+
+        .. note::
+
+            - If the input is SE(3) the translation component is ignored.
+
+        :seealso: :meth:`angvec` :func:`~angvec2r`
+        """
+        theta, v = smb.tr2angvec(self.R)
+        return theta * v
+    
     # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -763,6 +791,7 @@ class SO3(BasePoseMatrix):
         :param S: Lie algebra so(3)
         :type S: ndarray(3,3), ndarray(n,3)
         :param check: check that passed matrix is valid so(3), default True
+        :bool check: bool, optional
         :param so3: the input is interpretted as an so(3) matrix not a stack of three twists, default True
         :return: SO(3) rotation
         :rtype: SO3 instance
