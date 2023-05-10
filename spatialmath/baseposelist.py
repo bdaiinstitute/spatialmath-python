@@ -212,7 +212,13 @@ class BasePoseList(UserList, ABC):
                 self.data = [np.array(arg)]
 
             else:
-                return False
+                # see what NumPy makes of it
+                X = np.array(arg)
+                if X.shape == self.shape:
+                    self.data = [X]
+                else:
+                    # no idea what was passed
+                    return False
 
         elif isinstance(arg, self.__class__):
             # instance of same type, clone it
@@ -660,3 +666,12 @@ class BasePoseList(UserList, ABC):
             return np.vstack([op(x) for x in self.data])
         else:
             return [op(x) for x in self.data]
+
+if __name__ == "__main__":
+    from spatialmath import SO3, SO2
+
+    R = SO3([[1,0,0],[0,1,0],[0,0,1]])
+    print(R.eulervec())
+
+    R = SO2([0.3, 0.4, 0.5])
+    pass
