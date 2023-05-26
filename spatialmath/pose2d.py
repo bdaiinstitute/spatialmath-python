@@ -528,6 +528,46 @@ class SE2(SO2):
         else:
             return np.array([x[:2, 2] for x in self.A])
 
+    @property
+    def x(self):
+        """
+        First element of the translational component of SE(2)
+
+        :param self: SE(2)
+        :type self: SE2 instance
+        :return: translational component
+        :rtype: float
+
+        ``v.x`` is the first element of the translational vector component.  If ``len(x)`` is:
+
+        - 1, return an float
+        - N>1, return an ndarray with shape=(N,1)
+        """
+        if len(self) == 1:
+            return self.A[0, 2]
+        else:
+            return np.array([v[0, 2] for v in self.A])
+
+    @property
+    def y(self):
+        """
+        Second element of the translational component of SE(2)
+
+        :param self: SE(2)
+        :type self: SE2 instance
+        :return: translational component
+        :rtype: float
+
+        ``v.y`` is the second element of the translational vector component.  If ``len(x)`` is:
+
+        - 1, return an float
+        - N>1, return an ndarray with shape=(N,1)
+        """
+        if len(self) == 1:
+            return self.A[1, 2]
+        else:
+            return np.array([v[1, 2] for v in self.A])
+
     def xyt(self):
         r"""
         SE(2) as a configuration vector
