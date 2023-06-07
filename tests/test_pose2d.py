@@ -390,6 +390,8 @@ class TestSE2(unittest.TestCase):
         array_compare(TT1.A, T1)
         array_compare(TT1.R, R1)
         array_compare(TT1.t, t1)
+        self.assertEqual(TT1.x, t1[0])
+        self.assertEqual(TT1.y, t1[1])
         
         TT = SE2([TT1, TT1, TT1])
         array_compare(TT.t, [t1, t1, t1])

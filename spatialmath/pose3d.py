@@ -1036,6 +1036,105 @@ class SE3(SO3):
         v = smb.getvector(v, 3)
         self.A[:3, 3] = v
 
+    @property
+    def x(self) -> float:
+        """
+        First element of translational component of SE(3)
+
+        :return: first element of translational component of SE(3)
+        :rtype: float
+
+        If ``len(v) > 1``, return an array with shape=(N,).
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
+            >>> v = SE3(1,2,3)
+            >>> v.x
+            >>> v = SE3([ SE3(1,2,3), SE3(4,5,6)])
+            >>> v.x
+
+        :SymPy: supported
+        """
+        if len(self) == 1:
+            return self.A[0, 3]
+        else:
+            return np.array([v[0, 3] for v in self.A])
+
+    @x.setter
+    def x(self, x: float):
+        if len(self) > 1:
+            raise ValueError("can only assign elements to length 1 object")
+        self.A[0, 3] = x
+
+    @property
+    def y(self) -> float:
+        """
+        Second element of translational component of SE(3)
+
+        :return: second element of translational component of SE(3)
+        :rtype: float
+
+        If ``len(v) > 1``, return an array with shape=(N,).
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
+            >>> v = SE3(1,2,3)
+            >>> v.y
+            >>> v = SE3([ SE3(1,2,3), SE3(4,5,6)])
+            >>> v.y
+
+        :SymPy: supported
+        """
+        if len(self) == 1:
+            return self.A[1, 3]
+        else:
+            return np.array([v[1, 3] for v in self.A])
+
+    @y.setter
+    def y(self, y: float):
+        if len(self) > 1:
+            raise ValueError("can only assign elements to length 1 object")
+        self.A[1, 3] = y
+
+    @property
+    def z(self) -> float:
+        """
+        Third element of translational component of SE(3)
+
+        :return: third element of translational component of SE(3)
+        :rtype: float
+
+        If ``len(v) > 1``, return an array with shape=(N,).
+
+        Example:
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SE3
+            >>> v = SE3(1,2,3)
+            >>> v.z
+            >>> v = SE3([ SE3(1,2,3), SE3(4,5,6)])
+            >>> v.z
+
+        :SymPy: supported
+        """
+        if len(self) == 1:
+            return self.A[2, 3]
+        else:
+            return np.array([v[2, 3] for v in self.A])
+
+    @z.setter
+    def z(self, z: float):
+        if len(self) > 1:
+            raise ValueError("can only assign elements to length 1 object")
+        self.A[2, 3] = z
+
     # ------------------------------------------------------------------------ #
 
     def inv(self) -> SE3:

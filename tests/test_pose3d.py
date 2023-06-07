@@ -789,6 +789,20 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(T.R, R)
         nt.assert_equal(T.t, t)
 
+        nt.assert_equal(T.x, t[0])
+        nt.assert_equal(T.y, t[1])
+        nt.assert_equal(T.z, t[2])
+
+        TT = SE3([T, T, T])
+        desired_shape = (3,)
+        nt.assert_equal(TT.x.shape, desired_shape)
+        nt.assert_equal(TT.y.shape, desired_shape)
+        nt.assert_equal(TT.z.shape, desired_shape)
+
+        ones = np.ones(desired_shape)
+        nt.assert_equal(TT.x, ones*t[0])
+        nt.assert_equal(TT.y, ones*t[1])
+        nt.assert_equal(TT.z, ones*t[2])
 
         # copy constructor
         R = SE3.Rx(pi / 2)
