@@ -541,7 +541,7 @@ class SE2(SO2):
         ``v.x`` is the first element of the translational vector component.  If ``len(x)`` is:
 
         - 1, return an float
-        - N>1, return an ndarray with shape=(N,1)
+        - N>1, return an ndarray with shape=(N,)
         """
         if len(self) == 1:
             return self.A[0, 2]
@@ -561,7 +561,7 @@ class SE2(SO2):
         ``v.y`` is the second element of the translational vector component.  If ``len(x)`` is:
 
         - 1, return an float
-        - N>1, return an ndarray with shape=(N,1)
+        - N>1, return an ndarray with shape=(N,)
         """
         if len(self) == 1:
             return self.A[1, 2]

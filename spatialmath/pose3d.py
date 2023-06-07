@@ -1044,7 +1044,7 @@ class SE3(SO3):
         :return: first element of translational component of SE(3)
         :rtype: float
 
-        If ``len(v) > 1``, return an array with shape=(N,1).
+        If ``len(v) > 1``, return an array with shape=(N,).
 
         Example:
 
@@ -1077,7 +1077,7 @@ class SE3(SO3):
         :return: second element of translational component of SE(3)
         :rtype: float
 
-        If ``len(v) > 1``, return an array with shape=(N,1).
+        If ``len(v) > 1``, return an array with shape=(N,).
 
         Example:
 
@@ -1110,7 +1110,7 @@ class SE3(SO3):
         :return: third element of translational component of SE(3)
         :rtype: float
 
-        If ``len(v) > 1``, return an array with shape=(N,1).
+        If ``len(v) > 1``, return an array with shape=(N,).
 
         Example:
 
