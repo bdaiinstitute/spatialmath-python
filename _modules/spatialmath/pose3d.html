@@ -1039,15 +1039,7 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">SO3</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">SE2</span><span class="p">):</span>  <span class="c1"># type(x).__name__ == &quot;SE2&quot;:</span>
-
-                <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                    <span class="c1"># convert SE(2) to SE(3)</span>
-                    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">out</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-                    <span class="n">out</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-                    <span class="k">return</span> <span class="n">out</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">SE3</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
             <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                 <span class="c1"># SE3( [x, y, z] )</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
@@ -1247,6 +1239,9 @@
             <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SE3.SE2"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.SE2">[docs]</a>    <span class="k">def</span> <span class="nf">SE2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">()[</span><span class="mi">2</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="SE3.delta"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE3</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2088,7 +2083,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 07-Jun-2023.
+      <span class="lastupdated">Last updated on 09-Jun-2023.
       </span></p>
   </div>
 

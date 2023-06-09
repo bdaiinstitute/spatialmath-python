@@ -323,8 +323,8 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Twist3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">Twist3([</span>
-<span class="go">  [-0.72014, 0.61506, -0.32291, -2.2694, -0.13522, 1.0198],</span>
-<span class="go">  [-1.0249, -0.52946, -0.64361, -0.36555, 1.7838, -1.2214]</span>
+<span class="go">  [-0.73267, 0.67603, 0.91806, 0.11229, 1.7702, -2.4188],</span>
+<span class="go">  [-0.53479, -0.82455, 0.19926, 1.4842, 0.40812, -0.39907]</span>
 <span class="go">])</span>
 </pre></div>
 </div>
@@ -1078,15 +1078,14 @@ to the list</p>
 <p>Compute the inverse of each of the values within the twist instance.
 The inverse is the negative of the twist vector.</p>
 <p>Example:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/baseposelist.py&quot;</span>, line <span class="m">576</span>, in <span class="n">binop</span>
-<span class="w">    </span><span class="k">return</span> <span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">_A</span><span class="p">)]</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/twist.py&quot;</span>, line <span class="m">1139</span>, in <span class="n">&lt;lambda&gt;</span>
-<span class="w">    </span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">smb</span><span class="o">.</span><span class="n">trlog</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">@</span> <span class="n">smb</span><span class="o">.</span><span class="n">trexp</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">twist</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;</span>, line <span class="m">1338</span>, in <span class="n">trlog</span>
-<span class="w">    </span><span class="n">S</span> <span class="o">=</span> <span class="n">trlog</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SO3Array</span><span class="p">,</span> <span class="n">R</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># recurse</span>
-  File <span class="nb">&quot;/opt/hostedtoolcache/Python/3.7.16/x64/lib/python3.7/site-packages/spatialmath/base/transforms3d.py&quot;</span>, line <span class="m">1379</span>, in <span class="n">trlog</span>
-<span class="w">    </span><span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gr">ValueError</span>: <span class="n">math domain error</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">Twist3</span><span class="p">(</span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span>
+<span class="go">Twist3([-0.12269, 0.75087, 0.2429, 1.6799, 1.7586, -0.88713])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+<span class="go">Twist3([0.12269, -0.75087, -0.2429, -1.6799, -1.7586, 0.88713])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
+<span class="go">Twist3([5.5511e-17, 5.5511e-17, 1.1102e-16, 5.5511e-17, 6.9389e-18, -3.4694e-18])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1540,7 +1539,7 @@ this point is at infinity.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 07-Jun-2023.
+      <span class="lastupdated">Last updated on 09-Jun-2023.
       </span></p>
   </div>
 
