@@ -667,6 +667,9 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(poseSE3.x , poseSE2.x)
         nt.assert_equal(poseSE3.y , poseSE2.y)
 
+        posesSE3 = SE3([poseSE3, poseSE3])
+        posesSE2 = posesSE3.SE2()
+        nt.assert_equal(len(posesSE2), 2)
 
     def test_functions_vect(self):
         # inv

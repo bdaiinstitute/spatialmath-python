@@ -1163,7 +1163,10 @@ class SE3(SO3):
             return SE3([smb.trinv(x) for x in self.A], check=False)
 
     def SE2(self) -> SE2:
-        return SE2(self.x, self.y, self.rpy()[2])
+        if len(self) == 1:
+            return SE2(self.x, self.y, self.rpy()[2])
+        else:
+            return SE2([e.SE2() for e in self])
 
     def delta(self, X2: Optional[SE3] = None) -> R6:
         r"""
