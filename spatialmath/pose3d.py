@@ -961,15 +961,7 @@ class SE3(SO3):
             elif isinstance(x, SO3):
                 self.data = [smb.r2t(_x) for _x in x.data]
             elif isinstance(x, SE2):  # type(x).__name__ == "SE2":
-
-                def convert(x):
-                    # convert SE(2) to SE(3)
-                    out = np.identity(4, dtype=x.dtype)
-                    out[:2, :2] = x[:2, :2]
-                    out[:2, 3] = x[:2, 2]
-                    return out
-
-                self.data = [convert(_x) for _x in x.data]
+                self.data = x.SE3().data
             elif smb.isvector(x, 3):
                 # SE3( [x, y, z] )
                 self.data = [smb.transl(x)]
@@ -1169,6 +1161,9 @@ class SE3(SO3):
             return SE3(smb.trinv(self.A), check=False)
         else:
             return SE3([smb.trinv(x) for x in self.A], check=False)
+
+    def SE2(self) -> SE2:
+        return SE2(self.x, self.y, self.rpy()[2])
 
     def delta(self, X2: Optional[SE3] = None) -> R6:
         r"""
