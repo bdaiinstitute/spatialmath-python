@@ -1163,6 +1163,16 @@ class SE3(SO3):
             return SE3([smb.trinv(x) for x in self.A], check=False)
 
     def SE2(self) -> SE2:
+        """
+        Create SE(2) from SE(3)
+
+        :return: SE(2) with same rotation as the yaw angle using the 'zyx' convention,
+            and translation in x,y
+        :rtype: SE2 instance
+
+        "Flattens" 3D rigid-body motion to 2D, along the z axis.
+
+        """
         if len(self) == 1:
             return SE2(self.x, self.y, self.rpy()[2])
         else:
