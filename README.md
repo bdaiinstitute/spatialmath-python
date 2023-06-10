@@ -18,14 +18,14 @@
 <table style="border:0px">
 <tr style="border:0px">
 <td style="border:0px">
-<img src="https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png" width="200"></td>
+<img src="https://github.com/bdaiinstitute/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png" width="200"></td>
 <td style="border:0px">
 A Python implementation of the <a href="https://github.com/petercorke/spatial-math">Spatial Math Toolbox for MATLAB<sup>&reg;</sup></a>
 <ul>
-<li><a href="https://github.com/petercorke/spatialmath-python">GitHub repository </a></li>
-<li><a href="https://petercorke.github.io/spatialmath-python">Documentation</a></li>
-<li><a href=https://github.com/petercorke/spatialmath-python/discussions/categories/changes>Recent changes</a>
-<li><a href="https://github.com/petercorke/spatialmath-python/wiki">Wiki (examples and details)</a></li>
+<li><a href="https://github.com/bdaiinstitute/spatialmath-python">GitHub repository </a></li>
+<li><a href="https://bdaiinstitute.github.io/spatialmath-python">Documentation</a></li>
+<li><a href=https://github.com/bdaiinstitute/spatialmath-python/discussions/categories/changes>Recent changes</a>
+<li><a href="https://github.com/bdaiinstitute/spatialmath-python/wiki">Wiki (examples and details)</a></li>
 <li><a href="installation#">Installation</a></li>
 </ul>
 </td>
@@ -74,7 +74,7 @@ These are layered over a set of base functions that perform many of the same ope
 
 The class, method and functions names largely mirror those of the MATLAB toolboxes, and the semantics are quite similar.
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/fig1.png)
+![trplot](https://github.com/bdaiinstitute/spatialmath-python/raw/master/docs/figs/fig1.png)
 
 ![animation video](./docs/figs/animate.gif)
 
@@ -103,12 +103,12 @@ If the toolbox helped you in your research, please cite
 
 If you are using the Toolbox in your open source code, feel free to add our badge to your readme!
 
-[![Powered by the Robotics Toolbox](https://github.com/petercorke/spatialmath-python/raw/master/.github/svg/sm_powered.min.svg)](https://github.com/petercorke/spatialmath-python)
+[![Powered by the Spatial Math Toolbox](https://github.com/bdaiinstitute/spatialmath-python/raw/master/.github/svg/sm_powered.min.svg)](https://github.com/bdaiinstitute/spatialmath-python)
 
 Simply copy the following
 
 ```
-[![Powered by the Spatial Math Toolbox](https://github.com/petercorke/spatialmath-python/raw/master/.github/svg/sm_powered.min.svg)](https://github.com/petercorke/spatialmath-python)
+[![Powered by the Spatial Math Toolbox](https://github.com/bdaiinstitute/spatialmath-python/raw/master/.github/svg/sm_powered.min.svg)](https://github.com/bdaiinstitute/spatialmath-python)
 ```
 
 
@@ -127,7 +127,7 @@ pip install spatialmath-python
 Install the current code base from GitHub and pip install a link to that cloned copy
 
 ```
-git clone https://github.com/petercorke/spatialmath-python.git
+git clone https://github.com/bdaiinstitute/spatialmath-python.git
 cd spatialmath-python
 pip install -e .
 ```
@@ -269,14 +269,14 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 >>> T.plot()
 ```
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/fig1.png)
+![trplot](https://github.com/bdaiinstitute/spatialmath-python/raw/master/docs/figs/fig1.png)
 
 `printline` is a compact single line format for tabular listing, whereas `print` shows the underlying matrix and for consoles that support it, it is colorised, with rotational elements in red and translational elements in blue.
 
 For more detail checkout the shipped Python notebooks:
 
-* [gentle introduction](https://github.com/petercorke/spatialmath-python/blob/master/spatialmath/gentle-introduction.ipynb)
-* [deeper introduction](https://github.com/petercorke/spatialmath-python/blob/master/spatialmath/introduction.ipynb)
+* [gentle introduction](https://github.com/bdaiinstitute/spatialmath-python/blob/master/spatialmath/gentle-introduction.ipynb)
+* [deeper introduction](https://github.com/bdaiinstitute/spatialmath-python/blob/master/spatialmath/introduction.ipynb)
 
 
 You can browse it statically through the links above, or clone the toolbox and run them interactively using [Jupyter](https://jupyter.org) or [JupyterLab](https://jupyter.org).
@@ -362,7 +362,7 @@ array([-60,  12,  30,  24])
 
 ## Graphics
 
-![trplot](https://github.com/petercorke/spatialmath-python/raw/master/docs/figs/transforms3d.png)
+![trplot](https://github.com/bdaiinstitute/spatialmath-python/raw/master/docs/figs/transforms3d.png)
 
 The functions support various plotting styles
 
