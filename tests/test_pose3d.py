@@ -663,7 +663,7 @@ class TestSO3(unittest.TestCase):
         # conversion to SE2
         poseSE3 = SE3.Tx(3.3) * SE3.Rz(1.5)
         poseSE2 = poseSE3.yaw_SE2()
-        nt.assert_almost_equal(poseSE3.R[0:1,0:1], poseSE2.R[0:1,0:1])
+        nt.assert_almost_equal(poseSE3.R[0:2,0:2], poseSE2.R[0:2,0:2])
         nt.assert_equal(poseSE3.x , poseSE2.x)
         nt.assert_equal(poseSE3.y , poseSE2.y)
 
