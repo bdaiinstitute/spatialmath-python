@@ -1186,11 +1186,11 @@ class SE3(SO3):
 
         """
         if len(self) == 1:
-            if order in "zyx":
+            if order == "zyx":
                 return SE2(self.x, self.y, self.rpy(order = order)[2])
-            elif order in "xyz":
+            elif order == "xyz":
                 return SE2(self.z, self.y, self.rpy(order = order)[2])
-            elif order in "yxz":
+            elif order == "yxz":
                 return SE2(self.z, self.x, self.rpy(order = order)[2])
         else:
             return SE2([e.yaw_SE2() for e in self])
