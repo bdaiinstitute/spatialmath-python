@@ -1169,7 +1169,7 @@ class SE3(SO3):
         :param order: angle sequence order, default to 'zyx'
         :type order: str
         :return: SE(2) with same rotation as the yaw angle using the roll-pitch-yaw convention,
-            and translation in x,y.
+            and translation along the roll-pitch axes.
         :rtype: SE2 instance
 
         Roll-pitch-yaw corresponds to successive rotations about the axes specified by ``order``:
@@ -1186,7 +1186,12 @@ class SE3(SO3):
 
         """
         if len(self) == 1:
-            return SE2(self.x, self.y, self.rpy(order = order)[2])
+            if order in "zyx":
+                return SE2(self.x, self.y, self.rpy(order = order)[2])
+            elif order in "xyz":
+                return SE2(self.z, self.y, self.rpy(order = order)[2])
+            elif order in "yxz":
+                return SE2(self.z, self.x, self.rpy(order = order)[2])
         else:
             return SE2([e.yaw_SE2() for e in self])
 
