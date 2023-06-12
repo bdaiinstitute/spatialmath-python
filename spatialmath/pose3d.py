@@ -1162,21 +1162,33 @@ class SE3(SO3):
         else:
             return SE3([smb.trinv(x) for x in self.A], check=False)
 
-    def SE2(self) -> SE2:
+    def yaw_SE2(self, order: str = "zyx") -> SE2:
         """
-        Create SE(2) from SE(3)
+        Create SE(2) from SE(3) yaw angle.
 
-        :return: SE(2) with same rotation as the yaw angle using the 'zyx' convention,
-            and translation in x,y
+        :param order: angle sequence order, default to 'zyx'
+        :type order: str
+        :return: SE(2) with same rotation as the yaw angle using the roll-pitch-yaw convention,
+            and translation in x,y.
         :rtype: SE2 instance
 
-        "Flattens" 3D rigid-body motion to 2D, along the z axis.
+        Roll-pitch-yaw corresponds to successive rotations about the axes specified by ``order``:
+
+            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
+              and y-axis sideways.
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
+              and y-axis between the gripper fingers.
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
+              then by roll about the new z-axis. Convention for a camera with z-axis parallel
+              to the optic axis and x-axis parallel to the pixel rows.
 
         """
         if len(self) == 1:
-            return SE2(self.x, self.y, self.rpy()[2])
+            return SE2(self.x, self.y, self.rpy(order = order)[2])
         else:
-            return SE2([e.SE2() for e in self])
+            return SE2([e.yaw_SE2() for e in self])
 
     def delta(self, X2: Optional[SE3] = None) -> R6:
         r"""
