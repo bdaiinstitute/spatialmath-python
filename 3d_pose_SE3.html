@@ -595,13 +595,13 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">SE3([</span>
-<span class="go">array([[ 0.4536,  0.0164,  0.8911,  0.5702],</span>
-<span class="go">       [-0.0913,  0.9954,  0.0281, -0.926 ],</span>
-<span class="go">       [-0.8865, -0.0941,  0.453 ,  0.6929],</span>
+<span class="go">array([[ 0.4422, -0.8571,  0.2645, -0.8883],</span>
+<span class="go">       [ 0.8529,  0.3105, -0.4196, -0.892 ],</span>
+<span class="go">       [ 0.2775,  0.4111,  0.8683, -0.1344],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]),</span>
-<span class="go">array([[ 0.9389, -0.3431,  0.0284, -0.1692],</span>
-<span class="go">       [-0.2468, -0.7282, -0.6394, -0.7499],</span>
-<span class="go">       [ 0.2401,  0.5933, -0.7683, -0.4961],</span>
+<span class="go">array([[ 0.7329, -0.1443, -0.6649, -0.9722],</span>
+<span class="go">       [-0.5914,  0.348 , -0.7274,  0.6359],</span>
+<span class="go">       [ 0.3363,  0.9263,  0.1697,  0.5558],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]) ])</span>
 </pre></div>
 </div>
@@ -3059,6 +3059,38 @@ values, the string has one pose per line.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.pose3d.SE3.yaw_SE2">
+<span class="sig-name descname"><span class="pre">yaw_SE2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zyx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.yaw_SE2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.yaw_SE2" title="Permalink to this definition"></a></dt>
+<dd><p>Create SE(2) from SE(3) yaw angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order</strong> (<em>str</em>) – angle sequence order, default to ‘zyx’</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>SE(2) with same rotation as the yaw angle using the roll-pitch-yaw convention,
+and translation along the roll-pitch axes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SE2 instance</p>
+</dd>
+</dl>
+<p>Roll-pitch-yaw corresponds to successive rotations about the axes specified by <code class="docutils literal notranslate"><span class="pre">order</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'zyx'</span></code> [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
+and y-axis sideways.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'xyz'</span></code>, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
+and y-axis between the gripper fingers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'yxz'</span></code>, rotate by yaw about the y-axis, then by pitch about the new x-axis,
+then by roll about the new z-axis. Convention for a camera with z-axis parallel
+to the optic axis and x-axis parallel to the pixel rows.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.A">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.A" title="Permalink to this definition"></a></dt>
@@ -3403,7 +3435,7 @@ shape (3,). If <code class="docutils literal notranslate"><span class="pre">len(
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 10-Jun-2023.
+      <span class="lastupdated">Last updated on 15-Jun-2023.
       </span></p>
   </div>
 

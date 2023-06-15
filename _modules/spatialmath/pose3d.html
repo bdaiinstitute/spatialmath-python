@@ -1039,15 +1039,7 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">SO3</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">SE2</span><span class="p">):</span>  <span class="c1"># type(x).__name__ == &quot;SE2&quot;:</span>
-
-                <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                    <span class="c1"># convert SE(2) to SE(3)</span>
-                    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-                    <span class="n">out</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-                    <span class="n">out</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-                    <span class="k">return</span> <span class="n">out</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">SE3</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
             <span class="k">elif</span> <span class="n">smb</span><span class="o">.</span><span class="n">isvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                 <span class="c1"># SE3( [x, y, z] )</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
@@ -1247,6 +1239,39 @@
             <span class="k">return</span> <span class="n">SE3</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE3</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">trinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SE3.yaw_SE2"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.yaw_SE2">[docs]</a>    <span class="k">def</span> <span class="nf">yaw_SE2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create SE(2) from SE(3) yaw angle.</span>
+
+<span class="sd">        :param order: angle sequence order, default to &#39;zyx&#39;</span>
+<span class="sd">        :type order: str</span>
+<span class="sd">        :return: SE(2) with same rotation as the yaw angle using the roll-pitch-yaw convention,</span>
+<span class="sd">            and translation along the roll-pitch axes.</span>
+<span class="sd">        :rtype: SE2 instance</span>
+
+<span class="sd">        Roll-pitch-yaw corresponds to successive rotations about the axes specified by ``order``:</span>
+
+<span class="sd">            - ``&#39;zyx&#39;`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,</span>
+<span class="sd">              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward</span>
+<span class="sd">              and y-axis sideways.</span>
+<span class="sd">            - ``&#39;xyz&#39;``, rotate by yaw about the x-axis, then by pitch about the new y-axis,</span>
+<span class="sd">              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward</span>
+<span class="sd">              and y-axis between the gripper fingers.</span>
+<span class="sd">            - ``&#39;yxz&#39;``, rotate by yaw about the y-axis, then by pitch about the new x-axis,</span>
+<span class="sd">              then by roll about the new z-axis. Convention for a camera with z-axis parallel</span>
+<span class="sd">              to the optic axis and x-axis parallel to the pixel rows.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;zyx&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;xyz&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;yxz&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SE2</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">yaw_SE2</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="SE3.delta"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE3</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -2088,7 +2113,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 10-Jun-2023.
+      <span class="lastupdated">Last updated on 15-Jun-2023.
       </span></p>
   </div>
 
