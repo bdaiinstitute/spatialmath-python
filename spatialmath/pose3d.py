@@ -961,15 +961,7 @@ class SE3(SO3):
             elif isinstance(x, SO3):
                 self.data = [smb.r2t(_x) for _x in x.data]
             elif isinstance(x, SE2):  # type(x).__name__ == "SE2":
-
-                def convert(x):
-                    # convert SE(2) to SE(3)
-                    out = np.identity(4, dtype=x.dtype)
-                    out[:2, :2] = x[:2, :2]
-                    out[:2, 3] = x[:2, 2]
-                    return out
-
-                self.data = [convert(_x) for _x in x.data]
+                self.data = x.SE3().data
             elif smb.isvector(x, 3):
                 # SE3( [x, y, z] )
                 self.data = [smb.transl(x)]
@@ -1169,6 +1161,39 @@ class SE3(SO3):
             return SE3(smb.trinv(self.A), check=False)
         else:
             return SE3([smb.trinv(x) for x in self.A], check=False)
+
+    def yaw_SE2(self, order: str = "zyx") -> SE2:
+        """
+        Create SE(2) from SE(3) yaw angle.
+
+        :param order: angle sequence order, default to 'zyx'
+        :type order: str
+        :return: SE(2) with same rotation as the yaw angle using the roll-pitch-yaw convention,
+            and translation along the roll-pitch axes.
+        :rtype: SE2 instance
+
+        Roll-pitch-yaw corresponds to successive rotations about the axes specified by ``order``:
+
+            - ``'zyx'`` [default], rotate by yaw about the z-axis, then by pitch about the new y-axis,
+              then by roll about the new x-axis.  Convention for a mobile robot with x-axis forward
+              and y-axis sideways.
+            - ``'xyz'``, rotate by yaw about the x-axis, then by pitch about the new y-axis,
+              then by roll about the new z-axis. Convention for a robot gripper with z-axis forward
+              and y-axis between the gripper fingers.
+            - ``'yxz'``, rotate by yaw about the y-axis, then by pitch about the new x-axis,
+              then by roll about the new z-axis. Convention for a camera with z-axis parallel
+              to the optic axis and x-axis parallel to the pixel rows.
+
+        """
+        if len(self) == 1:
+            if order == "zyx":
+                return SE2(self.x, self.y, self.rpy(order = order)[2])
+            elif order == "xyz":
+                return SE2(self.z, self.y, self.rpy(order = order)[2])
+            elif order == "yxz":
+                return SE2(self.z, self.x, self.rpy(order = order)[2])
+        else:
+            return SE2([e.yaw_SE2() for e in self])
 
     def delta(self, X2: Optional[SE3] = None) -> R6:
         r"""
