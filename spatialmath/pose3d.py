@@ -1934,6 +1934,27 @@ class SE3(SO3):
             t = np.zeros((3,))
         return cls(smb.rt2tr(R, t, check=check), check=check)
 
+    @classmethod
+    def CopyFrom(
+        cls,
+        T: SE3Array,
+        check: bool = True
+    ) -> SE3:
+        """
+        Create an SE(3) from a 4x4 numpy array that is passed by value.
+
+        :param T: homogeneous transformation
+        :type T: ndarray(4, 4)
+        :param check: check rotation validity, defaults to True
+        :type check: bool, optional
+        :raises ValueError: bad rotation matrix, bad transformation matrix
+        :return: SE(3) matrix representing that transformation
+        :rtype: SE3 instance
+        """
+        if T is None:
+            raise ValueError("Transformation matrix must not be None")
+        return cls(np.copy(T), check=check)
+
     def angdist(self, other: SE3, metric: int = 6) -> float:
         r"""
         Angular distance metric between poses
