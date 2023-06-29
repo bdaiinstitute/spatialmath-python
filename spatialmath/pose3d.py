@@ -976,6 +976,9 @@ class SE3(SO3):
             # SE3(x, y, z)
             self.data = [smb.transl(x, y, z)]
 
+        else:
+            raise ValueError("Invalid arguments. See documentation for correct format.")
+
     @staticmethod
     def _identity() -> NDArray:
         return np.eye(4)
