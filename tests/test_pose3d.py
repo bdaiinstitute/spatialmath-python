@@ -836,7 +836,7 @@ class TestSE3(unittest.TestCase):
         # Bad number of arguments
         with self.assertRaises(ValueError):
             T = SE3(1.0, 0.0)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             T = SE3(1.0, 0.0, 0.0, 0.0)
 
     def test_shape(self):
