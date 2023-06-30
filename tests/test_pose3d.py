@@ -888,6 +888,21 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(R.N, 3)
         nt.assert_equal(R.shape, (4, 4))
 
+        # Testing the CopyFrom function
+        mutable_array = np.eye(4)
+        pass_by_ref = SE3(mutable_array)
+        pass_by_val = SE3.CopyFrom(mutable_array)
+        mutable_array[0, 3] = 5.0
+        nt.assert_allclose(pass_by_val.data[0], np.eye(4))
+        nt.assert_allclose(pass_by_ref.data[0], mutable_array)
+        nt.assert_raises(
+            AssertionError,
+            nt.assert_allclose,
+            pass_by_val.data[0],
+            pass_by_ref.data[0]
+            )
+
+
     def test_arith(self):
         T = SE3(1, 2, 3)
 
