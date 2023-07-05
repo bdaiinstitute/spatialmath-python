@@ -833,6 +833,12 @@ class TestSE3(unittest.TestCase):
         self.assertEqual(T.A.shape, (4,4))
         nt.assert_equal(T.t, [1, 2, 0])
 
+        # Bad number of arguments
+        with self.assertRaises(ValueError):
+            T = SE3(1.0, 0.0)
+        with self.assertRaises(TypeError):
+            T = SE3(1.0, 0.0, 0.0, 0.0)
+
     def test_shape(self):
         a = SE3()
         self.assertEqual(a._A.shape, a.shape)
