@@ -218,6 +218,16 @@ class TestQuaternion(unittest.TestCase):
         with self.assertRaises(ValueError):
             nt.assert_array_almost_equal(q1a, r2q(r1.R, order="aaa"))
 
+    def test_qangle(self):
+        # Test function that calculates angle between quaternions
+        q1 = [1., 0, 0, 0]
+        q2 = [1 / np.sqrt(2), 0, 1 / np.sqrt(2), 0]   # 90deg rotation about y-axis
+        nt.assert_almost_equal(qangle(q1, q2), np.pi / 2)
+
+        q1 = [1., 0, 0, 0]
+        q2 = [1 / np.sqrt(2), 1 / np.sqrt(2), 0, 0]   # 90deg rotation about x-axis
+        nt.assert_almost_equal(qangle(q1, q2), np.pi / 2)
+
 
 if __name__ == "__main__":
     unittest.main()
