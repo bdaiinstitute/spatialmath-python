@@ -817,7 +817,7 @@ def orthogonalize(v1: ArrayLike3, v2: ArrayLike3, normalize: bool = True) -> Arr
     :return: nearest vector to v1 that is orthoginal to v2
     :rtype: ndarray(n)
     """
-    v_orth = v1 - np.dot(v1, v2) * v2
+    v_orth = v1 - project(v1, v2)
     if normalize:
         v_orth = v_orth / np.linalg.norm(v_orth)
     return v_orth
