@@ -28,6 +28,7 @@ import numpy as np
 
 import spatialmath.base as smb
 from spatialmath.base.types import *
+from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
 
@@ -337,7 +338,7 @@ class SO3(BasePoseMatrix):
         """
         theta, v = smb.tr2angvec(self.R)
         return theta * v
-    
+
     # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -651,8 +652,10 @@ class SO3(BasePoseMatrix):
         axes in terms of the old axes.  Axes are denoted by strings ``"x"``,
         ``"y"``, ``"z"``, ``"-x"``, ``"-y"``, ``"-z"``.
 
-        The directions can also be specified by 3-element vectors, but these
-        must be orthogonal.
+        The directions can also be specified by 3-element vectors. If the vectors are not orthogonal,
+        they will orthogonalized w.r.t. the first available dimension. I.e. if x is available, it will be
+        normalized and the remaining vector will be orthogonalized w.r.t. x, else, y will be normalized
+        and z will be orthogonalized w.r.t. y.
 
         To create a rotation where the new frame has its x-axis in -z-direction
         of the previous frame, and its z-axis in the x-direction of the previous
@@ -679,25 +682,41 @@ class SO3(BasePoseMatrix):
             else:
                 return smb.unitvec(smb.getvector(v, 3))
 
-        if x is not None and y is not None and z is None:
+        if x is not None and y is not None and z is not None:
+            raise ValueError(
+                "Only two vectors should be provided. Please set one to None."
+            )
+
+        elif x is not None and y is not None and z is None:
             # z = x x y
             x = vval(x)
             y = vval(y)
+            # Orthogonalizes y w.r.t. x
+            y = orthogonalize(y, x, normalize=True)
             z = np.cross(x, y)
 
         elif x is None and y is not None and z is not None:
             # x = y x z
             y = vval(y)
             z = vval(z)
+            # Orthogonalizes z w.r.t. y
+            z = orthogonalize(z, y, normalize=True)
             x = np.cross(y, z)
 
         elif x is not None and y is None and z is not None:
             # y = z x x
             z = vval(z)
             x = vval(x)
+            # Orthogonalizes z w.r.t. x
+            z = orthogonalize(z, x, normalize=True)
             y = np.cross(z, x)
 
-        return cls(np.c_[x, y, z], check=False)
+        else:
+            raise ValueError(
+                "Insufficient number of vectors. Please provide exactly two vectors."
+            )
+
+        return cls(np.c_[x, y, z], check=True)
 
     @classmethod
     def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> Self:
@@ -1190,11 +1209,11 @@ class SE3(SO3):
         """
         if len(self) == 1:
             if order == "zyx":
-                return SE2(self.x, self.y, self.rpy(order = order)[2])
+                return SE2(self.x, self.y, self.rpy(order=order)[2])
             elif order == "xyz":
-                return SE2(self.z, self.y, self.rpy(order = order)[2])
+                return SE2(self.z, self.y, self.rpy(order=order)[2])
             elif order == "yxz":
-                return SE2(self.z, self.x, self.rpy(order = order)[2])
+                return SE2(self.z, self.x, self.rpy(order=order)[2])
         else:
             return SE2([e.yaw_SE2() for e in self])
 
@@ -1938,11 +1957,7 @@ class SE3(SO3):
         return cls(smb.rt2tr(R, t, check=check), check=check)
 
     @classmethod
-    def CopyFrom(
-        cls,
-        T: SE3Array,
-        check: bool = True
-    ) -> SE3:
+    def CopyFrom(cls, T: SE3Array, check: bool = True) -> SE3:
         """
         Create an SE(3) from a 4x4 numpy array that is passed by value.
 
