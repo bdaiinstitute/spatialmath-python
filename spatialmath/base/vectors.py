@@ -789,6 +789,40 @@ def removesmall(v: ArrayLike, tol: float = 100) -> NDArray:
     return np.where(np.abs(v) < tol * _eps, 0, v)
 
 
+def project(v1: ArrayLike3, v2: ArrayLike3) -> ArrayLike3:
+    """
+    Projects vector v1 onto v2. Returns a vector parallel to v2.
+
+    :param v1: vector to be projected
+    :type v1: array_like(n)
+    :param v2: vector to be projected onto
+    :type v2: array_like(n)
+    :return: vector projection of v1 onto v2 (parrallel to v2)
+    :rtype: ndarray(n)
+    """
+    return np.dot(v1, v2) * v2
+
+
+def orthogonalize(v1: ArrayLike3, v2: ArrayLike3, normalize: bool = True) -> ArrayLike3:
+    """
+    Orthoginalizes vector v1 with respect to v2 with minimum rotation.
+    Returns a the nearest vector to v1 that is orthoginal to v2.
+
+    :param v1: vector to be orthoginalized
+    :type v1: array_like(n)
+    :param v2: vector that returned vector will be orthoginal to
+    :type v2: array_like(n)
+    :param normalize: whether to normalize the output vector
+    :type normalize: bool
+    :return: nearest vector to v1 that is orthoginal to v2
+    :rtype: ndarray(n)
+    """
+    v_orth = v1 - project(v1, v2)
+    if normalize:
+        v_orth = v_orth / np.linalg.norm(v_orth)
+    return v_orth
+
+
 if __name__ == "__main__":  # pragma: no cover
     import pathlib
 

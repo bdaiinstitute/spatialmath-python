@@ -28,6 +28,7 @@ import numpy as np
 
 import spatialmath.base as smb
 from spatialmath.base.types import *
+from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
 
@@ -651,8 +652,10 @@ class SO3(BasePoseMatrix):
         axes in terms of the old axes.  Axes are denoted by strings ``"x"``,
         ``"y"``, ``"z"``, ``"-x"``, ``"-y"``, ``"-z"``.
 
-        The directions can also be specified by 3-element vectors, but these
-        must be orthogonal.
+        The directions can also be specified by 3-element vectors. If the vectors are not orthogonal,
+        they will orthogonalized w.r.t. the first available dimension. I.e. if x is available, it will be
+        normalized and the remaining vector will be orthogonalized w.r.t. x, else, y will be normalized
+        and z will be orthogonalized w.r.t. y.
 
         To create a rotation where the new frame has its x-axis in -z-direction
         of the previous frame, and its z-axis in the x-direction of the previous
@@ -679,25 +682,41 @@ class SO3(BasePoseMatrix):
             else:
                 return smb.unitvec(smb.getvector(v, 3))
 
-        if x is not None and y is not None and z is None:
+        if x is not None and y is not None and z is not None:
+            raise ValueError(
+                "Only two vectors should be provided. Please set one to None."
+            )
+
+        elif x is not None and y is not None and z is None:
             # z = x x y
             x = vval(x)
             y = vval(y)
+            # Orthogonalizes y w.r.t. x
+            y = orthogonalize(y, x, normalize=True)
             z = np.cross(x, y)
 
         elif x is None and y is not None and z is not None:
             # x = y x z
             y = vval(y)
             z = vval(z)
+            # Orthogonalizes z w.r.t. y
+            z = orthogonalize(z, y, normalize=True)
             x = np.cross(y, z)
 
         elif x is not None and y is None and z is not None:
             # y = z x x
             z = vval(z)
             x = vval(x)
+            # Orthogonalizes z w.r.t. x
+            z = orthogonalize(z, x, normalize=True)
             y = np.cross(z, x)
 
-        return cls(np.c_[x, y, z], check=False)
+        else:
+            raise ValueError(
+                "Insufficient number of vectors. Please provide exactly two vectors."
+            )
+
+        return cls(np.c_[x, y, z], check=True)
 
     @classmethod
     def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> Self:
