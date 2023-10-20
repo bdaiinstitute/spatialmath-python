@@ -338,7 +338,7 @@ class SO3(BasePoseMatrix):
         """
         theta, v = smb.tr2angvec(self.R)
         return theta * v
-
+    
     # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -1209,11 +1209,11 @@ class SE3(SO3):
         """
         if len(self) == 1:
             if order == "zyx":
-                return SE2(self.x, self.y, self.rpy(order=order)[2])
+                return SE2(self.x, self.y, self.rpy(order = order)[2])
             elif order == "xyz":
-                return SE2(self.z, self.y, self.rpy(order=order)[2])
+                return SE2(self.z, self.y, self.rpy(order = order)[2])
             elif order == "yxz":
-                return SE2(self.z, self.x, self.rpy(order=order)[2])
+                return SE2(self.z, self.x, self.rpy(order = order)[2])
         else:
             return SE2([e.yaw_SE2() for e in self])
 
@@ -1957,7 +1957,11 @@ class SE3(SO3):
         return cls(smb.rt2tr(R, t, check=check), check=check)
 
     @classmethod
-    def CopyFrom(cls, T: SE3Array, check: bool = True) -> SE3:
+    def CopyFrom(
+        cls,
+        T: SE3Array,
+        check: bool = True
+    ) -> SE3:
         """
         Create an SE(3) from a 4x4 numpy array that is passed by value.
 
