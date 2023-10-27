@@ -1376,7 +1376,9 @@ def trlog(
                 return skew(w * theta)
         else:
             # general case
-            theta = math.acos((np.trace(R) - 1) / 2)
+            tr = (np.trace(R) - 1) / 2
+            # min for inaccuracies near identity yielding trace > 3
+            theta = math.acos(min(tr, 1.0))
             st = math.sin(theta)
             if st == 0:
                 if twist:
