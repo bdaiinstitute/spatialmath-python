@@ -687,8 +687,11 @@ class TestSO3(unittest.TestCase):
 
         # Check log and exponential map
         nt.assert_equal(R, SO3.Exp(R.log()))
+        np.testing.assert_equal((R.inv() * R).log(), np.zeros([3, 3]))
+
         # Check euler vector map
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
+        np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
 
 # ============================== SE3 =====================================#
