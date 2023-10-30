@@ -151,6 +151,23 @@ class TestUnitQuaternion(unittest.TestCase):
         q = UnitQuaternion(rotx(0.3))
         qcompare(UnitQuaternion(q), q)
 
+        # fail when invalid arrays are provided
+        # invalid rotation matrix
+        R = 1.1 * np.eye(3)
+        with self.assertRaises(ValueError):
+            UnitQuaternion(R, check=True)
+
+        # no check, so try to interpret as a quaternion, but shape is wrong
+        with self.assertRaises(ValueError):
+            UnitQuaternion(R, check=False)
+
+        # wrong shape to be anything
+        R = np.zeros((5, 5))
+        with self.assertRaises(ValueError):
+            UnitQuaternion(R, check=True)
+        with self.assertRaises(ValueError):
+            UnitQuaternion(R, check=False)
+
     def test_concat(self):
         u = UnitQuaternion()
         uu = UnitQuaternion([u, u, u, u])
