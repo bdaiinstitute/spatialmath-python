@@ -701,6 +701,18 @@ class TestSO3(unittest.TestCase):
         # .T
         pass
 
+    def test_functions_lie(self):
+        R = SO3.EulerVec([0.42, 0.73, -1.17])
+
+        # Check log and exponential map
+        nt.assert_equal(R, SO3.Exp(R.log()))
+        np.testing.assert_equal((R.inv() * R).log(), np.zeros([3, 3]))
+
+        # Check euler vector map
+        nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
+        np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
+
+
 # ============================== SE3 =====================================#
 
 class TestSE3(unittest.TestCase):
