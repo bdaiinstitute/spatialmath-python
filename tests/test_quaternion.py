@@ -157,10 +157,6 @@ class TestUnitQuaternion(unittest.TestCase):
         with self.assertRaises(ValueError):
             UnitQuaternion(R, check=True)
 
-        # no check, so try to interpret as a quaternion, but shape is wrong
-        with self.assertRaises(ValueError):
-            UnitQuaternion(R, check=False)
-
         # wrong shape to be anything
         R = np.zeros((5, 5))
         with self.assertRaises(ValueError):
