@@ -989,9 +989,12 @@ class UnitQuaternion(Quaternion):
                 #  a quaternion as a 1D array
                 #  an array of quaternions as an nx4 array
 
-                if smb.isrot(s, check=check):
-                    # UnitQuaternion(R) R is 3x3 rotation matrix
-                    self.data = [smb.r2q(s)]
+                if s.shape == (3, 3):
+                    if smb.isrot(s, check=check):
+                        # UnitQuaternion(R) R is 3x3 rotation matrix
+                        self.data = [smb.r2q(s)]
+                    else:
+                        raise ValueError("invalid rotation matrix provided to UnitQuaternion constructor")
                 elif s.shape == (4,):
                     # passed a 4-vector
                     if norm:
@@ -1004,6 +1007,8 @@ class UnitQuaternion(Quaternion):
                     else:
                         # self.data = [smb.qpositive(x) for x in s]
                         self.data = [x for x in s]
+                else:
+                    raise ValueError("array could not be interpreted as UnitQuaternion")
 
             elif isinstance(s, SO3):
                 # UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)
