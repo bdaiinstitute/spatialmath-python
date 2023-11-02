@@ -1,19 +1,11 @@
 import numpy.testing as nt
-import matplotlib.pyplot as plt
 import unittest
 
 """
 we will assume that the primitives rotx,trotx, etc. all work
 """
-from math import pi
 from spatialmath import SE3, SO3, SE2
 import numpy as np
-# from spatialmath import super_pose as sp
-from spatialmath.base import *
-from spatialmath.base import argcheck
-import spatialmath as sm
-from spatialmath.baseposematrix import BasePoseMatrix
-from spatialmath.twist import BaseTwist
 import spatialmath.base.transforms3d as t3d
 
 
