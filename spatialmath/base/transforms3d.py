@@ -1023,7 +1023,7 @@ def tr2angvec(
     if not isrot(R, check=check):
         raise ValueError("argument is not SO(3)")
 
-    v = vex(trlog(cast(SO3Array, R)))
+    v = vex(trlog(cast(SO3Array, R), check=check))
 
     try:
         theta = norm(v)
