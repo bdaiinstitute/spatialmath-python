@@ -226,16 +226,23 @@ class TestVector(unittest.TestCase):
 
     def test_angdiff(self):
         self.assertEqual(angdiff(0, 0), 0)
+        self.assertIsInstance(angdiff(0, 0), float)
         self.assertEqual(angdiff(pi, 0), -pi)
         self.assertEqual(angdiff(-pi, pi), 0)
 
-        nt.assert_array_almost_equal(angdiff([0, -pi, pi], 0), [0, -pi, -pi])
+        x = angdiff([0, -pi, pi], 0)
+        nt.assert_array_almost_equal(x, [0, -pi, -pi])
+        self.assertIsInstance(x, np.ndarray)
         nt.assert_array_almost_equal(angdiff([0, -pi, pi], pi), [-pi, 0, 0])
 
-        nt.assert_array_almost_equal(angdiff(0, [0, -pi, pi]), [0, -pi, -pi])
+        x = angdiff(0, [0, -pi, pi])
+        nt.assert_array_almost_equal(x, [0, -pi, -pi])
+        self.assertIsInstance(x, np.ndarray)
         nt.assert_array_almost_equal(angdiff(pi, [0, -pi, pi]), [-pi, 0, 0])
 
-        nt.assert_array_almost_equal(angdiff([1, 2, 3], [1, 2, 3]), [0, 0, 0])
+        x = angdiff([1, 2, 3], [1, 2, 3])
+        nt.assert_array_almost_equal(x, [0, 0, 0])
+        self.assertIsInstance(x, np.ndarray)
 
     def test_wrap(self):
         self.assertAlmostEqual(wrap_0_2pi(0), 0)

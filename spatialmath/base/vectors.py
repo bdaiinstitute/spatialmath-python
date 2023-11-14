@@ -647,7 +647,11 @@ def angdiff(a, b=None):
         b = getvector(b)
         a = a - b  # cannot use -= here, numpy wont broadcast
 
-    return np.mod(a + math.pi, 2 * math.pi) - math.pi
+    y = np.mod(a + math.pi, 2 * math.pi) - math.pi
+    if isinstance(y, np.ndarray) and len(y) == 1:
+        return float(y)
+    else:
+        return y
 
 
 def angle_std(theta: ArrayLike) -> float:
