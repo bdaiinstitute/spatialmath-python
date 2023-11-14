@@ -440,4 +440,4 @@ Similarly when we assign an element or slice of the symbolic matrix to a numeric
 
 This package was originally created by [Peter Corke](https://github.com/petercorke) and [Jesse Haviland](https://github.com/jhavl) and was inspired by the [Spatial Math Toolbox for MATLAB](https://github.com/petercorke/spatialmath-matlab).  It supports the textbook [Robotics, Vision & Control in Python 3e](https://github.com/petercorke/RVC3-python).
 
-The package is now a collaboration with Boston Dynamics AI Institute.
+The package is now a collaboration with [Boston Dynamics AI Institute](https://theaiinstitute.com/).
