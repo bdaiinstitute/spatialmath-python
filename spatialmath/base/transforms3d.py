@@ -1533,13 +1533,17 @@ def trexp(S, theta=None, check=True):
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
 
+@overload  # pragma: no cover
+def trnorm(R: SO3Array) -> SO3Array:
+    ...
+
+
 def trnorm(T: SE3Array) -> SE3Array:
     r"""
     Normalize an SO(3) or SE(3) matrix
 
-    :param R: SE(3) or SO(3) matrix
-    :type R: ndarray(4,4) or ndarray(3,3)
-    :param T1: second SE(3) matrix
+    :param T: SE(3) or SO(3) matrix
+    :type T: ndarray(4,4) or ndarray(3,3)
     :return: normalized SE(3) or SO(3) matrix
     :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad arguments
@@ -1565,9 +1569,9 @@ def trnorm(T: SE3Array) -> SE3Array:
         >>> T = troty(45, 'deg', t=[3, 4, 5])
         >>> linalg.det(T[:3,:3]) - 1 # is a valid SO(3)
         >>> T = T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T
-        >>> linalg.det(T[:3,:3]) - 1  # not quite a valid SO(3) anymore
+        >>> linalg.det(T[:3,:3]) - 1  # not quite a valid SE(3) anymore
         >>> T = trnorm(T)
-        >>> linalg.det(T[:3,:3]) - 1  # once more a valid SO(3)
+        >>> linalg.det(T[:3,:3]) - 1  # once more a valid SE(3)
 
     .. note::
 

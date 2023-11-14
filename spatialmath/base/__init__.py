@@ -216,6 +216,7 @@ __all__ = [
     "isrot2",
     "trlog2",
     "trexp2",
+    "trnorm2",
     "tr2jac2",
     "trinterp2",
     "trprint2",

@@ -94,6 +94,20 @@ class Test2D(unittest.TestCase):
         T = transl2(1, 2) @ trot2(0.5)
         nt.assert_array_almost_equal(trexp2(logm(T)), T)
 
+    def test_trnorm2(self):
+        R = rot2(0.4)
+        R = np.round(R, 3)  # approx SO(2)
+        R = trnorm2(R)
+        self.assertTrue(isrot2(R, check=True))
+
+        R = rot2(0.4)
+        R = np.round(R, 3)  # approx SO(2)
+        T = rt2tr(R, [3, 4])
+
+        T = trnorm2(T)
+        self.assertTrue(ishom2(T, check=True))
+        nt.assert_almost_equal(T[:2, 2], [3, 4])
+
     def test_transl2(self):
         nt.assert_array_almost_equal(
             transl2(1, 2), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])

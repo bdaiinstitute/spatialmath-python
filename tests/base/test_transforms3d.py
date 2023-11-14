@@ -430,6 +430,20 @@ class Test3D(unittest.TestCase):
         a = rpy2tr(ang, order=seq)
         nt.assert_array_almost_equal(rpy2tr(tr2rpy(a, order=seq), order=seq), a)
 
+    def test_trnorm(self):
+        R = rpy2r(0.2, 0.3, 0.4)
+        R = np.round(R, 3)  # approx SO(3)
+        R = trnorm(R)
+        self.assertTrue(isrot(R, check=True))
+
+        R = rpy2r(0.2, 0.3, 0.4)
+        R = np.round(R, 3)  # approx SO(3)
+        T = rt2tr(R, [3, 4, 5])
+
+        T = trnorm(T)
+        self.assertTrue(ishom(T, check=True))
+        nt.assert_almost_equal(T[:3, 3], [3, 4, 5])
+
     def test_tr2eul(self):
         eul = np.r_[0.1, 0.2, 0.3]
         R = eul2r(eul)
