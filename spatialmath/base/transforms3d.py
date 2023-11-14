@@ -3420,14 +3420,14 @@ if __name__ == "__main__":  # pragma: no cover
 
     import pathlib
 
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_transforms3d.py"
-        ).read()
-    )  # pylint: disable=exec-used
+    # exec(
+    #     open(
+    #         pathlib.Path(__file__).parent.parent.parent.absolute()
+    #         / "tests"
+    #         / "base"
+    #         / "test_transforms3d.py"
+    #     ).read()
+    # )  # pylint: disable=exec-used
 
     # exec(
     #     open(
