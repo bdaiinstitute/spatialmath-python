@@ -28,6 +28,7 @@ except ImportError:
 import spatialmath.base as smb
 from spatialmath.base.types import *
 from spatialmath.base.transformsNd import rt2tr
+from spatialmath.base.vectors import unitvec
 
 _eps = np.finfo(np.float64).eps
 
@@ -677,6 +678,72 @@ def trexp2(
         return smb.rot2(w[0])
     else:
         raise ValueError(" First argument must be SO(2), 1-vector, SE(2) or 3-vector")
+
+
+@overload  # pragma: no cover
+def trnorm2(R: SO2Array) -> SO2Array:
+    ...
+
+
+def trnorm2(T: SE2Array) -> SE2Array:
+    r"""
+    Normalize an SO(2) or SE(2) matrix
+
+    :param T: SE(2) or SO(2) matrix
+    :type T: ndarray(3,3) or ndarray(2,2)
+    :return: normalized SE(2) or SO(2) matrix
+    :rtype: ndarray(3,3) or ndarray(2,2)
+    :raises ValueError: bad arguments
+
+    - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation
+      matrix (2,2) which is *close* to the input matrix R (2,2).
+    - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous
+      transformation T (3,3) is normalised while the translational part is
+      unchanged.
+
+    The steps in normalization are:
+
+    #. If :math:`\mathbf{R} = [a, b]`
+    #. Form unit vectors :math:`\hat{b}
+    #. Form the orthogonal planar vector :math:`\hat{a} = [\hat{b}_y  -\hat{b}_x]`
+    #. Form the normalized SO(2) matrix :math:`\mathbf{R} = [\hat{a}, \hat{b}]`
+
+    .. runblock:: pycon
+
+        >>> from spatialmath.base import trnorm, troty
+        >>> from numpy import linalg
+        >>> T = trot2(45, 'deg', t=[3, 4])
+        >>> linalg.det(T[:2,:2]) - 1 # is a valid SO(3)
+        >>> T = T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T
+        >>> linalg.det(T[:2,:2]) - 1  # not quite a valid SE(2) anymore
+        >>> T = trnorm2(T)
+        >>> linalg.det(T[:2,:2]) - 1  # once more a valid SE(2)
+
+    .. note::
+
+        - Only the direction of a-vector (the z-axis) is unchanged.
+        - Used to prevent finite word length arithmetic causing transforms to
+          become 'unnormalized', ie. determinant :math:`\ne 1`.
+    """
+
+    if not ishom2(T) and not isrot2(T):
+        raise ValueError("expecting SO(2) or SE(2)")
+
+    a = T[:, 0]
+    b = T[:, 1]
+
+    b = unitvec(b)
+    # fmt: off
+    R = np.array([
+        [ b[1], b[0]], 
+        [-b[0], b[1]]
+    ])
+    # fmt: on
+
+    if ishom2(T):
+        return rt2tr(cast(SO2Array, R), T[:2, 2])
+    else:
+        return R
 
 
 @overload  # pragma: no cover
