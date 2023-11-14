@@ -509,6 +509,26 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(theta, 90)
         nt.assert_array_almost_equal(v, np.r_[0, 1, 0])
 
+        true_ang = 1.51
+        true_vec = np.array([0., 1., 0.])
+        eps = 1e-08
+
+        # show that tr2angvec works on true rotation matrix
+        R = SO3.Ry(true_ang)
+        ang, vec = t3d.tr2angvec(R.A, check=True)
+        nt.assert_equal(ang, true_ang)
+        nt.assert_equal(vec, true_vec)
+
+        # check a rotation matrix that should fail
+        badR = SO3.Ry(true_ang).A[:, :] + eps
+        with self.assertRaises(ValueError):
+            t3d.tr2angvec(badR, check=True)
+
+        # run without check
+        ang, vec = t3d.tr2angvec(badR, check=False)
+        nt.assert_almost_equal(ang, true_ang)
+        nt.assert_equal(vec, true_vec)
+
     def test_print(self):
         R = rotx(0.3) @ roty(0.4)
         s = trprint(R, file=None)
@@ -778,7 +798,6 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(
             x2tr(x, representation="exp"), transl(t) @ r2t(trexp(gamma))
         )
-
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
