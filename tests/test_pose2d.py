@@ -496,12 +496,16 @@ class TestSE2(unittest.TestCase):
         
         T1.printline()
         
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+    )
     def test_graphics(self):
         
         plt.close('all')
         T1 = SE2.Rand()
         T2 = SE2.Rand()
         
+
         T1.plot(block=False, dims=[-2,2])
         
         T1.animate(repeat=False, dims=[-2,2], nframes=10)
