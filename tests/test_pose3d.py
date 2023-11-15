@@ -1,6 +1,8 @@
 import numpy.testing as nt
 import matplotlib.pyplot as plt
 import unittest
+import sys
+import pytest
 
 """
 we will assume that the primitives rotx,trotx, etc. all work
@@ -271,7 +273,8 @@ class TestSO3(unittest.TestCase):
         s = R.printline(file=None)
         # self.assertIsInstance(s, str)
         # self.assertEqual(s.count('\n'), 2)
-        
+
+    @pytest.mark.skipif(sys.platform.startswith("Darwin"), reason="tkinter bug with mac")
     def test_plot(self):
         plt.close('all')
         
