@@ -25,7 +25,9 @@ class TestGraphics(unittest.TestCase):
     def test_plotvol3(self):
         plotvol3(5)
 
-    @pytest.mark.tkinter
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+    )
     def test_plot_point(self):
         plot_point((2, 3))
         plot_point(np.r_[2, 3])
