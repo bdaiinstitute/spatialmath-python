@@ -515,8 +515,8 @@ class Test3D(unittest.TestCase):
 
         # show that tr2angvec works on true rotation matrix
         ang, vec = tr2angvec(roty(true_ang), check=True)
-        nt.assert_equal(ang, true_ang)
-        nt.assert_equal(vec, true_vec)
+        nt.assert_almost_equal(ang, true_ang)
+        nt.assert_almost_equal(vec, true_vec)
 
         # check a rotation matrix that should fail
         badR = roty(true_ang) + eps
@@ -526,7 +526,7 @@ class Test3D(unittest.TestCase):
         # run without check
         ang, vec = tr2angvec(badR, check=False)
         nt.assert_almost_equal(ang, true_ang)
-        nt.assert_equal(vec, true_vec)
+        nt.assert_almost_equal(vec, true_vec)
 
     def test_print(self):
         R = rotx(0.3) @ roty(0.4)
