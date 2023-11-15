@@ -126,7 +126,7 @@ class Line3Test(unittest.TestCase):
         self.assertAlmostEqual(d, 2)
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plot(self):
         P = [2, 3, 7]

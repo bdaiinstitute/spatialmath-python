@@ -14,13 +14,13 @@ class TestGraphics(unittest.TestCase):
         plt.close("all")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plotvol2(self):
         plotvol2(5)
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plotvol3(self):
         plotvol3(5)
@@ -33,14 +33,14 @@ class TestGraphics(unittest.TestCase):
         plot_point((2, 3), "x", text="foo")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plot_text(self):
         plot_text((2, 3), "foo")
         plot_text(np.r_[2, 3], "foo")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plot_box(self):
         plot_box("r--", centre=(-2, -3), wh=(1, 1))
@@ -52,7 +52,7 @@ class TestGraphics(unittest.TestCase):
         plot_box(centre=(1, 2), wh=(2, 3))
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plot_circle(self):
         plot_circle(1, (0, 0), "r")  # red circle
@@ -60,7 +60,7 @@ class TestGraphics(unittest.TestCase):
         plot_circle(0.5, (0, 0), filled=True, color="y")  # yellow filled circle
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_ellipse(self):
         plot_ellipse(np.diag((1, 2)), (0, 0), "r")  # red ellipse
@@ -70,7 +70,7 @@ class TestGraphics(unittest.TestCase):
         )  # yellow filled ellipse
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plot_homline(self):
         plot_homline((1, 2, 3))
@@ -78,7 +78,7 @@ class TestGraphics(unittest.TestCase):
         plot_homline((1, -2, 3), "k--")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_cuboid(self):
         plot_cuboid((1, 2, 3), color="g")
@@ -86,14 +86,14 @@ class TestGraphics(unittest.TestCase):
         plot_cuboid((1, 2, 3), filled=True, color="y")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_sphere(self):
         plot_sphere(0.3, color="r")
         plot_sphere(1, centre=(1, 1, 1), filled=True, color="b")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_ellipsoid(self):
         plot_ellipsoid(np.diag((1, 2, 3)), color="r")  # red ellipsoid
@@ -102,7 +102,7 @@ class TestGraphics(unittest.TestCase):
         )  # yellow filled ellipsoid
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_cylinder(self):
         plot_cylinder(radius=0.2, centre=(0.5, 0.5, 0), height=[-0.2, 0.2])
@@ -116,7 +116,7 @@ class TestGraphics(unittest.TestCase):
         )
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_cone(self):
         plot_cone(radius=0.2, centre=(0.5, 0.5, 0), height=0.3)

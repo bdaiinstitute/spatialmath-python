@@ -274,7 +274,7 @@ class TestSO3(unittest.TestCase):
         # self.assertIsInstance(s, str)
         # self.assertEqual(s.count('\n'), 2)
 
-    @pytest.mark.skipif(sys.platform.startswith("Darwin"), reason="tkinter bug with mac")
+    @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="tkinter bug with mac")
     def test_plot(self):
         plt.close('all')
         

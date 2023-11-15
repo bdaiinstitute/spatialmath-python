@@ -262,7 +262,7 @@ class Test2D(unittest.TestCase):
         )
 
     @pytest.mark.skipif(
-        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
     )
     def test_plot(self):
         plt.figure()
