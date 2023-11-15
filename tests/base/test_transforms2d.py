@@ -13,6 +13,8 @@ import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
+import pytest
+import sys
 
 from spatialmath.base.transforms2d import *
 from spatialmath.base.transformsNd import (
@@ -259,6 +261,9 @@ class Test2D(unittest.TestCase):
             trinterp2(start=None, end=T1, s=0.5), xyt2tr([0.5, 1, 0.15])
         )
 
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+    )
     def test_plot(self):
         plt.figure()
         trplot2(transl2(1, 2), block=False, frame="A", rviz=True, width=1)

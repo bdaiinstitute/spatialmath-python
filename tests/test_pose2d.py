@@ -1,6 +1,8 @@
 import numpy.testing as nt
 import matplotlib.pyplot as plt
 import unittest
+import sys
+import pytest
 
 """
 we will assume that the primitives rotx,trotx, etc. all work
@@ -227,6 +229,7 @@ class TestSO2(unittest.TestCase):
         # self.assertIsInstance(s, str)
         # self.assertEqual(s.count('\n'), 2)
         
+    @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="tkinter bug with mac")
     def test_plot(self):
         plt.close('all')
         
@@ -493,12 +496,16 @@ class TestSE2(unittest.TestCase):
         
         T1.printline()
         
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+    )
     def test_graphics(self):
         
         plt.close('all')
         T1 = SE2.Rand()
         T2 = SE2.Rand()
         
+
         T1.plot(block=False, dims=[-2,2])
         
         T1.animate(repeat=False, dims=[-2,2], nframes=10)

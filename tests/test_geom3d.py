@@ -12,6 +12,8 @@ from spatialmath.pose3d import SE3
 import unittest
 import numpy.testing as nt
 import spatialmath.base as base
+import pytest
+import sys
 
 
 class Line3Test(unittest.TestCase):
@@ -123,6 +125,9 @@ class Line3Test(unittest.TestCase):
         nt.assert_array_almost_equal(p, [5, 1, 2])
         self.assertAlmostEqual(d, 2)
 
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+    )
     def test_plot(self):
         P = [2, 3, 7]
         Q = [2, 1, 0]

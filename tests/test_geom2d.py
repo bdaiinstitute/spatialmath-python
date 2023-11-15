@@ -10,6 +10,8 @@ from spatialmath.geom2d import *
 from spatialmath.pose2d import SE2
 
 import unittest
+import pytest
+import sys
 import numpy.testing as nt
 import spatialmath.base as smb
 
@@ -85,6 +87,9 @@ class Polygon2Test(unittest.TestCase):
         l = Line2.Join((-10, 1.1), (10, 1.1))
         self.assertFalse(p.intersects(l))
 
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+    )
     def test_plot(self):
         p = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))
         p.plot()
