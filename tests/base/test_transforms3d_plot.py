@@ -14,6 +14,8 @@ import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
+import pytest
+import sys
 
 from spatialmath.base.transforms3d import *
 from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr
@@ -22,6 +24,9 @@ import matplotlib.pyplot as plt
 
 
 class Test3D(unittest.TestCase):
+    @pytest.mark.skipif(
+        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+    )
     def test_plot(self):
         plt.figure()
         # test options
@@ -65,6 +70,9 @@ class Test3D(unittest.TestCase):
 
         plt.close("all")
 
+    @pytest.mark.skipif(
+        sys.platform.startswith("Darwin"), reason="tkinter bug with mac"
+    )
     def test_animate(self):
         tranimate(transl(1, 2, 3), repeat=False, wait=True)
 
