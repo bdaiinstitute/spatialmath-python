@@ -1329,7 +1329,7 @@ def trlog(
     :seealso: :func:`~trexp` :func:`~spatialmath.base.transformsNd.vex` :func:`~spatialmath.base.transformsNd.vexa`
     """
 
-    if ishom(T, check=check, tol=10):
+    if ishom(T, check=check, tol=tol):
         # SE(3) matrix
 
         [R, t] = tr2rt(T)
@@ -1357,7 +1357,7 @@ def trlog(
             else:
                 return Ab2M(S, v)
 
-    elif isrot(T, check=check):
+    elif isrot(T, check=check, tol=tol):
         # deal with rotation matrix
         R = T
         if abs(np.trace(R) + 1) < tol * _eps:
