@@ -88,7 +88,8 @@ class Polygon2Test(unittest.TestCase):
         self.assertFalse(p.intersects(l))
 
     @pytest.mark.skipif(
-        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
+        reason="tkinter bug with mac",
     )
     def test_plot(self):
         p = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))

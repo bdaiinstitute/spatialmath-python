@@ -25,7 +25,8 @@ import matplotlib.pyplot as plt
 
 class Test3D(unittest.TestCase):
     @pytest.mark.skipif(
-        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
+        reason="tkinter bug with mac",
     )
     def test_plot(self):
         plt.figure()
@@ -71,7 +72,8 @@ class Test3D(unittest.TestCase):
         plt.close("all")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("darwin"), reason="tkinter bug with mac"
+        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
+        reason="tkinter bug with mac",
     )
     def test_animate(self):
         tranimate(transl(1, 2, 3), repeat=False, wait=True)
