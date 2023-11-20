@@ -14,6 +14,7 @@ from spatialmath.base import *
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.twist import BaseTwist
 
+
 def array_compare(x, y):
     if isinstance(x, BasePoseMatrix):
         x = x.A
@@ -29,10 +30,9 @@ def array_compare(x, y):
 class TestSO3(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
-        plt.close('all')
+        plt.close("all")
 
     def test_constructor(self):
-
         # null constructor
         R = SO3()
         nt.assert_equal(len(R), 1)
@@ -84,7 +84,6 @@ class TestSO3(unittest.TestCase):
         array_compare(R2, rotx(pi / 2))
 
     def test_constructor_Eul(self):
-
         R = SO3.Eul([0.1, 0.2, 0.3])
         nt.assert_equal(len(R), 1)
         array_compare(R, eul2r([0.1, 0.2, 0.3]))
@@ -100,108 +99,100 @@ class TestSO3(unittest.TestCase):
         array_compare(R, eul2r([0.1, 0.2, 0.3]))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.Eul([10, 20, 30], unit='deg')
+        R = SO3.Eul([10, 20, 30], unit="deg")
         nt.assert_equal(len(R), 1)
-        array_compare(R, eul2r([10, 20, 30], unit='deg'))
+        array_compare(R, eul2r([10, 20, 30], unit="deg"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.Eul(10, 20, 30, unit='deg')
+        R = SO3.Eul(10, 20, 30, unit="deg")
         nt.assert_equal(len(R), 1)
-        array_compare(R, eul2r([10, 20, 30], unit='deg'))
+        array_compare(R, eul2r([10, 20, 30], unit="deg"))
         self.assertIsInstance(R, SO3)
 
         # matrix input
 
-        angles = np.array([
-            [0.1, 0.2, 0.3],
-            [0.2, 0.3, 0.4],
-            [0.3, 0.4, 0.5],
-            [0.4, 0.5, 0.6]
-        ])
+        angles = np.array(
+            [[0.1, 0.2, 0.3], [0.2, 0.3, 0.4], [0.3, 0.4, 0.5], [0.4, 0.5, 0.6]]
+        )
         R = SO3.Eul(angles)
         self.assertIsInstance(R, SO3)
         nt.assert_equal(len(R), 4)
         for i in range(4):
-            array_compare(R[i], eul2r(angles[i,:]))
+            array_compare(R[i], eul2r(angles[i, :]))
 
         angles *= 10
-        R = SO3.Eul(angles, unit='deg')
+        R = SO3.Eul(angles, unit="deg")
         self.assertIsInstance(R, SO3)
         nt.assert_equal(len(R), 4)
         for i in range(4):
-            array_compare(R[i], eul2r(angles[i,:], unit='deg'))
-
+            array_compare(R[i], eul2r(angles[i, :], unit="deg"))
 
     def test_constructor_RPY(self):
-
-        R = SO3.RPY(0.1, 0.2, 0.3, order='zyx')
+        R = SO3.RPY(0.1, 0.2, 0.3, order="zyx")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="zyx"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.RPY(10, 20, 30, unit='deg', order='zyx')
+        R = SO3.RPY(10, 20, 30, unit="deg", order="zyx")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([10, 20, 30], order='zyx', unit='deg'))
+        array_compare(R, rpy2r([10, 20, 30], order="zyx", unit="deg"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.RPY([0.1, 0.2, 0.3], order='zyx')
+        R = SO3.RPY([0.1, 0.2, 0.3], order="zyx")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="zyx"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.RPY(np.r_[0.1, 0.2, 0.3], order='zyx')
+        R = SO3.RPY(np.r_[0.1, 0.2, 0.3], order="zyx")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="zyx"))
         self.assertIsInstance(R, SO3)
 
         # check default
         R = SO3.RPY([0.1, 0.2, 0.3])
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='zyx'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="zyx"))
         self.assertIsInstance(R, SO3)
 
         # XYZ order
 
-        R = SO3.RPY(0.1, 0.2, 0.3, order='xyz')
+        R = SO3.RPY(0.1, 0.2, 0.3, order="xyz")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="xyz"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.RPY(10, 20, 30, unit='deg', order='xyz')
+        R = SO3.RPY(10, 20, 30, unit="deg", order="xyz")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([10, 20, 30], order='xyz', unit='deg'))
+        array_compare(R, rpy2r([10, 20, 30], order="xyz", unit="deg"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.RPY([0.1, 0.2, 0.3], order='xyz')
+        R = SO3.RPY([0.1, 0.2, 0.3], order="xyz")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="xyz"))
         self.assertIsInstance(R, SO3)
 
-        R = SO3.RPY(np.r_[0.1, 0.2, 0.3], order='xyz')
+        R = SO3.RPY(np.r_[0.1, 0.2, 0.3], order="xyz")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2r([0.1, 0.2, 0.3], order='xyz'))
+        array_compare(R, rpy2r([0.1, 0.2, 0.3], order="xyz"))
         self.assertIsInstance(R, SO3)
 
         # matrix input
 
-        angles = np.array([
-            [0.1, 0.2, 0.3],
-            [0.2, 0.3, 0.4],
-            [0.3, 0.4, 0.5],
-            [0.4, 0.5, 0.6]
-        ])
-        R = SO3.RPY(angles, order='zyx')
+        angles = np.array(
+            [[0.1, 0.2, 0.3], [0.2, 0.3, 0.4], [0.3, 0.4, 0.5], [0.4, 0.5, 0.6]]
+        )
+        R = SO3.RPY(angles, order="zyx")
         self.assertIsInstance(R, SO3)
         nt.assert_equal(len(R), 4)
         for i in range(4):
-            array_compare(R[i], rpy2r(angles[i,:], order='zyx'))
+            array_compare(R[i], rpy2r(angles[i, :], order="zyx"))
 
         angles *= 10
-        R = SO3.RPY(angles, unit='deg', order='zyx')
+        R = SO3.RPY(angles, unit="deg", order="zyx")
         self.assertIsInstance(R, SO3)
         nt.assert_equal(len(R), 4)
         for i in range(4):
-            array_compare(R[i], rpy2r(angles[i,:], unit='deg', order='zyx'))
+            array_compare(R[i], rpy2r(angles[i, :], unit="deg", order="zyx"))
 
     def test_constructor_AngVec(self):
         # angvec
@@ -255,16 +246,15 @@ class TestSO3(unittest.TestCase):
 
         s = str(R)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 3)
+        self.assertEqual(s.count("\n"), 3)
 
         s = repr(R)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 2)
+        self.assertEqual(s.count("\n"), 2)
 
     def test_printline(self):
-        
-        R = SO3.Rx( 0.3)
-        
+        R = SO3.Rx(0.3)
+
         R.printline()
         # s = R.printline(file=None)
         # self.assertIsInstance(s, str)
@@ -274,17 +264,20 @@ class TestSO3(unittest.TestCase):
         # self.assertIsInstance(s, str)
         # self.assertEqual(s.count('\n'), 2)
 
-    @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="tkinter bug with mac")
+    @pytest.mark.skipif(
+        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
+        reason="tkinter bug with mac",
+    )
     def test_plot(self):
-        plt.close('all')
-        
-        R = SO3.Rx( 0.3)
+        plt.close("all")
+
+        R = SO3.Rx(0.3)
         R.plot(block=False)
-        
+
         R2 = SO3.Rx(0.6)
         # R.animate()
         # R.animate(start=R.inv())
-        
+
     def test_listpowers(self):
         R = SO3()
         R1 = SO3.Rx(0.2)
@@ -314,7 +307,6 @@ class TestSO3(unittest.TestCase):
         array_compare(R[2], rotx(0.3))
 
     def test_tests(self):
-
         R = SO3()
 
         self.assertEqual(R.isrot(), True)
@@ -323,7 +315,6 @@ class TestSO3(unittest.TestCase):
         self.assertEqual(R.ishom2(), False)
 
     def test_properties(self):
-
         R = SO3()
 
         self.assertEqual(R.isSO, True)
@@ -363,8 +354,6 @@ class TestSO3(unittest.TestCase):
         # self.assertNotIsInstance(a, SO3)
         # array_compare(a, np.array([ [2,0,0], [0,2,0], [0,0,2]]))
         #  this invokes the __add__ method for numpy
-
-
 
         # difference
         R = SO3()
@@ -454,26 +443,23 @@ class TestSO3(unittest.TestCase):
 
         # power
 
-        R = SO3.Rx(pi/2)
+        R = SO3.Rx(pi / 2)
         R = R**2
         array_compare(R, SO3.Rx(pi))
 
-        R = SO3.Rx(pi/2)
+        R = SO3.Rx(pi / 2)
         R **= 2
         array_compare(R, SO3.Rx(pi))
 
-        R = SO3.Rx(pi/4)
-        R = R**(-2)
-        array_compare(R, SO3.Rx(-pi/2))
+        R = SO3.Rx(pi / 4)
+        R = R ** (-2)
+        array_compare(R, SO3.Rx(-pi / 2))
 
-        R = SO3.Rx(pi/4)
+        R = SO3.Rx(pi / 4)
         R **= -2
-        array_compare(R, SO3.Rx(-pi/2))
-
-
+        array_compare(R, SO3.Rx(-pi / 2))
 
     def test_arith_vect(self):
-
         rx = SO3.Rx(pi / 2)
         ry = SO3.Ry(pi / 2)
         rz = SO3.Rz(pi / 2)
@@ -655,7 +641,6 @@ class TestSO3(unittest.TestCase):
         array_compare(a[1], ry + 1)
         array_compare(a[2], rz + 1)
 
-
         # subtract
         R = SO3([rx, ry, rz])
         a = R - rx
@@ -679,8 +664,6 @@ class TestSO3(unittest.TestCase):
         array_compare(a[1], ry - ry)
         array_compare(a[2], rz - rz)
 
-
-
     def test_functions(self):
         # inv
         # .T
@@ -688,9 +671,9 @@ class TestSO3(unittest.TestCase):
         # conversion to SE2
         poseSE3 = SE3.Tx(3.3) * SE3.Rz(1.5)
         poseSE2 = poseSE3.yaw_SE2()
-        nt.assert_almost_equal(poseSE3.R[0:2,0:2], poseSE2.R[0:2,0:2])
-        nt.assert_equal(poseSE3.x , poseSE2.x)
-        nt.assert_equal(poseSE3.y , poseSE2.y)
+        nt.assert_almost_equal(poseSE3.R[0:2, 0:2], poseSE2.R[0:2, 0:2])
+        nt.assert_equal(poseSE3.x, poseSE2.x)
+        nt.assert_equal(poseSE3.y, poseSE2.y)
 
         posesSE3 = SE3([poseSE3, poseSE3])
         posesSE2 = posesSE3.yaw_SE2()
@@ -715,14 +698,13 @@ class TestSO3(unittest.TestCase):
 
 # ============================== SE3 =====================================#
 
-class TestSE3(unittest.TestCase):
 
+class TestSE3(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
-        plt.close('all')
+        plt.close("all")
 
     def test_constructor(self):
-
         # null constructor
         R = SE3()
         nt.assert_equal(len(R), 1)
@@ -778,9 +760,9 @@ class TestSE3(unittest.TestCase):
         array_compare(R, eul2tr([0.1, 0.2, 0.3]))
         self.assertIsInstance(R, SE3)
 
-        R = SE3.Eul([10, 20, 30], unit='deg')
+        R = SE3.Eul([10, 20, 30], unit="deg")
         nt.assert_equal(len(R), 1)
-        array_compare(R, eul2tr([10, 20, 30], unit='deg'))
+        array_compare(R, eul2tr([10, 20, 30], unit="deg"))
         self.assertIsInstance(R, SE3)
 
         R = SE3.RPY([0.1, 0.2, 0.3])
@@ -793,14 +775,14 @@ class TestSE3(unittest.TestCase):
         array_compare(R, rpy2tr([0.1, 0.2, 0.3]))
         self.assertIsInstance(R, SE3)
 
-        R = SE3.RPY([10, 20, 30], unit='deg')
+        R = SE3.RPY([10, 20, 30], unit="deg")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2tr([10, 20, 30], unit='deg'))
+        array_compare(R, rpy2tr([10, 20, 30], unit="deg"))
         self.assertIsInstance(R, SE3)
 
-        R = SE3.RPY([0.1, 0.2, 0.3], order='xyz')
+        R = SE3.RPY([0.1, 0.2, 0.3], order="xyz")
         nt.assert_equal(len(R), 1)
-        array_compare(R, rpy2tr([0.1, 0.2, 0.3], order='xyz'))
+        array_compare(R, rpy2tr([0.1, 0.2, 0.3], order="xyz"))
         self.assertIsInstance(R, SE3)
 
         # angvec
@@ -831,7 +813,7 @@ class TestSE3(unittest.TestCase):
         t = T.t
         T = SE3.Rt(R, t)
         self.assertIsInstance(T, SE3)
-        self.assertEqual(T.A.shape, (4,4))
+        self.assertEqual(T.A.shape, (4, 4))
 
         nt.assert_equal(T.R, R)
         nt.assert_equal(T.t, t)
@@ -847,9 +829,9 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(TT.z.shape, desired_shape)
 
         ones = np.ones(desired_shape)
-        nt.assert_equal(TT.x, ones*t[0])
-        nt.assert_equal(TT.y, ones*t[1])
-        nt.assert_equal(TT.z, ones*t[2])
+        nt.assert_equal(TT.x, ones * t[0])
+        nt.assert_equal(TT.y, ones * t[1])
+        nt.assert_equal(TT.z, ones * t[2])
 
         # copy constructor
         R = SE3.Rx(pi / 2)
@@ -867,7 +849,7 @@ class TestSE3(unittest.TestCase):
         T = SE3(SE2(1, 2, 0.4))
         nt.assert_equal(len(T), 1)
         self.assertIsInstance(T, SE3)
-        self.assertEqual(T.A.shape, (4,4))
+        self.assertEqual(T.A.shape, (4, 4))
         nt.assert_equal(T.t, [1, 2, 0])
 
         # Bad number of arguments
@@ -909,7 +891,6 @@ class TestSE3(unittest.TestCase):
         array_compare(R[2], trotx(0.3))
 
     def test_tests(self):
-
         R = SE3()
 
         self.assertEqual(R.isrot(), False)
@@ -918,7 +899,6 @@ class TestSE3(unittest.TestCase):
         self.assertEqual(R.ishom2(), False)
 
     def test_properties(self):
-
         R = SE3()
 
         self.assertEqual(R.isSO, False)
@@ -939,12 +919,8 @@ class TestSE3(unittest.TestCase):
         nt.assert_allclose(pass_by_val.data[0], np.eye(4))
         nt.assert_allclose(pass_by_ref.data[0], mutable_array)
         nt.assert_raises(
-            AssertionError,
-            nt.assert_allclose,
-            pass_by_val.data[0],
-            pass_by_ref.data[0]
-            )
-
+            AssertionError, nt.assert_allclose, pass_by_val.data[0], pass_by_ref.data[0]
+        )
 
     def test_arith(self):
         T = SE3(1, 2, 3)
@@ -952,11 +928,15 @@ class TestSE3(unittest.TestCase):
         # sum
         a = T + T
         self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[2, 0, 0, 2], [0, 2, 0, 4], [0, 0, 2, 6], [0, 0, 0, 2]]))
+        array_compare(
+            a, np.array([[2, 0, 0, 2], [0, 2, 0, 4], [0, 0, 2, 6], [0, 0, 0, 2]])
+        )
 
         a = T + 1
         self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[2, 1, 1, 2], [1, 2, 1, 3], [1, 1, 2, 4], [1, 1, 1, 2]]))
+        array_compare(
+            a, np.array([[2, 1, 1, 2], [1, 2, 1, 3], [1, 1, 2, 4], [1, 1, 1, 2]])
+        )
 
         # a = 1 + T
         # self.assertNotIsInstance(a, SE3)
@@ -964,7 +944,9 @@ class TestSE3(unittest.TestCase):
 
         a = T + np.eye(4)
         self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[2, 0, 0, 1], [0, 2, 0, 2], [0, 0, 2, 3], [0, 0, 0, 2]]))
+        array_compare(
+            a, np.array([[2, 0, 0, 1], [0, 2, 0, 2], [0, 0, 2, 3], [0, 0, 0, 2]])
+        )
 
         # a =  np.eye(3) + T
         # self.assertNotIsInstance(a, SE3)
@@ -980,7 +962,10 @@ class TestSE3(unittest.TestCase):
 
         a = T - 1
         self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[0, -1, -1, 0], [-1, 0, -1, 1], [-1, -1, 0, 2], [-1, -1, -1, 0]]))
+        array_compare(
+            a,
+            np.array([[0, -1, -1, 0], [-1, 0, -1, 1], [-1, -1, 0, 2], [-1, -1, -1, 0]]),
+        )
 
         # a = 1 - T
         # self.assertNotIsInstance(a, SE3)
@@ -988,7 +973,9 @@ class TestSE3(unittest.TestCase):
 
         a = T - np.eye(4)
         self.assertNotIsInstance(a, SE3)
-        array_compare(a, np.array([[0, 0, 0, 1], [0, 0, 0, 2], [0, 0, 0, 3], [0, 0, 0, 0]]))
+        array_compare(
+            a, np.array([[0, 0, 0, 1], [0, 0, 0, 2], [0, 0, 0, 3], [0, 0, 0, 0]])
+        )
 
         # a =  np.eye(3) - T
         # self.assertNotIsInstance(a, SE3)
@@ -1017,7 +1004,9 @@ class TestSE3(unittest.TestCase):
         T = SE3(1, 2, 3)
         T *= SE3.Ry(pi / 2)
         self.assertIsInstance(T, SE3)
-        array_compare(T, np.array([[0, 0, 1, 1], [0, 1, 0, 2], [-1, 0, 0, 3], [0, 0, 0, 1]]))
+        array_compare(
+            T, np.array([[0, 0, 1, 1], [0, 1, 0, 2], [-1, 0, 0, 3], [0, 0, 0, 1]])
+        )
 
         T = SE3()
         T *= 2
@@ -1060,7 +1049,6 @@ class TestSE3(unittest.TestCase):
         array_compare(a, troty(0.3) / 2)
 
     def test_arith_vect(self):
-
         rx = SE3.Rx(pi / 2)
         ry = SE3.Ry(pi / 2)
         rz = SE3.Rz(pi / 2)
@@ -1272,7 +1260,6 @@ class TestSE3(unittest.TestCase):
         array_compare(a[1], ry - 1)
         array_compare(a[2], rz - 1)
 
-
     def test_functions(self):
         # inv
         # .T
@@ -1283,7 +1270,7 @@ class TestSE3(unittest.TestCase):
         # .T
         pass
 
+
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
-    
+if __name__ == "__main__":
     unittest.main()
