@@ -1101,7 +1101,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">isrot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument is not SO(3)&quot;</span><span class="p">)</span>
 
-    <span class="n">v</span> <span class="o">=</span> <span class="n">vex</span><span class="p">(</span><span class="n">trlog</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SO3Array</span><span class="p">,</span> <span class="n">R</span><span class="p">)))</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">vex</span><span class="p">(</span><span class="n">trlog</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SO3Array</span><span class="p">,</span> <span class="n">R</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">))</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -1454,7 +1454,9 @@
                 <span class="k">return</span> <span class="n">skew</span><span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># general case</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="c1"># min for inaccuracies near identity yielding trace &gt; 3</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
             <span class="n">st</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">st</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
@@ -1609,13 +1611,17 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; First argument must be SO(3), 3-vector, SE(3) or 6-vector&quot;</span><span class="p">)</span></div>
 
 
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
 <div class="viewcode-block" id="trnorm"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trnorm">[docs]</a><span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Normalize an SO(3) or SE(3) matrix</span>
 
-<span class="sd">    :param R: SE(3) or SO(3) matrix</span>
-<span class="sd">    :type R: ndarray(4,4) or ndarray(3,3)</span>
-<span class="sd">    :param T1: second SE(3) matrix</span>
+<span class="sd">    :param T: SE(3) or SO(3) matrix</span>
+<span class="sd">    :type T: ndarray(4,4) or ndarray(3,3)</span>
 <span class="sd">    :return: normalized SE(3) or SO(3) matrix</span>
 <span class="sd">    :rtype: ndarray(4,4) or ndarray(3,3)</span>
 <span class="sd">    :raises ValueError: bad arguments</span>
@@ -1641,9 +1647,9 @@
 <span class="sd">        &gt;&gt;&gt; T = troty(45, &#39;deg&#39;, t=[3, 4, 5])</span>
 <span class="sd">        &gt;&gt;&gt; linalg.det(T[:3,:3]) - 1 # is a valid SO(3)</span>
 <span class="sd">        &gt;&gt;&gt; T = T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T</span>
-<span class="sd">        &gt;&gt;&gt; linalg.det(T[:3,:3]) - 1  # not quite a valid SO(3) anymore</span>
+<span class="sd">        &gt;&gt;&gt; linalg.det(T[:3,:3]) - 1  # not quite a valid SE(3) anymore</span>
 <span class="sd">        &gt;&gt;&gt; T = trnorm(T)</span>
-<span class="sd">        &gt;&gt;&gt; linalg.det(T[:3,:3]) - 1  # once more a valid SO(3)</span>
+<span class="sd">        &gt;&gt;&gt; linalg.det(T[:3,:3]) - 1  # once more a valid SE(3)</span>
 
 <span class="sd">    .. note::</span>
 
@@ -3536,7 +3542,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Jun-2023.
+      <span class="lastupdated">Last updated on 20-Nov-2023.
       </span></p>
   </div>
 

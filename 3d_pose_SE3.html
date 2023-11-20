@@ -262,6 +262,29 @@ a rotation of <code class="docutils literal notranslate"><span class="pre">θ</s
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="spatialmath.pose3d.SE3.CopyFrom">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CopyFrom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.CopyFrom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.CopyFrom" title="Permalink to this definition"></a></dt>
+<dd><p>Create an SE(3) from a 4x4 numpy array that is passed by value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>ndarray</em><em>(</em><em>4</em><em>, </em><em>4</em><em>)</em>) – homogeneous transformation</p></li>
+<li><p><strong>check</strong> (<em>bool</em><em>, </em><em>optional</em>) – check rotation validity, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – bad rotation matrix, bad transformation matrix</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>SE(3) matrix representing that transformation</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>SE3 instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.Delta">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spatialmath/pose3d.html#SE3.Delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spatialmath.pose3d.SE3.Delta" title="Permalink to this definition"></a></dt>
 <dd><p>Create SE(3) from differential motion</p>
@@ -595,13 +618,13 @@ poses.</p></li>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">SE3([</span>
-<span class="go">array([[ 0.4422, -0.8571,  0.2645, -0.8883],</span>
-<span class="go">       [ 0.8529,  0.3105, -0.4196, -0.892 ],</span>
-<span class="go">       [ 0.2775,  0.4111,  0.8683, -0.1344],</span>
+<span class="go">array([[ 0.4597, -0.4803,  0.747 , -0.2775],</span>
+<span class="go">       [-0.8851, -0.3168,  0.3409,  0.4846],</span>
+<span class="go">       [ 0.0729, -0.8179, -0.5707,  0.5098],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]),</span>
-<span class="go">array([[ 0.7329, -0.1443, -0.6649, -0.9722],</span>
-<span class="go">       [-0.5914,  0.348 , -0.7274,  0.6359],</span>
-<span class="go">       [ 0.3363,  0.9263,  0.1697,  0.5558],</span>
+<span class="go">array([[-0.361 ,  0.8648,  0.349 ,  0.5746],</span>
+<span class="go">       [ 0.5957, -0.0741,  0.7998, -0.817 ],</span>
+<span class="go">       [ 0.7175,  0.4967, -0.4884,  0.443 ],</span>
 <span class="go">       [ 0.    ,  0.    ,  0.    ,  1.    ]]) ])</span>
 </pre></div>
 </div>
@@ -857,8 +880,10 @@ N elements whose translation is defined by the rows of <code class="docutils lit
 <p>Create a rotation by defining the direction of two of the new
 axes in terms of the old axes.  Axes are denoted by strings <code class="docutils literal notranslate"><span class="pre">&quot;x&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;y&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;z&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;-x&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;-y&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;-z&quot;</span></code>.</p>
-<p>The directions can also be specified by 3-element vectors, but these
-must be orthogonal.</p>
+<p>The directions can also be specified by 3-element vectors. If the vectors are not orthogonal,
+they will orthogonalized w.r.t. the first available dimension. I.e. if x is available, it will be
+normalized and the remaining vector will be orthogonalized w.r.t. x, else, y will be normalized
+and z will be orthogonalized w.r.t. y.</p>
 <p>To create a rotation where the new frame has its x-axis in -z-direction
 of the previous frame, and its z-axis in the x-direction of the previous
 frame is:</p>
@@ -2442,7 +2467,7 @@ In Python use <code class="docutils literal notranslate"><span class="pre">isins
 <dd><p>Test if matrix is a valid SE(3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – matrix to test</p>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – matrix to test</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the matrix is 4x4 and a valid element of SE(3), ie. it
@@ -2599,7 +2624,7 @@ become ‘unnormalized’.</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Seealso</dt>
-<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trnorm" title="spatialmath.base.transforms3d.trnorm"><code class="xref py py-func docutils literal notranslate"><span class="pre">trnorm()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">trnorm2()</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="func_3d.html#spatialmath.base.transforms3d.trnorm" title="spatialmath.base.transforms3d.trnorm"><code class="xref py py-func docutils literal notranslate"><span class="pre">trnorm()</span></code></a>, <a class="reference internal" href="func_2d.html#spatialmath.base.transforms2d.trnorm2" title="spatialmath.base.transforms2d.trnorm2"><code class="xref py py-func docutils literal notranslate"><span class="pre">trnorm2()</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3093,7 +3118,7 @@ to the optic axis and x-axis parallel to the pixel rows.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.A">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.A" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing._generic_alias.ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.A" title="Permalink to this definition"></a></dt>
 <dd><p>Array value of an instance (BasePoseList superclass method)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -3176,7 +3201,7 @@ rotation matrix is <code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.a">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.24)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.a" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.26)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.a" title="Permalink to this definition"></a></dt>
 <dd><p>Approach vector of SO(3) or SE(3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -3250,7 +3275,7 @@ example:</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.n">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.24)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.n" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.26)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.n" title="Permalink to this definition"></a></dt>
 <dd><p>Normal vector of SO(3) or SE(3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -3267,7 +3292,7 @@ this pose.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.o">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">o</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.24)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.o" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">o</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.26)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.o" title="Permalink to this definition"></a></dt>
 <dd><p>Orientation vector of SO(3) or SE(3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -3299,14 +3324,14 @@ defined by this pose.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="spatialmath.pose3d.SE3.t">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.24)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.t" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">t</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.26)"><span class="pre">numpy.dtype</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.floating" title="(in NumPy v1.26)"><span class="pre">numpy.floating</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#spatialmath.pose3d.SE3.t" title="Permalink to this definition"></a></dt>
 <dd><p>Translational component of SE(3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>translational component of SE(3)</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">x.t</span></code> is the translational component of <code class="docutils literal notranslate"><span class="pre">x</span></code> as an array with
@@ -3435,7 +3460,7 @@ shape (3,). If <code class="docutils literal notranslate"><span class="pre">len(
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Jun-2023.
+      <span class="lastupdated">Last updated on 20-Nov-2023.
       </span></p>
   </div>
 

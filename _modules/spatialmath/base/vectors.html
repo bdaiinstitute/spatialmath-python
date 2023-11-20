@@ -725,7 +725,11 @@
         <span class="n">b</span> <span class="o">=</span> <span class="n">getvector</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>  <span class="c1"># cannot use -= here, numpy wont broadcast</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span></div>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">y</span></div>
 
 
 <div class="viewcode-block" id="angle_std"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.angle_std">[docs]</a><span class="k">def</span> <span class="nf">angle_std</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -867,6 +871,40 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="project"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.project">[docs]</a><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="n">v1</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">v2</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike3</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Projects vector v1 onto v2. Returns a vector parallel to v2.</span>
+
+<span class="sd">    :param v1: vector to be projected</span>
+<span class="sd">    :type v1: array_like(n)</span>
+<span class="sd">    :param v2: vector to be projected onto</span>
+<span class="sd">    :type v2: array_like(n)</span>
+<span class="sd">    :return: vector projection of v1 onto v2 (parrallel to v2)</span>
+<span class="sd">    :rtype: ndarray(n)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v2</span></div>
+
+
+<div class="viewcode-block" id="orthogonalize"><a class="viewcode-back" href="../../../func_vector.html#spatialmath.base.vectors.orthogonalize">[docs]</a><span class="k">def</span> <span class="nf">orthogonalize</span><span class="p">(</span><span class="n">v1</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">v2</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike3</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Orthoginalizes vector v1 with respect to v2 with minimum rotation.</span>
+<span class="sd">    Returns a the nearest vector to v1 that is orthoginal to v2.</span>
+
+<span class="sd">    :param v1: vector to be orthoginalized</span>
+<span class="sd">    :type v1: array_like(n)</span>
+<span class="sd">    :param v2: vector that returned vector will be orthoginal to</span>
+<span class="sd">    :type v2: array_like(n)</span>
+<span class="sd">    :param normalize: whether to normalize the output vector</span>
+<span class="sd">    :type normalize: bool</span>
+<span class="sd">    :return: nearest vector to v1 that is orthoginal to v2</span>
+<span class="sd">    :rtype: ndarray(n)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v_orth</span> <span class="o">=</span> <span class="n">v1</span> <span class="o">-</span> <span class="n">project</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
+        <span class="n">v_orth</span> <span class="o">=</span> <span class="n">v_orth</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v_orth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v_orth</span></div>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span> <span class="nn">pathlib</span>
 
@@ -888,7 +926,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Jun-2023.
+      <span class="lastupdated">Last updated on 20-Nov-2023.
       </span></p>
   </div>
 

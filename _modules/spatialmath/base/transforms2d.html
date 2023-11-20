@@ -106,6 +106,7 @@
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">smb</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.transformsNd</span> <span class="kn">import</span> <span class="n">rt2tr</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.vectors</span> <span class="kn">import</span> <span class="n">unitvec</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -755,6 +756,72 @@
         <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">rot2</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot; First argument must be SO(2), 1-vector, SE(2) or 3-vector&quot;</span><span class="p">)</span></div>
+
+
+<span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
+<span class="k">def</span> <span class="nf">trnorm2</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">SO2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO2Array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+
+<div class="viewcode-block" id="trnorm2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trnorm2">[docs]</a><span class="k">def</span> <span class="nf">trnorm2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize an SO(2) or SE(2) matrix</span>
+
+<span class="sd">    :param T: SE(2) or SO(2) matrix</span>
+<span class="sd">    :type T: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :return: normalized SE(2) or SO(2) matrix</span>
+<span class="sd">    :rtype: ndarray(3,3) or ndarray(2,2)</span>
+<span class="sd">    :raises ValueError: bad arguments</span>
+
+<span class="sd">    - ``trnorm(R)`` is guaranteed to be a proper orthogonal matrix rotation</span>
+<span class="sd">      matrix (2,2) which is *close* to the input matrix R (2,2).</span>
+<span class="sd">    - ``trnorm(T)`` as above but the rotational submatrix of the homogeneous</span>
+<span class="sd">      transformation T (3,3) is normalised while the translational part is</span>
+<span class="sd">      unchanged.</span>
+
+<span class="sd">    The steps in normalization are:</span>
+
+<span class="sd">    #. If :math:`\mathbf{R} = [a, b]`</span>
+<span class="sd">    #. Form unit vectors :math:`\hat{b}</span>
+<span class="sd">    #. Form the orthogonal planar vector :math:`\hat{a} = [\hat{b}_y  -\hat{b}_x]`</span>
+<span class="sd">    #. Form the normalized SO(2) matrix :math:`\mathbf{R} = [\hat{a}, \hat{b}]`</span>
+
+<span class="sd">    .. runblock:: pycon</span>
+
+<span class="sd">        &gt;&gt;&gt; from spatialmath.base import trnorm, troty</span>
+<span class="sd">        &gt;&gt;&gt; from numpy import linalg</span>
+<span class="sd">        &gt;&gt;&gt; T = trot2(45, &#39;deg&#39;, t=[3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; linalg.det(T[:2,:2]) - 1 # is a valid SO(3)</span>
+<span class="sd">        &gt;&gt;&gt; T = T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T @ T</span>
+<span class="sd">        &gt;&gt;&gt; linalg.det(T[:2,:2]) - 1  # not quite a valid SE(2) anymore</span>
+<span class="sd">        &gt;&gt;&gt; T = trnorm2(T)</span>
+<span class="sd">        &gt;&gt;&gt; linalg.det(T[:2,:2]) - 1  # once more a valid SE(2)</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        - Only the direction of a-vector (the z-axis) is unchanged.</span>
+<span class="sd">        - Used to prevent finite word length arithmetic causing transforms to</span>
+<span class="sd">          become &#39;unnormalized&#39;, ie. determinant :math:`\ne 1`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting SO(2) or SE(2)&quot;</span><span class="p">)</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">T</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">unitvec</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="c1"># fmt: off</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> 
+        <span class="p">[</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt: on</span>
+
+    <span class="k">if</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rt2tr</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">SO2Array</span><span class="p">,</span> <span class="n">R</span><span class="p">),</span> <span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">R</span></div>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
@@ -1563,7 +1630,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Jun-2023.
+      <span class="lastupdated">Last updated on 20-Nov-2023.
       </span></p>
   </div>
 

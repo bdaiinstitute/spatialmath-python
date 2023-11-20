@@ -1067,9 +1067,12 @@
                 <span class="c1">#  a quaternion as a 1D array</span>
                 <span class="c1">#  an array of quaternions as an nx4 array</span>
 
-                <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
-                    <span class="c1"># UnitQuaternion(R) R is 3x3 rotation matrix</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">isrot</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+                        <span class="c1"># UnitQuaternion(R) R is 3x3 rotation matrix</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid rotation matrix provided to UnitQuaternion constructor&quot;</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,):</span>
                     <span class="c1"># passed a 4-vector</span>
                     <span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
@@ -1082,6 +1085,8 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># self.data = [smb.qpositive(x) for x in s]</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;array could not be interpreted as UnitQuaternion&quot;</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SO3</span><span class="p">):</span>
                 <span class="c1"># UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)</span>
@@ -2397,7 +2402,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Jun-2023.
+      <span class="lastupdated">Last updated on 20-Nov-2023.
       </span></p>
   </div>
 

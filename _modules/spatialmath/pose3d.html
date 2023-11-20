@@ -106,6 +106,7 @@
 
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">smb</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.vectors</span> <span class="kn">import</span> <span class="n">orthogonalize</span>
 <span class="kn">from</span> <span class="nn">spatialmath.baseposematrix</span> <span class="kn">import</span> <span class="n">BasePoseMatrix</span>
 <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
 
@@ -729,8 +730,10 @@
 <span class="sd">        axes in terms of the old axes.  Axes are denoted by strings ``&quot;x&quot;``,</span>
 <span class="sd">        ``&quot;y&quot;``, ``&quot;z&quot;``, ``&quot;-x&quot;``, ``&quot;-y&quot;``, ``&quot;-z&quot;``.</span>
 
-<span class="sd">        The directions can also be specified by 3-element vectors, but these</span>
-<span class="sd">        must be orthogonal.</span>
+<span class="sd">        The directions can also be specified by 3-element vectors. If the vectors are not orthogonal,</span>
+<span class="sd">        they will orthogonalized w.r.t. the first available dimension. I.e. if x is available, it will be</span>
+<span class="sd">        normalized and the remaining vector will be orthogonalized w.r.t. x, else, y will be normalized</span>
+<span class="sd">        and z will be orthogonalized w.r.t. y.</span>
 
 <span class="sd">        To create a rotation where the new frame has its x-axis in -z-direction</span>
 <span class="sd">        of the previous frame, and its z-axis in the x-direction of the previous</span>
@@ -757,25 +760,41 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">smb</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Only two vectors should be provided. Please set one to None.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># z = x x y</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">vval</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">vval</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="c1"># Orthogonalizes y w.r.t. x</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">orthogonalize</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># x = y x z</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">vval</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">vval</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="c1"># Orthogonalizes z w.r.t. y</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">orthogonalize</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># y = z x x</span>
             <span class="n">z</span> <span class="o">=</span> <span class="n">vval</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">vval</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="c1"># Orthogonalizes z w.r.t. x</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">orthogonalize</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Insufficient number of vectors. Please provide exactly two vectors.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SO3.AngleAxis"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.AngleAxis">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">AngleAxis</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
@@ -1052,7 +1071,10 @@
 
         <span class="k">elif</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># SE3(x, y, z)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid arguments. See documentation for correct format.&quot;</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_identity</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
@@ -2012,6 +2034,27 @@
             <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="SE3.CopyFrom"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.CopyFrom">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">CopyFrom</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span>
+        <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an SE(3) from a 4x4 numpy array that is passed by value.</span>
+
+<span class="sd">        :param T: homogeneous transformation</span>
+<span class="sd">        :type T: ndarray(4, 4)</span>
+<span class="sd">        :param check: check rotation validity, defaults to True</span>
+<span class="sd">        :type check: bool, optional</span>
+<span class="sd">        :raises ValueError: bad rotation matrix, bad transformation matrix</span>
+<span class="sd">        :return: SE(3) matrix representing that transformation</span>
+<span class="sd">        :rtype: SE3 instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">T</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Transformation matrix must not be None&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="SE3.angdist"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.angdist">[docs]</a>    <span class="k">def</span> <span class="nf">angdist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Angular distance metric between poses</span>
@@ -2113,7 +2156,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 15-Jun-2023.
+      <span class="lastupdated">Last updated on 20-Nov-2023.
       </span></p>
   </div>
 
