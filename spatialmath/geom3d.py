@@ -182,8 +182,8 @@ class Plane3:
 
         :param p: A 3D point
         :type p: array_like(3)
-        :param tol: Tolerance, defaults to 10*_eps
-        :type tol: float in multiples of eps, optional
+        :param tol: tolerance in units of eps, defaults to 10
+        :type tol: float
         :return: if the point is in the plane
         :rtype: bool
         """

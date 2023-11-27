@@ -127,6 +127,8 @@ class Line2:
 
         :param other: another 2D line
         :type other: Line2
+        :param tol: tolerance in units of eps, defaults to 10
+        :type tol: float
         :return: intersection point in homogeneous form
         :rtype: ndarray(3)
 
@@ -144,6 +146,8 @@ class Line2:
 
         :param p1: point to test
         :type p1: array_like(2) or array_like(3)
+        :param tol: tolerance in units of eps, defaults to 10
+        :type tol: float
         :return: True if point lies in the line
         :rtype: bool
         """
@@ -154,7 +158,7 @@ class Line2:
 
     # variant that gives lambda
 
-    def intersect_segment(self, p1: ArrayLike2, p2: ArrayLike2) -> bool:
+    def intersect_segment(self, p1: ArrayLike2, p2: ArrayLike2, tol: float = 10) -> bool:
         """
         Test for line intersecting line segment
 
@@ -162,6 +166,8 @@ class Line2:
         :type p1: array_like(2) or array_like(3)
         :param p2: end of line segment
         :type p2: array_like(2) or array_like(3)
+        :param tol: tolerance in units of eps, defaults to 10
+        :type tol: float
         :return: True if they intersect
         :rtype: bool
 
@@ -180,7 +186,7 @@ class Line2:
 
         if np.sign(z1) != np.sign(z2):
             return True
-        if self.contains(p1) or self.contains(p2):
+        if self.contains(p1, tol=tol) or self.contains(p2, tol=tol):
             return True
         return False
 

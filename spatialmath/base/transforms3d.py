@@ -1335,7 +1335,7 @@ def trlog(
         [R, t] = tr2rt(T)
 
         # S = trlog(R, check=False)  # recurse
-        S = trlog(cast(SO3Array, R), check=False)  # recurse
+        S = trlog(cast(SO3Array, R), check=False, tol=tol)  # recurse
         w = vex(S)
         theta = norm(w)
         if theta == 0:
