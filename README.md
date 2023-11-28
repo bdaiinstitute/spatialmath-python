@@ -8,10 +8,10 @@
 ![Python Version](https://img.shields.io/pypi/pyversions/spatialmath-python.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![Build Status](https://github.com/petercorke/spatialmath-python/workflows/build/badge.svg?branch=master)](https://github.com/petercorke/spatialmath-python/actions?query=workflow%3Abuild)
-[![Coverage](https://codecov.io/gh/petercorke/spatialmath-python/branch/master/graph/badge.svg)](https://codecov.io/gh/petercorke/spatialmath-python)
+[![Build Status](https://github.com/bdaiinstitute/spatialmath-python/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/bdaiinstitute/spatialmath-python/actions/workflows/master.yml?query=workflow%3Abuild+branch%3Amaster)
+[![Coverage](https://codecov.io/github/bdaiinstitute/spatialmath-python/graph/badge.svg?token=W15FGBA059)](https://codecov.io/github/bdaiinstitute/spatialmath-python)
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/spatialmath-python)](https://pypistats.org/packages/spatialmath-python)
-[![GitHub stars](https://img.shields.io/github/stars/petercorke/spatialmath-python.svg?style=social&label=Star)](https://GitHub.com/petercorke/spatialmath-python/stargazers/)
+[![GitHub stars](https://img.shields.io/github/stars/bdaiinstitute/spatialmath-python.svg?style=social&label=Star)](https://GitHub.com/bdaiinstitute/spatialmath-python/stargazers/)
 
 
 
