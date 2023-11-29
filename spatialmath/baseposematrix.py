@@ -882,8 +882,6 @@ class BasePoseMatrix(BasePoseList):
 
         :param color: colorise the output, defaults to False
         :type color: bool, optional
-        :param tol: zero values smaller than tol*eps, defaults to 10
-        :type tol: float, optional
         :return: multiline matrix representation
         :rtype: str
 
