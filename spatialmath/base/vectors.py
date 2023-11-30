@@ -392,7 +392,7 @@ def unittwist(S: ArrayLike6, tol: float = 10) -> Union[R6, None]:
     return S / th
 
 
-def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float]:
+def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[Union[R6, None], Union[float, None]]:
     """
     Convert twist to unit twist and norm
 
@@ -424,7 +424,7 @@ def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float
     S = getvector(S, 6)
 
     if iszerovec(S, tol=tol):
-        raise ValueError("zero norm")
+        return (None, None)  # according to "note" in docstring.
 
     v = S[0:3]
     w = S[3:6]
@@ -437,7 +437,7 @@ def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float
     return (S / th, th)
 
 
-def unittwist2(S: ArrayLike3, tol: float = 10) -> R3:
+def unittwist2(S: ArrayLike3, tol: float = 10) -> Union[R3, None]:
     """
     Convert twist to unit twist
 
@@ -459,9 +459,14 @@ def unittwist2(S: ArrayLike3, tol: float = 10) -> R3:
         >>> unittwist2([2, 4, 2)
         >>> unittwist2([2, 0, 0])
 
+    .. note:: Returns None if the twist has zero magnitude
     """
 
     S = getvector(S, 3)
+
+    if iszerovec(S, tol=tol):
+        return None
+
     v = S[0:2]
     w = S[2]
 
@@ -473,7 +478,7 @@ def unittwist2(S: ArrayLike3, tol: float = 10) -> R3:
     return S / th
 
 
-def unittwist2_norm(S: ArrayLike3, tol: float = 10) -> Tuple[R3, float]:
+def unittwist2_norm(S: ArrayLike3, tol: float = 10) -> Tuple[Union[R3, None], Union[float, None]]:
     """
     Convert twist to unit twist
 
@@ -495,9 +500,14 @@ def unittwist2_norm(S: ArrayLike3, tol: float = 10) -> Tuple[R3, float]:
         >>> unittwist2([2, 4, 2)
         >>> unittwist2([2, 0, 0])
 
+    .. note:: Returns (None, None) if the twist has zero magnitude
     """
 
     S = getvector(S, 3)
+
+    if iszerovec(S, tol=tol):
+        return (None, None)
+
     v = S[0:2]
     w = S[2]
 
@@ -728,7 +738,7 @@ def angle_wrap(theta: ArrayLike, mode: str = "-pi:pi") -> Union[float, NDArray]:
         return wrap_mpi_pi(theta)
     elif mode == "0:pi":
         return wrap_0_pi(theta)
-    elif mode == "0:pi":
+    elif mode == "-pi/2:pi/2":
         return wrap_mpi2_pi2(theta)
     else:
         raise ValueError("bad method specified")

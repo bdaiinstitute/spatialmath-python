@@ -58,6 +58,10 @@ class TestND(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             r2t(np.eye(3, 4))
+        
+        _ = r2t(np.ones((3, 3)), check=False)
+        with self.assertRaises(ValueError):
+            r2t(np.ones((3, 3)), check=True)
 
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_r2t_sym(self):
@@ -118,6 +122,13 @@ class TestND(unittest.TestCase):
         with self.assertRaises(ValueError):
             rt2tr(np.eye(3, 4), [1, 2, 3, 4])
 
+        with self.assertRaises(ValueError):
+            rt2tr(np.eye(4, 4), [1, 2, 3, 4])
+
+        _ = rt2tr(np.ones((3, 3)), [1, 2, 3], check=False)
+        with self.assertRaises(ValueError):
+            rt2tr(np.ones((3, 3)), [1, 2, 3], check=True)
+
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_rt2tr_sym(self):
         theta = symbol("theta")
@@ -146,6 +157,32 @@ class TestND(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             R, t = tr2rt(np.eye(3, 4))
+
+    def test_Ab2M(self):
+        # 3D
+        R = np.ones((3, 3))
+        t = [3, 4, 5]
+        T = Ab2M(R, t)
+        nt.assert_array_almost_equal(T[:3, :3], R)
+        nt.assert_array_almost_equal(T[:3, 3], np.array(t))
+        nt.assert_array_almost_equal(T[3, :], np.array([0, 0, 0, 0]))
+
+        # 2D
+        R = np.ones((2, 2))
+        t = [3, 4]
+        T = Ab2M(R, t)
+        nt.assert_array_almost_equal(T[:2, :2], R)
+        nt.assert_array_almost_equal(T[:2, 2], np.array(t))
+        nt.assert_array_almost_equal(T[2, :], np.array([0, 0, 0]))
+
+        with self.assertRaises(ValueError):
+            Ab2M(3, 4)
+
+        with self.assertRaises(ValueError):
+            Ab2M(np.eye(3, 4), [1, 2, 3, 4])
+
+        with self.assertRaises(ValueError):
+            Ab2M(np.eye(4, 4), [1, 2, 3, 4])
 
     def test_checks(self):
         # 3D case, with rotation matrix
@@ -281,6 +318,13 @@ class TestND(unittest.TestCase):
         t = [3]
         sk = skew(t)
         nt.assert_almost_equal(vex(sk), t)
+
+        _ = vex(np.ones((3, 3)), check=False)
+        with self.assertRaises(ValueError):
+            _ = vex(np.ones((3, 3)), check=True)
+
+        with self.assertRaises(ValueError):
+            _ = vex(np.eye(4, 4))
 
     def test_isskew(self):
         t = [3, 4, 5]

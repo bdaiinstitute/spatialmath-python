@@ -266,7 +266,7 @@ def tr2pos2(T):
     :return: translation elements of SE(2) matrix
     :rtype: ndarray(2)
 
-    - ``t = transl2(T)`` is the translational part of the SE(3) matrix ``T`` as a
+    - ``t = tr2pos2(T)`` is the translational part of the SE(3) matrix ``T`` as a
       2-element NumPy array.
 
     .. runblock:: pycon
@@ -274,7 +274,7 @@ def tr2pos2(T):
         >>> from spatialmath.base import *
         >>> import numpy as np
         >>> T = np.array([[1, 0, 3], [0, 1, 4], [0, 0, 1]])
-        >>> transl2(T)
+        >>> tr2pos2(T)
 
     :seealso: :func:`pos2tr2` :func:`transl2`
     """
@@ -292,9 +292,9 @@ def pos2tr2(x, y=None):
     :return: SE(2) matrix
     :rtype: ndarray(3,3)
 
-    - ``T = transl2([X, Y])`` is an SE(2) homogeneous transform (3x3)
+    - ``T = pos2tr2([X, Y])`` is an SE(2) homogeneous transform (3x3)
       representing a pure translation.
-    - ``T = transl2( V )`` as above but the translation is given by a 2-element
+    - ``T = pos2tr2( V )`` as above but the translation is given by a 2-element
       list, dict, or a numpy array, row or column vector.
 
 
@@ -302,9 +302,9 @@ def pos2tr2(x, y=None):
 
         >>> from spatialmath.base import *
         >>> import numpy as np
-        >>> transl2(3, 4)
-        >>> transl2([3, 4])
-        >>> transl2(np.array([3, 4]))
+        >>> pos2tr2(3, 4)
+        >>> pos2tr2([3, 4])
+        >>> pos2tr2(np.array([3, 4]))
 
     :seealso: :func:`tr2pos2` :func:`transl2`
     """
@@ -1016,8 +1016,22 @@ def trprint2(
     return s
 
 
-def _vec2s(fmt: str, v: ArrayLikePure):
-    v = [x if np.abs(x) > 100 * _eps else 0.0 for x in v]
+def _vec2s(fmt: str, v: ArrayLikePure, tol: float = 100) -> str:
+    """
+    Return a string representation for vector using the provided fmt.
+
+    :param fmt: format string for each value in v
+    :type fmt: str
+    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 100
+    :type tol: float, optional
+    :return: string representation for the vector
+    :rtype: str
+
+    Return a string representation for vector using the provided fmt, where
+    near-zero values are rounded to 0.
+    """
+
+    v = [x if np.abs(x) > tol * _eps else 0.0 for x in v]
     return ", ".join([fmt.format(x) for x in v])
 
 

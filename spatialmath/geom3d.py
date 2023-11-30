@@ -712,7 +712,7 @@ class Line3(BasePoseList):
 
         :seealso: :meth:`__xor__` :meth:`intersects` :meth:`isparallel`
         """
-        return not l1.isparallel(l2, tol=tol) and bool(abs(l1 * l2) < 10 * _eps)
+        return not l1.isparallel(l2, tol=tol) and bool(abs(l1 * l2) < tol * _eps)
 
     def __eq__(l1, l2: Line3) -> bool:  # type: ignore pylint: disable=no-self-argument
         """
