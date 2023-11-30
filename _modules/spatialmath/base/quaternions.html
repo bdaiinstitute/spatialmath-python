@@ -839,7 +839,7 @@
 
 
 <div class="viewcode-block" id="qslerp"><a class="viewcode-back" href="../../../func_quat.html#spatialmath.base.quaternions.qslerp">[docs]</a><span class="k">def</span> <span class="nf">qslerp</span><span class="p">(</span>
-    <span class="n">q0</span><span class="p">:</span> <span class="n">ArrayLike4</span><span class="p">,</span> <span class="n">q1</span><span class="p">:</span> <span class="n">ArrayLike4</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">q0</span><span class="p">:</span> <span class="n">ArrayLike4</span><span class="p">,</span> <span class="n">q1</span><span class="p">:</span> <span class="n">ArrayLike4</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitQuaternionArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Quaternion conjugate</span>
@@ -852,6 +852,8 @@
 <span class="sd">    :type s: float</span>
 <span class="sd">    :arg shortest: choose shortest distance [default False]</span>
 <span class="sd">    :type shortest: bool</span>
+<span class="sd">    :param tol: Tolerance when checking for identical quaternions, in multiples of eps, defaults to 10</span>
+<span class="sd">    :type tol: float, optional</span>
 <span class="sd">    :return: interpolated unit-quaternion</span>
 <span class="sd">    :rtype: ndarray(4)</span>
 <span class="sd">    :raises ValueError: s is outside interval [0, 1]</span>
@@ -900,7 +902,7 @@
 
     <span class="n">dotprod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dotprod</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># Clip within domain of acos()</span>
     <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dotprod</span><span class="p">)</span>  <span class="c1"># theta is the angle between rotation vectors</span>
-    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">:</span>
         <span class="n">s0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
         <span class="n">s1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">((</span><span class="n">q0</span> <span class="o">*</span> <span class="n">s0</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">q1</span> <span class="o">*</span> <span class="n">s1</span><span class="p">))</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>

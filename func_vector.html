@@ -692,6 +692,10 @@ Returns a the nearest vector to v1 that is orthoginal to v2.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returns None if the twist has zero magnitude</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -720,6 +724,10 @@ Returns a the nearest vector to v1 that is orthoginal to v2.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returns (None, None) if the twist has zero magnitude</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -745,7 +753,16 @@ Returns a the nearest vector to v1 that is orthoginal to v2.</p>
 <li><p>the rotation part has unit magnitude</p></li>
 <li><p>if the rotational part is zero, then the translational part has unit magnitude</p></li>
 </ul>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: zero norm</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">unittwist_norm</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="go">[1. 2. 3. 1. 0. 0.] 1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">unittwist_norm</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="go">[0. 0. 0. 1. 0. 0.] 2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">unittwist_norm</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="go">None None</span>
 </pre></div>
 </div>
 <div class="admonition note">
