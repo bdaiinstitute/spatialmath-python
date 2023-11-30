@@ -130,6 +130,8 @@ Install the current code base from GitHub and pip install a link to that cloned 
 git clone https://github.com/bdaiinstitute/spatialmath-python.git
 cd spatialmath-python
 pip install -e .
+# Optional: if you would like to contribute and commit code changes to the repository,
+# pre-commit install
 ```
 
 ## Dependencies
