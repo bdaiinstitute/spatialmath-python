@@ -142,12 +142,14 @@ def colvec(v: ArrayLike) -> NDArray:
     return np.array(v).reshape((len(v), 1))
 
 
-def unitvec(v: ArrayLike) -> NDArray:
+def unitvec(v: ArrayLike, tol: float = 100) -> NDArray:
     """
     Create a unit vector
 
     :param v: any vector
     :type v: array_like(n)
+    :param tol: Tolerance in units of eps for zero-norm case, defaults to 100
+    :type: float
     :return: a unit-vector parallel to ``v``.
     :rtype: ndarray(n)
     :raises ValueError: for zero length vector
@@ -166,7 +168,7 @@ def unitvec(v: ArrayLike) -> NDArray:
     v = getvector(v)
     n = norm(v)
 
-    if n > 100 * _eps:  # if greater than eps
+    if n > tol * _eps:  # if greater than eps
         return v / n
     else:
         raise ValueError("zero norm vector")
@@ -178,6 +180,8 @@ def unitvec_norm(v: ArrayLike, tol: float = 100) -> Tuple[NDArray, float]:
 
     :param v: any vector
     :type v: array_like(n)
+    :param tol: Tolerance in units of eps for zero-norm case, defaults to 100
+    :type: float
     :return: a unit-vector parallel to ``v`` and the norm
     :rtype: (ndarray(n), float)
     :raises ValueError: for zero length vector
@@ -208,7 +212,7 @@ def isunitvec(v: ArrayLike, tol: float = 10) -> bool:
 
     :param v: vector to test
     :type v: ndarray(n)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether vector has unit length
     :rtype: bool
@@ -230,7 +234,7 @@ def iszerovec(v: ArrayLike, tol: float = 10) -> bool:
 
     :param v: vector to test
     :type v: ndarray(n)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether vector has zero length
     :rtype: bool
@@ -252,7 +256,7 @@ def iszero(v: float, tol: float = 10) -> bool:
 
     :param v: value to test
     :type v: float
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether value is zero
     :rtype: bool
@@ -274,7 +278,7 @@ def isunittwist(v: ArrayLike6, tol: float = 10) -> bool:
 
     :param v: twist vector to test
     :type v: array_like(6)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether twist has unit length
     :rtype: bool
@@ -302,7 +306,7 @@ def isunittwist(v: ArrayLike6, tol: float = 10) -> bool:
     if len(v) == 6:
         # test for SE(3) twist
         return isunitvec(v[3:6], tol=tol) or (
-            bool(np.linalg.norm(v[3:6]) < tol * _eps) and isunitvec(v[0:3], tol=tol)
+            iszerovec(v[3:6], tol=tol) and isunitvec(v[0:3], tol=tol)
         )
     else:
         raise ValueError
@@ -314,7 +318,7 @@ def isunittwist2(v: ArrayLike3, tol: float = 10) -> bool:
 
     :param v: twist vector to test
     :type v: array_like(3)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether vector has unit length
     :rtype: bool
@@ -341,7 +345,7 @@ def isunittwist2(v: ArrayLike3, tol: float = 10) -> bool:
     if len(v) == 3:
         # test for SE(2) twist
         return isunitvec(v[2], tol=tol) or (
-            np.abs(v[2]) < tol * _eps and isunitvec(v[0:2], tol=tol)
+            iszero(v[2], tol=tol) and isunitvec(v[0:2], tol=tol)
         )
     else:
         raise ValueError
@@ -353,7 +357,7 @@ def unittwist(S: ArrayLike6, tol: float = 10) -> Union[R6, None]:
 
     :param S: twist vector
     :type S: array_like(6)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: unit twist
     :rtype: ndarray(6)
@@ -380,7 +384,7 @@ def unittwist(S: ArrayLike6, tol: float = 10) -> Union[R6, None]:
     v = S[0:3]
     w = S[3:6]
 
-    if iszerovec(w):
+    if iszerovec(w, tol=tol):
         th = norm(v)
     else:
         th = norm(w)
@@ -394,7 +398,7 @@ def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float
 
     :param S: twist vector
     :type S: array_like(6)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: unit twist and scalar motion
     :rtype: tuple (ndarray(6), float)
@@ -425,7 +429,7 @@ def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float
     v = S[0:3]
     w = S[3:6]
 
-    if iszerovec(w):
+    if iszerovec(w, tol=tol):
         th = norm(v)
     else:
         th = norm(w)
@@ -433,12 +437,14 @@ def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[R6, float
     return (S / th, th)
 
 
-def unittwist2(S: ArrayLike3) -> R3:
+def unittwist2(S: ArrayLike3, tol: float = 10) -> R3:
     """
     Convert twist to unit twist
 
     :param S: twist vector
     :type S: array_like(3)
+    :param tol: tolerance in units of eps, defaults to 10
+    :type tol: float
     :return: unit twist
     :rtype: ndarray(3)
 
@@ -459,7 +465,7 @@ def unittwist2(S: ArrayLike3) -> R3:
     v = S[0:2]
     w = S[2]
 
-    if iszero(w):
+    if iszero(w, tol=tol):
         th = norm(v)
     else:
         th = abs(w)
@@ -467,12 +473,14 @@ def unittwist2(S: ArrayLike3) -> R3:
     return S / th
 
 
-def unittwist2_norm(S: ArrayLike3) -> Tuple[R3, float]:
+def unittwist2_norm(S: ArrayLike3, tol: float = 10) -> Tuple[R3, float]:
     """
     Convert twist to unit twist
 
     :param S: twist vector
     :type S: array_like(3)
+    :param tol: tolerance in units of eps, defaults to 10
+    :type tol: float
     :return: unit twist and scalar motion
     :rtype: tuple (ndarray(3), float)
 
@@ -493,7 +501,7 @@ def unittwist2_norm(S: ArrayLike3) -> Tuple[R3, float]:
     v = S[0:2]
     w = S[2]
 
-    if iszero(w):
+    if iszero(w, tol=tol):
         th = norm(v)
     else:
         th = abs(w)

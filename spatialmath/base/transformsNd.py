@@ -359,7 +359,7 @@ def isR(R: NDArray, tol: float = 100) -> bool:  # -> TypeGuard[SOnArray]:
 
     :param R: matrix to test
     :type R: ndarray(2,2) or ndarray(3,3)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 100
     :type tol: float
     :return: whether matrix is a proper orthonormal rotation matrix
     :rtype: bool
@@ -388,7 +388,7 @@ def isskew(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[sonArray]:
 
     :param S: matrix to test
     :type S: ndarray(2,2) or ndarray(3,3)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool
@@ -415,7 +415,7 @@ def isskewa(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[senArray]:
 
     :param S: matrix to test
     :type S: ndarray(3,3) or ndarray(4,4)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool
@@ -445,7 +445,7 @@ def iseye(S: NDArray, tol: float = 10) -> bool:
 
     :param S: matrix to test
     :type S: ndarray(n,n)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 10
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool

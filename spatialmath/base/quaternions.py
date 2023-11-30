@@ -106,12 +106,14 @@ def qnorm(q: ArrayLike4) -> float:
     return np.linalg.norm(q)
 
 
-def qunit(q: ArrayLike4, tol: Optional[float] = 10) -> UnitQuaternionArray:
+def qunit(q: ArrayLike4, tol: float = 10) -> UnitQuaternionArray:
     """
     Create a unit quaternion
 
     :arg v: quaterion
     :type v: array_like(4)
+    :param tol: Tolerance in multiples of eps, defaults to 10
+    :type tol: float, optional
     :return: a pure quaternion
     :rtype: ndarray(4)
     :raises ValueError: quaternion has (near) zero norm
@@ -144,13 +146,13 @@ def qunit(q: ArrayLike4, tol: Optional[float] = 10) -> UnitQuaternionArray:
         return -q
 
 
-def qisunit(q: ArrayLike4, tol: Optional[float] = 100) -> bool:
+def qisunit(q: ArrayLike4, tol: float = 100) -> bool:
     """
     Test if quaternion has unit length
 
     :param v: quaternion
     :type v: array_like(4)
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 100
     :type tol: float
     :return: whether quaternion has unit length
     :rtype: bool
@@ -172,7 +174,7 @@ def qisunit(q: ArrayLike4, tol: Optional[float] = 100) -> bool:
 def qisequal(
     q1: ArrayLike4,
     q2: ArrayLike4,
-    tol: Optional[float] = 100,
+    tol: float = 100,
     unitq: Optional[bool] = False,
 ) -> bool:
     ...
@@ -182,13 +184,13 @@ def qisequal(
 def qisequal(
     q1: ArrayLike4,
     q2: ArrayLike4,
-    tol: Optional[float] = 100,
+    tol: float = 100,
     unitq: Optional[bool] = True,
 ) -> bool:
     ...
 
 
-def qisequal(q1, q2, tol: Optional[float] = 100, unitq: Optional[bool] = False):
+def qisequal(q1, q2, tol: float = 100, unitq: Optional[bool] = False):
     """
     Test if quaternions are equal
 
@@ -198,7 +200,7 @@ def qisequal(q1, q2, tol: Optional[float] = 100, unitq: Optional[bool] = False):
     :type q2: array_like(4)
     :param unitq: quaternions are unit quaternions
     :type unitq: bool
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 100
     :type tol: float
     :return: whether quaternions are equal
     :rtype: bool
@@ -545,7 +547,7 @@ def q2r(
 def r2q(
     R: SO3Array,
     check: Optional[bool] = False,
-    tol: Optional[float] = 100,
+    tol: float = 100,
     order: Optional[str] = "sxyz",
 ) -> UnitQuaternionArray:
     """
@@ -555,7 +557,7 @@ def r2q(
     :type R: ndarray(3,3)
     :param check: check validity of rotation matrix, default False
     :type check: bool
-    :param tol: tolerance in units of eps
+    :param tol: tolerance in units of eps, defaults to 100
     :type tol: float
     :param order: the order of the returned quaternion elements. Must be 'sxyz' or
         'xyzs'. Defaults to 'sxyz'.

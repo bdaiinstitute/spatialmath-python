@@ -324,7 +324,7 @@ def pos2tr2(x, y=None):
     return T
 
 
-def ishom2(T: Any, check: bool = False) -> bool:  # TypeGuard(SE2):
+def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(SE2):
     """
     Test if matrix belongs to SE(2)
 
@@ -332,6 +332,8 @@ def ishom2(T: Any, check: bool = False) -> bool:  # TypeGuard(SE2):
     :type T: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100
+    :type: float
     :return: whether matrix is an SE(2) homogeneous transformation matrix
     :rtype: bool
 
@@ -356,11 +358,11 @@ def ishom2(T: Any, check: bool = False) -> bool:  # TypeGuard(SE2):
     return (
         isinstance(T, np.ndarray)
         and T.shape == (3, 3)
-        and (not check or (smb.isR(T[:2, :2]) and all(T[2, :] == np.array([0, 0, 1]))))
+        and (not check or (smb.isR(T[:2, :2], tol=tol) and all(T[2, :] == np.array([0, 0, 1]))))
     )
 
 
-def isrot2(R: Any, check: bool = False) -> bool:  # TypeGuard(SO2):
+def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(SO2):
     """
     Test if matrix belongs to SO(2)
 
@@ -368,6 +370,8 @@ def isrot2(R: Any, check: bool = False) -> bool:  # TypeGuard(SO2):
     :type R: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100
+    :type: float
     :return: whether matrix is an SO(2) rotation matrix
     :rtype: bool
 
@@ -388,7 +392,7 @@ def isrot2(R: Any, check: bool = False) -> bool:  # TypeGuard(SO2):
 
     :seealso: isR, ishom2, isrot
     """
-    return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or smb.isR(R))
+    return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or smb.isR(R, tol=tol))
 
 
 # ---------------------------------------------------------------------------------------#
@@ -514,10 +518,10 @@ def trlog2(
               :func:`~spatialmath.base.transformsNd.vexa`
     """
 
-    if ishom2(T, check=check):
+    if ishom2(T, check=check, tol=tol):
         # SE(2) matrix
 
-        if smb.iseye(T, tol):
+        if smb.iseye(T, tol=tol):
             # is identity matrix
             if twist:
                 return np.zeros((3,))
@@ -539,7 +543,7 @@ def trlog2(
                     [[smb.skew(theta), tr[:, np.newaxis]], [np.zeros((1, 3))]]
                 )
 
-    elif isrot2(T, check=check):
+    elif isrot2(T, check=check, tol=tol):
         # SO(2) rotation matrix
         theta = math.atan(T[1, 0] / T[0, 0])
         if twist:
