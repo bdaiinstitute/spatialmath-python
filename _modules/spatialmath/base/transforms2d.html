@@ -402,7 +402,7 @@
     <span class="k">return</span> <span class="n">T</span></div>
 
 
-<div class="viewcode-block" id="ishom2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ishom2">[docs]</a><span class="k">def</span> <span class="nf">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># TypeGuard(SE2):</span>
+<div class="viewcode-block" id="ishom2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.ishom2">[docs]</a><span class="k">def</span> <span class="nf">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># TypeGuard(SE2):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to SE(2)</span>
 
@@ -410,6 +410,8 @@
 <span class="sd">    :type T: ndarray(3,3)</span>
 <span class="sd">    :param check: check validity of rotation submatrix</span>
 <span class="sd">    :type check: bool</span>
+<span class="sd">    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100</span>
+<span class="sd">    :type: float</span>
 <span class="sd">    :return: whether matrix is an SE(2) homogeneous transformation matrix</span>
 <span class="sd">    :rtype: bool</span>
 
@@ -434,11 +436,11 @@
     <span class="k">return</span> <span class="p">(</span>
         <span class="nb">isinstance</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
         <span class="ow">and</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))))</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">T</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))))</span>
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isrot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.isrot2">[docs]</a><span class="k">def</span> <span class="nf">isrot2</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># TypeGuard(SO2):</span>
+<div class="viewcode-block" id="isrot2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.isrot2">[docs]</a><span class="k">def</span> <span class="nf">isrot2</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># TypeGuard(SO2):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to SO(2)</span>
 
@@ -446,6 +448,8 @@
 <span class="sd">    :type R: ndarray(3,3)</span>
 <span class="sd">    :param check: check validity of rotation submatrix</span>
 <span class="sd">    :type check: bool</span>
+<span class="sd">    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100</span>
+<span class="sd">    :type: float</span>
 <span class="sd">    :return: whether matrix is an SO(2) rotation matrix</span>
 <span class="sd">    :rtype: bool</span>
 
@@ -466,7 +470,7 @@
 
 <span class="sd">    :seealso: isR, ishom2, isrot</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">check</span> <span class="ow">or</span> <span class="n">smb</span><span class="o">.</span><span class="n">isR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">))</span></div>
 
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
@@ -592,10 +596,10 @@
 <span class="sd">              :func:`~spatialmath.base.transformsNd.vexa`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ishom2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
         <span class="c1"># SE(2) matrix</span>
 
-        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">smb</span><span class="o">.</span><span class="n">iseye</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
             <span class="c1"># is identity matrix</span>
             <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,))</span>
@@ -617,7 +621,7 @@
                     <span class="p">[[</span><span class="n">smb</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">tr</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))]]</span>
                 <span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">isrot2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
         <span class="c1"># SO(2) rotation matrix</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">twist</span><span class="p">:</span>
@@ -1630,7 +1634,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 28-Nov-2023.
+      <span class="lastupdated">Last updated on 30-Nov-2023.
       </span></p>
   </div>
 
