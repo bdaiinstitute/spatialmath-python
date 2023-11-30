@@ -118,6 +118,30 @@ class Test2D(unittest.TestCase):
             transl2([1, 2]), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])
         )
 
+    def test_pos2tr2(self):
+        nt.assert_array_almost_equal(
+            pos2tr2(1, 2), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])
+        )
+        nt.assert_array_almost_equal(
+            transl2([1, 2]), np.array([[1, 0, 1], [0, 1, 2], [0, 0, 1]])
+        )
+        nt.assert_array_almost_equal(
+            tr2pos2(pos2tr2(1, 2)), np.array([1, 2])
+        )
+
+    def test_tr2jac2(self):
+        T = trot2(0.3, t=[4, 5])
+        jac2 = tr2jac2(T)
+        nt.assert_array_almost_equal(
+            jac2[:2, :2], smb.t2r(T)
+        )
+        nt.assert_array_almost_equal(
+            jac2[:3, 2], np.array([0, 0, 1])
+        )
+        nt.assert_array_almost_equal(
+            jac2[2, :3], np.array([0, 0, 1])
+        )
+
     def test_xyt2tr(self):
         T = xyt2tr([1, 2, 0])
         nt.assert_array_almost_equal(T, transl2(1, 2))

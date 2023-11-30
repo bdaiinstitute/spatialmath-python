@@ -88,6 +88,11 @@ class TestVector(unittest.TestCase):
         self.assertAlmostEqual(norm([1, 2, 3]), math.sqrt(14))
         self.assertAlmostEqual(norm(np.r_[1, 2, 3]), math.sqrt(14))
 
+    def test_normsq(self):
+        self.assertAlmostEqual(normsq([0, 0, 0]), 0)
+        self.assertAlmostEqual(normsq([1, 2, 3]), 14)
+        self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
+
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_norm_sym(self):
         x, y = symbol("x y")
@@ -208,8 +213,46 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(a[0], np.r_[0, 0, -1, 0, 0, 0])
         nt.assert_array_almost_equal(a[1], 2)
 
-        with self.assertRaises(ValueError):
-            unittwist_norm([0, 0, 0, 0, 0, 0])
+        a = unittwist_norm([0, 0, 0, 0, 0, 0])
+        self.assertIsNone(a[0])
+        self.assertIsNone(a[1])
+
+    def test_unittwist2(self):
+        nt.assert_array_almost_equal(
+            unittwist2([1, 0, 0]), np.r_[1, 0, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist2([0, 2, 0]), np.r_[0, 1, 0]
+        )
+        nt.assert_array_almost_equal(
+            unittwist2([0, 0, -3]), np.r_[0, 0, -1]
+        )
+        nt.assert_array_almost_equal(
+            unittwist2([2, 0, -2]), np.r_[1, 0, -1]
+        )
+
+        self.assertIsNone(unittwist2([0, 0, 0]))
+
+    def test_unittwist2_norm(self):
+        a = unittwist2_norm([1, 0, 0])
+        nt.assert_array_almost_equal(a[0], np.r_[1, 0, 0])
+        nt.assert_array_almost_equal(a[1], 1)
+
+        a = unittwist2_norm([0, 2, 0])
+        nt.assert_array_almost_equal(a[0], np.r_[0, 1, 0])
+        nt.assert_array_almost_equal(a[1], 2)
+
+        a = unittwist2_norm([0, 0, -3])
+        nt.assert_array_almost_equal(a[0], np.r_[0, 0, -1])
+        nt.assert_array_almost_equal(a[1], 3)
+
+        a = unittwist2_norm([2, 0, -2])
+        nt.assert_array_almost_equal(a[0], np.r_[1, 0, -1])
+        nt.assert_array_almost_equal(a[1], 2)
+
+        a = unittwist2_norm([0, 0, 0])
+        self.assertIsNone(a[0])
+        self.assertIsNone(a[1])
 
     def test_iszerovec(self):
         self.assertTrue(iszerovec([0]))
@@ -281,6 +324,21 @@ class TestVector(unittest.TestCase):
             wrap_mpi2_pi2([0, -0.5 * pi, 0.5 * pi, 0.6 * pi, -0.6 * pi]),
             [0, -0.5 * pi, 0.5 * pi, 0.4 * pi, -0.4 * pi],
         )
+
+        for angle_factor in (0, 0.3, 0.5, 0.8, 1.0, 1.3, 1.5, 1.7, 2):
+            theta = angle_factor * pi
+            self.assertAlmostEqual(angle_wrap(theta), wrap_mpi_pi(theta))
+            self.assertAlmostEqual(angle_wrap(-theta), wrap_mpi_pi(-theta))
+            self.assertAlmostEqual(angle_wrap(theta=theta, mode="-pi:pi"), wrap_mpi_pi(theta))
+            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="-pi:pi"), wrap_mpi_pi(-theta))
+            self.assertAlmostEqual(angle_wrap(theta=theta, mode="0:2pi"), wrap_0_2pi(theta))
+            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="0:2pi"), wrap_0_2pi(-theta))
+            self.assertAlmostEqual(angle_wrap(theta=theta, mode="0:pi"), wrap_0_pi(theta))
+            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="0:pi"), wrap_0_pi(-theta))
+            self.assertAlmostEqual(angle_wrap(theta=theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(theta))
+            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(-theta))
+            with self.assertRaises(ValueError):
+                angle_wrap(theta=theta, mode="foo")
 
     def test_angle_stats(self):
         theta = np.linspace(3 * pi / 2, 5 * pi / 2, 50)

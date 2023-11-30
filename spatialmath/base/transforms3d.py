@@ -713,7 +713,7 @@ def eul2tr(
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta: float, v: ArrayLike3, unit="rad") -> SO3Array:
+def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 10) -> SO3Array:
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -723,6 +723,8 @@ def angvec2r(theta: float, v: ArrayLike3, unit="rad") -> SO3Array:
     :type unit: str
     :param v: 3D rotation axis
     :type v: array_like(3)
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
+    :type: float
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
     :raises ValueError: bad arguments
@@ -748,7 +750,7 @@ def angvec2r(theta: float, v: ArrayLike3, unit="rad") -> SO3Array:
     if not isscalar(theta) or not isvector(v, 3):
         raise ValueError("Arguments must be angle and vector")
 
-    if np.linalg.norm(v) < 10 * _eps:
+    if np.linalg.norm(v) < tol * _eps:
         return np.eye(3)
 
     θ = getunit(theta, unit)
@@ -1044,6 +1046,7 @@ def tr2eul(
     unit: str = "rad",
     flip: bool = False,
     check: bool = False,
+    tol: float = 10,
 ) -> R3:
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
@@ -1056,6 +1059,8 @@ def tr2eul(
     :type flip: bool
     :param check: check that rotation matrix is valid
     :type check: bool
+    :param tol: Tolerance in units of eps for near-zero checks, defaults to 10
+    :type: float
     :return: ZYZ Euler angles
     :rtype: ndarray(3)
 
@@ -1090,11 +1095,11 @@ def tr2eul(
         R = t2r(T)
     else:
         R = T
-    if not isrot(R, check=check):
+    if not isrot(R, check=check, tol=tol):
         raise ValueError("argument is not SO(3)")
 
     eul = np.zeros((3,))
-    if abs(R[0, 2]) < 10 * _eps and abs(R[1, 2]) < 10 * _eps:
+    if abs(R[0, 2]) < tol * _eps and abs(R[1, 2]) < tol * _eps:
         eul[0] = 0
         sp = 0
         cp = 1
@@ -1124,6 +1129,7 @@ def tr2rpy(
     unit: str = "rad",
     order: str = "zyx",
     check: bool = False,
+    tol: float = 10,
 ) -> R3:
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
@@ -1136,6 +1142,8 @@ def tr2rpy(
     :type order: str
     :param check: check that rotation matrix is valid
     :type check: bool
+    :param tol: Tolerance in units of eps, defaults to 10
+    :type: float
     :return: Roll-pitch-yaw angles
     :rtype: ndarray(3)
     :raises ValueError: bad arguments
@@ -1176,13 +1184,13 @@ def tr2rpy(
         R = t2r(T)
     else:
         R = T
-    if not isrot(R, check=check):
+    if not isrot(R, check=check, tol=tol):
         raise ValueError("not a valid SO(3) matrix")
 
     rpy = np.zeros((3,))
     if order in ("xyz", "arm"):
         # XYZ order
-        if abs(abs(R[0, 2]) - 1) < 10 * _eps:  # when |R13| == 1
+        if abs(abs(R[0, 2]) - 1) < tol * _eps:  # when |R13| == 1
             # singularity
             rpy[0] = 0  # roll is zero
             if R[0, 2] > 0:
@@ -1206,7 +1214,7 @@ def tr2rpy(
 
     elif order in ("zyx", "vehicle"):
         # old ZYX order (as per Paul book)
-        if abs(abs(R[2, 0]) - 1) < 10 * _eps:  # when |R31| == 1
+        if abs(abs(R[2, 0]) - 1) < tol * _eps:  # when |R31| == 1
             # singularity
             rpy[0] = 0  # roll is zero
             if R[2, 0] < 0:
@@ -1229,7 +1237,7 @@ def tr2rpy(
                 rpy[1] = -math.atan(R[2, 0] * math.cos(rpy[0]) / R[2, 2])
 
     elif order in ("yxz", "camera"):
-        if abs(abs(R[1, 2]) - 1) < 10 * _eps:  # when |R23| == 1
+        if abs(abs(R[1, 2]) - 1) < tol * _eps:  # when |R23| == 1
             # singularity
             rpy[0] = 0
             if R[1, 2] < 0:

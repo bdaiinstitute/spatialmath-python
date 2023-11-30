@@ -396,10 +396,12 @@ class Quaternion(BasePoseList):
         v = math.acos(self.s / norm) * smb.unitvec(self.v)
         return Quaternion(s=s, v=v)
 
-    def exp(self) -> Quaternion:
+    def exp(self, tol: float=100) -> Quaternion:
         r"""
         Exponential of quaternion
 
+        :param tol: Tolerance when checking for pure quaternion, in multiples of eps, defaults to 100
+        :type tol: float, optional
         :rtype: Quaternion instance
 
         ``q.exp()`` is the exponential of the quaternion ``q``, ie.
@@ -433,7 +435,7 @@ class Quaternion(BasePoseList):
         norm_v = smb.norm(self.v)
         s = exp_s * math.cos(norm_v)
         v = exp_s * self.v / norm_v * math.sin(norm_v)
-        if abs(self.s) < 100 * _eps:
+        if abs(self.s) < tol * _eps:
             # result will be a unit quaternion
             return UnitQuaternion(s=s, v=v)
         else:

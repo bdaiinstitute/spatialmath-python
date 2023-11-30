@@ -761,7 +761,7 @@ def r2q(
 
 
 def qslerp(
-    q0: ArrayLike4, q1: ArrayLike4, s: float, shortest: Optional[bool] = False
+    q0: ArrayLike4, q1: ArrayLike4, s: float, shortest: Optional[bool] = False, tol: float = 10
 ) -> UnitQuaternionArray:
     """
     Quaternion conjugate
@@ -774,6 +774,8 @@ def qslerp(
     :type s: float
     :arg shortest: choose shortest distance [default False]
     :type shortest: bool
+    :param tol: Tolerance when checking for identical quaternions, in multiples of eps, defaults to 10
+    :type tol: float, optional
     :return: interpolated unit-quaternion
     :rtype: ndarray(4)
     :raises ValueError: s is outside interval [0, 1]
@@ -822,7 +824,7 @@ def qslerp(
 
     dotprod = np.clip(dotprod, -1, 1)  # Clip within domain of acos()
     theta = math.acos(dotprod)  # theta is the angle between rotation vectors
-    if abs(theta) > 10 * _eps:
+    if abs(theta) > tol * _eps:
         s0 = math.sin((1 - s) * theta)
         s1 = math.sin(s * theta)
         return ((q0 * s0) + (q1 * s1)) / math.sin(theta)
