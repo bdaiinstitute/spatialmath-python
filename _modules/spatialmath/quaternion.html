@@ -474,11 +474,11 @@
         <span class="n">v</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">/</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="n">smb</span><span class="o">.</span><span class="n">unitvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Quaternion.exp"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
+<div class="viewcode-block" id="Quaternion.exp"><a class="viewcode-back" href="../../3d_quaternion.html#spatialmath.quaternion.Quaternion.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Exponential of quaternion</span>
 
-<span class="sd">        :param tol: Tolerance when checking for pure quaternion, in multiples of eps, defaults to 100</span>
+<span class="sd">        :param tol: Tolerance when checking for pure quaternion, in multiples of eps, defaults to 20</span>
 <span class="sd">        :type tol: float, optional</span>
 <span class="sd">        :rtype: Quaternion instance</span>
 
@@ -1074,7 +1074,9 @@
                         <span class="c1"># UnitQuaternion(R) R is 3x3 rotation matrix</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">smb</span><span class="o">.</span><span class="n">r2q</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid rotation matrix provided to UnitQuaternion constructor&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;invalid rotation matrix provided to UnitQuaternion constructor&quot;</span>
+                        <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,):</span>
                     <span class="c1"># passed a 4-vector</span>
                     <span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
@@ -2404,7 +2406,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Nov-2023.
+      <span class="lastupdated">Last updated on 01-Dec-2023.
       </span></p>
   </div>
 

@@ -373,7 +373,9 @@
             <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span>
             <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R must be an SO(2) or SO(3) rotation matrix, not </span><span class="si">{</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;R must be an SO(2) or SO(3) rotation matrix, not </span><span class="si">{</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">T</span></div>
 
@@ -431,13 +433,13 @@
 <span class="c1"># ======================= predicates</span>
 
 
-<div class="viewcode-block" id="isR"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isR">[docs]</a><span class="k">def</span> <span class="nf">isR</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># -&gt; TypeGuard[SOnArray]:</span>
+<div class="viewcode-block" id="isR"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isR">[docs]</a><span class="k">def</span> <span class="nf">isR</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># -&gt; TypeGuard[SOnArray]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to SO(n)</span>
 
 <span class="sd">    :param R: matrix to test</span>
 <span class="sd">    :type R: ndarray(2,2) or ndarray(3,3)</span>
-<span class="sd">    :param tol: tolerance in units of eps, defaults to 100</span>
+<span class="sd">    :param tol: tolerance in units of eps, defaults to 20</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper orthonormal rotation matrix</span>
 <span class="sd">    :rtype: bool</span>
@@ -460,13 +462,13 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isskew"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isskew">[docs]</a><span class="k">def</span> <span class="nf">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># -&gt; TypeGuard[sonArray]:</span>
+<div class="viewcode-block" id="isskew"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isskew">[docs]</a><span class="k">def</span> <span class="nf">isskew</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># -&gt; TypeGuard[sonArray]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to so(n)</span>
 
 <span class="sd">    :param S: matrix to test</span>
 <span class="sd">    :type S: ndarray(2,2) or ndarray(3,3)</span>
-<span class="sd">    :param tol: tolerance in units of eps, defaults to 10</span>
+<span class="sd">    :param tol: tolerance in units of eps, defaults to 20</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper skew-symmetric matrix</span>
 <span class="sd">    :rtype: bool</span>
@@ -487,13 +489,13 @@
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">S</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="o">*</span> <span class="n">_eps</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isskewa"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isskewa">[docs]</a><span class="k">def</span> <span class="nf">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># -&gt; TypeGuard[senArray]:</span>
+<div class="viewcode-block" id="isskewa"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.isskewa">[docs]</a><span class="k">def</span> <span class="nf">isskewa</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># -&gt; TypeGuard[senArray]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix belongs to se(n)</span>
 
 <span class="sd">    :param S: matrix to test</span>
 <span class="sd">    :type S: ndarray(3,3) or ndarray(4,4)</span>
-<span class="sd">    :param tol: tolerance in units of eps, defaults to 10</span>
+<span class="sd">    :param tol: tolerance in units of eps, defaults to 20</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper skew-symmetric matrix</span>
 <span class="sd">    :rtype: bool</span>
@@ -517,18 +519,18 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="iseye"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.iseye">[docs]</a><span class="k">def</span> <span class="nf">iseye</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="iseye"><a class="viewcode-back" href="../../../func_nd.html#spatialmath.base.transformsNd.iseye">[docs]</a><span class="k">def</span> <span class="nf">iseye</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test if matrix is identity</span>
 
 <span class="sd">    :param S: matrix to test</span>
 <span class="sd">    :type S: ndarray(n,n)</span>
-<span class="sd">    :param tol: tolerance in units of eps, defaults to 10</span>
+<span class="sd">    :param tol: tolerance in units of eps, defaults to 20</span>
 <span class="sd">    :type tol: float</span>
 <span class="sd">    :return: whether matrix is a proper skew-symmetric matrix</span>
 <span class="sd">    :rtype: bool</span>
 
-<span class="sd">    Check if matrix is an identity matrix. </span>
+<span class="sd">    Check if matrix is an identity matrix.</span>
 <span class="sd">    We check that the sum of the absolute value of the residual is less than ``tol * eps``.</span>
 
 <span class="sd">    .. runblock:: pycon</span>
@@ -946,7 +948,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 30-Nov-2023.
+      <span class="lastupdated">Last updated on 01-Dec-2023.
       </span></p>
   </div>
 
