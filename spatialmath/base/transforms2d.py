@@ -324,7 +324,7 @@ def pos2tr2(x, y=None):
     return T
 
 
-def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(SE2):
+def ishom2(T: Any, check: bool = False, tol: float = 20) -> bool:  # TypeGuard(SE2):
     """
     Test if matrix belongs to SE(2)
 
@@ -332,7 +332,7 @@ def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
     :type T: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 20
     :type: float
     :return: whether matrix is an SE(2) homogeneous transformation matrix
     :rtype: bool
@@ -358,11 +358,14 @@ def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
     return (
         isinstance(T, np.ndarray)
         and T.shape == (3, 3)
-        and (not check or (smb.isR(T[:2, :2], tol=tol) and all(T[2, :] == np.array([0, 0, 1]))))
+        and (
+            not check
+            or (smb.isR(T[:2, :2], tol=tol) and all(T[2, :] == np.array([0, 0, 1])))
+        )
     )
 
 
-def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(SO2):
+def isrot2(R: Any, check: bool = False, tol: float = 20) -> bool:  # TypeGuard(SO2):
     """
     Test if matrix belongs to SO(2)
 
@@ -370,7 +373,7 @@ def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
     :type R: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 20
     :type: float
     :return: whether matrix is an SO(2) rotation matrix
     :rtype: bool
@@ -392,7 +395,11 @@ def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
 
     :seealso: isR, ishom2, isrot
     """
-    return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or smb.isR(R, tol=tol))
+    return (
+        isinstance(R, np.ndarray)
+        and R.shape == (2, 2)
+        and (not check or smb.isR(R, tol=tol))
+    )
 
 
 # ---------------------------------------------------------------------------------------#
@@ -438,7 +445,7 @@ def trlog2(
     T: SO2Array,
     twist: bool = False,
     check: bool = True,
-    tol: float = 10,
+    tol: float = 20,
 ) -> so2Array:
     ...
 
@@ -448,7 +455,7 @@ def trlog2(
     T: SE2Array,
     twist: bool = False,
     check: bool = True,
-    tol: float = 10,
+    tol: float = 20,
 ) -> se2Array:
     ...
 
@@ -458,7 +465,7 @@ def trlog2(
     T: SO2Array,
     twist: bool = True,
     check: bool = True,
-    tol: float = 10,
+    tol: float = 20,
 ) -> float:
     ...
 
@@ -468,7 +475,7 @@ def trlog2(
     T: SE2Array,
     twist: bool = True,
     check: bool = True,
-    tol: float = 10,
+    tol: float = 20,
 ) -> R3:
     ...
 
@@ -477,7 +484,7 @@ def trlog2(
     T: Union[SO2Array, SE2Array],
     twist: bool = False,
     check: bool = True,
-    tol: float = 10,
+    tol: float = 20,
 ) -> Union[float, R3, so2Array, se2Array]:
     """
     Logarithm of SO(2) or SE(2) matrix
@@ -488,7 +495,7 @@ def trlog2(
     :type check: bool
     :param twist: return a twist vector instead of matrix [default]
     :type twist: bool
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 20
     :type: float
     :return: logarithm
     :rtype: ndarray(3,3) or ndarray(3); or ndarray(2,2) or ndarray(1)
@@ -1016,13 +1023,13 @@ def trprint2(
     return s
 
 
-def _vec2s(fmt: str, v: ArrayLikePure, tol: float = 100) -> str:
+def _vec2s(fmt: str, v: ArrayLikePure, tol: float = 20) -> str:
     """
     Return a string representation for vector using the provided fmt.
 
     :param fmt: format string for each value in v
     :type fmt: str
-    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 100
+    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 20
     :type tol: float, optional
     :return: string representation for the vector
     :rtype: str

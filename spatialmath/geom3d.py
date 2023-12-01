@@ -176,13 +176,13 @@ class Plane3:
         """
         return self.plane[3]
 
-    def contains(self, p: ArrayLike3, tol: float = 10) -> bool:
+    def contains(self, p: ArrayLike3, tol: float = 20) -> bool:
         """
         Test if point in plane
 
         :param p: A 3D point
         :type p: array_like(3)
-        :param tol: tolerance in units of eps, defaults to 10
+        :param tol: tolerance in units of eps, defaults to 20
         :type tol: float
         :return: if the point is in the plane
         :rtype: bool
@@ -618,14 +618,14 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #
 
     def contains(
-        self, x: Union[R3, Points3], tol: float = 50
+        self, x: Union[R3, Points3], tol: float = 20
     ) -> Union[bool, List[bool]]:
         """
         Test if points are on the line
 
         :param x: 3D point
         :type x: 3-element array_like, or ndarray(3,N)
-        :param tol: Tolerance in units of eps, defaults to 50
+        :param tol: Tolerance in units of eps, defaults to 20
         :type tol: float, optional
         :raises ValueError: Bad argument
         :return: Whether point is on the line
@@ -649,14 +649,14 @@ class Line3(BasePoseList):
             raise ValueError("bad argument")
 
     def isequal(
-        l1, l2: Line3, tol: float = 10  # type: ignore
+        l1, l2: Line3, tol: float = 20  # type: ignore
     ) -> bool:  # pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
 
         :param l2: Second line
         :type l2: ``Line3``
-        :param tol: Tolerance in multiples of eps, defaults to 10
+        :param tol: Tolerance in multiples of eps, defaults to 20
         :type tol: float, optional
         :return: lines are equivalent
         :rtype: bool
@@ -672,14 +672,14 @@ class Line3(BasePoseList):
         )
 
     def isparallel(
-        l1, l2: Line3, tol: float = 10  # type: ignore
+        l1, l2: Line3, tol: float = 20  # type: ignore
     ) -> bool:  # pylint: disable=no-self-argument
         """
         Test if lines are parallel
 
         :param l2: Second line
         :type l2: ``Line3``
-        :param tol: Tolerance in multiples of eps, defaults to 10
+        :param tol: Tolerance in multiples of eps, defaults to 20
         :type tol: float, optional
         :return: lines are parallel
         :rtype: bool
@@ -693,14 +693,14 @@ class Line3(BasePoseList):
         return bool(np.linalg.norm(np.cross(l1.w, l2.w)) < tol * _eps)
 
     def isintersecting(
-        l1, l2: Line3, tol: float = 10  # type: ignore
+        l1, l2: Line3, tol: float = 20  # type: ignore
     ) -> bool:  # pylint: disable=no-self-argument
         """
         Test if lines are intersecting
 
         :param l2: Second line
         :type l2: Line3
-        :param tol: Tolerance in multiples of eps, defaults to 10
+        :param tol: Tolerance in multiples of eps, defaults to 20
         :type tol: float, optional
         :return: lines intersect
         :rtype: bool
@@ -826,14 +826,14 @@ class Line3(BasePoseList):
             return None
 
     def distance(
-        l1, l2: Line3, tol: float = 10  # type:ignore
+        l1, l2: Line3, tol: float = 20  # type:ignore
     ) -> float:  # pylint: disable=no-self-argument
         """
         Minimum distance between lines
 
         :param l2: Second line
         :type l2: ``Line3``
-        :param tol: Tolerance in multiples of eps, defaults to 10
+        :param tol: Tolerance in multiples of eps, defaults to 20
         :type tol: float, optional
         :return: Closest distance between lines
         :rtype: float
@@ -1075,14 +1075,14 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #
 
     def intersect_plane(
-        self, plane: Union[ArrayLike4, Plane3], tol: float = 100
+        self, plane: Union[ArrayLike4, Plane3], tol: float = 20
     ) -> Tuple[R3, float]:
         r"""
         Line intersection with a plane
 
         :param plane: A plane
         :type plane: array_like(4) or Plane3
-        :param tol: Tolerance in multiples of eps, defaults to 10
+        :param tol: Tolerance in multiples of eps, defaults to 20
         :type tol: float, optional
         :return: Intersection point, λ
         :rtype: ndarray(3), float

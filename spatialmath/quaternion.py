@@ -396,11 +396,11 @@ class Quaternion(BasePoseList):
         v = math.acos(self.s / norm) * smb.unitvec(self.v)
         return Quaternion(s=s, v=v)
 
-    def exp(self, tol: float=100) -> Quaternion:
+    def exp(self, tol: float = 20) -> Quaternion:
         r"""
         Exponential of quaternion
 
-        :param tol: Tolerance when checking for pure quaternion, in multiples of eps, defaults to 100
+        :param tol: Tolerance when checking for pure quaternion, in multiples of eps, defaults to 20
         :type tol: float, optional
         :rtype: Quaternion instance
 
@@ -996,7 +996,9 @@ class UnitQuaternion(Quaternion):
                         # UnitQuaternion(R) R is 3x3 rotation matrix
                         self.data = [smb.r2q(s)]
                     else:
-                        raise ValueError("invalid rotation matrix provided to UnitQuaternion constructor")
+                        raise ValueError(
+                            "invalid rotation matrix provided to UnitQuaternion constructor"
+                        )
                 elif s.shape == (4,):
                     # passed a 4-vector
                     if norm:

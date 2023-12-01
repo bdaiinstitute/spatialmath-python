@@ -295,7 +295,9 @@ def rt2tr(R, t, check=False):
             T[:3, :3] = R
             T[:3, 3] = t
         else:
-            raise ValueError(f"R must be an SO(2) or SO(3) rotation matrix, not {R.shape}")
+            raise ValueError(
+                f"R must be an SO(2) or SO(3) rotation matrix, not {R.shape}"
+            )
 
     return T
 
@@ -353,13 +355,13 @@ def Ab2M(A: np.ndarray, b: np.ndarray) -> np.ndarray:
 # ======================= predicates
 
 
-def isR(R: NDArray, tol: float = 100) -> bool:  # -> TypeGuard[SOnArray]:
+def isR(R: NDArray, tol: float = 20) -> bool:  # -> TypeGuard[SOnArray]:
     r"""
     Test if matrix belongs to SO(n)
 
     :param R: matrix to test
     :type R: ndarray(2,2) or ndarray(3,3)
-    :param tol: tolerance in units of eps, defaults to 100
+    :param tol: tolerance in units of eps, defaults to 20
     :type tol: float
     :return: whether matrix is a proper orthonormal rotation matrix
     :rtype: bool
@@ -382,13 +384,13 @@ def isR(R: NDArray, tol: float = 100) -> bool:  # -> TypeGuard[SOnArray]:
     )
 
 
-def isskew(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[sonArray]:
+def isskew(S: NDArray, tol: float = 20) -> bool:  # -> TypeGuard[sonArray]:
     r"""
     Test if matrix belongs to so(n)
 
     :param S: matrix to test
     :type S: ndarray(2,2) or ndarray(3,3)
-    :param tol: tolerance in units of eps, defaults to 10
+    :param tol: tolerance in units of eps, defaults to 20
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool
@@ -409,13 +411,13 @@ def isskew(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[sonArray]:
     return bool(np.linalg.norm(S + S.T) < tol * _eps)
 
 
-def isskewa(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[senArray]:
+def isskewa(S: NDArray, tol: float = 20) -> bool:  # -> TypeGuard[senArray]:
     r"""
     Test if matrix belongs to se(n)
 
     :param S: matrix to test
     :type S: ndarray(3,3) or ndarray(4,4)
-    :param tol: tolerance in units of eps, defaults to 10
+    :param tol: tolerance in units of eps, defaults to 20
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool
@@ -439,18 +441,18 @@ def isskewa(S: NDArray, tol: float = 10) -> bool:  # -> TypeGuard[senArray]:
     )
 
 
-def iseye(S: NDArray, tol: float = 10) -> bool:
+def iseye(S: NDArray, tol: float = 20) -> bool:
     """
     Test if matrix is identity
 
     :param S: matrix to test
     :type S: ndarray(n,n)
-    :param tol: tolerance in units of eps, defaults to 10
+    :param tol: tolerance in units of eps, defaults to 20
     :type tol: float
     :return: whether matrix is a proper skew-symmetric matrix
     :rtype: bool
 
-    Check if matrix is an identity matrix. 
+    Check if matrix is an identity matrix.
     We check that the sum of the absolute value of the residual is less than ``tol * eps``.
 
     .. runblock:: pycon

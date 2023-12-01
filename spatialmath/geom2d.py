@@ -121,13 +121,13 @@ class Line2:
         """
         smb.plot_homline(self.line, **kwargs)
 
-    def intersect(self, other: Line2, tol: float = 10) -> R3:
+    def intersect(self, other: Line2, tol: float = 20) -> R3:
         """
         Intersection with line
 
         :param other: another 2D line
         :type other: Line2
-        :param tol: tolerance in units of eps, defaults to 10
+        :param tol: tolerance in units of eps, defaults to 20
         :type tol: float
         :return: intersection point in homogeneous form
         :rtype: ndarray(3)
@@ -140,13 +140,13 @@ class Line2:
         c = np.cross(self.line, other.line)
         return abs(c[2]) > tol * _eps
 
-    def contains(self, p: ArrayLike2, tol: float = 10) -> bool:
+    def contains(self, p: ArrayLike2, tol: float = 20) -> bool:
         """
         Test if point is in line
 
         :param p1: point to test
         :type p1: array_like(2) or array_like(3)
-        :param tol: tolerance in units of eps, defaults to 10
+        :param tol: tolerance in units of eps, defaults to 20
         :type tol: float
         :return: True if point lies in the line
         :rtype: bool
@@ -158,7 +158,9 @@ class Line2:
 
     # variant that gives lambda
 
-    def intersect_segment(self, p1: ArrayLike2, p2: ArrayLike2, tol: float = 10) -> bool:
+    def intersect_segment(
+        self, p1: ArrayLike2, p2: ArrayLike2, tol: float = 20
+    ) -> bool:
         """
         Test for line intersecting line segment
 
@@ -166,7 +168,7 @@ class Line2:
         :type p1: array_like(2) or array_like(3)
         :param p2: end of line segment
         :type p2: array_like(2) or array_like(3)
-        :param tol: tolerance in units of eps, defaults to 10
+        :param tol: tolerance in units of eps, defaults to 20
         :type tol: float
         :return: True if they intersect
         :rtype: bool
@@ -1122,7 +1124,7 @@ class Ellipse:
         """
         Approximate with a polygon
 
-        :param resolution: number of polygon vertices, defaults to 10
+        :param resolution: number of polygon vertices, defaults to 20
         :type resolution: int, optional
         :return: a polygon approximating the ellipse
         :rtype: :class:`Polygon2` instance

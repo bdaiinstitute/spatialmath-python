@@ -349,14 +349,14 @@ def transl(x, y=None, z=None):
     return T
 
 
-def ishom(T: Any, check: bool = False, tol: float = 100) -> bool:
+def ishom(T: Any, check: bool = False, tol: float = 20) -> bool:
     """
     Test if matrix belongs to SE(3)
 
     :param T: SE(3) matrix to test
     :type T: numpy(4,4)
     :param check: check validity of rotation submatrix
-    :param tol: Tolerance in units of eps for rotation submatrix check, defaults to 100
+    :param tol: Tolerance in units of eps for rotation submatrix check, defaults to 20
     :return: whether matrix is an SE(3) homogeneous transformation matrix
 
     - ``ishom(T)`` is True if the argument ``T`` is of dimension 4x4
@@ -387,14 +387,14 @@ def ishom(T: Any, check: bool = False, tol: float = 100) -> bool:
     )
 
 
-def isrot(R: Any, check: bool = False, tol: float = 100) -> bool:
+def isrot(R: Any, check: bool = False, tol: float = 20) -> bool:
     """
     Test if matrix belongs to SO(3)
 
     :param R: SO(3) matrix to test
     :type R: numpy(3,3)
     :param check: check validity of rotation submatrix
-    :param tol: Tolerance in units of eps for rotation matrix test, defaults to 100
+    :param tol: Tolerance in units of eps for rotation matrix test, defaults to 20
     :return: whether matrix is an SO(3) rotation matrix
 
     - ``isrot(R)`` is True if the argument ``R`` is of dimension 3x3
@@ -713,7 +713,7 @@ def eul2tr(
 # ---------------------------------------------------------------------------------------#
 
 
-def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 10) -> SO3Array:
+def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 20) -> SO3Array:
     """
     Create an SO(3) rotation matrix from rotation angle and axis
 
@@ -723,7 +723,7 @@ def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 10) -> SO3Arr
     :type unit: str
     :param v: 3D rotation axis
     :type v: array_like(3)
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 20
     :type: float
     :return: SO(3) rotation matrix
     :rtype: ndarray(3,3)
@@ -1046,7 +1046,7 @@ def tr2eul(
     unit: str = "rad",
     flip: bool = False,
     check: bool = False,
-    tol: float = 10,
+    tol: float = 20,
 ) -> R3:
     r"""
     Convert SO(3) or SE(3) to ZYX Euler angles
@@ -1059,7 +1059,7 @@ def tr2eul(
     :type flip: bool
     :param check: check that rotation matrix is valid
     :type check: bool
-    :param tol: Tolerance in units of eps for near-zero checks, defaults to 10
+    :param tol: Tolerance in units of eps for near-zero checks, defaults to 20
     :type: float
     :return: ZYZ Euler angles
     :rtype: ndarray(3)
@@ -1129,7 +1129,7 @@ def tr2rpy(
     unit: str = "rad",
     order: str = "zyx",
     check: bool = False,
-    tol: float = 10,
+    tol: float = 20,
 ) -> R3:
     r"""
     Convert SO(3) or SE(3) to roll-pitch-yaw angles
@@ -1142,7 +1142,7 @@ def tr2rpy(
     :type order: str
     :param check: check that rotation matrix is valid
     :type check: bool
-    :param tol: Tolerance in units of eps, defaults to 10
+    :param tol: Tolerance in units of eps, defaults to 20
     :type: float
     :return: Roll-pitch-yaw angles
     :rtype: ndarray(3)
@@ -1271,25 +1271,25 @@ def tr2rpy(
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
 def trlog(
-    T: SO3Array, check: bool = True, twist: bool = False, tol: float = 10
+    T: SO3Array, check: bool = True, twist: bool = False, tol: float = 20
 ) -> so3Array:
     ...
 
 
 @overload  # pragma: no cover
 def trlog(
-    T: SE3Array, check: bool = True, twist: bool = False, tol: float = 10
+    T: SE3Array, check: bool = True, twist: bool = False, tol: float = 20
 ) -> se3Array:
     ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SO3Array, check: bool = True, twist: bool = True, tol: float = 10) -> R3:
+def trlog(T: SO3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R3:
     ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SE3Array, check: bool = True, twist: bool = True, tol: float = 10) -> R6:
+def trlog(T: SE3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R6:
     ...
 
 
@@ -1297,7 +1297,7 @@ def trlog(
     T: Union[SO3Array, SE3Array],
     check: bool = True,
     twist: bool = False,
-    tol: float = 10,
+    tol: float = 20,
 ) -> Union[R3, R6, so3Array, se3Array]:
     """
     Logarithm of SO(3) or SE(3) matrix
@@ -1308,7 +1308,7 @@ def trlog(
     :type check: bool
     :param twist: return a twist vector instead of matrix [default]
     :type twist: bool
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 20
     :type: float
     :return: logarithm
     :rtype: ndarray(4,4) or ndarray(3,3)
