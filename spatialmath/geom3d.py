@@ -618,14 +618,14 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #
 
     def contains(
-        self, x: Union[R3, Points3], tol: float = 50
+        self, x: Union[R3, Points3], tol: float = 10
     ) -> Union[bool, List[bool]]:
         """
         Test if points are on the line
 
         :param x: 3D point
         :type x: 3-element array_like, or ndarray(3,N)
-        :param tol: Tolerance in units of eps, defaults to 50
+        :param tol: Tolerance in units of eps, defaults to 10
         :type tol: float, optional
         :raises ValueError: Bad argument
         :return: Whether point is on the line
@@ -1075,7 +1075,7 @@ class Line3(BasePoseList):
     # ------------------------------------------------------------------------- #
 
     def intersect_plane(
-        self, plane: Union[ArrayLike4, Plane3], tol: float = 100
+        self, plane: Union[ArrayLike4, Plane3], tol: float = 10
     ) -> Tuple[R3, float]:
         r"""
         Line intersection with a plane

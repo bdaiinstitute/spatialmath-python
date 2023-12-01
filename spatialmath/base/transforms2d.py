@@ -324,7 +324,7 @@ def pos2tr2(x, y=None):
     return T
 
 
-def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(SE2):
+def ishom2(T: Any, check: bool = False, tol: float = 10) -> bool:  # TypeGuard(SE2):
     """
     Test if matrix belongs to SE(2)
 
@@ -332,7 +332,7 @@ def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
     :type T: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
     :type: float
     :return: whether matrix is an SE(2) homogeneous transformation matrix
     :rtype: bool
@@ -358,11 +358,14 @@ def ishom2(T: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
     return (
         isinstance(T, np.ndarray)
         and T.shape == (3, 3)
-        and (not check or (smb.isR(T[:2, :2], tol=tol) and all(T[2, :] == np.array([0, 0, 1]))))
+        and (
+            not check
+            or (smb.isR(T[:2, :2], tol=tol) and all(T[2, :] == np.array([0, 0, 1])))
+        )
     )
 
 
-def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(SO2):
+def isrot2(R: Any, check: bool = False, tol: float = 10) -> bool:  # TypeGuard(SO2):
     """
     Test if matrix belongs to SO(2)
 
@@ -370,7 +373,7 @@ def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
     :type R: ndarray(3,3)
     :param check: check validity of rotation submatrix
     :type check: bool
-    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 100
+    :param tol: Tolerance in units of eps for zero-rotation case, defaults to 10
     :type: float
     :return: whether matrix is an SO(2) rotation matrix
     :rtype: bool
@@ -392,7 +395,11 @@ def isrot2(R: Any, check: bool = False, tol: float = 100) -> bool:  # TypeGuard(
 
     :seealso: isR, ishom2, isrot
     """
-    return isinstance(R, np.ndarray) and R.shape == (2, 2) and (not check or smb.isR(R, tol=tol))
+    return (
+        isinstance(R, np.ndarray)
+        and R.shape == (2, 2)
+        and (not check or smb.isR(R, tol=tol))
+    )
 
 
 # ---------------------------------------------------------------------------------------#
@@ -1016,13 +1023,13 @@ def trprint2(
     return s
 
 
-def _vec2s(fmt: str, v: ArrayLikePure, tol: float = 100) -> str:
+def _vec2s(fmt: str, v: ArrayLikePure, tol: float = 10) -> str:
     """
     Return a string representation for vector using the provided fmt.
 
     :param fmt: format string for each value in v
     :type fmt: str
-    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 100
+    :param tol: Tolerance when checking for near-zero values, in multiples of eps, defaults to 10
     :type tol: float, optional
     :return: string representation for the vector
     :rtype: str

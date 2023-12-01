@@ -142,13 +142,13 @@ def colvec(v: ArrayLike) -> NDArray:
     return np.array(v).reshape((len(v), 1))
 
 
-def unitvec(v: ArrayLike, tol: float = 100) -> NDArray:
+def unitvec(v: ArrayLike, tol: float = 10) -> NDArray:
     """
     Create a unit vector
 
     :param v: any vector
     :type v: array_like(n)
-    :param tol: Tolerance in units of eps for zero-norm case, defaults to 100
+    :param tol: Tolerance in units of eps for zero-norm case, defaults to 10
     :type: float
     :return: a unit-vector parallel to ``v``.
     :rtype: ndarray(n)
@@ -174,13 +174,13 @@ def unitvec(v: ArrayLike, tol: float = 100) -> NDArray:
         raise ValueError("zero norm vector")
 
 
-def unitvec_norm(v: ArrayLike, tol: float = 100) -> Tuple[NDArray, float]:
+def unitvec_norm(v: ArrayLike, tol: float = 10) -> Tuple[NDArray, float]:
     """
     Create a unit vector
 
     :param v: any vector
     :type v: array_like(n)
-    :param tol: Tolerance in units of eps for zero-norm case, defaults to 100
+    :param tol: Tolerance in units of eps for zero-norm case, defaults to 10
     :type: float
     :return: a unit-vector parallel to ``v`` and the norm
     :rtype: (ndarray(n), float)
@@ -392,7 +392,9 @@ def unittwist(S: ArrayLike6, tol: float = 10) -> Union[R6, None]:
     return S / th
 
 
-def unittwist_norm(S: Union[R6, ArrayLike6], tol: float = 10) -> Tuple[Union[R6, None], Union[float, None]]:
+def unittwist_norm(
+    S: Union[R6, ArrayLike6], tol: float = 10
+) -> Tuple[Union[R6, None], Union[float, None]]:
     """
     Convert twist to unit twist and norm
 
@@ -478,7 +480,9 @@ def unittwist2(S: ArrayLike3, tol: float = 10) -> Union[R3, None]:
     return S / th
 
 
-def unittwist2_norm(S: ArrayLike3, tol: float = 10) -> Tuple[Union[R3, None], Union[float, None]]:
+def unittwist2_norm(
+    S: ArrayLike3, tol: float = 10
+) -> Tuple[Union[R3, None], Union[float, None]]:
     """
     Convert twist to unit twist
 
@@ -785,13 +789,13 @@ def vector_diff(v1: ArrayLike, v2: ArrayLike, mode: str) -> NDArray:
     return v
 
 
-def removesmall(v: ArrayLike, tol: float = 100) -> NDArray:
+def removesmall(v: ArrayLike, tol: float = 10) -> NDArray:
     """
     Set small values to zero
 
     :param v: any vector
     :type v: array_like(n) or ndarray(n,m)
-    :param tol: Tolerance in units of eps, defaults to 100
+    :param tol: Tolerance in units of eps, defaults to 10
     :type tol: int, optional
     :return: vector with small values set to zero
     :rtype: ndarray(n) or ndarray(n,m)
