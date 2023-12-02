@@ -1,4 +1,3 @@
-
 import unittest
 import numpy.testing as nt
 import numpy as np
@@ -55,8 +54,8 @@ class TestSpatialVector(unittest.TestCase):
 
         s = str(a)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 0)
-        self.assertTrue(s.startswith('SpatialVelocity'))
+        self.assertEqual(s.count("\n"), 0)
+        self.assertTrue(s.startswith("SpatialVelocity"))
 
         r = np.random.rand(6, 10)
         a = SpatialVelocity(r)
@@ -70,11 +69,11 @@ class TestSpatialVector(unittest.TestCase):
         self.assertIsInstance(b, SpatialVector)
         self.assertIsInstance(b, SpatialM6)
         self.assertEqual(len(b), 1)
-        self.assertTrue(all(b.A == r[:,3]))
+        self.assertTrue(all(b.A == r[:, 3]))
 
         s = str(a)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 9)
+        self.assertEqual(s.count("\n"), 9)
 
     def test_acceleration(self):
         a = SpatialAcceleration([1, 2, 3, 4, 5, 6])
@@ -93,8 +92,8 @@ class TestSpatialVector(unittest.TestCase):
 
         s = str(a)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 0)
-        self.assertTrue(s.startswith('SpatialAcceleration'))
+        self.assertEqual(s.count("\n"), 0)
+        self.assertTrue(s.startswith("SpatialAcceleration"))
 
         r = np.random.rand(6, 10)
         a = SpatialAcceleration(r)
@@ -108,14 +107,12 @@ class TestSpatialVector(unittest.TestCase):
         self.assertIsInstance(b, SpatialVector)
         self.assertIsInstance(b, SpatialM6)
         self.assertEqual(len(b), 1)
-        self.assertTrue(all(b.A == r[:,3]))
+        self.assertTrue(all(b.A == r[:, 3]))
 
         s = str(a)
         self.assertIsInstance(s, str)
 
-
     def test_force(self):
-
         a = SpatialForce([1, 2, 3, 4, 5, 6])
         self.assertIsInstance(a, SpatialForce)
         self.assertIsInstance(a, SpatialVector)
@@ -132,8 +129,8 @@ class TestSpatialVector(unittest.TestCase):
 
         s = str(a)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 0)
-        self.assertTrue(s.startswith('SpatialForce'))
+        self.assertEqual(s.count("\n"), 0)
+        self.assertTrue(s.startswith("SpatialForce"))
 
         r = np.random.rand(6, 10)
         a = SpatialForce(r)
@@ -153,7 +150,6 @@ class TestSpatialVector(unittest.TestCase):
         self.assertIsInstance(s, str)
 
     def test_momentum(self):
-
         a = SpatialMomentum([1, 2, 3, 4, 5, 6])
         self.assertIsInstance(a, SpatialMomentum)
         self.assertIsInstance(a, SpatialVector)
@@ -170,8 +166,8 @@ class TestSpatialVector(unittest.TestCase):
 
         s = str(a)
         self.assertIsInstance(s, str)
-        self.assertEqual(s.count('\n'), 0)
-        self.assertTrue(s.startswith('SpatialMomentum'))
+        self.assertEqual(s.count("\n"), 0)
+        self.assertTrue(s.startswith("SpatialMomentum"))
 
         r = np.random.rand(6, 10)
         a = SpatialMomentum(r)
@@ -190,9 +186,7 @@ class TestSpatialVector(unittest.TestCase):
         s = str(a)
         self.assertIsInstance(s, str)
 
-
     def test_arith(self):
-
         # just test SpatialVelocity since all types derive from same superclass
 
         r1 = np.r_[1, 2, 3, 4, 5, 6]
@@ -206,8 +200,23 @@ class TestSpatialVector(unittest.TestCase):
 
     def test_inertia(self):
         # constructor
+        i0 = SpatialInertia()
+        nt.assert_equal(i0.A, np.zeros((6, 6)))
+
+        i1 = SpatialInertia(np.eye(6, 6))
+        nt.assert_equal(i1.A, np.eye(6, 6))
+
+        i2 = SpatialInertia(m=1, r=(1, 2, 3))
+        nt.assert_almost_equal(i2.A, i2.A.T)
+
+        i3 = SpatialInertia(m=1, r=(1, 2, 3), I=np.ones((3, 3)))
+        nt.assert_almost_equal(i3.A, i3.A.T)
+
         # addition
-        pass
+        m_a, m_b = 1.1, 2.2
+        r = (1, 2, 3)
+        i4a, i4b = SpatialInertia(m=m_a, r=r), SpatialInertia(m=m_b, r=r)
+        nt.assert_almost_equal((i4a + i4b).A, SpatialInertia(m=m_a + m_b, r=r).A)
 
     def test_products(self):
         # v x v = a  *, v x F6 = a
@@ -218,6 +227,5 @@ class TestSpatialVector(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     unittest.main()
