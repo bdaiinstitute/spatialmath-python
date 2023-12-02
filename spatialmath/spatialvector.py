@@ -590,6 +590,7 @@ class SpatialInertia(BasePoseList):
         """
         return self.shape == x.shape
 
+    @property
     def shape(self):
         """
         Shape of the object's interal matrix representation

@@ -218,6 +218,9 @@ class TestSpatialVector(unittest.TestCase):
         i4a, i4b = SpatialInertia(m=m_a, r=r), SpatialInertia(m=m_b, r=r)
         nt.assert_almost_equal((i4a + i4b).A, SpatialInertia(m=m_a + m_b, r=r).A)
 
+        # isvalid - note this method is very barebone, to be improved
+        self.assertTrue(SpatialInertia().isvalid(np.ones((6, 6)), check=False))
+
     def test_products(self):
         # v x v = a  *, v x F6 = a
         # a x I, I x a
