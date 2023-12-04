@@ -393,7 +393,7 @@ class Quaternion(BasePoseList):
         """
         norm = self.norm()
         s = math.log(norm)
-        v = math.acos(min(1.0, self.s / norm)) * smb.unitvec(self.v)
+        v = math.acos(np.clip(self.s / norm, -1, 1)) * smb.unitvec(self.v)
         return Quaternion(s=s, v=v)
 
     def exp(self, tol: float = 20) -> Quaternion:
