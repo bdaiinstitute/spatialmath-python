@@ -543,7 +543,7 @@ class SpatialInertia(BasePoseList):
         :param I: inertia about the centre of mass, axes aligned with link frame
         :type I: numpy.array, shape=(6,6)
 
-        - ``SpatialInertia(m, r I)`` is a spatial inertia object for a rigid-body
+        - ``SpatialInertia(m, r, I)`` is a spatial inertia object for a rigid-body
           with mass ``m``, centre of mass at ``r`` relative to the link frame, and an
           inertia matrix ``I`` (3x3) about the centre of mass.
 
@@ -588,8 +588,9 @@ class SpatialInertia(BasePoseList):
         :return: True if the matrix has shape (6,6).
         :rtype: bool
         """
-        return self.shape == SpatialVector.shape
+        return self.shape == x.shape
 
+    @property
     def shape(self):
         """
         Shape of the object's interal matrix representation
@@ -603,7 +604,6 @@ class SpatialInertia(BasePoseList):
         return SpatialInertia(self.data[i])
 
     def __repr__(self):
-
         """
         Convert to string
 
@@ -634,7 +634,7 @@ class SpatialInertia(BasePoseList):
         """
         if not isinstance(right, SpatialInertia):
             raise TypeError("can only add spatial inertia to spatial inertia")
-        return SpatialInertia(left.I + left.I)
+        return SpatialInertia(left.A + right.A)
 
     def __mul__(
         left, right
@@ -682,7 +682,6 @@ class SpatialInertia(BasePoseList):
 
 
 if __name__ == "__main__":
-
     import numpy.testing as nt
     import pathlib
 
