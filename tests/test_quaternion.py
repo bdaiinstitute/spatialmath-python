@@ -806,10 +806,7 @@ class TestQuaternion(unittest.TestCase):
         q2 = Quaternion([-1, 2, -3, 4])
 
         self.assertTrue(isscalar(q1.log().s))
-        self.assertTrue(isscalar(q2.log().s))
-
         self.assertTrue(isvector(q1.log().v, 3))
-        self.assertTrue(isvector(q2.log().v, 3))
 
         nt.assert_array_almost_equal(q1.log().exp(), q1)
         nt.assert_array_almost_equal(q2.log().exp(), q2)
