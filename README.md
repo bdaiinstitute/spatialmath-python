@@ -277,8 +277,8 @@ t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
 
 For more detail checkout the shipped Python notebooks:
 
-* [gentle introduction](https://github.com/bdaiinstitute/spatialmath-python/blob/master/spatialmath/gentle-introduction.ipynb)
-* [deeper introduction](https://github.com/bdaiinstitute/spatialmath-python/blob/master/spatialmath/introduction.ipynb)
+* [gentle introduction](https://github.com/bdaiinstitute/spatialmath-python/blob/master/notebooks/gentle-introduction.ipynb)
+* [deeper introduction](https://github.com/bdaiinstitute/spatialmath-python/blob/master/notebooks/introduction.ipynb)
 
 
 You can browse it statically through the links above, or clone the toolbox and run them interactively using [Jupyter](https://jupyter.org) or [JupyterLab](https://jupyter.org).

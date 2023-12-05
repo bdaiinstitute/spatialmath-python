@@ -497,8 +497,16 @@ class TestUnitQuaternion(unittest.TestCase):
 
     def test_angle(self):
         # angle between quaternions
-        # pure
-        v = [5, 6, 7]
+        uq1 = UnitQuaternion.Rx(0.1)
+        uq2 = UnitQuaternion.Ry(0.1)
+        for metric in range(5):
+            self.assertEqual(uq1.angdist(other=uq1, metric=metric), 0.0)
+            self.assertEqual(uq2.angdist(other=uq2, metric=metric), 0.0)
+            self.assertEqual(
+                uq1.angdist(other=uq2, metric=metric),
+                uq2.angdist(other=uq1, metric=metric),
+            )
+            self.assertTrue(uq1.angdist(other=uq2, metric=metric) > 0)
 
     def test_conversions(self):
         # , 3 angle
@@ -793,8 +801,15 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(exp(log(q1)), q1)
         nt.assert_array_almost_equal(exp(log(q2)), q2)
 
-        # nt.assert_array_almost_equal(log(exp(q1)), q1)
-        # nt.assert_array_almost_equal(log(exp(q2)), q2)
+    def test_log(self):
+        q1 = Quaternion([4, 3, 2, 1])
+        q2 = Quaternion([-1, 2, -3, 4])
+
+        self.assertTrue(isscalar(q1.log().s))
+        self.assertTrue(isvector(q1.log().v, 3))
+
+        nt.assert_array_almost_equal(q1.log().exp(), q1)
+        nt.assert_array_almost_equal(q2.log().exp(), q2)
 
     def test_concat(self):
         u = Quaternion()

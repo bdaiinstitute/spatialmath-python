@@ -393,7 +393,7 @@ class Quaternion(BasePoseList):
         """
         norm = self.norm()
         s = math.log(norm)
-        v = math.acos(self.s / norm) * smb.unitvec(self.v)
+        v = math.acos(np.clip(self.s / norm, -1, 1)) * smb.unitvec(self.v)
         return Quaternion(s=s, v=v)
 
     def exp(self, tol: float = 20) -> Quaternion:
@@ -2242,9 +2242,9 @@ class UnitQuaternion(Quaternion):
         if metric == 0:
             measure = lambda p, q: 1 - abs(np.dot(p, q))
         elif metric == 1:
-            measure = lambda p, q: math.acos(abs(np.dot(p, q)))
+            measure = lambda p, q: math.acos(min(1.0, abs(np.dot(p, q))))
         elif metric == 2:
-            measure = lambda p, q: math.acos(abs(np.dot(p, q)))
+            measure = lambda p, q: math.acos(min(1.0, abs(np.dot(p, q))))
         elif metric == 3:
 
             def metric3(p, q):
@@ -2257,7 +2257,7 @@ class UnitQuaternion(Quaternion):
 
             measure = metric3
         elif metric == 4:
-            measure = lambda p, q: math.acos(2 * np.dot(p, q) ** 2 - 1)
+            measure = lambda p, q: math.acos(min(1.0, 2 * np.dot(p, q) ** 2 - 1))
 
         ad = self.binop(other, measure)
         if len(ad) == 1:
