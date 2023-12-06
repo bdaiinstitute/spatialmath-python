@@ -380,7 +380,7 @@ def isR(R: NDArray, tol: float = 20) -> bool:  # -> TypeGuard[SOnArray]:
     """
     return bool(
         np.linalg.norm(R @ R.T - np.eye(R.shape[0])) < tol * _eps
-        and np.linalg.det(R @ R.T) > 0
+        and np.linalg.det(R) > 0
     )
 
 
