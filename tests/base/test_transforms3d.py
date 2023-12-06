@@ -61,6 +61,14 @@ class Test3D(unittest.TestCase):
         nt.assert_equal(isrot(T, True), False)
         nt.assert_equal(ishom(T, True), False)
 
+        # reflection case
+        T = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        nt.assert_equal(isR(T), False)
+        nt.assert_equal(isrot(T), True)
+        nt.assert_equal(ishom(T), False)
+        nt.assert_equal(isrot(T, True), False)
+        nt.assert_equal(ishom(T, True), False)
+
     def test_trinv(self):
         T = np.eye(4)
         nt.assert_array_almost_equal(trinv(T), T)
