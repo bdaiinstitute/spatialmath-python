@@ -1683,7 +1683,8 @@ class BasePoseMatrix(BasePoseList):
                 return op(left.A, right)
             else:
                 return [op(x, right) for x in left.A]
-
+        else:
+            raise ValueError(f'Invalid type ({right.__class__}) for binary operation with {left.__class__}')
 
 if __name__ == "__main__":
     from spatialmath import SE3, SE2, SO2
