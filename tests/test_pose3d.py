@@ -1260,6 +1260,35 @@ class TestSE3(unittest.TestCase):
         array_compare(a[1], ry - 1)
         array_compare(a[2], rz - 1)
 
+    def test_angle(self):
+        # angle between SO3's
+        r1 = SO3.Rx(0.1)
+        r2 = SO3.Rx(0.2)
+        for metric in range(6):
+            self.assertAlmostEqual(r1.angdist(other=r1, metric=metric), 0.0)
+            self.assertGreater(r1.angdist(other=r2, metric=metric), 0.0)
+            self.assertAlmostEqual(
+                r1.angdist(other=r2, metric=metric), r2.angdist(other=r1, metric=metric)
+            )
+        # angle between SE3's
+        p1a, p1b = SE3.Rx(0.1), SE3.Rx(0.1, t=(1, 2, 3))
+        p2a, p2b = SE3.Rx(0.2), SE3.Rx(0.2, t=(3, 2, 1))
+        for metric in range(6):
+            self.assertAlmostEqual(p1a.angdist(other=p1a, metric=metric), 0.0)
+            self.assertGreater(p1a.angdist(other=p2a, metric=metric), 0.0)
+            self.assertAlmostEqual(p1a.angdist(other=p1b, metric=metric), 0.0)
+            self.assertAlmostEqual(
+                p1a.angdist(other=p2a, metric=metric),
+                p2a.angdist(other=p1a, metric=metric),
+            )
+            self.assertAlmostEqual(
+                p1a.angdist(other=p2a, metric=metric),
+                p1a.angdist(other=p2b, metric=metric),
+            )
+        # angle between mismatched types
+        with self.assertRaises(ValueError):
+            _ = r1.angdist(p1a)
+
     def test_functions(self):
         # inv
         # .T
