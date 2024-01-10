@@ -1657,7 +1657,7 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        if isinstance(right, left.__class__):
+        if isinstance(right, left.__class__) or isinstance(left, right.__class__):
             # class by class
             if len(left) == 1:
                 if len(right) == 1:
@@ -1683,6 +1683,10 @@ class BasePoseMatrix(BasePoseList):
                 return op(left.A, right)
             else:
                 return [op(x, right) for x in left.A]
+        else:
+            raise TypeError(
+                f"Invalid type ({right.__class__}) for binary operation with {left.__class__}"
+            )
 
 
 if __name__ == "__main__":
