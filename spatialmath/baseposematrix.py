@@ -1657,7 +1657,7 @@ class BasePoseMatrix(BasePoseList):
         =========   ==========   ====  ================================
 
         """
-        if right.__class__ is left.__class__:
+        if isinstance(right, left.__class__) or isinstance(left, right.__class__):
             # class by class
             if len(left) == 1:
                 if len(right) == 1:
