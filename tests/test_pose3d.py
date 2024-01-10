@@ -1285,16 +1285,19 @@ class TestSE3(unittest.TestCase):
                 p1a.angdist(other=p2a, metric=metric),
                 p1a.angdist(other=p2b, metric=metric),
             )
-        # not allowing angdist between mismatched types
+        # angdist is not implemented for mismatched types
         with self.assertRaises(ValueError):
             _ = r1.angdist(p1a)
 
-        # in general, the _op2 interface allows same type only
         with self.assertRaises(ValueError):
             _ = r1._op2(right=p1a, op=r1.angdist)
 
         with self.assertRaises(ValueError):
             _ = p1a._op2(right=r1, op=p1a.angdist)
+
+        # in general, the _op2 interface enforces an isinstance check.
+        with self.assertRaises(TypeError):
+            _ = r1._op2(right=(1, 0, 0), op=r1.angdist)
 
     def test_functions(self):
         # inv
