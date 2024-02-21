@@ -979,6 +979,11 @@ class UnitQuaternion(Quaternion):
         """
         super().__init__()
 
+        # handle: UnitQuaternion(v)`` constructs a unit quaternion with specified elements 
+        # from ``v`` which is a 4-vector given as a list, tuple, or ndarray(4)
+        if s is None and smb.isvector(v, 4):
+            v,s = (s,v)
+
         if v is None:
             # single argument
             if super().arghandler(s, check=check):

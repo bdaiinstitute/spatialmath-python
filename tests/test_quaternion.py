@@ -70,6 +70,9 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(2, [0, 0, 0]), np.r_[1, 0, 0, 0])
         qcompare(UnitQuaternion(-2, [0, 0, 0]), np.r_[1, 0, 0, 0])
 
+        qcompare(UnitQuaternion([1, 2, 3, 4]), UnitQuaternion(v = [1, 2, 3, 4]))
+        qcompare(UnitQuaternion(s = 1, v = [2, 3, 4]), UnitQuaternion(v = [1, 2, 3, 4]))
+
         # from R
 
         qcompare(UnitQuaternion(np.eye(3)), [1, 0, 0, 0])
