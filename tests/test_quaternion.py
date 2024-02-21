@@ -756,6 +756,9 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(Quaternion(2, [0, 0, 0]).vec, [2, 0, 0, 0])
         nt.assert_array_almost_equal(Quaternion(-2, [0, 0, 0]).vec, [-2, 0, 0, 0])
 
+        qcompare(Quaternion([1, 2, 3, 4]), Quaternion(v = [1, 2, 3, 4]))
+        qcompare(Quaternion(s = 1, v = [2, 3, 4]), Quaternion(v = [1, 2, 3, 4]))
+
         # pure
         v = [5, 6, 7]
         nt.assert_array_almost_equal(

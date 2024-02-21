@@ -77,6 +77,9 @@ class Quaternion(BasePoseList):
         """
         super().__init__()
 
+        if s is None and smb.isvector(v, 4):
+            v,s = (s,v)
+
         if v is None:
             # single argument
             if super().arghandler(s, check=False):
