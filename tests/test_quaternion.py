@@ -70,6 +70,9 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(2, [0, 0, 0]), np.r_[1, 0, 0, 0])
         qcompare(UnitQuaternion(-2, [0, 0, 0]), np.r_[1, 0, 0, 0])
 
+        qcompare(UnitQuaternion([1, 2, 3, 4]), UnitQuaternion(v = [1, 2, 3, 4]))
+        qcompare(UnitQuaternion(s = 1, v = [2, 3, 4]), UnitQuaternion(v = [1, 2, 3, 4]))
+
         # from R
 
         qcompare(UnitQuaternion(np.eye(3)), [1, 0, 0, 0])
@@ -752,6 +755,9 @@ class TestQuaternion(unittest.TestCase):
 
         nt.assert_array_almost_equal(Quaternion(2, [0, 0, 0]).vec, [2, 0, 0, 0])
         nt.assert_array_almost_equal(Quaternion(-2, [0, 0, 0]).vec, [-2, 0, 0, 0])
+
+        qcompare(Quaternion([1, 2, 3, 4]), Quaternion(v = [1, 2, 3, 4]))
+        qcompare(Quaternion(s = 1, v = [2, 3, 4]), Quaternion(v = [1, 2, 3, 4]))
 
         # pure
         v = [5, 6, 7]
