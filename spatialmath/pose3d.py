@@ -34,6 +34,9 @@ from spatialmath.pose2d import SE2
 
 from spatialmath.twist import Twist3
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from spatialmath.quaternion import UnitQuaternion
 
 # ============================== SO3 =====================================#
 
@@ -833,6 +836,29 @@ class SO3(BasePoseMatrix):
             return cls([smb.trexp(s, check=check) for s in S], check=False)
         else:
             return cls(smb.trexp(cast(R3, S), check=check), check=False)
+
+    def UnitQuaternion(self) -> UnitQuaternion:
+        """
+            SO3 as a unit quaternion instance
+
+            :return: a unit quaternion representation
+            :rtype: UnitQuaternion instance
+
+            ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
+            as the SO3 rotation ``R``.
+
+            Example:
+
+            .. runblock:: pycon
+
+                >>> from spatialmath import SO3
+                >>> SO3.Rz(0.3).UnitQuaternion()
+
+            """
+        # Function level import to avoid circular dependencies
+        from spatialmath import UnitQuaternion
+
+        return UnitQuaternion(smb.r2q(self.R), check=False)
 
     def angdist(self, other: SO3, metric: int = 6) -> Union[float, ndarray]:
         r"""
