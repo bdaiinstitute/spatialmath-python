@@ -153,8 +153,8 @@ The implementation of composition depends on the class:
 * for unit-quaternions composition is the Hamilton product of the underlying vector value,
 * for twists it is the logarithm of the product of exponentiating the two twists
 
-The ``**`` operator denotes repeated composition, so the exponent must be an integer.  If the negative exponent the repeated multiplication
-is performed then the inverse is taken.
+The ``**`` operator denotes repeated composition, so the exponent must be an integer.  If the exponent is negative, repeated multiplication
+is performed and then the inverse is taken.
 
 The group inverse is given by the ``inv()`` method:
 
@@ -214,6 +214,8 @@ or, in the case of a scalar, broadcast to each element:
 .. runblock:: pycon
 
     >>> from spatialmath import *
+    >>> T = SE3()
+    >>> T
     >>> T - 1
     >>> 2 * T
 
@@ -609,7 +611,7 @@ column vectors.
 .. runblock:: pycon
 
     >>> from spatialmath.base import *
-    >>> q = quat.qqmul([1,2,3,4], [5,6,7,8])
+    >>> q = qqmul([1,2,3,4], [5,6,7,8])
     >>> q
     >>> qprint(q)
     >>> qnorm(q)
