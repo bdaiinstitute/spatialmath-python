@@ -336,8 +336,8 @@ The operator <code class="docutils literal notranslate"><span class="pre">*</spa
 <li><p>for unit-quaternions composition is the Hamilton product of the underlying vector value,</p></li>
 <li><p>for twists it is the logarithm of the product of exponentiating the two twists</p></li>
 </ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">**</span></code> operator denotes repeated composition, so the exponent must be an integer.  If the negative exponent the repeated multiplication
-is performed then the inverse is taken.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">**</span></code> operator denotes repeated composition, so the exponent must be an integer.  If the exponent is negative, repeated multiplication
+is performed and then the inverse is taken.</p>
 <p>The group inverse is given by the <code class="docutils literal notranslate"><span class="pre">inv()</span></code> method:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rx</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
@@ -403,8 +403,23 @@ performed elementwise, for example:</p>
 </pre></div>
 </div>
 <p>or, in the case of a scalar, broadcast to each element:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;T&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="n">SE3</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span>
+<span class="go">SE3(array([[1., 0., 0., 0.],</span>
+<span class="go">           [0., 1., 0., 0.],</span>
+<span class="go">           [0., 0., 1., 0.],</span>
+<span class="go">           [0., 0., 0., 1.]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="go">array([[ 0., -1., -1., -1.],</span>
+<span class="go">       [-1.,  0., -1., -1.],</span>
+<span class="go">       [-1., -1.,  0., -1.],</span>
+<span class="go">       [-1., -1., -1.,  0.]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">2</span> <span class="o">*</span> <span class="n">T</span>
+<span class="go">array([[2., 0., 0., 0.],</span>
+<span class="go">       [0., 2., 0., 0.],</span>
+<span class="go">       [0., 0., 2., 0.],</span>
+<span class="go">       [0., 0., 0., 2.]])</span>
 </pre></div>
 </div>
 <p>The exception is the <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> class which supports these since a
@@ -437,7 +452,7 @@ listing to the console, file and returns a string:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">SE3</span><span class="o">.</span><span class="n">Rand</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">printline</span><span class="p">()</span>
-<span class="go">t = -0.651, 0.923, 0.545; rpy/zyx = -122°, 16°, -34°</span>
+<span class="go">t = -0.0632, 0.752, 0.87; rpy/zyx = -94.6°, -7.93°, 95.6°</span>
 </pre></div>
 </div>
 <p>The classes <code class="docutils literal notranslate"><span class="pre">SE3</span></code>, <code class="docutils literal notranslate"><span class="pre">SO3</span></code>, <code class="docutils literal notranslate"><span class="pre">SE2</span></code> and <code class="docutils literal notranslate"><span class="pre">SO2</span></code> can provide colorized text output to the console:</p>
@@ -1022,14 +1037,14 @@ which is equivalent to the MATLAB <code class="docutils literal notranslate"><sp
 unit quaternions. In both cases, the representation is a NumPy array of four elements.
 As above, functions can accept a NumPy array, a list, dict or NumPy row or
 column vectors.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span>  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;q&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;q&#39; is not defined</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;input&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">NameError</span>: <span class="n">name &#39;q&#39; is not defined</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">spatialmath.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">qqmul</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
+<span class="go">array([-60.,  12.,  30.,  24.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprint</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">-60.0000 &lt;  12.0000,  30.0000,  24.0000 &gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qnorm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="go">72.24956747275377</span>
 </pre></div>
 </div>
 <p>Functions exist to convert to and from SO(3) rotation matrices and a minimal 3-vector
@@ -1196,7 +1211,7 @@ equivalents are.  Vectorization is done by the classes.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 23-Feb-2024.
+      <span class="lastupdated">Last updated on 18-Apr-2024.
       </span></p>
   </div>
 
