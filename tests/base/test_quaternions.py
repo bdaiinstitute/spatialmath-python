@@ -131,6 +131,13 @@ class TestQuaternion(unittest.TestCase):
         )
         nt.assert_array_almost_equal(qvmul([0, 1, 0, 0], [0, 0, 1]), np.r_[0, 0, -1])
 
+        large_rotation = math.pi + 0.01
+        q1 = r2q(tr.rotx(large_rotation), shortest=False)
+        q2 = r2q(tr.rotx(large_rotation), shortest=True)
+        self.assertLess(q1[0], 0)
+        self.assertGreater(q2[0], 0)
+        self.assertTrue(qisequal(q1=q1, q2=q2, unitq=True))
+
     def test_slerp(self):
         q1 = np.r_[0, 1, 0, 0]
         q2 = np.r_[0, 0, 1, 0]

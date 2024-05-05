@@ -434,7 +434,7 @@ class BasePoseMatrix(BasePoseList):
         if self.N == 2:
             # SO(2) or SE(2)
             return self.__class__(
-                [smb.trinterp2(start=self.A, end=end, s=_s) for _s in s]
+                [smb.trinterp2(start=self.A, end=end, s=_s, shortest=shortest) for _s in s]
             )
 
         elif self.N == 3:

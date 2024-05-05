@@ -549,7 +549,7 @@ def r2q(
     check: Optional[bool] = False,
     tol: float = 20,
     order: Optional[str] = "sxyz",
-    shortest: bool = True,
+    shortest: bool = False,
 ) -> UnitQuaternionArray:
     """
     Convert SO(3) rotation matrix to unit-quaternion
@@ -564,7 +564,7 @@ def r2q(
         'xyzs'. Defaults to 'sxyz'.
     :type order: str
     :param shortest: ensures the quaternion has non-negative scalar part.
-    :type shortest: bool, default to True
+    :type shortest: bool, default to False
     :return: unit-quaternion as Euler parameters
     :rtype: ndarray(4)
     :raises ValueError: for non SO(3) argument

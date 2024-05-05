@@ -943,6 +943,10 @@ def trinterp2(start, end, s, shortest: bool = True):
 
             th0 = math.atan2(start[1, 0], start[0, 0])
             th1 = math.atan2(end[1, 0], end[0, 0])
+            if shortest:
+                delta = (th1 - th0 + math.pi) % (math.pi * 2) - math.pi
+                delta = delta + math.pi * 2 if delta < -math.pi else delta
+                th1 = th0 + delta
 
             p0 = transl2(start)
             p1 = transl2(end)
