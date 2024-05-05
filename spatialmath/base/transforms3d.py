@@ -1605,16 +1605,16 @@ def trnorm(T: SE3Array) -> SE3Array:
 
 
 @overload
-def trinterp(start: Optional[SO3Array], end: SO3Array, s: float) -> SO3Array:
+def trinterp(start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True) -> SO3Array:
     ...
 
 
 @overload
-def trinterp(start: Optional[SE3Array], end: SE3Array, s: float) -> SE3Array:
+def trinterp(start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True) -> SE3Array:
     ...
 
 
-def trinterp(start, end, s):
+def trinterp(start, end, s, shortest=True):
     """
     Interpolate SE(3) matrices
 
@@ -1624,6 +1624,8 @@ def trinterp(start, end, s):
     :type end: ndarray(4,4) or ndarray(3,3)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
+    :param shortest: take the shortest path along the great circle for the rotation
+    :type shortest: bool, default to True
     :return: interpolated SE(3) or SO(3) matrix value
     :rtype: ndarray(4,4) or ndarray(3,3)
     :raises ValueError: bad arguments
@@ -1663,12 +1665,12 @@ def trinterp(start, end, s):
         if start is None:
             # 	TRINTERP(T, s)
             q0 = r2q(end)
-            qr = qslerp(qeye(), q0, s)
+            qr = qslerp(qeye(), q0, s, shortest=shortest)
         else:
             # 	TRINTERP(T0, T1, s)
             q0 = r2q(start)
             q1 = r2q(end)
-            qr = qslerp(q0, q1, s)
+            qr = qslerp(q0, q1, s, shortest=shortest)
 
         return q2r(qr)
 
@@ -1679,7 +1681,7 @@ def trinterp(start, end, s):
             q0 = r2q(t2r(end))
             p0 = transl(end)
 
-            qr = qslerp(qeye(), q0, s)
+            qr = qslerp(qeye(), q0, s, shortest=shortest)
             pr = s * p0
         else:
             # 	TRINTERP(T0, T1, s)
@@ -1689,7 +1691,7 @@ def trinterp(start, end, s):
             p0 = transl(start)
             p1 = transl(end)
 
-            qr = qslerp(q0, q1, s)
+            qr = qslerp(q0, q1, s, shortest=shortest)
             pr = p0 * (1 - s) + s * p1
 
         return rt2tr(q2r(qr), pr)
