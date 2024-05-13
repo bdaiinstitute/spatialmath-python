@@ -853,16 +853,16 @@ def tr2jac2(T: SE2Array) -> R3x3:
 
 
 @overload
-def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float) -> SO2Array:
+def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float, shortest: bool = True) -> SO2Array:
     ...
 
 
 @overload
-def trinterp2(start: Optional[SE2Array], end: SE2Array, s: float) -> SE2Array:
+def trinterp2(start: Optional[SE2Array], end: SE2Array, s: float, shortest: bool = True) -> SE2Array:
     ...
 
 
-def trinterp2(start, end, s):
+def trinterp2(start, end, s, shortest: bool = True):
     """
     Interpolate SE(2) or SO(2) matrices
 
@@ -872,6 +872,8 @@ def trinterp2(start, end, s):
     :type end: ndarray(3,3) or ndarray(2,2)
     :param s: interpolation coefficient, range 0 to 1
     :type s: float
+    :param shortest: take the shortest path along the great circle for the rotation
+    :type shortest: bool, default to True
     :return: interpolated SE(2) or SO(2) matrix value
     :rtype: ndarray(3,3) or ndarray(2,2)
     :raises ValueError: bad arguments
@@ -917,6 +919,8 @@ def trinterp2(start, end, s):
 
             th0 = math.atan2(start[1, 0], start[0, 0])
             th1 = math.atan2(end[1, 0], end[0, 0])
+            if shortest:
+                th1 = th0 + smb.wrap_mpi_pi(th1 - th0)
 
             th = th0 * (1 - s) + s * th1
 
@@ -937,6 +941,8 @@ def trinterp2(start, end, s):
 
             th0 = math.atan2(start[1, 0], start[0, 0])
             th1 = math.atan2(end[1, 0], end[0, 0])
+            if shortest:
+                th1 = th0 + smb.wrap_mpi_pi(th1 - th0)
 
             p0 = transl2(start)
             p1 = transl2(end)
