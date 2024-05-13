@@ -931,16 +931,16 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SO2Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO2Array</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SO2Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SO2Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO2Array</span><span class="p">:</span>
     <span class="o">...</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE2Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE2Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SE2Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE2Array</span><span class="p">:</span>
     <span class="o">...</span>
 
 
-<div class="viewcode-block" id="trinterp2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trinterp2">[docs]</a><span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="trinterp2"><a class="viewcode-back" href="../../../func_2d.html#spatialmath.base.transforms2d.trinterp2">[docs]</a><span class="k">def</span> <span class="nf">trinterp2</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolate SE(2) or SO(2) matrices</span>
 
@@ -950,6 +950,8 @@
 <span class="sd">    :type end: ndarray(3,3) or ndarray(2,2)</span>
 <span class="sd">    :param s: interpolation coefficient, range 0 to 1</span>
 <span class="sd">    :type s: float</span>
+<span class="sd">    :param shortest: take the shortest path along the great circle for the rotation</span>
+<span class="sd">    :type shortest: bool, default to True</span>
 <span class="sd">    :return: interpolated SE(2) or SO(2) matrix value</span>
 <span class="sd">    :rtype: ndarray(3,3) or ndarray(2,2)</span>
 <span class="sd">    :raises ValueError: bad arguments</span>
@@ -995,6 +997,8 @@
 
             <span class="n">th0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
             <span class="n">th1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">shortest</span><span class="p">:</span>
+                <span class="n">th1</span> <span class="o">=</span> <span class="n">th0</span> <span class="o">+</span> <span class="n">smb</span><span class="o">.</span><span class="n">wrap_mpi_pi</span><span class="p">(</span><span class="n">th1</span> <span class="o">-</span> <span class="n">th0</span><span class="p">)</span>
 
             <span class="n">th</span> <span class="o">=</span> <span class="n">th0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">th1</span>
 
@@ -1015,6 +1019,8 @@
 
             <span class="n">th0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
             <span class="n">th1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">shortest</span><span class="p">:</span>
+                <span class="n">th1</span> <span class="o">=</span> <span class="n">th0</span> <span class="o">+</span> <span class="n">smb</span><span class="o">.</span><span class="n">wrap_mpi_pi</span><span class="p">(</span><span class="n">th1</span> <span class="o">-</span> <span class="n">th0</span><span class="p">)</span>
 
             <span class="n">p0</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
             <span class="n">p1</span> <span class="o">=</span> <span class="n">transl2</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
