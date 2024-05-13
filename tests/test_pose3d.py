@@ -8,7 +8,7 @@ import pytest
 we will assume that the primitives rotx,trotx, etc. all work
 """
 from math import pi
-from spatialmath import SE3, SO3, SE2
+from spatialmath import SE3, SO3, SE2, UnitQuaternion
 import numpy as np
 from spatialmath.base import *
 from spatialmath.baseposematrix import BasePoseMatrix
@@ -232,6 +232,20 @@ class TestSO3(unittest.TestCase):
         nt.assert_almost_equal(R.det(), 1, 5)
         # x axis should equal normalized x vector
         nt.assert_almost_equal(R.R[:, 0], v3 / np.linalg.norm(v3), 5)
+
+    def test_conversion(self):
+        R = SO3.AngleAxis(0.7, [1,2,3])
+        q = UnitQuaternion([11,7,3,-6])
+
+        R_from_q = SO3(q.R)
+        q_from_R = UnitQuaternion(R)
+
+        nt.assert_array_almost_equal(R.UnitQuaternion(), q_from_R)
+        nt.assert_array_almost_equal(R.UnitQuaternion().SO3(), R)
+
+        nt.assert_array_almost_equal(q.SO3(), R_from_q)
+        nt.assert_array_almost_equal(q.SO3().UnitQuaternion(), q)
+
 
     def test_shape(self):
         a = SO3()
