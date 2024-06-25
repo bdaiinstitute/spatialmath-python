@@ -1,24 +1,16 @@
 # for Python >= 3.9
 
 from typing import (
-    overload,
-    cast,
     Union,
     List,
     Tuple,
-    Type,
-    TextIO,
     Any,
-    Callable,
-    Optional,
-    Iterator,
 )
 from typing import Literal as L
-from typing_extensions import Self
 
 import numpy as np
 from numpy import ndarray, dtype, floating
-from numpy.typing import NDArray, DTypeLike
+from numpy.typing import NDArray
 
 # array like
 

@@ -1,19 +1,10 @@
 # for Python <= 3.8
 
 from typing import (
-    overload,
     Union,
     List,
     Tuple,
-    Type,
-    TextIO,
-    Any,
-    Callable,
-    Optional,
-    Iterator,
 )
-from typing_extensions import Literal as L
-from typing_extensions import Self
 
 # array like
 
@@ -26,9 +17,7 @@ from typing_extensions import Self
 # possible in future versions of Python, but for now it is a hint to the coder about
 # what is expected
 
-from numpy.typing import DTypeLike, NDArray  # , ArrayLike
-
-from typing import cast
+from numpy.typing import NDArray
 
 # from typing import TypeVar
 # NDArray = TypeVar('NDArray')
