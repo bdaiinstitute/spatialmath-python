@@ -9,6 +9,7 @@ Created on Mon May 11 11:49:29 2020
 import unittest
 import numpy as np
 import numpy.testing as nt
+import math
 
 from spatialmath.base.argcheck import *
 
