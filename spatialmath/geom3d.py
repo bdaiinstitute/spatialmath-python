@@ -22,7 +22,8 @@ from spatialmath.base.types import (
 )
 from spatialmath.baseposelist import BasePoseList
 import warnings
-from typing import Union, Tuple, Optional, List, cast, overload, Self
+from typing import Union, Tuple, Optional, List, cast, overload
+from typing_extensions import Self
 from numpy.typing import NDArray
 
 _eps = np.finfo(np.float64).eps

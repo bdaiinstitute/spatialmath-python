@@ -45,7 +45,8 @@ from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
 from spatialmath.twist import Twist3
-from typing import TYPE_CHECKING, List, Tuple, Union, overload, Self, Optional, cast
+from typing import TYPE_CHECKING, List, Tuple, Union, overload, Optional, cast
+from typing_extensions import Self
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:

@@ -7,6 +7,7 @@ Created on Sun Jul  5 09:42:30 2020
 """
 from __future__ import annotations
 
+from typing_extensions import Self
 from functools import reduce
 import warnings
 import matplotlib.pyplot as plt
