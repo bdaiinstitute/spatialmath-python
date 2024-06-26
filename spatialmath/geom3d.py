@@ -8,9 +8,22 @@ import math
 from collections import namedtuple
 import matplotlib.pyplot as plt
 import spatialmath.base as base
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike,
+    ArrayLike3,
+    ArrayLike4,
+    ArrayLike6,
+    R3,
+    R6,
+    R3x3,
+    R4x4,
+    Points3,
+    Rn,
+)
 from spatialmath.baseposelist import BasePoseList
 import warnings
+from typing import Union, Tuple, Optional, List, cast, overload, Self
+from numpy.typing import NDArray
 
 _eps = np.finfo(np.float64).eps
 
@@ -253,12 +266,10 @@ class Line3(BasePoseList):
     __array_ufunc__ = None  # allow pose matrices operators with NumPy values
 
     @overload
-    def __init__(self, v: ArrayLike3, w: ArrayLike3):
-        ...
+    def __init__(self, v: ArrayLike3, w: ArrayLike3): ...
 
     @overload
-    def __init__(self, v: ArrayLike6):
-        ...
+    def __init__(self, v: ArrayLike6): ...
 
     def __init__(self, v=None, w=None, check=True):
         """

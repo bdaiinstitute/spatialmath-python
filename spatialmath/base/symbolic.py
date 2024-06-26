@@ -8,11 +8,13 @@ generalizes some common functions so that they can accept numerical or
 Symbolic arguments.
 
 If SymPy is not installed then only the standard numeric operations are
-supported. 
+supported.
 """
 
 import math
-from spatialmath.base.types import *
+
+from typing import Any, Optional, Tuple, Union, overload
+
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -94,13 +96,11 @@ def issymbol(var: Any) -> bool:
 
 
 @overload
-def sin(theta: float) -> float:
-    ...
+def sin(theta: float) -> float: ...
 
 
 @overload
-def sin(theta: Symbol) -> Symbol:
-    ...
+def sin(theta: Symbol) -> Symbol: ...
 
 
 def sin(theta):
@@ -128,13 +128,11 @@ def sin(theta):
 
 
 @overload
-def cos(theta: float) -> float:
-    ...
+def cos(theta: float) -> float: ...
 
 
 @overload
-def cos(theta: Symbol) -> Symbol:
-    ...
+def cos(theta: Symbol) -> Symbol: ...
 
 
 def cos(theta):
@@ -162,13 +160,11 @@ def cos(theta):
 
 
 @overload
-def tan(theta: float) -> float:
-    ...
+def tan(theta: float) -> float: ...
 
 
 @overload
-def tan(theta: Symbol) -> Symbol:
-    ...
+def tan(theta: Symbol) -> Symbol: ...
 
 
 def tan(theta):
@@ -196,13 +192,11 @@ def tan(theta):
 
 
 @overload
-def sqrt(theta: float) -> float:
-    ...
+def sqrt(theta: float) -> float: ...
 
 
 @overload
-def sqrt(theta: Symbol) -> Symbol:
-    ...
+def sqrt(theta: Symbol) -> Symbol: ...
 
 
 def sqrt(v):

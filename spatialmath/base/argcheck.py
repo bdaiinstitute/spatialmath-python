@@ -5,28 +5,24 @@
 
 """
 Utility functions for testing and converting passed arguments.  Used in all
-spatialmath functions and classes to provides for flexibility in argument types 
+spatialmath functions and classes to provides for flexibility in argument types
 that can be passed.
 """
 
 # pylint: disable=invalid-name
 
-import math
 import numpy as np
 from collections.abc import Iterable
+from typing import Union, List, Tuple, Any, Optional, Type, Callable, cast, overload
+from numpy.typing import DTypeLike, NDArray
 
 # from spatialmath.base import symbolic as sym # HACK
 from spatialmath.base.symbolic import issymbol, symtype
 
+from spatialmath.base.types import ArrayLike
+
 # valid scalar types
 _scalartypes = (int, np.integer, float, np.floating) + symtype
-
-# from typing import Union, List, Tuple, Any, Optional, Type, Callable
-# from numpy.typing import DTypeLike
-# Array = np.ndarray[Any, np.dtype[np.floating]]
-# ArrayLike = Union[float,List[float],Tuple,Array]  # various ways to represent R^3 for input
-
-from spatialmath.base.types import *
 
 
 def isscalar(x: Any) -> bool:
@@ -274,7 +270,8 @@ def verifymatrix(
         raise ValueError("incorrect matrix dimensions, expecting {0}".format(shape))
 
 
-# and not np.iscomplex(m) checks every element, would need to be not np.any(np.iscomplex(m)) which seems expensive
+# and not np.iscomplex(m) checks every element, would need to be not
+# np.any(np.iscomplex(m)) which seems expensive
 
 
 @overload
@@ -283,8 +280,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "array",
     dtype: DTypeLike = np.float64,
-) -> NDArray:
-    ...
+) -> NDArray: ...
 
 
 @overload
@@ -293,8 +289,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "list",
     dtype: DTypeLike = np.float64,
-) -> List[float]:
-    ...
+) -> List[float]: ...
 
 
 @overload
@@ -303,8 +298,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "sequence",
     dtype: DTypeLike = np.float64,
-) -> Tuple[float, ...]:
-    ...
+) -> Tuple[float, ...]: ...
 
 
 @overload
@@ -313,8 +307,7 @@ def getvector(
     dim: Optional[Union[int, None]] = None,
     out: str = "sequence",
     dtype: DTypeLike = np.float64,
-) -> List[float]:
-    ...
+) -> List[float]: ...
 
 
 def getvector(
@@ -510,8 +503,8 @@ def isvector(v: Any, dim: Optional[int] = None) -> bool:
         if dim is None:
             return (
                 (len(s) == 1 and s[0] > 0)
-                or (s[0] == 1 and s[1] > 0)
-                or (s[0] > 0 and s[1] == 1)
+                or (len(s) > 1 and s[0] == 1 and s[1] > 0)
+                or (len(s) > 1 and s[0] > 0 and s[1] == 1)
             )
         else:
             return s == (dim,) or s == (1, dim) or s == (dim, 1)

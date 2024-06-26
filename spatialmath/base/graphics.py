@@ -5,7 +5,19 @@ import numpy as np
 from matplotlib import colors
 
 from spatialmath import base as smb
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike,
+    ArrayLike2,
+    ArrayLike3,
+    ArrayLike4,
+    R2x2,
+    R3x3,
+    Points2,
+    SE3Array,
+    Color,
+)
+from typing import List, Optional, Union, Tuple, Callable, overload
+from numpy.typing import NDArray
 
 # To assist code portability to headless platforms, these graphics primitives
 # are defined as null functions.
@@ -1209,9 +1221,7 @@ try:
         z = height
         X, Z = np.meshgrid(x, z)
 
-        Y = (
-            np.sqrt(radius**2 - (X - centre[0]) ** 2) + centre[1]
-        )  # Pythagorean theorem
+        Y = np.sqrt(radius**2 - (X - centre[0]) ** 2) + centre[1]  # Pythagorean theorem
 
         handles = []
         handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
@@ -1482,8 +1492,7 @@ try:
         dimensions: int = 2,
         autoscale: Optional[bool] = True,
         new: Optional[bool] = False,
-    ) -> plt.Axes:
-        ...
+    ) -> plt.Axes: ...
 
     @overload
     def axes_logic(
@@ -1492,8 +1501,7 @@ try:
         projection: Optional[str] = "ortho",
         autoscale: Optional[bool] = True,
         new: Optional[bool] = False,
-    ) -> Axes3D:
-        ...
+    ) -> Axes3D: ...
 
     def axes_logic(
         ax: Union[plt.Axes, Axes3D, None],

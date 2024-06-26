@@ -2,7 +2,12 @@ from __future__ import annotations
 import numpy as np
 from spatialmath import Quaternion, UnitQuaternion, SE3
 from spatialmath import base
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike3,
+    R8,
+    R8x8,
+)
+from typing import Tuple, overload
 
 # TODO scalar multiplication
 
@@ -271,11 +276,9 @@ class UnitDualQuaternion(DualQuaternion):
     """
 
     @overload
-    def __init__(self, T: SE3):
-        ...
+    def __init__(self, T: SE3): ...
 
-    def __init__(self, real: Quaternion, dual: Quaternion):
-        ...
+    def __init__(self, real: Quaternion, dual: Quaternion): ...
 
     def __init__(self, real=None, dual=None):
         r"""

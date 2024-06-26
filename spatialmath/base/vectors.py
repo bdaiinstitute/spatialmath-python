@@ -14,7 +14,16 @@ tuple, numpy array, numpy row vector or numpy column vector.
 import math
 import numpy as np
 from spatialmath.base.argcheck import getvector
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike,
+    ArrayLikePure,
+    R3,
+    R6,
+    ArrayLike6,
+    ArrayLike3,
+)
+from typing import Tuple, Union, overload
+from numpy.typing import NDArray
 
 try:  # pragma: no cover
     # print('Using SymPy')
@@ -620,13 +629,11 @@ def wrap_mpi_pi(theta: ArrayLike) -> Union[float, NDArray]:
 
 
 @overload
-def angdiff(a: ArrayLike, b: ArrayLike) -> NDArray:
-    ...
+def angdiff(a: ArrayLike, b: ArrayLike) -> NDArray: ...
 
 
 @overload
-def angdiff(a: ArrayLike) -> NDArray:
-    ...
+def angdiff(a: ArrayLike) -> NDArray: ...
 
 
 def angdiff(a, b=None):

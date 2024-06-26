@@ -20,22 +20,15 @@ import spatialmath.base as smb
 from spatialmath.base import plot_ellipse
 from spatialmath.base.types import (
     Points2,
-    Optional,
     ArrayLike,
     ArrayLike2,
     ArrayLike3,
-    NDArray,
-    Union,
-    List,
-    Tuple,
     R2,
     R3,
     R4,
-    Iterator,
-    Tuple,
-    Self,
-    cast,
 )
+from typing import Optional, Tuple, Union, List, Iterator, cast
+from numpy.typing import NDArray
 
 _eps = np.finfo(np.float64).eps
 

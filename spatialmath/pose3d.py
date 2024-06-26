@@ -27,14 +27,27 @@ from __future__ import annotations
 import numpy as np
 
 import spatialmath.base as smb
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike,
+    ArrayLike2,
+    ArrayLike3,
+    ArrayLike6,
+    R3,
+    R6,
+    R3x3,
+    R4x4,
+    R6x6,
+    RNx3,
+    SO3Array,
+    SE3Array,
+)
 from spatialmath.base.vectors import orthogonalize
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
-
 from spatialmath.twist import Twist3
+from typing import TYPE_CHECKING, List, Tuple, Union, overload, Self, Optional, cast
+from numpy.typing import NDArray
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from spatialmath.quaternion import UnitQuaternion
 
@@ -54,28 +67,22 @@ class SO3(BasePoseMatrix):
     """
 
     @overload
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     @overload
-    def __init__(self, arg: SO3, *, check=True):
-        ...
+    def __init__(self, arg: SO3, *, check=True): ...
 
     @overload
-    def __init__(self, arg: SE3, *, check=True):
-        ...
+    def __init__(self, arg: SE3, *, check=True): ...
 
     @overload
-    def __init__(self, arg: SO3Array, *, check=True):
-        ...
+    def __init__(self, arg: SO3Array, *, check=True): ...
 
     @overload
-    def __init__(self, arg: List[SO3Array], *, check=True):
-        ...
+    def __init__(self, arg: List[SO3Array], *, check=True): ...
 
     @overload
-    def __init__(self, arg: List[Union[SO3, SO3Array]], *, check=True):
-        ...
+    def __init__(self, arg: List[Union[SO3, SO3Array]], *, check=True): ...
 
     def __init__(self, arg=None, *, check=True):
         """
@@ -341,7 +348,7 @@ class SO3(BasePoseMatrix):
         """
         theta, v = smb.tr2angvec(self.R)
         return theta * v
-    
+
     # ------------------------------------------------------------------------ #
 
     @staticmethod
@@ -481,13 +488,11 @@ class SO3(BasePoseMatrix):
 
     @overload
     @classmethod
-    def Eul(cls, *angles: float, unit: str = "rad") -> Self:
-        ...
+    def Eul(cls, *angles: float, unit: str = "rad") -> Self: ...
 
     @overload
     @classmethod
-    def Eul(cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad") -> Self:
-        ...
+    def Eul(cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad") -> Self: ...
 
     @classmethod
     def Eul(cls, *angles, unit: str = "rad") -> Self:
@@ -536,15 +541,13 @@ class SO3(BasePoseMatrix):
         *angles: float,
         unit: str = "rad",
         order="zyx",
-    ) -> Self:
-        ...
+    ) -> Self: ...
 
     @overload
     @classmethod
     def RPY(
         cls, *angles: Union[ArrayLike3, RNx3], unit: str = "rad", order="zyx"
-    ) -> Self:
-        ...
+    ) -> Self: ...
 
     @classmethod
     def RPY(cls, *angles, unit="rad", order="zyx"):
@@ -839,22 +842,22 @@ class SO3(BasePoseMatrix):
 
     def UnitQuaternion(self) -> UnitQuaternion:
         """
-            SO3 as a unit quaternion instance
+        SO3 as a unit quaternion instance
 
-            :return: a unit quaternion representation
-            :rtype: UnitQuaternion instance
+        :return: a unit quaternion representation
+        :rtype: UnitQuaternion instance
 
-            ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
-            as the SO3 rotation ``R``.
+        ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
+        as the SO3 rotation ``R``.
 
-            Example:
+        Example:
 
-            .. runblock:: pycon
+        .. runblock:: pycon
 
-                >>> from spatialmath import SO3
-                >>> SO3.Rz(0.3).UnitQuaternion()
+            >>> from spatialmath import SO3
+            >>> SO3.Rz(0.3).UnitQuaternion()
 
-            """
+        """
         # Function level import to avoid circular dependencies
         from spatialmath import UnitQuaternion
 
@@ -1235,11 +1238,11 @@ class SE3(SO3):
         """
         if len(self) == 1:
             if order == "zyx":
-                return SE2(self.x, self.y, self.rpy(order = order)[2])
+                return SE2(self.x, self.y, self.rpy(order=order)[2])
             elif order == "xyz":
-                return SE2(self.z, self.y, self.rpy(order = order)[2])
+                return SE2(self.z, self.y, self.rpy(order=order)[2])
             elif order == "yxz":
-                return SE2(self.z, self.x, self.rpy(order = order)[2])
+                return SE2(self.z, self.x, self.rpy(order=order)[2])
         else:
             return SE2([e.yaw_SE2() for e in self])
 
@@ -1557,12 +1560,10 @@ class SE3(SO3):
         )
 
     @overload
-    def Eul(cls, phi: float, theta: float, psi: float, unit: str = "rad") -> SE3:
-        ...
+    def Eul(cls, phi: float, theta: float, psi: float, unit: str = "rad") -> SE3: ...
 
     @overload
-    def Eul(cls, angles: ArrayLike3, unit: str = "rad") -> SE3:
-        ...
+    def Eul(cls, angles: ArrayLike3, unit: str = "rad") -> SE3: ...
 
     @classmethod
     def Eul(cls, *angles, unit="rad") -> SE3:
@@ -1607,12 +1608,10 @@ class SE3(SO3):
             return cls([smb.eul2tr(a, unit=unit) for a in angles], check=False)
 
     @overload
-    def RPY(cls, roll: float, pitch: float, yaw: float, unit: str = "rad") -> SE3:
-        ...
+    def RPY(cls, roll: float, pitch: float, yaw: float, unit: str = "rad") -> SE3: ...
 
     @overload
-    def RPY(cls, angles: ArrayLike3, unit: str = "rad") -> SE3:
-        ...
+    def RPY(cls, angles: ArrayLike3, unit: str = "rad") -> SE3: ...
 
     @classmethod
     def RPY(cls, *angles, unit="rad", order="zyx") -> SE3:
@@ -1837,12 +1836,10 @@ class SE3(SO3):
         return cls(smb.trnorm(smb.delta2tr(d)))
 
     @overload
-    def Trans(cls, x: float, y: float, z: float) -> SE3:
-        ...
+    def Trans(cls, x: float, y: float, z: float) -> SE3: ...
 
     @overload
-    def Trans(cls, xyz: ArrayLike3) -> SE3:
-        ...
+    def Trans(cls, xyz: ArrayLike3) -> SE3: ...
 
     @classmethod
     def Trans(cls, x, y=None, z=None) -> SE3:
@@ -1983,11 +1980,7 @@ class SE3(SO3):
         return cls(smb.rt2tr(R, t, check=check), check=check)
 
     @classmethod
-    def CopyFrom(
-        cls,
-        T: SE3Array,
-        check: bool = True
-    ) -> SE3:
+    def CopyFrom(cls, T: SE3Array, check: bool = True) -> SE3:
         """
         Create an SE(3) from a 4x4 numpy array that is passed by value.
 

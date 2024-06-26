@@ -14,7 +14,17 @@ import sys
 import math
 import numpy as np
 import spatialmath.base as smb
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike3,
+    ArrayLike4,
+    R3,
+    R4x4,
+    SO3Array,
+    QuaternionArray,
+    UnitQuaternionArray,
+)
+
+from typing import Union, Optional, Tuple, overload, TextIO
 
 _eps = np.finfo(np.float64).eps
 
@@ -176,8 +186,7 @@ def qisequal(
     q2: ArrayLike4,
     tol: float = 20,
     unitq: Optional[bool] = False,
-) -> bool:
-    ...
+) -> bool: ...
 
 
 @overload
@@ -186,8 +195,7 @@ def qisequal(
     q2: ArrayLike4,
     tol: float = 20,
     unitq: Optional[bool] = True,
-) -> bool:
-    ...
+) -> bool: ...
 
 
 def qisequal(q1, q2, tol: float = 20, unitq: Optional[bool] = False):

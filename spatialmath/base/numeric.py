@@ -1,7 +1,13 @@
 import re
 import numpy as np
 from spatialmath import base
-from spatialmath.base.types import *
+from spatialmath.base.types import (
+    ArrayLike,
+    ArrayLike2,
+    Points2,
+)
+from numpy.typing import NDArray
+from typing import Callable, Tuple
 
 # this is a collection of useful algorithms, not otherwise categorized
 
@@ -373,11 +379,7 @@ def gauss1d(mu: float, var: float, x: ArrayLike):
     sigma = np.sqrt(var)
     x = base.getvector(x)
 
-    return (
-        1.0
-        / np.sqrt(sigma**2 * 2 * np.pi)
-        * np.exp(-((x - mu) ** 2) / 2 / sigma**2)
-    )
+    return 1.0 / np.sqrt(sigma**2 * 2 * np.pi) * np.exp(-((x - mu) ** 2) / 2 / sigma**2)
 
 
 def gauss2d(mu: ArrayLike2, P: NDArray, X: NDArray, Y: NDArray) -> NDArray:
