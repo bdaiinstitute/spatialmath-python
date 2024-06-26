@@ -96,7 +96,7 @@
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.argcheck</span> <span class="kn">import</span> <span class="n">getunit</span><span class="p">,</span> <span class="n">getvector</span><span class="p">,</span> <span class="n">isvector</span><span class="p">,</span> <span class="n">isscalar</span><span class="p">,</span> <span class="n">ismatrix</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.vectors</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">unitvec</span><span class="p">,</span>
@@ -118,7 +118,6 @@
     <span class="n">isskew</span><span class="p">,</span>
     <span class="n">isskewa</span><span class="p">,</span>
     <span class="n">isR</span><span class="p">,</span>
-    <span class="n">iseye</span><span class="p">,</span>
     <span class="n">tr2rt</span><span class="p">,</span>
     <span class="n">Ab2M</span><span class="p">,</span>
 <span class="p">)</span>
@@ -126,8 +125,19 @@
 <span class="kn">from</span> <span class="nn">spatialmath.base.graphics</span> <span class="kn">import</span> <span class="n">plotvol3</span><span class="p">,</span> <span class="n">axes_logic</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.animate</span> <span class="kn">import</span> <span class="n">Animate</span>
 <span class="kn">import</span> <span class="nn">spatialmath.base.symbolic</span> <span class="k">as</span> <span class="nn">sym</span>
-
-<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ArrayLikePure</span><span class="p">,</span>
+    <span class="n">ArrayLike3</span><span class="p">,</span>
+    <span class="n">ArrayLike6</span><span class="p">,</span>
+    <span class="n">R3</span><span class="p">,</span>
+    <span class="n">R6</span><span class="p">,</span>
+    <span class="n">R3x3</span><span class="p">,</span>
+    <span class="n">R6x6</span><span class="p">,</span>
+    <span class="n">SO3Array</span><span class="p">,</span>
+    <span class="n">SE3Array</span><span class="p">,</span>
+    <span class="n">so3Array</span><span class="p">,</span>
+    <span class="n">se3Array</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">_eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -341,18 +351,15 @@
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="transl"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.transl">[docs]</a><span class="k">def</span> <span class="nf">transl</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -504,8 +511,7 @@
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">rpy2r</span><span class="p">(</span>
     <span class="n">roll</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pitch</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
@@ -516,8 +522,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span>
     <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="rpy2r"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rpy2r">[docs]</a><span class="k">def</span> <span class="nf">rpy2r</span><span class="p">(</span>
@@ -595,8 +600,7 @@
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">rpy2tr</span><span class="p">(</span>
     <span class="n">roll</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pitch</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
@@ -606,8 +610,7 @@
     <span class="n">yaw</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span>
     <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zyx&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="rpy2tr"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rpy2tr">[docs]</a><span class="k">def</span> <span class="nf">rpy2tr</span><span class="p">(</span>
@@ -671,15 +674,13 @@
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">eul2r</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">eul2r</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">eul2r</span><span class="p">(</span>
     <span class="n">phi</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="eul2r"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.eul2r">[docs]</a><span class="k">def</span> <span class="nf">eul2r</span><span class="p">(</span>
@@ -732,13 +733,11 @@
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">eul2tr</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">eul2tr</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">eul2tr</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">eul2tr</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="eul2tr"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.eul2tr">[docs]</a><span class="k">def</span> <span class="nf">eul2tr</span><span class="p">(</span>
@@ -1350,25 +1349,25 @@
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span>
     <span class="n">T</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">so3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">so3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span>
     <span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">se3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">se3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">twist</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="trlog"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trlog">[docs]</a><span class="k">def</span> <span class="nf">trlog</span><span class="p">(</span>
@@ -1483,23 +1482,23 @@
 
 <span class="c1"># ---------------------------------------------------------------------------------------#</span>
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">so3Array</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span>
+    <span class="n">S</span><span class="p">:</span> <span class="n">so3Array</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">se3Array</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span>
+    <span class="n">S</span><span class="p">:</span> <span class="n">se3Array</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike6</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">ArrayLike6</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="trexp"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trexp">[docs]</a><span class="k">def</span> <span class="nf">trexp</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1620,8 +1619,7 @@
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">R</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="trnorm"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trnorm">[docs]</a><span class="k">def</span> <span class="nf">trnorm</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
@@ -1683,13 +1681,15 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SO3Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SO3Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SO3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE3Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SE3Array</span><span class="p">],</span> <span class="n">end</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">shortest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3Array</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="trinterp"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.trinterp">[docs]</a><span class="k">def</span> <span class="nf">trinterp</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">shortest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2302,8 +2302,7 @@
     <span class="n">inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
@@ -2311,8 +2310,7 @@
     <span class="n">𝚪</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span>
     <span class="n">inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
@@ -2321,8 +2319,7 @@
     <span class="n">inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">representation</span><span class="o">=</span><span class="s2">&quot;rpy/xyz&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
@@ -2330,8 +2327,7 @@
     <span class="n">𝚪</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span>
     <span class="n">inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="rotvelxform"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rotvelxform">[docs]</a><span class="k">def</span> <span class="nf">rotvelxform</span><span class="p">(</span>
@@ -2543,15 +2539,13 @@
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">rotvelxform_inv_dot</span><span class="p">(</span>
     <span class="n">𝚪</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">representation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rpy/xyz&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
 <span class="k">def</span> <span class="nf">rotvelxform_inv_dot</span><span class="p">(</span>
     <span class="n">𝚪</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">𝚪d</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">full</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">representation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rpy/xyz&quot;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="rotvelxform_inv_dot"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.rotvelxform_inv_dot">[docs]</a><span class="k">def</span> <span class="nf">rotvelxform_inv_dot</span><span class="p">(</span>
@@ -2748,13 +2742,11 @@
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R3x3</span><span class="p">:</span> <span class="o">...</span>
 
 
 <span class="nd">@overload</span>  <span class="c1"># pragma: no cover</span>
-<span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span>
-    <span class="o">...</span>
+<span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R6x6</span><span class="p">:</span> <span class="o">...</span>
 
 
 <div class="viewcode-block" id="tr2adjoint"><a class="viewcode-back" href="../../../func_3d.html#spatialmath.base.transforms3d.tr2adjoint">[docs]</a><span class="k">def</span> <span class="nf">tr2adjoint</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
@@ -3552,7 +3544,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 13-May-2024.
+      <span class="lastupdated">Last updated on 26-Jun-2024.
       </span></p>
   </div>
 

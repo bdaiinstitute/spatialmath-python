@@ -105,14 +105,28 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">spatialmath.base</span> <span class="k">as</span> <span class="nn">smb</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">ArrayLike2</span><span class="p">,</span>
+    <span class="n">ArrayLike3</span><span class="p">,</span>
+    <span class="n">ArrayLike6</span><span class="p">,</span>
+    <span class="n">R3</span><span class="p">,</span>
+    <span class="n">R6</span><span class="p">,</span>
+    <span class="n">R3x3</span><span class="p">,</span>
+    <span class="n">R4x4</span><span class="p">,</span>
+    <span class="n">R6x6</span><span class="p">,</span>
+    <span class="n">RNx3</span><span class="p">,</span>
+    <span class="n">SO3Array</span><span class="p">,</span>
+    <span class="n">SE3Array</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">spatialmath.base.vectors</span> <span class="kn">import</span> <span class="n">orthogonalize</span>
 <span class="kn">from</span> <span class="nn">spatialmath.baseposematrix</span> <span class="kn">import</span> <span class="n">BasePoseMatrix</span>
 <span class="kn">from</span> <span class="nn">spatialmath.pose2d</span> <span class="kn">import</span> <span class="n">SE2</span>
-
 <span class="kn">from</span> <span class="nn">spatialmath.twist</span> <span class="kn">import</span> <span class="n">Twist3</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Self</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">spatialmath.quaternion</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span>
 
@@ -132,28 +146,22 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">SO3</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">SO3</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">SE3</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">SE3</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">SO3Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SO3Array</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SO3Array</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">SO3</span><span class="p">,</span> <span class="n">SO3Array</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">SO3</span><span class="p">,</span> <span class="n">SO3Array</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="SO3.__init__"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -419,7 +427,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">theta</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">tr2angvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">v</span></div>
-    
+
     <span class="c1"># ------------------------------------------------------------------------ #</span>
 
 <div class="viewcode-block" id="SO3.isvalid"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.isvalid">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -559,13 +567,11 @@
 
     <span class="nd">@overload</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">RNx3</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">RNx3</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="SO3.Eul"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
@@ -614,15 +620,13 @@
         <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span>
         <span class="n">order</span><span class="o">=</span><span class="s2">&quot;zyx&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">RNx3</span><span class="p">],</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;zyx&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="SO3.RPY"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.RPY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;zyx&quot;</span><span class="p">):</span>
@@ -917,22 +921,22 @@
 
 <div class="viewcode-block" id="SO3.UnitQuaternion"><a class="viewcode-back" href="../../3d_orient_SO3.html#spatialmath.pose3d.SO3.UnitQuaternion">[docs]</a>    <span class="k">def</span> <span class="nf">UnitQuaternion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitQuaternion</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            SO3 as a unit quaternion instance</span>
+<span class="sd">        SO3 as a unit quaternion instance</span>
 
-<span class="sd">            :return: a unit quaternion representation</span>
-<span class="sd">            :rtype: UnitQuaternion instance</span>
+<span class="sd">        :return: a unit quaternion representation</span>
+<span class="sd">        :rtype: UnitQuaternion instance</span>
 
-<span class="sd">            ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation</span>
-<span class="sd">            as the SO3 rotation ``R``.</span>
+<span class="sd">        ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation</span>
+<span class="sd">        as the SO3 rotation ``R``.</span>
 
-<span class="sd">            Example:</span>
+<span class="sd">        Example:</span>
 
-<span class="sd">            .. runblock:: pycon</span>
+<span class="sd">        .. runblock:: pycon</span>
 
-<span class="sd">                &gt;&gt;&gt; from spatialmath import SO3</span>
-<span class="sd">                &gt;&gt;&gt; SO3.Rz(0.3).UnitQuaternion()</span>
+<span class="sd">            &gt;&gt;&gt; from spatialmath import SO3</span>
+<span class="sd">            &gt;&gt;&gt; SO3.Rz(0.3).UnitQuaternion()</span>
 
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Function level import to avoid circular dependencies</span>
         <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">UnitQuaternion</span>
 
@@ -1313,11 +1317,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;zyx&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;xyz&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;yxz&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">SE2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rpy</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SE2</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">yaw_SE2</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span></div>
 
@@ -1635,12 +1639,10 @@
         <span class="p">)</span></div>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="SE3.Eul"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Eul">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Eul</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
@@ -1685,12 +1687,10 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">smb</span><span class="o">.</span><span class="n">eul2tr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">roll</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pitch</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">roll</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">pitch</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">yaw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="SE3.RPY"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.RPY">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">RPY</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;rad&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;zyx&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
@@ -1915,12 +1915,10 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">trnorm</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">delta2tr</span><span class="p">(</span><span class="n">d</span><span class="p">)))</span></div>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">Trans</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">Trans</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="nf">Trans</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xyz</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
-        <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">Trans</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xyz</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span> <span class="o">...</span>
 
 <div class="viewcode-block" id="SE3.Trans"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.Trans">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">Trans</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
@@ -2061,11 +2059,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">smb</span><span class="o">.</span><span class="n">rt2tr</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">),</span> <span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SE3.CopyFrom"><a class="viewcode-back" href="../../3d_pose_SE3.html#spatialmath.pose3d.SE3.CopyFrom">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">CopyFrom</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span>
-        <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">CopyFrom</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">SE3Array</span><span class="p">,</span> <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an SE(3) from a 4x4 numpy array that is passed by value.</span>
 
@@ -2182,7 +2176,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 13-May-2024.
+      <span class="lastupdated">Last updated on 26-Jun-2024.
       </span></p>
   </div>
 
