@@ -212,6 +212,7 @@ class Animate:
                 # assume it is an SO(3) or SE(3)
                 T = frame
             # ensure result is SE(3)
+            
             if T.shape == (3, 3):
                 T = smb.r2t(T)
 
@@ -308,7 +309,7 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T @ self.p
+            p = T.A @ self.p
             self.h.set_data(p[0, :], p[1, :])
             self.h.set_3d_properties(p[2, :])
 
@@ -365,7 +366,8 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T @ self.p
+            # import ipdb; ipdb.set_trace()
+            p = T.A @ self.p
 
             # reshape it
             p = p[0:3, :].T.reshape(3, 2, 3)
@@ -419,7 +421,7 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T @ self.p
+            p = T.A @ self.p
             # x2, y2, _ = proj3d.proj_transform(
             #   p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))
