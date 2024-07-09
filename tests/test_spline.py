@@ -7,15 +7,14 @@ import pytest
 
 from spatialmath import BSplineSE3, SE3
 
-class TestBSplineSE3(unittest.TestCase):
 
+class TestBSplineSE3(unittest.TestCase):
     control_poses = [
-        SE3.Trans(
-            [e, 2*np.cos(e/2 * np.pi), 2*np.sin(e/2 * np.pi)]
-        )
-        *SE3.Ry(e/8 * np.pi) for e in range(0,8)
+        SE3.Trans([e, 2 * np.cos(e / 2 * np.pi), 2 * np.sin(e / 2 * np.pi)])
+        * SE3.Ry(e / 8 * np.pi)
+        for e in range(0, 8)
     ]
-    
+
     @classmethod
     def tearDownClass(cls):
         plt.close("all")
@@ -31,4 +30,3 @@ class TestBSplineSE3(unittest.TestCase):
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
         spline.visualize(num_samples=100, repeat=False)
-    

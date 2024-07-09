@@ -44,7 +44,7 @@ __all__ = [
     "LineSegment2",
     "Polygon2",
     "Ellipse",
-    "BSplineSE3"
+    "BSplineSE3",
 ]
 
 try:
