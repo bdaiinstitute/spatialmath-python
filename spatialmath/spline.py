@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from spatialmath.base.transforms3d import tranimate, trplot
 
-class BSpline_SE3:
+class BSplineSE3:
     """ 
     """
     def __init__(self, knots, control_poses: list[SE3], degree) -> None:
@@ -51,7 +51,7 @@ def main():
     knots=np.linspace(0,1,len(control_poses)-2,endpoint=True)
     knots=np.append([0,0,0],knots)
     knots=np.append(knots,[1,1,1]) 
-    trajectory = BSpline_SE3(knots, control_poses, degree)
+    trajectory = BSplineSE3(knots, control_poses, degree)
     
     out_poses = [trajectory(i) for i in np.linspace(0,1,100)]
     x = [pose.x for pose in out_poses]
