@@ -45,8 +45,8 @@ class BSplineSE3:
         
         if knots is None:
             knots=np.linspace(0,1,len(control_poses)-2,endpoint=True)
-            knots=np.append([0,0,0],knots) # ensures the curve starts on the first control pose
-            knots=np.append(knots,[1,1,1])  # ensures the curve ends on the last control pose
+            knots=np.append([0.0]*degree, knots) # ensures the curve starts on the first control pose
+            knots=np.append(knots, [1]*degree)  # ensures the curve ends on the last control pose
         self.knots = knots  
 
         self.splines = [ BSpline(knots, self.control_pose_matrix[:, i], degree) for i in range(0, 6) ]
@@ -71,7 +71,7 @@ class BSplineSE3:
         ) -> None:
         """ Displays an animation of the trajectory with the control poses.
         """
-        out_poses = [self(i) for i in np.linspace(0,1,num_samples)]
+        out_poses = [self(t) for t in np.linspace(0,1,num_samples)]
         x = [pose.x for pose in out_poses]
         y = [pose.y for pose in out_poses]
         z = [pose.z for pose in out_poses]
@@ -84,4 +84,3 @@ class BSplineSE3:
         ax.plot(x,y,z, **kwargs_plot) # plot x,y,z trajectory
 
         tranimate(out_poses, repeat=repeat, length = length, **kwargs_tranimate) # animate pose along trajectory
-        
