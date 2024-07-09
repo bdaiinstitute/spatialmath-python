@@ -17,7 +17,7 @@ from spatialmath.base.transforms3d import tranimate, trplot
 class BSplineSE3:
     """ A class to parameterize a trajectory in SE3 with a 6-dimensional B-spline.
 
-    The SE3 control poses are converted to se3 twists (the lie algebra) and a B-ppline 
+    The SE3 control poses are converted to se3 twists (the lie algebra) and a B-spline 
     is created for each dimension of the twist, using the corresponding element of the twists 
     as the control point for the spline.  
 
