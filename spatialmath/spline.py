@@ -2,9 +2,9 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 """
-Classes for parameterizing a trajectory in SE3 with B-Splines. 
+Classes for parameterizing a trajectory in SE3 with B-splines. 
 
-Copies parts of the API from scipy's B-Spline class.
+Copies parts of the API from scipy's B-spline class.
 """
 
 from typing import Any, Optional
@@ -21,7 +21,7 @@ class BSplineSE3:
     is created for each dimension of the twist, using the corresponding element of the twists 
     as the control point for the spline.  
 
-    For detailed information about B-Splines, please see this wikipedia article. 
+    For detailed information about B-splines, please see this wikipedia article. 
     https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline
     """
 
@@ -60,7 +60,7 @@ class BSplineSE3:
         return SE3.Exp(twist)
     
     def visualize(self, num_samples: int, repeat: bool = False) -> None:
-        """ Displays an animation of the trajectory with the control points.
+        """ Displays an animation of the trajectory with the control poses.
         """
         out_poses = [self(i) for i in np.linspace(0,1,num_samples)]
         x = [pose.x for pose in out_poses]
