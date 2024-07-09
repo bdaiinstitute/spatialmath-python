@@ -53,9 +53,6 @@ class BSplineSE3:
         self.degree = degree
 
         if knots is None:
-            # degree = len(internal_knots) + 2*degree - len(control_poses) + 1
-            # we have 2*degree edge knots for start and finish
-            # len(internal_knots) =
             knots = np.linspace(0, 1, len(control_poses) - degree + 1, endpoint=True)
             knots = np.append(
                 [0.0] * degree, knots
