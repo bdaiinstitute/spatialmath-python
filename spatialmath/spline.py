@@ -38,7 +38,8 @@ class BSplineSE3:
         - control_poses: list of SE3 objects that govern the shape of the spline.
         - degree: int that controls degree of the polynomial that governs any given point on the spline.
         - knots: list of floats that govern which control points are active during evaluating the spline
-        at a given t input.
+        at a given t input. If none, they are automatically, uniformly generated based on number of control poses and
+        degree of spline.
         """
 
         self.control_poses = control_poses
@@ -54,7 +55,7 @@ class BSplineSE3:
         if knots is None:
             # degree = len(internal_knots) + 2*degree - len(control_poses) + 1
             # we have 2*degree edge knots for start and finish
-            # len(internal_knots) = 
+            # len(internal_knots) =
             knots = np.linspace(0, 1, len(control_poses) - degree + 1, endpoint=True)
             knots = np.append(
                 [0.0] * degree, knots
@@ -65,7 +66,8 @@ class BSplineSE3:
         self.knots = knots
 
         self.splines = [
-            BSpline(knots, self.control_pose_matrix[:, i], degree) for i in range(0, 6) #twists are length 6
+            BSpline(knots, self.control_pose_matrix[:, i], degree)
+            for i in range(0, 6)  # twists are length 6
         ]
 
     def __call__(self, t: float) -> SE3:
