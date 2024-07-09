@@ -7,7 +7,7 @@ Classes for parameterizing a trajectory in SE3 with B-splines.
 Copies parts of the API from scipy's B-spline class.
 """
 
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 from scipy.interpolate import BSpline
 from spatialmath import SE3
 import numpy as np
@@ -25,7 +25,7 @@ class BSplineSE3:
     https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline
     """
 
-    def __init__(self, control_poses: list[SE3], degree: int = 3, knots: Optional[list[float]] = None) -> None:
+    def __init__(self, control_poses: List[SE3], degree: int = 3, knots: Optional[List[float]] = None) -> None:
         """ Construct BSplineSE3 object. The default arguments generate a cubic B-spline
         with uniformly spaced knots.
 
@@ -59,7 +59,16 @@ class BSplineSE3:
         twist = np.hstack([spline(t) for spline in self.splines])
         return SE3.Exp(twist)
     
-    def visualize(self, num_samples: int, repeat: bool = False) -> None:
+    def visualize(
+            self, 
+            num_samples: int, 
+            length:float = 1.0,
+            repeat: bool = False, 
+            ax: Optional[plt.Axes] = None,
+            kwargs_trplot: Dict[str, Any] = {"color": "green"},
+            kwargs_tranimate:  Dict[str, Any] = {"wait": True},
+            kwargs_plot: Dict[str, Any] = {}
+        ) -> None:
         """ Displays an animation of the trajectory with the control poses.
         """
         out_poses = [self(i) for i in np.linspace(0,1,num_samples)]
@@ -67,26 +76,12 @@ class BSplineSE3:
         y = [pose.y for pose in out_poses]
         z = [pose.z for pose in out_poses]
         
-        fig = plt.figure(figsize=(10,10))
-        ax = fig.add_subplot(projection='3d')
-        trplot([np.array(self.control_poses)],ax=ax, length= 1.0, color="green") # plot control points
-        ax.plot(x,y,z) # plot x,y,z trajectory
+        if ax is None:
+            fig = plt.figure(figsize=(10,10))
+            ax = fig.add_subplot(projection='3d')
 
-        tranimate(out_poses, repeat=repeat, wait=True, length = 1.0) # animate pose along trajectory
+        trplot([np.array(self.control_poses)], ax=ax, length= length, **kwargs_trplot) # plot control points
+        ax.plot(x,y,z, **kwargs_plot) # plot x,y,z trajectory
 
-def main():
-    degree = 3
-    control_poses = [
-        SE3.Trans(
-            [e, 2*np.cos(e/2 * np.pi), 2*np.sin(e/2 * np.pi)]
-        )
-        *SE3.Ry(e/8 * np.pi) for e in range(0,8)
-    ]
-    
-    spline = BSplineSE3(control_poses, degree)
-    spline.visualize(num_samples=100, repeat=True)
-    
-    
-
-if __name__ == "__main__":
-    main()
+        tranimate(out_poses, repeat=repeat, length = length, **kwargs_tranimate) # animate pose along trajectory
+        

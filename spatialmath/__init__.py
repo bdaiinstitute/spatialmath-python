@@ -15,6 +15,7 @@ from spatialmath.spatialvector import (
 )
 from spatialmath.quaternion import Quaternion, UnitQuaternion
 from spatialmath.DualQuaternion import DualQuaternion, UnitDualQuaternion
+from spatialmath.spline import BSplineSE3
 
 # from spatialmath.Plucker import *
 # from spatialmath import base as smb
@@ -43,6 +44,7 @@ __all__ = [
     "LineSegment2",
     "Polygon2",
     "Ellipse",
+    "BSplineSE3"
 ]
 
 try:
