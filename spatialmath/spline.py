@@ -52,7 +52,10 @@ class BSplineSE3:
         self.degree = degree
 
         if knots is None:
-            knots = np.linspace(0, 1, len(control_poses) - 2, endpoint=True)
+            # degree = len(internal_knots) + 2*degree - len(control_poses) + 1
+            # we have 2*degree edge knots for start and finish
+            # len(internal_knots) = 
+            knots = np.linspace(0, 1, len(control_poses) - degree + 1, endpoint=True)
             knots = np.append(
                 [0.0] * degree, knots
             )  # ensures the curve starts on the first control pose
@@ -62,7 +65,7 @@ class BSplineSE3:
         self.knots = knots
 
         self.splines = [
-            BSpline(knots, self.control_pose_matrix[:, i], degree) for i in range(0, 6)
+            BSpline(knots, self.control_pose_matrix[:, i], degree) for i in range(0, 6) #twists are length 6
         ]
 
     def __call__(self, t: float) -> SE3:
