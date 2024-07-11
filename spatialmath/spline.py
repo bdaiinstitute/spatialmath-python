@@ -9,7 +9,7 @@ Copies parts of the API from scipy's B-spline class.
 
 from typing import Any, Dict, List, Optional
 from scipy.interpolate import BSpline
-from spatialmath import SE3
+from spatialmath import SE3, Twist3
 import numpy as np
 import matplotlib.pyplot as plt
 from spatialmath.base.transforms3d import tranimate, trplot
@@ -104,23 +104,7 @@ class BSplineSE3:
             out_poses, repeat=repeat, length=length, **kwargs_tranimate
         )  # animate pose along trajectory
 
-# Copyright (c) 2024 Boston Dynamics AI Institute LLC.
-# MIT Licence, see details in top-level file: LICENCE
-
-"""
-Classes for parameterizing a trajectory in SE3 with B-splines. 
-
-Copies parts of the API from scipy's B-spline class.
-"""
-
-from typing import Any, Dict, List, Optional
-from scipy.interpolate import BSpline
-from spatialmath import SE3, Twist3
-import numpy as np
-import matplotlib.pyplot as plt
-from spatialmath.base.transforms3d import tranimate, trplot
-
-
+        
 class BSplineTwist3:
     """A class to parameterize a trajectory in SE3 with a 6-dimensional B-spline.
 
