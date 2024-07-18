@@ -129,21 +129,23 @@ class FitCubicBSplineSE3:
     
         self.spline = CubicBSplineSE3(control_poses=[SE3.CopyFrom(self.pose_data[index]) for index in closest_timestamp_indices])
 
-    def objective_function_xyz(self, xyz_flat: np.ndarray):
+    def objective_function_xyz(self, xyz_flat: Optional[np.ndarray] = None):
         """L-infinity norm of euclidean distance between data points and spline"""
 
         # data massage
-        self._assign_xyz_to_control_poses(xyz_flat)
+        if xyz_flat is not None:
+            self._assign_xyz_to_control_poses(xyz_flat)
 
         # objective
         error_vector = self.euclidean_distance()
         return np.linalg.norm(error_vector, ord=np.inf)
 
-    def objective_function_so3(self, so3_twists_flat: np.ndarray):
+    def objective_function_so3(self, so3_twists_flat: Optional[np.ndarray] = None):
         """L-infinity norm of angular distance between data points and spline"""
 
         # data massage
-        self._assign_so3_twist_to_control_poses(so3_twists_flat)
+        if so3_twists_flat is not None:
+            self._assign_so3_twist_to_control_poses(so3_twists_flat)
 
         # objective
         error_vector = self.ang_distance()
@@ -232,27 +234,3 @@ class FitCubicBSplineSE3:
         tranimate(
             out_poses, repeat=repeat, length=length, **kwargs_tranimate
         )  # animate pose along trajectory
-
-
-def example_bspline_fit():
-
-    num_data_points = 16
-    num_samples = 100
-    frequency = 0.5
-    scale = 4
-
-    timestamps = np.linspace(0, 1, num_data_points)
-    trajectory = [
-        SE3.Rt(t = [t*scale, scale*np.sin(t * 2*np.pi* frequency), scale*np.cos(t * 2*np.pi * frequency)], 
-               R= SO3.Rx( t*2*np.pi* frequency))
-        for t in timestamps
-    ]
-
-    fit_se3_spline = FitCubicBSplineSE3(trajectory, timestamps, num_control_points=6)
-    
-    result = fit_se3_spline.fit(disp=True)
-    fit_se3_spline.visualize(num_samples=num_samples, repeat=True, length=0.4, kwargs_tranimate={"wait": True, "interval" : 400})
-
-
-if __name__ == "__main__":
-    example_bspline_fit()
