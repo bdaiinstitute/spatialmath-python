@@ -17,45 +17,13 @@ from scipy.optimize import minimize
 from scipy.interpolate import splrep
 
 
-def weighted_average_SE3_metric(a: SE3, b: SE3, w: float = 0.5) -> float:
-    """A positive definite distance metric for SE3.
-
-    The metric is: (1-w)*translation_distance + w*angular_distance
-
-    Note that there isn't a
-    great "natural" choice for a metric on SE3 (see Appendix A.3.2 in
-    'A Mathematical Introduction to Robotic Manipulation' by Murray, Li, Sastry)
-
-    spatialmath has options for the rotational metrics from
-    'Metrics for 3D Rotations: Comparison and Analysis' by Du Q. Huynh.
-    This uses the 'best choice' from that paper.
-
-    Args:
-        a: a twist from SE3.twist, or an SE3 object
-        b: a twist from SE3.twist, or an SE3 object
-        w: a float that represents the relative weighting between the rotational and translation distances.
-
-    Returns:
-        a float for the 'distance' between two SE3 poses
-
-    """
-    if w> 1 or w < 0:
-        raise ValueError(f"Weight w={w} is outside the range [0,1].")
-
-    # if np.linalg.norm(a - b) < 1e-6:
-    #     return 0.0
-    
-    angular_distance = a.angdist(b)
-    translation_distance = np.linalg.norm(a.t - b.t)
-
-    return (1 - w) * translation_distance + w * angular_distance
-
 class CubicBSplineSE3:
-    """A class to parameterize a trajectory in SE3 with a 6-dimensional B-spline.
+    """A class to parameterize a trajectory in SE3 with a cubic B-spline.
 
-    The SE3 control poses are converted to se3 twists (the lie algebra) and a B-spline
-    is created for each dimension of the twist, using the corresponding element of the twists
-    as the control point for the spline.
+    The position and orientation are calculated disjointly. The position uses the
+    "classic" B-spline formulation. The orientation calculation is based on 
+    interpolation between the identity element and the control SO3 element, them applying 
+    each interpolated SO3 element as a group action. 
 
     For detailed information about B-splines, please see this wikipedia article.
     https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline
@@ -66,8 +34,7 @@ class CubicBSplineSE3:
         self,
         control_poses: List[SE3],
     ) -> None:
-        """Construct BSplineSE3 object. The default arguments generate a cubic B-spline
-        with a open uniform knot vector.
+        """Construct a CubicBSplineSE3 object with a open uniform knot vector.
 
         - control_poses: list of SE3 objects that govern the shape of the spline.
         """
@@ -80,8 +47,7 @@ class CubicBSplineSE3:
 
         t: Normalized time value [0,1] to evaluate the spline at.
         """     
-        
-        
+           
         spline_no_coeff = BSpline.design_matrix([time], self.knots, self.degree)  #the B in sum(alpha_i * B_i) = S(t)
         rows,cols = spline_no_coeff.nonzero()
 
@@ -99,6 +65,7 @@ class CubicBSplineSE3:
 
     @classmethod
     def knots_from_num_control_poses(self, num_control_poses: int):
+        """ Return open uniform knots vector based on number of control poses. """
         # use open uniform knot vector
         knots = np.linspace(0, 1, num_control_poses-2, endpoint=True)
         knots = np.append(
@@ -141,7 +108,7 @@ class CubicBSplineSE3:
         
 class FitCubicBSplineSE3:
 
-    def __init__(self, pose_data: List[SE3], timestamps, num_control_points: int =6) -> None:
+    def __init__(self, pose_data: List[SE3], timestamps, num_control_points: int = 6, method = "slsqp") -> None:
         """ 
             Timestamps should be normalized to [0,1] and sorted.
             Outputs control poses, but the optimization is done on the [pos,axis-angle], flattened into a 1d vector.
@@ -149,9 +116,9 @@ class FitCubicBSplineSE3:
         self.pose_data = pose_data
         self.timestamps = timestamps
         self.num_control_pose = num_control_points
-        self.se3_rep_size = 6 #[x, y, z, axis-angle vec]
+        self.method = method
 
-        # 
+        # initialize control poses with data points
         sample_points = np.linspace(self.timestamps[0], self.timestamps[-1], self.num_control_pose)
         closest_timestamp_indices = np.searchsorted(self.timestamps, sample_points)
         for i, index in enumerate(closest_timestamp_indices):
@@ -159,87 +126,73 @@ class FitCubicBSplineSE3:
                 closest_timestamp_indices[i] = 0
             if index >= len(timestamps):
                 closest_timestamp_indices[i] = len(timestamps) - 1
-        
-        # 
+    
         self.spline = CubicBSplineSE3(control_poses=[SE3.CopyFrom(self.pose_data[index]) for index in closest_timestamp_indices])
 
-    @classmethod
-    def make_SE3_pose(self, row: np.ndarray):
-        t = row[0:3]
-        so3_twist = row[3:6]
- 
-        return SE3.Rt(t = t, R = SO3.Exp(so3_twist))
-        
-    @classmethod
-    def make_SE3_rep(self, pose: SE3):
-        so3_twist = SO3(pose.R).log(twist=True)
-        return np.concatenate([pose.t, so3_twist])
-
-    def objective_function_xyz(self, pos: np.ndarray):
-        "L1 norm of SE3 distances between data points and spline"
+    def objective_function_xyz(self, xyz_flat: np.ndarray):
+        """L-infinity norm of euclidean distance between data points and spline"""
 
         # data massage
-        pos_matrix = pos.reshape(self.num_control_pose, 3)
-        spline = CubicBSplineSE3(control_poses=[SE3.Trans(row) for row in pos_matrix])
+        self._assign_xyz_to_control_poses(xyz_flat)
 
         # objective
-        error_vector = [ weighted_average_SE3_metric(spline(t), pose, w = 0.0) for t,pose in zip(self.timestamps, self.pose_data, strict=True) ]
-        
+        error_vector = self.euclidean_distance()
         return np.linalg.norm(error_vector, ord=np.inf)
 
     def objective_function_so3(self, so3_twists_flat: np.ndarray):
-        "L1 norm of SE3 distances between data points and spline"
+        """L-infinity norm of angular distance between data points and spline"""
 
         # data massage
-        so3_twists_matrix = so3_twists_flat.reshape(self.num_control_pose, 3)
-        spline = CubicBSplineSE3(control_poses=[SE3(SO3.Exp(row)) for row in so3_twists_matrix])
+        self._assign_so3_twist_to_control_poses(so3_twists_flat)
 
         # objective
-        error_vector = [ weighted_average_SE3_metric(spline(t), pose, w = 1.0) for t,pose in zip(self.timestamps, self.pose_data, strict=True) ]
-        
+        error_vector = self.ang_distance()
         return np.linalg.norm(error_vector, ord=np.inf)
     
-    def objective_function_pose(self, control_pose_rep: np.ndarray):
-        "L1 norm of SE3 distances between data points and spline"
-
-        # data massage
-        control_pose_matrix = control_pose_rep.reshape(self.num_control_pose, self.se3_rep_size)
-        spline = CubicBSplineSE3(control_poses=[self.make_SE3_pose(row) for row in control_pose_matrix])
-
-        # objective
-        error_vector = [ weighted_average_SE3_metric(spline(t), pose) for t,pose in zip(self.timestamps, self.pose_data, strict=True) ]
-        
-        return np.linalg.norm(error_vector, ord=np.inf)
-
     def fit(self, disp: bool = False):
-
+        """ Find the spline control points that minimize the distance from the spline to the data points.
+        """
         so3_result = self.fit_so3(disp)
         pos_result = self.fit_xyz(disp)
         
         return pos_result, so3_result
 
     def fit_xyz(self, disp: bool = False):
-        
+        """ Solve fitting problem for x,y,z coordinates.
+        """
         xyz_flat = np.concatenate([pose.t for pose in self.spline.control_poses])
-        result = minimize(self.objective_function_xyz, xyz_flat, method="slsqp", options = {"disp":disp})   
-        xyz_mat = result.x.reshape(self.num_control_pose, 3) 
-        for i, xyz in enumerate(xyz_mat):
-            self.spline.control_poses[i].t = xyz
+        result = minimize(self.objective_function_xyz, xyz_flat, method=self.method, options = {"disp":disp})   
+        self._assign_xyz_to_control_poses(result.x)
 
         return result
     
     def fit_so3(self, disp: bool = False):
-        so3_twists_flat = np.concatenate([SO3(pose.R).log(twist=True)for pose in self.spline.control_poses])
-        result = minimize(self.objective_function_so3, so3_twists_flat, method="slsqp", options = {"disp":disp})    
-        so3_twists_mat = result.x.reshape(self.num_control_pose, 3) 
-        for i, so3_twist in enumerate(so3_twists_mat):
-            self.spline.control_poses[i].R = SO3.Exp(so3_twist)
+        """ Solve fitting problem for SO3 coordinates.
+        """
+        so3_twists_flat = np.concatenate([SO3(pose.R).log(twist=True) for pose in self.spline.control_poses])
+        result = minimize(self.objective_function_so3, so3_twists_flat, method = self.method, options = {"disp":disp})    
+        self._assign_so3_twist_to_control_poses(result.x)
+
         return result
 
+    def _assign_xyz_to_control_poses(self, xyz_flat: np.ndarray) -> None:
+        xyz_mat = xyz_flat.reshape(self.num_control_pose, 3) 
+        for i, xyz in enumerate(xyz_mat):
+            self.spline.control_poses[i].t = xyz
+
+    def _assign_so3_twist_to_control_poses(self, so3_twists_flat: np.ndarray) -> None:
+        so3_twists_mat = so3_twists_flat.reshape(self.num_control_pose, 3) 
+        for i, so3_twist in enumerate(so3_twists_mat):
+            self.spline.control_poses[i].R = SO3.Exp(so3_twist)
+
     def ang_distance(self):
+        """ Returns vector of angular distance between spline and data points.
+        """
         return [pose.angdist(self.spline(timestamp)) for pose, timestamp in zip(self.pose_data, self.timestamps)]
 
     def euclidean_distance(self):
+        """ Returns vector of euclidean distance between spline and data points.
+        """
         return [np.linalg.norm(pose.t - self.spline(timestamp).t) for pose, timestamp in zip(self.pose_data, self.timestamps)]
 
     def visualize(
@@ -251,7 +204,7 @@ class FitCubicBSplineSE3:
         kwargs_tranimate: Dict[str, Any] = {"wait": True},
         kwargs_plot: Dict[str, Any] = {},
     ) -> None:
-        """Displays an animation of the trajectory with the control poses."""
+        """Displays an animation of the trajectory with the control poses and data points."""
         out_poses = [self.spline(t) for t in np.linspace(0, 1, num_samples)]
         x = [pose.x for pose in out_poses]
         y = [pose.y for pose in out_poses]
