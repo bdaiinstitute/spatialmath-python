@@ -104,6 +104,12 @@ class Animate:
             #     ax.set_zlim(dims[4:6])
             #     # ax.set_aspect('equal')
             ax = smb.plotvol3(ax=ax, dim=dim)
+        if dim is not None:
+            if len(dim) == 2:
+                dim = dim * 3
+            ax.set_xlim(dim[0:2])
+            ax.set_ylim(dim[2:4])
+            ax.set_zlim(dim[4:])
 
         self.ax = ax
 
