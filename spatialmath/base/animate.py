@@ -214,10 +214,12 @@ class Animate:
             if isinstance(frame, float):
                 # passed a single transform, interpolate it
                 T = smb.trinterp(start=self.start, end=self.end, s=frame)
-            else:
-                # assume it is an SO(3) or SE(3)
+            elif isinstance(frame, NDArray):
+                # type is SO3Array or SE3Array when Animate.trajectory is not None
                 T = frame
-            # ensure result is SE(3)
+            else:
+                # [unlikely] other types are converted to np array
+                T = np.array(frame)
             
             if T.shape == (3, 3):
                 T = smb.r2t(T)
