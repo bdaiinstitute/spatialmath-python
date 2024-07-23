@@ -1394,9 +1394,9 @@ try:
             edges = [[0, 1, 3, 2, 0], [4, 5, 7, 6, 4], [0, 4], [1, 5], [3, 7], [2, 6]]
             lines = []
             for edge in edges:
-                E = vertices[:, edge]
-                # ax.plot(E[0], E[1], E[2], **kwargs)
-                lines.append(E.T)
+                for line in zip(edge[:-1], edge[1:]):
+                    E = vertices[:, line]
+                    lines.append(E.T)
             if "color" in kwargs:
                 if "alpha" in kwargs:
                     alpha = kwargs["alpha"]
