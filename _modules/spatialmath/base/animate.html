@@ -290,6 +290,7 @@
                 <span class="c1"># assume it is an SO(3) or SE(3)</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="n">frame</span>
             <span class="c1"># ensure result is SE(3)</span>
+            
             <span class="k">if</span> <span class="n">T</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
                 <span class="n">T</span> <span class="o">=</span> <span class="n">smb</span><span class="o">.</span><span class="n">r2t</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
 
@@ -386,7 +387,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="n">anim</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">set_3d_properties</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])</span>
 
@@ -443,7 +444,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="n">anim</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+            <span class="c1"># import ipdb; ipdb.set_trace()</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
 
             <span class="c1"># reshape it</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -497,7 +499,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="n">anim</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">T</span><span class="o">.</span><span class="n">A</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
             <span class="c1"># x2, y2, _ = proj3d.proj_transform(</span>
             <span class="c1">#   p[0], p[1], p[2], self.anim.ax.get_proj())</span>
             <span class="c1"># self.h.set_position((x2, y2))</span>
@@ -992,7 +994,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 26-Jun-2024.
+      <span class="lastupdated">Last updated on 23-Jul-2024.
       </span></p>
   </div>
 

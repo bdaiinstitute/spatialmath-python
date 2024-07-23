@@ -83,19 +83,7 @@
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span>
 
 <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">smb</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ArrayLike</span><span class="p">,</span>
-    <span class="n">ArrayLike2</span><span class="p">,</span>
-    <span class="n">ArrayLike3</span><span class="p">,</span>
-    <span class="n">ArrayLike4</span><span class="p">,</span>
-    <span class="n">R2x2</span><span class="p">,</span>
-    <span class="n">R3x3</span><span class="p">,</span>
-    <span class="n">Points2</span><span class="p">,</span>
-    <span class="n">SE3Array</span><span class="p">,</span>
-    <span class="n">Color</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">overload</span>
-<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># To assist code portability to headless platforms, these graphics primitives</span>
 <span class="c1"># are defined as null functions.</span>
@@ -1299,7 +1287,9 @@
         <span class="n">z</span> <span class="o">=</span> <span class="n">height</span>
         <span class="n">X</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
-        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">centre</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Pythagorean theorem</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">centre</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">centre</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>  <span class="c1"># Pythagorean theorem</span>
 
         <span class="n">handles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">handles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_render3D</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="n">filled</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
@@ -1482,9 +1472,9 @@
             <span class="n">edges</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
-                <span class="n">E</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="n">edge</span><span class="p">]</span>
-                <span class="c1"># ax.plot(E[0], E[1], E[2], **kwargs)</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">edge</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                    <span class="n">E</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[:,</span> <span class="n">line</span><span class="p">]</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">E</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;color&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s2">&quot;alpha&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                     <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span>
@@ -1570,7 +1560,8 @@
         <span class="n">dimensions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">autoscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span> <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">axes_logic</span><span class="p">(</span>
@@ -1579,7 +1570,8 @@
         <span class="n">projection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ortho&quot;</span><span class="p">,</span>
         <span class="n">autoscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes3D</span><span class="p">:</span> <span class="o">...</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes3D</span><span class="p">:</span>
+        <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">axes_logic</span><span class="p">(</span>
         <span class="n">ax</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="n">Axes3D</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
@@ -1894,7 +1886,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 26-Jun-2024.
+      <span class="lastupdated">Last updated on 23-Jul-2024.
       </span></p>
   </div>
 
