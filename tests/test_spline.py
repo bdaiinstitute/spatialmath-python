@@ -46,10 +46,10 @@ class TestFitBSplineSE3(unittest.TestCase):
         plt.close("all")
 
     def test_constructor(self):
-        pass
+        fit_se3_spline = FitCubicBSplineSE3(self.timestamps, self.trajectory, num_control_points=self.num_control_points)
 
     def test_evaluation_and_visualization(self):
-        fit_se3_spline = FitCubicBSplineSE3(self.trajectory, self.timestamps, num_control_points=self.num_control_points)
+        fit_se3_spline = FitCubicBSplineSE3(self.timestamps, self.trajectory, num_control_points=self.num_control_points)
 
         result = fit_se3_spline.fit(disp=True)
 

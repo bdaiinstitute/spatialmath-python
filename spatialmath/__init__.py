@@ -15,7 +15,7 @@ from spatialmath.spatialvector import (
 )
 from spatialmath.quaternion import Quaternion, UnitQuaternion
 from spatialmath.DualQuaternion import DualQuaternion, UnitDualQuaternion
-from spatialmath.spline import CubicBSplineSE3, FitCubicBSplineSE3
+from spatialmath.spline import CubicBSplineSE3, FitCubicBSplineSE3, CubicSplineSE3
 
 # from spatialmath.Plucker import *
 # from spatialmath import base as smb
@@ -45,6 +45,7 @@ __all__ = [
     "Polygon2",
     "Ellipse",
     "CubicBSplineSE3",
+    "CubicSplineSE3",
     "FitCubicBSplineSE3"
 ]
 
