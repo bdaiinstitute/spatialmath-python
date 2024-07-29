@@ -105,8 +105,11 @@ class Animate:
             #     # ax.set_aspect('equal')
             ax = smb.plotvol3(ax=ax, dim=dim)
         if dim is not None:
+            dim = list(np.ndarray.flatten(np.array(dim)))
             if len(dim) == 2:
                 dim = dim * 3
+            elif len(dim) != 6:
+                raise ValueError(f"dim must have 2 or 6 elements, got {dim}. See docstring for details.")
             ax.set_xlim(dim[0:2])
             ax.set_ylim(dim[2:4])
             ax.set_zlim(dim[4:])
