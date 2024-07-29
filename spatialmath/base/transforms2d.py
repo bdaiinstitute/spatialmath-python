@@ -1510,12 +1510,9 @@ if _matplotlib_exists:
                 tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5])
                 tranimate2(transl(1,2)@trot2(1), frame='A', arrow=False, dims=[0, 5], movie='spin.mp4')
         """
-        anim = smb.animate.Animate2(**kwargs)
-        try:
-            del kwargs["dims"]
-        except KeyError:
-            pass
-
+        dims = kwargs.pop("dims", None)
+        ax = kwargs.pop("ax", None)
+        anim = smb.animate.Animate2(dims=dims, axes=ax, **kwargs)
         anim.trplot2(T, **kwargs)
         return anim.run(**kwargs)
 

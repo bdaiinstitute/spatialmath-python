@@ -3409,12 +3409,9 @@ if _matplotlib_exists:
 
         :seealso: `trplot`, `plotvol3`
         """
-        anim = Animate(**kwargs)
-        try:
-            del kwargs["dims"]
-        except KeyError:
-            pass
-
+        dim = kwargs.pop("dims", None)
+        ax = kwargs.pop("ax", None)
+        anim = Animate(dim=dim, ax=ax, **kwargs)
         anim.trplot(T, **kwargs)
         return anim.run(**kwargs)
 
