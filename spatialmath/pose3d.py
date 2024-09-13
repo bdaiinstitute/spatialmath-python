@@ -1041,6 +1041,13 @@ class SE3(SO3):
         """
         return (4, 4)
 
+    @SO3.R.setter
+    def R(self, r: SO3Array) -> None:
+        if len(self) > 1:
+            raise ValueError("can only assign rotation to length 1 object")
+        so3 = SO3(r)
+        self.A[:3, :3] = so3.R
+
     @property
     def t(self) -> R3:
         """
