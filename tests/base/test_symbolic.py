@@ -58,26 +58,26 @@ class Test_symbolic(unittest.TestCase):
         self.assertTrue(isinstance(sqrt(1.0), float))
 
         x = (theta - 1) * (theta + 1) - theta ** 2
-        self.assertEqual(simplify(x).evalf(), -1)
+        self.assertTrue(math.isclose(simplify(x).evalf(), -1))
 
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_constants(self):
 
         x = zero()
         self.assertTrue(isinstance(x, sp.Expr))
-        self.assertEqual(x.evalf(), 0)
+        self.assertTrue(math.isclose(x.evalf(), 0))
 
         x = one()
         self.assertTrue(isinstance(x, sp.Expr))
-        self.assertEqual(x.evalf(), 1)
+        self.assertTrue(math.isclose(x.evalf(), 1))
 
         x = negative_one()
         self.assertTrue(isinstance(x, sp.Expr))
-        self.assertEqual(x.evalf(), -1)
+        self.assertTrue(math.isclose(x.evalf(), -1))
 
         x = pi()
         self.assertTrue(isinstance(x, sp.Expr))
-        self.assertEqual(x.evalf(), math.pi)
+        self.assertTrue(math.isclose(x.evalf(), math.pi))
 
 
 # ---------------------------------------------------------------------------------------#

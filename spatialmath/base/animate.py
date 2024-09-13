@@ -104,6 +104,15 @@ class Animate:
             #     ax.set_zlim(dims[4:6])
             #     # ax.set_aspect('equal')
             ax = smb.plotvol3(ax=ax, dim=dim)
+        if dim is not None:
+            dim = list(np.ndarray.flatten(np.array(dim)))
+            if len(dim) == 2:
+                dim = dim * 3
+            elif len(dim) != 6:
+                raise ValueError(f"dim must have 2 or 6 elements, got {dim}. See docstring for details.")
+            ax.set_xlim(dim[0:2])
+            ax.set_ylim(dim[2:4])
+            ax.set_zlim(dim[4:])
 
         self.ax = ax
 
@@ -208,10 +217,12 @@ class Animate:
             if isinstance(frame, float):
                 # passed a single transform, interpolate it
                 T = smb.trinterp(start=self.start, end=self.end, s=frame)
-            else:
-                # assume it is an SO(3) or SE(3)
+            elif isinstance(frame, NDArray):
+                # type is SO3Array or SE3Array when Animate.trajectory is not None
                 T = frame
-            # ensure result is SE(3)
+            else:
+                # [unlikely] other types are converted to np array
+                T = np.array(frame)
             
             if T.shape == (3, 3):
                 T = smb.r2t(T)
@@ -309,7 +320,7 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T.A @ self.p
+            p = T @ self.p
             self.h.set_data(p[0, :], p[1, :])
             self.h.set_3d_properties(p[2, :])
 
@@ -367,7 +378,7 @@ class Animate:
 
         def draw(self, T):
             # import ipdb; ipdb.set_trace()
-            p = T.A @ self.p
+            p = T @ self.p
 
             # reshape it
             p = p[0:3, :].T.reshape(3, 2, 3)
@@ -421,7 +432,7 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T.A @ self.p
+            p = T @ self.p
             # x2, y2, _ = proj3d.proj_transform(
             #   p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))
@@ -546,8 +557,6 @@ class Animate2:
             axes.set_xlim(dims[0:2])
             axes.set_ylim(dims[2:4])
             # ax.set_aspect('equal')
-        else:
-            axes.autoscale(enable=True, axis="both")
 
         self.ax = axes
 
