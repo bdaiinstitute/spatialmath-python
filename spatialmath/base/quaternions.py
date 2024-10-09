@@ -26,7 +26,7 @@ _CDF_SIN_SQUARED_INTERP_ANGLES = np.linspace(0, np.pi, _NUMBER_CDF_SIN_SQUARED_I
 
 def _compute_cdf_sin_squared(theta: float):
     """
-    Computes the CDF for the distribution of anular magnitude for uniformly sampled rotations.
+    Computes the CDF for the distribution of angular magnitude for uniformly sampled rotations.
     
     :arg theta: angular magnitude
     :rtype: float
