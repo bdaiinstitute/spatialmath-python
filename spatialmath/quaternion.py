@@ -1231,7 +1231,7 @@ class UnitQuaternion(Quaternion):
 
         :param N: number of random rotations
         :type N: int
-        :param theta_range: anglular magnitude range [min,max], defaults to None -> [0,pi].
+        :param theta_range: angular magnitude range [min,max], defaults to None -> [0,pi].
         :type xrange: 2-element sequence, optional
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str

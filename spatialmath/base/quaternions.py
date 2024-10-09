@@ -28,9 +28,9 @@ def _compute_cdf_sin_squared(theta: float):
     """
     Computes the CDF for the distribution of anular magnitude for uniformly sampled rotations.
     
-    :arg theta: anglular magnitude
+    :arg theta: angular magnitude
     :rtype: float
-    :return: cdf of a given anglular magnitude
+    :return: cdf of a given angular magnitude
     :rtype: float
 
     Helper function for uniform sampling of rotations with constrained angular magnitude. 
@@ -869,7 +869,7 @@ def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQua
     """
     Random unit-quaternion
     
-    :arg theta_range: anglular magnitude range [min,max], defaults to None.
+    :arg theta_range: angular magnitude range [min,max], defaults to None.
     :type xrange: 2-element sequence, optional
     :arg unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
@@ -877,7 +877,7 @@ def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQua
     :rtype: ndarray(4)
 
     Computes a uniformly distributed random unit-quaternion, with in a maximum 
-    anglular magnitude, which can be considered equivalent to a random SO(3) rotation.
+    angular magnitude, which can be considered equivalent to a random SO(3) rotation.
 
     .. runblock:: pycon
 

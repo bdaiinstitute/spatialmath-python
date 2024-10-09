@@ -461,7 +461,7 @@ class SO3(BasePoseMatrix):
 
         :param N: number of random rotations
         :type N: int
-        :param theta_range: anglular magnitude range [min,max], defaults to None.
+        :param theta_range: angular magnitude range [min,max], defaults to None.
         :type xrange: 2-element sequence, optional
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
@@ -1533,7 +1533,7 @@ class SE3(SO3):
         :type yrange: 2-element sequence, optional
         :param zrange: z-axis range [min,max], defaults to [-1, 1]
         :type zrange: 2-element sequence, optional
-        :param theta_range: anglular magnitude range [min,max], defaults to None -> [0,pi].
+        :param theta_range: angular magnitude range [min,max], defaults to None -> [0,pi].
         :type xrange: 2-element sequence, optional
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
