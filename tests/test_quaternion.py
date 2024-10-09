@@ -49,6 +49,12 @@ class TestUnitQuaternion(unittest.TestCase):
             UnitQuaternion.Rz(-90, "deg").vec, np.r_[1, 0, 0, -1] / math.sqrt(2)
         )
 
+        q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertLessEqual(q.angvec()[0], 0.7)
+        self.assertGreaterEqual(q.angvec()[0], 0.1)
+
+
     def test_constructor(self):
         qcompare(UnitQuaternion(), [1, 0, 0, 0])
 

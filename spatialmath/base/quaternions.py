@@ -14,10 +14,32 @@ import sys
 import math
 import numpy as np
 import spatialmath.base as smb
+from spatialmath.base.argcheck import getunit
 from spatialmath.base.types import *
+import scipy.interpolate as interpolate
+from typing import Optional
 
 _eps = np.finfo(np.float64).eps
 
+_NUMBER_CDF_SIN_SQUARED_INTERP_POINTS = 256
+_CDF_SIN_SQUARED_INTERP_ANGLES = np.linspace(0, np.pi, _NUMBER_CDF_SIN_SQUARED_INTERP_POINTS)
+
+def _compute_cdf_sin_squared(theta: float):
+    """
+    Computes the CDF for the distribution of anular magnitude for uniformly sampled rotations.
+    
+    :arg theta: anglular magnitude
+    :rtype: float
+    :return: cdf of a given anglular magnitude
+    :rtype: float
+
+    Helper function for uniform sampling of rotations with constrained angular magnitude. 
+    This function returns the integral of the pdf of angular magnitudes (2/pi * sin^2(theta/2)).
+    """
+    return (theta - np.sin(theta)) / np.pi
+
+_CDF_SIN_SQUARED_INTERP_VALUES = _compute_cdf_sin_squared(_CDF_SIN_SQUARED_INTERP_ANGLES)
+_inv_cdf_sin_squared_interp = interpolate.interp1d(_CDF_SIN_SQUARED_INTERP_VALUES, _CDF_SIN_SQUARED_INTERP_ANGLES)
 
 def qeye() -> QuaternionArray:
     """
@@ -843,29 +865,57 @@ def qslerp(
         return q0
 
 
-def qrand() -> UnitQuaternionArray:
+def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQuaternionArray:
     """
     Random unit-quaternion
-
+    
+    :arg theta_range: anglular magnitude range [min,max], defaults to None.
+    :type xrange: 2-element sequence, optional
+    :arg unit: angular units: 'rad' [default], or 'deg'
+    :type unit: str
     :return: random unit-quaternion
     :rtype: ndarray(4)
 
-    Computes a uniformly distributed random unit-quaternion which can be
-    considered equivalent to a random SO(3) rotation.
+    Computes a uniformly distributed random unit-quaternion, with in a maximum 
+    anglular magnitude, which can be considered equivalent to a random SO(3) rotation.
 
     .. runblock:: pycon
 
         >>> from spatialmath.base import qrand, qprint
         >>> qprint(qrand())
     """
-    u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
-    return np.r_[
-        math.sqrt(1 - u[0]) * math.sin(2 * math.pi * u[1]),
-        math.sqrt(1 - u[0]) * math.cos(2 * math.pi * u[1]),
-        math.sqrt(u[0]) * math.sin(2 * math.pi * u[2]),
-        math.sqrt(u[0]) * math.cos(2 * math.pi * u[2]),
-    ]
+    if theta_range is not None:
+        theta_range = getunit(theta_range, unit)
 
+        if(theta_range[0] < 0 or theta_range[1] > np.pi or theta_range[0] > theta_range[1]):
+            ValueError('Invalid angular range. Must be within the range[0, pi].'
+            + f' Recieved {theta_range}.')
+
+        # Sample axis and angle indepently, respecing the CDF of the 
+        # angular magnitued under uniform sampling. 
+        
+        # Sample angle using inverse transform sampling based on CDF 
+        # of the anular distribution (2/pi * sin^2(theta/2))
+        theta = _inv_cdf_sin_squared_interp(
+            np.random.uniform(
+                low=_compute_cdf_sin_squared(theta_range[0]), 
+                high=_compute_cdf_sin_squared(theta_range[1]),
+            )
+        )
+        # Sample axis uniformly using 3D normal distributed
+        v = np.random.randn(3) 
+        v /= np.linalg.norm(v)
+
+        return np.r_[math.cos(theta / 2), (math.sin(theta / 2) * v)]
+    else:
+        u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
+        return np.r_[
+            math.sqrt(1 - u[0]) * math.sin(2 * math.pi * u[1]),
+            math.sqrt(1 - u[0]) * math.cos(2 * math.pi * u[1]),
+            math.sqrt(u[0]) * math.sin(2 * math.pi * u[2]),
+            math.sqrt(u[0]) * math.cos(2 * math.pi * u[2]),
+        ]
+    
 
 def qmatrix(q: ArrayLike4) -> R4x4:
     """

@@ -77,6 +77,12 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SO3)
 
+        R = SO3.Rand(theta_range=(0.1, 0.7))
+        self.assertIsInstance(R, SO3)
+        self.assertEqual(R.A.shape, (3, 3))
+        self.assertLessEqual(R.angvec()[0], 0.7)
+        self.assertGreaterEqual(R.angvec()[0], 0.1)
+
         # copy constructor
         R = SO3.Rx(pi / 2)
         R2 = SO3(R)
@@ -835,6 +841,13 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(T.x, t[0])
         nt.assert_equal(T.y, t[1])
         nt.assert_equal(T.z, t[2])
+
+        # random
+        T = SE3.Rand(theta_range=(0.1, 0.7))
+        self.assertIsInstance(T, SE3)
+        self.assertEqual(T.A.shape, (4, 4))
+        self.assertLessEqual(T.angvec()[0], 0.7)
+        self.assertGreaterEqual(T.angvec()[0], 0.1)
 
         TT = SE3([T, T, T])
         desired_shape = (3,)

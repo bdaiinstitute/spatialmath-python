@@ -34,7 +34,7 @@ from spatialmath.pose2d import SE2
 
 from spatialmath.twist import Twist3
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from spatialmath.quaternion import UnitQuaternion
 
@@ -455,12 +455,16 @@ class SO3(BasePoseMatrix):
         return cls([smb.rotz(x, unit=unit) for x in smb.getvector(theta)], check=False)
 
     @classmethod
-    def Rand(cls, N: int = 1) -> Self:
+    def Rand(cls, N: int = 1, *, theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> Self:
         """
         Construct a new SO(3) from random rotation
 
         :param N: number of random rotations
         :type N: int
+        :param theta_range: anglular magnitude range [min,max], defaults to None.
+        :type xrange: 2-element sequence, optional
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
         :return: SO(3) rotation matrix
         :rtype: SO3 instance
 
@@ -477,7 +481,7 @@ class SO3(BasePoseMatrix):
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
-        return cls([smb.q2r(smb.qrand()) for _ in range(0, N)], check=False)
+        return cls([smb.q2r(smb.qrand(theta_range=theta_range, unit=unit)) for _ in range(0, N)], check=False)
 
     @overload
     @classmethod
@@ -1517,6 +1521,8 @@ class SE3(SO3):
         xrange: Optional[ArrayLike2] = (-1, 1),
         yrange: Optional[ArrayLike2] = (-1, 1),
         zrange: Optional[ArrayLike2] = (-1, 1),
+        theta_range:Optional[ArrayLike2] = None,
+        unit: str = "rad",
     ) -> SE3:  # pylint: disable=arguments-differ
         """
         Create a random SE(3)
@@ -1527,6 +1533,10 @@ class SE3(SO3):
         :type yrange: 2-element sequence, optional
         :param zrange: z-axis range [min,max], defaults to [-1, 1]
         :type zrange: 2-element sequence, optional
+        :param theta_range: anglular magnitude range [min,max], defaults to None -> [0,pi].
+        :type xrange: 2-element sequence, optional
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
         :param N: number of random transforms
         :type N: int
         :return: SE(3) matrix
@@ -1557,7 +1567,7 @@ class SE3(SO3):
         Z = np.random.uniform(
             low=zrange[0], high=zrange[1], size=N
         )  # random values in the range
-        R = SO3.Rand(N=N)
+        R = SO3.Rand(N=N, theta_range=theta_range, unit=unit)
         return cls(
             [smb.transl(x, y, z) @ smb.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)],
             check=False,
