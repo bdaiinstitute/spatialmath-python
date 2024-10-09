@@ -895,7 +895,7 @@ def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQua
         # angular magnitude under uniform sampling. 
         
         # Sample angle using inverse transform sampling based on CDF 
-        # of the anular distribution (2/pi * sin^2(theta/2))
+        # of the angular distribution (2/pi * sin^2(theta/2))
         theta = _inv_cdf_sin_squared_interp(
             np.random.uniform(
                 low=_compute_cdf_sin_squared(theta_range[0]), 
