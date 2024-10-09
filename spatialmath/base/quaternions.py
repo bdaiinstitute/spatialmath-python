@@ -891,8 +891,8 @@ def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQua
             ValueError('Invalid angular range. Must be within the range[0, pi].'
             + f' Recieved {theta_range}.')
 
-        # Sample axis and angle indepently, respecing the CDF of the 
-        # angular magnitued under uniform sampling. 
+        # Sample axis and angle independently, respecting the CDF of the 
+        # angular magnitude under uniform sampling. 
         
         # Sample angle using inverse transform sampling based on CDF 
         # of the anular distribution (2/pi * sin^2(theta/2))

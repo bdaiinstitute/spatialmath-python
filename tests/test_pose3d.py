@@ -78,7 +78,7 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SO3)
 
-        # random constained
+        # random constrained
         R = SO3.Rand(theta_range=(0.1, 0.7))
         self.assertIsInstance(R, SO3)
         self.assertEqual(R.A.shape, (3, 3))
@@ -856,7 +856,7 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(TT.y, ones * t[1])
         nt.assert_equal(TT.z, ones * t[2])
 
-        # random constained
+        # random constrained
         T = SE3.Rand(theta_range=(0.1, 0.7))
         self.assertIsInstance(T, SE3)
         self.assertEqual(T.A.shape, (4, 4))
