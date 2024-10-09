@@ -48,6 +48,13 @@ class TestUnitQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(
             UnitQuaternion.Rz(-90, "deg").vec, np.r_[1, 0, 0, -1] / math.sqrt(2)
         )
+        
+        np.random.seed(73)
+        q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertLessEqual(q.angvec()[0], 0.7)
+        self.assertGreaterEqual(q.angvec()[0], 0.1)
+
 
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         self.assertIsInstance(q, UnitQuaternion)

@@ -72,6 +72,7 @@ class TestSO3(unittest.TestCase):
         array_compare(R, np.eye(3))
         self.assertIsInstance(R, SO3)
 
+        np.random.seed(32)
         # random
         R = SO3.Rand()
         nt.assert_equal(len(R), 1)
@@ -822,6 +823,7 @@ class TestSE3(unittest.TestCase):
         array_compare(R, np.eye(4))
         self.assertIsInstance(R, SE3)
 
+        np.random.seed(65)
         # random
         R = SE3.Rand()
         nt.assert_equal(len(R), 1)
