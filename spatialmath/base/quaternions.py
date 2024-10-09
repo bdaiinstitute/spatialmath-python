@@ -861,7 +861,7 @@ def _compute_cdf_sin_squared(theta: float):
     return (theta - np.sin(theta)) / np.pi
 
 @lru_cache(maxsize=1)
-def _generate_inv_cdf_sin_squared_interp(num_interpolation_points) -> interpolate.interp1d:
+def _generate_inv_cdf_sin_squared_interp(num_interpolation_points: int = 256) -> interpolate.interp1d:
     """
     Computes an interpolation function for the inverse CDF of the distribution of angular magnitude.
     
@@ -878,7 +878,7 @@ def _generate_inv_cdf_sin_squared_interp(num_interpolation_points) -> interpolat
     cdf_sin_squared_interp_values = _compute_cdf_sin_squared(cdf_sin_squared_interp_angles)
     return interpolate.interp1d(cdf_sin_squared_interp_values, cdf_sin_squared_interp_angles)
 
-def _compute_inv_cdf_sin_squared(x: ArrayLike, num_interpolation_points=256) -> ArrayLike:
+def _compute_inv_cdf_sin_squared(x: ArrayLike, num_interpolation_points: int = 256) -> ArrayLike:
     """
     Computes the inverse CDF of the distribution of angular magnitude.
     
@@ -896,7 +896,7 @@ def _compute_inv_cdf_sin_squared(x: ArrayLike, num_interpolation_points=256) -> 
     inv_cdf_sin_squared_interp = _generate_inv_cdf_sin_squared_interp(num_interpolation_points)
     return inv_cdf_sin_squared_interp(x)
 
-def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad", num_interpolation_points:int = 256) -> UnitQuaternionArray:
+def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad", num_interpolation_points: int = 256) -> UnitQuaternionArray:
     """
     Random unit-quaternion
     
@@ -904,6 +904,8 @@ def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad", num_interp
     :type xrange: 2-element sequence, optional
     :arg unit: angular units: 'rad' [default], or 'deg'
     :type unit: str
+    :arg num_interpolation_points: number of points to use in the interpolation function
+    :rtype: int
     :arg num_interpolation_points: number of points to use in the interpolation function
     :rtype: int
     :return: random unit-quaternion
