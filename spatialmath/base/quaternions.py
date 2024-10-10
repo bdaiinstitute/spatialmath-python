@@ -14,10 +14,13 @@ import sys
 import math
 import numpy as np
 import spatialmath.base as smb
+from spatialmath.base.argcheck import getunit
 from spatialmath.base.types import *
+import scipy.interpolate as interpolate
+from typing import Optional
+from functools import lru_cache
 
 _eps = np.finfo(np.float64).eps
-
 
 def qeye() -> QuaternionArray:
     """
@@ -843,29 +846,112 @@ def qslerp(
         return q0
 
 
-def qrand() -> UnitQuaternionArray:
+def _compute_cdf_sin_squared(theta: float):
+    """
+    Computes the CDF for the distribution of angular magnitude for uniformly sampled rotations.
+    
+    :arg theta: angular magnitude
+    :rtype: float
+    :return: cdf of a given angular magnitude
+    :rtype: float
+
+    Helper function for uniform sampling of rotations with constrained angular magnitude. 
+    This function returns the integral of the pdf of angular magnitudes (2/pi * sin^2(theta/2)).
+    """
+    return (theta - np.sin(theta)) / np.pi
+
+@lru_cache(maxsize=1)
+def _generate_inv_cdf_sin_squared_interp(num_interpolation_points: int = 256) -> interpolate.interp1d:
+    """
+    Computes an interpolation function for the inverse CDF of the distribution of angular magnitude.
+    
+    :arg num_interpolation_points: number of points to use in the interpolation function
+    :rtype: int
+    :return: interpolation function for the inverse cdf of a given angular magnitude
+    :rtype: interpolate.interp1d
+
+    Helper function for uniform sampling of rotations with constrained angular magnitude. 
+    This function returns interpolation function for the inverse of the integral of the 
+    pdf of angular magnitudes (2/pi * sin^2(theta/2)), which is not analytically defined.
+    """
+    cdf_sin_squared_interp_angles = np.linspace(0, np.pi, num_interpolation_points)
+    cdf_sin_squared_interp_values = _compute_cdf_sin_squared(cdf_sin_squared_interp_angles)
+    return interpolate.interp1d(cdf_sin_squared_interp_values, cdf_sin_squared_interp_angles)
+
+def _compute_inv_cdf_sin_squared(x: ArrayLike, num_interpolation_points: int = 256) -> ArrayLike:
+    """
+    Computes the inverse CDF of the distribution of angular magnitude.
+    
+    :arg x: value for cdf of angular magnitudes
+    :rtype: ArrayLike
+    :arg num_interpolation_points: number of points to use in the interpolation function
+    :rtype: int
+    :return: angular magnitude associate with cdf value
+    :rtype: ArrayLike
+
+    Helper function for uniform sampling of rotations with constrained angular magnitude. 
+    This function returns the angle associated with the cdf value derived form integral of 
+    the pdf of angular magnitudes (2/pi * sin^2(theta/2)), which is not analytically defined.
+    """
+    inv_cdf_sin_squared_interp = _generate_inv_cdf_sin_squared_interp(num_interpolation_points)
+    return inv_cdf_sin_squared_interp(x)
+
+def qrand(theta_range:Optional[ArrayLike2] = None, unit: str = "rad", num_interpolation_points: int = 256) -> UnitQuaternionArray:
     """
     Random unit-quaternion
-
+    
+    :arg theta_range: angular magnitude range [min,max], defaults to None.
+    :type xrange: 2-element sequence, optional
+    :arg unit: angular units: 'rad' [default], or 'deg'
+    :type unit: str
+    :arg num_interpolation_points: number of points to use in the interpolation function
+    :rtype: int
+    :arg num_interpolation_points: number of points to use in the interpolation function
+    :rtype: int
     :return: random unit-quaternion
     :rtype: ndarray(4)
 
-    Computes a uniformly distributed random unit-quaternion which can be
-    considered equivalent to a random SO(3) rotation.
+    Computes a uniformly distributed random unit-quaternion, with in a maximum 
+    angular magnitude, which can be considered equivalent to a random SO(3) rotation.
 
     .. runblock:: pycon
 
         >>> from spatialmath.base import qrand, qprint
         >>> qprint(qrand())
     """
-    u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
-    return np.r_[
-        math.sqrt(1 - u[0]) * math.sin(2 * math.pi * u[1]),
-        math.sqrt(1 - u[0]) * math.cos(2 * math.pi * u[1]),
-        math.sqrt(u[0]) * math.sin(2 * math.pi * u[2]),
-        math.sqrt(u[0]) * math.cos(2 * math.pi * u[2]),
-    ]
+    if theta_range is not None:
+        theta_range = getunit(theta_range, unit)
 
+        if(theta_range[0] < 0 or theta_range[1] > np.pi or theta_range[0] > theta_range[1]):
+            ValueError('Invalid angular range. Must be within the range[0, pi].'
+            + f' Recieved {theta_range}.')
+
+        # Sample axis and angle independently, respecting the CDF of the 
+        # angular magnitude under uniform sampling. 
+        
+        # Sample angle using inverse transform sampling based on CDF 
+        # of the angular distribution (2/pi * sin^2(theta/2))
+        theta = _compute_inv_cdf_sin_squared(
+            np.random.uniform(
+                low=_compute_cdf_sin_squared(theta_range[0]), 
+                high=_compute_cdf_sin_squared(theta_range[1]),
+            ),
+            num_interpolation_points=num_interpolation_points,
+        )
+        # Sample axis uniformly using 3D normal distributed
+        v = np.random.randn(3) 
+        v /= np.linalg.norm(v)
+
+        return np.r_[math.cos(theta / 2), (math.sin(theta / 2) * v)]
+    else:
+        u = np.random.uniform(low=0, high=1, size=3)  # get 3 random numbers in [0,1]
+        return np.r_[
+            math.sqrt(1 - u[0]) * math.sin(2 * math.pi * u[1]),
+            math.sqrt(1 - u[0]) * math.cos(2 * math.pi * u[1]),
+            math.sqrt(u[0]) * math.sin(2 * math.pi * u[2]),
+            math.sqrt(u[0]) * math.cos(2 * math.pi * u[2]),
+        ]
+    
 
 def qmatrix(q: ArrayLike4) -> R4x4:
     """

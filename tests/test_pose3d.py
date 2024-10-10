@@ -72,10 +72,18 @@ class TestSO3(unittest.TestCase):
         array_compare(R, np.eye(3))
         self.assertIsInstance(R, SO3)
 
+        np.random.seed(32)
         # random
         R = SO3.Rand()
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SO3)
+
+        # random constrained
+        R = SO3.Rand(theta_range=(0.1, 0.7))
+        self.assertIsInstance(R, SO3)
+        self.assertEqual(R.A.shape, (3, 3))
+        self.assertLessEqual(R.angvec()[0], 0.7)
+        self.assertGreaterEqual(R.angvec()[0], 0.1)
 
         # copy constructor
         R = SO3.Rx(pi / 2)
@@ -816,12 +824,13 @@ class TestSE3(unittest.TestCase):
         array_compare(R, np.eye(4))
         self.assertIsInstance(R, SE3)
 
+        np.random.seed(65)
         # random
         R = SE3.Rand()
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SE3)
 
-        # random
+        # random 
         T = SE3.Rand()
         R = T.R
         t = T.t
@@ -846,6 +855,13 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(TT.x, ones * t[0])
         nt.assert_equal(TT.y, ones * t[1])
         nt.assert_equal(TT.z, ones * t[2])
+
+        # random constrained
+        T = SE3.Rand(theta_range=(0.1, 0.7))
+        self.assertIsInstance(T, SE3)
+        self.assertEqual(T.A.shape, (4, 4))
+        self.assertLessEqual(T.angvec()[0], 0.7)
+        self.assertGreaterEqual(T.angvec()[0], 0.1)
 
         # copy constructor
         R = SE3.Rx(pi / 2)
