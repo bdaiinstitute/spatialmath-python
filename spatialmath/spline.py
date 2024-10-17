@@ -21,9 +21,15 @@ from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation, RotationSpline
 from spatialmath import SE3, SO3, Twist3
 from spatialmath.base.transforms3d import tranimate
+from abc import ABC, abstractmethod
 
+class SplineSE3(ABC):
 
-class InterpSplineSE3:
+    @abstractmethod
+    def __call__(self, t: float) -> SE3:
+        pass
+
+class InterpSplineSE3(SplineSE3):
     """Class for an interpolated trajectory in SE3, as a function of time, through waypoints with a cubic spline.
 
     A combination of scipy.interpolate.CubicSpline and scipy.spatial.transform.RotationSpline (itself also cubic)
@@ -32,11 +38,11 @@ class InterpSplineSE3:
 
     def __init__(
         self,
-        timepoints: List[float],
+        timepoints: List[float], 
         waypoints: List[SE3],
         *,
         normalize_time: bool = True,
-        bc_type: str | tuple = "not-a-knot",  # not-a-knot is scipy default; None is invalid
+        bc_type: str = "not-a-knot",  # not-a-knot is scipy default; None is invalid
     ) -> None:
         """Construct a InterpSplineSE3 object
 
@@ -66,7 +72,7 @@ class InterpSplineSE3:
         )
         self.spline_so3 = RotationSpline(self.timepoints, Rotation.from_matrix(np.array([(pose.R) for pose in self.waypoints])))
 
-    def __call__(self, t: float) -> Any:
+    def __call__(self, t: float) -> SE3:
 
         return SE3.Rt(t=self.spline_xyz(t), R=self.spline_so3(t).as_matrix())
 
@@ -80,8 +86,8 @@ class InterpSplineSE3:
         num_samples: int,
         pose_marker_length: float = 0.2,
         animate: bool = False,
-        ax: plt.Axes | None = None,
-        input_poses: List[SE3] | None = None
+        ax: Optional[plt.Axes] = None,
+        input_poses: Optional[List[SE3]] = None
     ) -> None:
         """Displays an animation of the trajectory with the control poses."""
         if ax is None:
@@ -125,14 +131,14 @@ class SplineFit:
         self.xyz_data = np.array([pose.t for pose in pose_data])
         self.so3_data = Rotation.from_matrix(np.array([(pose.R) for pose in pose_data]))
 
-        self.spline: InterpSplineSE3 | BSplineSE3 | None = None
+        self.spline: Optional[SplineSE3] = None
 
     def downsampled_interpolation(
         self, 
         epsilon_xyz: float = 1e-3, 
         epsilon_angle: float = 1e-1,
         normalize_time: bool = True,
-        bc_type: str | tuple = "not-a-knot",
+        bc_type: str = "not-a-knot",
     ) -> Tuple[InterpSplineSE3, List[int]]:
         """
             Return:
@@ -189,7 +195,7 @@ class SplineFit:
         ]
 
 
-class BSplineSE3:
+class BSplineSE3(SplineSE3):
     """A class to parameterize a trajectory in SE3 with a 6-dimensional B-spline.
 
     The SE3 control poses are converted to se3 twists (the lie algebra) and a B-spline
@@ -254,8 +260,8 @@ class BSplineSE3:
         num_samples: int,
         pose_marker_length: float = 0.2,
         animate: bool = False,
-        ax: plt.Axes | None = None,
-        input_poses: List[SE3] | None = None
+        ax: Optional[plt.Axes]  = None,
+        input_poses: Optional[List[SE3]] = None
     ) -> None:
         """Displays an animation of the trajectory with the control poses."""
         if ax is None:
