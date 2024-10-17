@@ -32,8 +32,8 @@ class InterpSplineSE3:
 
     def __init__(
         self,
-        timepoints: list[float] | npt.NDArray,
-        waypoints: list[SE3],
+        timepoints: List[float] | npt.NDArray,
+        waypoints: List[SE3],
         *,
         normalize_time: bool = True,
         bc_type: str | tuple = "not-a-knot",  # not-a-knot is scipy default; None is invalid
@@ -173,10 +173,10 @@ class SplineFit:
     def max_angular_error(self) -> float:
         return np.max(self.angular_errors())
 
-    def angular_errors(self) -> list[float]:
+    def angular_errors(self) -> List[float]:
         return [
             pose.angdist(self.spline(t))
-            for pose, t in zip(self.waypoints, self.timepoints, strict=True)
+            for pose, t in zip(self.pose_data, self.time_data, strict=True)
         ]
 
     def max_euclidean_error(self) -> float:
@@ -185,7 +185,7 @@ class SplineFit:
     def euclidean_errors(self) -> List[float]:
         return [
             np.linalg.norm(pose.t - self.spline(t).t)
-            for pose, t in zip(self.waypoints, self.timepoints, strict=True)
+            for pose, t in zip(self.pose_data, self.time_data, strict=True)
         ]
 
 

@@ -77,7 +77,5 @@ class TestSpineFit:
     fraction_points_removed = 1.0 - len(kept_indices) / num_data_points 
     assert(fraction_points_removed > 0.2)
     
-    sample = spline(timestamps[50])
-    true_pose = trajectory[50]
-    assert( sample.angdist(true_pose) <np.deg2rad(5.0) )
-    assert( np.linalg.norm(sample.t - true_pose.t) < 0.1 )
+    assert( fit.max_angular_error() < np.deg2rad(5.0) )
+    assert( fit.max_angular_error() < 0.1 )
