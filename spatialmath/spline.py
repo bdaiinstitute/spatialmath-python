@@ -64,7 +64,7 @@ class InterpSplineSE3:
             np.array([pose.t for pose in self.waypoints]), 
             bc_type=bc_type
         )
-        self.spline_so3 = RotationSpline(self.timepoints, self.so3_data)
+        self.spline_so3 = RotationSpline(self.timepoints, Rotation.from_matrix(np.array([(pose.R) for pose in self.waypoints])))
 
     def __call__(self, t: float) -> Any:
 

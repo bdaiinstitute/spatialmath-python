@@ -29,7 +29,7 @@ class TestBSplineSE3(unittest.TestCase):
 
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
-        spline.visualize(num_samples=100, repeat=False)
+        spline.visualize(num_samples=100, animate=True)
 
 class TestInterpSplineSE3:
     waypoints = [
@@ -53,7 +53,8 @@ class TestInterpSplineSE3:
 
     def test_visualize(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
-        spline.visualize(num_samples=100, repeat=False)
+        spline.visualize(num_samples=100, animate=True)
+        
 
 class TestSpineFit:
     num_data_points = 300
