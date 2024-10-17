@@ -5,23 +5,17 @@
 Classes for parameterizing a trajectory in SE3 with splines. 
 """
 
-from typing import Any, Dict, List, Optional
-from scipy.interpolate import BSpline
-from spatialmath import SE3
-import numpy as np
-import matplotlib.pyplot as plt
-from spatialmath.base.transforms3d import tranimate, trplot
-
-from typing import Any, List, Tuple
+from abc import ABC, abstractmethod
+from typing import List, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.typing as npt
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import BSpline, CubicSpline
 from scipy.spatial.transform import Rotation, RotationSpline
+
 from spatialmath import SE3, SO3, Twist3
 from spatialmath.base.transforms3d import tranimate
-from abc import ABC, abstractmethod
+
 
 class SplineSE3(ABC):
 
