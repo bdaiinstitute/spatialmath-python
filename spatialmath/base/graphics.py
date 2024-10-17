@@ -982,7 +982,7 @@ try:
         handles = []
         for c in centre.T:
             X, Y, Z = sphere(centre=c, radius=radius, resolution=resolution)
-            handles.append(_render3D(ax, X, Y, Z, **kwargs))
+            handles.append(_render3D(ax, X, Y, Z, pose=pose, **kwargs))
 
         return handles
 
@@ -1214,7 +1214,7 @@ try:
         )  # Pythagorean theorem
 
         handles = []
-        handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
+        handles.append(_render3D(ax, X, Y, Z, filled=filled, pose=pose, **kwargs))
         handles.append(
             _render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, pose=pose, **kwargs)
         )
@@ -1298,9 +1298,9 @@ try:
             Z = height - Z
 
         handles = []
-        handles.append(_render3D(ax, X, Y, Z, filled=filled, **kwargs))
+        handles.append(_render3D(ax, X, Y, Z, pose=pose, filled=filled, **kwargs))
         handles.append(
-            _render3D(ax, X, (2 * centre[1] - Y), Z, filled=filled, **kwargs)
+            _render3D(ax, X, (2 * centre[1] - Y), Z, pose=pose, filled=filled, **kwargs)
         )
 
         if ends and kwargs.get("filled", default=False):
