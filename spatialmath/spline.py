@@ -111,15 +111,6 @@ class InterpSplineSE3:
         else:
             plt.show()
 
-    def to_numpy(self) -> dict[str, npt.NDArray]:
-        """Export spline parameters as dictionary of numpy arrays."""
-        return {"timepoints": self.timepoints, "twists": np.vstack([1.0 * pose.twist().A for pose in self.waypoints])}
-
-    def from_numpy(self, data: dict[str, npt.NDArray]) -> None:
-        """Reconstruct spline from 'to_numpy' parameters."""
-        self.timepoints = data["timepoints"]
-        self.waypoints = [SE3.Exp(twist) for twist in data["twists"]]
-
 
 class SplineFit:
 
@@ -176,6 +167,7 @@ class SplineFit:
             if angular_error > epsilon_angle or euclidean_error > epsilon_xyz:
                 interpolation_indices.insert(int(np.searchsorted(interpolation_indices, index, side="right")), index)
 
+        self.spline = spline
         return spline, interpolation_indices
     
     def max_angular_error(self) -> float:
@@ -183,8 +175,8 @@ class SplineFit:
 
     def angular_errors(self) -> list[float]:
         return [
-            SO3(pose).angdist(SO3(self.spline_so3(timestamp).as_matrix()))
-            for pose, timestamp in zip(self.waypoints, self.timepoints, strict=True)
+            pose.angdist(self.spline(t))
+            for pose, t in zip(self.waypoints, self.timepoints, strict=True)
         ]
 
     def max_euclidean_error(self) -> float:
@@ -192,9 +184,10 @@ class SplineFit:
 
     def euclidean_errors(self) -> List[float]:
         return [
-            np.linalg.norm(pose.t - self.spline_xyz(timestamp))
-            for pose, timestamp in zip(self.waypoints, self.timepoints, strict=True)
+            np.linalg.norm(pose.t - self.spline(t).t)
+            for pose, t in zip(self.waypoints, self.timepoints, strict=True)
         ]
+
 
 class BSplineSE3:
     """A class to parameterize a trajectory in SE3 with a 6-dimensional B-spline.
