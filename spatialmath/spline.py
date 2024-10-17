@@ -32,7 +32,7 @@ class InterpSplineSE3:
 
     def __init__(
         self,
-        timepoints: List[float] | npt.NDArray,
+        timepoints: List[float],
         waypoints: List[SE3],
         *,
         normalize_time: bool = True,
@@ -116,8 +116,8 @@ class SplineFit:
 
     def __init__(
         self, 
-        time_data: npt.NDArray, 
-        pose_data: npt.NDArray,
+        time_data: List[float], 
+        pose_data: List[SE3],
     ) -> None:
         self.time_data = time_data
         self.pose_data = pose_data
