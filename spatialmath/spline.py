@@ -182,7 +182,7 @@ class SplineFit:
     def angular_errors(self) -> List[float]:
         return [
             pose.angdist(self.spline(t))
-            for pose, t in zip(self.pose_data, self.time_data, strict=True)
+            for pose, t in zip(self.pose_data, self.time_data)
         ]
 
     def max_euclidean_error(self) -> float:
@@ -191,7 +191,7 @@ class SplineFit:
     def euclidean_errors(self) -> List[float]:
         return [
             np.linalg.norm(pose.t - self.spline(t).t)
-            for pose, t in zip(self.pose_data, self.time_data, strict=True)
+            for pose, t in zip(self.pose_data, self.time_data)
         ]
 
 
