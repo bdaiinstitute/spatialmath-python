@@ -6,7 +6,7 @@ Classes for parameterizing a trajectory in SE3 with splines.
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
