@@ -5,7 +5,7 @@ import unittest
 import sys
 import pytest
 
-from spatialmath import BSplineSE3, SE3
+from spatialmath import BSplineSE3, SE3, InterpSplineSE3, SplineFit, SO3
 
 
 class TestBSplineSE3(unittest.TestCase):
@@ -30,3 +30,53 @@ class TestBSplineSE3(unittest.TestCase):
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
         spline.visualize(num_samples=100, repeat=False)
+
+class TestInterpSplineSE3:
+    waypoints = [
+        SE3.Trans([e, 2 * np.cos(e / 2 * np.pi), 2 * np.sin(e / 2 * np.pi)])
+        * SE3.Ry(e / 8 * np.pi)
+        for e in range(0, 8)
+    ]
+    times = np.linspace(0, 10, len(waypoints))
+
+    @classmethod
+    def tearDownClass(cls):
+        plt.close("all")
+
+    def test_constructor(self):
+        InterpSplineSE3(self.times, self.waypoints)
+
+    def test_evaluation(self):
+        spline = InterpSplineSE3(self.times, self.waypoints)
+        nt.assert_almost_equal(spline(0).A, self.waypoints[0].A)
+        nt.assert_almost_equal(spline(1).A, self.waypoints[-1].A)
+
+    def test_visualize(self):
+        spline = InterpSplineSE3(self.times, self.waypoints)
+        spline.visualize(num_samples=100, repeat=False)
+
+class TestSpineFit:
+    num_data_points = 300
+    time_horizon = 5
+    num_viz_points = 100
+
+    # make a helix
+    timestamps = np.linspace(0, 1, num_data_points)
+    trajectory = [
+        SE3.Rt(
+            t=[t * 0.4, 0.4 * np.sin(t * 2 * np.pi * 0.5), 0.4 * np.cos(t * 2 * np.pi * 0.5)],
+            R=SO3.Rx(t * 2 * np.pi * 0.5),
+        )
+        for t in timestamps * time_horizon
+    ]
+
+    fit = SplineFit(timestamps, trajectory)
+    spline, kept_indices = fit.downsampled_interpolation()
+
+    fraction_points_removed = 1.0 - len(kept_indices) / num_data_points 
+    assert(fraction_points_removed > 0.2)
+    
+    sample = spline(timestamps[50])
+    true_pose = trajectory[50]
+    assert( sample.angdist(true_pose) <np.deg2rad(5.0) )
+    assert( np.linalg.norm(sample.t - true_pose.t) < 0.1 )
