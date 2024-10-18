@@ -320,7 +320,7 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T * self.p
+            p = T @ self.p
             self.h.set_data(p[0, :], p[1, :])
             self.h.set_3d_properties(p[2, :])
 
@@ -378,7 +378,7 @@ class Animate:
 
         def draw(self, T):
             # import ipdb; ipdb.set_trace()
-            p = T * self.p
+            p = T @ self.p
 
             # reshape it
             p = p[0:3, :].T.reshape(3, 2, 3)
@@ -432,7 +432,7 @@ class Animate:
             self.anim = anim
 
         def draw(self, T):
-            p = T * self.p
+            p = T @ self.p
             # x2, y2, _ = proj3d.proj_transform(
             #   p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))
@@ -759,7 +759,7 @@ class Animate2:
             self.anim = anim
 
         def draw(self, T):
-            p = T * self.p
+            p = T @ self.p
             self.h.set_data(p[0, :], p[1, :])
 
     def plot(self, x, y, *args, **kwargs):
@@ -837,7 +837,7 @@ class Animate2:
             self.anim = anim
 
         def draw(self, T):
-            p = T * self.p
+            p = T @ self.p
             # x2, y2, _ = proj3d.proj_transform(
             #   p[0], p[1], p[2], self.anim.ax.get_proj())
             # self.h.set_position((x2, y2))

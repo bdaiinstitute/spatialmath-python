@@ -51,12 +51,15 @@ class TestInterpSplineSE3:
         nt.assert_almost_equal(spline(0).A, self.waypoints[0].A)
         nt.assert_almost_equal(spline(1).A, self.waypoints[-1].A)
 
+    def test_small_delta_t(self):
+        InterpSplineSE3(np.linspace(0, InterpSplineSE3._e, len(self.waypoints)), self.waypoints)
+
     def test_visualize(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
         spline.visualize(num_samples=100, animate=True)
         
 
-class TestSpineFit:
+class TestSplineFit:
     num_data_points = 300
     time_horizon = 5
     num_viz_points = 100
@@ -71,11 +74,13 @@ class TestSpineFit:
         for t in timestamps * time_horizon
     ]
 
-    fit = SplineFit(timestamps, trajectory)
-    spline, kept_indices = fit.downsampled_interpolation()
+    def test_spline_fit(self):
+        fit = SplineFit(self.timestamps, self.trajectory)
+        spline, kept_indices = fit.stochastic_downsample_interpolation()
 
-    fraction_points_removed = 1.0 - len(kept_indices) / num_data_points 
-    assert(fraction_points_removed > 0.2)
-    
-    assert( fit.max_angular_error() < np.deg2rad(5.0) )
-    assert( fit.max_angular_error() < 0.1 )
+        fraction_points_removed = 1.0 - len(kept_indices) / self.num_data_points 
+        assert(fraction_points_removed > 0.2)
+        
+        assert( fit.max_angular_error() < np.deg2rad(5.0) )
+        assert( fit.max_angular_error() < 0.1 )
+        spline.visualize(num_samples=100, animate=True)
