@@ -19,7 +19,6 @@ from spatialmath.base.transforms3d import tranimate
 
 
 class SplineSE3(ABC):
-
     def __init__(self) -> None:
         self.control_poses: SE3
 
@@ -33,11 +32,11 @@ class SplineSE3(ABC):
         pose_marker_length: float = 0.2,
         animate: bool = False,
         repeat: bool = True,
-        ax: Optional[plt.Axes]  = None,
+        ax: Optional[plt.Axes] = None,
         input_trajectory: Optional[List[SE3]] = None,
     ) -> None:
         """Displays an animation of the trajectory with the control poses against an optional input trajectory.
-        
+
         Args:
             times: which times to sample the spline at and plot
         """
@@ -48,19 +47,26 @@ class SplineSE3(ABC):
         samples = [self(t) for t in sample_times]
         if not animate:
             pos = np.array([pose.t for pose in samples])
-            ax.plot(pos[:,0], pos[:,1], pos[:,2], "c", linewidth=1.0)  # plot spline fit
+            ax.plot(
+                pos[:, 0], pos[:, 1], pos[:, 2], "c", linewidth=1.0
+            )  # plot spline fit
 
         pos = np.array([pose.t for pose in self.control_poses])
-        ax.plot(pos[:,0], pos[:,1], pos[:,2], "r*")  # plot control_poses
+        ax.plot(pos[:, 0], pos[:, 1], pos[:, 2], "r*")  # plot control_poses
 
         if input_trajectory is not None:
             pos = np.array([pose.t for pose in input_trajectory])
-            ax.plot(pos[:,0], pos[:,1], pos[:,2], "go", fillstyle="none")  # plot compare to input poses
+            ax.plot(
+                pos[:, 0], pos[:, 1], pos[:, 2], "go", fillstyle="none"
+            )  # plot compare to input poses
 
         if animate:
-            tranimate(samples, length=pose_marker_length, wait=True, repeat = repeat)  # animate pose along trajectory
+            tranimate(
+                samples, length=pose_marker_length, wait=True, repeat=repeat
+            )  # animate pose along trajectory
         else:
             plt.show()
+
 
 class InterpSplineSE3(SplineSE3):
     """Class for an interpolated trajectory in SE3, as a function of time, through control_poses with a cubic spline.
@@ -68,10 +74,12 @@ class InterpSplineSE3(SplineSE3):
     A combination of scipy.interpolate.CubicSpline and scipy.spatial.transform.RotationSpline (itself also cubic)
     under the hood.
     """
+
     _e = 1e-12
+
     def __init__(
         self,
-        timepoints: List[float], 
+        timepoints: List[float],
         control_poses: List[SE3],
         *,
         normalize_time: bool = False,
@@ -95,11 +103,13 @@ class InterpSplineSE3(SplineSE3):
         self.timepoints = np.array(timepoints)
 
         if self.timepoints[-1] < self._e:
-            raise ValueError("Difference between start and end timepoints is less than {self._e}")
-        
+            raise ValueError(
+                "Difference between start and end timepoints is less than {self._e}"
+            )
+
         if len(self.control_poses) != len(self.timepoints):
             raise ValueError("Length of control_poses and timepoints must be equal.")
-        
+
         if len(self.timepoints) < 2:
             raise ValueError("Need at least 2 data points to make a trajectory.")
 
@@ -108,14 +118,17 @@ class InterpSplineSE3(SplineSE3):
             self.timepoints = self.timepoints / self.timepoints[-1]
 
         self.spline_xyz = CubicSpline(
-            self.timepoints, 
-            np.array([pose.t for pose in self.control_poses]), 
-            bc_type=bc_type
+            self.timepoints,
+            np.array([pose.t for pose in self.control_poses]),
+            bc_type=bc_type,
         )
-        self.spline_so3 = RotationSpline(self.timepoints, Rotation.from_matrix(np.array([(pose.R) for pose in self.control_poses])))
+        self.spline_so3 = RotationSpline(
+            self.timepoints,
+            Rotation.from_matrix(np.array([(pose.R) for pose in self.control_poses])),
+        )
 
     def __call__(self, t: float) -> SE3:
-        """Compute function value at t. 
+        """Compute function value at t.
         Return:
             pose: SE3
         """
@@ -123,16 +136,18 @@ class InterpSplineSE3(SplineSE3):
 
     def derivative(self, t: float) -> Twist3:
         linear_vel = self.spline_xyz.derivative()(t)
-        angular_vel = self.spline_so3(t, 1) #1 is angular rate, 2 is angular acceleration
+        angular_vel = self.spline_so3(
+            t, 1
+        )  # 1 is angular rate, 2 is angular acceleration
         return Twist3(linear_vel, angular_vel)
 
 
 class SplineFit:
-    """ A general class to fit various SE3 splines to data.
-    """
+    """A general class to fit various SE3 splines to data."""
+
     def __init__(
-        self, 
-        time_data: List[float], 
+        self,
+        time_data: List[float],
         pose_data: List[SE3],
     ) -> None:
         self.time_data = time_data
@@ -144,26 +159,26 @@ class SplineFit:
         self.spline: Optional[SplineSE3] = None
 
     def stochastic_downsample_interpolation(
-        self, 
-        epsilon_xyz: float = 1e-3, 
+        self,
+        epsilon_xyz: float = 1e-3,
         epsilon_angle: float = 1e-1,
         normalize_time: bool = True,
         bc_type: str = "not-a-knot",
     ) -> Tuple[InterpSplineSE3, List[int]]:
         """
-        Uses a random dropout heuristic to downsample a trajectory with an interpolated spline. 
+        Uses a random dropout heuristic to downsample a trajectory with an interpolated spline.
 
-        This code does not ensure the global fit is within epsilon_xyz and epsilon_angle. 
+        This code does not ensure the global fit is within epsilon_xyz and epsilon_angle.
 
             Return:
-                downsampled interpolating spline, 
+                downsampled interpolating spline,
                 list of removed indices from input data
         """
         spline = InterpSplineSE3(
-            self.time_data, 
-            self.pose_data, 
-            normalize_time = normalize_time, 
-            bc_type=bc_type
+            self.time_data,
+            self.pose_data,
+            normalize_time=normalize_time,
+            bc_type=bc_type,
         )
         chosen_indices: set[int] = set()
         interpolation_indices = list(range(len(self.pose_data)))
@@ -178,20 +193,31 @@ class SplineFit:
             chosen_indices.add(index)
             interpolation_indices.remove(index)
 
-            spline.spline_xyz = CubicSpline(self.time_data[interpolation_indices], self.xyz_data[interpolation_indices])
+            spline.spline_xyz = CubicSpline(
+                self.time_data[interpolation_indices],
+                self.xyz_data[interpolation_indices],
+            )
             spline.spline_so3 = RotationSpline(
-                self.time_data[interpolation_indices], self.so3_data[interpolation_indices]
+                self.time_data[interpolation_indices],
+                self.so3_data[interpolation_indices],
             )
 
             time = self.time_data[index]
-            angular_error = SO3(self.pose_data[index]).angdist(SO3(spline.spline_so3(time).as_matrix()))
-            euclidean_error = np.linalg.norm(self.pose_data[index].t - spline.spline_xyz(time))
+            angular_error = SO3(self.pose_data[index]).angdist(
+                SO3(spline.spline_so3(time).as_matrix())
+            )
+            euclidean_error = np.linalg.norm(
+                self.pose_data[index].t - spline.spline_xyz(time)
+            )
             if (angular_error > epsilon_angle) or (euclidean_error > epsilon_xyz):
-                interpolation_indices.insert(int(np.searchsorted(interpolation_indices, index, side="right")), index)
+                interpolation_indices.insert(
+                    int(np.searchsorted(interpolation_indices, index, side="right")),
+                    index,
+                )
 
         self.spline = spline
         return spline, interpolation_indices
-    
+
     def max_angular_error(self) -> float:
         return np.max(self.angular_errors)
 
@@ -272,5 +298,3 @@ class BSplineSE3(SplineSE3):
         """
         twist = np.hstack([spline(t) for spline in self.splines])
         return SE3.Exp(twist)
-
-
