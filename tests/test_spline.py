@@ -2,8 +2,6 @@ import numpy.testing as nt
 import numpy as np
 import matplotlib.pyplot as plt
 import unittest
-import sys
-import pytest
 
 from spatialmath import BSplineSE3, SE3, InterpSplineSE3, SplineFit, SO3
 
@@ -29,7 +27,7 @@ class TestBSplineSE3(unittest.TestCase):
 
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
-        spline.visualize(num_samples=100, animate=True)
+        spline.visualize(np.linspace(0, 1.0, 100), animate=True, repeat=False)
 
 class TestInterpSplineSE3:
     waypoints = [
@@ -37,7 +35,8 @@ class TestInterpSplineSE3:
         * SE3.Ry(e / 8 * np.pi)
         for e in range(0, 8)
     ]
-    times = np.linspace(0, 10, len(waypoints))
+    time_horizon = 10
+    times = np.linspace(0, time_horizon, len(waypoints))
 
     @classmethod
     def tearDownClass(cls):
@@ -48,15 +47,22 @@ class TestInterpSplineSE3:
 
     def test_evaluation(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
-        nt.assert_almost_equal(spline(0).A, self.waypoints[0].A)
-        nt.assert_almost_equal(spline(1).A, self.waypoints[-1].A)
+        for time, pose in zip(self.times, self.waypoints):
+            nt.assert_almost_equal(spline(time).angdist(pose), 0.0)
+            nt.assert_almost_equal(np.linalg.norm(spline(time).t - pose.t), 0.0)
 
+        spline = InterpSplineSE3(self.times, self.waypoints, normalize_time=True)
+        norm_time = spline.timepoints
+        for time, pose in zip(norm_time, self.waypoints):
+            nt.assert_almost_equal(spline(time).angdist(pose), 0.0)
+            nt.assert_almost_equal(np.linalg.norm(spline(time).t - pose.t), 0.0)
+  
     def test_small_delta_t(self):
         InterpSplineSE3(np.linspace(0, InterpSplineSE3._e, len(self.waypoints)), self.waypoints)
 
     def test_visualize(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
-        spline.visualize(num_samples=100, animate=True)
+        spline.visualize(np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)
         
 
 class TestSplineFit:
@@ -83,4 +89,4 @@ class TestSplineFit:
         
         assert( fit.max_angular_error() < np.deg2rad(5.0) )
         assert( fit.max_angular_error() < 0.1 )
-        spline.visualize(num_samples=100, animate=True)
+        spline.visualize(np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)

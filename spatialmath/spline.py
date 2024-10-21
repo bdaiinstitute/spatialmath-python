@@ -29,37 +29,32 @@ class SplineSE3(ABC):
 
     def visualize(
         self,
-        num_samples: int,
+        times: list[float],
         pose_marker_length: float = 0.2,
         animate: bool = False,
+        repeat: bool = True,
         ax: Optional[plt.Axes]  = None,
-        input_poses: Optional[List[SE3]] = None
+        input_trajectory: Optional[List[SE3]] = None,
     ) -> None:
-        """Displays an animation of the trajectory with the control poses."""
+        """Displays an animation of the trajectory with the control poses against an optional input trajectory."""
         if ax is None:
             fig = plt.figure(figsize=(10, 10))
             ax = fig.add_subplot(projection="3d")
 
-        samples = [self(t) for t in np.linspace(0, 1, num_samples)]
+        samples = [self(t) for t in times]
         if not animate:
-            x = [pose.x for pose in samples]
-            y = [pose.y for pose in samples]
-            z = [pose.z for pose in samples]
-            ax.plot(x, y, z, "c", linewidth=1.0)  # plot spline fit
+            pos = np.array([pose.t for pose in samples])
+            ax.plot(pos[:,0], pos[:,1], pos[:,2], "c", linewidth=1.0)  # plot spline fit
 
-        x = [pose.x for pose in self.control_poses]
-        y = [pose.y for pose in self.control_poses]
-        z = [pose.z for pose in self.control_poses]
-        ax.plot(x, y, z, "r*")  # plot control_poses
+        pos = np.array([pose.t for pose in self.control_poses])
+        ax.plot(pos[:,0], pos[:,1], pos[:,2], "r*")  # plot control_poses
 
-        if input_poses is not None:
-            x = [pose.x for pose in input_poses]
-            y = [pose.y for pose in input_poses]
-            z = [pose.z for pose in input_poses]
-            ax.plot(x, y, z, "go", fillstyle="none")  # plot compare to input poses
+        if input_trajectory is not None:
+            pos = np.array([pose.t for pose in input_trajectory])
+            ax.plot(pos[:,0], pos[:,1], pos[:,2], "go", fillstyle="none")  # plot compare to input poses
 
         if animate:
-            tranimate(samples, repeat=True, length=pose_marker_length, wait=True)  # animate pose along trajectory
+            tranimate(samples, length=pose_marker_length, wait=True, repeat = repeat)  # animate pose along trajectory
         else:
             plt.show()
 
@@ -75,7 +70,7 @@ class InterpSplineSE3(SplineSE3):
         timepoints: List[float], 
         control_poses: List[SE3],
         *,
-        normalize_time: bool = True,
+        normalize_time: bool = False,
         bc_type: str = "not-a-knot",  # not-a-knot is scipy default; None is invalid
     ) -> None:
         """Construct a InterpSplineSE3 object
@@ -151,6 +146,10 @@ class SplineFit:
         bc_type: str = "not-a-knot",
     ) -> Tuple[InterpSplineSE3, List[int]]:
         """
+        Uses a random dropout heuristic to downsample a trajectory with an interpolated spline. 
+
+        This code does not ensure the global fit is within epsilon_xyz and epsilon_angle. 
+
             Return:
                 downsampled interpolating spline, 
                 list of removed indices from input data
