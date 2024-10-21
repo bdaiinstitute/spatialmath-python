@@ -124,7 +124,8 @@ class InterpSplineSE3(SplineSE3):
 
 
 class SplineFit:
-
+    """ A general class to fit various SE3 splines to data.
+    """
     def __init__(
         self, 
         time_data: List[float], 
