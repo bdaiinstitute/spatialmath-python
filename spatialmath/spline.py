@@ -29,19 +29,23 @@ class SplineSE3(ABC):
 
     def visualize(
         self,
-        times: List[float],
+        sample_times: List[float],
         pose_marker_length: float = 0.2,
         animate: bool = False,
         repeat: bool = True,
         ax: Optional[plt.Axes]  = None,
         input_trajectory: Optional[List[SE3]] = None,
     ) -> None:
-        """Displays an animation of the trajectory with the control poses against an optional input trajectory."""
+        """Displays an animation of the trajectory with the control poses against an optional input trajectory.
+        
+        Args:
+            times: which times to sample the spline at and plot
+        """
         if ax is None:
             fig = plt.figure(figsize=(10, 10))
             ax = fig.add_subplot(projection="3d")
 
-        samples = [self(t) for t in times]
+        samples = [self(t) for t in sample_times]
         if not animate:
             pos = np.array([pose.t for pose in samples])
             ax.plot(pos[:,0], pos[:,1], pos[:,2], "c", linewidth=1.0)  # plot spline fit
