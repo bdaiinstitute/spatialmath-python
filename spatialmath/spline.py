@@ -29,7 +29,7 @@ class SplineSE3(ABC):
 
     def visualize(
         self,
-        times: list[float],
+        times: List[float],
         pose_marker_length: float = 0.2,
         animate: bool = False,
         repeat: bool = True,
