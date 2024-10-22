@@ -27,7 +27,7 @@ class TestBSplineSE3(unittest.TestCase):
 
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
-        spline.visualize(np.linspace(0, 1.0, 100), animate=True, repeat=False)
+        spline.visualize(sample_times= np.linspace(0, 1.0, 100), animate=True, repeat=False)
 
 class TestInterpSplineSE3:
     waypoints = [
@@ -62,7 +62,7 @@ class TestInterpSplineSE3:
 
     def test_visualize(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
-        spline.visualize(np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)
+        spline.visualize(sample_times= np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)
         
 
 class TestSplineFit:
@@ -89,4 +89,4 @@ class TestSplineFit:
         
         assert( fit.max_angular_error() < np.deg2rad(5.0) )
         assert( fit.max_angular_error() < 0.1 )
-        spline.visualize(np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)
+        spline.visualize(sample_times= np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)

@@ -7,7 +7,7 @@ Classes for parameterizing a trajectory in SE3 with splines.
 
 from abc import ABC, abstractmethod
 from functools import cached_property
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Set
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,16 +29,16 @@ class SplineSE3(ABC):
     def visualize(
         self,
         sample_times: List[float],
+        input_trajectory: Optional[List[SE3]] = None,
         pose_marker_length: float = 0.2,
         animate: bool = False,
         repeat: bool = True,
         ax: Optional[plt.Axes] = None,
-        input_trajectory: Optional[List[SE3]] = None,
     ) -> None:
         """Displays an animation of the trajectory with the control poses against an optional input trajectory.
 
         Args:
-            times: which times to sample the spline at and plot
+            sample_times: which times to sample the spline at and plot
         """
         if ax is None:
             fig = plt.figure(figsize=(10, 10))
@@ -180,10 +180,10 @@ class SplineFit:
             normalize_time=normalize_time,
             bc_type=bc_type,
         )
-        chosen_indices: set[int] = set()
+        chosen_indices: Set[int] = set()
         interpolation_indices = list(range(len(self.pose_data)))
-        interpolation_indices.remove(0)
-        interpolation_indices.remove(len(self.pose_data) - 1)
+        chosen_indices.add(0)
+        chosen_indices.add(len(self.pose_data) - 1)
 
         for _ in range(len(self.time_data) - 2):  # you must have at least 2 indices
             choices = list(set(interpolation_indices).difference(chosen_indices))
@@ -263,7 +263,7 @@ class BSplineSE3(SplineSE3):
         - degree: int that controls degree of the polynomial that governs any given point on the spline.
         - knots: list of floats that govern which control points are active during evaluating the spline
         at a given t input. If none, they are automatically, uniformly generated based on number of control poses and
-        degree of spline.
+        degree of spline on the range [0,1].
         """
         super().__init__()
         self.control_poses = control_poses
