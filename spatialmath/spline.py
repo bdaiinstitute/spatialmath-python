@@ -152,10 +152,6 @@ class SplineFit:
     ) -> None:
         self.time_data = time_data
         self.pose_data = pose_data
-
-        self.xyz_data = np.array([pose.t for pose in pose_data])
-        self.so3_data = Rotation.from_matrix(np.array([(pose.R) for pose in pose_data]))
-
         self.spline: Optional[SplineSE3] = None
 
     def stochastic_downsample_interpolation(
@@ -164,64 +160,67 @@ class SplineFit:
         epsilon_angle: float = 1e-1,
         normalize_time: bool = True,
         bc_type: str = "not-a-knot",
+        check_type: str = "local"
     ) -> Tuple[InterpSplineSE3, List[int]]:
         """
-        Uses a random dropout heuristic to downsample a trajectory with an interpolated spline.
-
-        This code does not ensure the global fit is within epsilon_xyz and epsilon_angle.
+        Uses a random dropout to downsample a trajectory with an interpolated spline. Keeps the start and 
+        end points of the trajectory. Takes a random order of the remaining indices, and then checks the error bound 
+        of just that point if check_type=="local", checks the error of the whole trajectory is check_type=="global".
+        Local is **much** faster.
 
             Return:
                 downsampled interpolating spline,
                 list of removed indices from input data
         """
-        spline = InterpSplineSE3(
-            self.time_data,
-            self.pose_data,
+
+        interpolation_indices = list(range(len(self.pose_data)))
+
+        # randomly attempt to remove poses from the trajectory 
+        # always keep the start and end
+        removal_choices = interpolation_indices.copy()
+        removal_choices.remove(0)
+        removal_choices.remove(len(self.pose_data) - 1)
+        np.random.shuffle(removal_choices)
+        for candidate_removal_index in removal_choices:
+            interpolation_indices.remove(candidate_removal_index)
+
+            self.spline = InterpSplineSE3(
+                [self.time_data[i] for i in interpolation_indices],
+                [self.pose_data[i] for i in interpolation_indices],
+                normalize_time=normalize_time,
+                bc_type=bc_type,
+            )
+
+            sample_time = self.time_data[candidate_removal_index]
+            if check_type is "local":
+                angular_error = SO3(self.pose_data[candidate_removal_index]).angdist(
+                    SO3(self.spline.spline_so3(sample_time).as_matrix())
+                )
+                euclidean_error = np.linalg.norm(
+                    self.pose_data[candidate_removal_index].t - self.spline.spline_xyz(sample_time)
+                )
+            elif check_type is "global":
+                angular_error = self.max_angular_error()
+                euclidean_error = self.max_euclidean_error()
+            else:
+                raise ValueError(f"check_type must be 'local' of 'global', is {check_type}.")
+            
+            if (angular_error > epsilon_angle) or (euclidean_error > epsilon_xyz):
+                interpolation_indices.append(candidate_removal_index)
+                interpolation_indices.sort()
+
+        self.spline = InterpSplineSE3(
+            [self.time_data[i] for i in interpolation_indices],
+            [self.pose_data[i] for i in interpolation_indices],
             normalize_time=normalize_time,
             bc_type=bc_type,
         )
-        chosen_indices: Set[int] = set()
-        interpolation_indices = list(range(len(self.pose_data)))
-        chosen_indices.add(0)
-        chosen_indices.add(len(self.pose_data) - 1)
 
-        for _ in range(len(self.time_data) - 2):  # you must have at least 2 indices
-            choices = list(set(interpolation_indices).difference(chosen_indices))
-
-            index = np.random.choice(choices)
-
-            chosen_indices.add(index)
-            interpolation_indices.remove(index)
-
-            spline.spline_xyz = CubicSpline(
-                self.time_data[interpolation_indices],
-                self.xyz_data[interpolation_indices],
-            )
-            spline.spline_so3 = RotationSpline(
-                self.time_data[interpolation_indices],
-                self.so3_data[interpolation_indices],
-            )
-
-            time = self.time_data[index]
-            angular_error = SO3(self.pose_data[index]).angdist(
-                SO3(spline.spline_so3(time).as_matrix())
-            )
-            euclidean_error = np.linalg.norm(
-                self.pose_data[index].t - spline.spline_xyz(time)
-            )
-            if (angular_error > epsilon_angle) or (euclidean_error > epsilon_xyz):
-                interpolation_indices.insert(
-                    int(np.searchsorted(interpolation_indices, index, side="right")),
-                    index,
-                )
-
-        self.spline = spline
-        return spline, interpolation_indices
+        return self.spline, interpolation_indices
 
     def max_angular_error(self) -> float:
-        return np.max(self.angular_errors)
+        return np.max(self.angular_errors())
 
-    @cached_property
     def angular_errors(self) -> List[float]:
         return [
             pose.angdist(self.spline(t))
@@ -229,9 +228,8 @@ class SplineFit:
         ]
 
     def max_euclidean_error(self) -> float:
-        return np.max(self.euclidean_errors)
+        return np.max(self.euclidean_errors())
 
-    @cached_property
     def euclidean_errors(self) -> List[float]:
         return [
             np.linalg.norm(pose.t - self.spline(t).t)

@@ -84,8 +84,11 @@ class TestSplineFit:
         fit = SplineFit(self.timestamps, self.trajectory)
         spline, kept_indices = fit.stochastic_downsample_interpolation()
 
-        fraction_points_removed = 1.0 - len(kept_indices) / self.num_data_points 
+        fraction_points_removed = 1.0 - len(kept_indices) / self.num_data_points
+        
         assert(fraction_points_removed > 0.2)
+        assert(len(spline.control_poses)==len(kept_indices))
+        assert(len(spline.timepoints)==len(kept_indices))
         
         assert( fit.max_angular_error() < np.deg2rad(5.0) )
         assert( fit.max_angular_error() < 0.1 )
