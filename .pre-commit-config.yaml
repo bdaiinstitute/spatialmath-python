@@ -1,10 +1,10 @@
 repos:
-# - repo: https://github.com/charliermarsh/ruff-pre-commit
-#   # Ruff version.
-#   rev: 'v0.1.0'
-#   hooks:
-#     - id: ruff
-#       args: ['--fix', '--config', 'pyproject.toml']
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  # Ruff version.
+  rev: 'v0.1.0'
+  hooks:
+    - id: ruff
+      args: ['--fix', '--config', 'pyproject.toml']
 
 - repo: https://github.com/psf/black
   rev: 23.10.0
@@ -14,6 +14,21 @@ repos:
       args: ['--config', 'pyproject.toml']
       verbose: true
 
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  -   id: end-of-file-fixer
+  -   id: debug-statements # Ensure we don't commit `import pdb; pdb.set_trace()`
+      exclude: |
+        (?x)^(
+          docker/ros/web/static/.*|
+        )$
+  -   id: trailing-whitespace
+      exclude: |
+        (?x)^(
+          docker/ros/web/static/.*|
+          (.*/).*\.patch|
+        )$
 # - repo: https://github.com/pre-commit/mirrors-mypy
 #   rev: v1.6.1
 #   hooks:

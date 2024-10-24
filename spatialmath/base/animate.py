@@ -217,7 +217,7 @@ class Animate:
             if isinstance(frame, float):
                 # passed a single transform, interpolate it
                 T = smb.trinterp(start=self.start, end=self.end, s=frame)
-            elif isinstance(frame, NDArray):
+            elif isinstance(frame, np.ndarray):
                 # type is SO3Array or SE3Array when Animate.trajectory is not None
                 T = frame
             else:
