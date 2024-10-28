@@ -173,27 +173,12 @@ def qisunit(q: ArrayLike4, tol: float = 20) -> bool:
     return smb.iszerovec(q, tol=tol)
 
 
-@overload
 def qisequal(
-    q1: ArrayLike4,
-    q2: ArrayLike4,
-    tol: float = 20,
-    unitq: Optional[bool] = False,
-) -> bool:
-    ...
-
-
-@overload
-def qisequal(
-    q1: ArrayLike4,
-    q2: ArrayLike4,
-    tol: float = 20,
-    unitq: Optional[bool] = True,
-) -> bool:
-    ...
-
-
-def qisequal(q1, q2, tol: float = 20, unitq: Optional[bool] = False):
+        q1: ArrayLike4,
+        q2: ArrayLike4,
+        tol: float = 20,
+        unitq: Optional[bool] = False,
+):
     """
     Test if quaternions are equal
 
