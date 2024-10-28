@@ -16,7 +16,7 @@ import numpy as np
 import spatialmath.base as smb
 from spatialmath.base.argcheck import getunit
 from spatialmath.base.types import *
-import scipy.interpolate as interpolate
+import scipy.interpolate as interpolate # type: ignore
 from typing import Optional
 from functools import lru_cache
 

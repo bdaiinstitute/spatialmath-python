@@ -24,7 +24,7 @@ from spatialmath.base.vectors import iszerovec, unitvec_norm
 
 try:  # pragma: no cover
     # print('Using SymPy')
-    from sympy import Matrix
+    from sympy import Matrix # type: ignore
 
     _symbolics = True
 

@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from functools import reduce
 import warnings
-import matplotlib.pyplot as plt
-from matplotlib.path import Path
-from matplotlib.patches import PathPatch
-from matplotlib.transforms import Affine2D
+import matplotlib.pyplot as plt # type: ignore
+from matplotlib.path import Path # type: ignore
+from matplotlib.patches import PathPatch # type: ignore
+from matplotlib.transforms import Affine2D # type: ignore
 import numpy as np
 
 from spatialmath import SE2

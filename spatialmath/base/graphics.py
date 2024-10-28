@@ -2,7 +2,7 @@ import math
 from itertools import product
 import warnings
 import numpy as np
-from matplotlib import colors
+from matplotlib import colors # type: ignore
 
 from spatialmath import base as smb
 from spatialmath.base.types import *
@@ -23,14 +23,14 @@ All return a list of the graphic objects they create.
 """
 
 try:
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Circle
-    from mpl_toolkits.mplot3d.art3d import (
+    import matplotlib.pyplot as plt # type: ignore
+    from matplotlib.patches import Circle # type: ignore
+    from mpl_toolkits.mplot3d.art3d import ( # type: ignore
         Poly3DCollection,
         Line3DCollection,
         pathpatch_2d_to_3d,
     )
-    from mpl_toolkits.mplot3d import Axes3D
+    from mpl_toolkits.mplot3d import Axes3D # type: ignore
 
     # TODO
     # return a redrawer object, that can be used for animation
@@ -796,13 +796,13 @@ try:
             so to avoid inverting ``E`` twice to compute the ellipse, we flag that
             the inverse is provided using ``inverted``.
         """
-        from scipy.linalg import sqrtm
+        from scipy.linalg import sqrtm # type: ignore
 
         if E.shape != (2, 2):
             raise ValueError("ellipse is defined by a 2x2 matrix")
 
         if confidence:
-            from scipy.stats.distributions import chi2
+            from scipy.stats.distributions import chi2 # type: ignore
 
             # process the probability
             s = math.sqrt(chi2.ppf(confidence, df=2)) * scale

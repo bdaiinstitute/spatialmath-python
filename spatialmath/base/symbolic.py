@@ -16,7 +16,7 @@ from spatialmath.base.types import *
 
 try:  # pragma: no cover
     # print('Using SymPy')
-    import sympy
+    import sympy # type: ignore
 
     _symbolics = True
     symtype = (sympy.Expr,)

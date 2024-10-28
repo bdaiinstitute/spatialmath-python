@@ -9,10 +9,10 @@ from abc import ABC, abstractmethod
 from functools import cached_property
 from typing import List, Optional, Tuple, Set
 
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 import numpy as np
-from scipy.interpolate import BSpline, CubicSpline
-from scipy.spatial.transform import Rotation, RotationSpline
+from scipy.interpolate import BSpline, CubicSpline # type: ignore
+from scipy.spatial.transform import Rotation, RotationSpline # type: ignore
 
 from spatialmath import SE3, SO3, Twist3
 from spatialmath.base.transforms3d import tranimate

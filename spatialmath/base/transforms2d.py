@@ -20,7 +20,7 @@ import numpy as np
 from typing import Literal
 
 try:
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt # type: ignore
 
     _matplotlib_exists = True
 except ImportError:
@@ -35,7 +35,7 @@ _eps = np.finfo(np.float64).eps
 
 try:  # pragma: no cover
     # print('Using SymPy')
-    import sympy
+    import sympy # type: ignore
 
     _symbolics = True
 
@@ -1132,7 +1132,7 @@ def ICP2d(
     # hack below to use points2tr above
     # use ClayFlannigan's improved data association
 
-    from scipy.spatial import KDTree
+    from scipy.spatial import KDTree # type: ignore
 
     def _FindCorrespondences(
         tree, source, reference
@@ -1227,7 +1227,7 @@ if _matplotlib_exists:
     import matplotlib.pyplot as plt
 
     # from mpl_toolkits.axisartist import Axes
-    from matplotlib.axes import Axes
+    from matplotlib.axes import Axes # type: ignore
 
     def trplot2(
         T: Union[SO2Array, SE2Array],

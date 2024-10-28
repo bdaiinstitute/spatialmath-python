@@ -6,7 +6,7 @@ from __future__ import annotations
 import numpy as np
 import math
 from collections import namedtuple
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 import spatialmath.base as base
 from spatialmath.base.types import *
 from spatialmath.baseposelist import BasePoseList

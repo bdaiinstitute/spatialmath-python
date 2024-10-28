@@ -11,7 +11,7 @@
 from __future__ import annotations
 import os.path
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 from matplotlib import animation
 import spatialmath.base as smb
 from collections.abc import Iterable, Iterator

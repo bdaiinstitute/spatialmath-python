@@ -8,7 +8,7 @@ Created on Fri Apr 10 14:22:36 2020
 
 
 import timeit
-from ansitable import ANSITable, Column
+from ansitable import ANSITable, Column # type: ignore
 
 N = 100000
 

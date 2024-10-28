@@ -23,7 +23,7 @@ _eps = np.finfo(np.float64).eps
 # colored printing of matrices to the terminal
 #   colored package has much finer control than colorama, but the latter is available by default with anaconda
 try:
-    from colored import fg, bg, attr
+    from colored import fg, bg, attr # type: ignore
 
     _colored = True
     # print('using colored output')
@@ -35,7 +35,7 @@ except AttributeError:
     _colored = False
 
 try:
-    from ansitable import ANSIMatrix
+    from ansitable import ANSIMatrix # type: ignore
 
     _ANSIMatrix = True
     # print('using colored output')
