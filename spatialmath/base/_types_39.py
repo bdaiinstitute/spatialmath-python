@@ -1,5 +1,9 @@
 # for Python >= 3.9
 
+import sys
+
+assert sys.version_info >= (3, 9)
+
 from typing import (
     overload,
     cast,

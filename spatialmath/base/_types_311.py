@@ -1,4 +1,8 @@
-# for Python >= 3.9
+# for Python >= 3.11
+
+import sys
+
+assert sys.version_info >= (3, 11)
 
 from typing import (
     overload,
