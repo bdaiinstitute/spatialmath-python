@@ -714,7 +714,7 @@ class Line3(BasePoseList):
         """
         return not l1.isparallel(l2, tol=tol) and bool(abs(l1 * l2) < tol * _eps)
 
-    def __eq__(l1, l2: Line3) -> bool:  # type: ignore pylint: disable=no-self-argument
+    def __eq__(l1, l2: Line3) -> bool:  # type: ignore # pylint: disable=no-self-argument
         """
         Test if two lines are equivalent
 
@@ -733,7 +733,7 @@ class Line3(BasePoseList):
         """
         return l1.isequal(l2)
 
-    def __ne__(l1, l2: Line3) -> bool:  # type:ignore pylint: disable=no-self-argument
+    def __ne__(l1, l2: Line3) -> bool:  # type:ignore # pylint: disable=no-self-argument
         """
         Test if two lines are not equivalent
 
@@ -752,7 +752,7 @@ class Line3(BasePoseList):
         """
         return not l1.isequal(l2)
 
-    def __or__(l1, l2: Line3) -> bool:  # type:ignore pylint: disable=no-self-argument
+    def __or__(l1, l2: Line3) -> bool:  # type:ignore # pylint: disable=no-self-argument
         """
         Overloaded ``|`` operator tests for parallelism
 
@@ -771,7 +771,7 @@ class Line3(BasePoseList):
         """
         return l1.isparallel(l2)
 
-    def __xor__(l1, l2: Line3) -> bool:  # type:ignore pylint: disable=no-self-argument
+    def __xor__(l1, l2: Line3) -> bool:  # type:ignore # pylint: disable=no-self-argument
         """
         Overloaded ``^`` operator tests for intersection
 
@@ -989,7 +989,7 @@ class Line3(BasePoseList):
 
     def commonperp(
         l1, l2: Line3
-    ) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    ) -> Line3:  # type:ignore # pylint: disable=no-self-argument
         """
         Common perpendicular to two lines
 
@@ -1019,7 +1019,7 @@ class Line3(BasePoseList):
 
     def __mul__(
         left, right: Line3
-    ) -> float:  # type:ignore pylint: disable=no-self-argument
+    ) -> float:  # type:ignore # pylint: disable=no-self-argument
         r"""
         Reciprocal product
 
@@ -1047,7 +1047,7 @@ class Line3(BasePoseList):
 
     def __rmul__(
         right, left: SE3
-    ) -> Line3:  # type:ignore pylint: disable=no-self-argument
+    ) -> Line3:  # type:ignore # pylint: disable=no-self-argument
         """
         Rigid-body transformation of 3D line
 
