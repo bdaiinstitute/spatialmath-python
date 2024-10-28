@@ -17,6 +17,7 @@ tuple, numpy array, numpy row vector or numpy column vector.
 import sys
 import math
 import numpy as np
+from typing import Literal
 
 try:
     import matplotlib.pyplot as plt
@@ -443,7 +444,7 @@ def trinv2(T: SE2Array) -> SE2Array:
 @overload  # pragma: no cover
 def trlog2(
     T: SO2Array,
-    twist: bool = False,
+    twist: Literal[False] = False,
     check: bool = True,
     tol: float = 20,
 ) -> so2Array:
@@ -453,7 +454,7 @@ def trlog2(
 @overload  # pragma: no cover
 def trlog2(
     T: SE2Array,
-    twist: bool = False,
+    twist: Literal[False] = False,
     check: bool = True,
     tol: float = 20,
 ) -> se2Array:
@@ -463,7 +464,7 @@ def trlog2(
 @overload  # pragma: no cover
 def trlog2(
     T: SO2Array,
-    twist: bool = True,
+    twist: Literal[True] = True,
     check: bool = True,
     tol: float = 20,
 ) -> float:
@@ -473,7 +474,7 @@ def trlog2(
 @overload  # pragma: no cover
 def trlog2(
     T: SE2Array,
-    twist: bool = True,
+    twist: Literal[True] = True,
     check: bool = True,
     tol: float = 20,
 ) -> R3:

@@ -18,6 +18,7 @@ import sys
 from collections.abc import Iterable
 import math
 import numpy as np
+from typing import Literal
 
 from spatialmath.base.argcheck import getunit, getvector, isvector, isscalar, ismatrix
 from spatialmath.base.vectors import (
@@ -1271,25 +1272,25 @@ def tr2rpy(
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
 def trlog(
-    T: SO3Array, check: bool = True, twist: bool = False, tol: float = 20
+    T: SO3Array, check: bool = True, twist: Literal[False] = False, tol: float = 20
 ) -> so3Array:
     ...
 
 
 @overload  # pragma: no cover
 def trlog(
-    T: SE3Array, check: bool = True, twist: bool = False, tol: float = 20
+    T: SE3Array, check: bool = True, twist: Literal[False] = False, tol: float = 20
 ) -> se3Array:
     ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SO3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R3:
+def trlog(T: SO3Array, check: bool = True, twist: Literal[True] = True, tol: float = 20) -> R3:
     ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SE3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R6:
+def trlog(T: SE3Array, check: bool = True, twist: Literal[True] = True, tol: float = 20) -> R6:
     ...
 
 
@@ -2222,7 +2223,7 @@ def angvelxform_dot(𝚪, 𝚪d, full=True, representation="rpy/xyz"):
 def rotvelxform(
     𝚪: ArrayLike3,
     inverse: bool = False,
-    full: bool = False,
+    full: Literal[False] = False,
     representation="rpy/xyz",
 ) -> R3x3:
     ...
@@ -2232,7 +2233,7 @@ def rotvelxform(
 def rotvelxform(
     𝚪: SO3Array,
     inverse: bool = False,
-    full: bool = False,
+    full: Literal[False] = False,
 ) -> R3x3:
     ...
 
@@ -2241,7 +2242,7 @@ def rotvelxform(
 def rotvelxform(
     𝚪: ArrayLike3,
     inverse: bool = False,
-    full: bool = True,
+    full: Literal[True] = True,
     representation="rpy/xyz",
 ) -> R6x6:
     ...
@@ -2251,7 +2252,7 @@ def rotvelxform(
 def rotvelxform(
     𝚪: SO3Array,
     inverse: bool = False,
-    full: bool = True,
+    full: Literal[True] = True,
 ) -> R6x6:
     ...
 
@@ -2464,14 +2465,14 @@ def rotvelxform(
 
 @overload  # pragma: no cover
 def rotvelxform_inv_dot(
-    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = False, representation: str = "rpy/xyz"
+    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: Literal[False] = False, representation: str = "rpy/xyz"
 ) -> R3x3:
     ...
 
 
 @overload  # pragma: no cover
 def rotvelxform_inv_dot(
-    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = True, representation: str = "rpy/xyz"
+    𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: Literal[True] = True, representation: str = "rpy/xyz"
 ) -> R6x6:
     ...
 
