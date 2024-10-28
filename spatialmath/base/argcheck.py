@@ -14,6 +14,7 @@ that can be passed.
 import math
 import numpy as np
 from collections.abc import Iterable
+from typing import Literal
 
 # from spatialmath.base import symbolic as sym # HACK
 from spatialmath.base.symbolic import issymbol, symtype
@@ -281,7 +282,7 @@ def verifymatrix(
 def getvector(
     v: ArrayLike,
     dim: Optional[Union[int, None]] = None,
-    out: str = "array",
+    out: Literal["array"] = "array",
     dtype: DTypeLike = np.float64,
 ) -> NDArray:
     ...
@@ -291,7 +292,7 @@ def getvector(
 def getvector(
     v: ArrayLike,
     dim: Optional[Union[int, None]] = None,
-    out: str = "list",
+    out: Literal["list"] = "list",
     dtype: DTypeLike = np.float64,
 ) -> List[float]:
     ...
@@ -301,7 +302,7 @@ def getvector(
 def getvector(
     v: Tuple[float, ...],
     dim: Optional[Union[int, None]] = None,
-    out: str = "sequence",
+    out: Literal["sequence"] = "sequence",
     dtype: DTypeLike = np.float64,
 ) -> Tuple[float, ...]:
     ...
