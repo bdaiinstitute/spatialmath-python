@@ -53,31 +53,12 @@ class SO3(BasePoseMatrix):
        :parts: 1
     """
 
-    @overload
-    def __init__(self):
-        ...
-
-    @overload
-    def __init__(self, arg: SO3, *, check=True):
-        ...
-
-    @overload
-    def __init__(self, arg: SE3, *, check=True):
-        ...
-
-    @overload
-    def __init__(self, arg: SO3Array, *, check=True):
-        ...
-
-    @overload
-    def __init__(self, arg: List[SO3Array], *, check=True):
-        ...
-
-    @overload
-    def __init__(self, arg: List[Union[SO3, SO3Array]], *, check=True):
-        ...
-
-    def __init__(self, arg=None, *, check=True):
+    def __init__(
+            self,
+            arg : SO3 | SE3 | SO3Array | List[SO3 | SO3Array] = None,
+            *,
+            check=True,
+    ):
         """
         Construct new SO(3) object
 
