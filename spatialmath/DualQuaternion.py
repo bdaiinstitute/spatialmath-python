@@ -269,13 +269,14 @@ class UnitDualQuaternion(DualQuaternion):
     """
 
     @overload
-    def __init__(self, T: SE3):
+    def __init__(self, real: SE3, dual: None = None):
         ...
 
+    @overload
     def __init__(self, real: Quaternion, dual: Quaternion):
         ...
 
-    def __init__(self, real=None, dual=None):
+    def __init__(self, real, dual=None):
         r"""
         Create new unit dual quaternion
 
