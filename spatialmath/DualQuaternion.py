@@ -32,7 +32,7 @@ class DualQuaternion:
     :seealso: :func:`UnitDualQuaternion`
     """
 
-    def __init__(self, real: Optional[Quaternion] = None, dual: Optional[Quaternion] = None):
+    def __init__(self, real: Quaternion, dual: Optional[Quaternion] = None):
         """
         Construct a new dual quaternion
 
@@ -57,14 +57,10 @@ class DualQuaternion:
 
         """
 
-        if real is None and dual is None:
-            self.real = None
-            self.dual = None
-            return
-        elif dual is None and base.isvector(real, 8):
+        if dual is None and base.isvector(real, 8):
             self.real = Quaternion(real[0:4])
             self.dual = Quaternion(real[4:8])
-        elif real is not None and dual is not None:
+        elif dual is not None:
             if not isinstance(real, Quaternion):
                 raise ValueError("real part must be a Quaternion subclass")
             if not isinstance(dual, Quaternion):
@@ -72,7 +68,7 @@ class DualQuaternion:
             self.real = real  # quaternion, real part
             self.dual = dual  # quaternion, dual part
         else:
-            raise ValueError("expecting zero or two parameters")
+            raise ValueError("expecting one or two parameters")
 
     @classmethod
     def Pure(cls, x: ArrayLike3) -> Self:
