@@ -117,7 +117,7 @@ class DualQuaternion:
         b = self.real * self.dual.conj() + self.dual * self.real.conj()
         return (base.sqrt(a.s), base.sqrt(b.s))
 
-    def conj(self) -> Self:
+    def conj(self) -> DualQuaternion:
         r"""
         Conjugate of dual quaternion
 
@@ -140,7 +140,7 @@ class DualQuaternion:
 
     def __add__(
         left, right: DualQuaternion
-    ) -> Self:  # pylint: disable=no-self-argument
+    ) -> DualQuaternion:  # pylint: disable=no-self-argument
         """
         Sum of two dual quaternions
 
@@ -159,7 +159,7 @@ class DualQuaternion:
 
     def __sub__(
         left, right: DualQuaternion
-    ) -> Self:  # pylint: disable=no-self-argument
+    ) -> DualQuaternion:  # pylint: disable=no-self-argument
         """
         Difference of two dual quaternions
 
@@ -176,7 +176,7 @@ class DualQuaternion:
         """
         return DualQuaternion(left.real - right.real, left.dual - right.dual)
 
-    def __mul__(left, right: Self) -> Self:  # pylint: disable=no-self-argument
+    def __mul__(left, right: Self) -> DualQuaternion:  # pylint: disable=no-self-argument
         """
         Product of dual quaternion
 
