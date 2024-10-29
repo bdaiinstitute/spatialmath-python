@@ -362,17 +362,17 @@ class BasePoseList(UserList, ABC):
         self.data[i] = value.A
 
     # flag these binary operators as being not supported
-    def __lt__(self, other: BasePoseList) -> Type[Exception]:
-        return NotImplementedError
+    def __lt__(self, other):
+        raise NotImplementedError()
 
-    def __le__(self, other: BasePoseList) -> Type[Exception]:
-        return NotImplementedError
+    def __le__(self, other):
+        raise NotImplementedError()
 
-    def __gt__(self, other: BasePoseList) -> Type[Exception]:
-        return NotImplementedError
+    def __gt__(self, other):
+        raise NotImplementedError()
 
-    def __ge__(self, other: BasePoseList) -> Type[Exception]:
-        return NotImplementedError
+    def __ge__(self, other):
+        raise NotImplementedError()
 
     def append(self, item: BasePoseList) -> None:
         """
