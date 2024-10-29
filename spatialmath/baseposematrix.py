@@ -377,7 +377,7 @@ class BasePoseMatrix(BasePoseList):
         else:
             return log
 
-    def interp(self, end: Optional[bool] = None, s: Union[int, float] = None, shortest: bool = True) -> Self:
+    def interp(self, end: Optional[bool] = None, s: Union[int, float, None] = None, shortest: bool = True) -> Self:
         """
         Interpolate between poses (superclass method)
 
@@ -443,7 +443,7 @@ class BasePoseMatrix(BasePoseList):
                 [smb.trinterp(start=self.A, end=end, s=_s, shortest=shortest) for _s in s]
             )
 
-    def interp1(self, s: float = None) -> Self:
+    def interp1(self, s: Optional[float] = None) -> Self:
         """
         Interpolate pose (superclass method)
 

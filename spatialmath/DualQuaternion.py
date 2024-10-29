@@ -1,5 +1,7 @@
 from __future__ import annotations
 import numpy as np
+from typing import Optional
+
 from spatialmath import Quaternion, UnitQuaternion, SE3
 from spatialmath import base
 from spatialmath.base.types import *
@@ -30,7 +32,7 @@ class DualQuaternion:
     :seealso: :func:`UnitDualQuaternion`
     """
 
-    def __init__(self, real: Quaternion = None, dual: Quaternion = None):
+    def __init__(self, real: Optional[Quaternion] = None, dual: Optional[Quaternion] = None):
         """
         Construct a new dual quaternion
 

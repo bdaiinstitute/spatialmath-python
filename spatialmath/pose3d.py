@@ -55,7 +55,7 @@ class SO3(BasePoseMatrix):
 
     def __init__(
             self,
-            arg : SO3 | SE3 | SO3Array | List[SO3 | SO3Array] = None,
+            arg : None | SO3 | SE3 | SO3Array | List[SO3 | SO3Array] = None,
             *,
             check=True,
     ):

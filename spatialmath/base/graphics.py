@@ -1570,7 +1570,7 @@ try:
         return ax
 
     def plotvol2(
-        dim: ArrayLike = None,
+        dim: Optional[ArrayLike] = None,
         ax: Optional[plt.Axes] = None,
         equal: Optional[bool] = True,
         grid: Optional[bool] = False,
@@ -1625,7 +1625,7 @@ try:
         return ax
 
     def plotvol3(
-        dim: ArrayLike = None,
+        dim: Optional[ArrayLike] = None,
         ax: Optional[plt.Axes] = None,
         equal: Optional[bool] = True,
         grid: Optional[bool] = False,
@@ -1685,7 +1685,7 @@ try:
         ax._plotvol = True
         return ax
 
-    def expand_dims(dim: ArrayLike = None, nd: int = 2) -> NDArray:
+    def expand_dims(dim: Optional[ArrayLike] = None, nd: int = 2) -> NDArray:
         """
         Expand compact axis dimensions
 
