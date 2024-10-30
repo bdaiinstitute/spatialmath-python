@@ -5,14 +5,160 @@ Provide list super powers for spatial math objects.
 # pylint: disable=invalid-name
 from __future__ import annotations
 from collections import UserList
+from collections.abc import Callable
+from functools import partial
 from abc import ABC, abstractproperty, abstractstaticmethod
 import copy
 import numpy as np
 from spatialmath.base.argcheck import isnumberlist, isscalar
 from spatialmath.base.types import *
+from typing import (
+    List,
+    TypeVar,
+)
 
 _numtypes = (int, np.int64, float, np.float64)
 
+T = TypeVar('T')
+
+class VectorBinOp:
+    def __init__(self, op_name, reflected_op_name):
+        self.op_name = op_name
+        self.reflected_op_name = reflected_op_name
+
+    def op(self, x, y):
+        z = getattr(x, self.op_name)(y)
+        if z is NotImplemented:
+            return getattr(y, self.reflected_op_name)(x)
+        return z
+
+    def __get__(self, obj, _type):
+        def f(left, right):
+            if isinstance(right, Vector):
+                if len(left) != len(right):
+                    raise ValueError(f'size mismatch: {len(left)}!={len(right)}')
+                result = Vector(
+                    self.op(x, y)
+                    for x, y in zip(left, right)
+                )
+            else:
+                result = Vector(
+                    self.op(x, right)
+                    for x in left
+                )
+
+            if NotImplemented in result:
+                return NotImplemented
+            return result
+
+        if obj is None:
+            return f
+        return partial(f, obj)
+
+
+class VectorAssigningOp:
+    """
+    TODO: improve handling of NotImplemented, reflected operations
+    """
+    def __init__(self, binop):
+        self.binop = binop
+
+    def __get__(self, obj, _type):
+        if _type is type:
+            # TODO: unbound method
+            return NotImplemented
+
+        def f(left, right):
+            result = self.binop.__get__(left, type(left))(right)
+            if NotImplemented in result:
+                return NotImplemented
+
+            for i, x in enumerate(result):
+                left[i] = x
+            return left
+
+        if obj is None:
+            return f
+        return partial(f, obj)
+
+
+class VectorUnOp:
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, obj, _type):
+        if _type is type:
+            # TODO: unbound method
+            return NotImplemented
+        def f(z):
+            return Vector(
+                getattr(x, self.name)()
+                for x in z
+            )
+        if obj is None:
+            return f
+        return partial(f, obj)
+
+
+class Vector(List[T]):
+    """
+    A specialized list that supports vector-like mathematical operations
+    """
+    __add__ = VectorBinOp('__add__', '__radd__')
+    __sub__ = VectorBinOp('__sub__', '__rsub__')
+    __mul__ = VectorBinOp('__mul__', '__rmul__')
+    __matmul__ = VectorBinOp('__matmul__', '__rmatmul__')
+    __truediv__ = VectorBinOp('__truediv__', '__rtruediv__')
+    __floordiv__ = VectorBinOp('__floordiv__', '__rfloordiv__')
+    __mod__ = VectorBinOp('__mod__', '__rmod__')
+    __divmod__ = VectorBinOp('__divmod__', '__rdivmod__')
+    __pow__ = VectorBinOp('__pow__', '__rpow__') # note: not ternary
+    __lshift__ = VectorBinOp('__lshift__', '__rlshift__')
+    __rshift__ = VectorBinOp('__rshift__', '__rrshift__')
+    __and__ = VectorBinOp('__and__', '__rand__')
+    __xor__ = VectorBinOp('__xor__', '__rxor__')
+    __or__ = VectorBinOp('__or__', '__ror__')
+
+    __radd__ = VectorBinOp('__radd__', '__add__')
+    __rsub__ = VectorBinOp('__rsub__', '__sub__')
+    __rmul__ = VectorBinOp('__rmul__', '__mul__')
+    __rmatmul__ = VectorBinOp('__rmatmul__', '__matmul__')
+    __rtruediv__ = VectorBinOp('__rtruediv__', '__truediv__')
+    __rfloordiv__ = VectorBinOp('__rfloordiv__', '__floordiv__')
+    __rmod__ = VectorBinOp('__rmod__', '__mod__')
+    __rdivmod__ = VectorBinOp('__rdivmod__', '__divmod__')
+    __rpow__ = VectorBinOp('__rpow__', '__pow__') # note: not ternary
+    __rlshift__ = VectorBinOp('__rlshift__', '__lshift__')
+    __rrshift__ = VectorBinOp('__rrshift__', '__rshift__')
+    __rand__ = VectorBinOp('__rand__', '__and__')
+    __rxor__ = VectorBinOp('__rxor__', '__xor__')
+    __ror__ = VectorBinOp('__ror__', '__or__')
+
+    __iadd__ = VectorAssigningOp(__add__)
+    __isub__ = VectorAssigningOp(__sub__)
+    __imul__ = VectorAssigningOp(__mul__)
+    __imatmul__ = VectorAssigningOp(__matmul__)
+    __itruediv__ = VectorAssigningOp(__truediv__)
+    __ifloordiv__ = VectorAssigningOp(__floordiv__)
+    __imod__ = VectorAssigningOp(__mod__)
+    __idivmod__ = VectorAssigningOp(__divmod__)
+    __ipow__ = VectorAssigningOp(__pow__) # note: not ternary
+    __ilshift__ = VectorAssigningOp(__lshift__)
+    __irshift__ = VectorAssigningOp(__rshift__)
+    __iand__ = VectorAssigningOp(__and__)
+    __ixor__ = VectorAssigningOp(__xor__)
+    __ior__ = VectorAssigningOp(__or__)
+
+    __neg__ = VectorUnOp('__neg__')
+    __pos__ = VectorUnOp('__pos__')
+    __abs__ = VectorUnOp('__abs__')
+    __invert__ = VectorUnOp('__invert__')
+
+    def __repr__(self):
+        return f"Vector({super().__repr__()})"
+
+    def __str__(self):
+        return f"Vector({super().__str__()})"
 
 class BasePoseList(UserList, ABC):
     """

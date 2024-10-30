@@ -1,6 +1,10 @@
 import unittest
 import numpy as np
-from spatialmath.baseposelist import BasePoseList
+import pytest
+from spatialmath.baseposelist import (
+    BasePoseList,
+    Vector,
+)
 
 # create a subclass to test with, its value is a scalar
 class X(BasePoseList):
@@ -139,6 +143,64 @@ class TestBasePoseList(unittest.TestCase):
 
     def test_arghandler(self):
         pass
+
+class TestVector(unittest.TestCase):
+    def test_vector_eq(self):
+        assert Vector([1,2,3]) == [1,2,3]
+
+    def test_add_vector_scalar(self):
+        assert Vector([1,2,3]) + 1 == [2,3,4]
+
+    def test_add_vector_vector(self):
+        assert Vector([1,2,3]) + Vector([1,0,1]) == [2,2,4]
+
+    def test_iadd_vector_scalar(self):
+        v = Vector([1,2,3])
+        v += 1
+        assert v == [2,3,4]
+
+    def test_iadd_vector_vector(self):
+        v = Vector([1,2,3])
+        v += Vector([1,0,1])
+        assert v == [2,2,4]
+
+    def test_neg_vector(self):
+        assert -Vector([1,2,3]) == [-1,-2,-3]
+
+    def test_add_size_mismatch(self):
+        with pytest.raises(ValueError) as exc:
+            Vector([1,2,3]) + Vector([1,2])
+        assert 'size mismatch: 3!=2' in str(exc)
+
+    def test_radd_scalar_vector(self):
+        assert 1 + Vector([1,2,3]) == [2,3,4]
+
+    def test_add_vector_scalar_unbound(self):
+        assert Vector.__add__(Vector([1,2,3]), 1) == [2,3,4]
+
+    def test_add_vector_vector_unbound(self):
+        assert Vector.__add__(Vector([1,2,3]), Vector([1,0,1])) == [2,2,4]
+
+    def test_iadd_vector_scalar_unbound(self):
+        v = Vector([1,2,3])
+        Vector.__iadd__(v, 1)
+        assert v == [2,3,4]
+
+    def test_iadd_vector_vector_unbound(self):
+        v = Vector([1,2,3])
+        Vector.__iadd__(v, Vector([1,0,1]))
+        assert v == [2,2,4]
+
+    def test_neg_vector_unbound(self):
+        assert Vector.__neg__(Vector([1,2,3])) == [-1,-2,-3]
+
+    def test_add_size_mismatch_unbound(self):
+        with pytest.raises(ValueError) as exc:
+            Vector.__add__(Vector([1,2,3]), Vector([1,2]))
+        assert 'size mismatch: 3!=2' in str(exc)
+
+    def test_radd_scalar_vector_unbound(self):
+        assert Vector.__radd__(Vector([1,2,3]), 1) == [2,3,4]
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == '__main__':
