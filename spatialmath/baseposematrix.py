@@ -16,7 +16,10 @@ import numpy as np
 
 import spatialmath.base as smb
 from spatialmath.base.types import *
-from spatialmath.baseposelist import BasePoseList
+from spatialmath.baseposelist import (
+    bad_flatten,
+    BasePoseList,
+)
 
 _eps = np.finfo(np.float64).eps
 
@@ -323,15 +326,23 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: not supported
         """
         if type(self).__name__ in ("SO3", "SE3"):
-            if len(self) == 1:
-                return np.linalg.det(self.A[:3, :3])
-            else:
-                return [np.linalg.det(T[:3, :3]) for T in self.data]
+            # TODO: move out of superclass;
+            # inspecting the name of the subclass is brittle.
+            return bad_flatten(
+                [
+                    np.linalg.det(T[:3, :3])
+                    for T in self.data
+                ]
+            )
         elif type(self).__name__ in ("SO2", "SE2"):
-            if len(self) == 1:
-                return np.linalg.det(self.A[:2, :2])
-            else:
-                return [np.linalg.det(T[:2, :2]) for T in self.data]
+            # TODO: move out of superclass;
+            # inspecting the name of the subclass is brittle.
+            return bad_flatten(
+                [
+                    np.linalg.det(T[:2, :2])
+                    for T in self.data
+                ]
+            )
 
     def log(self, twist: Optional[bool] = False) -> Union[NDArray, List[NDArray]]:
         """
@@ -369,13 +380,15 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: not supported
         """
         if self.N == 2:
-            log = [smb.trlog2(x, twist=twist) for x in self.data]
+            log_func = smb.trlog2
         else:
-            log = [smb.trlog(x, twist=twist) for x in self.data]
-        if len(log) == 1:
-            return log[0]
-        else:
-            return log
+            log_func = smb.trlog
+        return bad_flatten(
+            [
+                log_func(x, twist=twist)
+                for x in self.data
+            ]
+        )
 
     def interp(self, end: Optional[bool] = None, s: Union[int, float, None] = None, shortest: bool = True) -> Self:
         """
