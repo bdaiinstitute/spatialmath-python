@@ -29,7 +29,11 @@ from spatialmath.baseposematrix import BasePoseMatrix
 # ============================== SO2 =====================================#
 
 
-class SO2(BasePoseMatrix):
+class SO2Clean:
+    pass
+
+
+class SO2(SO2Clean, BasePoseMatrix):
     """
     SO(2) matrix class
 

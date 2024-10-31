@@ -41,7 +41,11 @@ if TYPE_CHECKING:
 # ============================== SO3 =====================================#
 
 
-class SO3(BasePoseMatrix):
+class SO3Clean:
+    pass
+
+
+class SO3(SO3Clean, BasePoseMatrix):
     """
        SO(3) matrix class
 
