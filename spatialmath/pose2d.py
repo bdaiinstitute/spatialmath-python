@@ -30,7 +30,19 @@ from spatialmath.baseposematrix import BasePoseMatrix
 
 
 class SO2Clean:
-    pass
+    @staticmethod
+    def _identity():
+        return np.eye(2)
+
+    @property
+    def shape(self):
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (2,2)
+        :rtype: tuple
+        """
+        return (2, 2)
 
 
 class SO2(SO2Clean, BasePoseMatrix):
@@ -91,20 +103,6 @@ class SO2(SO2Clean, BasePoseMatrix):
 
         else:
             raise ValueError("bad argument to constructor")
-
-    @staticmethod
-    def _identity():
-        return np.eye(2)
-
-    @property
-    def shape(self):
-        """
-        Shape of the object's interal matrix representation
-
-        :return: (2,2)
-        :rtype: tuple
-        """
-        return (2, 2)
 
     @classmethod
     def Rand(cls, N=1, arange=(0, 2 * math.pi), unit="rad"):

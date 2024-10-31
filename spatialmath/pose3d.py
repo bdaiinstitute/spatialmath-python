@@ -42,7 +42,63 @@ if TYPE_CHECKING:
 
 
 class SO3Clean:
-    pass
+    @staticmethod
+    def _identity() -> R3x3:
+        return np.eye(3)
+
+    @property
+    def shape(self) -> Tuple[int, int]:
+        """
+        Shape of the object's interal matrix representation
+
+        :return: (3,3)
+        :rtype: tuple
+
+        Each value within the ``SO3`` instance is a NumPy array of this shape.
+        """
+        return (3, 3)
+
+    @property
+    def n(self) -> R3:
+        """
+        Normal vector of SO(3) or SE(3)
+
+        :return: normal vector
+        :rtype: ndarray(3)
+
+        This is the first column of the rotation submatrix, sometimes called the
+        *normal vector*.  It is parallel to the x-axis of the frame defined by
+        this pose.
+        """
+        return self.A[:3, 0]  # type: ignore
+
+    @property
+    def o(self) -> R3:
+        """
+        Orientation vector of SO(3) or SE(3)
+
+        :return: orientation vector
+        :rtype: ndarray(3)
+
+        This is the second column of the rotation submatrix, sometimes called
+        the *orientation vector*.  It is parallel to the y-axis of the frame
+        defined by this pose.
+        """
+        return self.A[:3, 1]  # type: ignore
+
+    @property
+    def a(self) -> R3:
+        """
+        Approach vector of SO(3) or SE(3)
+
+        :return: approach vector
+        :rtype: ndarray(3)
+
+        This is the third column of the rotation submatrix, sometimes called the
+        *approach vector*.  It is parallel to the z-axis of the frame defined by
+        this pose.
+        """
+        return self.A[:3, 2]  # type: ignore
 
 
 class SO3(SO3Clean, BasePoseMatrix):
@@ -92,23 +148,7 @@ class SO3(SO3Clean, BasePoseMatrix):
         elif not super().arghandler(arg, check=check):
             raise ValueError("bad argument to constructor")
 
-    @staticmethod
-    def _identity() -> R3x3:
-        return np.eye(3)
-
     # ------------------------------------------------------------------------ #
-    @property
-    def shape(self) -> Tuple[int, int]:
-        """
-        Shape of the object's interal matrix representation
-
-        :return: (3,3)
-        :rtype: tuple
-
-        Each value within the ``SO3`` instance is a NumPy array of this shape.
-        """
-        return (3, 3)
-
     @property
     def R(self) -> SO3Array:
         """
@@ -141,51 +181,21 @@ class SO3(SO3Clean, BasePoseMatrix):
 
     @property
     def n(self) -> R3:
-        """
-        Normal vector of SO(3) or SE(3)
-
-        :return: normal vector
-        :rtype: ndarray(3)
-
-        This is the first column of the rotation submatrix, sometimes called the
-        *normal vector*.  It is parallel to the x-axis of the frame defined by
-        this pose.
-        """
         if len(self) != 1:
             raise ValueError("can only determine n-vector for singleton pose")
-        return self.A[:3, 0]  # type: ignore
+        return super().n
 
     @property
     def o(self) -> R3:
-        """
-        Orientation vector of SO(3) or SE(3)
-
-        :return: orientation vector
-        :rtype: ndarray(3)
-
-        This is the second column of the rotation submatrix, sometimes called
-        the *orientation vector*.  It is parallel to the y-axis of the frame
-        defined by this pose.
-        """
         if len(self) != 1:
             raise ValueError("can only determine o-vector for singleton pose")
-        return self.A[:3, 1]  # type: ignore
+        return super().o
 
     @property
     def a(self) -> R3:
-        """
-        Approach vector of SO(3) or SE(3)
-
-        :return: approach vector
-        :rtype: ndarray(3)
-
-        This is the third column of the rotation submatrix, sometimes called the
-        *approach vector*.  It is parallel to the z-axis of the frame defined by
-        this pose.
-        """
         if len(self) != 1:
             raise ValueError("can only determine a-vector for singleton pose")
-        return self.A[:3, 2]  # type: ignore
+        return super().a
 
     # ------------------------------------------------------------------------ #
 
