@@ -29,6 +29,7 @@ import numpy as np
 import spatialmath.base as smb
 from spatialmath.base.types import *
 from spatialmath.base.vectors import orthogonalize
+from spatialmath.baseposelist import bad_flatten
 from spatialmath.baseposematrix import BasePoseMatrix
 from spatialmath.pose2d import SE2
 
@@ -174,10 +175,11 @@ class SO3(SO3Clean, BasePoseMatrix):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[:3, :3]  # type: ignore
-        else:
-            return np.array([x[:3, :3] for x in self.A])  # type: ignore
+        return np.array(
+            bad_flatten(
+                [x[:3, :3] for x in self.data]
+            )
+        )
 
     @property
     def n(self) -> R3:
@@ -210,10 +212,10 @@ class SO3(SO3Clean, BasePoseMatrix):
         account the matrix structure.  For an SO(3) matrix the inverse is the
         transpose.
         """
-        if len(self) == 1:
-            return SO3(self.A.T, check=False)  # type: ignore
-        else:
-            return SO3([x.T for x in self.A], check=False)
+        return SO3(
+            bad_flatten([x.T for x in self.data]),
+            check=False,
+        )
 
     def eul(self, unit: str = "rad", flip: bool = False) -> Union[R3, RNx3]:
         r"""
@@ -236,10 +238,14 @@ class SO3(SO3Clean, BasePoseMatrix):
         :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.tr2eul`
         :SymPy: not supported
         """
-        if len(self) == 1:
-            return smb.tr2eul(self.A, unit=unit, flip=flip)  # type: ignore
-        else:
-            return np.array([base.tr2eul(x, unit=unit, flip=flip) for x in self.A])
+        return np.array(
+            bad_flatten(
+                [
+                    smb.tr2eul(x, unit=unit, flip=flip)
+                    for x in self.data
+                ]
+            )
+        )
 
     def rpy(self, unit: str = "rad", order: str = "zyx") -> Union[R3, RNx3]:
         """
@@ -274,10 +280,14 @@ class SO3(SO3Clean, BasePoseMatrix):
         :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.tr2rpy`
         :SymPy: not supported
         """
-        if len(self) == 1:
-            return smb.tr2rpy(self.A, unit=unit, order=order)  # type: ignore
-        else:
-            return np.array([smb.tr2rpy(x, unit=unit, order=order) for x in self.A])
+        return np.array(
+            bad_flatten(
+                [
+                    smb.tr2rpy(x, unit=unit, order=order)
+                    for x in self.data
+                ]
+            )
+        )
 
     def angvec(self, unit: str = "rad") -> Tuple[float, R3]:
         r"""
@@ -1070,10 +1080,11 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[:3, 3]
-        else:
-            return np.array([x[:3, 3] for x in self.A])
+        return np.array(
+            bad_flatten(
+                [x[:3, 3] for x in self.data]
+            )
+        )
 
     @t.setter
     def t(self, v: ArrayLike3):
@@ -1211,10 +1222,15 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return SE3(smb.trinv(self.A), check=False)
-        else:
-            return SE3([smb.trinv(x) for x in self.A], check=False)
+        return SE3(
+            bad_flatten(
+                [
+                    smb.trinv(x)
+                    for x in self.data
+                ]
+            ),
+            check=False,
+        )
 
     def yaw_SE2(self, order: str = "zyx") -> SE2:
         """
@@ -1247,6 +1263,7 @@ class SE3(SO3):
             elif order == "yxz":
                 return SE2(self.z, self.x, self.rpy(order = order)[2])
         else:
+            # This looks like a bug; why is order not passed through?
             return SE2([e.yaw_SE2() for e in self])
 
     def delta(self, X2: Optional[SE3] = None) -> R6:

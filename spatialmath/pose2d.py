@@ -24,6 +24,7 @@ import math
 import numpy as np
 
 import spatialmath.base as smb
+from spatialmath.baseposelist import bad_flatten
 from spatialmath.baseposematrix import BasePoseMatrix
 
 # ============================== SO2 =====================================#
@@ -182,10 +183,14 @@ class SO2(SO2Clean, BasePoseMatrix):
             - for elements of SO(2) this is the transpose.
             - if `x` contains a sequence, returns an `SO2` with a sequence of inverses
         """
-        if len(self) == 1:
-            return SO2(self.A.T)
-        else:
-            return SO2([x.T for x in self.A])
+        return SO2(
+            bad_flatten(
+                [
+                    x.T
+                    for x in self.data
+                ]
+            )
+        )
 
     @property
     def R(self):
@@ -219,10 +224,12 @@ class SO2(SO2Clean, BasePoseMatrix):
         else:
             conv = 1.0
 
-        if len(self) == 1:
-            return conv * math.atan2(self.A[1, 0], self.A[0, 0])
-        else:
-            return [conv * math.atan2(x.A[1, 0], x.A[0, 0]) for x in self]
+        return bad_flatten(
+            [
+                conv * math.atan2(x.A[1, 0], x.A[0, 0])
+                for x in self.data
+            ]
+        )
 
     def SE2(self):
         """

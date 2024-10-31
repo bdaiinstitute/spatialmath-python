@@ -160,6 +160,13 @@ class Vector(List[T]):
     def __str__(self):
         return f"Vector({super().__str__()})"
 
+
+def bad_flatten(input: List[T]) -> T | List[T]:
+    if len(input) == 1:
+        return input[0]
+    return input
+
+
 class BasePoseList(UserList, ABC):
     """
     List properties for spatial math classes
@@ -405,10 +412,7 @@ class BasePoseList(UserList, ABC):
         :rtype: numpy.ndarray, shape=(3,)
         - ``X.v`` is a 3-vector
         """
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
+        return bad_flatten(self.data)
 
     @property
     def A(self) -> Union[List[NDArray], NDArray]:
@@ -424,11 +428,7 @@ class BasePoseList(UserList, ABC):
         .. note:: This assumes that ``len(X)`` == 1, ie. it is a single-valued
             instance.
         """
-
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
+        return bad_flatten(self.data)
 
     # ------------------------------------------------------------------------ #
 
