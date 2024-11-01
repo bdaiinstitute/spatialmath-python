@@ -105,10 +105,6 @@ class Twist3dTest(unittest.TestCase):
         x = Twist3.UnitRevolute([1, 2, 3], [0, 0, 0])
         self.assertFalse(x.isprismatic)
 
-        # check isprismatic on list
-        # x.append(Twist3.UnitRevolute([1,2,3], [0, 0, 0]))
-        # self.assertEqual(x.isprismatic, [False, False])
-        
         # check prismatic twist
         x = Twist3.UnitPrismatic([1, 2, 3])
         self.assertTrue(x.isprismatic)
@@ -118,7 +114,17 @@ class Twist3dTest(unittest.TestCase):
         
         self.assertFalse(Twist3.isvalid(2))
         self.assertFalse(Twist3.isvalid(np.eye(4)))
+
+    def test_isprismatic_list(self):
+        x = Twist3.UnitRevolute([1, 2, 3], [0, 0, 0])
+        x.append(Twist3.UnitRevolute([1,2,3], [0, 0, 0]))
+        self.assertEqual(x.isprismatic, [False, False])
         
+    def test_isrevolute_list(self):
+        x = Twist3.UnitRevolute([1, 2, 3], [0, 0, 0])
+        x.append(Twist3.UnitRevolute([1,2,3], [0, 0, 0]))
+        self.assertEqual(x.isrevolute, [True, True])
+
     def test_str(self):
         x = Twist3([1, 2, 3, 4, 5, 6])
         s = str(x)
