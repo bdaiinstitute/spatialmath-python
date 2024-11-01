@@ -104,6 +104,10 @@ class Twist3dTest(unittest.TestCase):
     def test_predicate(self):
         x = Twist3.UnitRevolute([1, 2, 3], [0, 0, 0])
         self.assertFalse(x.isprismatic)
+
+        # check isprismatic on list
+        # x.append(Twist3.UnitRevolute([1,2,3], [0, 0, 0]))
+        # self.assertEqual(x.isprismatic, [False, False])
         
         # check prismatic twist
         x = Twist3.UnitPrismatic([1, 2, 3])

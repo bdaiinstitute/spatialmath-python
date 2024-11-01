@@ -9,7 +9,10 @@ from collections import namedtuple
 import matplotlib.pyplot as plt # type: ignore
 import spatialmath.base as base
 from spatialmath.base.types import *
-from spatialmath.baseposelist import BasePoseList
+from spatialmath.baseposelist import (
+    bad_flatten,
+    BasePoseList,
+)
 import warnings
 
 _eps = np.finfo(np.float64).eps
@@ -437,11 +440,7 @@ class Line3(BasePoseList):
 
     @property
     def A(self) -> R6:
-        # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
+        return bad_flatten(self.data)
 
     def __getitem__(self, i):
         # print('getitem', i, 'class', self.__class__)

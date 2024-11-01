@@ -36,6 +36,7 @@ from spatialmath.base.types import (
     Self,
     cast,
 )
+from spatialmath.baseposelist import bad_flatten
 
 _eps = np.finfo(np.float64).eps
 
@@ -1090,10 +1091,7 @@ class Ellipse:
             x -= self._centre
             inside.append(np.linalg.norm(x.T @ self._E @ x) <= 1)
 
-        if len(inside) == 1:
-            return inside[0]
-        else:
-            return inside
+        return bad_flatten(inside)
 
     def points(self, resolution=20) -> Points2:
         """

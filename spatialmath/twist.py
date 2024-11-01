@@ -4,7 +4,10 @@
 
 import numpy as np
 import spatialmath.base as smb
-from spatialmath.baseposelist import BasePoseList
+from spatialmath.baseposelist import (
+    bad_flatten,
+    BasePoseList,
+)
 from spatialmath.geom3d import Line3
 
 
@@ -75,11 +78,7 @@ class BaseTwist(BasePoseList):
             - the vector is sometimes referred to as the twist coordinate vector.
             - if ``len(X)`` > 1 then return a list of vectors.
         """
-        # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
+        return bad_flatten(self.data)
 
     @property
     def isprismatic(self):
@@ -105,6 +104,10 @@ class BaseTwist(BasePoseList):
         if len(self) == 1:
             return smb.iszerovec(self.w)
         else:
+            # This is a bug:
+            # self.data: List[NDArray]
+            # x: NDArray
+            # AttributeError: 'numpy.ndarray' object has no attribute 'w'
             return [smb.iszerovec(x.w) for x in self.data]
 
     @property
@@ -131,6 +134,10 @@ class BaseTwist(BasePoseList):
         if len(self) == 1:
             return smb.iszerovec(self.v)
         else:
+            # This is a bug:
+            # self.data: List[NDArray]
+            # x: NDArray
+            # AttributeError: 'numpy.ndarray' object has no attribute 'w'
             return [smb.iszerovec(x.v) for x in self.data]
 
     @property
@@ -154,10 +161,9 @@ class BaseTwist(BasePoseList):
             >>> S.isunit()
 
         """
-        if len(self) == 1:
-            return smb.isunitvec(self.S)
-        else:
-            return [smb.isunitvec(x) for x in self.data]
+        return bad_flatten(
+            [smb.isunitvec(x) for x in self.data]
+        )
 
     @property
     def theta(self):
@@ -915,10 +921,9 @@ class Twist3(BaseTwist):
             >>> se
             >>> smb.trexp(se)
         """
-        if len(self) == 1:
-            return smb.skewa(self.S)
-        else:
-            return [smb.skewa(x.S) for x in self]
+        return bad_flatten(
+            [smb.skewa(x.S) for x in self]
+        )
 
     @property
     def pitch(self):
@@ -1531,10 +1536,11 @@ class Twist2(BaseTwist):
 
         theta = smb.getunit(theta, unit)
 
-        if len(theta) == 1:
-            return SE2(smb.trexp2(self.S * theta))
-        else:
-            return SE2([smb.trexp2(self.S * t) for t in theta])
+        return SE2(
+            bad_flatten(
+                [smb.trexp2(self.S * t) for t in theta]
+            )
+        )
 
     def skewa(self):
         """
@@ -1557,10 +1563,9 @@ class Twist2(BaseTwist):
             >>> se
             >>> smb.trexp2(se)
         """
-        if len(self) == 1:
-            return smb.skewa(self.S)
-        else:
-            return [smb.skewa(x.S) for x in self]
+        return bad_flatten(
+            [smb.skewa(x.S) for x in self]
+        )
 
     def exp(self, theta=1, unit="rad"):
         r"""
