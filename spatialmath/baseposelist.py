@@ -543,7 +543,7 @@ class BasePoseList(UserList, ABC):
         """
         # print('in append method')
         if not type(self) == type(item):
-            raise ValueError("can't append different type of object")
+            raise ValueError(f"can't append {type(item)} to {type(self)}")
         if len(item) > 1:
             raise ValueError("can't append a multivalued instance - use extend")
         super().append(item.A)
