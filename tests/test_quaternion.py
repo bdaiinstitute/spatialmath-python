@@ -231,6 +231,18 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(roty(-pi / 2)).SE3(), SE3.Ry(-pi / 2))
         qcompare(UnitQuaternion(rotz(pi)).SE3(), SE3.Rz(pi))
 
+    def test_s_list(self):
+        u = UnitQuaternion([1, 0, 0, 0])
+        u.append(UnitQuaternion([1, 0, 0, 0]))
+        
+        nt.assert_array_almost_equal(u.s, [1, 1])
+
+    def test_v_list(self):
+        u = UnitQuaternion([1, 0, 0, 0])
+        u.append(UnitQuaternion([1, 0, 0, 0]))
+        nt.assert_array_almost_equal(u.v, [[0, 0, 0], [0, 0, 0]])
+
+        
     def test_staticconstructors(self):
         # rotation primitives
         for theta in [-pi / 2, 0, pi / 2, pi]:
