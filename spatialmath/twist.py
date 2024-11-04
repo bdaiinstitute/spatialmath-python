@@ -101,14 +101,11 @@ class BaseTwist(BasePoseList):
             >>> x.isprismatic
 
         """
-        if len(self) == 1:
-            return smb.iszerovec(self.w)
-        else:
-            # This is a bug:
-            # self.data: List[NDArray]
-            # x: NDArray
-            # AttributeError: 'numpy.ndarray' object has no attribute 'w'
-            return [smb.iszerovec(x.w) for x in self.data]
+        return bad_flatten(
+            [
+                smb.iszerovec(q.w) for q in self
+            ]
+        )
 
     @property
     def isrevolute(self):
@@ -131,14 +128,11 @@ class BaseTwist(BasePoseList):
             >>> x.isrevolute
 
         """
-        if len(self) == 1:
-            return smb.iszerovec(self.v)
-        else:
-            # This is a bug:
-            # self.data: List[NDArray]
-            # x: NDArray
-            # AttributeError: 'numpy.ndarray' object has no attribute 'w'
-            return [smb.iszerovec(x.v) for x in self.data]
+        return bad_flatten(
+            [
+                smb.iszerovec(q.v) for q in self
+            ]
+        )
 
     @property
     def isunit(self):
