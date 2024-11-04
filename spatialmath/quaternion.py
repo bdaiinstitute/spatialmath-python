@@ -20,7 +20,10 @@ import numpy as np
 from typing import Any, Type
 import spatialmath.base as smb
 from spatialmath.pose3d import SO3, SE3
-from spatialmath.baseposelist import BasePoseList
+from spatialmath.baseposelist import (
+    bad_flatten,
+    BasePoseList,
+)
 from spatialmath.base.types import *
 
 _eps = np.finfo(np.float64).eps
@@ -202,10 +205,13 @@ class Quaternion(BasePoseList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).v
 
         """
-        if len(self) == 1:
-            return self._A[1:4]
-        else:
-            return np.array([q.v for q in self])
+        return np.array(
+            bad_flatten(
+                [
+                    arr[1:4] for arr in self.data
+                ]
+            )
+        )
 
     @property
     def vec(self) -> R4:
@@ -231,10 +237,11 @@ class Quaternion(BasePoseList):
             >>> Quaternion([1,2,3,4]).vec
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec
         """
-        if len(self) == 1:
-            return self._A
-        else:
-            return np.array([q._A for q in self])
+        return np.array(
+            bad_flatten(
+                [arr for arr in self.data]
+            )
+        )
 
     @property
     def vec_xyzs(self) -> R4:
@@ -261,10 +268,14 @@ class Quaternion(BasePoseList):
             >>> Quaternion([1,2,3,4]).vec_xyzs
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec_xyzs
         """
-        if len(self) == 1:
-            return np.roll(self._A, -1)
-        else:
-            return np.array([np.roll(q._A, -1) for q in self])
+        return np.array(
+            bad_flatten(
+                [
+                    np.roll(arr, -1)
+                    for arr in self.data
+                ]
+            )
+        )
 
     @property
     def matrix(self) -> R4x4:
@@ -1097,10 +1108,13 @@ class UnitQuaternion(Quaternion):
             ``x[i]``. This is different to the MATLAB version where the i'th
             rotation matrix is ``x(:,:,i)``.
         """
-        if len(self) > 1:
-            return np.array([smb.q2r(q) for q in self.data])
-        else:
-            return smb.q2r(self._A)
+        return np.array(
+            bad_flatten(
+                [
+                    smb.q2r(q) for q in self.data
+                ]
+            )
+        )
 
     @property
     def vec3(self) -> R3:
@@ -2059,10 +2073,15 @@ class UnitQuaternion(Quaternion):
 
         :see :func:`~spatialmath.base.transforms3d.tranimate` :func:`~spatialmath.base.transforms3d.trplot`
         """
-        if len(self) > 1:
-            return smb.tranimate([smb.q2r(q) for q in self.data], *args, **kwargs)
-        else:
-            return smb.tranimate(smb.q2r(self._A), *args, **kwargs)
+        return smb.tranimate(
+            bad_flatten(
+                [
+                    smb.q2r(q) for q in self.data
+                ]
+            ),
+            *args,
+            **kwargs,
+        )
 
     def rpy(
         self, unit: Optional[str] = "rad", order: Optional[str] = "zyx"
@@ -2142,10 +2161,14 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :meth:`SE3.Eul` :func:`~spatialmath.base.transforms3d.tr2eul`
         """
-        if len(self) == 1:
-            return smb.tr2eul(self.R, unit=unit)
-        else:
-            return np.array([smb.tr2eul(q.R, unit=unit) for q in self])
+        return np.array(
+            bad_flatten(
+                [
+                    smb.tr2eul(q.R, unit=unit)
+                    for q in self
+                ]
+            )
+        )
 
     def angvec(self, unit: Optional[str] = "rad") -> Tuple[float, R3]:
         r"""
