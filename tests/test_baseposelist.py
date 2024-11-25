@@ -133,6 +133,3 @@ class TestBasePoseList:
             assert (result == expected).all()
         else:
             assert result == expected
-
-    def test_arghandler(self):
-        pass
