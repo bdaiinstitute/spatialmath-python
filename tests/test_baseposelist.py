@@ -1,11 +1,16 @@
 import numpy as np
+import pytest
 from spatialmath.baseposelist import BasePoseList
 
-# create a subclass to test with, its value is a scalar
+# create a subclass to test with, its value is a list
 class X(BasePoseList):
-    def __init__(self, value=0, check=False):
+    def __init__(self, value=None, check=False):
+        if value is None:
+            value = [0]
+        elif not isinstance(value, list):
+            value = [value]
         super().__init__()
-        self.data = [value]
+        self.data = value
         
     @staticmethod
     def _identity():
@@ -27,10 +32,12 @@ class TestBasePoseList:
         assert isinstance(x, X)
         assert len(x) == 1
 
+    def test_empty(self):
         x = X.Empty()
         assert isinstance(x, X)
         assert len(x) == 0
 
+    def test_alloc(self):
         x = X.Alloc(10)
         assert isinstance(x, X)
         assert len(x) == 10
@@ -95,46 +102,37 @@ class TestBasePoseList:
         assert len(x) == 5
         assert [xx.A for xx in x] == [5, 4, 3, 2, 1]
 
-    def test_binop(self):
-        x = X(2)
-        y = X(3)
+    @pytest.mark.parametrize(
+        'x,y,list1,expected',
+        [
+            (X(2), X(3), True, [6]),
+            (X(2), X(3), False, 6),
+            (X(2), X([1,2,3,4,5]), True, [2,4,6,8,10]),
+            (X(2), X([1,2,3,4,5]), False, [2,4,6,8,10]),
+            (X([1,2,3,4,5]), X(2), True, [2,4,6,8,10]),
+            (X([1,2,3,4,5]), X(2), False, [2,4,6,8,10]),
+            (X([1,2,3,4,5]), X([1,2,3,4,5]), True, [1,4,9,16,25]),
+            (X([1,2,3,4,5]), X([1,2,3,4,5]), False, [1,4,9,16,25]),
+        ],
+    )
+    def test_binop(self, x, y, list1, expected):
+        assert x.binop(y, lambda x, y: x * y, list1=list1) == expected
 
-        # singelton x singleton
-        assert x.binop(y, lambda x, y: x * y) == [6]
-        assert x.binop(y, lambda x, y: x * y, list1=False) == 6
-
-        y = X.Alloc(5)
-        for i in range(0, 5):
-            y[i] = X(i + 1)
-
-        # singelton x non-singleton
-        assert x.binop(y, lambda x, y: x * y) == [2, 4, 6, 8, 10]
-        assert x.binop(y, lambda x, y: x * y, list1=False) == [2, 4, 6, 8, 10]
-
-        # non-singelton x singleton
-        assert y.binop(x, lambda x, y: x * y) == [2, 4, 6, 8, 10]
-        assert y.binop(x, lambda x, y: x * y, list1=False) == [2, 4, 6, 8, 10]
-
-        # non-singelton x non-singleton
-        assert y.binop(y, lambda x, y: x * y) == [1, 4, 9, 16, 25]
-        assert y.binop(y, lambda x, y: x * y, list1=False) == [1, 4, 9, 16, 25]
-
-    def test_unop(self):
-        x = X(2)
-
-        f = lambda x: 2 * x
-
-        assert x.unop(f) == [4]
-        assert x.unop(f, matrix=True) == np.r_[4]
-
-        x = X.Alloc(5)
-        for i in range(0, 5):
-            x[i] = X(i + 1)
-
-        assert x.unop(f) == [2, 4, 6, 8, 10]
-        y = x.unop(f, matrix=True)
-        assert y.shape == (5,1)
-        assert np.all(y - np.c_[2, 4, 6, 8, 10].T == 0)
+    @pytest.mark.parametrize(
+        'x,matrix,expected',
+        [
+            (X(2), False, [4]),
+            (X(2), True, np.array(4)),
+            (X([1,2,3,4,5]), False, [2,4,6,8,10]),
+            (X([1,2,3,4,5]), True, np.array([[2,4,6,8,10]]).T),
+        ],
+    )
+    def test_unop(self, x, matrix, expected):
+        result = x.unop(lambda x: 2*x, matrix=matrix)
+        if isinstance(result, np.ndarray):
+            assert (result == expected).all()
+        else:
+            assert result == expected
 
     def test_arghandler(self):
         pass
