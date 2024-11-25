@@ -14,7 +14,7 @@ from spatialmath.base.types import *
 _numtypes = (int, np.int64, float, np.float64)
 
 
-class BasePoseList(UserList, ABC):
+class BasePoseList(ABC):
     """
     List properties for spatial math classes
 
@@ -38,21 +38,6 @@ class BasePoseList(UserList, ABC):
     syntax              meaning
     ==================  ============================================================
     ``C()``             create a singleton instance of ``C`` with the identity value
-    ``C.Empty()``       create an instance of ``C`` with zero items
-    ``C.Alloc(n)``      create an instance of ``C`` with ``n`` identity items
-    ``len(x)``          return the number of items in ``x``
-    ``x[i]``            return the ``i``'th item of ``x``, ``i`` is an index
-                        or a slice.
-    ``x[i] = y``        set the ``i``'th item of ``x`` to the singleton instance
-                        ``y`` and ``i`` is an index
-    ``x.append(y)``     append the value of singleton instance ``y`` to ``x``
-    ``x.extend(y)``     append the items of ``y`` to ``x``
-    ``x.pop()``         pop the first item of ``x``
-    ``x.insert(i, y)``  insert the value of singleton instsance ``y`` into ``x``
-                        at position ``i``.
-    ``del x[i]``        delete the ``i``'th element of ``x``
-    ``x.reverse()``     reverse the elements of ``x`` in place
-    ``x.clear()``       remove all items from ``x``
     ==================  ============================================================
 
     where ``C`` is the class, and ``x`` and ``y`` are instances of ``C``.
@@ -84,58 +69,6 @@ class BasePoseList(UserList, ABC):
         else:
             return None
 
-    @classmethod
-    def Empty(cls) -> Self:
-        """
-        Construct an empty instance (BasePoseList superclass method)
-
-        :return: pose instance with zero values
-
-        Example::
-
-            >>> x = X.Empty()
-            >>> len(x)
-            0
-
-        where ``X`` is any of the SMTB classes.
-        """
-        x = cls()
-        x.data = []
-        return x
-
-    @classmethod
-    def Alloc(cls, n: Optional[int] = 1) -> Self:
-        """
-        Construct an instance with N default values (BasePoseList superclass method)
-
-        :param n: Number of values, defaults to 1
-        :type n: int, optional
-        :return: pose instance with ``n`` default values
-
-        ``X.Alloc(N)`` creates an instance of the pose class ``X`` with ``N``
-        default values, ie. ``len(X)`` will be ``N``.
-
-        ``X`` can be considered a vector of pose objects, and those elements
-        can be referenced ``X[i]`` or assigned to ``X[i] = ...``.
-
-        .. note:: The default value depends on the pose class and is the result
-                  of the empty constructor. For ``SO2``,
-                  ``SE2``, ``SO3``, ``SE3`` it is an identity matrix, for a
-                  twist class ``Twist2`` or ``Twist3`` it is a zero vector,
-                  for a ``UnitQuaternion`` or ``Quaternion`` it is a zero
-                  vector.
-
-        Example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-
-        where ``X`` is any of the SMTB classes.
-        """
-        x = cls()
-        x.data = [cls._identity() for i in range(n)]  # make n copies of the data
-        return x
 
     def arghandler(
         self, arg: Any, convertfrom: Tuple = (), check: Optional[bool] = True
@@ -252,20 +185,17 @@ class BasePoseList(UserList, ABC):
         return self.data[0].__array_interface__
 
     @property
-    def _A(self) -> Union[List[NDArray], NDArray]:
+    def _A(self) -> NDArray:
         """
         Spatial vector as an array
         :return: Moment vector
         :rtype: numpy.ndarray, shape=(3,)
         - ``X.v`` is a 3-vector
         """
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
+        return self.data[0]
 
     @property
-    def A(self) -> Union[List[NDArray], NDArray]:
+    def A(self) -> NDArray:
         """
         Array value of an instance (BasePoseList superclass method)
 
@@ -278,88 +208,13 @@ class BasePoseList(UserList, ABC):
         .. note:: This assumes that ``len(X)`` == 1, ie. it is a single-valued
             instance.
         """
+        return self.data[0]
 
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
-
+    def __len__(self) -> int:
+        return 1
+    
     # ------------------------------------------------------------------------ #
 
-    def __getitem__(self, i: Union[int, slice]) -> BasePoseList:
-        """
-        Access value of an instance (BasePoseList superclass method)
-
-        :param i: index of element to return
-        :type i: int
-        :return: the specific element of the pose
-        :rtype: Quaternion or UnitQuaternion instance
-        :raises IndexError: if the element is out of bounds
-
-        Note that only a single index is supported, slices are not.
-
-        Example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-            >>> y = x[1]
-            >>> len(y)
-            1
-            >>> y = x[1:5]
-            >>> len(y)
-            4
-
-        where ``X`` is any of the SMTB classes.
-        """
-
-        if isinstance(i, slice):
-            if i.stop is None:
-                # stop not given
-                end = len(self)
-            elif i.stop < 0:
-                # stop is negative, -
-                end = i.stop + len(self) + 1
-            else:
-                # stop is positive, use it directly
-                end = i.stop
-            return self.__class__(
-                [self.data[k] for k in range(i.start or 0, end, i.step or 1)]
-            )
-        else:
-            ret = self.__class__(self.data[i], check=False)
-            # ret.__array_interface__ = self.data[i].__array_interface__
-            return ret
-            # return self.__class__(self.data[i], check=False)
-
-    def __setitem__(self, i: int, value: BasePoseList) -> None:
-        """
-        Assign a value to an instance (BasePoseList superclass method)
-
-        :param i: index of element to assign to
-        :type i: int
-        :param value: the value to insert
-        :type value: Quaternion or UnitQuaternion instance
-        :raises ValueError: incorrect type of assigned value
-
-        Assign the argument to an element of the object's internal list of values.
-        This supports the assignement operator, for example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-            >>> x[3] = X()   # assign to position 3 in the list
-
-        where ``X`` is any of the SMTB classes.
-
-        """
-        if not type(self) == type(value):
-            raise ValueError("can't insert different type of object")
-        if len(value) > 1:
-            raise ValueError(
-                "can't insert a multivalued element - must have len() == 1"
-            )
-        self.data[i] = value.A
 
     # flag these binary operators as being not supported
     def __lt__(self, other: BasePoseList) -> Type[Exception]:
@@ -374,125 +229,6 @@ class BasePoseList(UserList, ABC):
     def __ge__(self, other: BasePoseList) -> Type[Exception]:
         return NotImplementedError
 
-    def append(self, item: BasePoseList) -> None:
-        """
-        Append a value to an instance (BasePoseList superclass method)
-
-        :param x: the value to append
-        :type x: Quaternion or UnitQuaternion instance
-        :raises ValueError: incorrect type of appended object
-
-        Appends the argument to the object's internal list of values.
-
-        Example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-            >>> x.append(X())   # append to the list
-            >>> len(x)
-            11
-
-        where ``X`` is any of the SMTB classes.
-        """
-        # print('in append method')
-        if not type(self) == type(item):
-            raise ValueError("can't append different type of object")
-        if len(item) > 1:
-            raise ValueError("can't append a multivalued instance - use extend")
-        super().append(item.A)
-
-    def extend(self, iterable: BasePoseList) -> None:
-        """
-        Extend sequence of values in an instance (BasePoseList superclass method)
-
-        :param x: the value to extend
-        :type x: instance of same type
-        :raises ValueError: incorrect type of appended object
-
-        Appends the argument's values to the object's internal list of values.
-
-        Example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-            >>> x.append(X.Alloc(5))   # extend the list
-            >>> len(x)
-            15
-
-        where ``X`` is any of the SMTB classes.
-        """
-        # print('in extend method')
-        if not type(self) == type(iterable):
-            raise ValueError("can't append different type of object")
-        super().extend(iterable._A)
-
-    def insert(self, i: int, item: BasePoseList) -> None:
-        """
-        Insert a value to an instance (BasePoseList superclass method)
-
-        :param i: element to insert value before
-        :type i: int
-        :param item: the value to insert
-        :type item: instance of same type
-        :raises ValueError: incorrect type of inserted value
-
-        Inserts the argument into the object's internal list of values.
-
-        Example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-            >>> x.insert(0, X())   # insert at start of list
-            >>> len(x)
-            11
-            >>> x.insert(10, X())   # append to the list
-            >>> len(x)
-            11
-
-        where ``X`` is any of the SMTB classes.
-
-        .. note:: If ``i`` is beyond the end of the list, the item is appended
-            to the list
-        """
-        if not type(self) == type(item):
-            raise ValueError("can't insert different type of object")
-        if len(item) > 1:
-            raise ValueError(
-                "can't insert a multivalued instance - must have len() == 1"
-            )
-        super().insert(i, item._A)
-
-    def pop(self, i: Optional[int] = -1) -> Self:
-        """
-        Pop value from an instance (BasePoseList superclass method)
-
-        :param i: item in the list to pop, default is last
-        :type i: int
-        :return: the popped value
-        :rtype: instance of same type
-        :raises IndexError: if there are no values to pop
-
-        Removes a value from the value list and returns it.  The original
-        instance is modified.
-
-        Example::
-
-            >>> x = X.Alloc(10)
-            >>> len(x)
-            10
-            >>> y = x.pop()  # pop the last value x[9]
-            >>> len(x)
-            9
-            >>> y = x.pop(0)  # pop the first value x[0]
-            >>> len(x)
-            8
-
-        where ``X`` is any of the SMTB classes.
-        """
-        return self.__class__(super().pop(i))
 
     def binop(
         self,
