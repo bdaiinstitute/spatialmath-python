@@ -176,7 +176,7 @@ class TestVector(unittest.TestCase):
             unittwist([0, 0, -2, 0, 0, 0]), np.r_[0, 0, -1, 0, 0, 0]
         )
 
-        self.assertIsNone(unittwist([0, 0, 0, 0, 0, 0]))
+        assert unittwist([0, 0, 0, 0, 0, 0]) is None
 
     def test_unittwist_norm(self):
         a = unittwist_norm([0, 0, 0, 1, 0, 0])
@@ -216,8 +216,8 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(a[1], 2)
 
         a = unittwist_norm([0, 0, 0, 0, 0, 0])
-        self.assertIsNone(a[0])
-        self.assertIsNone(a[1])
+        assert a[0] is None
+        assert a[1] is None
 
     def test_unittwist2(self):
         nt.assert_array_almost_equal(
@@ -233,7 +233,7 @@ class TestVector(unittest.TestCase):
             unittwist2([2, 0, -2]), np.r_[1, 0, -1]
         )
 
-        self.assertIsNone(unittwist2([0, 0, 0]))
+        assert unittwist2([0, 0, 0]) is None
 
     def test_unittwist2_norm(self):
         a = unittwist2_norm([1, 0, 0])
@@ -253,8 +253,8 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(a[1], 2)
 
         a = unittwist2_norm([0, 0, 0])
-        self.assertIsNone(a[0])
-        self.assertIsNone(a[1])
+        assert a[0] is None
+        assert a[1] is None
 
     def test_iszerovec(self):
         assert iszerovec([0])
