@@ -230,9 +230,7 @@ class TestND(unittest.TestCase):
         assert not isR(T)
         assert not isrot2(T)
         assert not isrot(T)
-        self.assertTrue(
-            ishom(T),
-        )
+        assert ishom(T)
         assert not ishom2(T)
         assert not isrot2(T, True)
         assert not isrot(T, True)

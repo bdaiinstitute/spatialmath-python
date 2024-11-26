@@ -214,13 +214,9 @@ class Line3Test(unittest.TestCase):
 
         # L1, || L2, but doesnt intersect
         # L3, intersects L4
-        self.assertFalse(
-            L1 ^ L2,
-        )
+        assert not L1 ^ L2
 
-        self.assertTrue(
-            L3 ^ L4,
-        )
+        assert L3 ^ L4
 
     def test_commonperp(self):
         L1 = Line3.PointDir([4, 5, 6], [0, 0, 1])
