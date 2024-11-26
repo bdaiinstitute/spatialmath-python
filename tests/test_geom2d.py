@@ -9,14 +9,13 @@ Created on Sun Jul  5 14:37:24 2020
 from spatialmath.geom2d import *
 from spatialmath.pose2d import SE2
 
-import unittest
 import pytest
 import sys
 import numpy.testing as nt
 import spatialmath.base as smb
 
 
-class Polygon2Test(unittest.TestCase):
+class Polygon2Test:
     # Primitives
     def test_constructor1(self):
         p = Polygon2([(1, 2), (3, 2), (2, 4)])
@@ -109,7 +108,7 @@ class Polygon2Test(unittest.TestCase):
     # p.move(SE2(0, 0, 0.7))
 
 
-class Line2Test(unittest.TestCase):
+class Line2Test:
     def test_constructor(self):
         l = Line2([1, 2, 3])
         assert str(l) == "Line2: [1. 2. 3.]"
@@ -141,7 +140,7 @@ class Line2Test(unittest.TestCase):
         assert l1.intersect_segment((2, 1), (2, -1))
 
 
-class EllipseTest(unittest.TestCase):
+class EllipseTest:
     def test_constructor(self):
         E = np.array([[1, 1], [1, 3]])
         e = Ellipse(E=E)

@@ -10,7 +10,6 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -24,7 +23,7 @@ matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
-class TestVelocity(unittest.TestCase):
+class TestVelocity:
     def test_numjac(self):
         # test on algebraic example
         def f(X):

@@ -2,7 +2,6 @@ import math
 from math import pi
 import numpy.testing as nt
 import pytest
-import unittest
 
 from spatialmath import *
 from spatialmath.base import *
@@ -27,7 +26,7 @@ def qcompare(x, y):
 # straight port of the MATLAB unit tests
 
 
-class TestUnitQuaternion(unittest.TestCase):
+class TestUnitQuaternion:
     def test_constructor_variants(self):
         nt.assert_array_almost_equal(UnitQuaternion().vec, np.r_[1, 0, 0, 0])
 
@@ -741,7 +740,7 @@ class TestUnitQuaternion(unittest.TestCase):
     #     ry.animate( UnitQuaternion.Rx(pi/2), 'rgb' )
 
 
-class TestQuaternion(unittest.TestCase):
+class TestQuaternion:
     def test_constructor(self):
         q = Quaternion()
         assert len(q) == 1

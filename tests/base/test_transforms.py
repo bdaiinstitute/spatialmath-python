@@ -10,7 +10,6 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -23,7 +22,7 @@ matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
-class TestLie(unittest.TestCase):
+class TestLie:
     def test_vex(self):
         S = np.array([[0, -3], [3, 0]])
 

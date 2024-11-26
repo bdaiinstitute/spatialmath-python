@@ -1,5 +1,4 @@
 import pytest
-import unittest
 import math
 
 try:
@@ -12,7 +11,7 @@ except ImportError:
 from spatialmath.base.symbolic import *
 
 
-class Test_symbolic(unittest.TestCase):
+class Test_symbolic:
     @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_symbol(self):
         theta = symbol("theta")

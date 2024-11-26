@@ -3,7 +3,6 @@ from math import pi
 import numpy as np
 
 import numpy.testing as nt
-import unittest
 
 from spatialmath import DualQuaternion, UnitDualQuaternion, Quaternion, SE3
 from spatialmath import base
@@ -20,7 +19,7 @@ def qcompare(x, y):
         y = y.A
     nt.assert_array_almost_equal(x, y)
 
-class TestDualQuaternion(unittest.TestCase):
+class TestDualQuaternion:
 
     def test_init(self):
 
@@ -84,7 +83,7 @@ class TestDualQuaternion(unittest.TestCase):
         pass
 
 
-class TestUnitDualQuaternion(unittest.TestCase):
+class TestUnitDualQuaternion:
 
     def test_init(self):
 

@@ -1,11 +1,10 @@
-import unittest
 import numpy.testing as nt
 import numpy as np
 
 from spatialmath.spatialvector import *
 
 
-class TestSpatialVector(unittest.TestCase):
+class TestSpatialVector:
     def test_list_powers(self):
         x = SpatialVelocity.Empty()
         assert len(x) == 0

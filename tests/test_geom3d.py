@@ -9,14 +9,13 @@ Created on Sun Jul  5 14:37:24 2020
 from spatialmath.geom3d import *
 from spatialmath.pose3d import SE3
 
-import unittest
 import numpy.testing as nt
 import spatialmath.base as base
 import pytest
 import sys
 
 
-class Line3Test(unittest.TestCase):
+class Line3Test:
     # Primitives
     def test_constructor1(self):
         # construct from 6-vector

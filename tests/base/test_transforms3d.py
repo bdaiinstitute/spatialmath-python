@@ -11,7 +11,6 @@ Created on Fri Apr 10 14:19:04 2020
 import numpy as np
 import numpy.testing as nt
 import pytest
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -20,7 +19,7 @@ from spatialmath.base.transforms3d import *
 from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
 
 
-class Test3D(unittest.TestCase):
+class Test3D:
     def test_checks(self):
         # 2D case, with rotation matrix
         R = np.eye(2)

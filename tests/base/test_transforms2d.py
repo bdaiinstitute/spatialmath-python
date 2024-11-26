@@ -9,7 +9,6 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -34,7 +33,7 @@ matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
-class Test2D(unittest.TestCase):
+class Test2D:
     def test_rot2(self):
         R = np.array([[1, 0], [0, 1]])
         nt.assert_array_almost_equal(rot2(0), R)

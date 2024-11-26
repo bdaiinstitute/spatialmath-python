@@ -10,7 +10,6 @@ Created on Fri Apr 10 14:19:04 2020
 import numpy as np
 import numpy.testing as nt
 import pytest
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -31,7 +30,7 @@ matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
-class TestND(unittest.TestCase):
+class TestND:
     def test_iseye(self):
         assert iseye(np.eye(1))
         assert iseye(np.eye(2))

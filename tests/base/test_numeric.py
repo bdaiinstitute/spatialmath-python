@@ -10,14 +10,13 @@ Created on Fri Apr 10 14:19:04 2020
 import numpy as np
 import numpy.testing as nt
 import pytest
-import unittest
 import math
 
 
 from spatialmath.base.numeric import *
 
 
-class TestNumeric(unittest.TestCase):
+class TestNumeric:
     def test_numjac(self):
 
         pass

@@ -2,7 +2,6 @@ import numpy.testing as nt
 import matplotlib
 matplotlib.use("AGG")
 import matplotlib.pyplot as plt
-import unittest
 import sys
 import pytest
 
@@ -29,7 +28,7 @@ def array_compare(x, y):
     nt.assert_array_almost_equal(x, y)
 
 
-class TestSO3(unittest.TestCase):
+class TestSO3:
     @classmethod
     def tearDownClass(cls):
         plt.close("all")
@@ -723,7 +722,7 @@ class TestSO3(unittest.TestCase):
 # ============================== SE3 =====================================#
 
 
-class TestSE3(unittest.TestCase):
+class TestSE3:
     @classmethod
     def tearDownClass(cls):
         plt.close("all")

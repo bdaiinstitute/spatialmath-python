@@ -3,12 +3,11 @@ import numpy as np
 import matplotlib
 matplotlib.use("AGG")
 import matplotlib.pyplot as plt
-import unittest
 
 from spatialmath import BSplineSE3, SE3, InterpSplineSE3, SplineFit, SO3
 
 
-class TestBSplineSE3(unittest.TestCase):
+class TestBSplineSE3:
     control_poses = [
         SE3.Trans([e, 2 * np.cos(e / 2 * np.pi), 2 * np.sin(e / 2 * np.pi)])
         * SE3.Ry(e / 8 * np.pi)

@@ -10,7 +10,6 @@ Created on Fri Apr 10 14:19:04 2020
 import numpy as np
 import numpy.testing as nt
 import pytest
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -32,7 +31,7 @@ import matplotlib.pyplot as plt
 from math import pi
 
 
-class TestVector(unittest.TestCase):
+class TestVector:
     @classmethod
     def tearDownClass(cls):
         plt.close("all")

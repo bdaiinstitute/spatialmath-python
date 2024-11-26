@@ -31,7 +31,6 @@
 
 import numpy.testing as nt
 import pytest
-import unittest
 
 from spatialmath.base.vectors import *
 import spatialmath.base as tr
@@ -39,7 +38,7 @@ from spatialmath.base.quaternions import *
 import spatialmath as sm
 
 
-class TestQuaternion(unittest.TestCase):
+class TestQuaternion:
     def test_ops(self):
         nt.assert_array_almost_equal(qeye(), np.r_[1, 0, 0, 0])
 

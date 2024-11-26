@@ -2,7 +2,6 @@ import numpy.testing as nt
 import matplotlib
 matplotlib.use("AGG")
 import matplotlib.pyplot as plt
-import unittest
 
 """
 we will assume that the primitives rotx,trotx, etc. all work
@@ -27,7 +26,7 @@ def array_compare(x, y):
     nt.assert_array_almost_equal(x, y)
 
 
-class Twist3dTest(unittest.TestCase):
+class Twist3dTest:
     
     def test_constructor(self):
         
@@ -194,7 +193,7 @@ class Twist3dTest(unittest.TestCase):
         array_compare( x.prod().SE3(), T1 * T2)
         
 
-class Twist2dTest(unittest.TestCase):
+class Twist2dTest:
     
     def test_constructor(self):
         

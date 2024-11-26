@@ -1,4 +1,3 @@
-import unittest
 import numpy as np
 import matplotlib
 matplotlib.use("AGG")
@@ -10,7 +9,7 @@ from spatialmath.base import *
 # test graphics primitives
 # TODO check they actually create artists
 
-class TestGraphics(unittest.TestCase):
+class TestGraphics:
     def teardown_method(self, method):
         plt.close("all")
 

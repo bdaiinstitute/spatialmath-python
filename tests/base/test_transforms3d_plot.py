@@ -10,7 +10,6 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
-import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
@@ -25,7 +24,7 @@ matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
-class Test3D(unittest.TestCase):
+class Test3D:
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),
         reason="tkinter bug with mac",
