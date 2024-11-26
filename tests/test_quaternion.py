@@ -52,13 +52,13 @@ class TestUnitQuaternion(unittest.TestCase):
         np.random.seed(73)
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         assert isinstance(q, UnitQuaternion)
-        self.assertLessEqual(q.angvec()[0], 0.7)
+        assert q.angvec()[0] <= 0.7
         self.assertGreaterEqual(q.angvec()[0], 0.1)
 
 
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         assert isinstance(q, UnitQuaternion)
-        self.assertLessEqual(q.angvec()[0], 0.7)
+        assert q.angvec()[0] <= 0.7
         self.assertGreaterEqual(q.angvec()[0], 0.1)
 
 

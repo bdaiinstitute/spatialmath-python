@@ -84,7 +84,7 @@ class TestSO3(unittest.TestCase):
         R = SO3.Rand(theta_range=(0.1, 0.7))
         assert isinstance(R, SO3)
         assert R.A.shape == (3, 3)
-        self.assertLessEqual(R.angvec()[0], 0.7)
+        assert R.angvec()[0] <= 0.7
         self.assertGreaterEqual(R.angvec()[0], 0.1)
 
         # copy constructor
@@ -862,7 +862,7 @@ class TestSE3(unittest.TestCase):
         T = SE3.Rand(theta_range=(0.1, 0.7))
         assert isinstance(T, SE3)
         assert T.A.shape == (4, 4)
-        self.assertLessEqual(T.angvec()[0], 0.7)
+        assert T.angvec()[0] <= 0.7
         self.assertGreaterEqual(T.angvec()[0], 0.1)
 
         # copy constructor
