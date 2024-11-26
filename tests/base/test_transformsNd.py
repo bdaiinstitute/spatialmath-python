@@ -32,10 +32,10 @@ import matplotlib.pyplot as plt
 
 class TestND(unittest.TestCase):
     def test_iseye(self):
-        self.assertTrue(iseye(np.eye(1)))
-        self.assertTrue(iseye(np.eye(2)))
-        self.assertTrue(iseye(np.eye(3)))
-        self.assertTrue(iseye(np.eye(5)))
+        assert iseye(np.eye(1))
+        assert iseye(np.eye(2))
+        assert iseye(np.eye(3))
+        assert iseye(np.eye(5))
 
         self.assertFalse(iseye(2 * np.eye(3)))
         self.assertFalse(iseye(-np.eye(3)))
@@ -80,7 +80,7 @@ class TestND(unittest.TestCase):
         self.assertEqual(r2t(R).dtype, "O")
         nt.assert_array_almost_equal(T[0:3, 3], np.r_[0, 0, 0])
         # nt.assert_array_almost_equal(T[:3,:3], R)
-        self.assertTrue((T[:3, :3] == R).all())
+        assert (T[:3, :3] == R).all()
 
     def test_t2r(self):
         # 3D
@@ -189,24 +189,24 @@ class TestND(unittest.TestCase):
     def test_checks(self):
         # 3D case, with rotation matrix
         R = np.eye(3)
-        self.assertTrue(isR(R))
+        assert isR(R)
         self.assertFalse(isrot2(R))
-        self.assertTrue(isrot(R))
+        assert isrot(R)
         self.assertFalse(ishom(R))
-        self.assertTrue(ishom2(R))
+        assert ishom2(R)
         self.assertFalse(isrot2(R, True))
-        self.assertTrue(isrot(R, True))
+        assert isrot(R, True)
         self.assertFalse(ishom(R, True))
-        self.assertTrue(ishom2(R, True))
+        assert ishom2(R, True)
 
         # 3D case, invalid rotation matrix
         R = np.eye(3)
         R[0, 1] = 2
         self.assertFalse(isR(R))
         self.assertFalse(isrot2(R))
-        self.assertTrue(isrot(R))
+        assert isrot(R)
         self.assertFalse(ishom(R))
-        self.assertTrue(ishom2(R))
+        assert ishom2(R)
         self.assertFalse(isrot2(R, True))
         self.assertFalse(isrot(R, True))
         self.assertFalse(ishom(R, True))
@@ -217,11 +217,11 @@ class TestND(unittest.TestCase):
         self.assertFalse(isR(T))
         self.assertFalse(isrot2(T))
         self.assertFalse(isrot(T))
-        self.assertTrue(ishom(T))
+        assert ishom(T)
         self.assertFalse(ishom2(T))
         self.assertFalse(isrot2(T, True))
         self.assertFalse(isrot(T, True))
-        self.assertTrue(ishom(T, True))
+        assert ishom(T, True)
         self.assertFalse(ishom2(T, True))
 
         # 3D case, invalid rotation matrix
@@ -243,7 +243,7 @@ class TestND(unittest.TestCase):
         self.assertFalse(isR(T))
         self.assertFalse(isrot2(T))
         self.assertFalse(isrot(T))
-        self.assertTrue(ishom(T))
+        assert ishom(T)
         self.assertFalse(ishom2(T))
         self.assertFalse(isrot2(T, True))
         self.assertFalse(isrot(T, True))
@@ -331,14 +331,14 @@ class TestND(unittest.TestCase):
     def test_isskew(self):
         t = [3, 4, 5]
         sk = skew(t)
-        self.assertTrue(isskew(sk))
+        assert isskew(sk)
         sk[0, 0] = 3
         self.assertFalse(isskew(sk))
 
         # 2D
         t = [3]
         sk = skew(t)
-        self.assertTrue(isskew(sk))
+        assert isskew(sk)
         sk[0, 0] = 3
         self.assertFalse(isskew(sk))
 
@@ -346,7 +346,7 @@ class TestND(unittest.TestCase):
         # 3D
         t = [3, 4, 5, 6, 7, 8]
         sk = skewa(t)
-        self.assertTrue(isskewa(sk))
+        assert isskewa(sk)
         sk[0, 0] = 3
         self.assertFalse(isskew(sk))
         sk = skewa(t)
@@ -356,7 +356,7 @@ class TestND(unittest.TestCase):
         # 2D
         t = [3, 4, 5]
         sk = skew(t)
-        self.assertTrue(isskew(sk))
+        assert isskew(sk)
         sk[0, 0] = 3
         self.assertFalse(isskew(sk))
         sk = skewa(t)

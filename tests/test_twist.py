@@ -109,10 +109,10 @@ class Twist3dTest(unittest.TestCase):
         
         # check prismatic twist
         x = Twist3.UnitPrismatic([1, 2, 3])
-        self.assertTrue(x.isprismatic)
+        assert x.isprismatic
         
-        self.assertTrue(Twist3.isvalid(x.skewa()))
-        self.assertTrue(Twist3.isvalid(x.S))
+        assert Twist3.isvalid(x.skewa())
+        assert Twist3.isvalid(x.S)
         
         self.assertFalse(Twist3.isvalid(2))
         self.assertFalse(Twist3.isvalid(np.eye(4)))
@@ -289,10 +289,10 @@ class Twist2dTest(unittest.TestCase):
         
         # check prismatic twist
         x = Twist2.UnitPrismatic([1, 2])
-        self.assertTrue(x.isprismatic)
+        assert x.isprismatic
         
-        self.assertTrue(Twist2.isvalid(x.skewa()))
-        self.assertTrue(Twist2.isvalid(x.S))
+        assert Twist2.isvalid(x.skewa())
+        assert Twist2.isvalid(x.S)
         
         self.assertFalse(Twist2.isvalid(2))
         self.assertFalse(Twist2.isvalid(np.eye(3)))

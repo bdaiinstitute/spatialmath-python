@@ -113,7 +113,7 @@ class TestSO2(unittest.TestCase):
         array_compare(x[2], rot2(1))
 
     def test_isa(self):
-        self.assertTrue(SO2.isvalid(rot2(0)))
+        assert SO2.isvalid(rot2(0))
 
         self.assertFalse(SO2.isvalid(1))
 
@@ -332,7 +332,7 @@ class TestSE2(unittest.TestCase):
         array_compare(x[2], transl2(5, 6))
 
     def test_isa(self):
-        self.assertTrue(SE2.isvalid(trot2(0)))
+        assert SE2.isvalid(trot2(0))
         self.assertFalse(SE2.isvalid(1))
 
     def test_resulttype(self):
@@ -445,7 +445,7 @@ class TestSE2(unittest.TestCase):
 
         ## Lie stuff
         x = TT.log()
-        self.assertTrue(isskewa(x))
+        assert isskewa(x)
 
     def test_interp(self):
         TT = SE2(2, -4, 0.6)
@@ -473,7 +473,7 @@ class TestSE2(unittest.TestCase):
 
         self.assertEqual(TT.A.shape, (3, 3))
 
-        self.assertTrue(TT.isSE)
+        assert TT.isSE
 
         assert isinstance(TT, SE2)
 

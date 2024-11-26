@@ -64,7 +64,7 @@ class TestNumeric(unittest.TestCase):
         z = np.array([x, y])
         d = np.diff(z, axis=1)
         d = np.linalg.norm(d, axis=0)
-        self.assertTrue(all(d <= np.sqrt(2)))
+        assert all(d <= np.sqrt(2))
 
         x, y = bresenham((20, 10), (-10, -10))
 
@@ -72,7 +72,7 @@ class TestNumeric(unittest.TestCase):
         z = np.array([x, y])
         d = np.diff(z, axis=1)
         d = np.linalg.norm(d, axis=0)
-        self.assertTrue(all(d <= np.sqrt(2)))
+        assert all(d <= np.sqrt(2))
 
         x, y = bresenham((-10, -10), (10, 20))
 
@@ -80,7 +80,7 @@ class TestNumeric(unittest.TestCase):
         z = np.array([x, y])
         d = np.diff(z, axis=1)
         d = np.linalg.norm(d, axis=0)
-        self.assertTrue(all(d <= np.sqrt(2)))
+        assert all(d <= np.sqrt(2))
 
         x, y = bresenham((10, 20), (-10, -10))
 
@@ -88,7 +88,7 @@ class TestNumeric(unittest.TestCase):
         z = np.array([x, y])
         d = np.diff(z, axis=1)
         d = np.linalg.norm(d, axis=0)
-        self.assertTrue(all(d <= np.sqrt(2)))
+        assert all(d <= np.sqrt(2))
 
     def test_mpq(self):
 

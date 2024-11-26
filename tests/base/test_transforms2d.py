@@ -102,14 +102,14 @@ class Test2D(unittest.TestCase):
         R = rot2(0.4)
         R = np.round(R, 3)  # approx SO(2)
         R = trnorm2(R)
-        self.assertTrue(isrot2(R, check=True))
+        assert isrot2(R, check=True)
 
         R = rot2(0.4)
         R = np.round(R, 3)  # approx SO(2)
         T = rt2tr(R, [3, 4])
 
         T = trnorm2(T)
-        self.assertTrue(ishom2(T, check=True))
+        assert ishom2(T, check=True)
         nt.assert_almost_equal(T[:2, 2], [3, 4])
 
     def test_transl2(self):

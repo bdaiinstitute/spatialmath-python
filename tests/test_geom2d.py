@@ -42,18 +42,18 @@ class Polygon2Test(unittest.TestCase):
 
     def test_contains(self):
         p = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))
-        self.assertTrue(p.contains([0, 0], radius=1e-6))
-        self.assertTrue(p.contains([1, 0], radius=1e-6))
-        self.assertTrue(p.contains([-1, 0], radius=1e-6))
-        self.assertTrue(p.contains([0, 1], radius=1e-6))
-        self.assertTrue(p.contains([0, -1], radius=1e-6))
+        assert p.contains([0, 0], radius=1e-6)
+        assert p.contains([1, 0], radius=1e-6)
+        assert p.contains([-1, 0], radius=1e-6)
+        assert p.contains([0, 1], radius=1e-6)
+        assert p.contains([0, -1], radius=1e-6)
 
         self.assertFalse(p.contains([0, 1.1], radius=1e-6))
         self.assertFalse(p.contains([0, -1.1], radius=1e-6))
         self.assertFalse(p.contains([1.1, 0], radius=1e-6))
         self.assertFalse(p.contains([-1.1, 0], radius=1e-6))
 
-        self.assertTrue(p.contains(np.r_[0, -1], radius=1e-6))
+        assert p.contains(np.r_[0, -1], radius=1e-6)
         self.assertFalse(p.contains(np.r_[0, 1.1], radius=1e-6))
 
     def test_transform(self):
@@ -74,15 +74,15 @@ class Polygon2Test(unittest.TestCase):
         self.assertFalse(p1.intersects(p2))
 
         p2 = p1.transformed(SE2(1, 1))
-        self.assertTrue(p1.intersects(p2))
+        assert p1.intersects(p2)
 
-        self.assertTrue(p1.intersects(p1))
+        assert p1.intersects(p1)
 
     def test_intersect_line(self):
         p = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))
 
         l = Line2.Join((-10, 0), (10, 0))
-        self.assertTrue(p.intersects(l))
+        assert p.intersects(l)
 
         l = Line2.Join((-10, 1.1), (10, 1.1))
         self.assertFalse(p.intersects(l))
@@ -123,9 +123,9 @@ class Line2Test(unittest.TestCase):
     def test_contains(self):
         l = Line2.Join((0, 0), (1, 2))
 
-        self.assertTrue(l.contains((0, 0)))
-        self.assertTrue(l.contains((1, 2)))
-        self.assertTrue(l.contains((2, 4)))
+        assert l.contains((0, 0))
+        assert l.contains((1, 2))
+        assert l.contains((2, 4))
 
     def test_intersect(self):
         l1 = Line2.Join((0, 0), (2, 0))  # y = 0
@@ -133,12 +133,12 @@ class Line2Test(unittest.TestCase):
         self.assertFalse(l1.intersect(l2))
 
         l2 = Line2.Join((2, 1), (2, -1))  # x = 2
-        self.assertTrue(l1.intersect(l2))
+        assert l1.intersect(l2)
 
     def test_intersect_segment(self):
         l1 = Line2.Join((0, 0), (2, 0))  # y = 0
         self.assertFalse(l1.intersect_segment((2, 1), (2, 3)))
-        self.assertTrue(l1.intersect_segment((2, 1), (2, -1)))
+        assert l1.intersect_segment((2, 1), (2, -1))
 
 
 class EllipseTest(unittest.TestCase):
@@ -229,11 +229,11 @@ class EllipseTest(unittest.TestCase):
         self.assertAlmostEqual(e.area, np.pi * 2)
 
         e = Ellipse(radii=(1, 2), theta=0)
-        self.assertTrue(e.contains((0, 0)))
-        self.assertTrue(e.contains((1, 0)))
-        self.assertTrue(e.contains((-1, 0)))
-        self.assertTrue(e.contains((0, 2)))
-        self.assertTrue(e.contains((0, -2)))
+        assert e.contains((0, 0))
+        assert e.contains((1, 0))
+        assert e.contains((-1, 0))
+        assert e.contains((0, 2))
+        assert e.contains((0, -2))
 
         self.assertFalse(e.contains((1.1, 0)))
         self.assertFalse(e.contains((-1.1, 0)))

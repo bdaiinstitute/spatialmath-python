@@ -37,7 +37,7 @@ class Line3Test(unittest.TestCase):
 
         # construct from point and direction
         L = Line3.PointDir([1, 2, 3], [4, 5, 6])
-        self.assertTrue(L.contains([1, 2, 3]))
+        assert L.contains([1, 2, 3])
         nt.assert_array_almost_equal(L.uw, base.unitvec([4, 5, 6]))
 
     def test_vec(self):
@@ -82,7 +82,7 @@ class Line3Test(unittest.TestCase):
         self.assertEqual(L.ppd, math.sqrt(5))
 
         # validate pp
-        self.assertTrue(L.contains(L.pp))
+        assert L.contains(L.pp)
 
     def test_contains(self):
         P = [2, 3, 7]
@@ -90,8 +90,8 @@ class Line3Test(unittest.TestCase):
         L = Line3.Join(P, Q)
 
         # validate contains
-        self.assertTrue(L.contains([2, 3, 7]))
-        self.assertTrue(L.contains([2, 1, 0]))
+        assert L.contains([2, 3, 7])
+        assert L.contains([2, 1, 0])
         self.assertFalse(L.contains([2, 1, 4]))
 
     def test_closest(self):
@@ -150,11 +150,11 @@ class Line3Test(unittest.TestCase):
         L2 = Line3.Join(P + 2 * w, P + 5 * w)
         L3 = Line3.Join(P + np.r_[1, 0, 0], P + w)
 
-        self.assertTrue(L1 == L2)
+        assert L1 == L2
         self.assertFalse(L1 == L3)
 
         self.assertFalse(L1 != L2)
-        self.assertTrue(L1 != L3)
+        assert L1 != L3
 
     def test_skew(self):
         P = [2, 3, 7]
@@ -196,13 +196,13 @@ class Line3Test(unittest.TestCase):
         # L1, || L2, but doesnt intersect
         # L1, intersects L3
 
-        self.assertTrue(L1.isparallel(L1))
-        self.assertTrue(L1 | L1)
+        assert L1.isparallel(L1)
+        assert L1 | L1
 
-        self.assertTrue(L1.isparallel(L2))
-        self.assertTrue(L1 | L2)
-        self.assertTrue(L2.isparallel(L1))
-        self.assertTrue(L2 | L1)
+        assert L1.isparallel(L2)
+        assert L1 | L2
+        assert L2.isparallel(L1)
+        assert L2 | L1
         self.assertFalse(L1.isparallel(L3))
         self.assertFalse(L1 | L3)
 
@@ -233,8 +233,8 @@ class Line3Test(unittest.TestCase):
 
         L = L1.commonperp(L2)  # common perp intersects both lines
 
-        self.assertTrue(L ^ L1)
-        self.assertTrue(L ^ L2)
+        assert L ^ L1
+        assert L ^ L2
 
     def test_line(self):
         # mindist
@@ -252,9 +252,9 @@ class Line3Test(unittest.TestCase):
         Q = [2, 1, 0]
         L = Line3.Join(P, Q)
 
-        self.assertTrue(L.contains(L.point(0)))
-        self.assertTrue(L.contains(L.point(1)))
-        self.assertTrue(L.contains(L.point(-1)))
+        assert L.contains(L.point(0))
+        assert L.contains(L.point(1))
+        assert L.contains(L.point(-1))
 
     def test_point(self):
         P = [2, 3, 7]

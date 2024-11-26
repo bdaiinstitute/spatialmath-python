@@ -192,7 +192,7 @@ class TestUnitQuaternion(unittest.TestCase):
 
         s = str(u)
         assert isinstance(s, str)
-        self.assertTrue(s.endswith(" >>"))
+        assert s.endswith(" >>")
         self.assertEqual(s.count("\n"), 0)
 
         q = UnitQuaternion.Rx([0.3, 0.4, 0.5])
@@ -522,7 +522,7 @@ class TestUnitQuaternion(unittest.TestCase):
                 uq1.angdist(other=uq2, metric=metric),
                 uq2.angdist(other=uq1, metric=metric),
             )
-            self.assertTrue(uq1.angdist(other=uq2, metric=metric) > 0)
+            assert uq1.angdist(other=uq2, metric=metric) > 0
 
     def test_conversions(self):
         # , 3 angle
@@ -615,7 +615,7 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(q.interp1(1), q)
 
         # self.assertEqual(length(q.interp(linspace(0,1, 10))), 10)
-        # self.assertTrue(all( q.interp([0, 1]) == [u, q]))
+        # assert all( q.interp([0, 1]) == [u, q])
         # TODO vectorizing
 
         q0_5 = q.interp1(0.5)
@@ -637,7 +637,7 @@ class TestUnitQuaternion(unittest.TestCase):
         qq = rx.interp(q, 11)
         self.assertEqual(len(qq), 11)
 
-        # self.assertTrue(all( q.interp([0, 1], dest=rx, ) == [q, rx]))
+        # assert all( q.interp([0, 1], dest=rx, ) == [q, rx])
 
         # test shortest option
         # q1 = UnitQuaternion.Rx(0.9*pi)
@@ -671,10 +671,10 @@ class TestUnitQuaternion(unittest.TestCase):
         q2 = UnitQuaternion([0, -1, 0, 0])
         q3 = UnitQuaternion.Rz(pi / 2)
 
-        self.assertTrue(q1 == q1)
-        self.assertTrue(q2 == q2)
-        self.assertTrue(q3 == q3)
-        self.assertTrue(q1 == q2)  # because of double wrapping
+        assert q1 == q1
+        assert q2 == q2
+        assert q3 == q3
+        assert q1 == q2  # because of double wrapping
         self.assertFalse(q1 == q3)
 
         nt.assert_array_almost_equal(
@@ -697,7 +697,7 @@ class TestUnitQuaternion(unittest.TestCase):
         ry = UnitQuaternion.Ry(pi / 2)
 
         # equality tests
-        self.assertTrue(rx == rx)
+        assert rx == rx
         self.assertFalse(rx != rx)
         self.assertFalse(rx == ry)
 
@@ -798,7 +798,7 @@ class TestQuaternion(unittest.TestCase):
 
         s = str(u)
         assert isinstance(s, str)
-        self.assertTrue(s.endswith(" >"))
+        assert s.endswith(" >")
         self.assertEqual(s.count("\n"), 0)
         self.assertEqual(len(s), 37)
 
@@ -824,8 +824,8 @@ class TestQuaternion(unittest.TestCase):
         q1 = Quaternion([4, 3, 2, 1])
         q2 = Quaternion([-1, 2, -3, 4])
 
-        self.assertTrue(isscalar(q1.log().s))
-        self.assertTrue(isvector(q1.log().v, 3))
+        assert isscalar(q1.log().s)
+        assert isvector(q1.log().v, 3)
 
         nt.assert_array_almost_equal(q1.log().exp(), q1)
         nt.assert_array_almost_equal(q2.log().exp(), q2)
@@ -930,10 +930,10 @@ class TestQuaternion(unittest.TestCase):
         q1 = Quaternion([1, 2, 3, 4])
         q2 = Quaternion([-2, 1, -4, 3])
 
-        self.assertTrue(q1 == q1)
+        assert q1 == q1
         self.assertFalse(q1 == q2)
 
-        self.assertTrue(q1 != q2)
+        assert q1 != q2
         self.assertFalse(q2 != q2)
 
         qt1 = Quaternion([q1, q1, q2, q2])

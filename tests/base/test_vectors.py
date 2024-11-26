@@ -67,18 +67,18 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(cv.flatten(), t)
 
     def test_isunitvec(self):
-        self.assertTrue(isunitvec([1, 0, 0]))
-        self.assertTrue(isunitvec((1, 0, 0)))
-        self.assertTrue(isunitvec(np.r_[1, 0, 0]))
+        assert isunitvec([1, 0, 0])
+        assert isunitvec((1, 0, 0))
+        assert isunitvec(np.r_[1, 0, 0])
 
         self.assertFalse(isunitvec([9, 0, 0]))
         self.assertFalse(isunitvec((9, 0, 0)))
         self.assertFalse(isunitvec(np.r_[9, 0, 0]))
 
-        self.assertTrue(isunitvec(1))
-        self.assertTrue(isunitvec([1]))
-        self.assertTrue(isunitvec(-1))
-        self.assertTrue(isunitvec([-1]))
+        assert isunitvec(1)
+        assert isunitvec([1])
+        assert isunitvec(-1)
+        assert isunitvec([-1])
 
         self.assertFalse(isunitvec(2))
         self.assertFalse(isunitvec([2]))
@@ -108,33 +108,33 @@ class TestVector(unittest.TestCase):
         for i in range(0, 3):
             j = (i + 1) % 3
             k = (i + 2) % 3
-            self.assertTrue(all(cross(A[:, i], A[:, j]) == A[:, k]))
+            assert all(cross(A[:, i], A[:, j]) == A[:, k])
 
     def test_isunittwist(self):
         # 3D
         # unit rotational twist
-        self.assertTrue(isunittwist([1, 2, 3, 1, 0, 0]))
-        self.assertTrue(isunittwist((1, 2, 3, 1, 0, 0)))
-        self.assertTrue(isunittwist(np.r_[1, 2, 3, 1, 0, 0]))
+        assert isunittwist([1, 2, 3, 1, 0, 0])
+        assert isunittwist((1, 2, 3, 1, 0, 0))
+        assert isunittwist(np.r_[1, 2, 3, 1, 0, 0])
 
         # not a unit rotational twist
         self.assertFalse(isunittwist([1, 2, 3, 1, 0, 1]))
 
         # unit translation twist
-        self.assertTrue(isunittwist([1, 0, 0, 0, 0, 0]))
+        assert isunittwist([1, 0, 0, 0, 0, 0])
 
         # not a unit translation twist
         self.assertFalse(isunittwist([2, 0, 0, 0, 0, 0]))
 
         # 2D
         # unit rotational twist
-        self.assertTrue(isunittwist2([1, 2, 1]))
+        assert isunittwist2([1, 2, 1])
 
         # not a unit rotational twist
         self.assertFalse(isunittwist2([1, 2, 3]))
 
         # unit translation twist
-        self.assertTrue(isunittwist2([1, 0, 0]))
+        assert isunittwist2([1, 0, 0])
 
         # not a unit translation twist
         self.assertFalse(isunittwist2([2, 0, 0]))
@@ -257,16 +257,16 @@ class TestVector(unittest.TestCase):
         self.assertIsNone(a[1])
 
     def test_iszerovec(self):
-        self.assertTrue(iszerovec([0]))
-        self.assertTrue(iszerovec([0, 0]))
-        self.assertTrue(iszerovec([0, 0, 0]))
+        assert iszerovec([0])
+        assert iszerovec([0, 0])
+        assert iszerovec([0, 0, 0])
 
         self.assertFalse(iszerovec([1]), False)
         self.assertFalse(iszerovec([0, 1]), False)
         self.assertFalse(iszerovec([0, 1, 0]), False)
 
     def test_iszero(self):
-        self.assertTrue(iszero(0))
+        assert iszero(0)
         self.assertFalse(iszero(1))
 
     def test_angdiff(self):

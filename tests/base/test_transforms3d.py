@@ -442,14 +442,14 @@ class Test3D(unittest.TestCase):
         R = rpy2r(0.2, 0.3, 0.4)
         R = np.round(R, 3)  # approx SO(3)
         R = trnorm(R)
-        self.assertTrue(isrot(R, check=True))
+        assert isrot(R, check=True)
 
         R = rpy2r(0.2, 0.3, 0.4)
         R = np.round(R, 3)  # approx SO(3)
         T = rt2tr(R, [3, 4, 5])
 
         T = trnorm(T)
-        self.assertTrue(ishom(T, check=True))
+        assert ishom(T, check=True)
         nt.assert_almost_equal(T[:3, 3], [3, 4, 5])
 
     def test_tr2eul(self):
@@ -546,19 +546,19 @@ class Test3D(unittest.TestCase):
         s = trprint(T, file=None)
         assert isinstance(s, str)
         self.assertEqual(len(s), 42)
-        self.assertTrue("rpy" in s)
-        self.assertTrue("zyx" in s)
+        assert "rpy" in s
+        assert "zyx" in s
 
         s = trprint(T, file=None, orient="rpy/xyz")
         assert isinstance(s, str)
         self.assertEqual(len(s), 39)
-        self.assertTrue("rpy" in s)
-        self.assertTrue("xyz" in s)
+        assert "rpy" in s
+        assert "xyz" in s
 
         s = trprint(T, file=None, orient="eul")
         assert isinstance(s, str)
         self.assertEqual(len(s), 37)
-        self.assertTrue("eul" in s)
+        assert "eul" in s
         self.assertFalse("zyx" in s)
 
     def test_trinterp(self):
