@@ -96,7 +96,7 @@ class TestVector(unittest.TestCase):
         assert normsq([1, 2, 3]) == pytest.approx(14)
         assert normsq(np.r_[1, 2, 3]) == pytest.approx(14)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_norm_sym(self):
         x, y = symbol("x y")
         v = [x, y]

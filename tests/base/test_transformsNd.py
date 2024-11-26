@@ -66,7 +66,7 @@ class TestND(unittest.TestCase):
         with pytest.raises(ValueError):
             r2t(np.ones((3, 3)), check=True)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_r2t_sym(self):
         theta = symbol("theta")
         R = rot2(theta)
@@ -132,7 +132,7 @@ class TestND(unittest.TestCase):
         with pytest.raises(ValueError):
             rt2tr(np.ones((3, 3)), [1, 2, 3], check=True)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_rt2tr_sym(self):
         theta = symbol("theta")
         R = rotx(theta)
@@ -397,7 +397,7 @@ class TestND(unittest.TestCase):
         a = np.array([[1, 2], [3, 4]])
         assert np.linalg.det(a) == pytest.approx(det(a))
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_det_sym(self):
         x, y = symbol("x y")
         a = np.array([[x, y], [y, x]])

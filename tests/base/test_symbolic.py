@@ -1,3 +1,4 @@
+import pytest
 import unittest
 import math
 
@@ -12,7 +13,7 @@ from spatialmath.base.symbolic import *
 
 
 class Test_symbolic(unittest.TestCase):
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_symbol(self):
         theta = symbol("theta")
         assert isinstance(theta, sp.Expr)
@@ -36,7 +37,7 @@ class Test_symbolic(unittest.TestCase):
             assert isinstance(_, sp.Expr)
             assert _.is_real
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_issymbol(self):
         theta = symbol("theta")
         assert not issymbol(3)
@@ -44,7 +45,7 @@ class Test_symbolic(unittest.TestCase):
         assert not issymbol([1, 2])
         assert issymbol(theta)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_functions(self):
 
         theta = symbol("theta")
@@ -60,7 +61,7 @@ class Test_symbolic(unittest.TestCase):
         x = (theta - 1) * (theta + 1) - theta ** 2
         assert math.isclose(simplify(x).evalf(), -1)
 
-    @unittest.skipUnless(_symbolics, "sympy required")
+    @pytest.mark.skipif(not _symbolics, reason="sympy required")
     def test_constants(self):
 
         x = zero()

@@ -218,7 +218,7 @@ class TestVelocity(unittest.TestCase):
         res = rotvelxform_inv_dot(gamma, gamma_d, representation=rep, full=False)
         nt.assert_array_almost_equal(Adot, res, decimal=4)
 
-    # @unittest.skip("bug in angvelxform_dot for exponential coordinates")
+    # @pytest.mark.skip("bug in angvelxform_dot for exponential coordinates")
     def test_angvelxform_dot_exp(self):
         rep = "exp"
         gamma = [0.1, 0.2, 0.3]
