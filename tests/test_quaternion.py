@@ -53,13 +53,13 @@ class TestUnitQuaternion(unittest.TestCase):
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         assert isinstance(q, UnitQuaternion)
         assert q.angvec()[0] <= 0.7
-        self.assertGreaterEqual(q.angvec()[0], 0.1)
+        assert q.angvec()[0] >= 0.1
 
 
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         assert isinstance(q, UnitQuaternion)
         assert q.angvec()[0] <= 0.7
-        self.assertGreaterEqual(q.angvec()[0], 0.1)
+        assert q.angvec()[0] >= 0.1
 
 
     def test_constructor(self):

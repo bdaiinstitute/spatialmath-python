@@ -85,7 +85,7 @@ class TestSO3(unittest.TestCase):
         assert isinstance(R, SO3)
         assert R.A.shape == (3, 3)
         assert R.angvec()[0] <= 0.7
-        self.assertGreaterEqual(R.angvec()[0], 0.1)
+        assert R.angvec()[0] >= 0.1
 
         # copy constructor
         R = SO3.Rx(pi / 2)
@@ -863,7 +863,7 @@ class TestSE3(unittest.TestCase):
         assert isinstance(T, SE3)
         assert T.A.shape == (4, 4)
         assert T.angvec()[0] <= 0.7
-        self.assertGreaterEqual(T.angvec()[0], 0.1)
+        assert T.angvec()[0] >= 0.1
 
         # copy constructor
         R = SE3.Rx(pi / 2)
