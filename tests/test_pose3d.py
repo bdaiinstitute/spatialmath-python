@@ -1298,14 +1298,14 @@ class TestSE3(unittest.TestCase):
         r2 = SO3.Rx(0.2)
         for metric in range(6):
             assert r1.angdist(other=r1, metric=metric) == pytest.approx(0.0)
-            self.assertGreater(r1.angdist(other=r2, metric=metric), 0.0)
+            assert r1.angdist(other=r2, metric=metric) > 0.0
             assert r1.angdist(other=r2, metric=metric) == pytest.approx(r2.angdist(other=r1, metric=metric))
         # angle between SE3's
         p1a, p1b = SE3.Rx(0.1), SE3.Rx(0.1, t=(1, 2, 3))
         p2a, p2b = SE3.Rx(0.2), SE3.Rx(0.2, t=(3, 2, 1))
         for metric in range(6):
             assert p1a.angdist(other=p1a, metric=metric) == pytest.approx(0.0)
-            self.assertGreater(p1a.angdist(other=p2a, metric=metric), 0.0)
+            assert p1a.angdist(other=p2a, metric=metric) > 0.0
             assert p1a.angdist(other=p1b, metric=metric) == pytest.approx(0.0)
             assert p1a.angdist(other=p2a, metric=metric) == pytest.approx(p2a.angdist(other=p1a, metric=metric))
             assert p1a.angdist(other=p2a, metric=metric) == pytest.approx(p1a.angdist(other=p2b, metric=metric))

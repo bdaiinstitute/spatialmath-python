@@ -134,8 +134,8 @@ class TestQuaternion(unittest.TestCase):
         large_rotation = math.pi + 0.01
         q1 = r2q(tr.rotx(large_rotation), shortest=False)
         q2 = r2q(tr.rotx(large_rotation), shortest=True)
-        self.assertLess(q1[0], 0)
-        self.assertGreater(q2[0], 0)
+        assert q1[0] < 0
+        assert q2[0] > 0
         assert qisequal(q1=q1, q2=q2, unitq=True)
 
     def test_slerp(self):
