@@ -31,7 +31,7 @@ class Test_symbolic(unittest.TestCase):
         assert isinstance(psi, sp.Expr)
 
         q = symbol("q:6")
-        self.assertEqual(len(q), 6)
+        assert len(q) == 6
         for _ in q:
             assert isinstance(_, sp.Expr)
             assert _.is_real

@@ -70,14 +70,14 @@ class TestND(unittest.TestCase):
         theta = symbol("theta")
         R = rot2(theta)
         T = r2t(R)
-        self.assertEqual(r2t(R).dtype, "O")
+        assert r2t(R).dtype == "O"
         nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
         nt.assert_array_almost_equal(T[:2, :2], R)
 
         theta = symbol("theta")
         R = rotx(theta)
         T = r2t(R)
-        self.assertEqual(r2t(R).dtype, "O")
+        assert r2t(R).dtype == "O"
         nt.assert_array_almost_equal(T[0:3, 3], np.r_[0, 0, 0])
         # nt.assert_array_almost_equal(T[:3,:3], R)
         assert (T[:3, :3] == R).all()
@@ -135,11 +135,11 @@ class TestND(unittest.TestCase):
     def test_rt2tr_sym(self):
         theta = symbol("theta")
         R = rotx(theta)
-        self.assertEqual(r2t(R).dtype, "O")
+        assert r2t(R).dtype == "O"
 
         theta = symbol("theta")
         R = rot2(theta)
-        self.assertEqual(r2t(R).dtype, "O")
+        assert r2t(R).dtype == "O"
 
     def test_tr2rt(self):
         # 3D
@@ -293,18 +293,18 @@ class TestND(unittest.TestCase):
     def test_skew(self):
         # 3D
         sk = skew([1, 2, 3])
-        self.assertEqual(sk.shape, (3, 3))
+        assert sk.shape == (3, 3)
         nt.assert_almost_equal(sk + sk.T, np.zeros((3, 3)))
-        self.assertEqual(sk[2, 1], 1)
-        self.assertEqual(sk[0, 2], 2)
-        self.assertEqual(sk[1, 0], 3)
+        assert sk[2, 1] == 1
+        assert sk[0, 2] == 2
+        assert sk[1, 0] == 3
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0, 0])
 
         # 2D
         sk = skew([1])
-        self.assertEqual(sk.shape, (2, 2))
+        assert sk.shape == (2, 2)
         nt.assert_almost_equal(sk + sk.T, np.zeros((2, 2)))
-        self.assertEqual(sk[1, 0], 1)
+        assert sk[1, 0] == 1
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0])
 
         with self.assertRaises(ValueError):
@@ -366,7 +366,7 @@ class TestND(unittest.TestCase):
     def test_skewa(self):
         # 3D
         sk = skewa([1, 2, 3, 4, 5, 6])
-        self.assertEqual(sk.shape, (4, 4))
+        assert sk.shape == (4, 4)
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0, 0, 0])
         nt.assert_almost_equal(sk[-1, :], np.r_[0, 0, 0, 0])
         nt.assert_almost_equal(sk[:3, 3], [1, 2, 3])
@@ -374,7 +374,7 @@ class TestND(unittest.TestCase):
 
         # 2D
         sk = skewa([1, 2, 3])
-        self.assertEqual(sk.shape, (3, 3))
+        assert sk.shape == (3, 3)
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0, 0])
         nt.assert_almost_equal(sk[-1, :], np.r_[0, 0, 0])
         nt.assert_almost_equal(sk[:2, 2], [1, 2])
@@ -402,7 +402,7 @@ class TestND(unittest.TestCase):
     def test_det_sym(self):
         x, y = symbol("x y")
         a = np.array([[x, y], [y, x]])
-        self.assertEqual(det(a), x**2 - y**2)
+        assert det(a) == x**2 - y**2
 
 
 # ---------------------------------------------------------------------------------------#

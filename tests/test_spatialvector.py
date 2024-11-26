@@ -8,33 +8,33 @@ from spatialmath.spatialvector import *
 class TestSpatialVector(unittest.TestCase):
     def test_list_powers(self):
         x = SpatialVelocity.Empty()
-        self.assertEqual(len(x), 0)
+        assert len(x) == 0
         x.append(SpatialVelocity([1, 2, 3, 4, 5, 6]))
-        self.assertEqual(len(x), 1)
+        assert len(x) == 1
 
         x.append(SpatialVelocity([7, 8, 9, 10, 11, 12]))
-        self.assertEqual(len(x), 2)
+        assert len(x) == 2
 
         y = x[0]
         assert isinstance(y, SpatialVelocity)
-        self.assertEqual(len(y), 1)
+        assert len(y) == 1
         assert all(y.A == np.r_[1, 2, 3, 4, 5, 6])
 
         y = x[1]
         assert isinstance(y, SpatialVelocity)
-        self.assertEqual(len(y), 1)
+        assert len(y) == 1
         assert all(y.A == np.r_[7, 8, 9, 10, 11, 12])
 
         x.insert(0, SpatialVelocity([20, 21, 22, 23, 24, 25]))
 
         y = x[0]
         assert isinstance(y, SpatialVelocity)
-        self.assertEqual(len(y), 1)
+        assert len(y) == 1
         assert all(y.A == np.r_[20, 21, 22, 23, 24, 25])
 
         y = x[1]
         assert isinstance(y, SpatialVelocity)
-        self.assertEqual(len(y), 1)
+        assert len(y) == 1
         assert all(y.A == np.r_[1, 2, 3, 4, 5, 6])
 
     def test_velocity(self):
@@ -42,19 +42,19 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialVelocity)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialM6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         a = SpatialVelocity(np.r_[1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialVelocity)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialM6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         s = str(a)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 0)
+        assert s.count("\n") == 0
         assert s.startswith("SpatialVelocity")
 
         r = np.random.rand(6, 10)
@@ -62,37 +62,37 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialVelocity)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialM6)
-        self.assertEqual(len(a), 10)
+        assert len(a) == 10
 
         b = a[3]
         assert isinstance(b, SpatialVelocity)
         assert isinstance(b, SpatialVector)
         assert isinstance(b, SpatialM6)
-        self.assertEqual(len(b), 1)
+        assert len(b) == 1
         assert all(b.A == r[:, 3])
 
         s = str(a)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 9)
+        assert s.count("\n") == 9
 
     def test_acceleration(self):
         a = SpatialAcceleration([1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialAcceleration)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialM6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         a = SpatialAcceleration(np.r_[1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialAcceleration)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialM6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         s = str(a)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 0)
+        assert s.count("\n") == 0
         assert s.startswith("SpatialAcceleration")
 
         r = np.random.rand(6, 10)
@@ -100,13 +100,13 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialAcceleration)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialM6)
-        self.assertEqual(len(a), 10)
+        assert len(a) == 10
 
         b = a[3]
         assert isinstance(b, SpatialAcceleration)
         assert isinstance(b, SpatialVector)
         assert isinstance(b, SpatialM6)
-        self.assertEqual(len(b), 1)
+        assert len(b) == 1
         assert all(b.A == r[:, 3])
 
         s = str(a)
@@ -117,19 +117,19 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialForce)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialF6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         a = SpatialForce(np.r_[1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialForce)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialF6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         s = str(a)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 0)
+        assert s.count("\n") == 0
         assert s.startswith("SpatialForce")
 
         r = np.random.rand(6, 10)
@@ -137,13 +137,13 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialForce)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialF6)
-        self.assertEqual(len(a), 10)
+        assert len(a) == 10
 
         b = a[3]
         assert isinstance(b, SpatialForce)
         assert isinstance(b, SpatialVector)
         assert isinstance(b, SpatialF6)
-        self.assertEqual(len(b), 1)
+        assert len(b) == 1
         assert all(b.A == r[:, 3])
 
         s = str(a)
@@ -154,19 +154,19 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialMomentum)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialF6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         a = SpatialMomentum(np.r_[1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialMomentum)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialF6)
-        self.assertEqual(len(a), 1)
+        assert len(a) == 1
         assert all(a.A == np.r_[1, 2, 3, 4, 5, 6])
 
         s = str(a)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 0)
+        assert s.count("\n") == 0
         assert s.startswith("SpatialMomentum")
 
         r = np.random.rand(6, 10)
@@ -174,13 +174,13 @@ class TestSpatialVector(unittest.TestCase):
         assert isinstance(a, SpatialMomentum)
         assert isinstance(a, SpatialVector)
         assert isinstance(a, SpatialF6)
-        self.assertEqual(len(a), 10)
+        assert len(a) == 10
 
         b = a[3]
         assert isinstance(b, SpatialMomentum)
         assert isinstance(b, SpatialVector)
         assert isinstance(b, SpatialF6)
-        self.assertEqual(len(b), 1)
+        assert len(b) == 1
         assert all(b.A == r[:, 3])
 
         s = str(a)

@@ -101,28 +101,28 @@ class TestVelocity(unittest.TestCase):
     #     gamma = [0.1, 0.2, 0.3]
     #     R = rpy2r(gamma, order="zyx")
     #     A = rotvelxform(R, representation="rpy/zyx")
-    #     self.assertEqual(A.shape, (6, 6))
+    #     assert A.shape == (6, 6)
     #     A3 = np.linalg.inv(A[3:6, 3:6])
     #     nt.assert_array_almost_equal(A3, rpy2jac(gamma, order="zyx"))
 
     #     gamma = [0.1, 0.2, 0.3]
     #     R = rpy2r(gamma, order="xyz")
     #     A = rot2jac(R, representation="rpy/xyz")
-    #     self.assertEqual(A.shape, (6, 6))
+    #     assert A.shape == (6, 6)
     #     A3 = np.linalg.inv(A[3:6, 3:6])
     #     nt.assert_array_almost_equal(A3, rpy2jac(gamma, order="xyz"))
 
     #     gamma = [0.1, 0.2, 0.3]
     #     R = eul2r(gamma)
     #     A = rot2jac(R, representation="eul")
-    #     self.assertEqual(A.shape, (6, 6))
+    #     assert A.shape == (6, 6)
     #     A3 = np.linalg.inv(A[3:6, 3:6])
     #     nt.assert_array_almost_equal(A3, eul2jac(gamma))
 
     #     gamma = [0.1, 0.2, 0.3]
     #     R = trexp(gamma)
     #     A = rot2jac(R, representation="exp")
-    #     self.assertEqual(A.shape, (6, 6))
+    #     assert A.shape == (6, 6)
     #     A3 = np.linalg.inv(A[3:6, 3:6])
     #     nt.assert_array_almost_equal(A3, exp2jac(gamma))
 

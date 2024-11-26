@@ -540,24 +540,24 @@ class Test3D(unittest.TestCase):
         R = rotx(0.3) @ roty(0.4)
         s = trprint(R, file=None)
         assert isinstance(s, str)
-        self.assertEqual(len(s), 30)
+        assert len(s) == 30
 
         T = transl(1, 2, 3) @ trotx(0.3) @ troty(0.4)
         s = trprint(T, file=None)
         assert isinstance(s, str)
-        self.assertEqual(len(s), 42)
+        assert len(s) == 42
         assert "rpy" in s
         assert "zyx" in s
 
         s = trprint(T, file=None, orient="rpy/xyz")
         assert isinstance(s, str)
-        self.assertEqual(len(s), 39)
+        assert len(s) == 39
         assert "rpy" in s
         assert "xyz" in s
 
         s = trprint(T, file=None, orient="eul")
         assert isinstance(s, str)
-        self.assertEqual(len(s), 37)
+        assert len(s) == 37
         assert "eul" in s
         assert not "zyx" in s
 

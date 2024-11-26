@@ -27,38 +27,38 @@ class TestNumeric(unittest.TestCase):
         s = array2str(x)
 
         assert isinstance(s, str)
-        self.assertEqual(s, "[ 1.23 ]")
+        assert s == "[ 1.23 ]"
 
         s = array2str(x, fmt="{:.5f}")
-        self.assertEqual(s, "[ 1.23457 ]")
+        assert s == "[ 1.23457 ]"
 
         s = array2str([1, 2, 3])
-        self.assertEqual(s, "[ 1, 2, 3 ]")
+        assert s == "[ 1, 2, 3 ]"
 
         s = array2str([1, 2, 3], valuesep=":")
-        self.assertEqual(s, "[ 1:2:3 ]")
+        assert s == "[ 1:2:3 ]"
 
         s = array2str([1, 2, 3], brackets=("<< ", " >>"))
-        self.assertEqual(s, "<< 1, 2, 3 >>")
+        assert s == "<< 1, 2, 3 >>"
 
         s = array2str([1, 2e-8, 3])
-        self.assertEqual(s, "[ 1, 2e-08, 3 ]")
+        assert s == "[ 1, 2e-08, 3 ]"
 
         s = array2str([1, -2e-14, 3])
-        self.assertEqual(s, "[ 1, 0, 3 ]")
+        assert s == "[ 1, 0, 3 ]"
 
         x = np.array([[1, 2, 3], [4, 5, 6]])
         s = array2str(x)
-        self.assertEqual(s, "[ 1, 2, 3 | 4, 5, 6 ]")
+        assert s == "[ 1, 2, 3 | 4, 5, 6 ]"
 
     def test_bresenham(self):
 
         x, y = bresenham((-10, -10), (20, 10))
         assert isinstance(x, np.ndarray)
-        self.assertEqual(x.ndim, 1)
+        assert x.ndim == 1
         assert isinstance(y, np.ndarray)
-        self.assertEqual(y.ndim, 1)
-        self.assertEqual(len(x), len(y))
+        assert y.ndim == 1
+        assert len(x) == len(y)
 
         # test points are no more than sqrt(2) apart
         z = np.array([x, y])
@@ -94,16 +94,16 @@ class TestNumeric(unittest.TestCase):
 
         data = np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]])
 
-        self.assertEqual(mpq_point(data, 0, 0), 4)
-        self.assertEqual(mpq_point(data, 1, 0), 0)
-        self.assertEqual(mpq_point(data, 0, 1), 0)
+        assert mpq_point(data, 0, 0) == 4
+        assert mpq_point(data, 1, 0) == 0
+        assert mpq_point(data, 0, 1) == 0
 
     def test_gauss1d(self):
 
         x = np.arange(-10, 10, 0.02)
         y = gauss1d(2, 1, x)
 
-        self.assertEqual(len(x), len(y))
+        assert len(x) == len(y)
 
         m = np.argmax(y)
         self.assertAlmostEqual(x[m], 2)

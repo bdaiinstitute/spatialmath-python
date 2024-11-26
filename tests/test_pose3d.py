@@ -83,7 +83,7 @@ class TestSO3(unittest.TestCase):
         # random constrained
         R = SO3.Rand(theta_range=(0.1, 0.7))
         assert isinstance(R, SO3)
-        self.assertEqual(R.A.shape, (3, 3))
+        assert R.A.shape == (3, 3)
         self.assertLessEqual(R.angvec()[0], 0.7)
         self.assertGreaterEqual(R.angvec()[0], 0.1)
 
@@ -259,7 +259,7 @@ class TestSO3(unittest.TestCase):
 
     def test_shape(self):
         a = SO3()
-        self.assertEqual(a._A.shape, a.shape)
+        assert a._A.shape == a.shape
 
     def test_about(self):
         R = SO3()
@@ -270,11 +270,11 @@ class TestSO3(unittest.TestCase):
 
         s = str(R)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 3)
+        assert s.count("\n") == 3
 
         s = repr(R)
         assert isinstance(s, str)
-        self.assertEqual(s.count("\n"), 2)
+        assert s.count("\n") == 2
 
     def test_printline(self):
         R = SO3.Rx(0.3)
@@ -286,7 +286,7 @@ class TestSO3(unittest.TestCase):
         R = SO3.Rx([0.3, 0.4, 0.5])
         s = R.printline(file=None)
         # assert isinstance(s, str)
-        # self.assertEqual(s.count('\n'), 2)
+        # assert s.count('\n') == 2
 
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),
@@ -333,16 +333,16 @@ class TestSO3(unittest.TestCase):
     def test_tests(self):
         R = SO3()
 
-        self.assertEqual(R.isrot(), True)
-        self.assertEqual(R.isrot2(), False)
-        self.assertEqual(R.ishom(), False)
-        self.assertEqual(R.ishom2(), False)
+        assert R.isrot() == True
+        assert R.isrot2() == False
+        assert R.ishom() == False
+        assert R.ishom2() == False
 
     def test_properties(self):
         R = SO3()
 
-        self.assertEqual(R.isSO, True)
-        self.assertEqual(R.isSE, False)
+        assert R.isSO == True
+        assert R.isSE == False
 
         array_compare(R.n, np.r_[1, 0, 0])
         array_compare(R.n, np.r_[1, 0, 0])
@@ -838,7 +838,7 @@ class TestSE3(unittest.TestCase):
         t = T.t
         T = SE3.Rt(R, t)
         assert isinstance(T, SE3)
-        self.assertEqual(T.A.shape, (4, 4))
+        assert T.A.shape == (4, 4)
 
         nt.assert_equal(T.R, R)
         nt.assert_equal(T.t, t)
@@ -861,7 +861,7 @@ class TestSE3(unittest.TestCase):
         # random constrained
         T = SE3.Rand(theta_range=(0.1, 0.7))
         assert isinstance(T, SE3)
-        self.assertEqual(T.A.shape, (4, 4))
+        assert T.A.shape == (4, 4)
         self.assertLessEqual(T.angvec()[0], 0.7)
         self.assertGreaterEqual(T.angvec()[0], 0.1)
 
@@ -881,7 +881,7 @@ class TestSE3(unittest.TestCase):
         T = SE3(SE2(1, 2, 0.4))
         nt.assert_equal(len(T), 1)
         assert isinstance(T, SE3)
-        self.assertEqual(T.A.shape, (4, 4))
+        assert T.A.shape == (4, 4)
         nt.assert_equal(T.t, [1, 2, 0])
 
         # Bad number of arguments
@@ -892,7 +892,7 @@ class TestSE3(unittest.TestCase):
 
     def test_shape(self):
         a = SE3()
-        self.assertEqual(a._A.shape, a.shape)
+        assert a._A.shape == a.shape
 
     def test_listpowers(self):
         R = SE3()
@@ -925,16 +925,16 @@ class TestSE3(unittest.TestCase):
     def test_tests(self):
         R = SE3()
 
-        self.assertEqual(R.isrot(), False)
-        self.assertEqual(R.isrot2(), False)
-        self.assertEqual(R.ishom(), True)
-        self.assertEqual(R.ishom2(), False)
+        assert R.isrot() == False
+        assert R.isrot2() == False
+        assert R.ishom() == True
+        assert R.ishom2() == False
 
     def test_properties(self):
         R = SE3()
 
-        self.assertEqual(R.isSO, False)
-        self.assertEqual(R.isSE, True)
+        assert R.isSO == False
+        assert R.isSE == True
 
         array_compare(R.n, np.r_[1, 0, 0])
         array_compare(R.n, np.r_[1, 0, 0])

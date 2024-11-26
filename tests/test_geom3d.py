@@ -56,30 +56,30 @@ class Line3Test(unittest.TestCase):
         # TODO, all combos of list and ndarray
         # test all possible input shapes
         # L2, = Line3(P, Q)
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
         # L2, = Line3(P, Q')
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
         # L2, = Line3(P', Q')
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
         # L2, = Line3(P, Q)
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
 
         # # planes constructor
         # P = [10, 11, 12]'; w = [1, 2, 3]
         # L = Line3.PointDir(P, w)
-        # self.assertEqual(double(L), [cross(w,P) w]'); %FAIL
+        # assertEqual(double(L), [cross(w,P) w]'); %FAIL
         # L2, = Line3.PointDir(P', w)
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
         # L2, = Line3.PointDir(P, w')
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
         # L2, = Line3.PointDir(P', w')
-        # self.assertEqual(double(L2), double(L))
+        # assert double(L2) == double(L)
 
     def test_pp(self):
         # validate pp and ppd
         L = Line3.Join([-1, 1, 2], [1, 1, 2])
         nt.assert_array_almost_equal(L.pp, np.r_[0, 1, 2])
-        self.assertEqual(L.ppd, math.sqrt(5))
+        assert L.ppd == math.sqrt(5)
 
         # validate pp
         assert L.contains(L.pp)
@@ -119,7 +119,7 @@ class Line3Test(unittest.TestCase):
 
         p, d = L.closest_to_point([0, 0, 0])
         nt.assert_array_almost_equal(p, L.pp)
-        self.assertEqual(d, L.ppd)
+        assert d == L.ppd
 
         p, d = L.closest_to_point([5, 1, 0])
         nt.assert_array_almost_equal(p, [5, 1, 2])
@@ -163,7 +163,7 @@ class Line3Test(unittest.TestCase):
 
         m = L.skew()
 
-        self.assertEqual(m.shape, (4, 4))
+        assert m.shape == (4, 4)
         nt.assert_array_almost_equal(m + m.T, np.zeros((4, 4)))
 
     def test_rmul(self):
@@ -229,7 +229,7 @@ class Line3Test(unittest.TestCase):
         assert not L1 | L2
         assert not L1 ^ L2
 
-        self.assertEqual(L1.distance(L2), 2)
+        assert L1.distance(L2) == 2
 
         L = L1.commonperp(L2)  # common perp intersects both lines
 
@@ -304,8 +304,8 @@ class Line3Test(unittest.TestCase):
         px1 = Line3.Join([0, 1, 0], [1, 1, 0])
         # offset x-axis
 
-        self.assertEqual(px.ppd, 0)
-        self.assertEqual(px1.ppd, 1)
+        assert px.ppd == 0
+        assert px1.ppd == 1
         nt.assert_array_almost_equal(px1.pp, [0, 1, 0])
 
         px.intersects(px)

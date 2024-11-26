@@ -63,7 +63,7 @@ class TestVector(unittest.TestCase):
     def test_colvec(self):
         t = np.r_[1, 2, 3]
         cv = colvec(t)
-        self.assertEqual(cv.shape, (3, 1))
+        assert cv.shape == (3, 1)
         nt.assert_array_almost_equal(cv.flatten(), t)
 
     def test_isunitvec(self):
@@ -99,8 +99,8 @@ class TestVector(unittest.TestCase):
     def test_norm_sym(self):
         x, y = symbol("x y")
         v = [x, y]
-        self.assertEqual(norm(v), sqrt(x**2 + y**2))
-        self.assertEqual(norm(np.r_[v]), sqrt(x**2 + y**2))
+        assert norm(v) == sqrt(x**2 + y**2)
+        assert norm(np.r_[v]) == sqrt(x**2 + y**2)
 
     def test_cross(self):
         A = np.eye(3)
@@ -270,10 +270,10 @@ class TestVector(unittest.TestCase):
         assert not iszero(1)
 
     def test_angdiff(self):
-        self.assertEqual(angdiff(0, 0), 0)
+        assert angdiff(0, 0) == 0
         assert isinstance(angdiff(0, 0), float)
-        self.assertEqual(angdiff(pi, 0), -pi)
-        self.assertEqual(angdiff(-pi, pi), 0)
+        assert angdiff(pi, 0) == -pi
+        assert angdiff(-pi, pi) == 0
 
         x = angdiff([0, -pi, pi], 0)
         nt.assert_array_almost_equal(x, [0, -pi, -pi])

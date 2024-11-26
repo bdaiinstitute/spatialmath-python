@@ -183,7 +183,7 @@ class Test2D(unittest.TestCase):
 
         s = trprint2(T, file=None)
         assert isinstance(s, str)
-        self.assertEqual(len(s), 15)
+        assert len(s) == 15
 
     def test_checks(self):
         # 2D case, with rotation matrix

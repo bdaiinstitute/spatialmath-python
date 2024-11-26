@@ -70,7 +70,7 @@ class TestDualQuaternion(unittest.TestCase):
 
         M = dq1.matrix()
         assert isinstance(M, np.ndarray)
-        self.assertEqual(M.shape, (8,8))
+        assert M.shape == (8,8)
 
     def test_multiply(self):
         dq1 = DualQuaternion(Quaternion([1.,2,3,4]), Quaternion([5.,6,7,8]))

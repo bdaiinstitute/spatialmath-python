@@ -21,8 +21,8 @@ class Polygon2Test(unittest.TestCase):
     def test_constructor1(self):
         p = Polygon2([(1, 2), (3, 2), (2, 4)])
         assert isinstance(p, Polygon2)
-        self.assertEqual(len(p), 3)
-        self.assertEqual(str(p), "Polygon2 with 4 vertices")
+        assert len(p) == 3
+        assert str(p) == "Polygon2 with 4 vertices"
         nt.assert_array_equal(p.vertices(), np.array([[1, 3, 2], [2, 2, 4]]))
         nt.assert_array_equal(
             p.vertices(unique=False), np.array([[1, 3, 2, 1], [2, 2, 4, 2]])
@@ -31,13 +31,13 @@ class Polygon2Test(unittest.TestCase):
     def test_methods(self):
         p = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))
 
-        self.assertEqual(p.area(), 4)
-        self.assertEqual(p.moment(0, 0), 4)
-        self.assertEqual(p.moment(1, 0), 0)
-        self.assertEqual(p.moment(0, 1), 0)
+        assert p.area() == 4
+        assert p.moment(0, 0) == 4
+        assert p.moment(1, 0) == 0
+        assert p.moment(0, 1) == 0
         nt.assert_array_equal(p.centroid(), np.r_[0, 0])
 
-        self.assertEqual(p.radius(), np.sqrt(2))
+        assert p.radius() == np.sqrt(2)
         nt.assert_array_equal(p.bbox(), np.r_[-1, -1, 1, 1])
 
     def test_contains(self):
@@ -61,10 +61,10 @@ class Polygon2Test(unittest.TestCase):
 
         p = p.transformed(SE2(2, 3))
 
-        self.assertEqual(p.area(), 4)
-        self.assertEqual(p.moment(0, 0), 4)
-        self.assertEqual(p.moment(1, 0), 8)
-        self.assertEqual(p.moment(0, 1), 12)
+        assert p.area() == 4
+        assert p.moment(0 == 0, 4)
+        assert p.moment(1 == 0, 8)
+        assert p.moment(0 == 1, 12)
         nt.assert_array_equal(p.centroid(), np.r_[2, 3])
 
     def test_intersect(self):
@@ -112,7 +112,7 @@ class Polygon2Test(unittest.TestCase):
 class Line2Test(unittest.TestCase):
     def test_constructor(self):
         l = Line2([1, 2, 3])
-        self.assertEqual(str(l), "Line2: [1. 2. 3.]")
+        assert str(l) == "Line2: [1. 2. 3.]"
 
         l = Line2.Join((0, 0), (1, 2))
         nt.assert_equal(l.line, [-2, 1, 0])
@@ -240,7 +240,7 @@ class EllipseTest(unittest.TestCase):
         assert not e.contains((0, 2.1))
         assert not e.contains((0, -2.1))
 
-        self.assertEqual(e.contains(np.array([[0, 0], [3, 3]]).T), [True, False])
+        assert e.contains(np.array([[0, 0], [3, 3]]).T) == [True, False]
 
 
 if __name__ == "__main__":
