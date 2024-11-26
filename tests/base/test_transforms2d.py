@@ -182,7 +182,7 @@ class Test2D(unittest.TestCase):
         T = transl2(1, 2) @ trot2(0.3)
 
         s = trprint2(T, file=None)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(len(s), 15)
 
     def test_checks(self):

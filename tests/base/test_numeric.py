@@ -26,7 +26,7 @@ class TestNumeric(unittest.TestCase):
         x = [1.2345678]
         s = array2str(x)
 
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(s, "[ 1.23 ]")
 
         s = array2str(x, fmt="{:.5f}")
@@ -54,9 +54,9 @@ class TestNumeric(unittest.TestCase):
     def test_bresenham(self):
 
         x, y = bresenham((-10, -10), (20, 10))
-        self.assertIsInstance(x, np.ndarray)
+        assert isinstance(x, np.ndarray)
         self.assertEqual(x.ndim, 1)
-        self.assertIsInstance(y, np.ndarray)
+        assert isinstance(y, np.ndarray)
         self.assertEqual(y.ndim, 1)
         self.assertEqual(len(x), len(y))
 

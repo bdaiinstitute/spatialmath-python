@@ -25,13 +25,13 @@ class Line3Test(unittest.TestCase):
             L = Line3([1, 2, 3, 4, 5, 6], check=True)
 
         L = Line3([1, 2, 3, 4, 5, 6], check=False)
-        self.assertIsInstance(L, Line3)
+        assert isinstance(L, Line3)
         nt.assert_array_almost_equal(L.v, np.r_[1, 2, 3])
         nt.assert_array_almost_equal(L.w, np.r_[4, 5, 6])
 
         # construct from object
         L2 = Line3(L, check=False)
-        self.assertIsInstance(L, Line3)
+        assert isinstance(L, Line3)
         nt.assert_array_almost_equal(L2.v, np.r_[1, 2, 3])
         nt.assert_array_almost_equal(L2.w, np.r_[4, 5, 6])
 
@@ -272,7 +272,7 @@ class Line3Test(unittest.TestCase):
         L = Line3.Join(P, Q)
 
         s = str(L)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
 
     def test_plane(self):
         xyplane = [0, 0, 1, 0]

@@ -20,7 +20,7 @@ class Polygon2Test(unittest.TestCase):
     # Primitives
     def test_constructor1(self):
         p = Polygon2([(1, 2), (3, 2), (2, 4)])
-        self.assertIsInstance(p, Polygon2)
+        assert isinstance(p, Polygon2)
         self.assertEqual(len(p), 3)
         self.assertEqual(str(p), "Polygon2 with 4 vertices")
         nt.assert_array_equal(p.vertices(), np.array([[1, 3, 2], [2, 2, 4]]))
@@ -224,7 +224,7 @@ class EllipseTest(unittest.TestCase):
 
     def test_misc(self):
         e = Ellipse(radii=(1, 2), theta=np.pi / 2)
-        self.assertIsInstance(str(e), str)
+        assert isinstance(str(e), str)
 
         self.assertAlmostEqual(e.area, np.pi * 2)
 

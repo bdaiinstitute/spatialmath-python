@@ -40,8 +40,8 @@ class TestDualQuaternion(unittest.TestCase):
     def test_strings(self):
 
         dq = DualQuaternion(Quaternion([1.,2,3,4]), Quaternion([5.,6,7,8]))
-        self.assertIsInstance(str(dq), str)
-        self.assertIsInstance(repr(dq), str)
+        assert isinstance(str(dq), str)
+        assert isinstance(repr(dq), str)
 
     def test_conj(self):
         dq = DualQuaternion(Quaternion([1.,2,3,4]), Quaternion([5.,6,7,8]))
@@ -69,7 +69,7 @@ class TestDualQuaternion(unittest.TestCase):
         dq1 = DualQuaternion(Quaternion([1.,2,3,4]), Quaternion([5.,6,7,8]))
 
         M = dq1.matrix()
-        self.assertIsInstance(M, np.ndarray)
+        assert isinstance(M, np.ndarray)
         self.assertEqual(M.shape, (8,8))
 
     def test_multiply(self):

@@ -51,13 +51,13 @@ class TestUnitQuaternion(unittest.TestCase):
         
         np.random.seed(73)
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
-        self.assertIsInstance(q, UnitQuaternion)
+        assert isinstance(q, UnitQuaternion)
         self.assertLessEqual(q.angvec()[0], 0.7)
         self.assertGreaterEqual(q.angvec()[0], 0.1)
 
 
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
-        self.assertIsInstance(q, UnitQuaternion)
+        assert isinstance(q, UnitQuaternion)
         self.assertLessEqual(q.angvec()[0], 0.7)
         self.assertGreaterEqual(q.angvec()[0], 0.1)
 
@@ -184,20 +184,20 @@ class TestUnitQuaternion(unittest.TestCase):
         u = UnitQuaternion()
         uu = UnitQuaternion([u, u, u, u])
 
-        self.assertIsInstance(uu, UnitQuaternion)
+        assert isinstance(uu, UnitQuaternion)
         self.assertEqual(len(uu), 4)
 
     def test_string(self):
         u = UnitQuaternion()
 
         s = str(u)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertTrue(s.endswith(" >>"))
         self.assertEqual(s.count("\n"), 0)
 
         q = UnitQuaternion.Rx([0.3, 0.4, 0.5])
         s = str(q)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(s.count("\n"), 2)
 
     def test_properties(self):
@@ -363,38 +363,38 @@ class TestUnitQuaternion(unittest.TestCase):
         q = Quaternion([2, 0, 0, 0])
         u = UnitQuaternion()
 
-        self.assertIsInstance(q * q, Quaternion)
-        self.assertIsInstance(q * u, Quaternion)
-        self.assertIsInstance(u * q, Quaternion)
-        self.assertIsInstance(u * u, UnitQuaternion)
+        assert isinstance(q * q, Quaternion)
+        assert isinstance(q * u, Quaternion)
+        assert isinstance(u * q, Quaternion)
+        assert isinstance(u * u, UnitQuaternion)
 
-        # self.assertIsInstance(u.*u, UnitQuaternion)
+        # assert isinstance(u.*u, UnitQuaternion)
         # other combos all fail, test this?
 
-        self.assertIsInstance(u / u, UnitQuaternion)
+        assert isinstance(u / u, UnitQuaternion)
 
-        self.assertIsInstance(u.conj(), UnitQuaternion)
-        self.assertIsInstance(u.inv(), UnitQuaternion)
-        self.assertIsInstance(u.unit(), UnitQuaternion)
-        self.assertIsInstance(q.unit(), UnitQuaternion)
+        assert isinstance(u.conj(), UnitQuaternion)
+        assert isinstance(u.inv(), UnitQuaternion)
+        assert isinstance(u.unit(), UnitQuaternion)
+        assert isinstance(q.unit(), UnitQuaternion)
 
-        self.assertIsInstance(q.conj(), Quaternion)
+        assert isinstance(q.conj(), Quaternion)
 
-        self.assertIsInstance(q + q, Quaternion)
-        self.assertIsInstance(q - q, Quaternion)
+        assert isinstance(q + q, Quaternion)
+        assert isinstance(q - q, Quaternion)
 
-        self.assertIsInstance(u + u, Quaternion)
-        self.assertIsInstance(u - u, Quaternion)
+        assert isinstance(u + u, Quaternion)
+        assert isinstance(u - u, Quaternion)
 
-        # self.assertIsInstance(q+u, Quaternion)
-        # self.assertIsInstance(u+q, Quaternion)
+        # assert isinstance(q+u, Quaternion)
+        # assert isinstance(u+q, Quaternion)
 
-        # self.assertIsInstance(q-u, Quaternion)
-        # self.assertIsInstance(u-q, Quaternion)
+        # assert isinstance(q-u, Quaternion)
+        # assert isinstance(u-q, Quaternion)
         # TODO test for ValueError in these cases
 
-        self.assertIsInstance(u.SO3(), SO3)
-        self.assertIsInstance(u.SE3(), SE3)
+        assert isinstance(u.SO3(), SO3)
+        assert isinstance(u.SE3(), SE3)
 
     def test_multiply(self):
         vx = np.r_[1, 0, 0]
@@ -747,7 +747,7 @@ class TestQuaternion(unittest.TestCase):
     def test_constructor(self):
         q = Quaternion()
         self.assertEqual(len(q), 1)
-        self.assertIsInstance(q, Quaternion)
+        assert isinstance(q, Quaternion)
 
         nt.assert_array_almost_equal(Quaternion().vec, [0, 0, 0, 0])
 
@@ -797,14 +797,14 @@ class TestQuaternion(unittest.TestCase):
         u = Quaternion()
 
         s = str(u)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertTrue(s.endswith(" >"))
         self.assertEqual(s.count("\n"), 0)
         self.assertEqual(len(s), 37)
 
         q = Quaternion([u, u, u])
         s = str(q)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(s.count("\n"), 2)
 
     def test_properties(self):
@@ -834,7 +834,7 @@ class TestQuaternion(unittest.TestCase):
         u = Quaternion()
         uu = Quaternion([u, u, u, u])
 
-        self.assertIsInstance(uu, Quaternion)
+        assert isinstance(uu, Quaternion)
         self.assertEqual(len(uu), 4)
 
     def primitive_test_convert(self):
@@ -854,15 +854,15 @@ class TestQuaternion(unittest.TestCase):
     def test_resulttype(self):
         q = Quaternion([2, 0, 0, 0])
 
-        self.assertIsInstance(q, Quaternion)
+        assert isinstance(q, Quaternion)
 
         # other combos all fail, test this?
 
-        self.assertIsInstance(q.conj(), Quaternion)
-        self.assertIsInstance(q.unit(), UnitQuaternion)
+        assert isinstance(q.conj(), Quaternion)
+        assert isinstance(q.unit(), UnitQuaternion)
 
-        self.assertIsInstance(q + q, Quaternion)
-        self.assertIsInstance(q + q, Quaternion)
+        assert isinstance(q + q, Quaternion)
+        assert isinstance(q + q, Quaternion)
 
     def test_multiply(self):
         q1 = Quaternion([1, 2, 3, 4])
@@ -1009,7 +1009,7 @@ class TestQuaternion(unittest.TestCase):
         # unit
         qu = q.unit()
         uu = UnitQuaternion()
-        self.assertIsInstance(q, Quaternion)
+        assert isinstance(q, Quaternion)
         nt.assert_array_almost_equal(qu.vec, v / np.linalg.norm(v))
         qcompare(Quaternion([q, u, q]).unit(), UnitQuaternion([qu, uu, qu]))
 

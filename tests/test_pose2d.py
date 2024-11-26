@@ -40,7 +40,7 @@ class TestSO2(unittest.TestCase):
     def test_constructor(self):
         # null case
         x = SO2()
-        self.assertIsInstance(x, SO2)
+        assert isinstance(x, SO2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.eye(2, 2))
 
@@ -83,14 +83,14 @@ class TestSO2(unittest.TestCase):
         x = SO2()
         xx = SO2([x, x, x, x])
 
-        self.assertIsInstance(xx, SO2)
+        assert isinstance(xx, SO2)
         self.assertEqual(len(xx), 4)
 
     def test_primitive_convert(self):
         # char
 
         s = str(SO2())
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
 
     def test_shape(self):
         a = SO2()
@@ -119,13 +119,13 @@ class TestSO2(unittest.TestCase):
 
     def test_resulttype(self):
         r = SO2()
-        self.assertIsInstance(r, SO2)
+        assert isinstance(r, SO2)
 
-        self.assertIsInstance(r * r, SO2)
+        assert isinstance(r * r, SO2)
 
-        self.assertIsInstance(r / r, SO2)
+        assert isinstance(r / r, SO2)
 
-        self.assertIsInstance(r.inv(), SO2)
+        assert isinstance(r.inv(), SO2)
 
     def test_multiply(self):
         vx = np.r_[1, 0]
@@ -190,7 +190,7 @@ class TestSO2(unittest.TestCase):
     def test_conversions(self):
         T = SO2(pi / 2).SE2()
 
-        self.assertIsInstance(T, SE2)
+        assert isinstance(T, SE2)
 
         ## Lie stuff
         th = 0.3
@@ -212,11 +212,11 @@ class TestSO2(unittest.TestCase):
 
         R.printline()
         # s = R.printline(file=None)
-        # self.assertIsInstance(s, str)
+        # assert isinstance(s, str)
 
         R = SO2([0.3, 0.4, 0.5])
         s = R.printline(file=None)
-        # self.assertIsInstance(s, str)
+        # assert isinstance(s, str)
         # self.assertEqual(s.count('\n'), 2)
 
     @pytest.mark.skipif(
@@ -243,47 +243,47 @@ class TestSE2(unittest.TestCase):
         plt.close("all")
 
     def test_constructor(self):
-        self.assertIsInstance(SE2(), SE2)
+        assert isinstance(SE2(), SE2)
 
         ## null
         array_compare(SE2().A, np.eye(3, 3))
 
         # from x,y
         x = SE2(2, 3)
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.array([[1, 0, 2], [0, 1, 3], [0, 0, 1]]))
 
         x = SE2([2, 3])
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.array([[1, 0, 2], [0, 1, 3], [0, 0, 1]]))
 
         # from x,y,theta
         x = SE2(2, 3, pi / 2)
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.array([[0, -1, 2], [1, 0, 3], [0, 0, 1]]))
 
         x = SE2([2, 3, pi / 2])
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.array([[0, -1, 2], [1, 0, 3], [0, 0, 1]]))
 
         x = SE2(2, 3, 90, unit="deg")
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.array([[0, -1, 2], [1, 0, 3], [0, 0, 1]]))
 
         x = SE2([2, 3, 90], unit="deg")
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, np.array([[0, -1, 2], [1, 0, 3], [0, 0, 1]]))
 
         ## T
         T = transl2(1, 2) @ trot2(0.3)
         x = SE2(T)
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 1)
         array_compare(x.A, T)
 
@@ -299,7 +299,7 @@ class TestSE2(unittest.TestCase):
         T2 = transl2(1, -2) @ trot2(-0.4)
 
         x = SE2([T1, T2, T1, T2])
-        self.assertIsInstance(x, SE2)
+        assert isinstance(x, SE2)
         self.assertEqual(len(x), 4)
         array_compare(x[0], T1)
         array_compare(x[1], T2)
@@ -312,7 +312,7 @@ class TestSE2(unittest.TestCase):
         x = SE2()
         xx = SE2([x, x, x, x])
 
-        self.assertIsInstance(xx, SE2)
+        assert isinstance(xx, SE2)
         self.assertEqual(len(xx), 4)
 
     def test_constructor_Exp(self):
@@ -337,17 +337,17 @@ class TestSE2(unittest.TestCase):
 
     def test_resulttype(self):
         t = SE2()
-        self.assertIsInstance(t, SE2)
-        self.assertIsInstance(t * t, SE2)
-        self.assertIsInstance(t / t, SE2)
-        self.assertIsInstance(t.inv(), SE2)
-        self.assertIsInstance(t + t, np.ndarray)
-        self.assertIsInstance(t + 1, np.ndarray)
-        self.assertIsInstance(t - 1, np.ndarray)
-        self.assertIsInstance(1 + t, np.ndarray)
-        self.assertIsInstance(1 - t, np.ndarray)
-        self.assertIsInstance(2 * t, np.ndarray)
-        self.assertIsInstance(t * 2, np.ndarray)
+        assert isinstance(t, SE2)
+        assert isinstance(t * t, SE2)
+        assert isinstance(t / t, SE2)
+        assert isinstance(t.inv(), SE2)
+        assert isinstance(t + t, np.ndarray)
+        assert isinstance(t + 1, np.ndarray)
+        assert isinstance(t - 1, np.ndarray)
+        assert isinstance(1 + t, np.ndarray)
+        assert isinstance(1 - t, np.ndarray)
+        assert isinstance(2 * t, np.ndarray)
+        assert isinstance(t * 2, np.ndarray)
 
     def test_inverse(self):
         T1 = transl2(1, 2) @ trot2(0.3)
@@ -452,7 +452,7 @@ class TestSE2(unittest.TestCase):
         I = SE2()
 
         z = I.interp(TT, s=0)
-        self.assertIsInstance(z, SE2)
+        assert isinstance(z, SE2)
 
         array_compare(I.interp(TT, s=0), I)
         array_compare(I.interp(TT, s=1), TT)
@@ -475,7 +475,7 @@ class TestSE2(unittest.TestCase):
 
         self.assertTrue(TT.isSE)
 
-        self.assertIsInstance(TT, SE2)
+        assert isinstance(TT, SE2)
 
     def test_display(self):
         T1 = SE2.Rand()

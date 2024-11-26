@@ -33,7 +33,7 @@ class Twist3dTest(unittest.TestCase):
         
         s = [1, 2, 3, 4, 5, 6]
         x = Twist3(s)
-        self.assertIsInstance(x, Twist3)
+        assert isinstance(x, Twist3)
         self.assertEqual(len(x), 1)
         array_compare(x.v, [1, 2, 3])
         array_compare(x.w, [4, 5, 6])
@@ -65,7 +65,7 @@ class Twist3dTest(unittest.TestCase):
         T = SE3.Rx(0)
         tw = Twist3(T)
         array_compare(tw.SE3(), T)
-        self.assertIsInstance(tw.SE3(), SE3)
+        assert isinstance(tw.SE3(), SE3)
         self.assertEqual(len(tw.SE3()), 1)
 
         T = SE3.Rx(0) * SE3(1, 2, 3)
@@ -87,20 +87,20 @@ class Twist3dTest(unittest.TestCase):
         x = Twist3([1, 0, 0, 0, 0, 0])
         
         a = Twist3([x,x,x,x])
-        self.assertIsInstance(a, Twist3)
+        assert isinstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
         a = Twist3([x.skewa(), x.skewa(), x.skewa(), x.skewa()])
-        self.assertIsInstance(a, Twist3)
+        assert isinstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
         a = Twist3([x.S, x.S, x.S, x.S])
-        self.assertIsInstance(a, Twist3)
+        assert isinstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
         s = np.r_[1, 2, 3, 4, 5, 6]
         a = Twist3([s, s, s, s])
-        self.assertIsInstance(a, Twist3)
+        assert isinstance(a, Twist3)
         self.assertEqual(len(a), 4)
         
     def test_predicate(self):
@@ -120,13 +120,13 @@ class Twist3dTest(unittest.TestCase):
     def test_str(self):
         x = Twist3([1, 2, 3, 4, 5, 6])
         s = str(x)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(len(s), 14)
         self.assertEqual(s.count('\n'), 0)
         
         x.append(x)
         s = str(x)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(len(s), 29)
         self.assertEqual(s.count('\n'), 1)
         
@@ -200,7 +200,7 @@ class Twist2dTest(unittest.TestCase):
         
         s = [1, 2, 3]
         x = Twist2(s)
-        self.assertIsInstance(x, Twist2)
+        assert isinstance(x, Twist2)
         self.assertEqual(len(x), 1)
         array_compare(x.v, [1, 2])
         array_compare(x.w, [3])
@@ -252,7 +252,7 @@ class Twist2dTest(unittest.TestCase):
         T = SE2(1, 2, 0.3)
         tw = Twist2(T)
         array_compare(tw.SE2(), T)
-        self.assertIsInstance(tw.SE2(), SE2)
+        assert isinstance(tw.SE2(), SE2)
         self.assertEqual(len(tw.SE2()), 1)
         
     def test_conversion_se2(self):
@@ -267,20 +267,20 @@ class Twist2dTest(unittest.TestCase):
         x = Twist2([1, 0, 0])
         
         a = Twist2([x,x,x,x])
-        self.assertIsInstance(a, Twist2)
+        assert isinstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
         a = Twist2([x.skewa(), x.skewa(), x.skewa(), x.skewa()])
-        self.assertIsInstance(a, Twist2)
+        assert isinstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
         a = Twist2([x.S, x.S, x.S, x.S])
-        self.assertIsInstance(a, Twist2)
+        assert isinstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
         s = np.r_[1, 2, 3]
         a = Twist2([s, s, s, s])
-        self.assertIsInstance(a, Twist2)
+        assert isinstance(a, Twist2)
         self.assertEqual(len(a), 4)
         
     def test_predicate(self):
@@ -300,13 +300,13 @@ class Twist2dTest(unittest.TestCase):
     def test_str(self):
         x = Twist2([1, 2, 3])
         s = str(x)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(len(s), 8)
         self.assertEqual(s.count('\n'), 0)
         
         x.append(x)
         s = str(x)
-        self.assertIsInstance(s, str)
+        assert isinstance(s, str)
         self.assertEqual(len(s), 17)
         self.assertEqual(s.count('\n'), 1)
         
