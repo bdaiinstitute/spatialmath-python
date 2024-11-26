@@ -24,6 +24,8 @@ try:
     _symbolics = True
 except ImportError:
     _symbolics = False
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 from math import pi

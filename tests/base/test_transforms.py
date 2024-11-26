@@ -18,6 +18,8 @@ from scipy.linalg import logm, expm
 from spatialmath.base import *
 from spatialmath.base import sym
 
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 

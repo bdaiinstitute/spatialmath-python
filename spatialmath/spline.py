@@ -34,6 +34,7 @@ class SplineSE3(ABC):
         animate: bool = False,
         repeat: bool = True,
         ax: Optional[plt.Axes] = None,
+        **kwargs, # pass through to tranimate
     ) -> None:
         """Displays an animation of the trajectory with the control poses against an optional input trajectory.
 
@@ -62,7 +63,7 @@ class SplineSE3(ABC):
 
         if animate:
             tranimate(
-                samples, length=pose_marker_length, wait=True, repeat=repeat
+                samples, length=pose_marker_length, wait=True, repeat=repeat, **kwargs,
             )  # animate pose along trajectory
         else:
             plt.show()

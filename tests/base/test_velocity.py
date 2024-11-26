@@ -19,6 +19,8 @@ from spatialmath.base.transforms3d import *
 from spatialmath.base.numeric import *
 from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr
 
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 

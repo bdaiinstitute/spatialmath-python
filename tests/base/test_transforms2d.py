@@ -29,6 +29,8 @@ from spatialmath.base.transformsNd import (
 )
 from spatialmath.base.numeric import numjac
 
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 

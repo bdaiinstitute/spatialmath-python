@@ -1,4 +1,6 @@
 import numpy.testing as nt
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 import unittest
 import sys

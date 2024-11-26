@@ -20,6 +20,8 @@ import sys
 from spatialmath.base.transforms3d import *
 from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr
 
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
@@ -76,11 +78,11 @@ class Test3D(unittest.TestCase):
         reason="tkinter bug with mac",
     )
     def test_animate(self):
-        tranimate(transl(1, 2, 3), repeat=False, wait=True)
+        tranimate(transl(1, 2, 3), repeat=False, wait=True, movie=True)
 
-        tranimate(transl(1, 2, 3), repeat=False, wait=True)
+        tranimate(transl(1, 2, 3), repeat=False, wait=True, movie=True)
         # run again, with axes already created
-        tranimate(transl(1, 2, 3), repeat=False, wait=True, dims=[0, 10, 0, 10, 0, 10])
+        tranimate(transl(1, 2, 3), repeat=False, wait=True, dims=[0, 10, 0, 10, 0, 10], movie=True)
 
         plt.close("all")
         # test animate with line not arrow, text, test with SO(3)

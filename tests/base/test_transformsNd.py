@@ -25,6 +25,8 @@ try:
     from spatialmath.base.symbolic import symbol
 except ImportError:
     _symbolics = False
+import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 
 
