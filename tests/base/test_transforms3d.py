@@ -10,6 +10,7 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
+import pytest
 import unittest
 from math import pi
 import math
@@ -528,7 +529,7 @@ class Test3D(unittest.TestCase):
 
         # check a rotation matrix that should fail
         badR = roty(true_ang) + eps
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             tr2angvec(badR, check=True)
 
         # run without check

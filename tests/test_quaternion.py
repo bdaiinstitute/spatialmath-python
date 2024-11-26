@@ -171,14 +171,14 @@ class TestUnitQuaternion(unittest.TestCase):
         # fail when invalid arrays are provided
         # invalid rotation matrix
         R = 1.1 * np.eye(3)
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             UnitQuaternion(R, check=True)
 
         # wrong shape to be anything
         R = np.zeros((5, 5))
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             UnitQuaternion(R, check=True)
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             UnitQuaternion(R, check=False)
 
     def test_concat(self):

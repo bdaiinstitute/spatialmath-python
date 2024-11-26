@@ -56,14 +56,14 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[0:2, 2], np.r_[0, 0])
         nt.assert_array_almost_equal(T[:2, :2], R)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             r2t(3)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             r2t(np.eye(3, 4))
         
         _ = r2t(np.ones((3, 3)), check=False)
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             r2t(np.ones((3, 3)), check=True)
 
     @unittest.skipUnless(_symbolics, "sympy required")
@@ -98,10 +98,10 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[:2, :2], R)
         nt.assert_array_almost_equal(transl2(T), np.array(t))
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             t2r(3)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             r2t(np.eye(3, 4))
 
     def test_rt2tr(self):
@@ -119,17 +119,17 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(t2r(T), R)
         nt.assert_array_almost_equal(transl2(T), np.array(t))
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             rt2tr(3, 4)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             rt2tr(np.eye(3, 4), [1, 2, 3, 4])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             rt2tr(np.eye(4, 4), [1, 2, 3, 4])
 
         _ = rt2tr(np.ones((3, 3)), [1, 2, 3], check=False)
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             rt2tr(np.ones((3, 3)), [1, 2, 3], check=True)
 
     @unittest.skipUnless(_symbolics, "sympy required")
@@ -155,10 +155,10 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[:2, :2], R)
         nt.assert_array_almost_equal(T[:2, 2], t)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             R, t = tr2rt(3)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             R, t = tr2rt(np.eye(3, 4))
 
     def test_Ab2M(self):
@@ -178,13 +178,13 @@ class TestND(unittest.TestCase):
         nt.assert_array_almost_equal(T[:2, 2], np.array(t))
         nt.assert_array_almost_equal(T[2, :], np.array([0, 0, 0]))
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             Ab2M(3, 4)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             Ab2M(np.eye(3, 4), [1, 2, 3, 4])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             Ab2M(np.eye(4, 4), [1, 2, 3, 4])
 
     def test_checks(self):
@@ -286,7 +286,7 @@ class TestND(unittest.TestCase):
         v2 = homtrans(T, v)
         nt.assert_almost_equal(v2, np.c_[[-11, 12], [5, -1]])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             T = trotx(pi / 2, t=[1, 2, 3])
             v = [10, 12]
             v2 = homtrans(T, v)
@@ -308,7 +308,7 @@ class TestND(unittest.TestCase):
         assert sk[1, 0] == 1
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             sk = skew([1, 2])
 
     def test_vex(self):
@@ -323,10 +323,10 @@ class TestND(unittest.TestCase):
         nt.assert_almost_equal(vex(sk), t)
 
         _ = vex(np.ones((3, 3)), check=False)
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             _ = vex(np.ones((3, 3)), check=True)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             _ = vex(np.eye(4, 4))
 
     def test_isskew(self):
@@ -381,7 +381,7 @@ class TestND(unittest.TestCase):
         nt.assert_almost_equal(sk[:2, 2], [1, 2])
         nt.assert_almost_equal(vex(sk[:2, :2]), [3])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             sk = skew([1, 2])
 
     def test_vexa(self):

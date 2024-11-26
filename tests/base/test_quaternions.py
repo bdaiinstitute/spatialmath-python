@@ -30,6 +30,7 @@
 #     3. Peter Corke, 2020
 
 import numpy.testing as nt
+import pytest
 import unittest
 
 from spatialmath.base.vectors import *
@@ -222,7 +223,7 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(q1a, r2q(r1.R, order="sxyz"))
         nt.assert_array_almost_equal(q1b, r2q(r1.R, order="xyzs"))
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             nt.assert_array_almost_equal(q1a, r2q(r1.R, order="aaa"))
 
     def test_qangle(self):

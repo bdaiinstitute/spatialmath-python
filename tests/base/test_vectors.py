@@ -54,11 +54,11 @@ class TestVector(unittest.TestCase):
         nt.assert_array_almost_equal(unitvec([0, 9, 0]), np.r_[0, 1, 0])
         nt.assert_array_almost_equal(unitvec([0, 0, 9]), np.r_[0, 0, 1])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             unitvec([0, 0, 0])
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             unitvec([0])
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             unitvec(0)
 
     def test_colvec(self):
@@ -140,10 +140,10 @@ class TestVector(unittest.TestCase):
         # not a unit translation twist
         assert not isunittwist2([2, 0, 0])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             isunittwist([3, 4])
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             isunittwist2([3, 4])
 
     def test_unittwist(self):
@@ -340,7 +340,7 @@ class TestVector(unittest.TestCase):
             assert angle_wrap(theta=-theta, mode="0:pi") == pytest.approx(wrap_0_pi(-theta))
             assert angle_wrap(theta=theta, mode="-pi/2:pi/2") == pytest.approx(wrap_mpi2_pi2(theta))
             assert angle_wrap(theta=-theta, mode="-pi/2:pi/2") == pytest.approx(wrap_mpi2_pi2(-theta))
-            with self.assertRaises(ValueError):
+            with pytest.raises(ValueError):
                 angle_wrap(theta=theta, mode="foo")
 
     def test_angle_stats(self):

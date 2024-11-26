@@ -21,7 +21,7 @@ class Line3Test(unittest.TestCase):
     def test_constructor1(self):
         # construct from 6-vector
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             L = Line3([1, 2, 3, 4, 5, 6], check=True)
 
         L = Line3([1, 2, 3, 4, 5, 6], check=False)

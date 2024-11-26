@@ -885,9 +885,9 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(T.t, [1, 2, 0])
 
         # Bad number of arguments
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             T = SE3(1.0, 0.0)
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             T = SE3(1.0, 0.0, 0.0, 0.0)
 
     def test_shape(self):
@@ -1310,17 +1310,17 @@ class TestSE3(unittest.TestCase):
             assert p1a.angdist(other=p2a, metric=metric) == pytest.approx(p2a.angdist(other=p1a, metric=metric))
             assert p1a.angdist(other=p2a, metric=metric) == pytest.approx(p1a.angdist(other=p2b, metric=metric))
         # angdist is not implemented for mismatched types
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             _ = r1.angdist(p1a)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             _ = r1._op2(right=p1a, op=r1.angdist)
 
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             _ = p1a._op2(right=r1, op=p1a.angdist)
 
         # in general, the _op2 interface enforces an isinstance check.
-        with self.assertRaises(TypeError):
+        with pytest.raises(TypeError):
             _ = r1._op2(right=(1, 0, 0), op=r1.angdist)
 
     def test_functions(self):
