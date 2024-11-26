@@ -144,8 +144,3 @@ class TestGraphics(unittest.TestCase):
             resolution=5,
             color="red",
         )
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main(buffer=True)

@@ -1015,8 +1015,3 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(u.inner(u), 1)
         nt.assert_equal(q.inner(q), q.norm() ** 2)
         nt.assert_equal(q.inner(u), np.dot(q.vec, u.vec))
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

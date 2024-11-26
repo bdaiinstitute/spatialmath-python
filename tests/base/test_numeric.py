@@ -118,9 +118,3 @@ class TestNumeric(unittest.TestCase):
         m = np.unravel_index(np.argmax(Z, axis=None), Z.shape)
         assert r[m[0]] == pytest.approx(3)
         assert r[m[1]] == pytest.approx(2)
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-
-    unittest.main()

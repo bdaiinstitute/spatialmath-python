@@ -241,7 +241,3 @@ class EllipseTest(unittest.TestCase):
         assert not e.contains((0, -2.1))
 
         assert e.contains(np.array([[0, 0], [3, 3]]).T) == [True, False]
-
-
-if __name__ == "__main__":
-    unittest.main()

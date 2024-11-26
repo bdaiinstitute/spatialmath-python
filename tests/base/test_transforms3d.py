@@ -806,7 +806,3 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(
             x2tr(x, representation="exp"), transl(t) @ r2t(trexp(gamma))
         )
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

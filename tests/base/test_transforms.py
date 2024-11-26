@@ -321,9 +321,3 @@ class TestLie(unittest.TestCase):
     def test_trnorm(self):
         T0 = transl(-1, -2, -3) @ trotx(-0.3)
         nt.assert_array_almost_equal(trnorm(T0), T0)
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-
-    unittest.main()

@@ -367,8 +367,3 @@ class TestVector(unittest.TestCase):
 
         v = np.r_[1, 2, 3, 1e-10, -1e-10]
         nt.assert_array_almost_equal(removesmall(v, tol=1e8), [1, 2, 3, 0, 0])
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

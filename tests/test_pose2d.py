@@ -495,8 +495,3 @@ class TestSE2(unittest.TestCase):
 
         T1.animate(repeat=False, dims=[-2, 2], nframes=10)
         T1.animate(T0=T2, repeat=False, dims=[-2, 2], nframes=10)
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main(buffer=True)

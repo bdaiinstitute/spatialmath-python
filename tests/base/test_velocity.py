@@ -272,8 +272,3 @@ class TestVelocity(unittest.TestCase):
     #     f = lambda gamma: angvelxform(gamma, options)
 
     #     nt.assert_array_almost_equal(angvelxform_dot(gamma, options), numjac(f))
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

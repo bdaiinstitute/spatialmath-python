@@ -227,8 +227,3 @@ class TestSpatialVector(unittest.TestCase):
         # v x I, I x v
         # twist x v, twist x a, twist x F
         pass
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

@@ -316,7 +316,3 @@ class Line3Test(unittest.TestCase):
     #
     #     px.intersect_plane(plane)
     #     py.intersect_plane(plane)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -235,7 +235,3 @@ class TestQuaternion(unittest.TestCase):
         q1 = [1., 0, 0, 0]
         q2 = [1 / np.sqrt(2), 1 / np.sqrt(2), 0, 0]   # 90deg rotation about x-axis
         nt.assert_almost_equal(qangle(q1, q2), np.pi / 2)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -299,8 +299,3 @@ class Test2D(unittest.TestCase):
             transl2(4, 3) @ trot2(math.pi / 3), block=False, color="green", frame="c"
         )
         plt.close("all")
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

@@ -402,8 +402,3 @@ class TestND(unittest.TestCase):
         x, y = symbol("x y")
         a = np.array([[x, y], [y, x]])
         assert det(a) == x**2 - y**2
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

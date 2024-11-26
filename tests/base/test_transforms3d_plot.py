@@ -86,8 +86,3 @@ class Test3D(unittest.TestCase):
 
         plt.close("all")
         # test animate with line not arrow, text, test with SO(3)
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":
-    unittest.main()

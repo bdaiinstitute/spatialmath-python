@@ -108,9 +108,3 @@ class TestUnitDualQuaternion(unittest.TestCase):
 
         d = d1 * d2
         nt.assert_array_almost_equal(d.SE3().A, T.A)
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':  # pragma: no cover
-
-    unittest.main()

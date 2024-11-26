@@ -79,9 +79,3 @@ class Test_symbolic(unittest.TestCase):
         x = pi()
         assert isinstance(x, sp.Expr)
         assert math.isclose(x.evalf(), math.pi)
-
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == "__main__":  # pragma: no cover
-
-    unittest.main()

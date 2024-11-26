@@ -362,9 +362,3 @@ class Twist2dTest(unittest.TestCase):
         
         x = Twist2([x1, x2])
         array_compare( x.prod().SE2(), T1 * T2)
-
-# ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
-
-
-    unittest.main()
