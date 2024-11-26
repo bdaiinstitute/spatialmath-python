@@ -147,31 +147,31 @@ class EllipseTest(unittest.TestCase):
         e = Ellipse(E=E)
         nt.assert_almost_equal(e.E, E)
         nt.assert_almost_equal(e.centre, [0, 0])
-        self.assertAlmostEqual(e.theta, 1.1780972450961724)
+        assert e.theta == pytest.approx(1.1780972450961724)
 
         e = Ellipse(radii=(1, 2), theta=0)
         nt.assert_almost_equal(e.E, np.diag([1, 0.25]))
         nt.assert_almost_equal(e.centre, [0, 0])
         nt.assert_almost_equal(e.radii, [1, 2])
-        self.assertAlmostEqual(e.theta, 0)
+        assert e.theta == pytest.approx(0)
 
         e = Ellipse(radii=(1, 2), theta=np.pi / 2)
         nt.assert_almost_equal(e.E, np.diag([0.25, 1]))
         nt.assert_almost_equal(e.centre, [0, 0])
         nt.assert_almost_equal(e.radii, [2, 1])
-        self.assertAlmostEqual(e.theta, np.pi / 2)
+        assert e.theta == pytest.approx(np.pi / 2)
 
         E = np.array([[1, 1], [1, 3]])
         e = Ellipse(E=E, centre=[3, 4])
         nt.assert_almost_equal(e.E, E)
         nt.assert_almost_equal(e.centre, [3, 4])
-        self.assertAlmostEqual(e.theta, 1.1780972450961724)
+        assert e.theta == pytest.approx(1.1780972450961724)
 
         e = Ellipse(radii=(1, 2), theta=0, centre=[3, 4])
         nt.assert_almost_equal(e.E, np.diag([1, 0.25]))
         nt.assert_almost_equal(e.centre, [3, 4])
         nt.assert_almost_equal(e.radii, [1, 2])
-        self.assertAlmostEqual(e.theta, 0)
+        assert e.theta == pytest.approx(0)
 
     def test_Polynomial(self):
         e = Ellipse.Polynomial([2, 3, 1, 0, 0, -1])
@@ -226,7 +226,7 @@ class EllipseTest(unittest.TestCase):
         e = Ellipse(radii=(1, 2), theta=np.pi / 2)
         assert isinstance(str(e), str)
 
-        self.assertAlmostEqual(e.area, np.pi * 2)
+        assert e.area == pytest.approx(np.pi * 2)
 
         e = Ellipse(radii=(1, 2), theta=0)
         assert e.contains((0, 0))

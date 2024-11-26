@@ -9,6 +9,7 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
+import pytest
 import unittest
 from math import pi
 import math
@@ -86,14 +87,14 @@ class TestVector(unittest.TestCase):
         assert not isunitvec([-2])
 
     def test_norm(self):
-        self.assertAlmostEqual(norm([0, 0, 0]), 0)
-        self.assertAlmostEqual(norm([1, 2, 3]), math.sqrt(14))
-        self.assertAlmostEqual(norm(np.r_[1, 2, 3]), math.sqrt(14))
+        assert norm([0, 0, 0]) == pytest.approx(0)
+        assert norm([1, 2, 3]) == pytest.approx(math.sqrt(14))
+        assert norm(np.r_[1, 2, 3]) == pytest.approx(math.sqrt(14))
 
     def test_normsq(self):
-        self.assertAlmostEqual(normsq([0, 0, 0]), 0)
-        self.assertAlmostEqual(normsq([1, 2, 3]), 14)
-        self.assertAlmostEqual(normsq(np.r_[1, 2, 3]), 14)
+        assert normsq([0, 0, 0]) == pytest.approx(0)
+        assert normsq([1, 2, 3]) == pytest.approx(14)
+        assert normsq(np.r_[1, 2, 3]) == pytest.approx(14)
 
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_norm_sym(self):
@@ -290,38 +291,38 @@ class TestVector(unittest.TestCase):
         assert isinstance(x, np.ndarray)
 
     def test_wrap(self):
-        self.assertAlmostEqual(wrap_0_2pi(0), 0)
-        self.assertAlmostEqual(wrap_0_2pi(2 * pi), 0)
-        self.assertAlmostEqual(wrap_0_2pi(3 * pi), pi)
-        self.assertAlmostEqual(wrap_0_2pi(-pi), pi)
+        assert wrap_0_2pi(0) == pytest.approx(0)
+        assert wrap_0_2pi(2 * pi) == pytest.approx(0)
+        assert wrap_0_2pi(3 * pi) == pytest.approx(pi)
+        assert wrap_0_2pi(-pi) == pytest.approx(pi)
         nt.assert_array_almost_equal(
             wrap_0_2pi([0, 2 * pi, 3 * pi, -pi]), [0, 0, pi, pi]
         )
 
-        self.assertAlmostEqual(wrap_mpi_pi(0), 0)
-        self.assertAlmostEqual(wrap_mpi_pi(-pi), -pi)
-        self.assertAlmostEqual(wrap_mpi_pi(pi), -pi)
-        self.assertAlmostEqual(wrap_mpi_pi(2 * pi), 0)
-        self.assertAlmostEqual(wrap_mpi_pi(1.5 * pi), -0.5 * pi)
-        self.assertAlmostEqual(wrap_mpi_pi(-1.5 * pi), 0.5 * pi)
+        assert wrap_mpi_pi(0) == pytest.approx(0)
+        assert wrap_mpi_pi(-pi) == pytest.approx(-pi)
+        assert wrap_mpi_pi(pi) == pytest.approx(-pi)
+        assert wrap_mpi_pi(2 * pi) == pytest.approx(0)
+        assert wrap_mpi_pi(1.5 * pi) == pytest.approx(-0.5 * pi)
+        assert wrap_mpi_pi(-1.5 * pi) == pytest.approx(0.5 * pi)
         nt.assert_array_almost_equal(
             wrap_mpi_pi([0, -pi, pi, 2 * pi, 1.5 * pi, -1.5 * pi]),
             [0, -pi, -pi, 0, -0.5 * pi, 0.5 * pi],
         )
 
-        self.assertAlmostEqual(wrap_0_pi(0), 0)
-        self.assertAlmostEqual(wrap_0_pi(pi), pi)
-        self.assertAlmostEqual(wrap_0_pi(1.2 * pi), 0.8 * pi)
-        self.assertAlmostEqual(wrap_0_pi(-0.2 * pi), 0.2 * pi)
+        assert wrap_0_pi(0) == pytest.approx(0)
+        assert wrap_0_pi(pi) == pytest.approx(pi)
+        assert wrap_0_pi(1.2 * pi) == pytest.approx(0.8 * pi)
+        assert wrap_0_pi(-0.2 * pi) == pytest.approx(0.2 * pi)
         nt.assert_array_almost_equal(
             wrap_0_pi([0, pi, 1.2 * pi, -0.2 * pi]), [0, pi, 0.8 * pi, 0.2 * pi]
         )
 
-        self.assertAlmostEqual(wrap_mpi2_pi2(0), 0)
-        self.assertAlmostEqual(wrap_mpi2_pi2(-0.5 * pi), -0.5 * pi)
-        self.assertAlmostEqual(wrap_mpi2_pi2(0.5 * pi), 0.5 * pi)
-        self.assertAlmostEqual(wrap_mpi2_pi2(0.6 * pi), 0.4 * pi)
-        self.assertAlmostEqual(wrap_mpi2_pi2(-0.6 * pi), -0.4 * pi)
+        assert wrap_mpi2_pi2(0) == pytest.approx(0)
+        assert wrap_mpi2_pi2(-0.5 * pi) == pytest.approx(-0.5 * pi)
+        assert wrap_mpi2_pi2(0.5 * pi) == pytest.approx(0.5 * pi)
+        assert wrap_mpi2_pi2(0.6 * pi) == pytest.approx(0.4 * pi)
+        assert wrap_mpi2_pi2(-0.6 * pi) == pytest.approx(-0.4 * pi)
         nt.assert_array_almost_equal(
             wrap_mpi2_pi2([0, -0.5 * pi, 0.5 * pi, 0.6 * pi, -0.6 * pi]),
             [0, -0.5 * pi, 0.5 * pi, 0.4 * pi, -0.4 * pi],
@@ -329,27 +330,27 @@ class TestVector(unittest.TestCase):
 
         for angle_factor in (0, 0.3, 0.5, 0.8, 1.0, 1.3, 1.5, 1.7, 2):
             theta = angle_factor * pi
-            self.assertAlmostEqual(angle_wrap(theta), wrap_mpi_pi(theta))
-            self.assertAlmostEqual(angle_wrap(-theta), wrap_mpi_pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="-pi:pi"), wrap_mpi_pi(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="-pi:pi"), wrap_mpi_pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="0:2pi"), wrap_0_2pi(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="0:2pi"), wrap_0_2pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="0:pi"), wrap_0_pi(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="0:pi"), wrap_0_pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(-theta))
+            assert angle_wrap(theta) == pytest.approx(wrap_mpi_pi(theta))
+            assert angle_wrap(-theta) == pytest.approx(wrap_mpi_pi(-theta))
+            assert angle_wrap(theta=theta, mode="-pi:pi") == pytest.approx(wrap_mpi_pi(theta))
+            assert angle_wrap(theta=-theta, mode="-pi:pi") == pytest.approx(wrap_mpi_pi(-theta))
+            assert angle_wrap(theta=theta, mode="0:2pi") == pytest.approx(wrap_0_2pi(theta))
+            assert angle_wrap(theta=-theta, mode="0:2pi") == pytest.approx(wrap_0_2pi(-theta))
+            assert angle_wrap(theta=theta, mode="0:pi") == pytest.approx(wrap_0_pi(theta))
+            assert angle_wrap(theta=-theta, mode="0:pi") == pytest.approx(wrap_0_pi(-theta))
+            assert angle_wrap(theta=theta, mode="-pi/2:pi/2") == pytest.approx(wrap_mpi2_pi2(theta))
+            assert angle_wrap(theta=-theta, mode="-pi/2:pi/2") == pytest.approx(wrap_mpi2_pi2(-theta))
             with self.assertRaises(ValueError):
                 angle_wrap(theta=theta, mode="foo")
 
     def test_angle_stats(self):
         theta = np.linspace(3 * pi / 2, 5 * pi / 2, 50)
-        self.assertAlmostEqual(angle_mean(theta), 0)
-        self.assertAlmostEqual(angle_std(theta), 0.9717284050981313)
+        assert angle_mean(theta) == pytest.approx(0)
+        assert angle_std(theta) == pytest.approx(0.9717284050981313)
 
         theta = np.linspace(pi / 2, 3 * pi / 2, 50)
-        self.assertAlmostEqual(angle_mean(theta), pi)
-        self.assertAlmostEqual(angle_std(theta), 0.9717284050981313)
+        assert angle_mean(theta) == pytest.approx(pi)
+        assert angle_std(theta) == pytest.approx(0.9717284050981313)
 
     def test_removesmall(self):
         v = np.r_[1, 2, 3]

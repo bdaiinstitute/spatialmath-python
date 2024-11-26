@@ -1,6 +1,7 @@
 import math
 from math import pi
 import numpy.testing as nt
+import pytest
 import unittest
 
 from spatialmath import *
@@ -543,18 +544,18 @@ class TestUnitQuaternion(unittest.TestCase):
         th = 0.2
         v = unitvec([1, 2, 3])
         [a, b] = UnitQuaternion.AngVec(th, v).angvec()
-        self.assertAlmostEqual(a, th)
+        assert a == pytest.approx(th)
         nt.assert_array_almost_equal(b, v)
 
         [a, b] = UnitQuaternion.AngVec(-th, v).angvec()
-        self.assertAlmostEqual(a, th)
+        assert a == pytest.approx(th)
         nt.assert_array_almost_equal(b, -v)
 
         # null rotation case
         th = 0
         v = unitvec([1, 2, 3])
         [a, b] = UnitQuaternion.AngVec(th, v).angvec()
-        self.assertAlmostEqual(a, th)
+        assert a == pytest.approx(th)
 
     #  SO3                     convert to SO3 class
     #  SE3                     convert to SE3 class

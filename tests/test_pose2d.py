@@ -201,7 +201,7 @@ class TestSO2(unittest.TestCase):
         r = SO2(
             0.3,
         )
-        self.assertAlmostEqual(np.linalg.det(r.A), 1)
+        assert np.linalg.det(r.A) == pytest.approx(1)
 
         assert r.N == 2
 

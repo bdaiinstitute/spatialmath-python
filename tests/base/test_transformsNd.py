@@ -9,6 +9,7 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
+import pytest
 import unittest
 from math import pi
 import math
@@ -396,7 +397,7 @@ class TestND(unittest.TestCase):
 
     def test_det(self):
         a = np.array([[1, 2], [3, 4]])
-        self.assertAlmostEqual(np.linalg.det(a), det(a))
+        assert np.linalg.det(a) == pytest.approx(det(a))
 
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_det_sym(self):

@@ -101,21 +101,21 @@ class Line3Test(unittest.TestCase):
 
         p, d = L.closest_to_point(P)
         nt.assert_array_almost_equal(p, P)
-        self.assertAlmostEqual(d, 0)
+        assert d == pytest.approx(0)
 
         # validate closest with given points and origin
         p, d = L.closest_to_point(Q)
         nt.assert_array_almost_equal(p, Q)
-        self.assertAlmostEqual(d, 0)
+        assert d == pytest.approx(0)
 
         L = Line3.Join([-1, 1, 2], [1, 1, 2])
         p, d = L.closest_to_point([0, 1, 2])
         nt.assert_array_almost_equal(p, np.r_[0, 1, 2])
-        self.assertAlmostEqual(d, 0)
+        assert d == pytest.approx(0)
 
         p, d = L.closest_to_point([5, 1, 2])
         nt.assert_array_almost_equal(p, np.r_[5, 1, 2])
-        self.assertAlmostEqual(d, 0)
+        assert d == pytest.approx(0)
 
         p, d = L.closest_to_point([0, 0, 0])
         nt.assert_array_almost_equal(p, L.pp)
@@ -123,7 +123,7 @@ class Line3Test(unittest.TestCase):
 
         p, d = L.closest_to_point([5, 1, 0])
         nt.assert_array_almost_equal(p, [5, 1, 2])
-        self.assertAlmostEqual(d, 2)
+        assert d == pytest.approx(2)
 
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),

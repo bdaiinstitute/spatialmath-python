@@ -9,6 +9,7 @@ Created on Fri Apr 10 14:19:04 2020
 
 import numpy as np
 import numpy.testing as nt
+import pytest
 import unittest
 import math
 
@@ -106,7 +107,7 @@ class TestNumeric(unittest.TestCase):
         assert len(x) == len(y)
 
         m = np.argmax(y)
-        self.assertAlmostEqual(x[m], 2)
+        assert x[m] == pytest.approx(2)
 
     def test_gauss2d(self):
 
@@ -115,8 +116,8 @@ class TestNumeric(unittest.TestCase):
         Z = gauss2d([2, 3], np.eye(2), X, Y)
 
         m = np.unravel_index(np.argmax(Z, axis=None), Z.shape)
-        self.assertAlmostEqual(r[m[0]], 3)
-        self.assertAlmostEqual(r[m[1]], 2)
+        assert r[m[0]] == pytest.approx(3)
+        assert r[m[1]] == pytest.approx(2)
 
 
 # ---------------------------------------------------------------------------------------#
