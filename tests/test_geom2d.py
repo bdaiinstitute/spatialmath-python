@@ -48,13 +48,13 @@ class Polygon2Test(unittest.TestCase):
         assert p.contains([0, 1], radius=1e-6)
         assert p.contains([0, -1], radius=1e-6)
 
-        self.assertFalse(p.contains([0, 1.1], radius=1e-6))
-        self.assertFalse(p.contains([0, -1.1], radius=1e-6))
-        self.assertFalse(p.contains([1.1, 0], radius=1e-6))
-        self.assertFalse(p.contains([-1.1, 0], radius=1e-6))
+        assert not p.contains([0, 1.1], radius=1e-6)
+        assert not p.contains([0, -1.1], radius=1e-6)
+        assert not p.contains([1.1, 0], radius=1e-6)
+        assert not p.contains([-1.1, 0], radius=1e-6)
 
         assert p.contains(np.r_[0, -1], radius=1e-6)
-        self.assertFalse(p.contains(np.r_[0, 1.1], radius=1e-6))
+        assert not p.contains(np.r_[0, 1.1], radius=1e-6)
 
     def test_transform(self):
         p = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))
@@ -71,7 +71,7 @@ class Polygon2Test(unittest.TestCase):
         p1 = Polygon2(np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]]))
 
         p2 = p1.transformed(SE2(2, 3))
-        self.assertFalse(p1.intersects(p2))
+        assert not p1.intersects(p2)
 
         p2 = p1.transformed(SE2(1, 1))
         assert p1.intersects(p2)
@@ -85,7 +85,7 @@ class Polygon2Test(unittest.TestCase):
         assert p.intersects(l)
 
         l = Line2.Join((-10, 1.1), (10, 1.1))
-        self.assertFalse(p.intersects(l))
+        assert not p.intersects(l)
 
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),
@@ -130,14 +130,14 @@ class Line2Test(unittest.TestCase):
     def test_intersect(self):
         l1 = Line2.Join((0, 0), (2, 0))  # y = 0
         l2 = Line2.Join((0, 1), (2, 1))  # y = 1
-        self.assertFalse(l1.intersect(l2))
+        assert not l1.intersect(l2)
 
         l2 = Line2.Join((2, 1), (2, -1))  # x = 2
         assert l1.intersect(l2)
 
     def test_intersect_segment(self):
         l1 = Line2.Join((0, 0), (2, 0))  # y = 0
-        self.assertFalse(l1.intersect_segment((2, 1), (2, 3)))
+        assert not l1.intersect_segment((2, 1), (2, 3))
         assert l1.intersect_segment((2, 1), (2, -1))
 
 
@@ -235,10 +235,10 @@ class EllipseTest(unittest.TestCase):
         assert e.contains((0, 2))
         assert e.contains((0, -2))
 
-        self.assertFalse(e.contains((1.1, 0)))
-        self.assertFalse(e.contains((-1.1, 0)))
-        self.assertFalse(e.contains((0, 2.1)))
-        self.assertFalse(e.contains((0, -2.1)))
+        assert not e.contains((1.1, 0))
+        assert not e.contains((-1.1, 0))
+        assert not e.contains((0, 2.1))
+        assert not e.contains((0, -2.1))
 
         self.assertEqual(e.contains(np.array([[0, 0], [3, 3]]).T), [True, False])
 

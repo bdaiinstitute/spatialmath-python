@@ -37,10 +37,10 @@ class TestND(unittest.TestCase):
         assert iseye(np.eye(3))
         assert iseye(np.eye(5))
 
-        self.assertFalse(iseye(2 * np.eye(3)))
-        self.assertFalse(iseye(-np.eye(3)))
-        self.assertFalse(iseye(np.array([[1, 0, 0], [0, 1, 0]])))
-        self.assertFalse(iseye(np.array([1, 0, 0])))
+        assert not iseye(2 * np.eye(3))
+        assert not iseye(-np.eye(3))
+        assert not iseye(np.array([[1, 0, 0], [0, 1, 0]]))
+        assert not iseye(np.array([1, 0, 0]))
 
     def test_r2t(self):
         # 3D
@@ -190,65 +190,65 @@ class TestND(unittest.TestCase):
         # 3D case, with rotation matrix
         R = np.eye(3)
         assert isR(R)
-        self.assertFalse(isrot2(R))
+        assert not isrot2(R)
         assert isrot(R)
-        self.assertFalse(ishom(R))
+        assert not ishom(R)
         assert ishom2(R)
-        self.assertFalse(isrot2(R, True))
+        assert not isrot2(R, True)
         assert isrot(R, True)
-        self.assertFalse(ishom(R, True))
+        assert not ishom(R, True)
         assert ishom2(R, True)
 
         # 3D case, invalid rotation matrix
         R = np.eye(3)
         R[0, 1] = 2
-        self.assertFalse(isR(R))
-        self.assertFalse(isrot2(R))
+        assert not isR(R)
+        assert not isrot2(R)
         assert isrot(R)
-        self.assertFalse(ishom(R))
+        assert not ishom(R)
         assert ishom2(R)
-        self.assertFalse(isrot2(R, True))
-        self.assertFalse(isrot(R, True))
-        self.assertFalse(ishom(R, True))
-        self.assertFalse(ishom2(R, True))
+        assert not isrot2(R, True)
+        assert not isrot(R, True)
+        assert not ishom(R, True)
+        assert not ishom2(R, True)
 
         # 3D case, with rotation matrix
         T = np.array([[1, 0, 0, 3], [0, 1, 0, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
-        self.assertFalse(isR(T))
-        self.assertFalse(isrot2(T))
-        self.assertFalse(isrot(T))
+        assert not isR(T)
+        assert not isrot2(T)
+        assert not isrot(T)
         assert ishom(T)
-        self.assertFalse(ishom2(T))
-        self.assertFalse(isrot2(T, True))
-        self.assertFalse(isrot(T, True))
+        assert not ishom2(T)
+        assert not isrot2(T, True)
+        assert not isrot(T, True)
         assert ishom(T, True)
-        self.assertFalse(ishom2(T, True))
+        assert not ishom2(T, True)
 
         # 3D case, invalid rotation matrix
         T = np.array([[1, 0, 0, 3], [0, 1, 1, 4], [0, 0, 1, 5], [0, 0, 0, 1]])
-        self.assertFalse(isR(T))
-        self.assertFalse(isrot2(T))
-        self.assertFalse(isrot(T))
+        assert not isR(T)
+        assert not isrot2(T)
+        assert not isrot(T)
         self.assertTrue(
             ishom(T),
         )
-        self.assertFalse(ishom2(T))
-        self.assertFalse(isrot2(T, True))
-        self.assertFalse(isrot(T, True))
-        self.assertFalse(ishom(T, True))
-        self.assertFalse(ishom2(T, True))
+        assert not ishom2(T)
+        assert not isrot2(T, True)
+        assert not isrot(T, True)
+        assert not ishom(T, True)
+        assert not ishom2(T, True)
 
         # 3D case, invalid bottom row
         T = np.array([[1, 0, 0, 3], [0, 1, 1, 4], [0, 0, 1, 5], [9, 0, 0, 1]])
-        self.assertFalse(isR(T))
-        self.assertFalse(isrot2(T))
-        self.assertFalse(isrot(T))
+        assert not isR(T)
+        assert not isrot2(T)
+        assert not isrot(T)
         assert ishom(T)
-        self.assertFalse(ishom2(T))
-        self.assertFalse(isrot2(T, True))
-        self.assertFalse(isrot(T, True))
-        self.assertFalse(ishom(T, True))
-        self.assertFalse(ishom2(T, True))
+        assert not ishom2(T)
+        assert not isrot2(T, True)
+        assert not isrot(T, True)
+        assert not ishom(T, True)
+        assert not ishom2(T, True)
 
         # skew matrices
         S = np.array([[0, 2], [-2, 0]])
@@ -333,14 +333,14 @@ class TestND(unittest.TestCase):
         sk = skew(t)
         assert isskew(sk)
         sk[0, 0] = 3
-        self.assertFalse(isskew(sk))
+        assert not isskew(sk)
 
         # 2D
         t = [3]
         sk = skew(t)
         assert isskew(sk)
         sk[0, 0] = 3
-        self.assertFalse(isskew(sk))
+        assert not isskew(sk)
 
     def test_isskewa(self):
         # 3D
@@ -348,20 +348,20 @@ class TestND(unittest.TestCase):
         sk = skewa(t)
         assert isskewa(sk)
         sk[0, 0] = 3
-        self.assertFalse(isskew(sk))
+        assert not isskew(sk)
         sk = skewa(t)
         sk[3, 3] = 3
-        self.assertFalse(isskew(sk))
+        assert not isskew(sk)
 
         # 2D
         t = [3, 4, 5]
         sk = skew(t)
         assert isskew(sk)
         sk[0, 0] = 3
-        self.assertFalse(isskew(sk))
+        assert not isskew(sk)
         sk = skewa(t)
         sk[2, 2] = 3
-        self.assertFalse(isskew(sk))
+        assert not isskew(sk)
 
     def test_skewa(self):
         # 3D

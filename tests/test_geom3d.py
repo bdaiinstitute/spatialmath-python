@@ -92,7 +92,7 @@ class Line3Test(unittest.TestCase):
         # validate contains
         assert L.contains([2, 3, 7])
         assert L.contains([2, 1, 0])
-        self.assertFalse(L.contains([2, 1, 4]))
+        assert not L.contains([2, 1, 4])
 
     def test_closest(self):
         P = [2, 3, 7]
@@ -151,9 +151,9 @@ class Line3Test(unittest.TestCase):
         L3 = Line3.Join(P + np.r_[1, 0, 0], P + w)
 
         assert L1 == L2
-        self.assertFalse(L1 == L3)
+        assert not L1 == L3
 
-        self.assertFalse(L1 != L2)
+        assert not L1 != L2
         assert L1 != L3
 
     def test_skew(self):
@@ -203,8 +203,8 @@ class Line3Test(unittest.TestCase):
         assert L1 | L2
         assert L2.isparallel(L1)
         assert L2 | L1
-        self.assertFalse(L1.isparallel(L3))
-        self.assertFalse(L1 | L3)
+        assert not L1.isparallel(L3)
+        assert not L1 | L3
 
     def test_intersect(self):
         L1 = Line3.PointDir([4, 5, 6], [1, 2, 3])
@@ -226,8 +226,8 @@ class Line3Test(unittest.TestCase):
         L1 = Line3.PointDir([4, 5, 6], [0, 0, 1])
         L2 = Line3.PointDir([6, 5, 6], [0, 1, 0])
 
-        self.assertFalse(L1 | L2)
-        self.assertFalse(L1 ^ L2)
+        assert not L1 | L2
+        assert not L1 ^ L2
 
         self.assertEqual(L1.distance(L2), 2)
 

@@ -20,7 +20,7 @@ class Test_symbolic(unittest.TestCase):
 
         theta = symbol("theta", real=False)
         assert isinstance(theta, sp.Expr)
-        self.assertFalse(theta.is_real)
+        assert not theta.is_real
 
         theta, psi = symbol("theta, psi")
         assert isinstance(theta, sp.Expr)
@@ -39,9 +39,9 @@ class Test_symbolic(unittest.TestCase):
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_issymbol(self):
         theta = symbol("theta")
-        self.assertFalse(issymbol(3))
-        self.assertFalse(issymbol("not a symbol"))
-        self.assertFalse(issymbol([1, 2]))
+        assert not issymbol(3)
+        assert not issymbol("not a symbol")
+        assert not issymbol([1, 2])
         assert issymbol(theta)
 
     @unittest.skipUnless(_symbolics, "sympy required")

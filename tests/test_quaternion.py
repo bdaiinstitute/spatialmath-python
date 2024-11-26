@@ -675,7 +675,7 @@ class TestUnitQuaternion(unittest.TestCase):
         assert q2 == q2
         assert q3 == q3
         assert q1 == q2  # because of double wrapping
-        self.assertFalse(q1 == q3)
+        assert not q1 == q3
 
         nt.assert_array_almost_equal(
             UnitQuaternion([q1, q1, q1]) == UnitQuaternion([q1, q1, q1]),
@@ -698,8 +698,8 @@ class TestUnitQuaternion(unittest.TestCase):
 
         # equality tests
         assert rx == rx
-        self.assertFalse(rx != rx)
-        self.assertFalse(rx == ry)
+        assert not rx != rx
+        assert not rx == ry
 
     def test_dot(self):
         q = UnitQuaternion()
@@ -931,10 +931,10 @@ class TestQuaternion(unittest.TestCase):
         q2 = Quaternion([-2, 1, -4, 3])
 
         assert q1 == q1
-        self.assertFalse(q1 == q2)
+        assert not q1 == q2
 
         assert q1 != q2
-        self.assertFalse(q2 != q2)
+        assert not q2 != q2
 
         qt1 = Quaternion([q1, q1, q2, q2])
         qt2 = Quaternion([q1, q2, q2, q1])

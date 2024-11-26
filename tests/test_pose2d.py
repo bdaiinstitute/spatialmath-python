@@ -115,7 +115,7 @@ class TestSO2(unittest.TestCase):
     def test_isa(self):
         assert SO2.isvalid(rot2(0))
 
-        self.assertFalse(SO2.isvalid(1))
+        assert not SO2.isvalid(1)
 
     def test_resulttype(self):
         r = SO2()
@@ -205,7 +205,7 @@ class TestSO2(unittest.TestCase):
 
         self.assertEqual(r.N, 2)
 
-        self.assertFalse(r.isSE)
+        assert not r.isSE
 
     def test_printline(self):
         R = SO2(0.3)
@@ -333,7 +333,7 @@ class TestSE2(unittest.TestCase):
 
     def test_isa(self):
         assert SE2.isvalid(trot2(0))
-        self.assertFalse(SE2.isvalid(1))
+        assert not SE2.isvalid(1)
 
     def test_resulttype(self):
         t = SE2()

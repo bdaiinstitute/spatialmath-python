@@ -559,7 +559,7 @@ class Test3D(unittest.TestCase):
         assert isinstance(s, str)
         self.assertEqual(len(s), 37)
         assert "eul" in s
-        self.assertFalse("zyx" in s)
+        assert not "zyx" in s
 
     def test_trinterp(self):
         R0 = rotx(-0.3)

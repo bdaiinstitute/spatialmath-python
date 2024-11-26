@@ -71,19 +71,19 @@ class TestVector(unittest.TestCase):
         assert isunitvec((1, 0, 0))
         assert isunitvec(np.r_[1, 0, 0])
 
-        self.assertFalse(isunitvec([9, 0, 0]))
-        self.assertFalse(isunitvec((9, 0, 0)))
-        self.assertFalse(isunitvec(np.r_[9, 0, 0]))
+        assert not isunitvec([9, 0, 0])
+        assert not isunitvec((9, 0, 0))
+        assert not isunitvec(np.r_[9, 0, 0])
 
         assert isunitvec(1)
         assert isunitvec([1])
         assert isunitvec(-1)
         assert isunitvec([-1])
 
-        self.assertFalse(isunitvec(2))
-        self.assertFalse(isunitvec([2]))
-        self.assertFalse(isunitvec(-2))
-        self.assertFalse(isunitvec([-2]))
+        assert not isunitvec(2)
+        assert not isunitvec([2])
+        assert not isunitvec(-2)
+        assert not isunitvec([-2])
 
     def test_norm(self):
         self.assertAlmostEqual(norm([0, 0, 0]), 0)
@@ -118,26 +118,26 @@ class TestVector(unittest.TestCase):
         assert isunittwist(np.r_[1, 2, 3, 1, 0, 0])
 
         # not a unit rotational twist
-        self.assertFalse(isunittwist([1, 2, 3, 1, 0, 1]))
+        assert not isunittwist([1, 2, 3, 1, 0, 1])
 
         # unit translation twist
         assert isunittwist([1, 0, 0, 0, 0, 0])
 
         # not a unit translation twist
-        self.assertFalse(isunittwist([2, 0, 0, 0, 0, 0]))
+        assert not isunittwist([2, 0, 0, 0, 0, 0])
 
         # 2D
         # unit rotational twist
         assert isunittwist2([1, 2, 1])
 
         # not a unit rotational twist
-        self.assertFalse(isunittwist2([1, 2, 3]))
+        assert not isunittwist2([1, 2, 3])
 
         # unit translation twist
         assert isunittwist2([1, 0, 0])
 
         # not a unit translation twist
-        self.assertFalse(isunittwist2([2, 0, 0]))
+        assert not isunittwist2([2, 0, 0])
 
         with self.assertRaises(ValueError):
             isunittwist([3, 4])
@@ -261,13 +261,13 @@ class TestVector(unittest.TestCase):
         assert iszerovec([0, 0])
         assert iszerovec([0, 0, 0])
 
-        self.assertFalse(iszerovec([1]), False)
-        self.assertFalse(iszerovec([0, 1]), False)
-        self.assertFalse(iszerovec([0, 1, 0]), False)
+        assert not iszerovec([1]), False
+        assert not iszerovec([0, 1]), False
+        assert not iszerovec([0, 1, 0]), False
 
     def test_iszero(self):
         assert iszero(0)
-        self.assertFalse(iszero(1))
+        assert not iszero(1)
 
     def test_angdiff(self):
         self.assertEqual(angdiff(0, 0), 0)
