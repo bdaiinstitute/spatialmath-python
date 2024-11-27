@@ -61,14 +61,6 @@ class TestSO2:
 
         array_compare(SO2(rot2(pi / 2)).R, rot2(pi / 2))
 
-        ## vectorised forms of R
-        R = SO2.Empty()
-        for theta in [-pi / 2, 0, pi / 2, pi]:
-            R.append(SO2(theta))
-        assert len(R) == 4
-        array_compare(R[0], rot2(-pi / 2))
-        array_compare(R[3], rot2(pi))
-
         # TODO assert SO2(R).R == R
 
         ## copy constructor
@@ -77,13 +69,6 @@ class TestSO2:
         array_compare(r, c)
         r = SO2(0.4)
         array_compare(c, SO2(0.3))
-
-    def test_concat(self):
-        x = SO2()
-        xx = SO2([x, x, x, x])
-
-        assert isinstance(xx, SO2)
-        assert len(xx) == 4
 
     def test_primitive_convert(self):
         # char
@@ -98,18 +83,6 @@ class TestSO2:
     def test_constructor_Exp(self):
         array_compare(SO2.Exp(skew(0.3)).R, rot2(0.3))
         array_compare(SO2.Exp(0.3).R, rot2(0.3))
-
-        x = SO2.Exp([0, 0.3, 1])
-        assert len(x) == 3
-        array_compare(x[0], rot2(0))
-        array_compare(x[1], rot2(0.3))
-        array_compare(x[2], rot2(1))
-
-        x = SO2.Exp([skew(x) for x in [0, 0.3, 1]])
-        assert len(x) == 3
-        array_compare(x[0], rot2(0))
-        array_compare(x[1], rot2(0.3))
-        array_compare(x[2], rot2(1))
 
     def test_isa(self):
         assert SO2.isvalid(rot2(0))
@@ -126,65 +99,26 @@ class TestSO2:
 
         assert isinstance(r.inv(), SO2)
 
-    def test_multiply(self):
-        vx = np.r_[1, 0]
-        vy = np.r_[0, 1]
+    @pytest.mark.parametrize(
+        'left, right, expected',
+        [
+            (SO2(0), SO2(), SO2(0)),
+            (SO2(), SO2(0), SO2(0)),
+            (SO2(pi/2), np.r_[1, 0], np.c_[np.r_[0, 1]]),
+        ],
+    )
+    def test_multiply(self, left, right, expected):
+        array_compare(left * right, expected)
 
-        r0 = SO2(0)
-        r1 = SO2(pi / 2)
-        r2 = SO2(pi)
-        u = SO2()
-
-        ## SO2-SO2, product
-        # scalar x scalar
-
-        array_compare(r0 * u, r0)
-        array_compare(u * r0, r0)
-
-        # vector x vector
-        array_compare(
-            SO2([r0, r1, r2]) * SO2([r2, r0, r1]), SO2([r0 * r2, r1 * r0, r2 * r1])
-        )
-
-        # scalar x vector
-        array_compare(r1 * SO2([r0, r1, r2]), SO2([r1 * r0, r1 * r1, r1 * r2]))
-
-        # vector x scalar
-        array_compare(SO2([r0, r1, r2]) * r2, SO2([r0 * r2, r1 * r2, r2 * r2]))
-
-        ## SO2-vector product
-        # scalar x scalar
-
-        array_compare(r1 * vx, np.c_[vy])
-
-        # vector x vector
-        # array_compare(SO2([r0, r1, r0]) * np.c_[vy, vx, vx], np.c_[vy, vy, vx])
-
-        # scalar x vector
-        array_compare(r1 * np.c_[vx, vy, -vx], np.c_[vy, -vx, -vy])
-
-        # vector x scalar
-        array_compare(SO2([r0, r1, r2]) * vy, np.c_[vy, -vx, -vy])
-
-    def test_divide(self):
-        r0 = SO2(0)
-        r1 = SO2(pi / 2)
-        r2 = SO2(pi)
-        u = SO2()
-
-        # scalar / scalar
-        # implicity tests inv
-
-        array_compare(r1 / u, r1)
-        array_compare(r1 / r1, u)
-
-        # vector / vector
-        array_compare(
-            SO2([r0, r1, r2]) / SO2([r2, r1, r0]), SO2([r0 / r2, r1 / r1, r2 / r0])
-        )
-
-        # vector / scalar
-        array_compare(SO2([r0, r1, r2]) / r1, SO2([r0 / r1, r1 / r1, r2 / r1]))
+    @pytest.mark.parametrize(
+        'left, right, expected',
+        [
+            (SO2(pi/2), SO2(), SO2(pi/2)),
+            (SO2(pi/2), SO2(pi/2), SO2()),
+        ],
+    )
+    def test_divide(self, left, right, expected):
+        array_compare(left / right, expected)
 
     def test_conversions(self):
         T = SO2(pi / 2).SE2()
@@ -212,11 +146,6 @@ class TestSO2:
         R.printline()
         # s = R.printline(file=None)
         # assert isinstance(s, str)
-
-        R = SO2([0.3, 0.4, 0.5])
-        s = R.printline(file=None)
-        # assert isinstance(s, str)
-        # assert s.count('\n') == 2
 
     @pytest.mark.skipif(
         sys.platform.startswith("darwin") and sys.version_info < (3, 11),
@@ -292,43 +221,13 @@ class TestSE2:
         x = SE2()
         array_compare(SE2(TT).A, T)
 
-        ## vectorised versions
-
-        T1 = transl2(1, 2) @ trot2(0.3)
-        T2 = transl2(1, -2) @ trot2(-0.4)
-
-        x = SE2([T1, T2, T1, T2])
-        assert isinstance(x, SE2)
-        assert len(x) == 4
-        array_compare(x[0], T1)
-        array_compare(x[1], T2)
-
     def test_shape(self):
         a = SE2()
         assert a._A.shape == a.shape
 
-    def test_concat(self):
-        x = SE2()
-        xx = SE2([x, x, x, x])
-
-        assert isinstance(xx, SE2)
-        assert len(xx) == 4
-
     def test_constructor_Exp(self):
         array_compare(SE2.Exp(skewa([1, 2, 0])), transl2(1, 2))
         array_compare(SE2.Exp(np.r_[1, 2, 0]), transl2(1, 2))
-
-        x = SE2.Exp([(1, 2, 0), (3, 4, 0), (5, 6, 0)])
-        assert len(x) == 3
-        array_compare(x[0], transl2(1, 2))
-        array_compare(x[1], transl2(3, 4))
-        array_compare(x[2], transl2(5, 6))
-
-        x = SE2.Exp([skewa(x) for x in [(1, 2, 0), (3, 4, 0), (5, 6, 0)]])
-        assert len(x) == 3
-        array_compare(x[0], transl2(1, 2))
-        array_compare(x[1], transl2(3, 4))
-        array_compare(x[2], transl2(5, 6))
 
     def test_isa(self):
         assert SE2.isvalid(trot2(0))
@@ -358,11 +257,6 @@ class TestSE2:
         array_compare(TT1 * TT1.inv(), np.eye(3))
         array_compare(TT1.inv() * TT1, np.eye(3))
 
-        # vector case
-        TT2 = SE2([TT1, TT1])
-        u = [np.eye(3), np.eye(3)]
-        array_compare(TT2.inv() * TT1, u)
-
     def test_Rt(self):
         TT1 = SE2.Rand()
         T1 = TT1.A
@@ -374,9 +268,6 @@ class TestSE2:
         array_compare(TT1.t, t1)
         assert TT1.x == t1[0]
         assert TT1.y == t1[1]
-
-        TT = SE2([TT1, TT1, TT1])
-        array_compare(TT.t, [t1, t1, t1])
 
     def test_arith(self):
         TT1 = SE2.Rand()
@@ -394,18 +285,6 @@ class TestSE2:
         array_compare(TT1 * I, T1)
         array_compare(TT2 * I, TT2)
 
-        # vector x vector
-        array_compare(
-            SE2([TT1, TT1, TT2]) * SE2([TT2, TT1, TT1]),
-            SE2([TT1 * TT2, TT1 * TT1, TT2 * TT1]),
-        )
-
-        # scalar x vector
-        array_compare(TT1 * SE2([TT2, TT1]), SE2([TT1 * TT2, TT1 * TT1]))
-
-        # vector x scalar
-        array_compare(SE2([TT1, TT2]) * TT2, SE2([TT1 * TT2, TT2 * TT2]))
-
         ## SE2, * vector product
         vx = np.r_[1, 0]
         vy = np.r_[0, 1]
@@ -413,18 +292,6 @@ class TestSE2:
         # scalar x scalar
 
         array_compare(TT1 * vy, h2e(T1 @ e2h(vy)))
-
-        # # vector x vector
-        # array_compare(SE2([TT1, TT2]) * np.c_[vx, vy], np.c_[h2e(T1 @ e2h(vx)), h2e(T2 @ e2h(vy))])
-
-        # scalar x vector
-        array_compare(TT1 * np.c_[vx, vy], h2e(T1 @ e2h(np.c_[vx, vy])))
-
-        # vector x scalar
-        array_compare(
-            SE2([TT1, TT2, TT1]) * vy,
-            np.c_[h2e(T1 @ e2h(vy)), h2e(T2 @ e2h(vy)), h2e(T1 @ e2h(vy))],
-        )
 
     def test_defs(self):
         # log

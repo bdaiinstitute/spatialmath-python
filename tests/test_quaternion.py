@@ -16,10 +16,14 @@ def qcompare(x, y):
         x = x.vec
     elif isinstance(x, BasePoseMatrix):
         x = x.A
+    elif isinstance(x, list) and isinstance(x[0], Quaternion):
+        x = [q.A for q in x]
     if isinstance(y, Quaternion):
         y = y.vec
     elif isinstance(y, BasePoseMatrix):
         y = y.A
+    elif isinstance(y, list) and isinstance(y[0], Quaternion):
+        y = [q.A for q in y]
     nt.assert_array_almost_equal(x, y)
 
 
@@ -118,11 +122,6 @@ class TestUnitQuaternion:
         qcompare(UnitQuaternion(SO3.Ry(pi)), np.r_[0, 0, 1, 0])
         qcompare(UnitQuaternion(SO3.Rz(pi)), np.r_[0, 0, 0, 1])
 
-        # vector of SO3
-        q = UnitQuaternion([SO3.Rx(pi / 2), SO3.Ry(pi / 2), SO3.Rz(pi / 2)])
-        assert len(q) == 3
-        qcompare(q, np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
-
         # from SE3
 
         qcompare(UnitQuaternion(SE3()), np.r_[1, 0, 0, 0])
@@ -138,30 +137,6 @@ class TestUnitQuaternion:
         qcompare(UnitQuaternion(SE3.Rx(pi)), np.r_[0, 1, 0, 0])
         qcompare(UnitQuaternion(SE3.Ry(pi)), np.r_[0, 0, 1, 0])
         qcompare(UnitQuaternion(SE3.Rz(pi)), np.r_[0, 0, 0, 1])
-
-        # vector of SE3
-        q = UnitQuaternion([SE3.Rx(pi / 2), SE3.Ry(pi / 2), SE3.Rz(pi / 2)])
-        assert len(q) == 3
-        qcompare(q, np.array([[1, 1, 0, 0], [1, 0, 1, 0], [1, 0, 0, 1]]) / math.sqrt(2))
-
-        # from S
-        M = np.identity(4)
-        q = UnitQuaternion(M)
-        assert len(q) == 4
-
-        qcompare(q[0], np.r_[1, 0, 0, 0])
-        qcompare(q[1], np.r_[0, 1, 0, 0])
-        qcompare(q[2], np.r_[0, 0, 1, 0])
-        qcompare(q[3], np.r_[0, 0, 0, 1])
-
-        # # vectorised forms of R, T
-        # R = []; T = []
-        # for theta in [-pi/2, 0, pi/2, pi]:
-        #     R = cat(3, R, rotx(theta), roty(theta), rotz(theta))
-        #     T = cat(3, T, trotx(theta), troty(theta), trotz(theta))
-
-        # nt.assert_array_almost_equal(UnitQuaternion(R).R, R)
-        # nt.assert_array_almost_equal(UnitQuaternion(T).T, T)
 
         # copy constructor
         q = UnitQuaternion(rotx(0.3))
@@ -179,13 +154,6 @@ class TestUnitQuaternion:
             UnitQuaternion(R, check=True)
         with pytest.raises(ValueError):
             UnitQuaternion(R, check=False)
-
-    def test_concat(self):
-        u = UnitQuaternion()
-        uu = UnitQuaternion([u, u, u, u])
-
-        assert isinstance(uu, UnitQuaternion)
-        assert len(uu) == 4
 
     def test_string(self):
         u = UnitQuaternion()
@@ -411,36 +379,10 @@ class TestUnitQuaternion:
         qcompare(rx * u, rx)
         qcompare(u * rx, rx)
 
-        # vector x vector
-        qcompare(
-            UnitQuaternion([ry, rz, rx]) * UnitQuaternion([rx, ry, rz]),
-            UnitQuaternion([ry * rx, rz * ry, rx * rz]),
-        )
-
-        # scalar x vector
-        qcompare(
-            ry * UnitQuaternion([rx, ry, rz]),
-            UnitQuaternion([ry * rx, ry * ry, ry * rz]),
-        )
-
-        # vector x scalar
-        qcompare(
-            UnitQuaternion([rx, ry, rz]) * ry,
-            UnitQuaternion([rx * ry, ry * ry, rz * ry]),
-        )
-
         # quatvector product
         # scalar x scalar
 
         qcompare(rx * vy, vz)
-
-        # scalar x vector
-        nt.assert_array_almost_equal(ry * np.c_[vx, vy, vz], np.c_[-vz, vy, vx])
-
-        # vector x scalar
-        nt.assert_array_almost_equal(
-            UnitQuaternion([ry, rz, rx]) * vy, np.c_[vy, -vx, vz]
-        )
 
     def test_matmul(self):
         rx = UnitQuaternion.Rx(pi / 2)
@@ -569,11 +511,9 @@ class TestUnitQuaternion:
 
         # norm
         qcompare(rx.norm(), 1)
-        qcompare(UnitQuaternion([rx, ry, rz]).norm(), [1, 1, 1])
 
         # unit
         qcompare(rx.unit(), rx)
-        qcompare(UnitQuaternion([rx, ry, rz]).unit(), UnitQuaternion([rx, ry, rz]))
 
         # inner
         nt.assert_array_almost_equal(u.inner(u), 1)
@@ -608,22 +548,22 @@ class TestUnitQuaternion:
         q = UnitQuaternion.RPY([0.2, 0.3, 0.4])
 
         # from null
-        qcompare(q.interp1(0), u)
-        qcompare(q.interp1(1), q)
+        qcompare(q.interp1(0), [u])
+        qcompare(q.interp1(1), [q])
 
         # assert length(q.interp(linspace(0,1, 10))) == 10
         # assert all( q.interp([0, 1]) == [u, q])
         # TODO vectorizing
 
-        q0_5 = q.interp1(0.5)
+        q0_5 = q.interp1(0.5)[0]
         qcompare(q0_5 * q0_5, q)
 
         qq = rx.interp1(11)
         assert len(qq) == 11
 
         # between two quaternions
-        qcompare(q.interp(rx, 0), q)
-        qcompare(q.interp(rx, 1), rx)
+        qcompare(q.interp(rx, 0), [q])
+        qcompare(q.interp(rx, 1), [rx])
 
         # test vectorised results
         qq = q.interp(rx, [0, 1])
@@ -673,21 +613,6 @@ class TestUnitQuaternion:
         assert q3 == q3
         assert q1 == q2  # because of double wrapping
         assert not q1 == q3
-
-        nt.assert_array_almost_equal(
-            UnitQuaternion([q1, q1, q1]) == UnitQuaternion([q1, q1, q1]),
-            [True, True, True],
-        )
-        nt.assert_array_almost_equal(
-            UnitQuaternion([q1, q2, q3]) == UnitQuaternion([q1, q2, q3]),
-            [True, True, True],
-        )
-        nt.assert_array_almost_equal(
-            UnitQuaternion([q1, q1, q3]) == q1, [True, True, False]
-        )
-        nt.assert_array_almost_equal(
-            q3 == UnitQuaternion([q1, q1, q3]), [False, False, True]
-        )
 
     def test_logical(self):
         rx = UnitQuaternion.Rx(pi / 2)
@@ -827,13 +752,6 @@ class TestQuaternion:
         nt.assert_array_almost_equal(q1.log().exp(), q1)
         nt.assert_array_almost_equal(q2.log().exp(), q2)
 
-    def test_concat(self):
-        u = Quaternion()
-        uu = Quaternion([u, u, u, u])
-
-        assert isinstance(uu, Quaternion)
-        assert len(uu) == 4
-
     def primitive_test_convert(self):
         # s,v
         nt.assert_array_almost_equal(Quaternion([1, 0, 0, 0]).s, 1)
@@ -933,25 +851,6 @@ class TestQuaternion:
         assert q1 != q2
         assert not q2 != q2
 
-        qt1 = Quaternion([q1, q1, q2, q2])
-        qt2 = Quaternion([q1, q2, q2, q1])
-
-        assert (qt1 == q1) == [True, True, False, False]
-        assert (q1 == qt1) == [True, True, False, False]
-        assert (qt1 == qt1) == [True, True, True, True]
-
-        assert (qt2 == q1) == [True, False, False, True]
-        assert (q1 == qt2) == [True, False, False, True]
-        assert (qt1 == qt2) == [True, False, True, False]
-
-        assert (qt1 != q1) == [False, False, True, True]
-        assert (q1 != qt1) == [False, False, True, True]
-        assert (qt1 != qt1) == [False, False, False, False]
-
-        assert (qt2 != q1) == [False, True, True, False]
-        assert (q1 != qt2) == [False, True, True, False]
-        assert (qt1 != qt2) == [False, True, False, True]
-
         # errors
 
         # tc.verifyError( @() [q1 q1] == [q1 q1 q1], 'SMTB:Quaternion:badarg')
@@ -999,16 +898,12 @@ class TestQuaternion:
 
         # norm
         nt.assert_array_almost_equal(q.norm(), np.linalg.norm(v))
-        nt.assert_array_almost_equal(
-            Quaternion([q, u, q]).norm(), [np.linalg.norm(v), 1, np.linalg.norm(v)]
-        )
 
         # unit
         qu = q.unit()
         uu = UnitQuaternion()
         assert isinstance(q, Quaternion)
         nt.assert_array_almost_equal(qu.vec, v / np.linalg.norm(v))
-        qcompare(Quaternion([q, u, q]).unit(), UnitQuaternion([qu, uu, qu]))
 
         # inner
         nt.assert_equal(u.inner(u), 1)

@@ -455,12 +455,10 @@ class SO3(BasePoseMatrix):
         return cls([smb.rotz(x, unit=unit) for x in smb.getvector(theta)], check=False)
 
     @classmethod
-    def Rand(cls, N: int = 1, *, theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> Self:
+    def Rand(cls, *, theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> Self:
         """
         Construct a new SO(3) from random rotation
 
-        :param N: number of random rotations
-        :type N: int
         :param theta_range: angular magnitude range [min,max], defaults to None.
         :type xrange: 2-element sequence, optional
         :param unit: angular units: 'rad' [default], or 'deg'
@@ -481,7 +479,7 @@ class SO3(BasePoseMatrix):
 
         :seealso: :func:`spatialmath.quaternion.UnitQuaternion.Rand`
         """
-        return cls([smb.q2r(smb.qrand(theta_range=theta_range, unit=unit)) for _ in range(0, N)], check=False)
+        return cls(smb.q2r(smb.qrand(theta_range=theta_range, unit=unit)), check=False)
 
     @overload
     @classmethod
@@ -1517,7 +1515,6 @@ class SE3(SO3):
     @classmethod
     def Rand(
         cls,
-        N: int = 1,
         xrange: Optional[ArrayLike2] = (-1, 1),
         yrange: Optional[ArrayLike2] = (-1, 1),
         zrange: Optional[ArrayLike2] = (-1, 1),
@@ -1537,16 +1534,12 @@ class SE3(SO3):
         :type xrange: 2-element sequence, optional
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
-        :param N: number of random transforms
-        :type N: int
         :return: SE(3) matrix
         :rtype: SE3 instance
 
         Return an SE3 instance with random rotation and translation.
 
         - ``SE3.Rand()`` is a random SE(3) translation.
-        - ``SE3.Rand(N)`` is an SE3 object containing a sequence of N random
-          poses.
 
 
         Example:
@@ -1559,17 +1552,17 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.quaternions.UnitQuaternion.Rand`
         """
         X = np.random.uniform(
-            low=xrange[0], high=xrange[1], size=N
+            low=xrange[0], high=xrange[1], size=1
         )  # random values in the range
         Y = np.random.uniform(
-            low=yrange[0], high=yrange[1], size=N
+            low=yrange[0], high=yrange[1], size=1
         )  # random values in the range
         Z = np.random.uniform(
-            low=zrange[0], high=zrange[1], size=N
+            low=zrange[0], high=zrange[1], size=1
         )  # random values in the range
-        R = SO3.Rand(N=N, theta_range=theta_range, unit=unit)
+        R = SO3.Rand(theta_range=theta_range, unit=unit)
         return cls(
-            [smb.transl(x, y, z) @ smb.r2t(r.A) for (x, y, z, r) in zip(X, Y, Z, R)],
+            smb.transl(X[0], Y[0], Z[0]) @ smb.r2t(R.A),
             check=False,
         )
 

@@ -103,7 +103,7 @@ class SO2(BasePoseMatrix):
         return (2, 2)
 
     @classmethod
-    def Rand(cls, N=1, arange=(0, 2 * math.pi), unit="rad"):
+    def Rand(cls, arange=(0, 2 * math.pi), unit="rad"):
         r"""
         Construct new SO(2) with random rotation
 
@@ -125,8 +125,8 @@ class SO2(BasePoseMatrix):
 
         """
         rand = np.random.uniform(
-            low=arange[0], high=arange[1], size=N
-        )  # random values in the range
+            low=arange[0], high=arange[1], size=1
+        )[0]  # random values in the range
         return cls([smb.rot2(x) for x in smb.getunit(rand, unit)])
 
     @classmethod
@@ -628,7 +628,7 @@ class SE2(SO2):
             y[2, 3] = z
             return y
 
-        return SE3([lift3(x) for x in self])
+        return SE3(lift3(self))
 
     def Twist2(self):
         from spatialmath.twist import Twist2

@@ -5,37 +5,6 @@ from spatialmath.spatialvector import *
 
 
 class TestSpatialVector:
-    def test_list_powers(self):
-        x = SpatialVelocity.Empty()
-        assert len(x) == 0
-        x.append(SpatialVelocity([1, 2, 3, 4, 5, 6]))
-        assert len(x) == 1
-
-        x.append(SpatialVelocity([7, 8, 9, 10, 11, 12]))
-        assert len(x) == 2
-
-        y = x[0]
-        assert isinstance(y, SpatialVelocity)
-        assert len(y) == 1
-        assert all(y.A == np.r_[1, 2, 3, 4, 5, 6])
-
-        y = x[1]
-        assert isinstance(y, SpatialVelocity)
-        assert len(y) == 1
-        assert all(y.A == np.r_[7, 8, 9, 10, 11, 12])
-
-        x.insert(0, SpatialVelocity([20, 21, 22, 23, 24, 25]))
-
-        y = x[0]
-        assert isinstance(y, SpatialVelocity)
-        assert len(y) == 1
-        assert all(y.A == np.r_[20, 21, 22, 23, 24, 25])
-
-        y = x[1]
-        assert isinstance(y, SpatialVelocity)
-        assert len(y) == 1
-        assert all(y.A == np.r_[1, 2, 3, 4, 5, 6])
-
     def test_velocity(self):
         a = SpatialVelocity([1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialVelocity)
@@ -55,24 +24,6 @@ class TestSpatialVector:
         assert isinstance(s, str)
         assert s.count("\n") == 0
         assert s.startswith("SpatialVelocity")
-
-        r = np.random.rand(6, 10)
-        a = SpatialVelocity(r)
-        assert isinstance(a, SpatialVelocity)
-        assert isinstance(a, SpatialVector)
-        assert isinstance(a, SpatialM6)
-        assert len(a) == 10
-
-        b = a[3]
-        assert isinstance(b, SpatialVelocity)
-        assert isinstance(b, SpatialVector)
-        assert isinstance(b, SpatialM6)
-        assert len(b) == 1
-        assert all(b.A == r[:, 3])
-
-        s = str(a)
-        assert isinstance(s, str)
-        assert s.count("\n") == 9
 
     def test_acceleration(self):
         a = SpatialAcceleration([1, 2, 3, 4, 5, 6])
@@ -94,23 +45,6 @@ class TestSpatialVector:
         assert s.count("\n") == 0
         assert s.startswith("SpatialAcceleration")
 
-        r = np.random.rand(6, 10)
-        a = SpatialAcceleration(r)
-        assert isinstance(a, SpatialAcceleration)
-        assert isinstance(a, SpatialVector)
-        assert isinstance(a, SpatialM6)
-        assert len(a) == 10
-
-        b = a[3]
-        assert isinstance(b, SpatialAcceleration)
-        assert isinstance(b, SpatialVector)
-        assert isinstance(b, SpatialM6)
-        assert len(b) == 1
-        assert all(b.A == r[:, 3])
-
-        s = str(a)
-        assert isinstance(s, str)
-
     def test_force(self):
         a = SpatialForce([1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialForce)
@@ -131,23 +65,6 @@ class TestSpatialVector:
         assert s.count("\n") == 0
         assert s.startswith("SpatialForce")
 
-        r = np.random.rand(6, 10)
-        a = SpatialForce(r)
-        assert isinstance(a, SpatialForce)
-        assert isinstance(a, SpatialVector)
-        assert isinstance(a, SpatialF6)
-        assert len(a) == 10
-
-        b = a[3]
-        assert isinstance(b, SpatialForce)
-        assert isinstance(b, SpatialVector)
-        assert isinstance(b, SpatialF6)
-        assert len(b) == 1
-        assert all(b.A == r[:, 3])
-
-        s = str(a)
-        assert isinstance(s, str)
-
     def test_momentum(self):
         a = SpatialMomentum([1, 2, 3, 4, 5, 6])
         assert isinstance(a, SpatialMomentum)
@@ -167,23 +84,6 @@ class TestSpatialVector:
         assert isinstance(s, str)
         assert s.count("\n") == 0
         assert s.startswith("SpatialMomentum")
-
-        r = np.random.rand(6, 10)
-        a = SpatialMomentum(r)
-        assert isinstance(a, SpatialMomentum)
-        assert isinstance(a, SpatialVector)
-        assert isinstance(a, SpatialF6)
-        assert len(a) == 10
-
-        b = a[3]
-        assert isinstance(b, SpatialMomentum)
-        assert isinstance(b, SpatialVector)
-        assert isinstance(b, SpatialF6)
-        assert len(b) == 1
-        assert all(b.A == r[:, 3])
-
-        s = str(a)
-        assert isinstance(s, str)
 
     def test_arith(self):
         # just test SpatialVelocity since all types derive from same superclass

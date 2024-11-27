@@ -310,7 +310,7 @@ class Quaternion(BasePoseList):
         :seealso: :func:`~spatialmath.base.quaternions.qconj`
         """
 
-        return self.__class__([smb.qconj(q._A) for q in self])
+        return self.__class__(smb.qconj(self._A))
 
     def norm(self) -> float:
         r"""
@@ -361,7 +361,7 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
-        return UnitQuaternion([smb.qunit(q._A) for q in self], norm=False)
+        return UnitQuaternion(smb.qunit(self._A), norm=False)
 
     def log(self) -> Quaternion:
         r"""
@@ -585,7 +585,7 @@ class Quaternion(BasePoseList):
         elif smb.isscalar(right):
             # quaternion * scalar case
             # print('scalar * quat')
-            return Quaternion([right * q._A for q in left])
+            return Quaternion(right * left._A)
 
         else:
             raise ValueError("operands to * are of different types")
@@ -613,7 +613,7 @@ class Quaternion(BasePoseList):
         :seealso: :func:`__mul__`
         """
         # scalar * quaternion case
-        return Quaternion([left * q._A for q in right])
+        return Quaternion(left * right._A)
 
     def __imul__(
         left, right: Quaternion
@@ -663,7 +663,7 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`~spatialmath.base.quaternions.qpow`
         """
-        return self.__class__([smb.qpow(q._A, n) for q in self])
+        return self.__class__(smb.qpow(self._A, n))
 
     def __ipow__(self, n: int) -> Quaternion:
         """
@@ -1024,11 +1024,11 @@ class UnitQuaternion(Quaternion):
 
             elif isinstance(s, SO3):
                 # UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)
-                self.data = [smb.r2q(x.R) for x in s]
+                self.data = [smb.r2q(s.R)]
 
             elif isinstance(s[0], SO3):
                 # list of SO3 or SE3
-                self.data = [smb.r2q(x.R) for x in s]
+                self.data = [smb.r2q(s.R)]
 
             else:
                 raise ValueError("bad argument to UnitQuaternion constructor")
@@ -1501,7 +1501,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :func:`~spatialmath.base.quaternions.qinv`
         """
-        return UnitQuaternion([smb.qconj(q._A) for q in self])
+        return UnitQuaternion(smb.qconj(self._A))
 
     @staticmethod
     def qvmul(qv1: ArrayLike3, qv2: ArrayLike3) -> R3:
@@ -1840,7 +1840,7 @@ class UnitQuaternion(Quaternion):
 
     def interp(
         self, end: UnitQuaternion, s: float = 0, shortest: Optional[bool] = False
-    ) -> UnitQuaternion:
+    ) -> List[UnitQuaternion]:
         """
         Interpolate between two unit quaternions
 
@@ -1915,9 +1915,9 @@ class UnitQuaternion(Quaternion):
             s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
             s2 = math.sin(theta) / math.sin(theta_0)
             out = (q1 * s1) + (q2 * s2)
-            qi.append(out)
+            qi.append(UnitQuaternion(out))
 
-        return UnitQuaternion(qi)
+        return qi
 
     def interp1(self, s: float = 0, shortest: Optional[bool] = False) -> UnitQuaternion:
         """
@@ -1987,9 +1987,9 @@ class UnitQuaternion(Quaternion):
             s1 = float(math.cos(theta) - dot * math.sin(theta) / math.sin(theta_0))
             s2 = math.sin(theta) / math.sin(theta_0)
             out = np.r_[s1, 0, 0, 0] + (q * s2)
-            qi.append(out)
+            qi.append(UnitQuaternion(out))
 
-        return UnitQuaternion(qi)
+        return qi
 
     def increment(self, w: ArrayLike3, normalize: Optional[bool] = False) -> None:
         """

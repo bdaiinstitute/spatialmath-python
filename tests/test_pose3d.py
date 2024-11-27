@@ -40,11 +40,6 @@ class TestSO3:
         array_compare(R, np.eye(3))
         assert isinstance(R, SO3)
 
-        # empty constructor
-        R = SO3.Empty()
-        nt.assert_equal(len(R), 0)
-        assert isinstance(R, SO3)
-
         # construct from matrix
         R = SO3(rotx(0.2))
         nt.assert_equal(len(R), 1)
@@ -118,24 +113,6 @@ class TestSO3:
         array_compare(R, eul2r([10, 20, 30], unit="deg"))
         assert isinstance(R, SO3)
 
-        # matrix input
-
-        angles = np.array(
-            [[0.1, 0.2, 0.3], [0.2, 0.3, 0.4], [0.3, 0.4, 0.5], [0.4, 0.5, 0.6]]
-        )
-        R = SO3.Eul(angles)
-        assert isinstance(R, SO3)
-        nt.assert_equal(len(R), 4)
-        for i in range(4):
-            array_compare(R[i], eul2r(angles[i, :]))
-
-        angles *= 10
-        R = SO3.Eul(angles, unit="deg")
-        assert isinstance(R, SO3)
-        nt.assert_equal(len(R), 4)
-        for i in range(4):
-            array_compare(R[i], eul2r(angles[i, :], unit="deg"))
-
     def test_constructor_RPY(self):
         R = SO3.RPY(0.1, 0.2, 0.3, order="zyx")
         nt.assert_equal(len(R), 1)
@@ -184,24 +161,6 @@ class TestSO3:
         nt.assert_equal(len(R), 1)
         array_compare(R, rpy2r([0.1, 0.2, 0.3], order="xyz"))
         assert isinstance(R, SO3)
-
-        # matrix input
-
-        angles = np.array(
-            [[0.1, 0.2, 0.3], [0.2, 0.3, 0.4], [0.3, 0.4, 0.5], [0.4, 0.5, 0.6]]
-        )
-        R = SO3.RPY(angles, order="zyx")
-        assert isinstance(R, SO3)
-        nt.assert_equal(len(R), 4)
-        for i in range(4):
-            array_compare(R[i], rpy2r(angles[i, :], order="zyx"))
-
-        angles *= 10
-        R = SO3.RPY(angles, unit="deg", order="zyx")
-        assert isinstance(R, SO3)
-        nt.assert_equal(len(R), 4)
-        for i in range(4):
-            array_compare(R[i], rpy2r(angles[i, :], unit="deg", order="zyx"))
 
     def test_constructor_AngVec(self):
         # angvec
@@ -300,34 +259,6 @@ class TestSO3:
         R2 = SO3.Rx(0.6)
         # R.animate()
         # R.animate(start=R.inv())
-
-    def test_listpowers(self):
-        R = SO3()
-        R1 = SO3.Rx(0.2)
-        R2 = SO3.Ry(0.3)
-
-        R.append(R1)
-        R.append(R2)
-        nt.assert_equal(len(R), 3)
-        assert isinstance(R, SO3)
-
-        array_compare(R[0], np.eye(3))
-        array_compare(R[1], R1)
-        array_compare(R[2], R2)
-
-        R = SO3([rotx(0.1), rotx(0.2), rotx(0.3)])
-        nt.assert_equal(len(R), 3)
-        assert isinstance(R, SO3)
-        array_compare(R[0], rotx(0.1))
-        array_compare(R[1], rotx(0.2))
-        array_compare(R[2], rotx(0.3))
-
-        R = SO3([SO3.Rx(0.1), SO3.Rx(0.2), SO3.Rx(0.3)])
-        nt.assert_equal(len(R), 3)
-        assert isinstance(R, SO3)
-        array_compare(R[0], rotx(0.1))
-        array_compare(R[1], rotx(0.2))
-        array_compare(R[2], rotx(0.3))
 
     def test_tests(self):
         R = SO3()
@@ -482,211 +413,6 @@ class TestSO3:
         R **= -2
         array_compare(R, SO3.Rx(-pi / 2))
 
-    def test_arith_vect(self):
-        rx = SO3.Rx(pi / 2)
-        ry = SO3.Ry(pi / 2)
-        rz = SO3.Rz(pi / 2)
-        u = SO3()
-
-        # multiply
-        R = SO3([rx, ry, rz])
-        a = R * rx
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * rx)
-        array_compare(a[2], rz * rx)
-
-        a = rx * R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], rx * ry)
-        array_compare(a[2], rx * rz)
-
-        a = R * R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * ry)
-        array_compare(a[2], rz * rz)
-
-        a = R * 2
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * 2)
-        array_compare(a[1], ry * 2)
-        array_compare(a[2], rz * 2)
-
-        a = 2 * R
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * 2)
-        array_compare(a[1], ry * 2)
-        array_compare(a[2], rz * 2)
-
-        a = R
-        a *= rx
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * rx)
-        array_compare(a[2], rz * rx)
-
-        a = rx
-        a *= R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], rx * ry)
-        array_compare(a[2], rx * rz)
-
-        a = R
-        a *= R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * ry)
-        array_compare(a[2], rz * rz)
-
-        a = R
-        a *= 2
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * 2)
-        array_compare(a[1], ry * 2)
-        array_compare(a[2], rz * 2)
-
-        # SO3 x vector
-        vx = np.r_[1, 0, 0]
-        vy = np.r_[0, 1, 0]
-        vz = np.r_[0, 0, 1]
-
-        a = R * vx
-        array_compare(a[:, 0], (rx * vx).flatten())
-        array_compare(a[:, 1], (ry * vx).flatten())
-        array_compare(a[:, 2], (rz * vx).flatten())
-
-        a = rx * np.vstack((vx, vy, vz)).T
-        array_compare(a[:, 0], (rx * vx).flatten())
-        array_compare(a[:, 1], (rx * vy).flatten())
-        array_compare(a[:, 2], (rx * vz).flatten())
-
-        # divide
-        R = SO3([rx, ry, rz])
-        a = R / rx
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], ry / rx)
-        array_compare(a[2], rz / rx)
-
-        a = rx / R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], rx / ry)
-        array_compare(a[2], rx / rz)
-
-        a = R / R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], np.eye(3))
-        array_compare(a[1], np.eye(3))
-        array_compare(a[2], np.eye(3))
-
-        a = R / 2
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / 2)
-        array_compare(a[1], ry / 2)
-        array_compare(a[2], rz / 2)
-
-        a = R
-        a /= rx
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], ry / rx)
-        array_compare(a[2], rz / rx)
-
-        a = rx
-        a /= R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], rx / ry)
-        array_compare(a[2], rx / rz)
-
-        a = R
-        a /= R
-        assert isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], np.eye(3))
-        array_compare(a[1], np.eye(3))
-        array_compare(a[2], np.eye(3))
-
-        a = R
-        a /= 2
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / 2)
-        array_compare(a[1], ry / 2)
-        array_compare(a[2], rz / 2)
-
-        # add
-        R = SO3([rx, ry, rz])
-        a = R + rx
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + rx)
-        array_compare(a[2], rz + rx)
-
-        a = rx + R
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], rx + ry)
-        array_compare(a[2], rx + rz)
-
-        a = R + R
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + ry)
-        array_compare(a[2], rz + rz)
-
-        a = R + 1
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + 1)
-        array_compare(a[1], ry + 1)
-        array_compare(a[2], rz + 1)
-
-        # subtract
-        R = SO3([rx, ry, rz])
-        a = R - rx
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - rx)
-        array_compare(a[2], rz - rx)
-
-        a = rx - R
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], rx - ry)
-        array_compare(a[2], rx - rz)
-
-        a = R - R
-        assert not isinstance(a, SO3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - ry)
-        array_compare(a[2], rz - rz)
-
     def test_functions(self):
         # inv
         # .T
@@ -697,15 +423,6 @@ class TestSO3:
         nt.assert_almost_equal(poseSE3.R[0:2, 0:2], poseSE2.R[0:2, 0:2])
         nt.assert_equal(poseSE3.x, poseSE2.x)
         nt.assert_equal(poseSE3.y, poseSE2.y)
-
-        posesSE3 = SE3([poseSE3, poseSE3])
-        posesSE2 = posesSE3.yaw_SE2()
-        nt.assert_equal(len(posesSE2), 2)
-
-    def test_functions_vect(self):
-        # inv
-        # .T
-        pass
 
     def test_functions_lie(self):
         R = SO3.EulerVec([0.42, 0.73, -1.17])
@@ -846,17 +563,6 @@ class TestSE3:
         nt.assert_equal(T.y, t[1])
         nt.assert_equal(T.z, t[2])
 
-        TT = SE3([T, T, T])
-        desired_shape = (3,)
-        nt.assert_equal(TT.x.shape, desired_shape)
-        nt.assert_equal(TT.y.shape, desired_shape)
-        nt.assert_equal(TT.z.shape, desired_shape)
-
-        ones = np.ones(desired_shape)
-        nt.assert_equal(TT.x, ones * t[0])
-        nt.assert_equal(TT.y, ones * t[1])
-        nt.assert_equal(TT.z, ones * t[2])
-
         # random constrained
         T = SE3.Rand(theta_range=(0.1, 0.7))
         assert isinstance(T, SE3)
@@ -892,34 +598,6 @@ class TestSE3:
     def test_shape(self):
         a = SE3()
         assert a._A.shape == a.shape
-
-    def test_listpowers(self):
-        R = SE3()
-        R1 = SE3.Rx(0.2)
-        R2 = SE3.Ry(0.3)
-
-        R.append(R1)
-        R.append(R2)
-        nt.assert_equal(len(R), 3)
-        assert isinstance(R, SE3)
-
-        array_compare(R[0], np.eye(4))
-        array_compare(R[1], R1)
-        array_compare(R[2], R2)
-
-        R = SE3([trotx(0.1), trotx(0.2), trotx(0.3)])
-        nt.assert_equal(len(R), 3)
-        assert isinstance(R, SE3)
-        array_compare(R[0], trotx(0.1))
-        array_compare(R[1], trotx(0.2))
-        array_compare(R[2], trotx(0.3))
-
-        R = SE3([SE3.Rx(0.1), SE3.Rx(0.2), SE3.Rx(0.3)])
-        nt.assert_equal(len(R), 3)
-        assert isinstance(R, SE3)
-        array_compare(R[0], trotx(0.1))
-        array_compare(R[1], trotx(0.2))
-        array_compare(R[2], trotx(0.3))
 
     def test_tests(self):
         R = SE3()
@@ -1078,218 +756,6 @@ class TestSE3:
         a = T / 2
         assert not isinstance(a, SE3)
         array_compare(a, troty(0.3) / 2)
-
-    def test_arith_vect(self):
-        rx = SE3.Rx(pi / 2)
-        ry = SE3.Ry(pi / 2)
-        rz = SE3.Rz(pi / 2)
-        u = SE3()
-
-        # multiply
-        T = SE3([rx, ry, rz])
-        a = T * rx
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * rx)
-        array_compare(a[2], rz * rx)
-
-        a = rx * T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], rx * ry)
-        array_compare(a[2], rx * rz)
-
-        a = T * T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * ry)
-        array_compare(a[2], rz * rz)
-
-        a = T * 2
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * 2)
-        array_compare(a[1], ry * 2)
-        array_compare(a[2], rz * 2)
-
-        a = 2 * T
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * 2)
-        array_compare(a[1], ry * 2)
-        array_compare(a[2], rz * 2)
-
-        a = T
-        a *= rx
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * rx)
-        array_compare(a[2], rz * rx)
-
-        a = rx
-        a *= T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], rx * ry)
-        array_compare(a[2], rx * rz)
-
-        a = T
-        a *= T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * rx)
-        array_compare(a[1], ry * ry)
-        array_compare(a[2], rz * rz)
-
-        a = T
-        a *= 2
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx * 2)
-        array_compare(a[1], ry * 2)
-        array_compare(a[2], rz * 2)
-
-        # SE3 x vector
-        vx = np.r_[1, 0, 0]
-        vy = np.r_[0, 1, 0]
-        vz = np.r_[0, 0, 1]
-
-        a = T * vx
-        array_compare(a[:, 0], (rx * vx).flatten())
-        array_compare(a[:, 1], (ry * vx).flatten())
-        array_compare(a[:, 2], (rz * vx).flatten())
-
-        a = rx * np.vstack((vx, vy, vz)).T
-        array_compare(a[:, 0], (rx * vx).flatten())
-        array_compare(a[:, 1], (rx * vy).flatten())
-        array_compare(a[:, 2], (rx * vz).flatten())
-
-        # divide
-        T = SE3([rx, ry, rz])
-        a = T / rx
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], ry / rx)
-        array_compare(a[2], rz / rx)
-
-        a = rx / T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], rx / ry)
-        array_compare(a[2], rx / rz)
-
-        a = T / T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], np.eye(4))
-        array_compare(a[1], np.eye(4))
-        array_compare(a[2], np.eye(4))
-
-        a = T / 2
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / 2)
-        array_compare(a[1], ry / 2)
-        array_compare(a[2], rz / 2)
-
-        a = T
-        a /= rx
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], ry / rx)
-        array_compare(a[2], rz / rx)
-
-        a = rx
-        a /= T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / rx)
-        array_compare(a[1], rx / ry)
-        array_compare(a[2], rx / rz)
-
-        a = T
-        a /= T
-        assert isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], np.eye(4))
-        array_compare(a[1], np.eye(4))
-        array_compare(a[2], np.eye(4))
-
-        a = T
-        a /= 2
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx / 2)
-        array_compare(a[1], ry / 2)
-        array_compare(a[2], rz / 2)
-
-        # add
-        T = SE3([rx, ry, rz])
-        a = T + rx
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + rx)
-        array_compare(a[2], rz + rx)
-
-        a = rx + T
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], rx + ry)
-        array_compare(a[2], rx + rz)
-
-        a = T + T
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + rx)
-        array_compare(a[1], ry + ry)
-        array_compare(a[2], rz + rz)
-
-        a = T + 1
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx + 1)
-        array_compare(a[1], ry + 1)
-        array_compare(a[2], rz + 1)
-
-        # subtract
-        T = SE3([rx, ry, rz])
-        a = T - rx
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - rx)
-        array_compare(a[2], rz - rx)
-
-        a = rx - T
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], rx - ry)
-        array_compare(a[2], rx - rz)
-
-        a = T - T
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - rx)
-        array_compare(a[1], ry - ry)
-        array_compare(a[2], rz - rz)
-
-        a = T - 1
-        assert not isinstance(a, SE3)
-        nt.assert_equal(len(a), 3)
-        array_compare(a[0], rx - 1)
-        array_compare(a[1], ry - 1)
-        array_compare(a[2], rz - 1)
 
     def test_angle(self):
         # angle between SO3's

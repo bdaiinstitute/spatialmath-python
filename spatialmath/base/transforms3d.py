@@ -339,7 +339,7 @@ def transl(x, y=None, z=None):
         # SE(3) -> R3
         return x[:3, 3]
     else:
-        raise ValueError("bad argument")
+        raise ValueError(f"bad argument {x}")
 
     if t.dtype != "O":
         t = t.astype("float64")
