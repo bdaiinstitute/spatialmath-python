@@ -1134,16 +1134,3 @@ def qprint(
         file.write(s + "\n")
     else:
         return s
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_quaternions.py"
-        ).read()
-    )  # pylint: disable=exec-used

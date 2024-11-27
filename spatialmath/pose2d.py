@@ -634,13 +634,3 @@ class SE2(SO2):
         from spatialmath.twist import Twist2
 
         return Twist2(self.log(twist=True))
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose2d.py"
-        ).read()
-    )  # pylint: disable=exec-used

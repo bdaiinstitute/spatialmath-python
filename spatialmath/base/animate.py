@@ -882,36 +882,3 @@ class Animate2:
 
     def set_ylabel(self, *args, **kwargs):
         self.ax.set_ylabel(*args, **kwargs)
-
-
-if __name__ == "__main__":
-    # from spatialmath import UnitQuaternion
-    # from spatialmath.base import tranimate, r2t
-
-    # J = np.array([[2, -1, 0], [-1, 4, 0], [0, 0, 3]])
-    # dt = 0.05
-    # def attitude():
-    #     attitude = UnitQuaternion()
-    #     w = 0.2 * np.r_[1, 2, 2].T
-    #     for t in np.arange(0, 3, dt):
-    #         wd =  -np.linalg.inv(J) @ (np.cross(w, J @ w))
-    #         w += wd * dt
-    #         attitude.increment(w * dt)
-    #         yield attitude.R
-    # plt.figure()
-    # plotvol3(2)
-    # tranimate(attitude())
-
-    from spatialmath import base
-
-    # T = smb.rpy2r(0.3, 0.4, 0.5)
-    # # smb.tranimate(T, wait=True)
-    # s = smb.tranimate(T, movie=True)
-    # with open("zz.html", "w") as f:
-    #     print(f"<html>{s}</html>", file=f)
-
-    T = smb.rot2(2)
-    # smb.tranimate2(T, wait=True)
-    s = smb.tranimate2(T, movie=True)
-    with open("zz.html", "w") as f:
-        print(f"<html>{s}</html>", file=f)

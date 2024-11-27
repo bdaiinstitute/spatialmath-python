@@ -354,13 +354,3 @@ class UnitDualQuaternion(DualQuaternion):
     #     w = self.real.v
     #     v = self.dual.v
     #     theta = base.norm(w)
-
-
-if __name__ == "__main__":  # pragma: no cover
-
-    from spatialmath import SE3, UnitDualQuaternion
-
-    print(UnitDualQuaternion(SE3()))
-    # import pathlib
-
-    # exec(open(pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_dualquaternion.py").read())  # pylint: disable=exec-used

@@ -1752,18 +1752,6 @@ try:
         except NameError:
             return False  # Probably standard Python interpreter
 
-    if __name__ == "__main__":
-        import pathlib
-
-        exec(
-            open(
-                pathlib.Path(__file__).parent.parent.parent.absolute()
-                / "tests"
-                / "base"
-                / "test_graphics.py"
-            ).read()
-        )  # pylint: disable=exec-used
-
 except ImportError:  # pragma: no cover
 
     def plot_text(*args, **kwargs) -> None:

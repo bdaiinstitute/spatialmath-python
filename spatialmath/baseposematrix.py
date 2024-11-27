@@ -1689,23 +1689,3 @@ class BasePoseMatrix(BasePoseList):
             raise TypeError(
                 f"Invalid type ({right.__class__}) for binary operation with {left.__class__}"
             )
-
-
-if __name__ == "__main__":
-    from spatialmath import SE3, SE2, SO2
-
-    C = SO2(0.5)
-    A = np.array([[10, 0], [0, 1]])
-
-    print(C * A)
-    print(C * A * C.inv())
-    print(C.conjugation(A))
-
-    # x = SE3.Rand(N=6)
-
-    # x.printline(orient="rpy/xyz", fmt="{:8.3g}")
-
-    # d = np.diag([0.25, 0.25, 1])
-    # a = SE2()
-    # print(a)
-    # print(d * a)

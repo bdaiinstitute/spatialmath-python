@@ -2094,13 +2094,3 @@ class SE3(SO3):
     #         return cls(base.r2t(R))
     #     else:
     #         return cls(base.rt2tr(R, t))
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_pose3d.py"
-        ).read()
-    )  # pylint: disable=exec-used

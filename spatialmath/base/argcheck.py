@@ -679,16 +679,3 @@ def islistof(value: Any, what: Union[Type, Callable], n: Optional[int] = None):
         return all([what(x) for x in value])
     else:
         raise ValueError("bad value of what")
-
-
-if __name__ == "__main__":
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_argcheck.py"
-        ).read()
-    )  # pylint: disable=exec-used

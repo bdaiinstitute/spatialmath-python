@@ -429,18 +429,3 @@ def gauss2d(mu: ArrayLike2, P: NDArray, X: NDArray, Y: NDArray) -> NDArray:
         * np.exp(-0.5 * (x**2 * Pi[0, 0] + y**2 * Pi[1, 1] + 2 * x * y * Pi[0, 1]))
     )
     return g.reshape(X.shape)
-
-
-if __name__ == "__main__":
-    r = np.linspace(-4, 4, 6)
-    x, y = np.meshgrid(r, r)
-    print(gauss2d([0, 0], np.diag([1, 2]), x, y))
-    # print(bresenham([2,2], [2,4]))
-    # print(bresenham([2,2], [2,-4]))
-    # print(bresenham([2,2], [4,2]))
-    # print(bresenham([2,2], [-4,2]))
-    # print(bresenham([2,2], [2,2]))
-    # print(bresenham([2,2], [3,6])) # steep
-    # print(bresenham([2,2], [6,3])) # shallow
-    # print(bresenham([2,2], [3,6])) # steep
-    # print(bresenham([2,2], [6,3])) # shallow

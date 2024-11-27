@@ -1842,13 +1842,3 @@ class Twist2(BaseTwist):
                 if i > 0:
                     p.break_()
                 p.text(f"{i:3d}: {str(x)}")
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.absolute() / "tests" / "test_twist.py"
-        ).read()
-    )  # pylint: disable=exec-used

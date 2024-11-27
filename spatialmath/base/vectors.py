@@ -847,16 +847,3 @@ def orthogonalize(v1: ArrayLike3, v2: ArrayLike3, normalize: bool = True) -> Arr
     if normalize:
         v_orth = v_orth / np.linalg.norm(v_orth)
     return v_orth
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_vectors.py"
-        ).read()
-    )  # pylint: disable=exec-used

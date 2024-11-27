@@ -2316,17 +2316,3 @@ class UnitQuaternion(Quaternion):
 
         """
         return SE3(smb.r2t(self.R), check=False)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    a = UnitQuaternion([0, 1, 0, 0])
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.absolute()
-            / "tests"
-            / "test_quaternion.py"
-        ).read()
-    )  # pylint: disable=exec-used

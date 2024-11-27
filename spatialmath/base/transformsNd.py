@@ -847,16 +847,3 @@ def det(m: np.ndarray) -> float:
         return Matrix(m).det()
     else:
         return np.linalg.det(m)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    import pathlib
-
-    exec(
-        open(
-            pathlib.Path(__file__).parent.parent.parent.absolute()
-            / "tests"
-            / "base"
-            / "test_transformsNd.py"
-        ).read()
-    )  # pylint: disable=exec-used
