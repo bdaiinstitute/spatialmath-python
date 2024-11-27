@@ -5,7 +5,7 @@ Provide list super powers for spatial math objects.
 # pylint: disable=invalid-name
 from __future__ import annotations
 from collections import UserList
-from abc import ABC, abstractproperty, abstractstaticmethod
+from abc import ABC, abstractproperty, abstractmethod
 import copy
 import numpy as np
 from spatialmath.base.argcheck import isnumberlist, isscalar
@@ -70,11 +70,12 @@ class BasePoseList(UserList, ABC):
         pass
 
     @staticmethod
-    @abstractstaticmethod
+    @abstractmethod
     def isvalid(x, check=True):
         pass
 
-    @abstractstaticmethod
+    @staticmethod
+    @abstractmethod
     def _identity():
         pass
 
