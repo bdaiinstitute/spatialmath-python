@@ -317,22 +317,22 @@ class TestSE2:
         TT = SE2(2, -4, 0.6)
         I = SE2()
 
-        z = I.interp(TT, s=0)
+        z = I.interp(TT, s=0)[0]
         assert isinstance(z, SE2)
 
-        array_compare(I.interp(TT, s=0), I)
-        array_compare(I.interp(TT, s=1), TT)
-        array_compare(I.interp(TT, s=0.5), SE2(1, -2, 0.3))
+        array_compare(I.interp(TT, s=0)[0], I)
+        array_compare(I.interp(TT, s=1)[0], TT)
+        array_compare(I.interp(TT, s=0.5)[0], SE2(1, -2, 0.3))
 
         R1 = SO2(math.pi - 0.1)
         R2 = SO2(-math.pi + 0.2)
-        array_compare(R1.interp(R2, s=0.5, shortest=False), SO2(0.05))
-        array_compare(R1.interp(R2, s=0.5, shortest=True), SO2(-math.pi + 0.05))
+        array_compare(R1.interp(R2, s=0.5, shortest=False)[0], SO2(0.05))
+        array_compare(R1.interp(R2, s=0.5, shortest=True)[0], SO2(-math.pi + 0.05))
 
         T1 = SE2(0, 0, math.pi - 0.1)
         T2 = SE2(0, 0, -math.pi + 0.2)
-        array_compare(T1.interp(T2, s=0.5, shortest=False), SE2(0, 0, 0.05))
-        array_compare(T1.interp(T2, s=0.5, shortest=True), SE2(0, 0, -math.pi + 0.05))
+        array_compare(T1.interp(T2, s=0.5, shortest=False)[0], SE2(0, 0, 0.05))
+        array_compare(T1.interp(T2, s=0.5, shortest=True)[0], SE2(0, 0, -math.pi + 0.05))
 
     def test_miscellany(self):
         TT = SE2(1, 2, 0.3)
