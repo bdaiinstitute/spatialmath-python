@@ -2,6 +2,7 @@
 # Copyright (c) 2000 Peter Corke
 # MIT Licence, see details in top-level file: LICENCE
 
+from functools import reduce
 import numpy as np
 import spatialmath.base as smb
 from spatialmath.baseposelist import BasePoseList
@@ -182,7 +183,8 @@ class BaseTwist(BasePoseList):
         """
         return self.__class__(-self.data[0])
 
-    def prod(self):
+    @classmethod
+    def prod(cls, twists) :
         r"""
         Product of twists (superclass method)
 
@@ -202,17 +204,18 @@ class BaseTwist(BasePoseList):
             >>> S.prod()
             >>> Twist3.Rx(0.9)
         """
-        if self.N == 2:
+        if cls.N == 2:
             log = smb.trlog2
             exp = smb.trexp2
         else:
             log = smb.trlog
             exp = smb.trexp
 
-        twprod = exp(self.data[0])
-        for tw in self.data[1:]:
-            twprod = twprod @ exp(tw)
-        return self.__class__(log(twprod))
+        exp_twprod = reduce(
+            lambda exp_twprod, exp_tw: exp_twprod @ exp_tw,
+            [exp(tw.A) for tw in twists],
+        )
+        return cls(log(exp_twprod))
 
     def __eq__(left, right):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """

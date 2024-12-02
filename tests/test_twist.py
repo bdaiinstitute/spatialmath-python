@@ -152,8 +152,7 @@ class TestTwist3d:
         x1 = Twist3(T1)
         x2 = Twist3(T2)
         
-        x = Twist3([x1, x2])
-        array_compare( x.prod().SE3(), T1 * T2)
+        array_compare(Twist3.prod([x1,x2]).SE3(), T1 * T2)
         
 
 class TestTwist2d:
@@ -284,5 +283,4 @@ class TestTwist2d:
         x1 = Twist2(T1)
         x2 = Twist2(T2)
         
-        x = Twist2([x1, x2])
-        array_compare( x.prod().SE2(), T1 * T2)
+        array_compare(Twist2.prod([x1, x2]).SE2(), T1 * T2)
