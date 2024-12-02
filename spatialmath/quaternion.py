@@ -175,10 +175,7 @@ class Quaternion(BasePoseList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).s
 
         """
-        if len(self) == 1:
-            return self._A[0]
-        else:
-            return np.array([q.s for q in self])
+        return self._A[0]
 
     @property
     def v(self) -> R3:
@@ -202,10 +199,7 @@ class Quaternion(BasePoseList):
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).v
 
         """
-        if len(self) == 1:
-            return self._A[1:4]
-        else:
-            return np.array([q.v for q in self])
+        return self._A[1:4]
 
     @property
     def vec(self) -> R4:
@@ -231,10 +225,7 @@ class Quaternion(BasePoseList):
             >>> Quaternion([1,2,3,4]).vec
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec
         """
-        if len(self) == 1:
-            return self._A
-        else:
-            return np.array([q._A for q in self])
+        return self._A
 
     @property
     def vec_xyzs(self) -> R4:
@@ -261,10 +252,7 @@ class Quaternion(BasePoseList):
             >>> Quaternion([1,2,3,4]).vec_xyzs
             >>> Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]]).vec_xyzs
         """
-        if len(self) == 1:
-            return np.roll(self._A, -1)
-        else:
-            return np.array([np.roll(q._A, -1) for q in self])
+        return np.roll(self._A, -1)
 
     @property
     def matrix(self) -> R4x4:
@@ -332,10 +320,7 @@ class Quaternion(BasePoseList):
 
         :seealso: :func:`~spatialmath.base.quaternions.qnorm`
         """
-        if len(self) == 1:
-            return smb.qnorm(self._A)
-        else:
-            return np.array([smb.qnorm(q._A) for q in self])
+        return smb.qnorm(self._A)
 
     def unit(self) -> UnitQuaternion:
         r"""
@@ -839,19 +824,8 @@ class Quaternion(BasePoseList):
             >>> q
         """
         name = type(self).__name__
-        if len(self) == 0:
-            return name + "([])"
-        elif len(self) == 1:
-            # need to indent subsequent lines of the native repr string by 4 spaces
-            return name + "(" + self._A.__repr__() + ")"
-        else:
-            # format this as a list of ndarrays
-            return (
-                name
-                + "([\n  "
-                + ",\n  ".join([v.__repr__() for v in self.data])
-                + " ])"
-            )
+        # need to indent subsequent lines of the native repr string by 4 spaces
+        return name + "(" + self._A.__repr__() + ")"
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -1097,10 +1071,7 @@ class UnitQuaternion(Quaternion):
             ``x[i]``. This is different to the MATLAB version where the i'th
             rotation matrix is ``x(:,:,i)``.
         """
-        if len(self) > 1:
-            return np.array([smb.q2r(q) for q in self.data])
-        else:
-            return smb.q2r(self._A)
+        return smb.q2r(self._A)
 
     @property
     def vec3(self) -> R3:
@@ -2059,10 +2030,7 @@ class UnitQuaternion(Quaternion):
 
         :see :func:`~spatialmath.base.transforms3d.tranimate` :func:`~spatialmath.base.transforms3d.trplot`
         """
-        if len(self) > 1:
-            return smb.tranimate([smb.q2r(q) for q in self.data], *args, **kwargs)
-        else:
-            return smb.tranimate(smb.q2r(self._A), *args, **kwargs)
+        return smb.tranimate(smb.q2r(self._A), *args, **kwargs)
 
     def rpy(
         self, unit: Optional[str] = "rad", order: Optional[str] = "zyx"
@@ -2106,10 +2074,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :meth:`SE3.RPY` :func:`~spatialmath.base.transforms3d.tr2rpy`
         """
-        if len(self) == 1:
-            return smb.tr2rpy(self.R, unit=unit, order=order)
-        else:
-            return np.array([smb.tr2rpy(q.R, unit=unit, order=order) for q in self])
+        return smb.tr2rpy(self.R, unit=unit, order=order)
 
     def eul(self, unit: Optional[str] = "rad") -> Union[R3, RNx3]:
         r"""
@@ -2142,10 +2107,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :meth:`SE3.Eul` :func:`~spatialmath.base.transforms3d.tr2eul`
         """
-        if len(self) == 1:
-            return smb.tr2eul(self.R, unit=unit)
-        else:
-            return np.array([smb.tr2eul(q.R, unit=unit) for q in self])
+        return smb.tr2eul(self.R, unit=unit)
 
     def angvec(self, unit: Optional[str] = "rad") -> Tuple[float, R3]:
         r"""
