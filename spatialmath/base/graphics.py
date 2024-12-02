@@ -327,7 +327,7 @@ try:
         return handles
 
     def plot_box(
-        *fmt: Optional[str],
+        *fmt: List[str],
         lbrt: Optional[ArrayLike4] = None,
         lrbt: Optional[ArrayLike4] = None,
         lbwh: Optional[ArrayLike4] = None,
