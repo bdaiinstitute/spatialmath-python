@@ -398,27 +398,18 @@ class Twist3(BaseTwist):
         """
         return (6,)
 
-    @property
-    def N(self):
-        """
-        Dimension of the object's group
+    # Dimension of the object's group
 
-        :return: dimension
-        :rtype: int
+    # Dimension of the group is 3 for ``Twist3`` and corresponds to the
+    # dimension of the space (3D in this case) to which these
+    # rigid-body motions apply.
 
-        Dimension of the group is 3 for ``Twist3`` and corresponds to the
-        dimension of the space (3D in this case) to which these
-        rigid-body motions apply.
+    # Example:
 
-        Example:
-
-        .. runblock:: pycon
-
-            >>> from spatialmath import Twist3
-            >>> x = Twist3()
-            >>> x.N
-        """
-        return 3
+    # >>> from spatialmath import Twist3
+    # >>> x = Twist3()
+    # >>> x.N
+    N = 3
 
     @property
     def v(self):
@@ -1356,27 +1347,18 @@ class Twist2(BaseTwist):
 
     # ------------------------ properties ---------------------------#
 
-    @property
-    def N(self):
-        """
-        Dimension of the object's group
+    # Dimension of the object's group
 
-        :return: dimension
-        :rtype: int
+    # Dimension of the group is 2 for ``Twist2`` and corresponds to the
+    # dimension of the space (2D in this case) to which these
+    # rigid-body motions apply.
 
-        Dimension of the group is 2 for ``Twist2`` and corresponds to the
-        dimension of the space (2D in this case) to which these
-        rigid-body motions apply.
+    # Example:
 
-        Example:
-
-        .. runblock:: pycon
-
-            >>> from spatialmath import Twist2
-            >>> x = Twist2()
-            >>> x.N
-        """
-        return 2
+    # >>> from spatialmath import Twist2
+    # >>> x = Twist2()
+    # >>> x.N
+    N = 2
 
     @property
     def v(self):
