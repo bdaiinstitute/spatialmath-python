@@ -180,10 +180,7 @@ class SO2(BasePoseMatrix):
             - for elements of SO(2) this is the transpose.
             - if `x` contains a sequence, returns an `SO2` with a sequence of inverses
         """
-        if len(self) == 1:
-            return SO2(self.A.T)
-        else:
-            return SO2([x.T for x in self.A])
+        return SO2(self.A.T)
 
     @property
     def R(self):
@@ -217,10 +214,7 @@ class SO2(BasePoseMatrix):
         else:
             conv = 1.0
 
-        if len(self) == 1:
-            return conv * math.atan2(self.A[1, 0], self.A[0, 0])
-        else:
-            return [conv * math.atan2(x.A[1, 0], x.A[0, 0]) for x in self]
+        return conv * math.atan2(self.A[1, 0], self.A[0, 0])
 
     def SE2(self):
         """
@@ -523,10 +517,7 @@ class SE2(SO2):
         - 1, return an ndarray with shape=(2,)
         - N>1, return an ndarray with shape=(N,2)
         """
-        if len(self) == 1:
-            return self.A[:2, 2]
-        else:
-            return np.array([x[:2, 2] for x in self.A])
+        return self.A[:2, 2]
 
     @property
     def x(self):
@@ -543,10 +534,7 @@ class SE2(SO2):
         - 1, return an float
         - N>1, return an ndarray with shape=(N,)
         """
-        if len(self) == 1:
-            return self.A[0, 2]
-        else:
-            return np.array([v[0, 2] for v in self.A])
+        return self.A[0, 2]
 
     @property
     def y(self):
@@ -563,10 +551,7 @@ class SE2(SO2):
         - 1, return an float
         - N>1, return an ndarray with shape=(N,)
         """
-        if len(self) == 1:
-            return self.A[1, 2]
-        else:
-            return np.array([v[1, 2] for v in self.A])
+        return self.A[1, 2]
 
     def xyt(self):
         r"""
@@ -581,10 +566,7 @@ class SE2(SO2):
         - 1, return an ndarray with shape=(3,)
         - N>1, return an ndarray with shape=(N,3)
         """
-        if len(self) == 1:
-            return smb.tr2xyt(self.A)
-        else:
-            return [smb.tr2xyt(x) for x in self.A]
+        return smb.tr2xyt(self.A)
 
     def inv(self):
         r"""
@@ -601,10 +583,7 @@ class SE2(SO2):
             - if `x` contains a sequence, returns an `SE2` with a sequence of inverses
 
         """
-        if len(self) == 1:
-            return SE2(smb.rt2tr(self.R.T, -self.R.T @ self.t), check=False)
-        else:
-            return SE2([smb.rt2tr(x.R.T, -x.R.T @ x.t) for x in self], check=False)
+        return SE2(smb.rt2tr(self.R.T, -self.R.T @ self.t), check=False)
 
     def SE3(self, z=0):
         """
