@@ -15,7 +15,7 @@ import numpy.testing as nt
 import spatialmath.base as smb
 
 
-class Polygon2Test:
+class TestPolygon2:
     # Primitives
     def test_constructor1(self):
         p = Polygon2([(1, 2), (3, 2), (2, 4)])
@@ -108,7 +108,7 @@ class Polygon2Test:
     # p.move(SE2(0, 0, 0.7))
 
 
-class Line2Test:
+class TestLine2:
     def test_constructor(self):
         l = Line2([1, 2, 3])
         assert str(l) == "Line2: [1. 2. 3.]"
@@ -140,7 +140,7 @@ class Line2Test:
         assert l1.intersect_segment((2, 1), (2, -1))
 
 
-class EllipseTest:
+class TestEllipse:
     def test_constructor(self):
         E = np.array([[1, 1], [1, 3]])
         e = Ellipse(E=E)

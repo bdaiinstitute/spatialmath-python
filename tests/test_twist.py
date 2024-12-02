@@ -26,7 +26,7 @@ def array_compare(x, y):
     nt.assert_array_almost_equal(x, y)
 
 
-class Twist3dTest:
+class TestTwist3d:
     
     def test_constructor(self):
         
@@ -193,7 +193,7 @@ class Twist3dTest:
         array_compare( x.prod().SE3(), T1 * T2)
         
 
-class Twist2dTest:
+class TestTwist2d:
     
     def test_constructor(self):
         
