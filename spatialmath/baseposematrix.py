@@ -323,15 +323,9 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: not supported
         """
         if type(self).__name__ in ("SO3", "SE3"):
-            if len(self) == 1:
-                return np.linalg.det(self.A[:3, :3])
-            else:
-                return [np.linalg.det(T[:3, :3]) for T in self.data]
+            return np.linalg.det(self.A[:3, :3])
         elif type(self).__name__ in ("SO2", "SE2"):
-            if len(self) == 1:
-                return np.linalg.det(self.A[:2, :2])
-            else:
-                return [np.linalg.det(T[:2, :2]) for T in self.data]
+            return np.linalg.det(self.A[:2, :2])
 
     def log(self, twist: Optional[bool] = False) -> Union[NDArray, List[NDArray]]:
         """
@@ -422,9 +416,6 @@ class BasePoseMatrix(BasePoseList):
         else:
             s = smb.getvector(s)
             s = np.clip(s, 0, 1)
-
-        if len(self) > 1:
-            raise ValueError("start pose must be a singleton")
 
         if end is not None:
             if len(end) > 1:
@@ -737,19 +728,8 @@ class BasePoseMatrix(BasePoseList):
                 return smb.removesmall(x)
 
         name = type(self).__name__
-        if len(self) == 0:
-            return name + "([])"
-        elif len(self) == 1:
-            # need to indent subsequent lines of the native repr string by 4 spaces
-            return name + "(" + trim(self.A).__repr__().replace("\n", "\n    ") + ")"
-        else:
-            # format this as a list of ndarrays
-            return (
-                name
-                + "([\n"
-                + ",\n".join([trim(v).__repr__() for v in self.data])
-                + " ])"
-            )
+        # need to indent subsequent lines of the native repr string by 4 spaces
+        return name + "(" + trim(self.A).__repr__().replace("\n", "\n    ") + ")"
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -768,11 +748,7 @@ class BasePoseMatrix(BasePoseList):
         """
         # see https://ipython.org/ipython-doc/stable/api/generated/IPython.lib.pretty.html
 
-        if len(self) == 1:
-            p.text(str(self))
-        else:
-            for i, x in enumerate(self):
-                p.text(f"{i}:\n{str(x)}")
+        p.text(str(self))
 
     def __str__(self) -> str:
         """
@@ -960,18 +936,11 @@ class BasePoseMatrix(BasePoseList):
         if start is not None:
             start = start.A
 
-        if len(self) > 1:
-            # trajectory case
-            if self.N == 2:
-                return smb.tranimate2(self.data, *args, **kwargs)
-            else:
-                return smb.tranimate(self.data, *args, **kwargs)
+        # singleton case
+        if self.N == 2:
+            return smb.tranimate2(self.A, start=start, *args, **kwargs)
         else:
-            # singleton case
-            if self.N == 2:
-                return smb.tranimate2(self.A, start=start, *args, **kwargs)
-            else:
-                return smb.tranimate(self.A, start=start, *args, **kwargs)
+            return smb.tranimate(self.A, start=start, *args, **kwargs)
 
     # ------------------------------------------------------------------------ #
     def prod(self, norm=False, check=True) -> Self:
