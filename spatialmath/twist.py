@@ -1506,10 +1506,7 @@ class Twist2(BaseTwist):
             >>> se
             >>> smb.trexp2(se)
         """
-        if len(self) == 1:
-            return smb.skewa(self.S)
-        else:
-            return [smb.skewa(x.S) for x in self]
+        return smb.skewa(self.S)
 
     def exp(self, theta=1, unit="rad"):
         r"""
@@ -1548,12 +1545,7 @@ class Twist2(BaseTwist):
 
         theta = smb.getunit(theta, unit)
 
-        if len(self) == 1:
-            return SE2([smb.trexp2(self.S * t) for t in theta], check=False)
-        elif len(self) == len(theta):
-            return SE2([smb.trexp2(s * t) for s, t in zip(self.S, theta)], check=False)
-        else:
-            raise ValueError("length mismatch")
+        return SE2(smb.trexp2(self.S * theta), check=False)
 
     def unit(self):
         """
@@ -1762,16 +1754,7 @@ class Twist2(BaseTwist):
 
         """
 
-        if len(self) == 1:
-            return "Twist2([{:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
-        else:
-            return (
-                "Twist2([\n"
-                + ",\n".join(
-                    ["  [{:.5g}, {:.5g}, {:.5g}}]".format(*list(tw.S)) for tw in self]
-                )
-                + "\n])"
-            )
+        return "Twist2([{:.5g}, {:.5g}, {:.5g}])".format(*list(self.S))
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -1784,10 +1767,4 @@ class Twist2(BaseTwist):
         itself.
 
         """
-        if len(self) == 1:
-            p.text(str(self))
-        else:
-            for i, x in enumerate(self):
-                if i > 0:
-                    p.break_()
-                p.text(f"{i:3d}: {str(x)}")
+        p.text(str(self))
