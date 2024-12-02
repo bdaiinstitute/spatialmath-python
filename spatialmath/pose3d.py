@@ -149,10 +149,7 @@ class SO3(BasePoseMatrix):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[:3, :3]  # type: ignore
-        else:
-            return np.array([x[:3, :3] for x in self.A])  # type: ignore
+        return self.A[:3, :3]  # type: ignore
 
     @property
     def n(self) -> R3:
@@ -166,8 +163,6 @@ class SO3(BasePoseMatrix):
         *normal vector*.  It is parallel to the x-axis of the frame defined by
         this pose.
         """
-        if len(self) != 1:
-            raise ValueError("can only determine n-vector for singleton pose")
         return self.A[:3, 0]  # type: ignore
 
     @property
@@ -182,8 +177,6 @@ class SO3(BasePoseMatrix):
         the *orientation vector*.  It is parallel to the y-axis of the frame
         defined by this pose.
         """
-        if len(self) != 1:
-            raise ValueError("can only determine o-vector for singleton pose")
         return self.A[:3, 1]  # type: ignore
 
     @property
@@ -198,8 +191,6 @@ class SO3(BasePoseMatrix):
         *approach vector*.  It is parallel to the z-axis of the frame defined by
         this pose.
         """
-        if len(self) != 1:
-            raise ValueError("can only determine a-vector for singleton pose")
         return self.A[:3, 2]  # type: ignore
 
     # ------------------------------------------------------------------------ #
@@ -215,10 +206,7 @@ class SO3(BasePoseMatrix):
         account the matrix structure.  For an SO(3) matrix the inverse is the
         transpose.
         """
-        if len(self) == 1:
-            return SO3(self.A.T, check=False)  # type: ignore
-        else:
-            return SO3([x.T for x in self.A], check=False)
+        return SO3(self.A.T, check=False)  # type: ignore
 
     def eul(self, unit: str = "rad", flip: bool = False) -> Union[R3, RNx3]:
         r"""
@@ -241,10 +229,7 @@ class SO3(BasePoseMatrix):
         :seealso: :func:`~spatialmath.pose3d.SE3.Eul`, :func:`~spatialmath.base.transforms3d.tr2eul`
         :SymPy: not supported
         """
-        if len(self) == 1:
-            return smb.tr2eul(self.A, unit=unit, flip=flip)  # type: ignore
-        else:
-            return np.array([base.tr2eul(x, unit=unit, flip=flip) for x in self.A])
+        return smb.tr2eul(self.A, unit=unit, flip=flip)  # type: ignore
 
     def rpy(self, unit: str = "rad", order: str = "zyx") -> Union[R3, RNx3]:
         """
@@ -279,10 +264,7 @@ class SO3(BasePoseMatrix):
         :seealso: :func:`~spatialmath.pose3d.SE3.RPY`, :func:`~spatialmath.base.transforms3d.tr2rpy`
         :SymPy: not supported
         """
-        if len(self) == 1:
-            return smb.tr2rpy(self.A, unit=unit, order=order)  # type: ignore
-        else:
-            return np.array([smb.tr2rpy(x, unit=unit, order=order) for x in self.A])
+        return smb.tr2rpy(self.A, unit=unit, order=order)  # type: ignore
 
     def angvec(self, unit: str = "rad") -> Tuple[float, R3]:
         r"""
@@ -1045,8 +1027,6 @@ class SE3(SO3):
 
     @SO3.R.setter
     def R(self, r: SO3Array) -> None:
-        if len(self) > 1:
-            raise ValueError("can only assign rotation to length 1 object")
         so3 = SO3(r)
         self.A[:3, :3] = so3.R
 
@@ -1073,15 +1053,10 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[:3, 3]
-        else:
-            return np.array([x[:3, 3] for x in self.A])
+        return self.A[:3, 3]
 
     @t.setter
     def t(self, v: ArrayLike3):
-        if len(self) > 1:
-            raise ValueError("can only assign translation to length 1 object")
         v = smb.getvector(v, 3)
         self.A[:3, 3] = v
 
@@ -1107,15 +1082,10 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[0, 3]
-        else:
-            return np.array([v[0, 3] for v in self.A])
+        return self.A[0, 3]
 
     @x.setter
     def x(self, x: float):
-        if len(self) > 1:
-            raise ValueError("can only assign elements to length 1 object")
         self.A[0, 3] = x
 
     @property
@@ -1140,15 +1110,10 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[1, 3]
-        else:
-            return np.array([v[1, 3] for v in self.A])
+        return self.A[1, 3]
 
     @y.setter
     def y(self, y: float):
-        if len(self) > 1:
-            raise ValueError("can only assign elements to length 1 object")
         self.A[1, 3] = y
 
     @property
@@ -1173,15 +1138,10 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return self.A[2, 3]
-        else:
-            return np.array([v[2, 3] for v in self.A])
+        return self.A[2, 3]
 
     @z.setter
     def z(self, z: float):
-        if len(self) > 1:
-            raise ValueError("can only assign elements to length 1 object")
         self.A[2, 3] = z
 
     # ------------------------------------------------------------------------ #
@@ -1214,10 +1174,7 @@ class SE3(SO3):
 
         :SymPy: supported
         """
-        if len(self) == 1:
-            return SE3(smb.trinv(self.A), check=False)
-        else:
-            return SE3([smb.trinv(x) for x in self.A], check=False)
+        return SE3(smb.trinv(self.A), check=False)
 
     def yaw_SE2(self, order: str = "zyx") -> SE2:
         """
