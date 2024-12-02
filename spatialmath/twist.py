@@ -76,10 +76,7 @@ class BaseTwist(BasePoseList):
             - if ``len(X)`` > 1 then return a list of vectors.
         """
         # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
+        return self.data[0]
 
     @property
     def isprismatic(self):
@@ -102,10 +99,7 @@ class BaseTwist(BasePoseList):
             >>> x.isprismatic
 
         """
-        if len(self) == 1:
-            return smb.iszerovec(self.w)
-        else:
-            return [smb.iszerovec(x.w) for x in self.data]
+        return smb.iszerovec(self.w)
 
     @property
     def isrevolute(self):
@@ -128,10 +122,7 @@ class BaseTwist(BasePoseList):
             >>> x.isrevolute
 
         """
-        if len(self) == 1:
-            return smb.iszerovec(self.v)
-        else:
-            return [smb.iszerovec(x.v) for x in self.data]
+        return smb.iszerovec(self.v)
 
     @property
     def isunit(self):
@@ -154,10 +145,7 @@ class BaseTwist(BasePoseList):
             >>> S.isunit()
 
         """
-        if len(self) == 1:
-            return smb.isunitvec(self.S)
-        else:
-            return [smb.isunitvec(x) for x in self.data]
+        return smb.isunitvec(self.S)
 
     @property
     def theta(self):
@@ -915,10 +903,7 @@ class Twist3(BaseTwist):
             >>> se
             >>> smb.trexp(se)
         """
-        if len(self) == 1:
-            return smb.skewa(self.S)
-        else:
-            return [smb.skewa(x.S) for x in self]
+        return smb.skewa(self.S)
 
     @property
     def pitch(self):
@@ -1013,17 +998,8 @@ class Twist3(BaseTwist):
 
         theta = smb.getunit(theta, unit)
 
-        if len(theta) == 1:
-            # theta is a scalar
-            return SE3(smb.trexp(self.S * theta))
-        else:
-            # theta is a vector
-            if len(self) == 1:
-                return SE3([smb.trexp(self.S * t) for t in theta])
-            elif len(self) == len(theta):
-                return SE3([smb.trexp(S * t) for S, t in zip(self.data, theta)])
-            else:
-                raise ValueError("length of twist and theta not consistent")
+        # theta is a scalar
+        return SE3(smb.trexp(self.S * theta))
 
     def exp(self, theta=1, unit="rad"):
         """
@@ -1071,12 +1047,7 @@ class Twist3(BaseTwist):
 
         theta = smb.getunit(theta, unit)
 
-        if len(self) == 1:
-            return SE3([smb.trexp(self.S * t) for t in theta], check=False)
-        elif len(self) == len(theta):
-            return SE3([smb.trexp(s * t) for s, t in zip(self.S, theta)], check=False)
-        else:
-            raise ValueError("length mismatch")
+        return SE3(smb.trexp(self.S * theta), check=False)
 
     # ------------------------- arithmetic -------------------------------#
 
@@ -1212,25 +1183,9 @@ class Twist3(BaseTwist):
             >>> a
 
         """
-        if len(self) == 0:
-            return "Twist([])"
-        elif len(self) == 1:
-            return "Twist3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(
-                *list(self.S)
-            )
-        else:
-            return (
-                "Twist3([\n"
-                + ",\n".join(
-                    [
-                        "  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(
-                            *list(tw)
-                        )
-                        for tw in self.data
-                    ]
-                )
-                + "\n])"
-            )
+        return "Twist3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(
+            *list(self.S)
+        )
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -1243,13 +1198,7 @@ class Twist3(BaseTwist):
         itself.
 
         """
-        if len(self) == 1:
-            p.text(str(self))
-        else:
-            for i, x in enumerate(self):
-                if i > 0:
-                    p.break_()
-                p.text(f"{i:3d}: {str(x)}")
+        p.text(str(self))
 
 
 # ======================================================================== #
