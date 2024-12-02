@@ -438,14 +438,7 @@ class Line3(BasePoseList):
     @property
     def A(self) -> R6:
         # get the underlying numpy array
-        if len(self.data) == 1:
-            return self.data[0]
-        else:
-            return self.data
-
-    def __getitem__(self, i):
-        # print('getitem', i, 'class', self.__class__)
-        return self.__class__(self.data[i])
+        return self.data[0]
 
     @property
     def v(self) -> R3:
@@ -1265,23 +1258,9 @@ class Line3(BasePoseList):
         For a multi-valued ``Line3``, one line per value in ``Line3``.
         """
 
-        if len(self) == 1:
-            return "Line3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(
-                *list(self.A)
-            )
-        else:
-            return (
-                "Line3([\n"
-                + ",\n".join(
-                    [
-                        "  [{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}]".format(
-                            *list(tw)
-                        )
-                        for tw in self.data
-                    ]
-                )
-                + "\n])"
-            )
+        return "Line3([{:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}, {:.5g}])".format(
+            *list(self.A)
+        )
 
     def _repr_pretty_(self, p, cycle):
         """
@@ -1298,29 +1277,7 @@ class Line3(BasePoseList):
             In [1]: x
 
         """
-        if len(self) == 1:
-            p.text(str(self))
-        else:
-            for i, x in enumerate(self):
-                if i > 0:
-                    p.break_()
-                p.text(f"{i:3d}: {str(x)}")
-
-    #         function z = side(self1, pl2)
-    #             Plucker.side Plucker side operator
-    #
-    #             # X = SIDE(P1, P2) is the side operator which is zero whenever
-    #             # the lines P1 and P2 intersect or are parallel.
-    #
-    #             # See also Plucker.or.
-    #
-    #             if ~isa(self2, 'Plucker')
-    #                 error('SMTB:Plucker:badarg', 'both arguments to | must be Plucker objects');
-    #             end
-    #             L1 = pl1.line(); L2 = pl2.line();
-    #
-    #             z = L1([1 5 2 6 3 4]) * L2([5 1 6 2 4 3])';
-    #         end
+        p.text(str(self))
 
     def side(self, other: Line3) -> float:
         """
