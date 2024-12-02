@@ -180,7 +180,7 @@ class BaseTwist(BasePoseList):
             >>> S.inv()
             >>> S * S.inv()
         """
-        return self.__class__([-t for t in self.data])
+        return self.__class__(-self.data[0])
 
     def prod(self):
         r"""
@@ -950,7 +950,7 @@ class Twist3(BaseTwist):
             >>> S = Twist3(T)
             >>> S.line()
         """
-        return Line3([Line3(-tw.v + tw.pitch * tw.w, tw.w) for tw in self])
+        return Line3(-self.v + self.pitch * self.w, self.w)
 
     @property
     def pole(self):
@@ -1156,13 +1156,8 @@ class Twist3(BaseTwist):
             >>> x = Twist3.R([1,2,3], [4,5,6])
             >>> print(x)
         """
-        return "\n".join(
-            [
-                "({:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g})".format(
-                    *list(smb.removesmall(tw.S))
-                )
-                for tw in self
-            ]
+        return "({:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g})".format(
+            *list(smb.removesmall(self.S))
         )
 
     def __repr__(self):
@@ -1733,7 +1728,7 @@ class Twist2(BaseTwist):
             >>> x = Twist2([1,2,3])
             >>> print(x)
         """
-        return "\n".join(["({:.5g} {:.5g}; {:.5g})".format(*list(tw.S)) for tw in self])
+        return "({:.5g} {:.5g}; {:.5g})".format(*list(self.S))
 
     def __repr__(self):
         """
