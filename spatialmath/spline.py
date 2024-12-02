@@ -20,7 +20,7 @@ from spatialmath.base.transforms3d import tranimate
 
 class SplineSE3(ABC):
     def __init__(self) -> None:
-        self.control_poses: SE3
+        self.control_poses: List[SE3]
 
     @abstractmethod
     def __call__(self, t: float) -> SE3:
