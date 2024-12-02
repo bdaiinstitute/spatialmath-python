@@ -15,7 +15,7 @@ import pytest
 import sys
 
 
-class Line3Test:
+class TestLine3:
     # Primitives
     def test_constructor1(self):
         # construct from 6-vector
