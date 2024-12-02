@@ -139,7 +139,7 @@ class TestLine3:
         ax.set_ylim3d(-10, 10)
         ax.set_zlim3d(-10, 10)
 
-        L.plot(color="red", linewidth=2)
+        Line3.plot([L], color="red", linewidth=2)
 
     def test_eq(self):
         w = np.r_[1, 2, 3]
