@@ -1242,15 +1242,12 @@ class SE3(SO3):
               to the optic axis and x-axis parallel to the pixel rows.
 
         """
-        if len(self) == 1:
-            if order == "zyx":
-                return SE2(self.x, self.y, self.rpy(order = order)[2])
-            elif order == "xyz":
-                return SE2(self.z, self.y, self.rpy(order = order)[2])
-            elif order == "yxz":
-                return SE2(self.z, self.x, self.rpy(order = order)[2])
-        else:
-            return SE2([e.yaw_SE2() for e in self])
+        if order == "zyx":
+            return SE2(self.x, self.y, self.rpy(order = order)[2])
+        elif order == "xyz":
+            return SE2(self.z, self.y, self.rpy(order = order)[2])
+        elif order == "yxz":
+            return SE2(self.z, self.x, self.rpy(order = order)[2])
 
     def delta(self, X2: Optional[SE3] = None) -> R6:
         r"""
