@@ -907,9 +907,6 @@ class Line3(BasePoseList):
         # https://web.cs.iastate.edu/~cs577/handouts/plucker-coordinates.pdf
         # but (20) (21) is the negative of correct answer
 
-        points = []
-        dists = []
-
         def intersection(line1, line2):
             with np.errstate(divide="ignore", invalid="ignore"):
                 # compute the distance between all pairs of lines
@@ -929,30 +926,7 @@ class Line3(BasePoseList):
 
             return p1, np.linalg.norm(p1 - p2)
 
-        if len(l1) == len(l2):
-            # two sets of lines of equal length
-            for line1, line2 in zip(l1, l2):
-                point, dist = intersection(line1, line2)
-                points.append(point)
-                dists.append(dist)
-
-        elif len(l1) == 1 and len(l2) > 1:
-            for line in l2:
-                point, dist = intersection(l1, line)
-                points.append(point)
-                dists.append(dist)
-
-        elif len(l1) > 1 and len(l2) == 1:
-            for line in l1:
-                point, dist = intersection(line, l2)
-                points.append(point)
-                dists.append(dist)
-
-        if len(points) == 1:
-            # 1D case for self or line
-            return points[0], dists[0]
-        else:
-            return np.array(points).T, np.array(dists)
+        return intersection(line1, line2)
 
     def closest_to_point(self, x: ArrayLike3) -> Tuple[R3, float]:
         """
@@ -1203,8 +1177,9 @@ class Line3(BasePoseList):
     #  PLOT AND DISPLAY
     # ------------------------------------------------------------------------- #
 
+    @staticmethod
     def plot(
-        self,
+        lines: List[Self],
         *pos,
         bounds: Optional[ArrayLike] = None,
         ax: Optional[plt.Axes] = None,
@@ -1244,16 +1219,16 @@ class Line3(BasePoseList):
             ax.set_ylim(bounds[2:4])
             ax.set_zlim(bounds[4:6])
 
-        lines = []
-        for line in self:
+        plot_lines = []
+        for line in lines:
             P, lam = line.intersect_volume(bounds)
 
             if len(lam) > 0:
                 l = ax.plot(
                     tuple(P[0, :]), tuple(P[1, :]), tuple(P[2, :]), *pos, **kwargs
                 )
-                lines.append(l)
-        return lines
+                plot_lines.append(l)
+        return plot_lines
 
     def __str__(self) -> str:
         """
@@ -1274,13 +1249,8 @@ class Line3(BasePoseList):
 
         """
 
-        return "\n".join(
-            [
-                "{{ {:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}}}".format(
-                    *list(base.removesmall(x.vec))
-                )
-                for x in self
-            ]
+        return "{{ {:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}}}".format(
+            *list(base.removesmall(self.vec))
         )
 
     def __repr__(self) -> str:
