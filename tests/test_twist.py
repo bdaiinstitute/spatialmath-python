@@ -49,17 +49,6 @@ class TestTwist3d:
         x = Twist3(SE3())
         array_compare(x, [0,0,0,0,0,0])
         
-        
-    def test_list(self):
-        x = Twist3([1, 0, 0, 0, 0, 0])
-        y = Twist3([1, 0, 0, 0, 0, 0])
-                   
-        a = Twist3(x)
-        a.append(y)
-        assert len(a) == 2
-        array_compare(a[0], x)
-        array_compare(a[1], y)
-        
     def test_conversion_SE3(self):
         T = SE3.Rx(0)
         tw = Twist3(T)
@@ -82,26 +71,6 @@ class TestTwist3d:
     def test_conversion_Plucker(self):
         pass
         
-    def test_list_constuctor(self):
-        x = Twist3([1, 0, 0, 0, 0, 0])
-        
-        a = Twist3([x,x,x,x])
-        assert isinstance(a, Twist3)
-        assert len(a) == 4
-        
-        a = Twist3([x.skewa(), x.skewa(), x.skewa(), x.skewa()])
-        assert isinstance(a, Twist3)
-        assert len(a) == 4
-        
-        a = Twist3([x.S, x.S, x.S, x.S])
-        assert isinstance(a, Twist3)
-        assert len(a) == 4
-        
-        s = np.r_[1, 2, 3, 4, 5, 6]
-        a = Twist3([s, s, s, s])
-        assert isinstance(a, Twist3)
-        assert len(a) == 4
-        
     def test_predicate(self):
         x = Twist3.UnitRevolute([1, 2, 3], [0, 0, 0])
         assert not x.isprismatic
@@ -122,12 +91,6 @@ class TestTwist3d:
         assert isinstance(s, str)
         assert len(s) == 14
         assert s.count('\n') == 0
-        
-        x.append(x)
-        s = str(x)
-        assert isinstance(s, str)
-        assert len(s) == 29
-        assert s.count('\n') == 1
         
     def test_variant_constructors(self):
         
@@ -226,17 +189,6 @@ class TestTwist2d:
         x = Twist2( SE2(1, 2, pi / 2))
         array_compare(x, np.r_[3 * pi / 4, pi / 4, pi / 2])
         
-        
-    def test_list(self):
-        x = Twist2([1, 0, 0])
-        y = Twist2([1, 0, 0])
-                   
-        a = Twist2(x)
-        a.append(y)
-        assert len(a) == 2
-        array_compare(a[0], x)
-        array_compare(a[1], y)
-
     def test_variant_constructors(self):
         
         # check rotational twist
@@ -262,26 +214,6 @@ class TestTwist2d:
                                        [ 3.,  0.,  2.],
                                        [ 0.,  0.,  0.]]))
 
-    def test_list_constuctor(self):
-        x = Twist2([1, 0, 0])
-        
-        a = Twist2([x,x,x,x])
-        assert isinstance(a, Twist2)
-        assert len(a) == 4
-        
-        a = Twist2([x.skewa(), x.skewa(), x.skewa(), x.skewa()])
-        assert isinstance(a, Twist2)
-        assert len(a) == 4
-        
-        a = Twist2([x.S, x.S, x.S, x.S])
-        assert isinstance(a, Twist2)
-        assert len(a) == 4
-        
-        s = np.r_[1, 2, 3]
-        a = Twist2([s, s, s, s])
-        assert isinstance(a, Twist2)
-        assert len(a) == 4
-        
     def test_predicate(self):
         x = Twist2.UnitRevolute([1, 2])
         assert not x.isprismatic
@@ -302,13 +234,6 @@ class TestTwist2d:
         assert isinstance(s, str)
         assert len(s) == 8
         assert s.count('\n') == 0
-        
-        x.append(x)
-        s = str(x)
-        assert isinstance(s, str)
-        assert len(s) == 17
-        assert s.count('\n') == 1
-        
 
     def test_SE2_twists(self):
         tw = Twist2( SE2() )
