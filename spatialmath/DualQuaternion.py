@@ -75,7 +75,7 @@ class DualQuaternion:
     @classmethod
     def Pure(cls, x: ArrayLike3) -> Self:
         x = base.getvector(x, 3)
-        return cls(UnitQuaternion(), Quaternion.Pure(x))
+        return cls(UnitQuaternion.identity(), Quaternion.Pure(x))
 
     def __repr__(self) -> str:
         return str(self)

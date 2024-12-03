@@ -32,8 +32,6 @@ def qcompare(x, y):
 
 class TestUnitQuaternion:
     def test_constructor_variants(self):
-        nt.assert_array_almost_equal(UnitQuaternion().vec, np.r_[1, 0, 0, 0])
-
         nt.assert_array_almost_equal(
             UnitQuaternion.Rx(90, "deg").vec, np.r_[1, 1, 0, 0] / math.sqrt(2)
         )
@@ -67,8 +65,6 @@ class TestUnitQuaternion:
 
 
     def test_constructor(self):
-        qcompare(UnitQuaternion(), [1, 0, 0, 0])
-
         # from S
         qcompare(UnitQuaternion([1, 0, 0, 0]), np.r_[1, 0, 0, 0])
         qcompare(UnitQuaternion([0, 1, 0, 0]), np.r_[0, 1, 0, 0])
@@ -156,7 +152,7 @@ class TestUnitQuaternion:
             UnitQuaternion(R, check=False)
 
     def test_string(self):
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         s = str(u)
         assert isinstance(s, str)
@@ -169,7 +165,7 @@ class TestUnitQuaternion:
         assert s.count("\n") == 2
 
     def test_properties(self):
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         # s,v
         nt.assert_array_almost_equal(UnitQuaternion([1, 0, 0, 0]).s, 1)
@@ -329,7 +325,7 @@ class TestUnitQuaternion:
 
     def test_resulttype(self):
         q = Quaternion([2, 0, 0, 0])
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         assert isinstance(q * q, Quaternion)
         assert isinstance(q * u, Quaternion)
@@ -371,7 +367,7 @@ class TestUnitQuaternion:
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         # quat-quat product
         # scalar x scalar
@@ -402,7 +398,7 @@ class TestUnitQuaternion:
     #     rx = UnitQuaternion.Rx(pi/2)
     #     ry = UnitQuaternion.Ry(pi/2)
     #     rz = UnitQuaternion.Rz(pi/2)
-    #     u = UnitQuaternion()
+    #     u = UnitQuaternion.identity()
 
     #     # quat-quat product
     #     # scalar x scalar
@@ -427,7 +423,7 @@ class TestUnitQuaternion:
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         # scalar / scalar
         # implicity tests inv
@@ -507,7 +503,7 @@ class TestUnitQuaternion:
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         # norm
         qcompare(rx.norm(), 1)
@@ -543,7 +539,7 @@ class TestUnitQuaternion:
         rx = UnitQuaternion.Rx(pi / 2)
         ry = UnitQuaternion.Ry(pi / 2)
         rz = UnitQuaternion.Rz(pi / 2)
-        u = UnitQuaternion()
+        u = UnitQuaternion.identity()
 
         q = UnitQuaternion.RPY([0.2, 0.3, 0.4])
 
@@ -586,19 +582,19 @@ class TestUnitQuaternion:
         # TODO interp
 
     def test_increment(self):
-        q = UnitQuaternion()
+        q = UnitQuaternion.identity()
 
         q.increment([0, 0, 0])
-        qcompare(q, UnitQuaternion())
+        qcompare(q, UnitQuaternion.identity())
 
         q.increment([0, 0, 0], normalize=True)
-        qcompare(q, UnitQuaternion())
+        qcompare(q, UnitQuaternion.identity())
 
         for i in range(10):
             q.increment([0.1, 0, 0])
         qcompare(q, UnitQuaternion.Rx(1))
 
-        q = UnitQuaternion()
+        q = UnitQuaternion.identity()
         for i in range(10):
             q.increment([0.1, 0, 0], normalize=True)
         qcompare(q, UnitQuaternion.Rx(1))
@@ -624,7 +620,7 @@ class TestUnitQuaternion:
         assert not rx == ry
 
     def test_dot(self):
-        q = UnitQuaternion()
+        q = UnitQuaternion.identity()
         omega = np.r_[1, 2, 3]
 
         nt.assert_array_almost_equal(q.dot(omega), np.r_[0, omega / 2])
@@ -670,12 +666,6 @@ class TestUnitQuaternion:
 
 class TestQuaternion:
     def test_constructor(self):
-        q = Quaternion()
-        assert len(q) == 1
-        assert isinstance(q, Quaternion)
-
-        nt.assert_array_almost_equal(Quaternion().vec, [0, 0, 0, 0])
-
         # from S
         nt.assert_array_almost_equal(Quaternion([1, 0, 0, 0]).vec, [1, 0, 0, 0])
         nt.assert_array_almost_equal(Quaternion([0, 1, 0, 0]).vec, [0, 1, 0, 0])
@@ -719,7 +709,7 @@ class TestQuaternion:
         # tc.verifyError( @() Quaternion([1, 2, 3]), 'SMTB:Quaternion:badarg')
 
     def test_string(self):
-        u = Quaternion()
+        u = Quaternion.identity()
 
         s = str(u)
         assert isinstance(s, str)
@@ -904,7 +894,7 @@ class TestQuaternion:
 
         # unit
         qu = q.unit()
-        uu = UnitQuaternion()
+        uu = UnitQuaternion.identity()
         assert isinstance(q, Quaternion)
         nt.assert_array_almost_equal(qu.vec, v / np.linalg.norm(v))
 
