@@ -578,6 +578,10 @@ class SpatialInertia(BasePoseList):
 
         self.data = [I]
 
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
+
     @staticmethod
     def _identity():
         return np.zeros((6, 6))

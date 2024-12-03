@@ -134,3 +134,6 @@ class TestSpatialVector:
     )
     def test_identity(self, cls):
         nt.assert_equal(cls.identity().A, np.zeros((6,)))
+
+    def test_spatial_inertia_identity(self):
+        nt.assert_equal(SpatialInertia.identity().A, np.zeros((6,6)))
