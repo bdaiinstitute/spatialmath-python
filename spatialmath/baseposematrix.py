@@ -127,18 +127,6 @@ class BasePoseMatrix(BasePoseList):
 
     __array_ufunc__ = None  # allow pose matrices operators with NumPy values
 
-    def __new__(cls, *args, **kwargs):
-        """
-        Create the subclass instance (superclass method)
-
-        Create a new instance and call the superclass initializer to enable the
-        ``UserList`` capabilities.
-        """
-
-        pose = super(BasePoseMatrix, cls).__new__(cls)  # create a new instance
-        super().__init__(pose)  # initialize UserList
-        return pose
-
     # ------------------------------------------------------------------------ #
 
     @property
