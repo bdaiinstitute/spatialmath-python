@@ -5,6 +5,7 @@
 from functools import reduce
 import numpy as np
 import spatialmath.base as smb
+from spatialmath.base.types import Self
 from spatialmath.baseposelist import BasePoseList
 from spatialmath.geom3d import Line3
 
@@ -334,6 +335,10 @@ class Twist3(BaseTwist):
             raise ValueError("bad value to Twist constructor")
 
     # ------------------------ SMUserList required ---------------------------#
+
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
 
     @staticmethod
     def _identity():
