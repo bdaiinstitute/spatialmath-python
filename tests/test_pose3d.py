@@ -793,3 +793,6 @@ class TestSE3:
         # inv
         # .T
         pass
+
+    def test_identity(self):
+        nt.assert_equal(SE3.identity().A, np.eye(4))

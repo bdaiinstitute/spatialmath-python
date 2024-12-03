@@ -1012,6 +1012,10 @@ class SE3(SO3):
         else:
             raise ValueError("Invalid arguments. See documentation for correct format.")
 
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
+
     @staticmethod
     def _identity() -> NDArray:
         return np.eye(4)
