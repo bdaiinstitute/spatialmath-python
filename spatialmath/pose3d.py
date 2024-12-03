@@ -803,6 +803,8 @@ class SO3(BasePoseMatrix):
         r"""
         Create an SO(3) rotation matrix from so(3)
 
+        TODO: clean up typing for S, possibly by introducing additional type parameters at the class level.
+
         :param S: Lie algebra so(3)
         :type S: ndarray(3,3), ndarray(n,3)
         :param check: check that passed matrix is valid so(3), default True
@@ -1804,6 +1806,8 @@ class SE3(SO3):
     def Exp(cls, S: Union[R6, R4x4], check: bool = True) -> SE3:
         """
         Create an SE(3) matrix from se(3)
+
+        TODO: clean up typing for S, possibly by introducing additional type parameters at the class level.
 
         :param S: Lie algebra se(3) matrix
         :type S: ndarray(6), ndarray(4,4)
