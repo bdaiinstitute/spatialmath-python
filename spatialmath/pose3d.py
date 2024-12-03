@@ -853,7 +853,7 @@ class SO3(BasePoseMatrix):
 
         return UnitQuaternion(smb.r2q(self.R), check=False)
 
-    def angdist(self, other: SO3, metric: int = 6) -> Union[float, ndarray]:
+    def angdist(self, other: Self, metric: int = 6) -> Union[float, ndarray]:
         r"""
         Angular distance metric between rotations
 
@@ -2009,7 +2009,7 @@ class SE3(SO3):
             raise ValueError("Transformation matrix must not be None")
         return cls(np.copy(T), check=check)
 
-    def angdist(self, other: SE3, metric: int = 6) -> float:
+    def angdist(self, other: Self, metric: int = 6) -> float:
         r"""
         Angular distance metric between poses
 
