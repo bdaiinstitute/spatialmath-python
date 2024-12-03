@@ -34,12 +34,6 @@ class TestSO3:
         plt.close("all")
 
     def test_constructor(self):
-        # null constructor
-        R = SO3()
-        nt.assert_equal(len(R), 1)
-        array_compare(R, np.eye(3))
-        assert isinstance(R, SO3)
-
         # construct from matrix
         R = SO3(rotx(0.2))
         nt.assert_equal(len(R), 1)
@@ -216,15 +210,15 @@ class TestSO3:
 
 
     def test_shape(self):
-        a = SO3()
+        a = SO3.identity()
         assert a._A.shape == a.shape
 
     def test_about(self):
-        R = SO3()
+        R = SO3.identity()
         R.about
 
     def test_str(self):
-        R = SO3()
+        R = SO3.identity()
 
         s = str(R)
         assert isinstance(s, str)
@@ -261,7 +255,7 @@ class TestSO3:
         # R.animate(start=R.inv())
 
     def test_tests(self):
-        R = SO3()
+        R = SO3.identity()
 
         assert R.isrot() == True
         assert R.isrot2() == False
@@ -269,7 +263,7 @@ class TestSO3:
         assert R.ishom2() == False
 
     def test_properties(self):
-        R = SO3()
+        R = SO3.identity()
 
         assert R.isSO == True
         assert R.isSE == False
@@ -285,7 +279,7 @@ class TestSO3:
         array_compare(R.inv() * R, np.eye(3, 3))
 
     def test_arith(self):
-        R = SO3()
+        R = SO3.identity()
 
         # sum
         a = R + R
@@ -310,7 +304,7 @@ class TestSO3:
         #  this invokes the __add__ method for numpy
 
         # difference
-        R = SO3()
+        R = SO3.identity()
 
         a = R - R
         assert not isinstance(a, SO3)
@@ -333,7 +327,7 @@ class TestSO3:
         # array_compare(a, np.zeros((3,3)))
 
         # multiply
-        R = SO3()
+        R = SO3.identity()
 
         a = R * R
         assert isinstance(a, SO3)
@@ -347,12 +341,12 @@ class TestSO3:
         assert not isinstance(a, SO3)
         array_compare(a, 2 * np.eye(3))
 
-        R = SO3()
+        R = SO3.identity()
         R *= SO3.Rx(pi / 2)
         assert isinstance(R, SO3)
         array_compare(R, rotx(pi / 2))
 
-        R = SO3()
+        R = SO3.identity()
         R *= 2
         assert not isinstance(R, SO3)
         array_compare(R, 2 * np.eye(3))
@@ -579,7 +573,7 @@ class TestSE3:
         array_compare(R2, trotx(pi / 2))
 
         # SO3
-        T = SE3(SO3())
+        T = SE3(SO3.identity())
         nt.assert_equal(len(T), 1)
         assert isinstance(T, SE3)
         nt.assert_equal(T.A, np.eye(4))
