@@ -107,10 +107,6 @@ class SO3(BasePoseMatrix):
         elif not super().arghandler(arg, check=check):
             raise ValueError("bad argument to constructor")
 
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
-
     @staticmethod
     def _identity() -> R3x3:
         return np.eye(3)
@@ -1011,10 +1007,6 @@ class SE3(SO3):
 
         else:
             raise ValueError("Invalid arguments. See documentation for correct format.")
-
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
 
     @staticmethod
     def _identity() -> NDArray:

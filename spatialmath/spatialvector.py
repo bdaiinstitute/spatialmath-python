@@ -113,10 +113,6 @@ class SpatialVector(BasePoseList):
         # else:
         #     raise ValueError('bad arguments to constructor')
 
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
-
     @staticmethod
     def _identity():
         return np.zeros((6,))
@@ -577,10 +573,6 @@ class SpatialInertia(BasePoseList):
             raise ValueError("bad values")
 
         self.data = [I]
-
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
 
     @staticmethod
     def _identity():

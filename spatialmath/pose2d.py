@@ -89,10 +89,6 @@ class SO2(BasePoseMatrix):
         else:
             raise ValueError("bad argument to constructor")
 
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
-
     @staticmethod
     def _identity():
         return np.eye(2)
@@ -320,10 +316,6 @@ class SE2(SO2):
 
         else:
             raise ValueError("bad arguments to constructor")
-
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
 
     @staticmethod
     def _identity():

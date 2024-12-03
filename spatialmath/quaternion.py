@@ -116,10 +116,6 @@ class Quaternion(BasePoseList):
         """
         return cls(s=0, v=smb.getvector(v, 3))
 
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
-
     @staticmethod
     def _identity():
         return np.zeros((4,))
@@ -966,10 +962,6 @@ class UnitQuaternion(Quaternion):
 
         else:
             raise ValueError("bad argument to UnitQuaternion constructor")
-
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
 
     @staticmethod
     def _identity():

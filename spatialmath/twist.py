@@ -335,11 +335,6 @@ class Twist3(BaseTwist):
             raise ValueError("bad value to Twist constructor")
 
     # ------------------------ SMUserList required ---------------------------#
-
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
-
     @staticmethod
     def _identity():
         return np.zeros((6,))
@@ -1241,10 +1236,6 @@ class Twist2(BaseTwist):
         raise ValueError("bad twist value")
 
     # ------------------------ SMUserList required ---------------------------#
-    @classmethod
-    def identity(cls) -> Self:
-        return cls(cls._identity())
-
     @staticmethod
     def _identity():
         return np.zeros((3,))

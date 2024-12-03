@@ -59,6 +59,10 @@ class BasePoseList(ABC):
     def isvalid(x, check=True):
         pass
 
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
+
     @abstractstaticmethod
     def _identity():
         pass
