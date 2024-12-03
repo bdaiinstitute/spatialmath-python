@@ -167,11 +167,6 @@ class TestSE2:
         plt.close("all")
 
     def test_constructor(self):
-        assert isinstance(SE2(), SE2)
-
-        ## null
-        array_compare(SE2().A, np.eye(3, 3))
-
         # from x,y
         x = SE2(2, 3)
         assert isinstance(x, SE2)
@@ -214,11 +209,11 @@ class TestSE2:
         ## copy constructor
         TT = SE2(x)
         array_compare(SE2(TT).A, T)
-        x = SE2()
+        x = SE2.identity()
         array_compare(SE2(TT).A, T)
 
     def test_shape(self):
-        a = SE2()
+        a = SE2.identity()
         assert a._A.shape == a.shape
 
     def test_constructor_Exp(self):
@@ -230,7 +225,7 @@ class TestSE2:
         assert not SE2.isvalid(1)
 
     def test_resulttype(self):
-        t = SE2()
+        t = SE2.identity()
         assert isinstance(t, SE2)
         assert isinstance(t * t, SE2)
         assert isinstance(t / t, SE2)
@@ -271,7 +266,7 @@ class TestSE2:
         TT2 = SE2.Rand()
         T2 = TT2.A
 
-        I = SE2()
+        I = SE2.identity()
 
         ## SE2, * SE2, product
         # scalar x scalar
@@ -311,7 +306,7 @@ class TestSE2:
 
     def test_interp(self):
         TT = SE2(2, -4, 0.6)
-        I = SE2()
+        I = SE2.identity()
 
         z = I.interp(TT, s=0)[0]
         assert isinstance(z, SE2)

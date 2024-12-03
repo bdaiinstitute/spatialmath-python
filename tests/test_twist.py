@@ -176,7 +176,7 @@ class TestTwist2d:
         array_compare(x, y)
         
         # construct from SE2
-        x = Twist2(SE2())
+        x = Twist2(SE2.identity())
         array_compare(x, [0,0,0])
         
         x = Twist2( SE2(0, 0, pi / 2))
@@ -235,7 +235,7 @@ class TestTwist2d:
         assert s.count('\n') == 0
 
     def test_SE2_twists(self):
-        tw = Twist2( SE2() )
+        tw = Twist2( SE2.identity() )
         array_compare(tw, np.r_[0, 0, 0])
                       
         tw = Twist2( SE2(0, 0, pi / 2) )
