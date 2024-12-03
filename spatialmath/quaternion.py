@@ -600,34 +600,6 @@ class Quaternion(BasePoseList):
         # scalar * quaternion case
         return Quaternion(left * right._A)
 
-    def __imul__(
-        left, right: Quaternion
-    ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-        """
-        Overloaded ``*=`` operator
-
-        :return: product
-        :rtype: Quaternion
-        :raises: ValueError
-
-        ``q1 *= q2`` sets ``q1 := q1 * q2``
-        ``q1 *= s`` sets ``q1 := q1 * s`` where ``s`` is a scalar
-
-        Example:
-
-        .. runblock:: pycon
-
-            >>> from spatialmath import Quaternion
-            >>> q = Quaternion([1,2,3,4])
-            >>> q *= Quaternion([5,6,7,8])
-            >>> print(q)
-            >>> q *= 2
-            >>> print(q)
-
-        :seealso: :func:`__mul__`
-        """
-        return left.__mul__(right)
-
     def __pow__(self, n: int) -> Quaternion:
         """
         Overloaded ``**`` operator
@@ -649,32 +621,6 @@ class Quaternion(BasePoseList):
         :seealso: :func:`~spatialmath.base.quaternions.qpow`
         """
         return self.__class__(smb.qpow(self._A, n))
-
-    def __ipow__(self, n: int) -> Quaternion:
-        """
-        Overloaded ``=**`` operator
-
-        :rtype: Quaternion instance
-
-        ``q **= N`` computes the product of ``q`` with itself ``N-1`` times, where ``N`` must be
-        an integer.  If ``N``<0 the result is conjugated.
-
-        Example:
-
-        .. runblock:: pycon
-
-            >>> from spatialmath import Quaternion
-            >>> q = Quaternion([1,2,3,4])
-            >>> q **= 2
-            >>> q
-            >>> q = Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
-            >>> q **= 2
-            >>> q
-
-
-        :seealso: :func:`__pow__`
-        """
-        return self.__pow__(n)
 
     def __truediv__(self, other: Quaternion):
         return NotImplemented  # Quaternion division not supported
@@ -1637,30 +1583,6 @@ class UnitQuaternion(Quaternion):
                 raise ValueError("bad operands")
         else:
             raise ValueError("UnitQuaternion: operands to * are of different types")
-
-    def __imul__(
-        left, right: UnitQuaternion
-    ) -> UnitQuaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
-        """
-        Multiply unit quaternion in place
-
-        :return: product
-        :rtype: UnitQuaternion, Quaternion
-        :raises: ValueError
-
-        Multiplies a quaternion in place. If the right operand is a list,
-        the result will be a list.
-
-        Example::
-
-            >>> q = UQ.Rx(0.3)
-            >>> q *= UQ.Rx(0.3)
-            >>> q
-
-        :seealso: :func:`__mul__`
-
-        """
-        return left.__mul__(right)
 
     def __truediv__(
         left, right: UnitQuaternion

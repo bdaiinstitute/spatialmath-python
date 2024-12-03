@@ -1225,22 +1225,6 @@ class BasePoseMatrix(BasePoseList):
             # an ``SE3`` using their own ``__rmul__`` methods.
             return NotImplemented
 
-    def __imul__(left, right):  # noqa
-        """
-        Overloaded ``*=`` operator (superclass method)
-
-        :return: Product of two operands
-        :rtype: Pose instance or NumPy array
-        :raises ValueError: for incompatible arguments
-
-        - ``X *= Y`` compounds the poses ``X`` and ``Y`` and places the result in ``X``
-        - ``X *= s`` performs elementwise multiplication of the elements of ``X``
-          and ``s`` and places the result in ``X``
-
-        :seealso: ``__mul__``
-        """
-        return left.__mul__(right)
-
     def __truediv__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator (superclass method)
@@ -1292,22 +1276,6 @@ class BasePoseMatrix(BasePoseList):
             return left._op2(right, lambda x, y: x / y)
         else:
             raise ValueError("bad operands")
-
-    def __itruediv__(left, right):  # pylint: disable=no-self-argument
-        """
-        Overloaded ``/=`` operator (superclass method)
-
-        :return: Product of right operand and inverse of left operand
-        :rtype: Pose instance or NumPy array
-        :raises ValueError: for incompatible arguments
-
-        - ``X /= Y`` compounds the poses ``X`` and ``Y.inv()`` and places the result in ``X``
-        - ``X /= s`` performs elementwise division of the elements of ``X``
-          by ``s`` and places the result in ``X``
-
-        :seealso: ``__truediv__``
-        """
-        return left.__truediv__(right)
 
     def __add__(left, right):  # pylint: disable=no-self-argument
         """
@@ -1375,22 +1343,6 @@ class BasePoseMatrix(BasePoseList):
         """
         return right.__add__(left)
 
-    def __iadd__(left, right):  # pylint: disable=no-self-argument
-        """
-        Overloaded ``+=`` operator (superclass method)
-
-        :return: Sum of two operands
-        :rtype: NumPy array, shape=(N,N)
-        :raises ValueError: for incompatible arguments
-
-        - ``X += Y`` adds the matrix values of ``X`` and ``Y`` and places the result in ``X``
-        - ``X += s`` elementwise addition of the matrix elements of ``X``
-          and ``s`` and places the result in ``X``
-
-        :seealso: ``__add__``
-        """
-        return left.__add__(right)
-
     def __sub__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``-`` operator (superclass method)
@@ -1456,23 +1408,6 @@ class BasePoseMatrix(BasePoseList):
         :seealso: :meth:`__sub__`
         """
         return -right.__sub__(left)
-
-    def __isub__(left, right: Self):  # pylint: disable=no-self-argument
-        """
-        Overloaded ``-=`` operator (superclass method)
-
-        :return: Difference of two operands
-        :rtype: NumPy array, shape=(N,N)
-        :raises: ValueError
-
-        - ``X -= Y`` is the element-wise difference of the matrix value of ``X``
-          and ``Y`` and places the result in ``X``
-        - ``X -= s`` is the element-wise difference of the matrix value of ``X``
-          and the scalar ``s`` and places the result in ``X``
-
-        :seealso: ``__sub__``
-        """
-        return left.__sub__(right)
 
     def __eq__(left, right: Self) -> bool:  # pylint: disable=no-self-argument
         """
