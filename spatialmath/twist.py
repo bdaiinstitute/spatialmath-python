@@ -1241,6 +1241,10 @@ class Twist2(BaseTwist):
         raise ValueError("bad twist value")
 
     # ------------------------ SMUserList required ---------------------------#
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
+
     @staticmethod
     def _identity():
         return np.zeros((3,))

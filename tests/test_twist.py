@@ -287,3 +287,6 @@ class TestTwist2d:
         x2 = Twist2(T2)
         
         array_compare(Twist2.prod([x1, x2]).SE2(), T1 * T2)
+
+    def test_identity(self):
+        array_compare(Twist3.identity(), np.zeros(6,))
