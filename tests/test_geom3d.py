@@ -315,3 +315,6 @@ class TestLine3:
     #
     #     px.intersect_plane(plane)
     #     py.intersect_plane(plane)
+
+    def test_identity(self):
+        nt.assert_array_equal(Line3.identity().A, np.zeros(6,))

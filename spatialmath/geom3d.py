@@ -324,6 +324,10 @@ class Line3(BasePoseList):
     def shape(self) -> Tuple[int]:
         return (6,)
 
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
+
     @staticmethod
     def _identity() -> R6:
         return np.zeros((6,))
