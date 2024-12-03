@@ -37,12 +37,6 @@ class TestSO2:
         plt.close("all")
 
     def test_constructor(self):
-        # null case
-        x = SO2()
-        assert isinstance(x, SO2)
-        assert len(x) == 1
-        array_compare(x.A, np.eye(2, 2))
-
         ## from angle
 
         array_compare(SO2(0).A, np.eye(2))
@@ -73,11 +67,11 @@ class TestSO2:
     def test_primitive_convert(self):
         # char
 
-        s = str(SO2())
+        s = str(SO2.identity())
         assert isinstance(s, str)
 
     def test_shape(self):
-        a = SO2()
+        a = SO2.identity()
         assert a._A.shape == a.shape
 
     def test_constructor_Exp(self):
@@ -90,7 +84,7 @@ class TestSO2:
         assert not SO2.isvalid(1)
 
     def test_resulttype(self):
-        r = SO2()
+        r = SO2.identity()
         assert isinstance(r, SO2)
 
         assert isinstance(r * r, SO2)
@@ -102,8 +96,8 @@ class TestSO2:
     @pytest.mark.parametrize(
         'left, right, expected',
         [
-            (SO2(0), SO2(), SO2(0)),
-            (SO2(), SO2(0), SO2(0)),
+            (SO2(0), SO2.identity(), SO2(0)),
+            (SO2.identity(), SO2(0), SO2(0)),
             (SO2(pi/2), np.r_[1, 0], np.c_[np.r_[0, 1]]),
         ],
     )
@@ -113,8 +107,8 @@ class TestSO2:
     @pytest.mark.parametrize(
         'left, right, expected',
         [
-            (SO2(pi/2), SO2(), SO2(pi/2)),
-            (SO2(pi/2), SO2(pi/2), SO2()),
+            (SO2(pi/2), SO2.identity(), SO2(pi/2)),
+            (SO2(pi/2), SO2(pi/2), SO2.identity()),
         ],
     )
     def test_divide(self, left, right, expected):
