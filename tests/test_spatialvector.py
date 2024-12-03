@@ -99,10 +99,6 @@ class TestSpatialVector:
         assert all((-a1).A == -r1)
 
     def test_inertia(self):
-        # constructor
-        i0 = SpatialInertia()
-        nt.assert_equal(i0.A, np.zeros((6, 6)))
-
         i1 = SpatialInertia(np.eye(6, 6))
         nt.assert_equal(i1.A, np.eye(6, 6))
 
@@ -119,7 +115,7 @@ class TestSpatialVector:
         nt.assert_almost_equal((i4a + i4b).A, SpatialInertia(m=m_a + m_b, r=r).A)
 
         # isvalid - note this method is very barebone, to be improved
-        assert SpatialInertia().isvalid(np.ones((6, 6)), check=False)
+        assert SpatialInertia.identity().isvalid(np.ones((6, 6)), check=False)
 
     def test_products(self):
         # v x v = a  *, v x F6 = a
