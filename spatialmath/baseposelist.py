@@ -71,7 +71,7 @@ class BasePoseList(UserList, ABC):
 
     @staticmethod
     @abstractmethod
-    def isvalid(x, check=True):
+    def isvalid(x, check: bool=True) -> bool:
         pass
 
     @staticmethod

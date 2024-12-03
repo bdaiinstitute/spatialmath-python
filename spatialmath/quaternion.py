@@ -131,7 +131,7 @@ class Quaternion(BasePoseList):
         return (4,)
 
     @staticmethod
-    def isvalid(x: ArrayLike4) -> bool:
+    def isvalid(x, check: bool=True):
         """
         Test if vector is valid quaternion
 
@@ -473,7 +473,7 @@ class Quaternion(BasePoseList):
     # -------------------------------------------- operators
 
     def __eq__(
-        left, right: Quaternion
+        left, right
     ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator
@@ -501,7 +501,7 @@ class Quaternion(BasePoseList):
         return left.binop(right, smb.qisequal, list1=False)
 
     def __ne__(
-        left, right: Quaternion
+        left, right
     ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``!=`` operator
@@ -528,7 +528,7 @@ class Quaternion(BasePoseList):
         return left.binop(right, lambda x, y: not smb.qisequal(x, y), list1=False)
 
     def __mul__(
-        left, right: Quaternion
+        left, right
     ) -> Quaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator
@@ -591,7 +591,7 @@ class Quaternion(BasePoseList):
             raise ValueError("operands to * are of different types")
 
     def __rmul__(
-        right, left: Quaternion
+        right, left
     ) -> Quaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*`` operator
@@ -616,8 +616,8 @@ class Quaternion(BasePoseList):
         return Quaternion([left * q._A for q in right])
 
     def __imul__(
-        left, right: Quaternion
-    ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
+        left, right
+    ):  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``*=`` operator
 
@@ -1570,7 +1570,7 @@ class UnitQuaternion(Quaternion):
         return smb.qdotb(self._A, omega)
 
     def __mul__(
-        left, right: UnitQuaternion
+        left, right
     ) -> UnitQuaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Multiply unit quaternion
@@ -1668,7 +1668,7 @@ class UnitQuaternion(Quaternion):
             raise ValueError("UnitQuaternion: operands to * are of different types")
 
     def __imul__(
-        left, right: UnitQuaternion
+        left, right
     ) -> UnitQuaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Multiply unit quaternion in place
@@ -1692,7 +1692,7 @@ class UnitQuaternion(Quaternion):
         return left.__mul__(right)
 
     def __truediv__(
-        left, right: UnitQuaternion
+        left, right
     ) -> UnitQuaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``/`` operator
@@ -1756,7 +1756,7 @@ class UnitQuaternion(Quaternion):
             raise ValueError("bad operands")
 
     def __eq__(
-        left, right: UnitQuaternion
+        left, right
     ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator
@@ -1787,7 +1787,7 @@ class UnitQuaternion(Quaternion):
         )
 
     def __ne__(
-        left, right: UnitQuaternion
+        left, right
     ) -> bool:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded ``!=`` operator
@@ -1818,7 +1818,7 @@ class UnitQuaternion(Quaternion):
         )
 
     def __matmul__(
-        left, right: UnitQuaternion
+        left, right
     ) -> UnitQuaternion:  # lgtm[py/not-named-self] pylint: disable=no-self-argument
         """
         Overloaded @ operator

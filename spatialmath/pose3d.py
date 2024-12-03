@@ -465,6 +465,10 @@ class SO3(BasePoseMatrix):
         return cls([smb.q2r(smb.qrand(theta_range=theta_range, unit=unit)) for _ in range(0, N)], check=False)
 
     @overload
+    def Eul(cls, phi: float, theta: float, psi: float, unit: str = "rad") -> SE3:
+        ...
+
+    @overload
     @classmethod
     def Eul(cls, *angles: float, unit: str = "rad") -> Self:
         ...
@@ -513,6 +517,10 @@ class SO3(BasePoseMatrix):
             return cls(smb.eul2r(angles, unit=unit), check=False)
         else:
             return cls([smb.eul2r(a, unit=unit) for a in angles], check=False)
+
+    @overload
+    def RPY(cls, roll: float, pitch: float, yaw: float, unit: str = "rad") -> SE3:
+        ...
 
     @overload
     @classmethod

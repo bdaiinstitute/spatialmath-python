@@ -1572,7 +1572,7 @@ class BasePoseMatrix(BasePoseList):
         """
         return left.__sub__(right)
 
-    def __eq__(left, right: Self) -> bool:  # pylint: disable=no-self-argument
+    def __eq__(left, right):  # pylint: disable=no-self-argument
         """
         Overloaded ``==`` operator (superclass method)
 
