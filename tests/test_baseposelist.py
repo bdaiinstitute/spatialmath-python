@@ -55,3 +55,46 @@ class TestBasePoseList:
             assert (result == expected).all()
         else:
             assert result == expected
+
+class TestConcreteSubclasses:
+    """
+    Check consistency of methods in concrete subclasses
+    """
+    from spatialmath import (
+        SO2,
+        SE2,
+        SO3,
+        SE3,
+        Quaternion,
+        UnitQuaternion,
+        Twist2,
+        Twist3,
+        SpatialVelocity,
+        SpatialAcceleration,
+        SpatialForce,
+        SpatialMomentum,
+        Line3,
+    )
+    concrete_subclasses = [
+        SO2,
+        SE2,
+        SO3,
+        SE3,
+        Quaternion,
+        UnitQuaternion,
+        Twist2,
+        Twist3,
+        SpatialVelocity,
+        SpatialAcceleration,
+        SpatialForce,
+        SpatialMomentum,
+        Line3,
+    ]
+
+    @pytest.mark.parametrize(
+        'cls',
+        concrete_subclasses,
+    )
+    def test_bare_init(self, cls):
+        with pytest.raises(TypeError):
+            cls()

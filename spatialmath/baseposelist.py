@@ -119,7 +119,7 @@ class BasePoseList(ABC):
 
         if arg is None:
             # empty constructor
-            self.data = [self._identity()]
+            raise TypeError("missing required argument (or argument is None)")
 
         elif isinstance(arg, np.ndarray):
             # it's a numpy array
