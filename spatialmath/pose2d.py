@@ -25,6 +25,7 @@ import numpy as np
 
 import spatialmath.base as smb
 from spatialmath.baseposematrix import BasePoseMatrix
+from spatialmath.base.types import Self
 
 # ============================== SO2 =====================================#
 
@@ -87,6 +88,10 @@ class SO2(BasePoseMatrix):
 
         else:
             raise ValueError("bad argument to constructor")
+
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
 
     @staticmethod
     def _identity():

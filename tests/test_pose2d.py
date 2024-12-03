@@ -161,6 +161,8 @@ class TestSO2:
         # R.animate()
         # R.animate(start=R2)
 
+    def test_identity(self):
+        array_compare(SO2.identity().A, np.eye(2, 2))
 
 # ============================== SE2 =====================================#
 
