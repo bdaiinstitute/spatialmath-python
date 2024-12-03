@@ -18,6 +18,7 @@ from abc import abstractmethod
 import numpy as np
 from spatialmath.baseposelist import BasePoseList
 from spatialmath import base
+from spatialmath.base.types import Self
 from spatialmath.pose3d import SE3
 from spatialmath.twist import Twist3
 
@@ -111,6 +112,10 @@ class SpatialVector(BasePoseList):
         #     self.data = [np.array(x) for x in value]
         # else:
         #     raise ValueError('bad arguments to constructor')
+
+    @classmethod
+    def identity(cls) -> Self:
+        return cls(cls._identity())
 
     @staticmethod
     def _identity():

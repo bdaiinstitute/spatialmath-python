@@ -1,5 +1,6 @@
 import numpy.testing as nt
 import numpy as np
+import pytest
 
 from spatialmath.spatialvector import *
 
@@ -126,3 +127,10 @@ class TestSpatialVector:
         # v x I, I x v
         # twist x v, twist x a, twist x F
         pass
+
+    @pytest.mark.parametrize(
+        'cls',
+        [SpatialVelocity, SpatialAcceleration, SpatialForce, SpatialMomentum],
+    )
+    def test_identity(self, cls):
+        nt.assert_equal(cls.identity().A, np.zeros((6,)))
