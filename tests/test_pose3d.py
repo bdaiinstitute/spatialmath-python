@@ -441,12 +441,6 @@ class TestSE3:
         plt.close("all")
 
     def test_constructor(self):
-        # null constructor
-        R = SE3()
-        nt.assert_equal(len(R), 1)
-        array_compare(R, np.eye(4))
-        assert isinstance(R, SE3)
-
         # construct from matrix
         R = SE3(trotx(0.2))
         nt.assert_equal(len(R), 1)
@@ -592,11 +586,11 @@ class TestSE3:
             T = SE3(1.0, 0.0, 0.0, 0.0)
 
     def test_shape(self):
-        a = SE3()
+        a = SE3.identity()
         assert a._A.shape == a.shape
 
     def test_tests(self):
-        R = SE3()
+        R = SE3.identity()
 
         assert R.isrot() == False
         assert R.isrot2() == False
@@ -604,7 +598,7 @@ class TestSE3:
         assert R.ishom2() == False
 
     def test_properties(self):
-        R = SE3()
+        R = SE3.identity()
 
         assert R.isSO == False
         assert R.isSE == True
@@ -713,7 +707,7 @@ class TestSE3:
             T, np.array([[0, 0, 1, 1], [0, 1, 0, 2], [-1, 0, 0, 3], [0, 0, 0, 1]])
         )
 
-        T = SE3()
+        T = SE3.identity()
         T *= 2
         assert not isinstance(T, SE3)
         array_compare(T, 2 * np.eye(4))

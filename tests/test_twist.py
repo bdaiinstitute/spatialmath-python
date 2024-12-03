@@ -46,7 +46,7 @@ class TestTwist3d:
         y = Twist3(x)
         array_compare(x, y)
         
-        x = Twist3(SE3())
+        x = Twist3(SE3.identity())
         array_compare(x, [0,0,0,0,0,0])
         
     def test_conversion_SE3(self):

@@ -172,7 +172,7 @@ class TestLine3:
 
         # check transformation by SE3
 
-        L2 = SE3() * L
+        L2 = SE3.identity() * L
         p = L2.intersect_plane([0, 0, 1, 0])[0]  # intersects z=0
         nt.assert_array_almost_equal(p, [1, 2, 0])
 

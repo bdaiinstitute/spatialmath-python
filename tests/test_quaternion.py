@@ -120,7 +120,7 @@ class TestUnitQuaternion:
 
         # from SE3
 
-        qcompare(UnitQuaternion(SE3()), np.r_[1, 0, 0, 0])
+        qcompare(UnitQuaternion(SE3.identity()), np.r_[1, 0, 0, 0])
 
         qcompare(UnitQuaternion(SE3.Rx(pi / 2)), np.r_[1, 1, 0, 0] / math.sqrt(2))
         qcompare(UnitQuaternion(SE3.Ry(pi / 2)), np.r_[1, 0, 1, 0] / math.sqrt(2))
