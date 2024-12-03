@@ -120,36 +120,21 @@ Points3 = NDArray  # R^{2xN} matrix
 RNx3 = NDArray
 
 # Lie group elements
-SO2Array = ndarray[Tuple[L[2, 2]], dtype[floating]]  # SO(2) rotation matrix
-SE2Array = ndarray[Tuple[L[3, 3]], dtype[floating]]  # SE(2) rigid-body transform
-# SO3Array = ndarray[Tuple[L[3, 3]], dtype[floating]]
-SO3Array = np.ndarray[Tuple[L[3], L[3]], dtype[floating]]  # SO(3) rotation matrix
-SE3Array = ndarray[Tuple[L[4], L[4]], dtype[floating]]  # SE(3) rigid-body transform
+SO2Array = R2x2  # SO(2) rotation matrix
+SE2Array = R3x3  # SE(2) rigid-body transform
+SO3Array = R3x3  # SO(3) rotation matrix
+SE3Array = R4x4  # SE(3) rigid-body transform
 
 
 # Lie algebra elements
-so2Array = ndarray[
-    Tuple[L[2, 2]], dtype[floating]
-]  # so(2) Lie algebra of SO(2), skew-symmetrix matrix
-se2Array = ndarray[
-    Tuple[L[3, 3]], dtype[floating]
-]  # se(2) Lie algebra of SE(2), augmented skew-symmetrix matrix
-so3Array = ndarray[
-    Tuple[L[3, 3]], dtype[floating]
-]  # so(3) Lie algebra of SO(3), skew-symmetrix matrix
-se3Array = ndarray[
-    Tuple[L[4, 4]], dtype[floating]
-]  # se(3) Lie algebra of SE(3), augmented skew-symmetrix matrix
+so2Array = R2x2  # so(2) Lie algebra of SO(2), skew-symmetrix matrix
+se2Array = R3x3  # se(2) Lie algebra of SE(2), augmented skew-symmetrix matrix
+so3Array = R3x3  # so(3) Lie algebra of SO(3), skew-symmetrix matrix
+se3Array = R4x4  # se(3) Lie algebra of SE(3), augmented skew-symmetrix matrix
 
 # quaternion arrays
-QuaternionArray = ndarray[
-    Tuple[L[4,]],
-    dtype[floating],
-]
-UnitQuaternionArray = ndarray[
-    Tuple[L[4,]],
-    dtype[floating],
-]
+QuaternionArray = R4
+UnitQuaternionArray = R4
 
 Rn = Union[R2, R3]
 
