@@ -465,6 +465,7 @@ class SO3(BasePoseMatrix):
         return cls([smb.q2r(smb.qrand(theta_range=theta_range, unit=unit)) for _ in range(0, N)], check=False)
 
     @overload
+    @classmethod
     def Eul(cls, phi: float, theta: float, psi: float, unit: str = "rad") -> SE3:
         ...
 
@@ -519,6 +520,7 @@ class SO3(BasePoseMatrix):
             return cls([smb.eul2r(a, unit=unit) for a in angles], check=False)
 
     @overload
+    @classmethod
     def RPY(cls, roll: float, pitch: float, yaw: float, unit: str = "rad") -> SE3:
         ...
 
@@ -1565,10 +1567,12 @@ class SE3(SO3):
         )
 
     @overload
+    @classmethod
     def Eul(cls, phi: float, theta: float, psi: float, unit: str = "rad") -> SE3:
         ...
 
     @overload
+    @classmethod
     def Eul(cls, angles: ArrayLike3, unit: str = "rad") -> SE3:
         ...
 
@@ -1615,10 +1619,12 @@ class SE3(SO3):
             return cls([smb.eul2tr(a, unit=unit) for a in angles], check=False)
 
     @overload
+    @classmethod
     def RPY(cls, roll: float, pitch: float, yaw: float, unit: str = "rad") -> SE3:
         ...
 
     @overload
+    @classmethod
     def RPY(cls, angles: ArrayLike3, unit: str = "rad") -> SE3:
         ...
 
@@ -1847,10 +1853,12 @@ class SE3(SO3):
         return cls(smb.trnorm(smb.delta2tr(d)))
 
     @overload
+    @classmethod
     def Trans(cls, x: float, y: float, z: float) -> SE3:
         ...
 
     @overload
+    @classmethod
     def Trans(cls, xyz: ArrayLike3) -> SE3:
         ...
 
