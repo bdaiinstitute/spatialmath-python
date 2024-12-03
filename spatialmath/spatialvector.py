@@ -94,7 +94,6 @@ class SpatialVector(BasePoseList):
 
         """
         # print('spatialVec6 init')
-        super().__init__()
 
         if base.isvector(value, 6):
             self.data = [np.array(value)]
@@ -305,10 +304,6 @@ class SpatialM6(SpatialVector):
     :seealso: :func:`~spatialmath.spatialvector.SpatialVelocity`, :func:`~spatialmath.spatialvector.SpatialAcceleration`
     """
 
-    @abstractmethod
-    def __init__(self, value):
-        super().__init__(value)
-
     def cross(self, other):
         r"""
         Spatial vector cross product
@@ -365,10 +360,6 @@ class SpatialF6(SpatialVector):
     :seealso: :func:`~spatialmath.spatialvector.SpatialForce`, :func:`~spatialmath.spatialvector.SpatialMomentum`.
     """
 
-    @abstractmethod
-    def __init__(self, value):
-        super().__init__(value)
-
     def dot(self, value):
         return np.dot(self.A, base.getvector(value, 6))
 
@@ -390,9 +381,6 @@ class SpatialVelocity(SpatialM6):
     :seealso: :func:`~spatialmath.spatialvector.SpatialM6`, :func:`~spatialmath.spatialvector.SpatialAcceleration`
 
     """
-
-    def __init__(self, value=None):
-        super().__init__(value)
 
     # def cross(self, other):
     #     r"""
@@ -458,9 +446,6 @@ class SpatialAcceleration(SpatialM6):
 
     """
 
-    def __init__(self, value=None):
-        super().__init__(value)
-
 
 # ------------------------------------------------------------------------- #
 
@@ -478,9 +463,6 @@ class SpatialForce(SpatialF6):
 
     :seealso: :func:`~spatialmath.spatialvector.SpatialF6`, :func:`~spatialmath.spatialvector.SpatialMomentum`
     """
-
-    def __init__(self, value=None):
-        super().__init__(value)
 
     # n = SpatialForce(val);
 
@@ -508,9 +490,6 @@ class SpatialMomentum(SpatialF6):
 
     :seealso: :func:`~spatialmath.spatialvector.SpatialF6`,  :func:`~spatialmath.spatialvector.SpatialForce`
     """
-
-    def __init__(self, value=None):
-        super().__init__(value)
 
 
 # ------------------------------------------------------------------------- #
@@ -553,7 +532,6 @@ class SpatialInertia(BasePoseList):
 
         :SymPy: supported
         """
-        super().__init__()
 
         if m is None and r is None and I is None:
             # no arguments

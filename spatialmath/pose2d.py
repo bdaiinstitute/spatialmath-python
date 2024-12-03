@@ -72,8 +72,6 @@ class SO2(BasePoseMatrix):
         - ``SO2([X1, X2, ... XN])`` is an SO2 instance containing a sequence of N rotations, where each Xi is an SO2 instance.
 
         """
-        super().__init__()
-
         if isinstance(arg, SE2):
             self.data = [smb.t2r(x) for x in arg.data]
 

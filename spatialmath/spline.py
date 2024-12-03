@@ -99,7 +99,6 @@ class InterpSplineSE3(SplineSE3):
                       string options: ["not-a-knot" (default), "clamped", "natural", "periodic"].
                       For tuple options and details see the scipy docs link above.
         """
-        super().__init__()
         self.control_poses = control_poses
         self.timepoints = np.array(timepoints)
 

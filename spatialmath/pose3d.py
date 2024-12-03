@@ -99,8 +99,6 @@ class SO3(BasePoseMatrix):
 
         :SymPy: supported
         """
-        super().__init__()
-
         if isinstance(arg, SE3):
             self.data = [smb.t2r(x) for x in arg.data]
 

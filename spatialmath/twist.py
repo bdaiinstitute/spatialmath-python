@@ -57,9 +57,6 @@ class BaseTwist(BasePoseList):
 
     """
 
-    def __init__(self):
-        super().__init__()  # enable UserList superpowers
-
     @property
     def S(self):
         """
@@ -316,8 +313,6 @@ class Twist3(BaseTwist):
 
         """
         from spatialmath.pose3d import SE3
-
-        super().__init__()
 
         if w is None:
             # zero or one arguments passed
@@ -1220,8 +1215,6 @@ class Twist2(BaseTwist):
             components, ie. :math:`[\omega, \vec{v}]`.
         """
         from spatialmath.pose2d import SE2
-
-        super().__init__()
 
         if w is None:
             # zero or one arguments passed

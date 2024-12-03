@@ -75,8 +75,6 @@ class Quaternion(BasePoseList):
             >>> print(q)
 
         """
-        super().__init__()
-
         if s is None and smb.isvector(v, 4):
             v,s = (s,v)
 
@@ -900,8 +898,6 @@ class UnitQuaternion(Quaternion):
             >>> print(q)  # str()
 
         """
-        super().__init__()
-
         # handle: UnitQuaternion(v)`` constructs a unit quaternion with specified elements 
         # from ``v`` which is a 4-vector given as a list, tuple, or ndarray(4)
         if s is None and smb.isvector(v, 4):

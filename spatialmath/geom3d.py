@@ -300,8 +300,6 @@ class Line3(BasePoseList):
         """
         from spatialmath.pose3d import SE3
 
-        super().__init__()  # enable list powers
-
         if w is None:
             # zero or one arguments passed
             if super().arghandler(v, convertfrom=(SE3,)):
