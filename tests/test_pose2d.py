@@ -357,3 +357,6 @@ class TestSE2:
 
         T1.animate(repeat=False, dims=[-2, 2], nframes=10)
         T1.animate(T0=T2, repeat=False, dims=[-2, 2], nframes=10)
+
+    def test_identity(self):
+        array_compare(SE2.identity().A, np.eye(3))
