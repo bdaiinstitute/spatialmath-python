@@ -435,6 +435,8 @@ class TestSO3:
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
         np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
+    def test_identity(self):
+        nt.assert_equal(SO3.identity().A, np.eye(3))
 
 # ============================== SE3 =====================================#
 
