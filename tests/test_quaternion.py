@@ -664,6 +664,9 @@ class TestUnitQuaternion:
     #     ry.animate('rgb')
     #     ry.animate( UnitQuaternion.Rx(pi/2), 'rgb' )
 
+    def test_identity(self):
+        qcompare(UnitQuaternion.identity(), [1, 0, 0, 0])
+
 
 class TestQuaternion:
     def test_constructor(self):
@@ -909,3 +912,6 @@ class TestQuaternion:
         nt.assert_equal(u.inner(u), 1)
         nt.assert_equal(q.inner(q), q.norm() ** 2)
         nt.assert_equal(q.inner(u), np.dot(q.vec, u.vec))
+
+    def test_identity(self):
+        qcompare(Quaternion.identity(), [0, 0, 0, 0])
