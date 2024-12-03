@@ -19,7 +19,7 @@ try:  # pragma: no cover
     import sympy # type: ignore
 
     _symbolics = True
-    symtype = (sympy.Expr,)
+    symtype : Tuple[type, ...] = (sympy.Expr,)
     from sympy import Symbol
 
 except ImportError:  # pragma: no cover
