@@ -1406,26 +1406,92 @@ def trlog(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def trexp(S: so3Array, theta: Optional[float] = None, check: bool = True) -> SO3Array:
+def trexp_SO3(S: so3Array, theta: Optional[float] = None, check: bool = True) -> SO3Array:
     ...
 
 
 @overload  # pragma: no cover
-def trexp(S: se3Array, theta: Optional[float] = None, check: bool = True) -> SE3Array:
+def trexp_SO3(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array:
+    ...
+
+
+def trexp_SO3(S, theta=None, check=True):
+    if ismatrix(S, (3, 3)) or isvector(S, 3):
+        # so(3) case
+        if ismatrix(S, (3, 3)):
+            # skew symmetric matrix
+            if check and not isskew(S):
+                raise ValueError("argument must be a valid so(3) element")
+            w = vex(S)
+        else:
+            # 3 vector
+            w = getvector(S)
+
+        if theta is not None and not isunitvec(w):
+            raise ValueError("If theta is specified S must be a unit twist")
+
+        # do Rodrigues' formula for rotation
+        return rodrigues(w, theta)
+    else:
+        raise ValueError(" First argument must be SO(3) or 3-vector")
+
+
+@overload  # pragma: no cover
+def trexp_SE3(S: se3Array, theta: Optional[float] = None, check: bool = True) -> SE3Array:
     ...
 
 
 @overload  # pragma: no cover
-def trexp(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array:
+def trexp_SE3(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array:
     ...
 
 
-@overload  # pragma: no cover
-def trexp(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array:
-    ...
+def trexp_SE3(S, theta=None, check=True):
+    if ismatrix(S, (4, 4)) or isvector(S, 6):
+        # se(3) case
+        if ismatrix(S, (4, 4)):
+            # augmentented skew matrix
+            if check and not isskewa(S):
+                raise ValueError("argument must be a valid se(3) element")
+            tw = vexa(cast(se3Array, S))
+        else:
+            # 6 vector
+            tw = getvector(S)
+
+        if iszerovec(tw):
+            return np.eye(4)
+
+        if theta is None:
+            (tw, theta) = unittwist_norm(tw)
+        else:
+            if theta == 0:
+                return np.eye(4)
+            elif not isunittwist(tw):
+                raise ValueError("If theta is specified S must be a unit twist")
+
+        # tw is a unit twist, th is its magnitude
+        t = tw[0:3]
+        w = tw[3:6]
+
+        R = rodrigues(w, theta)
+
+        skw = skew(w)
+        V = (
+            np.eye(3) * theta
+            + (1.0 - math.cos(theta)) * skw
+            + (theta - math.sin(theta)) * skw @ skw
+        )
+
+        return rt2tr(R, V @ t)
+    else:
+        raise ValueError(" First argument must be SE(3) or 6-vector")
 
 
-def trexp(S, theta=None, check=True):
+def trexp(
+        S: so3Array | ArrayLike3 | se3Array | ArrayLike6,
+        theta: Optional[float] = None,
+        check: bool = True,
+):
     """
     Exponential of se(3) or so(3) matrix
 
@@ -1486,58 +1552,9 @@ def trexp(S, theta=None, check=True):
     """
 
     if ismatrix(S, (4, 4)) or isvector(S, 6):
-        # se(3) case
-        if ismatrix(S, (4, 4)):
-            # augmentented skew matrix
-            if check and not isskewa(S):
-                raise ValueError("argument must be a valid se(3) element")
-            tw = vexa(cast(se3Array, S))
-        else:
-            # 6 vector
-            tw = getvector(S)
-
-        if iszerovec(tw):
-            return np.eye(4)
-
-        if theta is None:
-            (tw, theta) = unittwist_norm(tw)
-        else:
-            if theta == 0:
-                return np.eye(4)
-            elif not isunittwist(tw):
-                raise ValueError("If theta is specified S must be a unit twist")
-
-        # tw is a unit twist, th is its magnitude
-        t = tw[0:3]
-        w = tw[3:6]
-
-        R = rodrigues(w, theta)
-
-        skw = skew(w)
-        V = (
-            np.eye(3) * theta
-            + (1.0 - math.cos(theta)) * skw
-            + (theta - math.sin(theta)) * skw @ skw
-        )
-
-        return rt2tr(R, V @ t)
-
+        return trexp_SE3(S, theta=theta, check=check)
     elif ismatrix(S, (3, 3)) or isvector(S, 3):
-        # so(3) case
-        if ismatrix(S, (3, 3)):
-            # skew symmetric matrix
-            if check and not isskew(S):
-                raise ValueError("argument must be a valid so(3) element")
-            w = vex(S)
-        else:
-            # 3 vector
-            w = getvector(S)
-
-        if theta is not None and not isunitvec(w):
-            raise ValueError("If theta is specified S must be a unit twist")
-
-        # do Rodrigues' formula for rotation
-        return rodrigues(w, theta)
+        return trexp_SO3(S, theta=theta, check=check)
     else:
         raise ValueError(" First argument must be SO(3), 3-vector, SE(3) or 6-vector")
 
