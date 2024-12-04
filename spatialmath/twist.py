@@ -916,9 +916,9 @@ class Twist3(BaseTwist):
             >>> smb.trexp(se)
         """
         if len(self) == 1:
-            return smb.skewa(self.S)
+            return smb.skewa3(self.S)
         else:
-            return [smb.skewa(x.S) for x in self]
+            return [smb.skewa3(x.S) for x in self]
 
     @property
     def pitch(self):
@@ -1558,9 +1558,9 @@ class Twist2(BaseTwist):
             >>> smb.trexp2(se)
         """
         if len(self) == 1:
-            return smb.skewa(self.S)
+            return smb.skewa2(self.S)
         else:
-            return [smb.skewa(x.S) for x in self]
+            return [smb.skewa2(x.S) for x in self]
 
     def exp(self, theta=1, unit="rad"):
         r"""

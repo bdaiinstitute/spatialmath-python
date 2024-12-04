@@ -286,6 +286,8 @@ __all__ = [
     "iseye",
     "skew",
     "vex",
+    "skewa2",
+    "skewa3",
     "skewa",
     "vexa",
     "h2e",

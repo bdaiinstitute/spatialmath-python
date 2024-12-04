@@ -35,7 +35,7 @@ from spatialmath.base.transformsNd import (
     t2r,
     rt2tr,
     skew,
-    skewa,
+    skewa3,
     vex,
     vexa,
     isskew,
@@ -1723,7 +1723,7 @@ def delta2tr(d: R6) -> SE3Array:
     :SymPy: supported
     """
 
-    return np.eye(4, 4) + skewa(d)
+    return np.eye(4, 4) + skewa3(d)
 
 
 def trinv(T: SE3Array) -> SE3Array:
