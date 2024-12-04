@@ -361,23 +361,35 @@ class TestND(unittest.TestCase):
         sk[2, 2] = 3
         self.assertFalse(isskew(sk))
 
-    def test_skewa(self):
+    def test_skewa3(self):
         # 3D
-        sk = skewa([1, 2, 3, 4, 5, 6])
+        sk = skewa3([1, 2, 3, 4, 5, 6])
         self.assertEqual(sk.shape, (4, 4))
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0, 0, 0])
         nt.assert_almost_equal(sk[-1, :], np.r_[0, 0, 0, 0])
         nt.assert_almost_equal(sk[:3, 3], [1, 2, 3])
         nt.assert_almost_equal(vex(sk[:3, :3]), [4, 5, 6])
 
+    def test_skewa2(self):
         # 2D
-        sk = skewa([1, 2, 3])
+        sk = skewa2([1, 2, 3])
         self.assertEqual(sk.shape, (3, 3))
         nt.assert_almost_equal(sk.diagonal(), np.r_[0, 0, 0])
         nt.assert_almost_equal(sk[-1, :], np.r_[0, 0, 0])
         nt.assert_almost_equal(sk[:2, 2], [1, 2])
         nt.assert_almost_equal(vex(sk[:2, :2]), [3])
 
+    def test_skewa_skewa3(self):
+        # 3D
+        v = [1, 2, 3, 4, 5, 6]
+        nt.assert_equal(skewa(v), skewa3(v))
+
+    def test_skewa_skewa2(self):
+        # 2D
+        v = [1, 2, 3]
+        nt.assert_equal(skewa(v), skewa2(v))
+
+    def test_skew_raises(self):
         with self.assertRaises(ValueError):
             sk = skew([1, 2])
 

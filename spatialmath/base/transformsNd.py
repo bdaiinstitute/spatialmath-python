@@ -590,14 +590,26 @@ def vex(s, check=False):
 
 
 # ---------------------------------------------------------------------------------------#
-@overload
-def skewa(v: ArrayLike3) -> se2Array:
-    ...
+def skewa2(v: ArrayLike3) -> se2Array:
+    v = getvector(v, None)
+    if len(v) == 3:
+        omega = np.zeros((3, 3), dtype=v.dtype)
+        omega[:2, :2] = skew(v[2])
+        omega[:2, 2] = v[0:2]
+        return omega
+    else:
+        raise ValueError("expecting a 3-vector")
 
 
-@overload
-def skewa(v: ArrayLike6) -> se3Array:
-    ...
+def skewa3(v: ArrayLike6) -> se3Array:
+    v = getvector(v, None)
+    if len(v) == 6:
+        omega = np.zeros((4, 4), dtype=v.dtype)
+        omega[:3, :3] = skew(v[3:6])
+        omega[:3, 3] = v[0:3]
+        return omega
+    else:
+        raise ValueError("expecting a 6-vector")
 
 
 def skewa(v: Union[ArrayLike3, ArrayLike6]) -> Union[se2Array, se3Array]:
@@ -633,15 +645,9 @@ def skewa(v: Union[ArrayLike3, ArrayLike6]) -> Union[se2Array, se3Array]:
 
     v = getvector(v, None)
     if len(v) == 3:
-        omega = np.zeros((3, 3), dtype=v.dtype)
-        omega[:2, :2] = skew(v[2])
-        omega[:2, 2] = v[0:2]
-        return omega
+        return skewa2(v)
     elif len(v) == 6:
-        omega = np.zeros((4, 4), dtype=v.dtype)
-        omega[:3, :3] = skew(v[3:6])
-        omega[:3, 3] = v[0:3]
-        return omega
+        return skewa3(v)
     else:
         raise ValueError("expecting a 3- or 6-vector")
 
