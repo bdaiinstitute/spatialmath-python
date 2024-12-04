@@ -2139,7 +2139,7 @@ def x2r(r: ArrayLike3, representation: str = "rpy/xyz") -> SO3Array:
     elif representation in ("arm", "vehicle", "camera"):
         R = rpy2r(r, order=representation)
     elif representation == "exp":
-        R = trexp(r)
+        R = trexp_SO3(r)
     else:
         raise ValueError(f"unknown representation: {representation}")
     return R

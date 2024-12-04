@@ -830,9 +830,9 @@ class SO3(BasePoseMatrix):
         :seealso: :func:`spatialmath.base.transforms3d.trexp`, :func:`spatialmath.base.transformsNd.skew`
         """
         if smb.ismatrix(S, (-1, 3)) and not so3:
-            return cls([smb.trexp(s, check=check) for s in S], check=False)
+            return cls([smb.trexp_SO3(s, check=check) for s in S], check=False)
         else:
-            return cls(smb.trexp(cast(R3, S), check=check), check=False)
+            return cls(smb.trexp_SO3(cast(R3, S), check=check), check=False)
 
     def UnitQuaternion(self) -> UnitQuaternion:
         """
@@ -1828,9 +1828,9 @@ class SE3(SO3):
         :seealso: :func:`~spatialmath.base.transforms3d.trexp`, :func:`~spatialmath.base.transformsNd.skew`
         """
         if smb.isvector(S, 6):
-            return cls(smb.trexp(smb.getvector(S)), check=False)
+            return cls(smb.trexp_SE3(smb.getvector(S)), check=False)
         else:
-            return cls(smb.trexp(S), check=False)
+            return cls(smb.trexp_SE3(S), check=False)
 
     @classmethod
     def Delta(cls, d: ArrayLike6) -> SE3:

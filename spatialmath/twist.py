@@ -1015,13 +1015,13 @@ class Twist3(BaseTwist):
 
         if len(theta) == 1:
             # theta is a scalar
-            return SE3(smb.trexp(self.S * theta))
+            return SE3(smb.trexp_SE3(self.S * theta))
         else:
             # theta is a vector
             if len(self) == 1:
-                return SE3([smb.trexp(self.S * t) for t in theta])
+                return SE3([smb.trexp_SE3(self.S * t) for t in theta])
             elif len(self) == len(theta):
-                return SE3([smb.trexp(S * t) for S, t in zip(self.data, theta)])
+                return SE3([smb.trexp_SE3(S * t) for S, t in zip(self.data, theta)])
             else:
                 raise ValueError("length of twist and theta not consistent")
 
@@ -1072,9 +1072,9 @@ class Twist3(BaseTwist):
         theta = smb.getunit(theta, unit)
 
         if len(self) == 1:
-            return SE3([smb.trexp(self.S * t) for t in theta], check=False)
+            return SE3([smb.trexp_SE3(self.S * t) for t in theta], check=False)
         elif len(self) == len(theta):
-            return SE3([smb.trexp(s * t) for s, t in zip(self.S, theta)], check=False)
+            return SE3([smb.trexp_SE3(s * t) for s, t in zip(self.S, theta)], check=False)
         else:
             raise ValueError("length mismatch")
 
@@ -1136,12 +1136,12 @@ class Twist3(BaseTwist):
             return Twist3(
                 left.binop(
                     right,
-                    lambda x, y: smb.trlog(smb.trexp(x) @ smb.trexp(y), twist=True),
+                    lambda x, y: smb.trlog(smb.trexp_SE3(x) @ smb.trexp_SE3(y), twist=True),
                 )
             )
         elif isinstance(right, SE3):
             # twist * SE3 -> SE3
-            return SE3(left.binop(right, lambda x, y: smb.trexp(x) @ y), check=False)
+            return SE3(left.binop(right, lambda x, y: smb.trexp_SE3(x) @ y), check=False)
         elif smb.isscalar(right):
             # return Twist(left.S * right)
             return Twist3(left.binop(right, lambda x, y: x * y))
