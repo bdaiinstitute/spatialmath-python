@@ -310,7 +310,7 @@ class Line3(BasePoseList):
         if base.isvector(v, 3) and base.isvector(w, 3):
             if check and not base.iszero(np.dot(v, w)):
                 raise ValueError("invalid Plucker coordinates")
-            self.data = [np.r_[v, w]]
+            self.data = np.r_[v, w]
 
         else:
             raise ValueError("invalid argument to Line3 constructor")
@@ -436,7 +436,7 @@ class Line3(BasePoseList):
     @property
     def A(self) -> R6:
         # get the underlying numpy array
-        return self.data[0]
+        return self.data
 
     @property
     def v(self) -> R3:
@@ -450,7 +450,7 @@ class Line3(BasePoseList):
 
         :seealso: :meth:`w`
         """
-        return self.data[0][0:3]
+        return self.data[0:3]
 
     @property
     def w(self) -> R3:
@@ -464,7 +464,7 @@ class Line3(BasePoseList):
 
         :seealso: :meth:`v` :meth:`uw`
         """
-        return self.data[0][3:6]
+        return self.data[3:6]
 
     @property
     def uw(self) -> R3:

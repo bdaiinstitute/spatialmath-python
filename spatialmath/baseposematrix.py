@@ -351,13 +351,10 @@ class BasePoseMatrix(BasePoseList):
         :SymPy: not supported
         """
         if self.N == 2:
-            log = [smb.trlog2(x, twist=twist) for x in self.data]
+            log = smb.trlog2(self.data, twist=twist)
         else:
-            log = [smb.trlog(x, twist=twist) for x in self.data]
-        if len(log) == 1:
-            return log[0]
-        else:
-            return log
+            log = smb.trlog(self.data, twist=twist)
+        return log
 
     def interp(self, end: Optional[bool] = None, s: Union[int, float] = None, shortest: bool = True) -> list[Self]:
         """
@@ -458,9 +455,9 @@ class BasePoseMatrix(BasePoseList):
         :seealso: :func:`~spatialmath.base.transforms3d.trnorm`, :func:`~spatialmath.base.transforms2d.trnorm2`
         """
         if self.N == 2:
-            return self.__class__([smb.trnorm2(x) for x in self.data])
+            return self.__class__(smb.trnorm2(self.data))
         else:
-            return self.__class__([smb.trnorm(x) for x in self.data])
+            return self.__class__(smb.trnorm(self.data))
 
     def simplify(self) -> Self:
         """
@@ -493,7 +490,7 @@ class BasePoseMatrix(BasePoseList):
         """
 
         vf = np.vectorize(smb.sym.simplify)
-        return self.__class__([vf(x) for x in self.data], check=False)
+        return self.__class__(vf(self.data), check=False)
 
     def stack(self) -> NDArray:
         """
@@ -621,11 +618,9 @@ class BasePoseMatrix(BasePoseList):
         :seealso: :meth:`strline` :func:`trprint`, :func:`trprint2`
         """
         if self.N == 2:
-            for x in self.data:
-                smb.trprint2(x, *args, **kwargs)
+            smb.trprint2(self.data, *args, **kwargs)
         else:
-            for x in self.data:
-                smb.trprint(x, *args, **kwargs)
+            smb.trprint(self.data, *args, **kwargs)
 
     def strline(self, *args, **kwargs) -> str:
         """
@@ -683,11 +678,9 @@ class BasePoseMatrix(BasePoseList):
         """
         s = ""
         if self.N == 2:
-            for x in self.data:
-                s += smb.trprint2(x, *args, file=False, **kwargs)
+            s += smb.trprint2(self.data, *args, file=False, **kwargs)
         else:
-            for x in self.data:
-                s += smb.trprint(x, *args, file=False, **kwargs)
+            s += smb.trprint(self.data, *args, file=False, **kwargs)
         return s
 
     def __repr__(self) -> str:
@@ -773,7 +766,7 @@ class BasePoseMatrix(BasePoseList):
         if self._ansiformatter is None:
             self._ansiformatter = ANSIMatrix(style="thick")
 
-        return "\n".join([self._ansiformatter.str(A) for A in self.data])
+        return self._ansiformatter.str(self.data)
 
     def _string_color(self, color: Optional[bool] = False) -> str:
         """
@@ -848,25 +841,7 @@ class BasePoseMatrix(BasePoseList):
                 out += rowstr + bgcol + "  " + reset + "\n"
             return out
 
-        output_str = ""
-
-        if len(self.data) == 0:
-            output_str = "[]"
-        elif len(self.data) == 1:
-            # single matrix case
-            output_str = mformat(self, self.A)
-        else:
-            # sequence case
-            for count, X in enumerate(self.data):
-                # add separator lines and the index
-                output_str += (
-                    indexcol
-                    + "[{:d}] =".format(count)
-                    + reset
-                    + "\n"
-                    + mformat(self, X)
-                )
-
+        output_str = mformat(self, self.A)
         return output_str
 
     # ----------------------- graphics
@@ -956,9 +931,7 @@ class BasePoseMatrix(BasePoseList):
             group.  You can either disable membership checking by ``check=False``
             which is risky, or normalize the result by ``norm=True``.
         """
-        Tprod = self.__class__._identity()  # identity value
-        for T in self.data:
-            Tprod = Tprod @ T
+        Tprod = self.data
         if norm:
             Tprod = smb.trnorm(Tprod)
         return self.__class__(Tprod, check=check)
@@ -987,7 +960,7 @@ class BasePoseMatrix(BasePoseList):
 
         assert type(n) is int, "exponent must be an int"
         return self.__class__(
-            [np.linalg.matrix_power(x, n) for x in self.data], check=False
+            np.linalg.matrix_power(self.data, n), check=False
         )
 
     # ----------------------- arithmetic

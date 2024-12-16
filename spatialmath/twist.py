@@ -75,7 +75,7 @@ class BaseTwist(BasePoseList):
             - if ``len(X)`` > 1 then return a list of vectors.
         """
         # get the underlying numpy array
-        return self.data[0]
+        return self.data
 
     @property
     def isprismatic(self):
@@ -179,7 +179,7 @@ class BaseTwist(BasePoseList):
             >>> S.inv()
             >>> S * S.inv()
         """
-        return self.__class__(-self.data[0])
+        return self.__class__(-self.data)
 
     @classmethod
     def prod(cls, twists) :
@@ -319,11 +319,11 @@ class Twist3(BaseTwist):
             if super().arghandler(arg, check=check):
                 return
             elif isinstance(arg, SE3):
-                self.data = [arg.twist().A]
+                self.data = arg.twist().A
 
         elif w is not None and smb.isvector(w, 3) and smb.isvector(arg, 3):
             # Twist(v, w)
-            self.data = [np.r_[arg, w]]
+            self.data = np.r_[arg, w]
             return
 
         else:
@@ -427,7 +427,7 @@ class Twist3(BaseTwist):
             >>> t = Twist3([1, 2, 3, 4, 5, 6])
             >>> t.v
         """
-        return self.data[0][:3]
+        return self.data[:3]
 
     @property
     def w(self):
@@ -448,7 +448,7 @@ class Twist3(BaseTwist):
             >>> t.w
 
         """
-        return self.data[0][3:6]
+        return self.data[3:6]
 
     # -------------------- variant constructors ----------------------------#
 
@@ -1223,7 +1223,7 @@ class Twist2(BaseTwist):
 
         elif w is not None and smb.isscalar(w) and smb.isvector(arg, 2):
             # Twist(v, w)
-            self.data = [np.r_[arg, w]]
+            self.data = np.r_[arg, w]
             return
 
         raise ValueError("bad twist value")
@@ -1375,7 +1375,7 @@ class Twist2(BaseTwist):
             >>> t.v
 
         """
-        return self.data[0][:2]
+        return self.data[:2]
 
     @property
     def w(self):
@@ -1396,7 +1396,7 @@ class Twist2(BaseTwist):
             >>> t.w
 
         """
-        return self.data[0][2]
+        return self.data[2]
 
     @property
     def pole(self):

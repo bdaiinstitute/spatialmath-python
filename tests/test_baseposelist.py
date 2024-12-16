@@ -6,9 +6,9 @@ from spatialmath.baseposelist import BasePoseList
 class X(BasePoseList):
     def __init__(self, value=None, check=False):
         if value is None:
-            value = [0]
+            value = 0
         elif not isinstance(value, list):
-            value = [value]
+            value = value
         super().__init__()
         self.data = value
         

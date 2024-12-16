@@ -96,13 +96,11 @@ class SpatialVector(BasePoseList):
         # print('spatialVec6 init')
 
         if base.isvector(value, 6):
-            self.data = [np.array(value)]
+            self.data = np.array(value)
         elif base.isvector(value, 3):
-            self.data = [np.r_[value, 0, 0, 0]]
+            self.data = np.r_[value, 0, 0, 0]
         elif isinstance(value, SpatialVector):
-            self.data = [value.A]
-        elif base.ismatrix(value, (6, None)):
-            self.data = [x for x in value.T]
+            self.data = value.A
         elif not super().arghandler(value):
             raise ValueError("bad argument to constructor")
 
@@ -144,9 +142,6 @@ class SpatialVector(BasePoseList):
         """
         return (6,)
 
-    def __getitem__(self, i):
-        return self.__class__(self.data[i])
-
     # ------------------------------------------------------------------------ #
 
     def __repr__(self):
@@ -180,12 +175,7 @@ class SpatialVector(BasePoseList):
         line per element.
         """
         typ = type(self).__name__
-        return "\n".join(
-            [
-                "{:s}[{:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}]".format(typ, *list(x))
-                for x in self.data
-            ]
-        )
+        return "{:s}[{:.5g} {:.5g} {:.5g}; {:.5g} {:.5g} {:.5g}]".format(typ, *self.data)
 
     def __neg__(self):
         """
@@ -203,7 +193,7 @@ class SpatialVector(BasePoseList):
         # for i=1:numel(obj)
         # y(i) = obj.new(-obj(i).vw);
 
-        return self.__class__([-x for x in self.data])
+        return self.__class__(-self.data)
 
     def __add__(
         left, right
@@ -229,7 +219,7 @@ class SpatialVector(BasePoseList):
         if len(left) != len(right):
             raise ValueError("can only add equal length arrays of spatial vectors")
 
-        return left.__class__([x + y for x, y in zip(left.data, right.data)])
+        return left.__class__(left.data + right.data)
 
     def __sub__(
         left, right
@@ -254,7 +244,7 @@ class SpatialVector(BasePoseList):
         if len(left) != len(right):
             raise ValueError("can only add equal length arrays of spatial vectors")
 
-        return left.__class__([x - y for x, y in zip(left.data, right.data)])
+        return left.__class__(left.data - right.data)
 
     def __rmul__(
         right, left
@@ -550,7 +540,7 @@ class SpatialInertia(BasePoseList):
         else:
             raise ValueError("bad values")
 
-        self.data = [I]
+        self.data = I
 
     @staticmethod
     def _identity():
@@ -578,9 +568,6 @@ class SpatialInertia(BasePoseList):
         :rtype: tuple
         """
         return (6, 6)
-
-    def __getitem__(self, i):
-        return SpatialInertia(self.data[i])
 
     def __repr__(self):
         """

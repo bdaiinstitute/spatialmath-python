@@ -73,16 +73,13 @@ class SO2(BasePoseMatrix):
 
         """
         if isinstance(arg, SE2):
-            self.data = [smb.t2r(x) for x in arg.data]
+            self.data = smb.t2r(arg.data)
 
         elif super().arghandler(arg, check=check):
             return
 
         elif smb.isscalar(arg):
-            self.data = [smb.rot2(arg, unit=unit)]
-
-        elif smb.isvector(arg):
-            self.data = [smb.rot2(x, unit=unit) for x in smb.getvector(arg)]
+            self.data = smb.rot2(arg, unit=unit)
 
         else:
             raise ValueError("bad argument to constructor")
@@ -289,16 +286,16 @@ class SE2(SO2):
                 return
 
             if isinstance(x, SO2):
-                self.data = [smb.r2t(_x) for _x in x.data]
+                self.data = smb.r2t(x.data)
 
             elif smb.isscalar(x):
-                self.data = [smb.trot2(x, unit=unit)]
+                self.data = mb.trot2(x, unit=unit)
             elif len(x) == 2:
                 # SE2([x,y])
-                self.data = [smb.transl2(x)]
+                self.data = smb.transl2(x)
             elif len(x) == 3:
                 # SE2([x,y,theta])
-                self.data = [smb.trot2(x[2], t=x[:2], unit=unit)]
+                self.data = smb.trot2(x[2], t=x[:2], unit=unit)
 
             else:
                 raise ValueError("bad argument to constructor")
@@ -306,11 +303,11 @@ class SE2(SO2):
         elif x is not None:
             if y is not None and theta is None:
                 # SE2(x, y)
-                self.data = [smb.transl2(x, y)]
+                self.data = smb.transl2(x, y)
 
             elif y is not None and theta is not None:
                 # SE2(x, y, theta)
-                self.data = [smb.trot2(theta, t=[x, y], unit=unit)]
+                self.data = smb.trot2(theta, t=[x, y], unit=unit)
 
         else:
             raise ValueError("bad arguments to constructor")

@@ -126,7 +126,7 @@ class BasePoseList(ABC):
 
             x = self._import(arg, check=check)
             if x is not None:
-                self.data = [x]
+                self.data = x
             else:
                 return False
 
@@ -134,25 +134,25 @@ class BasePoseList(ABC):
             # it's a list of things
             if isinstance(arg[0], np.ndarray):
                 # possibly a list of numpy arrays
-                self.data = [self._import(x, check=check) for x in arg]
+                self.data = [self._import(x, check=check) for x in arg][0] # TODO: confirm
 
             elif type(arg[0]) == type(self):
                 # possibly a list of objects of same type
                 assert all(
                     map(lambda x: type(x) == type(self), arg)
                 ), "elements of list are incorrect type"
-                self.data = [x.A for x in arg]
+                self.data = [x.A for x in arg][0] # TODO: confirm
 
             elif (
                 isnumberlist(arg) and len(self.shape) == 1 and len(arg) == self.shape[0]
             ):
-                self.data = [np.array(arg)]
+                self.data = [np.array(arg)][0] # TODO: confirm
 
             else:
                 # see what NumPy makes of it
                 X = np.array(arg)
                 if X.shape == self.shape:
-                    self.data = [X]
+                    self.data = X
                 else:
                     # no idea what was passed
                     return False
@@ -171,7 +171,7 @@ class BasePoseList(ABC):
                 raise ValueError(
                     "argument has no conversion method to this type"
                 ) from None
-            self.data = [converter(arg).A]
+            self.data = converter(arg).A
 
         else:
             # don't know this argument, let object __init__ deal with it
@@ -186,7 +186,7 @@ class BasePoseList(ABC):
         so that C extenstions with this spatial math class have direct
         access to the underlying numpy array
         """
-        return self.data[0].__array_interface__
+        return self.data.__array_interface__
 
     @property
     def _A(self) -> NDArray:
@@ -196,7 +196,7 @@ class BasePoseList(ABC):
         :rtype: numpy.ndarray, shape=(3,)
         - ``X.v`` is a 3-vector
         """
-        return self.data[0]
+        return self.data
 
     @property
     def A(self) -> NDArray:
@@ -212,7 +212,7 @@ class BasePoseList(ABC):
         .. note:: This assumes that ``len(X)`` == 1, ie. it is a single-valued
             instance.
         """
-        return self.data[0]
+        return self.data
 
     def __len__(self) -> int:
         return 1
@@ -403,6 +403,6 @@ class BasePoseList(ABC):
 
         """
         if matrix:
-            return np.vstack([op(x) for x in self.data])
+            return np.vstack([op(self.data)])
         else:
-            return [op(x) for x in self.data]
+            return [op(self.data)]

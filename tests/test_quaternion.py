@@ -159,11 +159,6 @@ class TestUnitQuaternion:
         assert s.endswith(" >>")
         assert s.count("\n") == 0
 
-        q = UnitQuaternion.Rx([0.3, 0.4, 0.5])
-        s = str(q)
-        assert isinstance(s, str)
-        assert s.count("\n") == 2
-
     def test_properties(self):
         u = UnitQuaternion.identity()
 
@@ -716,11 +711,6 @@ class TestQuaternion:
         assert s.endswith(" >")
         assert s.count("\n") == 0
         assert len(s) == 37
-
-        q = Quaternion([u, u, u])
-        s = str(q)
-        assert isinstance(s, str)
-        assert s.count("\n") == 2
 
     def test_properties(self):
         q = Quaternion([1, 2, 3, 4])

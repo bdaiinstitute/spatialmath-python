@@ -84,11 +84,11 @@ class Quaternion(BasePoseList):
                 return
 
             elif smb.isvector(s, 4):
-                self.data = [smb.getvector(s)]
+                self.data = smb.getvector(s)
 
         elif smb.isscalar(s) and smb.isvector(v, 3):
             # Quaternion(s, v)
-            self.data = [np.r_[s, smb.getvector(v)]]
+            self.data = np.r_[s, smb.getvector(v)]
 
         else:
             raise ValueError("bad argument to Quaternion constructor")
@@ -748,9 +748,7 @@ class Quaternion(BasePoseList):
             >>> -Quaternion([np.r_[1,2,3,4], np.r_[5,6,7,8]])
         """
 
-        return UnitQuaternion(
-            [-x for x in self.data]
-        )  # pylint: disable=invalid-unary-operand-type
+        return UnitQuaternion(-self.data) # pylint: disable=invalid-unary-operand-type
 
     def __repr__(self) -> str:
         """
@@ -815,7 +813,7 @@ class Quaternion(BasePoseList):
             delim = ("<<", ">>")
         else:
             delim = ("<", ">")
-        return "\n".join([smb.qprint(q, file=None, delim=delim) for q in self.data])
+        return smb.qprint(self.data, file=None, delim=delim)
 
 
 # ========================================================================= #
@@ -907,7 +905,7 @@ class UnitQuaternion(Quaternion):
             # single argument
             if super().arghandler(s, check=check):
                 # create unit quaternion
-                self.data = [smb.qunit(q) for q in self.data]
+                self.data = smb.qunit(self.data)
 
             elif isinstance(s, np.ndarray):
                 # passed a NumPy array, it could be:
@@ -918,7 +916,7 @@ class UnitQuaternion(Quaternion):
                 if s.shape == (3, 3):
                     if smb.isrot(s, check=check):
                         # UnitQuaternion(R) R is 3x3 rotation matrix
-                        self.data = [smb.r2q(s)]
+                        self.data = smb.r2q(s)
                     else:
                         raise ValueError(
                             "invalid rotation matrix provided to UnitQuaternion constructor"
@@ -926,25 +924,25 @@ class UnitQuaternion(Quaternion):
                 elif s.shape == (4,):
                     # passed a 4-vector
                     if norm:
-                        self.data = [smb.qunit(s)]
+                        self.data = smb.qunit(s)
                     else:
-                        self.data = [s]
+                        self.data = s
                 elif s.ndim == 2 and s.shape[1] == 4:
                     if norm:
-                        self.data = [smb.qunit(x) for x in s]
+                        self.data = smb.qunit(s)
                     else:
                         # self.data = [smb.qpositive(x) for x in s]
-                        self.data = [x for x in s]
+                        self.data = s
                 else:
                     raise ValueError("array could not be interpreted as UnitQuaternion")
 
             elif isinstance(s, SO3):
                 # UnitQuaternion(x) x is SO3 or SE3 (since SE3 is subclass of SO3)
-                self.data = [smb.r2q(s.R)]
+                self.data = smb.r2q(s.R)
 
             elif isinstance(s[0], SO3):
                 # list of SO3 or SE3
-                self.data = [smb.r2q(s.R)]
+                self.data = smb.r2q(s.R)
 
             else:
                 raise ValueError("bad argument to UnitQuaternion constructor")
@@ -954,7 +952,7 @@ class UnitQuaternion(Quaternion):
             q = np.r_[s, smb.getvector(v)]
             if norm:
                 q = smb.qunit(q)
-            self.data = [q]
+            self.data = q
 
         else:
             raise ValueError("bad argument to UnitQuaternion constructor")
@@ -1905,7 +1903,7 @@ class UnitQuaternion(Quaternion):
         updated = smb.qqmul(self.A, np.r_[ds, dv])
         if normalize:
             updated = smb.qunit(updated)
-        self.data = [updated]
+        self.data = updated
 
     def plot(self, *args: List, **kwargs):
         """
