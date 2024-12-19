@@ -192,14 +192,14 @@ class SplineFit:
             )
 
             sample_time = self.time_data[candidate_removal_index]
-            if check_type is "local":
+            if check_type == "local":
                 angular_error = SO3(self.pose_data[candidate_removal_index]).angdist(
                     SO3(self.spline.spline_so3(sample_time).as_matrix())
                 )
                 euclidean_error = np.linalg.norm(
                     self.pose_data[candidate_removal_index].t - self.spline.spline_xyz(sample_time)
                 )
-            elif check_type is "global":
+            elif check_type == "global":
                 angular_error = self.max_angular_error()
                 euclidean_error = self.max_euclidean_error()
             else:
