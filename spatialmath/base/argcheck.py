@@ -559,7 +559,7 @@ def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> Union[float, NDArray]:
 
     :seealso: :func:`getvector`
     """
-    if not isinstance(v, Iterable) and dim == 0:
+    if not isinstance(v, Iterable) and dim in (0, None):
         # scalar in, scalar out
         if unit == "rad":
             return v
