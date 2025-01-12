@@ -63,7 +63,7 @@ def rot2(theta: float, unit: str = "rad") -> SO2Array:
         >>> rot2(0.3)
         >>> rot2(45, 'deg')
     """
-    theta = smb.getunit(theta, unit, dim=0)
+    theta = smb.getunit(theta, unit, vector=False)
     ct = smb.sym.cos(theta)
     st = smb.sym.sin(theta)
     # fmt: off
@@ -172,18 +172,15 @@ def tr2xyt(T: SE2Array, unit: str = "rad") -> R3:
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def transl2(x: float, y: float) -> SE2Array:
-    ...
+def transl2(x: float, y: float) -> SE2Array: ...
 
 
 @overload  # pragma: no cover
-def transl2(x: ArrayLike2) -> SE2Array:
-    ...
+def transl2(x: ArrayLike2) -> SE2Array: ...
 
 
 @overload  # pragma: no cover
-def transl2(x: SE2Array) -> R2:
-    ...
+def transl2(x: SE2Array) -> R2: ...
 
 
 def transl2(x, y=None):
@@ -446,8 +443,7 @@ def trlog2(
     twist: bool = False,
     check: bool = True,
     tol: float = 20,
-) -> so2Array:
-    ...
+) -> so2Array: ...
 
 
 @overload  # pragma: no cover
@@ -456,8 +452,7 @@ def trlog2(
     twist: bool = False,
     check: bool = True,
     tol: float = 20,
-) -> se2Array:
-    ...
+) -> se2Array: ...
 
 
 @overload  # pragma: no cover
@@ -466,8 +461,7 @@ def trlog2(
     twist: bool = True,
     check: bool = True,
     tol: float = 20,
-) -> float:
-    ...
+) -> float: ...
 
 
 @overload  # pragma: no cover
@@ -476,8 +470,7 @@ def trlog2(
     twist: bool = True,
     check: bool = True,
     tol: float = 20,
-) -> R3:
-    ...
+) -> R3: ...
 
 
 def trlog2(
@@ -563,13 +556,15 @@ def trlog2(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def trexp2(S: so2Array, theta: Optional[float] = None, check: bool = True) -> SO2Array:
-    ...
+def trexp2(
+    S: so2Array, theta: Optional[float] = None, check: bool = True
+) -> SO2Array: ...
 
 
 @overload  # pragma: no cover
-def trexp2(S: se2Array, theta: Optional[float] = None, check: bool = True) -> SE2Array:
-    ...
+def trexp2(
+    S: se2Array, theta: Optional[float] = None, check: bool = True
+) -> SE2Array: ...
 
 
 def trexp2(
@@ -692,8 +687,7 @@ def trexp2(
 
 
 @overload  # pragma: no cover
-def trnorm2(R: SO2Array) -> SO2Array:
-    ...
+def trnorm2(R: SO2Array) -> SO2Array: ...
 
 
 def trnorm2(T: SE2Array) -> SE2Array:
@@ -758,13 +752,11 @@ def trnorm2(T: SE2Array) -> SE2Array:
 
 
 @overload  # pragma: no cover
-def tradjoint2(T: SO2Array) -> R1x1:
-    ...
+def tradjoint2(T: SO2Array) -> R1x1: ...
 
 
 @overload  # pragma: no cover
-def tradjoint2(T: SE2Array) -> R3x3:
-    ...
+def tradjoint2(T: SE2Array) -> R3x3: ...
 
 
 def tradjoint2(T):
@@ -853,13 +845,15 @@ def tr2jac2(T: SE2Array) -> R3x3:
 
 
 @overload
-def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float, shortest: bool = True) -> SO2Array:
-    ...
+def trinterp2(
+    start: Optional[SO2Array], end: SO2Array, s: float, shortest: bool = True
+) -> SO2Array: ...
 
 
 @overload
-def trinterp2(start: Optional[SE2Array], end: SE2Array, s: float, shortest: bool = True) -> SE2Array:
-    ...
+def trinterp2(
+    start: Optional[SE2Array], end: SE2Array, s: float, shortest: bool = True
+) -> SE2Array: ...
 
 
 def trinterp2(start, end, s, shortest: bool = True):

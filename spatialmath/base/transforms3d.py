@@ -79,7 +79,7 @@ def rotx(theta: float, unit: str = "rad") -> SO3Array:
     :SymPy: supported
     """
 
-    theta = getunit(theta, unit, dim=0)
+    theta = getunit(theta, unit, vector=False)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -118,7 +118,7 @@ def roty(theta: float, unit: str = "rad") -> SO3Array:
     :SymPy: supported
     """
 
-    theta = getunit(theta, unit, dim=0)
+    theta = getunit(theta, unit, vector=False)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -152,7 +152,7 @@ def rotz(theta: float, unit: str = "rad") -> SO3Array:
     :seealso: :func:`~trotz`
     :SymPy: supported
     """
-    theta = getunit(theta, unit, dim=0)
+    theta = getunit(theta, unit, vector=False)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -263,18 +263,15 @@ def trotz(theta: float, unit: str = "rad", t: Optional[ArrayLike3] = None) -> SE
 
 
 @overload  # pragma: no cover
-def transl(x: float, y: float, z: float) -> SE3Array:
-    ...
+def transl(x: float, y: float, z: float) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def transl(x: ArrayLike3) -> SE3Array:
-    ...
+def transl(x: ArrayLike3) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def transl(x: SE3Array) -> R3:
-    ...
+def transl(x: SE3Array) -> R3: ...
 
 
 def transl(x, y=None, z=None):
@@ -327,6 +324,7 @@ def transl(x, y=None, z=None):
     .. note:: This function is compatible with the MATLAB version of the
         Toolbox.  It is unusual/weird in doing two completely different things
         inside the one function.
+
     :seealso: :func:`~spatialmath.base.transforms2d.transl2`
     :SymPy: supported
     """
@@ -426,8 +424,7 @@ def isrot(R: Any, check: bool = False, tol: float = 20) -> bool:
 @overload  # pragma: no cover
 def rpy2r(
     roll: float, pitch: float, yaw: float, *, unit: str = "rad", order: str = "zyx"
-) -> SO3Array:
-    ...
+) -> SO3Array: ...
 
 
 @overload  # pragma: no cover
@@ -438,8 +435,7 @@ def rpy2r(
     *,
     unit: str = "rad",
     order: str = "zyx",
-) -> SO3Array:
-    ...
+) -> SO3Array: ...
 
 
 def rpy2r(
@@ -517,8 +513,7 @@ def rpy2r(
 @overload  # pragma: no cover
 def rpy2tr(
     roll: float, pitch: float, yaw: float, unit: str = "rad", order: str = "zyx"
-) -> SE3Array:
-    ...
+) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
@@ -528,8 +523,7 @@ def rpy2tr(
     yaw: None = None,
     unit: str = "rad",
     order: str = "zyx",
-) -> SE3Array:
-    ...
+) -> SE3Array: ...
 
 
 def rpy2tr(
@@ -593,15 +587,13 @@ def rpy2tr(
 
 
 @overload  # pragma: no cover
-def eul2r(phi: float, theta: float, psi: float, unit: str = "rad") -> SO3Array:
-    ...
+def eul2r(phi: float, theta: float, psi: float, unit: str = "rad") -> SO3Array: ...
 
 
 @overload  # pragma: no cover
 def eul2r(
     phi: ArrayLike3, theta: None = None, psi: None = None, unit: str = "rad"
-) -> SO3Array:
-    ...
+) -> SO3Array: ...
 
 
 def eul2r(
@@ -654,13 +646,11 @@ def eul2r(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def eul2tr(phi: float, theta: float, psi: float, unit: str = "rad") -> SE3Array:
-    ...
+def eul2tr(phi: float, theta: float, psi: float, unit: str = "rad") -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def eul2tr(phi: ArrayLike3, theta=None, psi=None, unit: str = "rad") -> SE3Array:
-    ...
+def eul2tr(phi: ArrayLike3, theta=None, psi=None, unit: str = "rad") -> SE3Array: ...
 
 
 def eul2tr(
@@ -753,7 +743,7 @@ def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 20) -> SO3Arr
     if np.linalg.norm(v) < tol * _eps:
         return np.eye(3)
 
-    θ = getunit(theta, unit)
+    θ = getunit(theta, unit, vector=False)
 
     # Rodrigue's equation
 
@@ -1272,25 +1262,25 @@ def tr2rpy(
 @overload  # pragma: no cover
 def trlog(
     T: SO3Array, check: bool = True, twist: bool = False, tol: float = 20
-) -> so3Array:
-    ...
+) -> so3Array: ...
 
 
 @overload  # pragma: no cover
 def trlog(
     T: SE3Array, check: bool = True, twist: bool = False, tol: float = 20
-) -> se3Array:
-    ...
+) -> se3Array: ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SO3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R3:
-    ...
+def trlog(
+    T: SO3Array, check: bool = True, twist: bool = True, tol: float = 20
+) -> R3: ...
 
 
 @overload  # pragma: no cover
-def trlog(T: SE3Array, check: bool = True, twist: bool = True, tol: float = 20) -> R6:
-    ...
+def trlog(
+    T: SE3Array, check: bool = True, twist: bool = True, tol: float = 20
+) -> R6: ...
 
 
 def trlog(
@@ -1405,23 +1395,23 @@ def trlog(
 
 # ---------------------------------------------------------------------------------------#
 @overload  # pragma: no cover
-def trexp(S: so3Array, theta: Optional[float] = None, check: bool = True) -> SO3Array:
-    ...
+def trexp(
+    S: so3Array, theta: Optional[float] = None, check: bool = True
+) -> SO3Array: ...
 
 
 @overload  # pragma: no cover
-def trexp(S: se3Array, theta: Optional[float] = None, check: bool = True) -> SE3Array:
-    ...
+def trexp(
+    S: se3Array, theta: Optional[float] = None, check: bool = True
+) -> SE3Array: ...
 
 
 @overload  # pragma: no cover
-def trexp(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array:
-    ...
+def trexp(S: ArrayLike3, theta: Optional[float] = None, check=True) -> SO3Array: ...
 
 
 @overload  # pragma: no cover
-def trexp(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array:
-    ...
+def trexp(S: ArrayLike6, theta: Optional[float] = None, check=True) -> SE3Array: ...
 
 
 def trexp(S, theta=None, check=True):
@@ -1542,8 +1532,7 @@ def trexp(S, theta=None, check=True):
 
 
 @overload  # pragma: no cover
-def trnorm(R: SO3Array) -> SO3Array:
-    ...
+def trnorm(R: SO3Array) -> SO3Array: ...
 
 
 def trnorm(T: SE3Array) -> SE3Array:
@@ -1605,13 +1594,15 @@ def trnorm(T: SE3Array) -> SE3Array:
 
 
 @overload
-def trinterp(start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True) -> SO3Array:
-    ...
+def trinterp(
+    start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True
+) -> SO3Array: ...
 
 
 @overload
-def trinterp(start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True) -> SE3Array:
-    ...
+def trinterp(
+    start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True
+) -> SE3Array: ...
 
 
 def trinterp(start, end, s, shortest=True):
@@ -2224,8 +2215,7 @@ def rotvelxform(
     inverse: bool = False,
     full: bool = False,
     representation="rpy/xyz",
-) -> R3x3:
-    ...
+) -> R3x3: ...
 
 
 @overload  # pragma: no cover
@@ -2233,8 +2223,7 @@ def rotvelxform(
     𝚪: SO3Array,
     inverse: bool = False,
     full: bool = False,
-) -> R3x3:
-    ...
+) -> R3x3: ...
 
 
 @overload  # pragma: no cover
@@ -2243,8 +2232,7 @@ def rotvelxform(
     inverse: bool = False,
     full: bool = True,
     representation="rpy/xyz",
-) -> R6x6:
-    ...
+) -> R6x6: ...
 
 
 @overload  # pragma: no cover
@@ -2252,8 +2240,7 @@ def rotvelxform(
     𝚪: SO3Array,
     inverse: bool = False,
     full: bool = True,
-) -> R6x6:
-    ...
+) -> R6x6: ...
 
 
 def rotvelxform(
@@ -2465,15 +2452,13 @@ def rotvelxform(
 @overload  # pragma: no cover
 def rotvelxform_inv_dot(
     𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = False, representation: str = "rpy/xyz"
-) -> R3x3:
-    ...
+) -> R3x3: ...
 
 
 @overload  # pragma: no cover
 def rotvelxform_inv_dot(
     𝚪: ArrayLike3, 𝚪d: ArrayLike3, full: bool = True, representation: str = "rpy/xyz"
-) -> R6x6:
-    ...
+) -> R6x6: ...
 
 
 def rotvelxform_inv_dot(
@@ -2670,13 +2655,11 @@ def rotvelxform_inv_dot(
 
 
 @overload  # pragma: no cover
-def tr2adjoint(T: SO3Array) -> R3x3:
-    ...
+def tr2adjoint(T: SO3Array) -> R3x3: ...
 
 
 @overload  # pragma: no cover
-def tr2adjoint(T: SE3Array) -> R6x6:
-    ...
+def tr2adjoint(T: SE3Array) -> R6x6: ...
 
 
 def tr2adjoint(T):
@@ -2709,7 +2692,7 @@ def tr2adjoint(T):
 
     :Reference:
         - Robotics, Vision & Control for Python, Section 3, P. Corke, Springer 2023.
-        - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>_
+        - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>`_
 
     :SymPy: supported
     """
@@ -3002,29 +2985,36 @@ if _matplotlib_exists:
             - ``width`` of line
             - ``length`` of line
             - ``style`` which is one of:
+
                 - ``'arrow'`` [default], draw line with arrow head in ``color``
                 - ``'line'``, draw line with no arrow head in ``color``
                 - ``'rgb'``, frame axes are lines with no arrow head and red for X, green
-                for Y, blue for Z; no origin dot
+                  for Y, blue for Z; no origin dot
                 - ``'rviz'``, frame axes are thick lines with no arrow head and red for X,
-                green for Y, blue for Z; no origin dot
+                  green for Y, blue for Z; no origin dot
+
         - coordinate axis labels depend on:
+
             - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
             - ``labels`` 3-list of alternative axis labels
             - ``textcolor`` which defaults to ``color``
             - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
-            for each axis label
+              for each axis label
+
         - coordinate frame label depends on:
+
             - `frame` the label placed inside {} near the origin of the frame
+
         - a dot at the origin
+
             - ``originsize`` size of the dot, if zero no dot
             - ``origincolor`` color of the dot, defaults to ``color``
 
         Examples::
 
-                trplot(T, frame='A')
-                trplot(T, frame='A', color='green')
-                trplot(T1, 'labels', 'UVW');
+            trplot(T, frame='A')
+            trplot(T, frame='A', color='green')
+            trplot(T1, 'labels', 'UVW');
 
         .. plot::
 
@@ -3383,12 +3373,12 @@ if _matplotlib_exists:
         :param **kwargs: arguments passed to ``trplot``
 
         - ``tranimate(T)`` where ``T`` is an SO(3) or SE(3) matrix, animates a 3D
-        coordinate frame moving from the world frame to the frame ``T`` in
-        ``nsteps``.
+          coordinate frame moving from the world frame to the frame ``T`` in
+          ``nsteps``.
 
         - ``tranimate(I)`` where ``I`` is an iterable or generator, animates a 3D
-        coordinate frame representing the pose of each element in the sequence of
-        SO(3) or SE(3) matrices.
+          coordinate frame representing the pose of each element in the sequence of
+          SO(3) or SE(3) matrices.
 
         Examples:
 
