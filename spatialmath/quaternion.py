@@ -897,7 +897,7 @@ class Quaternion(BasePoseList):
             delim = ("<<", ">>")
         else:
             delim = ("<", ">")
-        return "\n".join([smb.qprint(q, file=None, delim=delim) for q in self.data])
+        return "\n".join([smb.q2str(q, delim=delim) for q in self.data])
 
 
 # ========================================================================= #
