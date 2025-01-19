@@ -1292,6 +1292,21 @@ class SE3(SO3):
         else:
             return smb.tr2delta(self.A, X2.A)
 
+    def rtvec(self) -> Tuple[R3, R3]:
+        """
+        Convert to OpenCV-style rotation and translation vectors
+
+        :return: rotation and translation vectors
+        :rtype: ndarray(3), ndarray(3)
+
+        Many OpenCV functions accept pose as two 3-vectors: a rotation vector using
+        exponential coordinates and a translation vector.  This method combines them
+        into an SE(3) instance.
+
+        :seealso: :meth:`rtvec`
+        """
+        return SO3(self).log(twist=True), self.t
+
     def Ad(self) -> R6x6:
         r"""
         Adjoint of SE(3)
@@ -1832,6 +1847,26 @@ class SE3(SO3):
             return cls(smb.trexp(smb.getvector(S)), check=False)
         else:
             return cls(smb.trexp(S), check=False)
+
+    @classmethod
+    def RTvec(cls, rvec: ArrayLike3, tvec: ArrayLike3) -> Self:
+        """
+        Construct a new SE(3) from OpenCV-style rotation and translation vectors
+
+        :param rvec: rotation as exponential coordinates
+        :type rvec: ArrayLike3
+        :param tvec: translation vector
+        :type tvec: ArrayLike3
+        :return: An SE(3) instance
+        :rtype: SE3 instance
+
+        Many OpenCV functions (such as pose estimation) return pose as two 3-vectors: a
+        rotation vector using exponential coordinates and a translation vector.  This
+        method combines them into an SE(3) instance.
+
+        :seealso: :meth:`rtvec`
+        """
+        return SE3.Rt(smb.trexp(rvec), tvec)
 
     @classmethod
     def Delta(cls, d: ArrayLike6) -> SE3:

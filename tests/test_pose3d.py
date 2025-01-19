@@ -254,7 +254,6 @@ class TestSO3(unittest.TestCase):
         nt.assert_array_almost_equal(q.SO3(), R_from_q)
         nt.assert_array_almost_equal(q.SO3().UnitQuaternion(), q)
 
-
     def test_shape(self):
         a = SO3()
         self.assertEqual(a._A.shape, a.shape)
@@ -1338,6 +1337,16 @@ class TestSE3(unittest.TestCase):
         # inv
         # .T
         pass
+
+    def test_rtvec(self):
+        # OpenCV compatibility functions
+        T = SE3.RTvec([0, 1, 0], [2, 3, 4])
+        nt.assert_equal(T.t, [2, 3, 4])
+        nt.assert_equal(T.R, SO3.Ry(1))
+
+        rvec, tvec = T.rtvec()
+        nt.assert_equal(rvec, [0, 1, 0])
+        nt.assert_equal(tvec, [2, 3, 4])
 
 
 # ---------------------------------------------------------------------------------------#
