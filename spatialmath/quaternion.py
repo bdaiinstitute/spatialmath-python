@@ -1411,7 +1411,7 @@ class UnitQuaternion(Quaternion):
         :seealso: :meth:`UnitQuaternion.angvec` :meth:`UnitQuaternion.exp` :func:`~spatialmath.base.transforms3d.angvec2r`
         """
         v = smb.getvector(v, 3)
-        theta = smb.getunit(theta, unit, dim=0)
+        theta = smb.getunit(theta, unit, vector=False)
         return cls(
             s=math.cos(theta / 2), v=math.sin(theta / 2) * v, norm=False, check=False
         )

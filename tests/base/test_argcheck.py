@@ -122,11 +122,49 @@ class Test_check(unittest.TestCase):
             verifymatrix(a, (3, 4))
 
     def test_unit(self):
-        self.assertIsInstance(getunit(1), np.ndarray)
+        # scalar -> vector
+        self.assertEqual(getunit(1), np.array([1]))
+        self.assertEqual(getunit(1, dim=0), np.array([1]))
+        with self.assertRaises(ValueError):
+            self.assertEqual(getunit(1, dim=1), np.array([1]))
+
+        self.assertEqual(getunit(1, unit="deg"), np.array([1 * math.pi / 180.0]))
+        self.assertEqual(getunit(1, dim=0, unit="deg"), np.array([1 * math.pi / 180.0]))
+        with self.assertRaises(ValueError):
+            self.assertEqual(
+                getunit(1, dim=1, unit="deg"), np.array([1 * math.pi / 180.0])
+            )
+
+        # scalar -> scalar
+        self.assertEqual(getunit(1, vector=False), 1)
+        self.assertEqual(getunit(1, dim=0, vector=False), 1)
+        with self.assertRaises(ValueError):
+            self.assertEqual(getunit(1, dim=1, vector=False), 1)
+
+        self.assertIsInstance(getunit(1.0, vector=False), float)
+        self.assertIsInstance(getunit(1, vector=False), int)
+
+        self.assertEqual(getunit(1, vector=False, unit="deg"), 1 * math.pi / 180.0)
+        self.assertEqual(
+            getunit(1, dim=0, vector=False, unit="deg"), 1 * math.pi / 180.0
+        )
+        with self.assertRaises(ValueError):
+            self.assertEqual(
+                getunit(1, dim=1, vector=False, unit="deg"), 1 * math.pi / 180.0
+            )
+
+        self.assertIsInstance(getunit(1.0, vector=False, unit="deg"), float)
+        self.assertIsInstance(getunit(1, vector=False, unit="deg"), float)
+
+        # vector -> vector
+        self.assertEqual(getunit([1]), np.array([1]))
+        self.assertEqual(getunit([1], dim=1), np.array([1]))
+        with self.assertRaises(ValueError):
+            getunit([1], dim=0)
+
         self.assertIsInstance(getunit([1, 2]), np.ndarray)
         self.assertIsInstance(getunit((1, 2)), np.ndarray)
         self.assertIsInstance(getunit(np.r_[1, 2]), np.ndarray)
-        self.assertIsInstance(getunit(1.0, dim=0), float)
 
         nt.assert_equal(getunit(5, "rad"), 5)
         nt.assert_equal(getunit(5, "deg"), 5 * math.pi / 180.0)
