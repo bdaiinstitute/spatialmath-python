@@ -1263,7 +1263,7 @@ class UnitQuaternion(Quaternion):
         Construct a new unit quaternion from Euler angles
 
         :param 𝚪: 3-vector of Euler angles
-        :type 𝚪: array_like
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: unit-quaternion
@@ -1289,12 +1289,15 @@ class UnitQuaternion(Quaternion):
         if len(angles) == 1:
             angles = angles[0]
 
-        return cls(smb.r2q(smb.eul2r(angles, unit=unit)), check=False)
+        if smb.isvector(angles, 3):
+            return cls(smb.r2q(smb.eul2r(angles, unit=unit)), check=False)
+        else:
+            return cls([smb.eul2r(a, unit=unit) for a in angles], check=False)
 
     @classmethod
     def RPY(
         cls,
-        *angles: List[float],
+        *angles,
         order: Optional[str] = "zyx",
         unit: Optional[str] = "rad",
     ) -> UnitQuaternion:
@@ -1302,7 +1305,7 @@ class UnitQuaternion(Quaternion):
         Construct a new unit quaternion from roll-pitch-yaw angles
 
         :param 𝚪: 3-vector of roll-pitch-yaw angles
-        :type 𝚪: array_like
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
@@ -1344,7 +1347,13 @@ class UnitQuaternion(Quaternion):
         if len(angles) == 1:
             angles = angles[0]
 
-        return cls(smb.r2q(smb.rpy2r(angles, unit=unit, order=order)), check=False)
+        if smb.isvector(angles, 3):
+            return cls(smb.r2q(smb.rpy2r(angles, unit=unit, order=order)), check=False)
+        else:
+            return cls(
+                [smb.r2q(smb.rpy2r(a, unit=unit, order=order)) for a in angles],
+                check=False,
+            )
 
     @classmethod
     def OA(cls, o: ArrayLike3, a: ArrayLike3) -> UnitQuaternion:
