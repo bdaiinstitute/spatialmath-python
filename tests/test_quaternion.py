@@ -1018,6 +1018,19 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(q.inner(q), q.norm() ** 2)
         nt.assert_equal(q.inner(u), np.dot(q.vec, u.vec))
 
+    def test_mean(self):
+        rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
+        q = UnitQuaternion.RPY(rpy)
+        self.assertEqual(len(q), 100)
+        m = q.mean()
+        self.assertIsInstance(m, UnitQuaternion)
+        array_compare(m, q[0])
+
+        # now add noise
+        rpy += 0.1 * np.random.rand(100, 3)
+        m = q.mean()
+        array_compare(m, q.RPY(0.1, 0.2, 0.3))
+
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
