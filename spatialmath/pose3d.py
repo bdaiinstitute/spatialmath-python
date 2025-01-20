@@ -931,6 +931,29 @@ class SO3(BasePoseMatrix):
         else:
             return ad
 
+    def mean(self, tol: float = 20) -> SO3:
+        """Mean of a set of rotations
+
+        :param tol: iteration tolerance in units of eps, defaults to 20
+        :type tol: float, optional
+        :return: the mean rotation
+        :rtype: :class:`SO3` instance.
+
+        Computes the Karcher mean of the set of rotations within the SO(3) instance.
+
+        :references:
+            - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_
+            - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean`_
+        """
+
+        eta = tol * np.finfo(float).eps
+        R_mean = self[0]  # initial guess
+        while True:
+            r = np.dstack((self.inv() * self).log()) / len(self)
+            if np.linalg.norm(r) < eta:
+                return R_mean
+            R_mean = R_mean @ self.Exp(r)  # update estimate and normalize
+
 
 # ============================== SE3 =====================================#
 
