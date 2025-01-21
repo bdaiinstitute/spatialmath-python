@@ -949,7 +949,7 @@ class SO3(BasePoseMatrix):
         eta = tol * np.finfo(float).eps
         R_mean = self[0]  # initial guess
         while True:
-            r = np.dstack((self.inv() * self).log()) / len(self)
+            r = np.dstack((self.inv() * self).log()).mean(axis=2)
             if np.linalg.norm(r) < eta:
                 return R_mean
             R_mean = R_mean @ self.Exp(r)  # update estimate and normalize
