@@ -45,10 +45,10 @@ class Quaternion(BasePoseList):
         r"""
         Construct a new quaternion
 
-        :param s: scalar
-        :type s: float
-        :param v: vector
-        :type v: 3-element array_like
+        :param s: scalar part
+        :type s: float or ndarray(N)
+        :param v: vector part
+        :type v: ndarray(3), ndarray(Nx3)
 
         - ``Quaternion()`` constructs a zero quaternion
         - ``Quaternion(s, v)`` construct a new quaternion from the scalar ``s``
@@ -78,7 +78,7 @@ class Quaternion(BasePoseList):
         super().__init__()
 
         if s is None and smb.isvector(v, 4):
-            v,s = (s,v)
+            v, s = (s, v)
 
         if v is None:
             # single argument
@@ -92,6 +92,11 @@ class Quaternion(BasePoseList):
             # Quaternion(s, v)
             self.data = [np.r_[s, smb.getvector(v)]]
 
+        elif (
+            smb.isvector(s) and smb.ismatrix(v, (None, 3)) and s.shape[0] == v.shape[0]
+        ):
+            # Quaternion(s, v) where s and v are arrays
+            self.data = [np.r_[_s, _v] for _s, _v in zip(s, v)]
         else:
             raise ValueError("bad argument to Quaternion constructor")
 
