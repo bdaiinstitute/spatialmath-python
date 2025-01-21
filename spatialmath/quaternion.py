@@ -456,7 +456,11 @@ class Quaternion(BasePoseList):
         exp_s = math.exp(self.s)
         norm_v = smb.norm(self.v)
         s = exp_s * math.cos(norm_v)
-        v = exp_s * self.v / norm_v * math.sin(norm_v)
+        if smb.iszerovec(self.v, tol * _eps):
+            # result will be a unit quaternion
+            v = np.zeros((3,))
+        else:
+            v = exp_s * self.v / norm_v * math.sin(norm_v)
         if abs(self.s) < tol * _eps:
             # result will be a unit quaternion
             return UnitQuaternion(s=s, v=v)
