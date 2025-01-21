@@ -1619,7 +1619,7 @@ class UnitQuaternion(Quaternion):
         eta = tol * np.finfo(float).eps
         q_mean = self[0]  # initial guess
         while True:
-            r = np.dstack((self.inv() * self).log()) / len(self)
+            r = (self.inv() * self).log().vec.mean(axis=0)
             if np.linalg.norm(r) < eta:
                 return q_mean
             q_mean = q_mean @ self.Exp(r)  # update estimate and normalize

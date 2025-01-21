@@ -1093,12 +1093,12 @@ class TestQuaternion(unittest.TestCase):
         self.assertEqual(len(q), 100)
         m = q.mean()
         self.assertIsInstance(m, UnitQuaternion)
-        array_compare(m, q[0])
+        nt.assert_array_almost_equal(m.vec, q[0].vec)
 
         # now add noise
         rpy += 0.1 * np.random.rand(100, 3)
         m = q.mean()
-        array_compare(m, q.RPY(0.1, 0.2, 0.3))
+        nt.assert_array_almost_equal(m.vec, q.RPY(0.1, 0.2, 0.3).vec)
 
 
 # ---------------------------------------------------------------------------------------#
