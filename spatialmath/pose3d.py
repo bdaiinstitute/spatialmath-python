@@ -843,22 +843,22 @@ class SO3(BasePoseMatrix):
 
     def UnitQuaternion(self) -> UnitQuaternion:
         """
-            SO3 as a unit quaternion instance
+        SO3 as a unit quaternion instance
 
-            :return: a unit quaternion representation
-            :rtype: UnitQuaternion instance
+        :return: a unit quaternion representation
+        :rtype: UnitQuaternion instance
 
-            ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
-            as the SO3 rotation ``R``.
+        ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
+        as the SO3 rotation ``R``.
 
-            Example:
+        Example:
 
-            .. runblock:: pycon
+        .. runblock:: pycon
 
-                >>> from spatialmath import SO3
-                >>> SO3.Rz(0.3).UnitQuaternion()
+            >>> from spatialmath import SO3
+            >>> SO3.Rz(0.3).UnitQuaternion()
 
-            """
+        """
         # Function level import to avoid circular dependencies
         from spatialmath import UnitQuaternion
 
