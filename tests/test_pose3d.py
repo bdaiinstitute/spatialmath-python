@@ -717,6 +717,16 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
         np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
+        R = SO3()  # identity matrix case
+
+        # Check log and exponential map
+        nt.assert_equal(R, SO3.Exp(R.log()))
+        np.testing.assert_equal((R.inv() * R).log(), np.zeros([3, 3]))
+
+        # Check euler vector map
+        nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
+        np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
+
     def test_mean(self):
         rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
         R = SO3.RPY(rpy)
