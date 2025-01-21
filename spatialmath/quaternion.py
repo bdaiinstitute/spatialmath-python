@@ -1292,7 +1292,7 @@ class UnitQuaternion(Quaternion):
         if smb.isvector(angles, 3):
             return cls(smb.r2q(smb.eul2r(angles, unit=unit)), check=False)
         else:
-            return cls([smb.eul2r(a, unit=unit) for a in angles], check=False)
+            return cls([smb.r2q(smb.eul2r(a, unit=unit)) for a in angles], check=False)
 
     @classmethod
     def RPY(
