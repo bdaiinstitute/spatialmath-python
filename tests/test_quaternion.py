@@ -885,6 +885,20 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(q1.log().exp(), q1)
         nt.assert_array_almost_equal(q2.log().exp(), q2)
 
+        q = Quaternion([q1, q2, q1, q2])
+        qlog = q.log()
+        nt.assert_array_almost_equal(qlog[0].exp(), q1)
+        nt.assert_array_almost_equal(qlog[1].exp(), q2)
+        nt.assert_array_almost_equal(qlog[2].exp(), q1)
+        nt.assert_array_almost_equal(qlog[3].exp(), q2)
+
+        q = UnitQuaternion()  # identity
+        qlog = q.log()
+        nt.assert_array_almost_equal(qlog.vec, np.zeros(4))
+        qq = qlog.exp()
+        self.assertIsInstance(qq, UnitQuaternion)
+        nt.assert_array_almost_equal(qq.vec, np.r_[1, 0, 0, 0])
+
     def test_concat(self):
         u = Quaternion()
         uu = Quaternion([u, u, u, u])

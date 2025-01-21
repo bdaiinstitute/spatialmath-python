@@ -401,11 +401,22 @@ class Quaternion(BasePoseList):
         """
         norm = self.norm()
         s = np.log(norm)
-        v = [
-            math.acos(np.clip(A[0] / n, -1, 1)) * smb.unitvec(A[1:4])
-            for A, n in zip(self._A, norm)
-        ]
-        return Quaternion(s=s, v=v)
+        if len(self) == 1:
+            if smb.iszerovec(self._A[1:4]):
+                v = np.zeros((3,))
+            else:
+                v = math.acos(np.clip(self._A[0] / norm, -1, 1)) * smb.unitvec(
+                    self._A[1:4]
+                )
+            return Quaternion(s=s, v=v)
+        else:
+            v = [
+                np.zeros((3,))
+                if smb.iszerovec(A[1:4])
+                else math.acos(np.clip(A[0] / n, -1, 1)) * smb.unitvec(A[1:4])
+                for A, n in zip(self._A, norm)
+            ]
+            return Quaternion(s=s, v=np.array(v))
 
     def exp(self, tol: float = 20) -> Quaternion:
         r"""
