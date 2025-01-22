@@ -1225,12 +1225,16 @@ class UnitQuaternion(Quaternion):
         )
 
     @classmethod
-    def Rand(cls, N: int = 1) -> UnitQuaternion:
+    def Rand(cls, N: int = 1, *, theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQuaternion:
         """
         Construct a new random unit quaternion
 
         :param N: number of random rotations
         :type N: int
+        :param theta_range: angular magnitude range [min,max], defaults to None -> [0,pi].
+        :type xrange: 2-element sequence, optional
+        :param unit: angular units: 'rad' [default], or 'deg'
+        :type unit: str
         :return: random unit-quaternion
         :rtype: UnitQuaternion instance
 
@@ -1248,7 +1252,7 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :meth:`UnitQuaternion.Rand`
         """
-        return cls([smb.qrand() for i in range(0, N)], check=False)
+        return cls([smb.qrand(theta_range=theta_range, unit=unit) for i in range(0, N)], check=False)
 
     @classmethod
     def Eul(cls, *angles: List[float], unit: Optional[str] = "rad") -> UnitQuaternion:

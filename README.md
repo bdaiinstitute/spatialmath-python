@@ -122,6 +122,13 @@ Install a snapshot from PyPI
 pip install spatialmath-python
 ```
 
+Note that if you are using ROS2, you may run into version conflicts when using `rosdep`, particularly
+concerning `matplotlib`. If this happens, you can enable optional version pinning with
+
+```
+pip install spatialmath-python[ros-humble]
+```
+
 ## From GitHub
 
 Install the current code base from GitHub and pip install a link to that cloned copy
