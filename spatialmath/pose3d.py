@@ -942,8 +942,8 @@ class SO3(BasePoseMatrix):
         Computes the Karcher mean of the set of rotations within the SO(3) instance.
 
         :references:
-            - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_
-            - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean`_
+            - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_, Algorithm 1, page 15.
+            - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean>`_
         """
 
         eta = tol * np.finfo(float).eps
