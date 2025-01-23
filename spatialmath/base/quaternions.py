@@ -1114,17 +1114,15 @@ def q2str(
     where S, VX, VY, VZ are the quaternion elements, and D1 and D2 are a pair
     of delimeters given by `delim`.
 
-    By default the string is written to `sys.stdout`.
-
-    If `file=None` then a string is returned.
-
     .. runblock:: pycon
 
-        >>> from spatialmath.base import qprint, qrand
+        >>> from spatialmath.base import q2str, qrand
         >>> q = [1, 2, 3, 4]
-        >>> qprint(q)
+        >>> q2str(q)
         >>> q = qrand()   # a unit quaternion
-        >>> qprint(q, delim=('<<', '>>'))
+        >>> q2str(q, delim=('<<', '>>'))
+
+    :seealso: :meth:`qprint`
     """
     q = smb.getvector(q, 4)
     template = "# {} #, #, # {}".replace("#", fmt)
@@ -1148,8 +1146,6 @@ def qprint(
     :type fmt: str
     :arg file: destination for formatted string [default sys.stdout]
     :type file: file object
-    :return: formatted string
-    :rtype: str
 
     Format the quaternion in a human-readable form as::
 
@@ -1160,8 +1156,6 @@ def qprint(
 
     By default the string is written to `sys.stdout`.
 
-    If `file=None` then a string is returned.
-
     .. runblock:: pycon
 
         >>> from spatialmath.base import qprint, qrand
@@ -1169,6 +1163,8 @@ def qprint(
         >>> qprint(q)
         >>> q = qrand()   # a unit quaternion
         >>> qprint(q, delim=('<<', '>>'))
+
+    :seealso: :meth:`q2str`
     """
     q = smb.getvector(q, 4)
     if file is None:
