@@ -735,8 +735,15 @@ class TestSO3(unittest.TestCase):
         self.assertIsInstance(m, SO3)
         array_compare(m, R[0])
 
+        # range of angles, mean should be the middle one, index=25
+        R = SO3.Rz(np.linspace(start=0.3, stop=0.7, num=51))
+        m = R.mean()
+        self.assertIsInstance(m, SO3)
+        array_compare(m, R[25])
+
         # now add noise
-        rpy += 0.1 * np.random.rand(100, 3)
+        rng = np.random.default_rng(0)  # reproducible random numbers
+        rpy += rng.normal(scale=0.1, size=(100, 3))
         m = R.mean()
         array_compare(m, SO3.RPY(0.1, 0.2, 0.3))
 
