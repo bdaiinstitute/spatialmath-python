@@ -1601,28 +1601,23 @@ class UnitQuaternion(Quaternion):
         """
         return smb.qdotb(self._A, omega)
 
-    def mean(self, tol: float = 20) -> SO3:
-        """Mean of a set of rotations
+    # def mean(self, tol: float = 20) -> SO3:
+    #     """Mean of a set of rotations
 
-        :param tol: iteration tolerance in units of eps, defaults to 20
-        :type tol: float, optional
-        :return: the mean rotation
-        :rtype: :class:`UnitQuaternion` instance.
+    #     :param tol: iteration tolerance in units of eps, defaults to 20
+    #     :type tol: float, optional
+    #     :return: the mean rotation
+    #     :rtype: :class:`UnitQuaternion` instance.
 
-        Computes the Karcher mean of the set of rotations within the unit quaternion instance.
+    #     Computes the Karcher mean of the set of rotations within the unit quaternion instance.
 
-        :references:
-            - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_
-            - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean`_
-        """
+    #     :references:
+    #         - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_
+    #         - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean`_
+    #     """
 
-        eta = tol * np.finfo(float).eps
-        q_mean = self[0]  # initial guess
-        while True:
-            r = (self.inv() * self).log().vec.mean(axis=0)
-            if np.linalg.norm(r) < eta:
-                return q_mean
-            q_mean = q_mean @ self.Exp(r)  # update estimate and normalize
+    #     R_mean = self.SO3().mean(tol=tol)
+    #     return R_mean.UnitQuaternion()
 
     def __mul__(
         left, right: UnitQuaternion

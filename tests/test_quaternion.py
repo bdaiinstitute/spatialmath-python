@@ -1087,18 +1087,26 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(q.inner(q), q.norm() ** 2)
         nt.assert_equal(q.inner(u), np.dot(q.vec, u.vec))
 
-    def test_mean(self):
-        rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
-        q = UnitQuaternion.RPY(rpy)
-        self.assertEqual(len(q), 100)
-        m = q.mean()
-        self.assertIsInstance(m, UnitQuaternion)
-        nt.assert_array_almost_equal(m.vec, q[0].vec)
+    # def test_mean(self):
+    #     rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
+    #     q = UnitQuaternion.RPY(rpy)
+    #     self.assertEqual(len(q), 100)
+    #     m = q.mean()
+    #     self.assertIsInstance(m, UnitQuaternion)
+    #     nt.assert_array_almost_equal(m.vec, q[0].vec)
 
-        # now add noise
-        rpy += 0.1 * np.random.rand(100, 3)
-        m = q.mean()
-        nt.assert_array_almost_equal(m.vec, q.RPY(0.1, 0.2, 0.3).vec)
+    #     # range of angles, mean should be the middle one, index=25
+    #     q = UnitQuaternion.Rz(np.linspace(start=0.3, stop=0.7, num=51))
+    #     m = q.mean()
+    #     self.assertIsInstance(m, UnitQuaternion)
+    #     nt.assert_array_almost_equal(m.vec, q[25].vec)
+
+    #     # now add noise
+    #     rng = np.random.default_rng(0)  # reproducible random numbers
+    #     rpy += rng.normal(scale=0.1, size=(100, 3))
+    #     q = UnitQuaternion.RPY(rpy)
+    #     m = q.mean()
+    #     nt.assert_array_almost_equal(m.vec, q.RPY(0.1, 0.2, 0.3).vec)
 
 
 # ---------------------------------------------------------------------------------------#
