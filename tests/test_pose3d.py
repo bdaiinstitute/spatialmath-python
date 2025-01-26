@@ -717,6 +717,37 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
         np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
+        R = SO3()  # identity matrix case
+
+        # Check log and exponential map
+        nt.assert_equal(R, SO3.Exp(R.log()))
+        np.testing.assert_equal((R.inv() * R).log(), np.zeros([3, 3]))
+
+        # Check euler vector map
+        nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
+        np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
+
+    def test_mean(self):
+        rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
+        R = SO3.RPY(rpy)
+        self.assertEqual(len(R), 100)
+        m = R.mean()
+        self.assertIsInstance(m, SO3)
+        array_compare(m, R[0])
+
+        # range of angles, mean should be the middle one, index=25
+        R = SO3.Rz(np.linspace(start=0.3, stop=0.7, num=51))
+        m = R.mean()
+        self.assertIsInstance(m, SO3)
+        array_compare(m, R[25])
+
+        # now add noise
+        rng = np.random.default_rng(0)  # reproducible random numbers
+        rpy += rng.normal(scale=0.00001, size=(100, 3))
+        R = SO3.RPY(rpy)
+        m = R.mean()
+        array_compare(m, SO3.RPY(0.1, 0.2, 0.3))
+
 
 # ============================== SE3 =====================================#
 

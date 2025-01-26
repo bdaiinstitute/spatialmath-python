@@ -843,22 +843,22 @@ class SO3(BasePoseMatrix):
 
     def UnitQuaternion(self) -> UnitQuaternion:
         """
-            SO3 as a unit quaternion instance
+        SO3 as a unit quaternion instance
 
-            :return: a unit quaternion representation
-            :rtype: UnitQuaternion instance
+        :return: a unit quaternion representation
+        :rtype: UnitQuaternion instance
 
-            ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
-            as the SO3 rotation ``R``.
+        ``R.UnitQuaternion()`` is an ``UnitQuaternion`` instance representing the same rotation
+        as the SO3 rotation ``R``.
 
-            Example:
+        Example:
 
-            .. runblock:: pycon
+        .. runblock:: pycon
 
-                >>> from spatialmath import SO3
-                >>> SO3.Rz(0.3).UnitQuaternion()
+            >>> from spatialmath import SO3
+            >>> SO3.Rz(0.3).UnitQuaternion()
 
-            """
+        """
         # Function level import to avoid circular dependencies
         from spatialmath import UnitQuaternion
 
@@ -930,6 +930,29 @@ class SO3(BasePoseMatrix):
             return np.array(ad)
         else:
             return ad
+
+    def mean(self, tol: float = 20) -> SO3:
+        """Mean of a set of rotations
+
+        :param tol: iteration tolerance in units of eps, defaults to 20
+        :type tol: float, optional
+        :return: the mean rotation
+        :rtype: :class:`SO3` instance.
+
+        Computes the Karcher mean of the set of rotations within the SO(3) instance.
+
+        :references:
+            - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_, Algorithm 1, page 15.
+            - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean>`_
+        """
+
+        eta = tol * np.finfo(float).eps
+        R_mean = self[0]  # initial guess
+        while True:
+            r = np.dstack((R_mean.inv() * self).log()).mean(axis=2)
+            if np.linalg.norm(r) < eta:
+                return R_mean
+            R_mean = R_mean @ self.Exp(r)  # update estimate and normalize
 
 
 # ============================== SE3 =====================================#
