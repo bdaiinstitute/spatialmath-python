@@ -45,10 +45,10 @@ class Quaternion(BasePoseList):
         r"""
         Construct a new quaternion
 
-        :param s: scalar
-        :type s: float
-        :param v: vector
-        :type v: 3-element array_like
+        :param s: scalar part
+        :type s: float or ndarray(N)
+        :param v: vector part
+        :type v: ndarray(3), ndarray(Nx3)
 
         - ``Quaternion()`` constructs a zero quaternion
         - ``Quaternion(s, v)`` construct a new quaternion from the scalar ``s``
@@ -78,7 +78,7 @@ class Quaternion(BasePoseList):
         super().__init__()
 
         if s is None and smb.isvector(v, 4):
-            v,s = (s,v)
+            v, s = (s, v)
 
         if v is None:
             # single argument
@@ -92,6 +92,11 @@ class Quaternion(BasePoseList):
             # Quaternion(s, v)
             self.data = [np.r_[s, smb.getvector(v)]]
 
+        elif (
+            smb.isvector(s) and smb.ismatrix(v, (None, 3)) and s.shape[0] == v.shape[0]
+        ):
+            # Quaternion(s, v) where s and v are arrays
+            self.data = [np.r_[_s, _v] for _s, _v in zip(s, v)]
         else:
             raise ValueError("bad argument to Quaternion constructor")
 
@@ -395,9 +400,23 @@ class Quaternion(BasePoseList):
         :seealso: :meth:`Quaternion.exp` :meth:`Quaternion.log` :meth:`UnitQuaternion.angvec`
         """
         norm = self.norm()
-        s = math.log(norm)
-        v = math.acos(np.clip(self.s / norm, -1, 1)) * smb.unitvec(self.v)
-        return Quaternion(s=s, v=v)
+        s = np.log(norm)
+        if len(self) == 1:
+            if smb.iszerovec(self._A[1:4]):
+                v = np.zeros((3,))
+            else:
+                v = math.acos(np.clip(self._A[0] / norm, -1, 1)) * smb.unitvec(
+                    self._A[1:4]
+                )
+            return Quaternion(s=s, v=v)
+        else:
+            v = [
+                np.zeros((3,))
+                if smb.iszerovec(A[1:4])
+                else math.acos(np.clip(A[0] / n, -1, 1)) * smb.unitvec(A[1:4])
+                for A, n in zip(self._A, norm)
+            ]
+            return Quaternion(s=s, v=np.array(v))
 
     def exp(self, tol: float = 20) -> Quaternion:
         r"""
@@ -437,7 +456,11 @@ class Quaternion(BasePoseList):
         exp_s = math.exp(self.s)
         norm_v = smb.norm(self.v)
         s = exp_s * math.cos(norm_v)
-        v = exp_s * self.v / norm_v * math.sin(norm_v)
+        if smb.iszerovec(self.v, tol * _eps):
+            # result will be a unit quaternion
+            v = np.zeros((3,))
+        else:
+            v = exp_s * self.v / norm_v * math.sin(norm_v)
         if abs(self.s) < tol * _eps:
             # result will be a unit quaternion
             return UnitQuaternion(s=s, v=v)
@@ -1260,7 +1283,7 @@ class UnitQuaternion(Quaternion):
         Construct a new unit quaternion from Euler angles
 
         :param 𝚪: 3-vector of Euler angles
-        :type 𝚪: array_like
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :return: unit-quaternion
@@ -1286,12 +1309,15 @@ class UnitQuaternion(Quaternion):
         if len(angles) == 1:
             angles = angles[0]
 
-        return cls(smb.r2q(smb.eul2r(angles, unit=unit)), check=False)
+        if smb.isvector(angles, 3):
+            return cls(smb.r2q(smb.eul2r(angles, unit=unit)), check=False)
+        else:
+            return cls([smb.r2q(smb.eul2r(a, unit=unit)) for a in angles], check=False)
 
     @classmethod
     def RPY(
         cls,
-        *angles: List[float],
+        *angles,
         order: Optional[str] = "zyx",
         unit: Optional[str] = "rad",
     ) -> UnitQuaternion:
@@ -1299,7 +1325,7 @@ class UnitQuaternion(Quaternion):
         Construct a new unit quaternion from roll-pitch-yaw angles
 
         :param 𝚪: 3-vector of roll-pitch-yaw angles
-        :type 𝚪: array_like
+        :type 𝚪: 3 floats, array_like(3) or ndarray(N,3)
         :param unit: angular units: 'rad' [default], or 'deg'
         :type unit: str
         :param unit: rotation order: 'zyx' [default], 'xyz', or 'yxz'
@@ -1341,7 +1367,13 @@ class UnitQuaternion(Quaternion):
         if len(angles) == 1:
             angles = angles[0]
 
-        return cls(smb.r2q(smb.rpy2r(angles, unit=unit, order=order)), check=False)
+        if smb.isvector(angles, 3):
+            return cls(smb.r2q(smb.rpy2r(angles, unit=unit, order=order)), check=False)
+        else:
+            return cls(
+                [smb.r2q(smb.rpy2r(a, unit=unit, order=order)) for a in angles],
+                check=False,
+            )
 
     @classmethod
     def OA(cls, o: ArrayLike3, a: ArrayLike3) -> UnitQuaternion:
@@ -1568,6 +1600,24 @@ class UnitQuaternion(Quaternion):
         :seealso: :func:`~spatialmath.base.quaternions.qdotb`
         """
         return smb.qdotb(self._A, omega)
+
+    # def mean(self, tol: float = 20) -> SO3:
+    #     """Mean of a set of rotations
+
+    #     :param tol: iteration tolerance in units of eps, defaults to 20
+    #     :type tol: float, optional
+    #     :return: the mean rotation
+    #     :rtype: :class:`UnitQuaternion` instance.
+
+    #     Computes the Karcher mean of the set of rotations within the unit quaternion instance.
+
+    #     :references:
+    #         - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_
+    #         - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean`_
+    #     """
+
+    #     R_mean = self.SO3().mean(tol=tol)
+    #     return R_mean.UnitQuaternion()
 
     def __mul__(
         left, right: UnitQuaternion

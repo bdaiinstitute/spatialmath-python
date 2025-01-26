@@ -254,7 +254,6 @@ class TestSO3(unittest.TestCase):
         nt.assert_array_almost_equal(q.SO3(), R_from_q)
         nt.assert_array_almost_equal(q.SO3().UnitQuaternion(), q)
 
-
     def test_shape(self):
         a = SO3()
         self.assertEqual(a._A.shape, a.shape)
@@ -717,6 +716,7 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
         np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
+
     def test_rotatedvector(self):
         v1 = [1, 2, 3]
         R = SO3.Eul(0.3, 0.4, 0.5)
@@ -726,6 +726,38 @@ class TestSO3(unittest.TestCase):
 
         Re = SO3.RotatedVector(v1, v1)
         np.testing.assert_almost_equal(Re, np.eye(3))
+
+        R = SO3()  # identity matrix case
+
+        # Check log and exponential map
+        nt.assert_equal(R, SO3.Exp(R.log()))
+        np.testing.assert_equal((R.inv() * R).log(), np.zeros([3, 3]))
+
+        # Check euler vector map
+        nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
+        np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
+
+    def test_mean(self):
+        rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
+        R = SO3.RPY(rpy)
+        self.assertEqual(len(R), 100)
+        m = R.mean()
+        self.assertIsInstance(m, SO3)
+        array_compare(m, R[0])
+
+        # range of angles, mean should be the middle one, index=25
+        R = SO3.Rz(np.linspace(start=0.3, stop=0.7, num=51))
+        m = R.mean()
+        self.assertIsInstance(m, SO3)
+        array_compare(m, R[25])
+
+        # now add noise
+        rng = np.random.default_rng(0)  # reproducible random numbers
+        rpy += rng.normal(scale=0.00001, size=(100, 3))
+        R = SO3.RPY(rpy)
+        m = R.mean()
+        array_compare(m, SO3.RPY(0.1, 0.2, 0.3))
+
 
 
 # ============================== SE3 =====================================#
@@ -1348,6 +1380,16 @@ class TestSE3(unittest.TestCase):
         # inv
         # .T
         pass
+
+    def test_rtvec(self):
+        # OpenCV compatibility functions
+        T = SE3.RTvec([0, 1, 0], [2, 3, 4])
+        nt.assert_equal(T.t, [2, 3, 4])
+        nt.assert_equal(T.R, SO3.Ry(1))
+
+        rvec, tvec = T.rtvec()
+        nt.assert_equal(rvec, [0, 1, 0])
+        nt.assert_equal(tvec, [2, 3, 4])
 
 
 # ---------------------------------------------------------------------------------------#

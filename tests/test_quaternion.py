@@ -257,18 +257,55 @@ class TestUnitQuaternion(unittest.TestCase):
                 UnitQuaternion.Rz(theta, "deg").R, rotz(theta, "deg")
             )
 
+    def test_constructor_RPY(self):
         # 3 angle
-        nt.assert_array_almost_equal(
-            UnitQuaternion.RPY([0.1, 0.2, 0.3]).R, rpy2r(0.1, 0.2, 0.3)
-        )
-
-        nt.assert_array_almost_equal(
-            UnitQuaternion.Eul([0.1, 0.2, 0.3]).R, eul2r(0.1, 0.2, 0.3)
-        )
+        q = UnitQuaternion.RPY([0.1, 0.2, 0.3])
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 1)
+        nt.assert_array_almost_equal(q.R, rpy2r(0.1, 0.2, 0.3))
+        q = UnitQuaternion.RPY(0.1, 0.2, 0.3)
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 1)
+        nt.assert_array_almost_equal(q.R, rpy2r(0.1, 0.2, 0.3))
+        q = UnitQuaternion.RPY(np.r_[0.1, 0.2, 0.3])
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 1)
+        nt.assert_array_almost_equal(q.R, rpy2r(0.1, 0.2, 0.3))
 
         nt.assert_array_almost_equal(
             UnitQuaternion.RPY([10, 20, 30], unit="deg").R,
             rpy2r(10, 20, 30, unit="deg"),
+        )
+        nt.assert_array_almost_equal(
+            UnitQuaternion.RPY([0.1, 0.2, 0.3], order="xyz").R,
+            rpy2r(0.1, 0.2, 0.3, order="xyz"),
+        )
+
+        angles = np.array(
+            [[0.1, 0.2, 0.3], [0.2, 0.3, 0.4], [0.3, 0.4, 0.5], [0.4, 0.5, 0.6]]
+        )
+        q = UnitQuaternion.RPY(angles)
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 4)
+        for i in range(4):
+            nt.assert_array_almost_equal(q[i].R, rpy2r(angles[i, :]))
+
+        q = UnitQuaternion.RPY(angles, order="xyz")
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 4)
+        for i in range(4):
+            nt.assert_array_almost_equal(q[i].R, rpy2r(angles[i, :], order="xyz"))
+
+        angles *= 10
+        q = UnitQuaternion.RPY(angles, unit="deg")
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 4)
+        for i in range(4):
+            nt.assert_array_almost_equal(q[i].R, rpy2r(angles[i, :], unit="deg"))
+
+    def test_constructor_Eul(self):
+        nt.assert_array_almost_equal(
+            UnitQuaternion.Eul([0.1, 0.2, 0.3]).R, eul2r(0.1, 0.2, 0.3)
         )
 
         nt.assert_array_almost_equal(
@@ -276,6 +313,23 @@ class TestUnitQuaternion(unittest.TestCase):
             eul2r(10, 20, 30, unit="deg"),
         )
 
+        angles = np.array(
+            [[0.1, 0.2, 0.3], [0.2, 0.3, 0.4], [0.3, 0.4, 0.5], [0.4, 0.5, 0.6]]
+        )
+        q = UnitQuaternion.Eul(angles)
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 4)
+        for i in range(4):
+            nt.assert_array_almost_equal(q[i].R, eul2r(angles[i, :]))
+
+        angles *= 10
+        q = UnitQuaternion.Eul(angles, unit="deg")
+        self.assertIsInstance(q, UnitQuaternion)
+        self.assertEqual(len(q), 4)
+        for i in range(4):
+            nt.assert_array_almost_equal(q[i].R, eul2r(angles[i, :], unit="deg"))
+
+    def test_constructor_AngVec(self):
         # (theta, v)
         th = 0.2
         v = unitvec([1, 2, 3])
@@ -286,6 +340,7 @@ class TestUnitQuaternion(unittest.TestCase):
         )
         nt.assert_array_almost_equal(UnitQuaternion.AngVec(th, -v).R, angvec2r(th, -v))
 
+    def test_constructor_EulerVec(self):
         # (theta, v)
         th = 0.2
         v = unitvec([1, 2, 3])
@@ -830,6 +885,20 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(q1.log().exp(), q1)
         nt.assert_array_almost_equal(q2.log().exp(), q2)
 
+        q = Quaternion([q1, q2, q1, q2])
+        qlog = q.log()
+        nt.assert_array_almost_equal(qlog[0].exp(), q1)
+        nt.assert_array_almost_equal(qlog[1].exp(), q2)
+        nt.assert_array_almost_equal(qlog[2].exp(), q1)
+        nt.assert_array_almost_equal(qlog[3].exp(), q2)
+
+        q = UnitQuaternion()  # identity
+        qlog = q.log()
+        nt.assert_array_almost_equal(qlog.vec, np.zeros(4))
+        qq = qlog.exp()
+        self.assertIsInstance(qq, UnitQuaternion)
+        nt.assert_array_almost_equal(qq.vec, np.r_[1, 0, 0, 0])
+
     def test_concat(self):
         u = Quaternion()
         uu = Quaternion([u, u, u, u])
@@ -1017,6 +1086,27 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_equal(u.inner(u), 1)
         nt.assert_equal(q.inner(q), q.norm() ** 2)
         nt.assert_equal(q.inner(u), np.dot(q.vec, u.vec))
+
+    # def test_mean(self):
+    #     rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
+    #     q = UnitQuaternion.RPY(rpy)
+    #     self.assertEqual(len(q), 100)
+    #     m = q.mean()
+    #     self.assertIsInstance(m, UnitQuaternion)
+    #     nt.assert_array_almost_equal(m.vec, q[0].vec)
+
+    #     # range of angles, mean should be the middle one, index=25
+    #     q = UnitQuaternion.Rz(np.linspace(start=0.3, stop=0.7, num=51))
+    #     m = q.mean()
+    #     self.assertIsInstance(m, UnitQuaternion)
+    #     nt.assert_array_almost_equal(m.vec, q[25].vec)
+
+    #     # now add noise
+    #     rng = np.random.default_rng(0)  # reproducible random numbers
+    #     rpy += rng.normal(scale=0.1, size=(100, 3))
+    #     q = UnitQuaternion.RPY(rpy)
+    #     m = q.mean()
+    #     nt.assert_array_almost_equal(m.vec, q.RPY(0.1, 0.2, 0.3).vec)
 
 
 # ---------------------------------------------------------------------------------------#
