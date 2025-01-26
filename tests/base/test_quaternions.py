@@ -36,6 +36,7 @@ from spatialmath.base.vectors import *
 import spatialmath.base as tr
 from spatialmath.base.quaternions import *
 import spatialmath as sm
+import io
 
 
 class TestQuaternion(unittest.TestCase):
@@ -96,19 +97,32 @@ class TestQuaternion(unittest.TestCase):
             ),
             True,
         )
+        nt.assert_equal(isunitvec(qrand()), True)
 
-        s = qprint(np.r_[1, 1, 0, 0], file=None)
+    def test_display(self):
+        s = q2str(np.r_[1, 2, 3, 4])
         nt.assert_equal(isinstance(s, str), True)
-        nt.assert_equal(len(s) > 2, True)
-        s = qprint([1, 1, 0, 0], file=None)
-        nt.assert_equal(isinstance(s, str), True)
-        nt.assert_equal(len(s) > 2, True)
+        nt.assert_equal(s, " 1.0000 <  2.0000,  3.0000,  4.0000 >")
 
+        s = q2str([1, 2, 3, 4])
+        nt.assert_equal(s, " 1.0000 <  2.0000,  3.0000,  4.0000 >")
+
+        s = q2str([1, 2, 3, 4], delim=("<<", ">>"))
+        nt.assert_equal(s, " 1.0000 <<  2.0000,  3.0000,  4.0000 >>")
+
+        s = q2str([1, 2, 3, 4], fmt="{:20.6f}")
         nt.assert_equal(
-            qprint([1, 2, 3, 4], file=None), " 1.0000 <  2.0000,  3.0000,  4.0000 >"
+            s,
+            "            1.000000 <             2.000000,             3.000000,             4.000000 >",
         )
 
-        nt.assert_equal(isunitvec(qrand()), True)
+        # would be nicer to do this with redirect_stdout() from contextlib but that
+        # fails because file=sys.stdout is maybe assigned at compile time, so when
+        # contextlib changes sys.stdout, qprint() doesn't see it
+
+        f = io.StringIO()
+        qprint(np.r_[1, 2, 3, 4], file=f)
+        nt.assert_equal(f.getvalue().rstrip(), " 1.0000 <  2.0000,  3.0000,  4.0000 >")
 
     def test_rotation(self):
         # rotation matrix to quaternion
@@ -227,12 +241,12 @@ class TestQuaternion(unittest.TestCase):
 
     def test_qangle(self):
         # Test function that calculates angle between quaternions
-        q1 = [1., 0, 0, 0]
-        q2 = [1 / np.sqrt(2), 0, 1 / np.sqrt(2), 0]   # 90deg rotation about y-axis
+        q1 = [1.0, 0, 0, 0]
+        q2 = [1 / np.sqrt(2), 0, 1 / np.sqrt(2), 0]  # 90deg rotation about y-axis
         nt.assert_almost_equal(qangle(q1, q2), np.pi / 2)
 
-        q1 = [1., 0, 0, 0]
-        q2 = [1 / np.sqrt(2), 1 / np.sqrt(2), 0, 0]   # 90deg rotation about x-axis
+        q1 = [1.0, 0, 0, 0]
+        q2 = [1 / np.sqrt(2), 1 / np.sqrt(2), 0, 0]  # 90deg rotation about x-axis
         nt.assert_almost_equal(qangle(q1, q2), np.pi / 2)
 
 

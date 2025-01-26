@@ -19,8 +19,10 @@ from spatialmath.base.types import *
 import scipy.interpolate as interpolate
 from typing import Optional
 from functools import lru_cache
+import warnings
 
 _eps = np.finfo(np.float64).eps
+
 
 def qeye() -> QuaternionArray:
     """
@@ -56,7 +58,7 @@ def qpure(v: ArrayLike3) -> QuaternionArray:
 
     .. runblock:: pycon
 
-        >>> from spatialmath.base import pure, qprint
+        >>> from spatialmath.base import qpure, qprint
         >>> q = qpure([1, 2, 3])
         >>> qprint(q)
     """
@@ -1088,14 +1090,13 @@ def qangle(q1: ArrayLike4, q2: ArrayLike4) -> float:
     return 4.0 * math.atan2(smb.norm(q1 - q2), smb.norm(q1 + q2))
 
 
-def qprint(
+def q2str(
     q: Union[ArrayLike4, ArrayLike4],
     delim: Optional[Tuple[str, str]] = ("<", ">"),
     fmt: Optional[str] = "{: .4f}",
-    file: Optional[TextIO] = sys.stdout,
 ) -> str:
     """
-    Format a quaternion
+    Format a quaternion as a string
 
     :arg q: unit-quaternion
     :type q: array_like(4)
@@ -1103,8 +1104,6 @@ def qprint(
     :type delim: list or tuple of strings
     :arg fmt: printf-style format soecifier [default '{: .4f}']
     :type fmt: str
-    :arg file: destination for formatted string [default sys.stdout]
-    :type file: file object
     :return: formatted string
     :rtype: str
 
@@ -1115,9 +1114,47 @@ def qprint(
     where S, VX, VY, VZ are the quaternion elements, and D1 and D2 are a pair
     of delimeters given by `delim`.
 
-    By default the string is written to `sys.stdout`.
+    .. runblock:: pycon
 
-    If `file=None` then a string is returned.
+        >>> from spatialmath.base import q2str, qrand
+        >>> q = [1, 2, 3, 4]
+        >>> q2str(q)
+        >>> q = qrand()   # a unit quaternion
+        >>> q2str(q, delim=('<<', '>>'))
+
+    :seealso: :meth:`qprint`
+    """
+    q = smb.getvector(q, 4)
+    template = "# {} #, #, # {}".replace("#", fmt)
+    return template.format(q[0], delim[0], q[1], q[2], q[3], delim[1])
+
+
+def qprint(
+    q: Union[ArrayLike4, ArrayLike4],
+    delim: Optional[Tuple[str, str]] = ("<", ">"),
+    fmt: Optional[str] = "{: .4f}",
+    file: Optional[TextIO] = sys.stdout,
+) -> None:
+    """
+    Format a quaternion to a file
+
+    :arg q: unit-quaternion
+    :type q: array_like(4)
+    :arg delim: 2-list of delimeters [default ('<', '>')]
+    :type delim: list or tuple of strings
+    :arg fmt: printf-style format soecifier [default '{: .4f}']
+    :type fmt: str
+    :arg file: destination for formatted string [default sys.stdout]
+    :type file: file object
+
+    Format the quaternion in a human-readable form as::
+
+        S  D1  VX VY VZ D2
+
+    where S, VX, VY, VZ are the quaternion elements, and D1 and D2 are a pair
+    of delimeters given by `delim`.
+
+    By default the string is written to `sys.stdout`.
 
     .. runblock:: pycon
 
@@ -1126,14 +1163,16 @@ def qprint(
         >>> qprint(q)
         >>> q = qrand()   # a unit quaternion
         >>> qprint(q, delim=('<<', '>>'))
+
+    :seealso: :meth:`q2str`
     """
     q = smb.getvector(q, 4)
-    template = "# {} #, #, # {}".replace("#", fmt)
-    s = template.format(q[0], delim[0], q[1], q[2], q[3], delim[1])
-    if file:
-        file.write(s + "\n")
-    else:
-        return s
+    if file is None:
+        warnings.warn(
+            "Usage: qprint(..., file=None) -> str is deprecated, use q2str() instead",
+            DeprecationWarning,
+        )
+    print(q2str(q, delim=delim, fmt=fmt), file=file)
 
 
 if __name__ == "__main__":  # pragma: no cover

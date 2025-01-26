@@ -208,6 +208,7 @@ __all__ = [
     "qdotb",
     "qangle",
     "qprint",
+    "q2str",
     # spatialmath.base.transforms2d
     "rot2",
     "trot2",
