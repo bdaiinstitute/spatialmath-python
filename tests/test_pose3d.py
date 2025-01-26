@@ -743,7 +743,8 @@ class TestSO3(unittest.TestCase):
 
         # now add noise
         rng = np.random.default_rng(0)  # reproducible random numbers
-        rpy += rng.normal(scale=0.1, size=(100, 3))
+        rpy += rng.normal(scale=0.00001, size=(100, 3))
+        R = SO3.RPY(rpy)
         m = R.mean()
         array_compare(m, SO3.RPY(0.1, 0.2, 0.3))
 
