@@ -522,7 +522,9 @@ def isvector(v: Any, dim: Optional[int] = None) -> bool:
     return False
 
 
-def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> Union[float, NDArray]:
+def getunit(
+    v: ArrayLike, unit: str = "rad", dim: Optional[int] = None, vector: bool = True
+) -> Union[float, NDArray]:
     """
     Convert values according to angular units
 
@@ -530,8 +532,10 @@ def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> Union[float, NDArray]:
     :type v: array_like(m)
     :param unit: the angular unit, "rad" or "deg"
     :type unit: str
-    :param dim: expected dimension of input, defaults to None
+    :param dim: expected dimension of input, defaults to don't check (None)
     :type dim: int, optional
+    :param vector: return a scalar as a 1d vector, defaults to True
+    :type vector: bool, optional
     :return: the converted value in radians
     :rtype: ndarray(m) or float
     :raises ValueError: argument is not a valid angular unit
@@ -543,30 +547,44 @@ def getunit(v: ArrayLike, unit: str = "rad", dim=None) -> Union[float, NDArray]:
         >>> from spatialmath.base import getunit
         >>> import numpy as np
         >>> getunit(1.5, 'rad')
-        >>> getunit(1.5, 'rad', dim=0)
-        >>> # getunit([1.5], 'rad', dim=0)  --> ValueError
         >>> getunit(90, 'deg')
+        >>> getunit(90, 'deg', vector=False) # force a scalar output
+        >>> getunit(1.5, 'rad', dim=0) # check argument is scalar
+        >>> getunit(1.5, 'rad', dim=3) # check argument is a 3-vector
+        >>> getunit([1.5], 'rad', dim=1) # check argument is a 1-vector
+        >>> getunit([1.5], 'rad', dim=3) # check argument is a 3-vector
         >>> getunit([90, 180], 'deg')
-        >>> getunit(np.r_[0.5, 1], 'rad')
         >>> getunit(np.r_[90, 180], 'deg')
-        >>> getunit(np.r_[90, 180], 'deg', dim=2)
-        >>> # getunit([90, 180], 'deg', dim=3)  --> ValueError
+        >>> getunit(np.r_[90, 180], 'deg', dim=2) # check argument is a 2-vector
+        >>> getunit([90, 180], 'deg', dim=3) # check argument is a 3-vector
 
     :note:
         - the input value is processed by :func:`getvector` and the argument ``dim`` can
-          be used to check that ``v`` is the desired length.
-        - the output is always an ndarray except if the input is a scalar and ``dim=0``.
+          be used to check that ``v`` is the desired length.  Note that 0 means a scalar,
+          whereas 1 means a 1-element array.
+        - the output is always an ndarray except if the input is a scalar and ``vector=False``.
 
     :seealso: :func:`getvector`
     """
-    if not isinstance(v, Iterable) and dim == 0:
-        # scalar in, scalar out
-        if unit == "rad":
-            return v
-        elif unit == "deg":
-            return np.deg2rad(v)
+    if not isinstance(v, Iterable):
+        # scalar input
+        if dim is not None and dim != 0:
+            raise ValueError("for dim==0 input must be a scalar")
+        if vector:
+            # scalar in, vector out
+            if unit == "deg":
+                v = np.deg2rad(v)
+            elif unit != "rad":
+                raise ValueError("invalid angular units")
+            return np.array([v])
         else:
-            raise ValueError("invalid angular units")
+            # scalar in, scalar out
+            if unit == "rad":
+                return v
+            elif unit == "deg":
+                return np.deg2rad(v)
+            else:
+                raise ValueError("invalid angular units")
 
     else:
         # scalar or iterable in, ndarray out

@@ -79,7 +79,7 @@ def rotx(theta: float, unit: str = "rad") -> SO3Array:
     :SymPy: supported
     """
 
-    theta = getunit(theta, unit, dim=0)
+    theta = getunit(theta, unit, vector=False)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -118,7 +118,7 @@ def roty(theta: float, unit: str = "rad") -> SO3Array:
     :SymPy: supported
     """
 
-    theta = getunit(theta, unit, dim=0)
+    theta = getunit(theta, unit, vector=False)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -152,7 +152,7 @@ def rotz(theta: float, unit: str = "rad") -> SO3Array:
     :seealso: :func:`~trotz`
     :SymPy: supported
     """
-    theta = getunit(theta, unit, dim=0)
+    theta = getunit(theta, unit, vector=False)
     ct = sym.cos(theta)
     st = sym.sin(theta)
     # fmt: off
@@ -2709,7 +2709,7 @@ def tr2adjoint(T):
 
     :Reference:
         - Robotics, Vision & Control for Python, Section 3, P. Corke, Springer 2023.
-        - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>_
+        - `Lie groups for 2D and 3D Transformations <http://ethaneade.com/lie.pdf>`_
 
     :SymPy: supported
     """
@@ -3002,29 +3002,36 @@ if _matplotlib_exists:
             - ``width`` of line
             - ``length`` of line
             - ``style`` which is one of:
+
                 - ``'arrow'`` [default], draw line with arrow head in ``color``
                 - ``'line'``, draw line with no arrow head in ``color``
                 - ``'rgb'``, frame axes are lines with no arrow head and red for X, green
-                for Y, blue for Z; no origin dot
+                  for Y, blue for Z; no origin dot
                 - ``'rviz'``, frame axes are thick lines with no arrow head and red for X,
-                green for Y, blue for Z; no origin dot
+                  green for Y, blue for Z; no origin dot
+
         - coordinate axis labels depend on:
+
             - ``axislabel`` if True [default] label the axis, default labels are X, Y, Z
             - ``labels`` 3-list of alternative axis labels
             - ``textcolor`` which defaults to ``color``
             - ``axissubscript`` if True [default] add the frame label ``frame`` as a subscript
-            for each axis label
+              for each axis label
+
         - coordinate frame label depends on:
+
             - `frame` the label placed inside {} near the origin of the frame
+
         - a dot at the origin
+
             - ``originsize`` size of the dot, if zero no dot
             - ``origincolor`` color of the dot, defaults to ``color``
 
         Examples::
 
-                trplot(T, frame='A')
-                trplot(T, frame='A', color='green')
-                trplot(T1, 'labels', 'UVW');
+            trplot(T, frame='A')
+            trplot(T, frame='A', color='green')
+            trplot(T1, 'labels', 'UVW');
 
         .. plot::
 
@@ -3383,12 +3390,12 @@ if _matplotlib_exists:
         :param **kwargs: arguments passed to ``trplot``
 
         - ``tranimate(T)`` where ``T`` is an SO(3) or SE(3) matrix, animates a 3D
-        coordinate frame moving from the world frame to the frame ``T`` in
-        ``nsteps``.
+          coordinate frame moving from the world frame to the frame ``T`` in
+          ``nsteps``.
 
         - ``tranimate(I)`` where ``I`` is an iterable or generator, animates a 3D
-        coordinate frame representing the pose of each element in the sequence of
-        SO(3) or SE(3) matrices.
+          coordinate frame representing the pose of each element in the sequence of
+          SO(3) or SE(3) matrices.
 
         Examples:
 

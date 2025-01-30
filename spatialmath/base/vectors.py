@@ -530,6 +530,7 @@ def wrap_0_pi(theta: ArrayLike) -> Union[float, NDArray]:
     :param theta: input angle
     :type theta: scalar or ndarray
     :return: angle wrapped into range :math:`[0, \pi)`
+    :rtype: scalar or ndarray
 
     This is used to fold angles of colatitude.  If zero is the angle of the
     north pole, colatitude increases to :math:`\pi` at the south pole then
@@ -537,7 +538,7 @@ def wrap_0_pi(theta: ArrayLike) -> Union[float, NDArray]:
 
     :seealso: :func:`wrap_mpi2_pi2` :func:`wrap_0_2pi` :func:`wrap_mpi_pi` :func:`angle_wrap`
     """
-    theta = np.abs(theta)
+    theta = np.abs(getvector(theta))
     n = theta / np.pi
     if isinstance(n, np.ndarray):
         n = n.astype(int)
@@ -546,7 +547,7 @@ def wrap_0_pi(theta: ArrayLike) -> Union[float, NDArray]:
 
     y = np.where(np.bitwise_and(n, 1) == 0, theta - n * np.pi, (n + 1) * np.pi - theta)
     if isinstance(y, np.ndarray) and y.size == 1:
-        return float(y)
+        return float(y[0])
     else:
         return y
 
@@ -558,6 +559,7 @@ def wrap_mpi2_pi2(theta: ArrayLike) -> Union[float, NDArray]:
     :param theta: input angle
     :type theta: scalar or ndarray
     :return: angle wrapped into range :math:`[-\pi/2, \pi/2]`
+    :rtype: scalar or ndarray
 
     This is used to fold angles of latitude.
 
@@ -573,7 +575,7 @@ def wrap_mpi2_pi2(theta: ArrayLike) -> Union[float, NDArray]:
 
     y = np.where(np.bitwise_and(n, 1) == 0, theta - n * np.pi, n * np.pi - theta)
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y[0])
     else:
         return y
 
@@ -585,13 +587,14 @@ def wrap_0_2pi(theta: ArrayLike) -> Union[float, NDArray]:
     :param theta: input angle
     :type theta: scalar or ndarray
     :return: angle wrapped into range :math:`[0, 2\pi)`
+    :rtype: scalar or ndarray
 
     :seealso: :func:`wrap_mpi_pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`
     """
     theta = getvector(theta)
     y = theta - 2.0 * math.pi * np.floor(theta / 2.0 / np.pi)
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y[0])
     else:
         return y
 
@@ -603,13 +606,14 @@ def wrap_mpi_pi(theta: ArrayLike) -> Union[float, NDArray]:
     :param theta: input angle
     :type theta: scalar or ndarray
     :return: angle wrapped into range :math:`[-\pi, \pi)`
+    :rtype: scalar or ndarray
 
     :seealso: :func:`wrap_0_2pi` :func:`wrap_0_pi` :func:`wrap_mpi2_pi2` :func:`angle_wrap`
     """
     theta = getvector(theta)
     y = np.mod(theta + math.pi, 2 * math.pi) - np.pi
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y[0])
     else:
         return y
 
@@ -643,6 +647,7 @@ def angdiff(a, b=None):
     - ``angdiff(a, b)`` is the difference ``a - b`` wrapped to the range
       :math:`[-\pi, \pi)`.  This is the operator :math:`a \circleddash b` used
       in the RVC book
+
         - If ``a`` and ``b`` are both scalars, the result is scalar
         - If ``a`` is array_like, the result is a NumPy array ``a[i]-b``
         - If ``a`` is array_like, the result is a NumPy array ``a-b[i]``
@@ -651,6 +656,7 @@ def angdiff(a, b=None):
 
     - ``angdiff(a)`` is the angle or vector of angles ``a`` wrapped to the range
       :math:`[-\pi, \pi)`.
+
         - If ``a`` is a scalar, the result is scalar
         - If ``a`` is array_like, the result is a NumPy array
 
@@ -671,7 +677,7 @@ def angdiff(a, b=None):
 
     y = np.mod(a + math.pi, 2 * math.pi) - math.pi
     if isinstance(y, np.ndarray) and len(y) == 1:
-        return float(y)
+        return float(y[0])
     else:
         return y
 
