@@ -1,6 +1,6 @@
 # Spatial Maths for Python
 
-[![A Python Robotics Package](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/py_collection.min.svg)](https://github.com/petercorke/robotics-toolbox-python)
+[![A Python Robotics Package](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/py_collection.min.svg)](https://github.com/bdaiinstitute/robotics-toolbox-python)
 [![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
 
 [![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
@@ -20,7 +20,7 @@
 <td style="border:0px">
 <img src="https://github.com/bdaiinstitute/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png" width="200"></td>
 <td style="border:0px">
-A Python implementation of the <a href="https://github.com/petercorke/spatial-math">Spatial Math Toolbox for MATLAB<sup>&reg;</sup></a>
+A Python implementation of the <a href="https://github.com/bdaiinstitute/spatial-math">Spatial Math Toolbox for MATLAB<sup>&reg;</sup></a>
 <ul>
 <li><a href="https://github.com/bdaiinstitute/spatialmath-python">GitHub repository </a></li>
 <li><a href="https://bdaiinstitute.github.io/spatialmath-python">Documentation</a></li>
@@ -45,8 +45,8 @@ space:
 | ------------ | ---------------- | -------- |
 | pose         | ``SE3`` ``Twist3`` ``UnitDualQuaternion``   |   ``SE2`` ``Twist2`` |
 | orientation  | ``SO3`` ``UnitQuaternion`` |            ``SO2``  |
-                
-                
+
+
 More specifically:
 
  * `SE3` matrices belonging to the group $\mathbf{SE}(3)$ for position and orientation (pose) in 3-dimensions
@@ -80,7 +80,7 @@ The class, method and functions names largely mirror those of the MATLAB toolbox
 
 # Citing
 
-Check out our ICRA 2021 paper on [IEEE Xplore](https://ieeexplore.ieee.org/document/9561366) or get the PDF from [Peter's website](https://bit.ly/icra_rtb).  This describes the [Robotics Toolbox for Python](https://github.com/petercorke/robotics-toolbox-python) as well Spatial Maths.
+Check out our ICRA 2021 paper on [IEEE Xplore](https://ieeexplore.ieee.org/document/9561366) or get the PDF from [Peter's website](https://bit.ly/icra_rtb).  This describes the [Robotics Toolbox for Python](https://github.com/bdaiinstitute/robotics-toolbox-python) as well Spatial Maths.
 
 If the toolbox helped you in your research, please cite
 
@@ -160,26 +160,26 @@ For example, to create an object representing a rotation of 0.3 radians about th
 >>> from spatialmath import SO3, SE3
 >>> R1 = SO3.Rx(0.3)
 >>> R1
-   1         0         0          
-   0         0.955336 -0.29552    
-   0         0.29552   0.955336         
+   1         0         0
+   0         0.955336 -0.29552
+   0         0.29552   0.955336
 ```
 while a rotation of 30 deg about the z-axis is
 
 ```python
 >>> R2 = SO3.Rz(30, 'deg')
 >>> R2
-   0.866025 -0.5       0          
-   0.5       0.866025  0          
-   0         0         1    
+   0.866025 -0.5       0
+   0.5       0.866025  0
+   0         0         1
 ```
-and the composition of these two rotations is 
+and the composition of these two rotations is
 
 ```python
 >>> R = R1 * R2
-   0.866025 -0.5       0          
-   0.433013  0.75     -0.5        
-   0.25      0.433013  0.866025 
+   0.866025 -0.5       0
+   0.433013  0.75     -0.5
+   0.25      0.433013  0.866025
 ```
 
 We can find the corresponding Euler angles (in radians)
@@ -198,16 +198,16 @@ Frequently in robotics we want a sequence, a trajectory, of rotation matrices or
 >>> len(R)
  3
 >>> R[1]
-   1         0         0          
-   0         0.955336 -0.29552    
-   0         0.29552   0.955336             
+   1         0         0
+   0         0.955336 -0.29552
+   0         0.29552   0.955336
 ```
 and this can be used in `for` loops and list comprehensions.
 
 An alternative way of constructing this would be (`R1`, `R2` defined above)
 
 ```python
->>> R = SO3( [ SO3(), R1, R2 ] )       
+>>> R = SO3( [ SO3(), R1, R2 ] )
 >>> len(R)
  3
 ```
@@ -233,7 +233,7 @@ will produce a result where each element is the product of each element of the l
 Similarly
 
 ```python
->>> A = SO3.Ry(0.5) * R 
+>>> A = SO3.Ry(0.5) * R
 >>> len(R)
  32
 ```
@@ -242,7 +242,7 @@ will produce a result where each element is the product of the left-hand side wi
 Finally
 
 ```python
->>> A = R * R 
+>>> A = R * R
 >>> len(R)
  32
 ```
@@ -267,10 +267,10 @@ We can print and plot these objects as well
 ```
 >>> T = SE3(1,2,3) * SE3.Rx(30, 'deg')
 >>> T.print()
-   1         0         0         1          
-   0         0.866025 -0.5       2          
-   0         0.5       0.866025  3          
-   0         0         0         1          
+   1         0         0         1
+   0         0.866025 -0.5       2
+   0         0.5       0.866025  3
+   0         0         0         1
 
 >>> T.printline()
 t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
@@ -339,7 +339,7 @@ array([[1., 0., 1.],
        [0., 0., 1.]])
 
 transl2( (1,2) )
-Out[444]: 
+Out[444]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -349,7 +349,7 @@ array([[1., 0., 1.],
 
 ```
 transl2( np.array([1,2]) )
-Out[445]: 
+Out[445]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -436,7 +436,7 @@ Out[259]: int
 
 a = T[1,1]
 a
-Out[256]: 
+Out[256]:
 cos(theta)
 type(a)
 Out[255]: cos
@@ -447,6 +447,6 @@ Similarly when we assign an element or slice of the symbolic matrix to a numeric
 
 ## History & Contributors
 
-This package was originally created by [Peter Corke](https://github.com/petercorke) and [Jesse Haviland](https://github.com/jhavl) and was inspired by the [Spatial Math Toolbox for MATLAB](https://github.com/petercorke/spatialmath-matlab).  It supports the textbook [Robotics, Vision & Control in Python 3e](https://github.com/petercorke/RVC3-python).
+This package was originally created by [Peter Corke](https://github.com/bdaiinstitute) and [Jesse Haviland](https://github.com/jhavl) and was inspired by the [Spatial Math Toolbox for MATLAB](https://github.com/bdaiinstitute/spatialmath-matlab).  It supports the textbook [Robotics, Vision & Control in Python 3e](https://github.com/bdaiinstitute/RVC3-python).
 
 The package is now a collaboration with [Boston Dynamics AI Institute](https://theaiinstitute.com/).
