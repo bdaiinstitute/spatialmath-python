@@ -716,6 +716,17 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
         np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
+
+    def test_rotatedvector(self):
+        v1 = [1, 2, 3]
+        R = SO3.Eul(0.3, 0.4, 0.5)
+        v2 = R * v1
+        Re = SO3.RotatedVector(v1, v2)
+        np.testing.assert_almost_equal(v2, Re * v1)
+
+        Re = SO3.RotatedVector(v1, v1)
+        np.testing.assert_almost_equal(Re, np.eye(3))
+
         R = SO3()  # identity matrix case
 
         # Check log and exponential map
@@ -746,6 +757,7 @@ class TestSO3(unittest.TestCase):
         R = SO3.RPY(rpy)
         m = R.mean()
         array_compare(m, SO3.RPY(0.1, 0.2, 0.3))
+
 
 
 # ============================== SE3 =====================================#

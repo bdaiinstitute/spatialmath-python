@@ -726,6 +726,48 @@ class SO3(BasePoseMatrix):
         return cls(np.c_[x, y, z], check=True)
 
     @classmethod
+    def RotatedVector(cls, v1: ArrayLike3, v2: ArrayLike3, tol=20) -> Self:
+        """
+        Construct a new SO(3) from a vector and its rotated image
+
+        :param v1: initial vector
+        :type v1: array_like(3)
+        :param v2: vector after rotation
+        :type v2: array_like(3)
+        :param tol: tolerance for singularity in units of eps, defaults to 20
+        :type tol: float
+        :return: SO(3) rotation
+        :rtype: :class:`SO3` instance
+
+        ``SO3.RotatedVector(v1, v2)`` is an SO(3) rotation defined in terms of
+        two vectors. The rotation takes vector ``v1`` to ``v2``.
+
+        .. runblock:: pycon
+
+            >>> from spatialmath import SO3
+            >>> v1 = [1, 2, 3]
+            >>> v2 = SO3.Eul(0.3, 0.4, 0.5) * v1
+            >>> print(v2)
+            >>> R = SO3.RotatedVector(v1, v2)
+            >>> print(R)
+            >>> print(R * v1)
+
+        .. note:: The vectors do not have to be unit-length.
+        """
+        # https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+        v1 = smb.unitvec(v1)
+        v2 = smb.unitvec(v2)
+        v = smb.cross(v1, v2)
+        s = smb.norm(v)
+        if abs(s) < tol * np.finfo(float).eps:
+            return cls(np.eye(3), check=False)
+        else:
+            c = np.dot(v1, v2)
+            V = smb.skew(v)
+            R = np.eye(3) + V + V @ V * (1 - c) / (s**2)
+            return cls(R, check=False)
+
+    @classmethod
     def AngleAxis(cls, theta: float, v: ArrayLike3, *, unit: str = "rad") -> Self:
         r"""
         Construct a new SO(3) rotation matrix from rotation angle and axis
