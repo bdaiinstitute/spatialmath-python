@@ -1,21 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>spatialmath.DualQuaternion &mdash; Spatial Maths package  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -33,9 +34,6 @@
             Spatial Maths package
               <img src="../../_static/CartesianSnakes_LogoW.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.1.11
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -76,16 +74,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for spatialmath.DualQuaternion</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">UnitQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
-<span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">spatialmath.base.types</span> <span class="kn">import</span> <span class="o">*</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">UnitQuaternion</span><span class="p">,</span> <span class="n">SE3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath.base.types</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># TODO scalar multiplication</span>
 
 
-<div class="viewcode-block" id="DualQuaternion"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion">[docs]</a><span class="k">class</span> <span class="nc">DualQuaternion</span><span class="p">:</span>
+<div class="viewcode-block" id="DualQuaternion"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DualQuaternion</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A dual number is an ordered pair :math:`\hat{a} = (a, b)` or written as</span>
 <span class="sd">    :math:`a + \epsilon b` where :math:`\epsilon^2 = 0`.</span>
@@ -108,7 +106,7 @@
 <span class="sd">    :seealso: :func:`UnitDualQuaternion`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DualQuaternion.__init__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="p">:</span> <span class="n">Quaternion</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dual</span><span class="p">:</span> <span class="n">Quaternion</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DualQuaternion.__init__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="p">:</span> <span class="n">Quaternion</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dual</span><span class="p">:</span> <span class="n">Quaternion</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a new dual quaternion</span>
 
@@ -151,14 +149,14 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting zero or two parameters&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DualQuaternion.Pure"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.Pure">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">Pure</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Pure</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">getvector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">UnitQuaternion</span><span class="p">(),</span> <span class="n">Quaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        String representation of dual quaternion</span>
 
@@ -175,7 +173,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; + ε &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DualQuaternion.norm"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.norm">[docs]</a>    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<div class="viewcode-block" id="DualQuaternion.norm"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.norm">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Norm of a dual quaternion</span>
 
@@ -197,7 +195,7 @@
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">s</span><span class="p">),</span> <span class="n">base</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">s</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="DualQuaternion.conj"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.conj">[docs]</a>    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<div class="viewcode-block" id="DualQuaternion.conj"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.conj">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Conjugate of dual quaternion</span>
 
@@ -218,7 +216,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DualQuaternion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dual</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="DualQuaternion.__add__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span>
+<div class="viewcode-block" id="DualQuaternion.__add__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__add__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">DualQuaternion</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -237,7 +235,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DualQuaternion</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">right</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">dual</span> <span class="o">+</span> <span class="n">right</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DualQuaternion.__sub__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span>
+<div class="viewcode-block" id="DualQuaternion.__sub__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__sub__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">DualQuaternion</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -256,7 +254,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">DualQuaternion</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">real</span> <span class="o">-</span> <span class="n">right</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">left</span><span class="o">.</span><span class="n">dual</span> <span class="o">-</span> <span class="n">right</span><span class="o">.</span><span class="n">dual</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DualQuaternion.__mul__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-self-argument</span>
+<div class="viewcode-block" id="DualQuaternion.__mul__"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.__mul__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="n">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-self-argument</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Product of dual quaternion</span>
 
@@ -289,7 +287,7 @@
             <span class="n">vp</span> <span class="o">=</span> <span class="n">left</span> <span class="o">*</span> <span class="n">DualQuaternion</span><span class="o">.</span><span class="n">Pure</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">left</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">vp</span><span class="o">.</span><span class="n">dual</span><span class="o">.</span><span class="n">v</span></div>
 
-<div class="viewcode-block" id="DualQuaternion.matrix"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.matrix">[docs]</a>    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R8x8</span><span class="p">:</span>
+<div class="viewcode-block" id="DualQuaternion.matrix"><a class="viewcode-back" href="../../3d_dualquaternion.html#spatialmath.DualQuaternion.DualQuaternion.matrix">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R8x8</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dual quaternion as a matrix</span>
 
@@ -314,7 +312,7 @@
         <span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R8</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">R8</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dual quaternion as a vector</span>
 
@@ -335,7 +333,7 @@
     <span class="c1">#     pass</span>
 
 
-<div class="viewcode-block" id="UnitDualQuaternion"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion">[docs]</a><span class="k">class</span> <span class="nc">UnitDualQuaternion</span><span class="p">(</span><span class="n">DualQuaternion</span><span class="p">):</span>
+<div class="viewcode-block" id="UnitDualQuaternion"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">UnitDualQuaternion</span><span class="p">(</span><span class="n">DualQuaternion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;[summary]</span>
 
 <span class="sd">    :param DualQuaternion: [description]</span>
@@ -349,13 +347,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">SE3</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="n">SE3</span><span class="p">):</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="p">:</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">dual</span><span class="p">:</span> <span class="n">Quaternion</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="p">:</span> <span class="n">Quaternion</span><span class="p">,</span> <span class="n">dual</span><span class="p">:</span> <span class="n">Quaternion</span><span class="p">):</span>
         <span class="o">...</span>
 
-<div class="viewcode-block" id="UnitDualQuaternion.__init__"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="UnitDualQuaternion.__init__"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dual</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create new unit dual quaternion</span>
 
@@ -405,7 +403,7 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">dual</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="UnitDualQuaternion.SE3"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion.SE3">[docs]</a>    <span class="k">def</span> <span class="nf">SE3</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
+<div class="viewcode-block" id="UnitDualQuaternion.SE3"><a class="viewcode-back" href="../../3d_pose_dualquaternion.html#spatialmath.DualQuaternion.UnitDualQuaternion.SE3">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">SE3</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SE3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert unit dual quaternion to SE(3) matrix</span>
 
@@ -435,8 +433,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-
-    <span class="kn">from</span> <span class="nn">spatialmath</span> <span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">UnitDualQuaternion</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">spatialmath</span><span class="w"> </span><span class="kn">import</span> <span class="n">SE3</span><span class="p">,</span> <span class="n">UnitDualQuaternion</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">UnitDualQuaternion</span><span class="p">(</span><span class="n">SE3</span><span class="p">()))</span>
     <span class="c1"># import pathlib</span>
@@ -452,7 +449,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2020-, Peter Corke..
-      <span class="lastupdated">Last updated on 01-Aug-2024.
+      <span class="lastupdated">Last updated on 30-Jan-2025.
       </span></p>
   </div>
 
