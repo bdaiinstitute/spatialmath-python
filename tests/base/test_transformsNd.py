@@ -11,8 +11,6 @@ import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
-import math
-from scipy.linalg import logm, expm
 
 from spatialmath.base.transformsNd import *
 from spatialmath.base.transforms3d import trotx, transl, rotx, isrot, ishom
@@ -25,7 +23,6 @@ try:
     from spatialmath.base.symbolic import symbol
 except ImportError:
     _symbolics = False
-import matplotlib.pyplot as plt
 
 
 class TestND(unittest.TestCase):
@@ -58,7 +55,7 @@ class TestND(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             r2t(np.eye(3, 4))
-        
+
         _ = r2t(np.ones((3, 3)), check=False)
         with self.assertRaises(ValueError):
             r2t(np.ones((3, 3)), check=True)

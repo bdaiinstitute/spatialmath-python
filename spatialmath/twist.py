@@ -655,7 +655,7 @@ class Twist3(BaseTwist):
           scalars.
 
         Foo bar!
-        
+
         Example:
 
         .. runblock:: pycon

@@ -17,7 +17,7 @@ To use::
 from __future__ import annotations
 import math
 import numpy as np
-from typing import Any, Type
+from typing import Any
 import spatialmath.base as smb
 from spatialmath.pose3d import SO3, SE3
 from spatialmath.baseposelist import BasePoseList
@@ -1005,10 +1005,10 @@ class UnitQuaternion(Quaternion):
         """
         super().__init__()
 
-        # handle: UnitQuaternion(v)`` constructs a unit quaternion with specified elements 
+        # handle: UnitQuaternion(v)`` constructs a unit quaternion with specified elements
         # from ``v`` which is a 4-vector given as a list, tuple, or ndarray(4)
         if s is None and smb.isvector(v, 4):
-            v,s = (s,v)
+            v, s = (s, v)
 
         if v is None:
             # single argument
@@ -1248,7 +1248,9 @@ class UnitQuaternion(Quaternion):
         )
 
     @classmethod
-    def Rand(cls, N: int = 1, *, theta_range:Optional[ArrayLike2] = None, unit: str = "rad") -> UnitQuaternion:
+    def Rand(
+        cls, N: int = 1, *, theta_range: Optional[ArrayLike2] = None, unit: str = "rad"
+    ) -> UnitQuaternion:
         """
         Construct a new random unit quaternion
 
@@ -1275,7 +1277,10 @@ class UnitQuaternion(Quaternion):
 
         :seealso: :meth:`UnitQuaternion.Rand`
         """
-        return cls([smb.qrand(theta_range=theta_range, unit=unit) for i in range(0, N)], check=False)
+        return cls(
+            [smb.qrand(theta_range=theta_range, unit=unit) for i in range(0, N)],
+            check=False,
+        )
 
     @classmethod
     def Eul(cls, *angles: List[float], unit: Optional[str] = "rad") -> UnitQuaternion:

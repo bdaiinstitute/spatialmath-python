@@ -46,7 +46,6 @@ class Test_symbolic(unittest.TestCase):
 
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_functions(self):
-
         theta = symbol("theta")
         self.assertTrue(isinstance(sin(theta), sp.Expr))
         self.assertTrue(isinstance(sin(1.0), float))
@@ -57,12 +56,11 @@ class Test_symbolic(unittest.TestCase):
         self.assertTrue(isinstance(sqrt(theta), sp.Expr))
         self.assertTrue(isinstance(sqrt(1.0), float))
 
-        x = (theta - 1) * (theta + 1) - theta ** 2
+        x = (theta - 1) * (theta + 1) - theta**2
         self.assertTrue(math.isclose(simplify(x).evalf(), -1))
 
     @unittest.skipUnless(_symbolics, "sympy required")
     def test_constants(self):
-
         x = zero()
         self.assertTrue(isinstance(x, sp.Expr))
         self.assertTrue(math.isclose(x.evalf(), 0))
@@ -82,5 +80,4 @@ class Test_symbolic(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":  # pragma: no cover
-
     unittest.main()

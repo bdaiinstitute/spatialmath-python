@@ -746,7 +746,7 @@ def trnorm2(T: SE2Array) -> SE2Array:
     b = unitvec(b)
     # fmt: off
     R = np.array([
-        [ b[1], b[0]], 
+        [ b[1], b[0]],
         [-b[0], b[1]]
     ])
     # fmt: on
@@ -810,7 +810,7 @@ def tradjoint2(T):
         (R, t) = smb.tr2rt(cast(SE3Array, T))
         # fmt: off
         return np.block([
-                [R, np.c_[t[1], -t[0]].T], 
+                [R, np.c_[t[1], -t[0]].T],
                 [0, 0,           1]
                 ])  # type: ignore
         # fmt: on
@@ -853,12 +853,16 @@ def tr2jac2(T: SE2Array) -> R3x3:
 
 
 @overload
-def trinterp2(start: Optional[SO2Array], end: SO2Array, s: float, shortest: bool = True) -> SO2Array:
+def trinterp2(
+    start: Optional[SO2Array], end: SO2Array, s: float, shortest: bool = True
+) -> SO2Array:
     ...
 
 
 @overload
-def trinterp2(start: Optional[SE2Array], end: SE2Array, s: float, shortest: bool = True) -> SE2Array:
+def trinterp2(
+    start: Optional[SE2Array], end: SE2Array, s: float, shortest: bool = True
+) -> SE2Array:
     ...
 
 

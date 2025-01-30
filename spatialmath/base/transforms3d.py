@@ -40,7 +40,6 @@ from spatialmath.base.transformsNd import (
     isskew,
     isskewa,
     isR,
-    iseye,
     tr2rt,
     Ab2M,
 )
@@ -1605,12 +1604,16 @@ def trnorm(T: SE3Array) -> SE3Array:
 
 
 @overload
-def trinterp(start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True) -> SO3Array:
+def trinterp(
+    start: Optional[SO3Array], end: SO3Array, s: float, shortest: bool = True
+) -> SO3Array:
     ...
 
 
 @overload
-def trinterp(start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True) -> SE3Array:
+def trinterp(
+    start: Optional[SE3Array], end: SE3Array, s: float, shortest: bool = True
+) -> SE3Array:
     ...
 
 
@@ -1954,15 +1957,15 @@ def rpy2jac(angles: ArrayLike3, order: str = "zyx") -> R3x3:
 
     if order == "xyz":
         # fmt: off
-        J = np.array([	
-            [ sp,       0,   1], 
+        J = np.array([
+            [ sp,       0,   1],
             [-cp * sy,  cy,  0],
             [ cp * cy,  sy,  0]
         ])  # type: ignore
         # fmt: on
     elif order == "zyx":
         # fmt: off
-        J = np.array([	 
+        J = np.array([
                 [ cp * cy, -sy, 0],
                 [ cp * sy,  cy, 0],
                 [-sp,       0,  1],
@@ -1970,7 +1973,7 @@ def rpy2jac(angles: ArrayLike3, order: str = "zyx") -> R3x3:
         # fmt: on
     elif order == "yxz":
         # fmt: off
-        J = np.array([	
+        J = np.array([
                 [ cp * sy,  cy, 0],
                 [-sp,       0,  1],
                 [ cp * cy, -sy, 0]
@@ -2350,7 +2353,7 @@ def rotvelxform(
             # analytical rates -> angular velocity
             # fmt: off
             A = np.array([
-                [ S(beta),          0,        1], 
+                [ S(beta),          0,        1],
                 [-S(gamma)*C(beta), C(gamma), 0], # type: ignore
                 [ C(beta)*C(gamma), S(gamma), 0]  # type: ignore
                 ])
@@ -2360,7 +2363,7 @@ def rotvelxform(
             # fmt: off
             A = np.array([
                 [0, -S(gamma)/C(beta),  C(gamma)/C(beta)], # type: ignore
-                [0,  C(gamma),          S(gamma)], 
+                [0,  C(gamma),          S(gamma)],
                 [1,  S(gamma)*T(beta), -C(gamma)*T(beta)]  # type: ignore
                 ])
             # fmt: on
@@ -2724,7 +2727,7 @@ def tr2adjoint(T):
         (R, t) = tr2rt(T)
         # fmt: off
         return np.block([
-                    [R, skew(t) @ R], 
+                    [R, skew(t) @ R],
                     [Z, R]
                 ])
         # fmt: on
@@ -3431,8 +3434,6 @@ if __name__ == "__main__":  # pragma: no cover
     # print(p)
 
     # print(angvelxform([p, q, r], representation='eul'))
-
-    import pathlib
 
     # exec(
     #     open(

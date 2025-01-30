@@ -357,7 +357,6 @@ class UnitDualQuaternion(DualQuaternion):
 
 
 if __name__ == "__main__":  # pragma: no cover
-
     from spatialmath import SE3, UnitDualQuaternion
 
     print(UnitDualQuaternion(SE3()))

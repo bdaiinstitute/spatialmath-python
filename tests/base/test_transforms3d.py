@@ -12,8 +12,7 @@ import numpy as np
 import numpy.testing as nt
 import unittest
 from math import pi
-import math
-from scipy.linalg import logm, expm
+from scipy.linalg import logm
 
 from spatialmath.base.transforms3d import *
 from spatialmath.base.transformsNd import isR, t2r, r2t, rt2tr, skew
@@ -518,7 +517,7 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(v, np.r_[0, 1, 0])
 
         true_ang = 1.51
-        true_vec = np.array([0., 1., 0.])
+        true_vec = np.array([0.0, 1.0, 0.0])
         eps = 1e-08
 
         # show that tr2angvec works on true rotation matrix
@@ -805,6 +804,7 @@ class Test3D(unittest.TestCase):
         nt.assert_array_almost_equal(
             x2tr(x, representation="exp"), transl(t) @ r2t(trexp(gamma))
         )
+
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":

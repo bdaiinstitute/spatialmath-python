@@ -377,7 +377,12 @@ class BasePoseMatrix(BasePoseList):
         else:
             return log
 
-    def interp(self, end: Optional[bool] = None, s: Union[int, float] = None, shortest: bool = True) -> Self:
+    def interp(
+        self,
+        end: Optional[bool] = None,
+        s: Union[int, float] = None,
+        shortest: bool = True,
+    ) -> Self:
         """
         Interpolate between poses (superclass method)
 
@@ -434,13 +439,19 @@ class BasePoseMatrix(BasePoseList):
         if self.N == 2:
             # SO(2) or SE(2)
             return self.__class__(
-                [smb.trinterp2(start=self.A, end=end, s=_s, shortest=shortest) for _s in s]
+                [
+                    smb.trinterp2(start=self.A, end=end, s=_s, shortest=shortest)
+                    for _s in s
+                ]
             )
 
         elif self.N == 3:
             # SO(3) or SE(3)
             return self.__class__(
-                [smb.trinterp(start=self.A, end=end, s=_s, shortest=shortest) for _s in s]
+                [
+                    smb.trinterp(start=self.A, end=end, s=_s, shortest=shortest)
+                    for _s in s
+                ]
             )
 
     def interp1(self, s: float = None) -> Self:
@@ -1692,7 +1703,7 @@ class BasePoseMatrix(BasePoseList):
 
 
 if __name__ == "__main__":
-    from spatialmath import SE3, SE2, SO2
+    from spatialmath import SO2
 
     C = SO2(0.5)
     A = np.array([[10, 0], [0, 1]])
