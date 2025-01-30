@@ -109,7 +109,9 @@ class Animate:
             if len(dim) == 2:
                 dim = dim * 3
             elif len(dim) != 6:
-                raise ValueError(f"dim must have 2 or 6 elements, got {dim}. See docstring for details.")
+                raise ValueError(
+                    f"dim must have 2 or 6 elements, got {dim}. See docstring for details."
+                )
             ax.set_xlim(dim[0:2])
             ax.set_ylim(dim[2:4])
             ax.set_zlim(dim[4:])
@@ -223,7 +225,7 @@ class Animate:
             else:
                 # [unlikely] other types are converted to np array
                 T = np.array(frame)
-            
+
             if T.shape == (3, 3):
                 T = smb.r2t(T)
 
@@ -606,14 +608,14 @@ class Animate2:
         smb.trplot2(self.start, ax=self, block=False, **kwargs)
 
     def run(
-        self, 
+        self,
         movie: Optional[str] = None,
         axes: Optional[plt.Axes] = None,
         repeat: bool = False,
         interval: int = 50,
         nframes: int = 100,
-        wait: bool = False, 
-        **kwargs
+        wait: bool = False,
+        **kwargs,
     ):
         """
         Run the animation
@@ -663,7 +665,6 @@ class Animate2:
             animation._draw(T)
             self.count += 1  # say we're still running
 
-
         if movie is not None:
             repeat = False
 
@@ -698,7 +699,9 @@ class Animate2:
                 print("overwriting movie", movie)
             else:
                 print("creating movie", movie)
-            FFwriter = animation.FFMpegWriter(fps=1000 / interval, extra_args=["-vcodec", "libx264"])
+            FFwriter = animation.FFMpegWriter(
+                fps=1000 / interval, extra_args=["-vcodec", "libx264"]
+            )
             _ani.save(movie, writer=FFwriter)
 
         if wait:
@@ -901,8 +904,6 @@ if __name__ == "__main__":
     # plt.figure()
     # plotvol3(2)
     # tranimate(attitude())
-
-    from spatialmath import base
 
     # T = smb.rpy2r(0.3, 0.4, 0.5)
     # # smb.tranimate(T, wait=True)

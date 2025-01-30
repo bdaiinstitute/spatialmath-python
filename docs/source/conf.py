@@ -11,8 +11,6 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
 
 # sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath('..'))
@@ -67,9 +65,11 @@ autodoc_member_order = "groupwise"
 #  choose UTF-8 encoding to allow for Unicode characters, eg. ansitable
 #  Python session setup, turn off color printing for SE3, set NumPy precision
 autorun_languages = {}
-autorun_languages['pycon_output_encoding'] = 'UTF-8'
-autorun_languages['pycon_input_encoding'] = 'UTF-8'
-autorun_languages['pycon_runfirst'] = """
+autorun_languages["pycon_output_encoding"] = "UTF-8"
+autorun_languages["pycon_input_encoding"] = "UTF-8"
+autorun_languages[
+    "pycon_runfirst"
+] = """
 from spatialmath import SE3
 SE3._color = False
 import numpy as np

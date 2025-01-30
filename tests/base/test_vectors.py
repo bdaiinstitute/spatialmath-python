@@ -12,7 +12,6 @@ import numpy.testing as nt
 import unittest
 from math import pi
 import math
-from scipy.linalg import logm, expm
 
 from spatialmath.base.vectors import *
 
@@ -218,18 +217,10 @@ class TestVector(unittest.TestCase):
         self.assertIsNone(a[1])
 
     def test_unittwist2(self):
-        nt.assert_array_almost_equal(
-            unittwist2([1, 0, 0]), np.r_[1, 0, 0]
-        )
-        nt.assert_array_almost_equal(
-            unittwist2([0, 2, 0]), np.r_[0, 1, 0]
-        )
-        nt.assert_array_almost_equal(
-            unittwist2([0, 0, -3]), np.r_[0, 0, -1]
-        )
-        nt.assert_array_almost_equal(
-            unittwist2([2, 0, -2]), np.r_[1, 0, -1]
-        )
+        nt.assert_array_almost_equal(unittwist2([1, 0, 0]), np.r_[1, 0, 0])
+        nt.assert_array_almost_equal(unittwist2([0, 2, 0]), np.r_[0, 1, 0])
+        nt.assert_array_almost_equal(unittwist2([0, 0, -3]), np.r_[0, 0, -1])
+        nt.assert_array_almost_equal(unittwist2([2, 0, -2]), np.r_[1, 0, -1])
 
         self.assertIsNone(unittwist2([0, 0, 0]))
 
@@ -329,14 +320,30 @@ class TestVector(unittest.TestCase):
             theta = angle_factor * pi
             self.assertAlmostEqual(angle_wrap(theta), wrap_mpi_pi(theta))
             self.assertAlmostEqual(angle_wrap(-theta), wrap_mpi_pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="-pi:pi"), wrap_mpi_pi(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="-pi:pi"), wrap_mpi_pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="0:2pi"), wrap_0_2pi(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="0:2pi"), wrap_0_2pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="0:pi"), wrap_0_pi(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="0:pi"), wrap_0_pi(-theta))
-            self.assertAlmostEqual(angle_wrap(theta=theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(theta))
-            self.assertAlmostEqual(angle_wrap(theta=-theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(-theta))
+            self.assertAlmostEqual(
+                angle_wrap(theta=theta, mode="-pi:pi"), wrap_mpi_pi(theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=-theta, mode="-pi:pi"), wrap_mpi_pi(-theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=theta, mode="0:2pi"), wrap_0_2pi(theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=-theta, mode="0:2pi"), wrap_0_2pi(-theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=theta, mode="0:pi"), wrap_0_pi(theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=-theta, mode="0:pi"), wrap_0_pi(-theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(theta)
+            )
+            self.assertAlmostEqual(
+                angle_wrap(theta=-theta, mode="-pi/2:pi/2"), wrap_mpi2_pi2(-theta)
+            )
             with self.assertRaises(ValueError):
                 angle_wrap(theta=theta, mode="foo")
 

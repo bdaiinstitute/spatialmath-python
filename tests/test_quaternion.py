@@ -48,19 +48,17 @@ class TestUnitQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(
             UnitQuaternion.Rz(-90, "deg").vec, np.r_[1, 0, 0, -1] / math.sqrt(2)
         )
-        
+
         np.random.seed(73)
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         self.assertIsInstance(q, UnitQuaternion)
         self.assertLessEqual(q.angvec()[0], 0.7)
         self.assertGreaterEqual(q.angvec()[0], 0.1)
 
-
         q = UnitQuaternion.Rand(theta_range=(0.1, 0.7))
         self.assertIsInstance(q, UnitQuaternion)
         self.assertLessEqual(q.angvec()[0], 0.7)
         self.assertGreaterEqual(q.angvec()[0], 0.1)
-
 
     def test_constructor(self):
         qcompare(UnitQuaternion(), [1, 0, 0, 0])
@@ -83,8 +81,8 @@ class TestUnitQuaternion(unittest.TestCase):
         qcompare(UnitQuaternion(2, [0, 0, 0]), np.r_[1, 0, 0, 0])
         qcompare(UnitQuaternion(-2, [0, 0, 0]), np.r_[1, 0, 0, 0])
 
-        qcompare(UnitQuaternion([1, 2, 3, 4]), UnitQuaternion(v = [1, 2, 3, 4]))
-        qcompare(UnitQuaternion(s = 1, v = [2, 3, 4]), UnitQuaternion(v = [1, 2, 3, 4]))
+        qcompare(UnitQuaternion([1, 2, 3, 4]), UnitQuaternion(v=[1, 2, 3, 4]))
+        qcompare(UnitQuaternion(s=1, v=[2, 3, 4]), UnitQuaternion(v=[1, 2, 3, 4]))
 
         # from R
 
@@ -824,8 +822,8 @@ class TestQuaternion(unittest.TestCase):
         nt.assert_array_almost_equal(Quaternion(2, [0, 0, 0]).vec, [2, 0, 0, 0])
         nt.assert_array_almost_equal(Quaternion(-2, [0, 0, 0]).vec, [-2, 0, 0, 0])
 
-        qcompare(Quaternion([1, 2, 3, 4]), Quaternion(v = [1, 2, 3, 4]))
-        qcompare(Quaternion(s = 1, v = [2, 3, 4]), Quaternion(v = [1, 2, 3, 4]))
+        qcompare(Quaternion([1, 2, 3, 4]), Quaternion(v=[1, 2, 3, 4]))
+        qcompare(Quaternion(s=1, v=[2, 3, 4]), Quaternion(v=[1, 2, 3, 4]))
 
         # pure
         v = [5, 6, 7]

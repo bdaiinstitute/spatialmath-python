@@ -27,7 +27,10 @@ class TestBSplineSE3(unittest.TestCase):
 
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
-        spline.visualize(sample_times= np.linspace(0, 1.0, 100), animate=True, repeat=False)
+        spline.visualize(
+            sample_times=np.linspace(0, 1.0, 100), animate=True, repeat=False
+        )
+
 
 class TestInterpSplineSE3:
     waypoints = [
@@ -56,14 +59,20 @@ class TestInterpSplineSE3:
         for time, pose in zip(norm_time, self.waypoints):
             nt.assert_almost_equal(spline(time).angdist(pose), 0.0)
             nt.assert_almost_equal(np.linalg.norm(spline(time).t - pose.t), 0.0)
-  
+
     def test_small_delta_t(self):
-        InterpSplineSE3(np.linspace(0, InterpSplineSE3._e, len(self.waypoints)), self.waypoints)
+        InterpSplineSE3(
+            np.linspace(0, InterpSplineSE3._e, len(self.waypoints)), self.waypoints
+        )
 
     def test_visualize(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
-        spline.visualize(sample_times= np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)
-        
+        spline.visualize(
+            sample_times=np.linspace(0, self.time_horizon, 100),
+            animate=True,
+            repeat=False,
+        )
+
 
 class TestSplineFit:
     num_data_points = 300
@@ -74,7 +83,11 @@ class TestSplineFit:
     timestamps = np.linspace(0, 1, num_data_points)
     trajectory = [
         SE3.Rt(
-            t=[t * 0.4, 0.4 * np.sin(t * 2 * np.pi * 0.5), 0.4 * np.cos(t * 2 * np.pi * 0.5)],
+            t=[
+                t * 0.4,
+                0.4 * np.sin(t * 2 * np.pi * 0.5),
+                0.4 * np.cos(t * 2 * np.pi * 0.5),
+            ],
             R=SO3.Rx(t * 2 * np.pi * 0.5),
         )
         for t in timestamps * time_horizon
@@ -85,11 +98,15 @@ class TestSplineFit:
         spline, kept_indices = fit.stochastic_downsample_interpolation()
 
         fraction_points_removed = 1.0 - len(kept_indices) / self.num_data_points
-        
-        assert(fraction_points_removed > 0.2)
-        assert(len(spline.control_poses)==len(kept_indices))
-        assert(len(spline.timepoints)==len(kept_indices))
-        
-        assert( fit.max_angular_error() < np.deg2rad(5.0) )
-        assert( fit.max_angular_error() < 0.1 )
-        spline.visualize(sample_times= np.linspace(0, self.time_horizon, 100), animate=True, repeat=False)
+
+        assert fraction_points_removed > 0.2
+        assert len(spline.control_poses) == len(kept_indices)
+        assert len(spline.timepoints) == len(kept_indices)
+
+        assert fit.max_angular_error() < np.deg2rad(5.0)
+        assert fit.max_angular_error() < 0.1
+        spline.visualize(
+            sample_times=np.linspace(0, self.time_horizon, 100),
+            animate=True,
+            repeat=False,
+        )

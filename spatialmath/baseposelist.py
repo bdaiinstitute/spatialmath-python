@@ -667,10 +667,11 @@ class BasePoseList(UserList, ABC):
         else:
             return [op(x) for x in self.data]
 
+
 if __name__ == "__main__":
     from spatialmath import SO3, SO2
 
-    R = SO3([[1,0,0],[0,1,0],[0,0,1]])
+    R = SO3([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     print(R.eulervec())
 
     R = SO2([0.3, 0.4, 0.5])

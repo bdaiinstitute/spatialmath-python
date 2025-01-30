@@ -8,9 +8,7 @@ Created on Fri Apr 10 14:19:04 2020
 """
 
 import numpy as np
-import numpy.testing as nt
 import unittest
-import math
 
 
 from spatialmath.base.numeric import *
@@ -18,11 +16,9 @@ from spatialmath.base.numeric import *
 
 class TestNumeric(unittest.TestCase):
     def test_numjac(self):
-
         pass
 
     def test_array2str(self):
-
         x = [1.2345678]
         s = array2str(x)
 
@@ -52,7 +48,6 @@ class TestNumeric(unittest.TestCase):
         self.assertEqual(s, "[ 1, 2, 3 | 4, 5, 6 ]")
 
     def test_bresenham(self):
-
         x, y = bresenham((-10, -10), (20, 10))
         self.assertIsInstance(x, np.ndarray)
         self.assertEqual(x.ndim, 1)
@@ -91,7 +86,6 @@ class TestNumeric(unittest.TestCase):
         self.assertTrue(all(d <= np.sqrt(2)))
 
     def test_mpq(self):
-
         data = np.array([[-1, 1, 1, -1], [-1, -1, 1, 1]])
 
         self.assertEqual(mpq_point(data, 0, 0), 4)
@@ -99,7 +93,6 @@ class TestNumeric(unittest.TestCase):
         self.assertEqual(mpq_point(data, 0, 1), 0)
 
     def test_gauss1d(self):
-
         x = np.arange(-10, 10, 0.02)
         y = gauss1d(2, 1, x)
 
@@ -109,7 +102,6 @@ class TestNumeric(unittest.TestCase):
         self.assertAlmostEqual(x[m], 2)
 
     def test_gauss2d(self):
-
         r = np.arange(-10, 10, 0.02)
         X, Y = np.meshgrid(r, r)
         Z = gauss2d([2, 3], np.eye(2), X, Y)
@@ -121,5 +113,4 @@ class TestNumeric(unittest.TestCase):
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":
-
     unittest.main()

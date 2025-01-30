@@ -17,8 +17,6 @@ from spatialmath.quaternion import Quaternion, UnitQuaternion
 from spatialmath.DualQuaternion import DualQuaternion, UnitDualQuaternion
 from spatialmath.spline import BSplineSE3, InterpSplineSE3, SplineFit
 
-# from spatialmath.Plucker import *
-# from spatialmath import base as smb
 
 __all__ = [
     # pose
@@ -46,7 +44,7 @@ __all__ = [
     "Ellipse",
     "BSplineSE3",
     "InterpSplineSE3",
-    "SplineFit"
+    "SplineFit",
 ]
 
 try:

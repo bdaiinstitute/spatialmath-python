@@ -2,28 +2,28 @@ import unittest
 import numpy as np
 from spatialmath.baseposelist import BasePoseList
 
+
 # create a subclass to test with, its value is a scalar
 class X(BasePoseList):
     def __init__(self, value=0, check=False):
         super().__init__()
         self.data = [value]
-        
+
     @staticmethod
     def _identity():
         return 0
 
     @property
     def shape(self):
-        return (1,1)
+        return (1, 1)
 
     @staticmethod
     def isvalid(x):
         return True
 
+
 class TestBasePoseList(unittest.TestCase):
-
     def test_constructor(self):
-
         x = X()
         self.assertIsInstance(x, X)
         self.assertEqual(len(x), 1)
@@ -43,13 +43,13 @@ class TestBasePoseList(unittest.TestCase):
         for i in range(0, 10):
             x[i] = X(2 * i)
 
-        for i,v in enumerate(x):
+        for i, v in enumerate(x):
             self.assertEqual(v.A, 2 * i)
 
     def test_append(self):
         x = X.Empty()
         for i in range(0, 10):
-            x.append(X(i+1))
+            x.append(X(i + 1))
         self.assertEqual(len(x), 10)
         self.assertEqual([xx.A for xx in x], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
@@ -63,7 +63,7 @@ class TestBasePoseList(unittest.TestCase):
         x.extend(y)
         self.assertEqual(len(x), 10)
         self.assertEqual([xx.A for xx in x], [1, 2, 3, 4, 5, 10, 11, 12, 13, 14])
-        
+
     def test_insert(self):
         x = X.Alloc(10)
         for i in range(0, 10):
@@ -134,13 +134,13 @@ class TestBasePoseList(unittest.TestCase):
 
         self.assertEqual(x.unop(f), [2, 4, 6, 8, 10])
         y = x.unop(f, matrix=True)
-        self.assertEqual(y.shape, (5,1))
+        self.assertEqual(y.shape, (5, 1))
         self.assertTrue(np.all(y - np.c_[2, 4, 6, 8, 10].T == 0))
 
     def test_arghandler(self):
         pass
 
+
 # ---------------------------------------------------------------------------------------#
-if __name__ == '__main__':
-    
+if __name__ == "__main__":
     unittest.main()

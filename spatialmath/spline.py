@@ -2,12 +2,11 @@
 # MIT Licence, see details in top-level file: LICENCE
 
 """
-Classes for parameterizing a trajectory in SE3 with splines. 
+Classes for parameterizing a trajectory in SE3 with splines.
 """
 
 from abc import ABC, abstractmethod
-from functools import cached_property
-from typing import List, Optional, Tuple, Set
+from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -160,11 +159,11 @@ class SplineFit:
         epsilon_angle: float = 1e-1,
         normalize_time: bool = True,
         bc_type: str = "not-a-knot",
-        check_type: str = "local"
+        check_type: str = "local",
     ) -> Tuple[InterpSplineSE3, List[int]]:
         """
-        Uses a random dropout to downsample a trajectory with an interpolated spline. Keeps the start and 
-        end points of the trajectory. Takes a random order of the remaining indices, and then checks the error bound 
+        Uses a random dropout to downsample a trajectory with an interpolated spline. Keeps the start and
+        end points of the trajectory. Takes a random order of the remaining indices, and then checks the error bound
         of just that point if check_type=="local", checks the error of the whole trajectory is check_type=="global".
         Local is **much** faster.
 
@@ -175,7 +174,7 @@ class SplineFit:
 
         interpolation_indices = list(range(len(self.pose_data)))
 
-        # randomly attempt to remove poses from the trajectory 
+        # randomly attempt to remove poses from the trajectory
         # always keep the start and end
         removal_choices = interpolation_indices.copy()
         removal_choices.remove(0)
@@ -197,14 +196,17 @@ class SplineFit:
                     SO3(self.spline.spline_so3(sample_time).as_matrix())
                 )
                 euclidean_error = np.linalg.norm(
-                    self.pose_data[candidate_removal_index].t - self.spline.spline_xyz(sample_time)
+                    self.pose_data[candidate_removal_index].t
+                    - self.spline.spline_xyz(sample_time)
                 )
             elif check_type == "global":
                 angular_error = self.max_angular_error()
                 euclidean_error = self.max_euclidean_error()
             else:
-                raise ValueError(f"check_type must be 'local' of 'global', is {check_type}.")
-            
+                raise ValueError(
+                    f"check_type must be 'local' of 'global', is {check_type}."
+                )
+
             if (angular_error > epsilon_angle) or (euclidean_error > epsilon_xyz):
                 interpolation_indices.append(candidate_removal_index)
                 interpolation_indices.sort()

@@ -242,8 +242,8 @@ class TestSO3(unittest.TestCase):
         nt.assert_almost_equal(R.R[:, 0], v3 / np.linalg.norm(v3), 5)
 
     def test_conversion(self):
-        R = SO3.AngleAxis(0.7, [1,2,3])
-        q = UnitQuaternion([11,7,3,-6])
+        R = SO3.AngleAxis(0.7, [1, 2, 3])
+        q = UnitQuaternion([11, 7, 3, -6])
 
         R_from_q = SO3(q.R)
         q_from_R = UnitQuaternion(R)
@@ -716,7 +716,6 @@ class TestSO3(unittest.TestCase):
         nt.assert_equal(R, SO3.EulerVec(R.eulervec()))
         np.testing.assert_equal((R.inv() * R).eulervec(), np.zeros(3))
 
-
     def test_rotatedvector(self):
         v1 = [1, 2, 3]
         R = SO3.Eul(0.3, 0.4, 0.5)
@@ -757,7 +756,6 @@ class TestSO3(unittest.TestCase):
         R = SO3.RPY(rpy)
         m = R.mean()
         array_compare(m, SO3.RPY(0.1, 0.2, 0.3))
-
 
 
 # ============================== SE3 =====================================#
@@ -872,7 +870,7 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(len(R), 1)
         self.assertIsInstance(R, SE3)
 
-        # random 
+        # random
         T = SE3.Rand()
         R = T.R
         t = T.t
