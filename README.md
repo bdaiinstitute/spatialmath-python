@@ -1,6 +1,6 @@
 # Spatial Maths for Python
 
-[![A Python Robotics Package](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/py_collection.min.svg)](https://github.com/bdaiinstitute/robotics-toolbox-python)
+[![A Python Robotics Package](https://raw.githubusercontent.com/petercorke/robotics-toolbox-python/master/.github/svg/py_collection.min.svg)](https://github.com/petercorke/robotics-toolbox-python)
 [![QUT Centre for Robotics Open Source](https://github.com/qcr/qcr.github.io/raw/master/misc/badge.svg)](https://qcr.github.io)
 
 [![PyPI version](https://badge.fury.io/py/spatialmath-python.svg)](https://badge.fury.io/py/spatialmath-python)
@@ -20,7 +20,7 @@
 <td style="border:0px">
 <img src="https://github.com/bdaiinstitute/spatialmath-python/raw/master/docs/figs/CartesianSnakes_LogoW.png" width="200"></td>
 <td style="border:0px">
-A Python implementation of the <a href="https://github.com/bdaiinstitute/spatial-math">Spatial Math Toolbox for MATLAB<sup>&reg;</sup></a>
+A Python implementation of the <a href="https://github.com/petercorke/spatial-math">Spatial Math Toolbox for MATLAB<sup>&reg;</sup></a>
 <ul>
 <li><a href="https://github.com/bdaiinstitute/spatialmath-python">GitHub repository </a></li>
 <li><a href="https://bdaiinstitute.github.io/spatialmath-python">Documentation</a></li>
@@ -80,7 +80,7 @@ The class, method and functions names largely mirror those of the MATLAB toolbox
 
 # Citing
 
-Check out our ICRA 2021 paper on [IEEE Xplore](https://ieeexplore.ieee.org/document/9561366) or get the PDF from [Peter's website](https://bit.ly/icra_rtb).  This describes the [Robotics Toolbox for Python](https://github.com/bdaiinstitute/robotics-toolbox-python) as well Spatial Maths.
+Check out our ICRA 2021 paper on [IEEE Xplore](https://ieeexplore.ieee.org/document/9561366) or get the PDF from [Peter's website](https://bit.ly/icra_rtb).  This describes the [Robotics Toolbox for Python](https://github.com/petercorke/robotics-toolbox-python) as well Spatial Maths.
 
 If the toolbox helped you in your research, please cite
 
@@ -447,6 +447,6 @@ Similarly when we assign an element or slice of the symbolic matrix to a numeric
 
 ## History & Contributors
 
-This package was originally created by [Peter Corke](https://github.com/bdaiinstitute) and [Jesse Haviland](https://github.com/jhavl) and was inspired by the [Spatial Math Toolbox for MATLAB](https://github.com/bdaiinstitute/spatialmath-matlab).  It supports the textbook [Robotics, Vision & Control in Python 3e](https://github.com/bdaiinstitute/RVC3-python).
+This package was originally created by [Peter Corke](https://github.com/petercorke) and [Jesse Haviland](https://github.com/jhavl) and was inspired by the [Spatial Math Toolbox for MATLAB](https://github.com/petercorke/spatialmath-matlab).  It supports the textbook [Robotics, Vision & Control in Python 3e](https://github.com/petercorke/RVC3-python).
 
 The package is now a collaboration with [Boston Dynamics AI Institute](https://theaiinstitute.com/).

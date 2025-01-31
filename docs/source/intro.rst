@@ -718,9 +718,9 @@ Relationship to MATLAB tools
 ----------------------------
 
 This package replicates, as much as possible, the functionality of the `Spatial
-Math Toolbox  <https://github.com/bdaiinstitute/spatial-math>`__ for MATLAB®
+Math Toolbox  <https://github.com/petercorke/spatial-math>`__ for MATLAB®
 which underpins the `Robotics Toolbox
-<https://github.com/bdaiinstitute/robotics-toolbox-matlab>`__ for MATLAB®. It
+<https://github.com/petercorke/robotics-toolbox-matlab>`__ for MATLAB®. It
 comprises:
 
 * the *classic* functions (which date back to the origin of the Robotics Toolbox

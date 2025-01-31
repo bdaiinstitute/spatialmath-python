@@ -1,5 +1,5 @@
 # This file is part of the SpatialMath toolbox for Python
-# https://github.com/bdaiinstitute/spatialmath-python
+# https://github.com/petercorke/spatialmath-python
 #
 # MIT License
 #
