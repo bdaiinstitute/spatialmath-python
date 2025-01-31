@@ -514,7 +514,7 @@ def skew(v):
     if len(v) == 1:
         # fmt: off
         return np.array([
-            [0.0,  -v[0]], 
+            [0.0,  -v[0]],
             [v[0],  0.0]
         ])  # type: ignore
         # fmt: on

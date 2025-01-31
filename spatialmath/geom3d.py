@@ -507,7 +507,7 @@ class Line3(BasePoseList):
     def skew(self) -> R4x4:
         r"""
         Line as a Plucker skew-symmetric matrix
-        
+
         :return: Skew-symmetric matrix form of Plucker coordinates
         :rtype: ndarray(4,4)
 
@@ -523,7 +523,7 @@ class Line3(BasePoseList):
                 -\omega_x & -\omega_y & -\omega_z & 0 \end{bmatrix}
 
         .. note::
-            
+
             - For two homogeneous points P and Q on the line, :math:`PQ^T-QP^T` is
             also skew symmetric.
             - The projection of Plucker line by a perspective camera is a
