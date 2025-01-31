@@ -45,8 +45,8 @@ space:
 | ------------ | ---------------- | -------- |
 | pose         | ``SE3`` ``Twist3`` ``UnitDualQuaternion``   |   ``SE2`` ``Twist2`` |
 | orientation  | ``SO3`` ``UnitQuaternion`` |            ``SO2``  |
-                
-                
+
+
 More specifically:
 
  * `SE3` matrices belonging to the group $\mathbf{SE}(3)$ for position and orientation (pose) in 3-dimensions
@@ -160,26 +160,26 @@ For example, to create an object representing a rotation of 0.3 radians about th
 >>> from spatialmath import SO3, SE3
 >>> R1 = SO3.Rx(0.3)
 >>> R1
-   1         0         0          
-   0         0.955336 -0.29552    
-   0         0.29552   0.955336         
+   1         0         0
+   0         0.955336 -0.29552
+   0         0.29552   0.955336
 ```
 while a rotation of 30 deg about the z-axis is
 
 ```python
 >>> R2 = SO3.Rz(30, 'deg')
 >>> R2
-   0.866025 -0.5       0          
-   0.5       0.866025  0          
-   0         0         1    
+   0.866025 -0.5       0
+   0.5       0.866025  0
+   0         0         1
 ```
-and the composition of these two rotations is 
+and the composition of these two rotations is
 
 ```python
 >>> R = R1 * R2
-   0.866025 -0.5       0          
-   0.433013  0.75     -0.5        
-   0.25      0.433013  0.866025 
+   0.866025 -0.5       0
+   0.433013  0.75     -0.5
+   0.25      0.433013  0.866025
 ```
 
 We can find the corresponding Euler angles (in radians)
@@ -198,16 +198,16 @@ Frequently in robotics we want a sequence, a trajectory, of rotation matrices or
 >>> len(R)
  3
 >>> R[1]
-   1         0         0          
-   0         0.955336 -0.29552    
-   0         0.29552   0.955336             
+   1         0         0
+   0         0.955336 -0.29552
+   0         0.29552   0.955336
 ```
 and this can be used in `for` loops and list comprehensions.
 
 An alternative way of constructing this would be (`R1`, `R2` defined above)
 
 ```python
->>> R = SO3( [ SO3(), R1, R2 ] )       
+>>> R = SO3( [ SO3(), R1, R2 ] )
 >>> len(R)
  3
 ```
@@ -233,7 +233,7 @@ will produce a result where each element is the product of each element of the l
 Similarly
 
 ```python
->>> A = SO3.Ry(0.5) * R 
+>>> A = SO3.Ry(0.5) * R
 >>> len(R)
  32
 ```
@@ -242,7 +242,7 @@ will produce a result where each element is the product of the left-hand side wi
 Finally
 
 ```python
->>> A = R * R 
+>>> A = R * R
 >>> len(R)
  32
 ```
@@ -267,10 +267,10 @@ We can print and plot these objects as well
 ```
 >>> T = SE3(1,2,3) * SE3.Rx(30, 'deg')
 >>> T.print()
-   1         0         0         1          
-   0         0.866025 -0.5       2          
-   0         0.5       0.866025  3          
-   0         0         0         1          
+   1         0         0         1
+   0         0.866025 -0.5       2
+   0         0.5       0.866025  3
+   0         0         0         1
 
 >>> T.printline()
 t =        1,        2,        3; rpy/zyx =       30,        0,        0 deg
@@ -339,7 +339,7 @@ array([[1., 0., 1.],
        [0., 0., 1.]])
 
 transl2( (1,2) )
-Out[444]: 
+Out[444]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -349,7 +349,7 @@ array([[1., 0., 1.],
 
 ```
 transl2( np.array([1,2]) )
-Out[445]: 
+Out[445]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -436,7 +436,7 @@ Out[259]: int
 
 a = T[1,1]
 a
-Out[256]: 
+Out[256]:
 cos(theta)
 type(a)
 Out[255]: cos

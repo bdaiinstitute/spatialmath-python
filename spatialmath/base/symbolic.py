@@ -8,7 +8,7 @@ generalizes some common functions so that they can accept numerical or
 Symbolic arguments.
 
 If SymPy is not installed then only the standard numeric operations are
-supported. 
+supported.
 """
 
 import math

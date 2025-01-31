@@ -21,9 +21,9 @@ import spatialmath as sm
 
 R = sm.SO3.Rx(30, 'deg')
 print(R)
-   1         0         0          
-   0         0.866025 -0.5        
-   0         0.5       0.866025   
+   1         0         0
+   0         0.866025 -0.5
+   0         0.5       0.866025
 ```
 which constructs a rotation about the x-axis by 30 degrees.
 
@@ -45,7 +45,7 @@ array([[ 1.        ,  0.        ,  0.        ],
        [ 0.        ,  0.29552021,  0.95533649]])
 
 >>> rotx(30, unit='deg')
-Out[438]: 
+Out[438]:
 array([[ 1.       ,  0.       ,  0.       ],
        [ 0.       ,  0.8660254, -0.5      ],
        [ 0.       ,  0.5      ,  0.8660254]])
@@ -64,7 +64,7 @@ We also support multiple ways of passing vector information to functions that re
 
 ```
 transl2(1, 2)
-Out[442]: 
+Out[442]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -74,13 +74,13 @@ array([[1., 0., 1.],
 
 ```
 transl2( [1,2] )
-Out[443]: 
+Out[443]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
 
 transl2( (1,2) )
-Out[444]: 
+Out[444]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -90,7 +90,7 @@ array([[1., 0., 1.],
 
 ```
 transl2( np.array([1,2]) )
-Out[445]: 
+Out[445]:
 array([[1., 0., 1.],
        [0., 1., 2.],
        [0., 0., 1.]])
@@ -129,7 +129,7 @@ Using classes ensures type safety, for example it stops us mixing a 2D homogeneo
 These classes are all derived from two parent classes:
 
 * `RTBPose` which provides common functionality for all
-* `UserList` which provdides the ability to act like a list 
+* `UserList` which provdides the ability to act like a list
 
 The latter is important because frequnetly in robotics we want a sequence, a trajectory, of rotation matrices or poses.  However a list of these items has the type `list` and the elements are not enforced to be homogeneous, ie. a list could contain a mixture of classes.
 
@@ -178,7 +178,7 @@ Out[259]: int
 
 a = T[1,1]
 a
-Out[256]: 
+Out[256]:
 cos(theta)
 type(a)
 Out[255]: cos
@@ -226,10 +226,3 @@ TypeError: can't convert expression to float
 | t2r | yes |
 | rotx | yes |
 | rotx | yes |
-
-
-
-
-
-
-
