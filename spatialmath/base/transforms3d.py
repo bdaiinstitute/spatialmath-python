@@ -43,7 +43,7 @@ from spatialmath.base.transformsNd import (
     tr2rt,
     Ab2M,
 )
-from spatialmath.base.quaternions import r2q, q2r, qeye, qslerp
+from spatialmath.base.quaternions import r2q, q2r, qeye, qslerp, qunit
 from spatialmath.base.graphics import plotvol3, axes_logic
 from spatialmath.base.animate import Animate
 import spatialmath.base.symbolic as sym
@@ -1675,7 +1675,7 @@ def trinterp(start, end, s, shortest=True):
             q1 = r2q(end)
             qr = qslerp(q0, q1, s, shortest=shortest)
 
-        return q2r(qr)
+        return q2r(qunit(qr))
 
     elif ismatrix(end, (4, 4)):
         # SE(3) case
@@ -1697,7 +1697,7 @@ def trinterp(start, end, s, shortest=True):
             qr = qslerp(q0, q1, s, shortest=shortest)
             pr = p0 * (1 - s) + s * p1
 
-        return rt2tr(q2r(qr), pr)
+        return rt2tr(q2r(qunit(qr)), pr)
     else:
         return ValueError("Argument must be SO(3) or SE(3)")
 
