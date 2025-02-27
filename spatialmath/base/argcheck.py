@@ -5,7 +5,7 @@
 
 """
 Utility functions for testing and converting passed arguments.  Used in all
-spatialmath functions and classes to provides for flexibility in argument types 
+spatialmath functions and classes to provides for flexibility in argument types
 that can be passed.
 """
 

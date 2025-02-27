@@ -10,7 +10,7 @@ A set of cooperating classes to support Featherstone's spatial vector formalism
    :top-classes: collections.UserList
    :parts: 1
 
-.. note:: Compared to Featherstone's papers these spatial vectors have the 
+.. note:: Compared to Featherstone's papers these spatial vectors have the
     translational components first, followed by rotational components.
 """
 
