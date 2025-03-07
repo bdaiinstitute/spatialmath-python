@@ -1429,6 +1429,32 @@ class TestSE3(unittest.TestCase):
                 test_angle = path_se3[i].angdist(path_se3[i + 1])
                 assert abs(test_angle - angle) < 1e-6
 
+    def test_mean(self):
+        rpy = np.ones((100, 1)) @ np.c_[0.1, 0.2, 0.3]
+        T = SE3.RPY(rpy)
+        self.assertEqual(len(T), 100)
+        m = T.mean()
+        self.assertIsInstance(m, SE3)
+        array_compare(m, T[0])
+
+        # range of angles, mean should be the middle one, index=25
+        T = SE3.Rz(np.linspace(start=0.3, stop=0.7, num=51))
+        m = T.mean()
+        self.assertIsInstance(m, SE3)
+        array_compare(m, T[25])
+
+        # now add noise
+        rng = np.random.default_rng(0)  # reproducible random numbers
+        rpy += rng.normal(scale=0.00001, size=(100, 3))
+        T = SE3.RPY(rpy)
+        m = T.mean()
+        array_compare(m, SE3.RPY(0.1, 0.2, 0.3))
+
+        T = SE3.Tz(np.linspace(start=-2, stop=1, num=51))
+        m = T.mean()
+        self.assertIsInstance(m, SE3)
+        array_compare(m, T[25])
+
 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":

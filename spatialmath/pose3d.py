@@ -983,18 +983,20 @@ class SO3(BasePoseMatrix):
             return ad
 
     def mean(self, tol: float = 20) -> SO3:
-        """Mean of a set of rotations
+        """Mean of a set of SO(3) values
 
         :param tol: iteration tolerance in units of eps, defaults to 20
         :type tol: float, optional
         :return: the mean rotation
         :rtype: :class:`SO3` instance.
 
-        Computes the Karcher mean of the set of rotations within the SO(3) instance.
+        Computes the Karcher mean of the set of SO(3) rotations within the :class:`SO3` instance.
 
         :references:
             - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_, Algorithm 1, page 15.
             - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean>`_
+
+        :seealso: :class:`SE3.mean`
         """
 
         eta = tol * np.finfo(float).eps
@@ -2193,6 +2195,28 @@ class SE3(SO3):
             return np.array(ad)
         else:
             return ad
+
+    def mean(self, tol: float = 20) -> SE3:
+        """Mean of a set of SE(3) values
+
+        :param tol: iteration tolerance in units of eps, defaults to 20
+        :type tol: float, optional
+        :return: the mean SE(3) pose
+        :rtype: :class:`SE3` instance.
+
+        Computes the mean of all the SE(3) values within the :class:`SE3` instance.  Rotations are
+        averaged using the Karcher mean, and translations are averaged using the
+        arithmetic mean.
+
+        :references:
+            - `**Hartley, Trumpf** - "Rotation Averaging" - IJCV 2011 <https://users.cecs.anu.edu.au/~hartley/Papers/PDF/Hartley-Trumpf:Rotation-averaging:IJCV.pdf>`_, Algorithm 1, page 15.
+            - `Karcher mean <https://en.wikipedia.org/wiki/Karcher_mean>`_
+
+        :seealso:  :meth:`SO3.mean`
+        """
+        R_mean = SO3(self).mean(tol)
+        t_mean = self.t.mean(axis=0)
+        return SE3.Rt(R_mean, t_mean)
 
     # @classmethod
     # def SO3(cls, R, t=None, check=True):
