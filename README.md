@@ -13,6 +13,29 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/spatialmath-python)](https://pypistats.org/packages/spatialmath-python)
 [![GitHub stars](https://img.shields.io/github/stars/bdaiinstitute/spatialmath-python.svg?style=social&label=Star)](https://GitHub.com/bdaiinstitute/spatialmath-python/stargazers/)
 
+# Repository Migration Notice
+
+> [!IMPORTANT]
+> This repository is moving to the **RAI-Opensource** GitHub organization in **about 2 weeks from April 9, 2026 (UTC)**.
+>
+> The `github.io` page is now at <https://spatialmath-python.rai-inst.com/>.  The old link (`https://bdaiinstitute.github.io/spatialmath-python`) will continue to redirect until repository migration and **then will break**.
+>
+> Current status: **pre-migration**.
+> Migration target org: <https://github.com/RAI-Opensource/spatialmath-python>
+>
+> What to do now:
+>
+> - Immediately: Update any links of `https://bdaiinstitute.github.io/spatialmath-python` to  <https://spatialmath-python.rai-inst.com/>
+>
+>
+> - Watch this repository for the final cutover update and destination repository link.
+> - Plan to update your git remote after the move:
+>
+>   ```bash
+>   git remote set-url origin https://github.com/rai-opensource/spatialmath-python.git
+>   ```
+>
+>
 
 
 <table style="border:0px">
@@ -32,29 +55,6 @@ A Python implementation of the <a href="https://github.com/petercorke/spatial-ma
 </tr>
 </table>
 
-# Repository Migration Notice
-
-> [!IMPORTANT]
-> This repository is moving to the **RAI-Opensource** GitHub organization in **about 2 weeks from April 9, 2026 (UTC)**.
->
-> The <github.io> page is now at <https://spatialmath-python.rai-inst.com/>.  The old link (`https://bdaiinstitute.github.io/spatialmath-python`) will continue to redirect until repository migration and **then will break**.
->
-> Current status: **pre-migration**.
-> Migration target org: <https://github.com/RAI-Opensource/spatialmath-python>
->
-> What to do now:
->
-> - Immediately: Update any links of `https://bdaiinstitute.github.io/spatialmath-python` to  <https://spatialmath-python.rai-inst.com/>
->
->
-> - Watch this repository for the final cutover update and destination repository link.
-> - Plan to update your git remote after the move:
->
->   ```bash
->   git remote set-url origin https://github.com/rai-opensource/spatialmath-python.git
->   ```
->
->
 
 Spatial mathematics capability underpins all of robotics and robotic vision where we need to describe the position, orientation or pose of objects in 2D or 3D spaces.
 
