@@ -752,7 +752,7 @@ def angvec2r(theta: float, v: ArrayLike3, unit="rad", tol: float = 20) -> SO3Arr
     if np.linalg.norm(v) < tol * _eps:
         return np.eye(3)
 
-    θ = getunit(theta, unit)
+    θ = getunit(theta, unit, vector=False)
 
     # Rodrigue's equation
 
