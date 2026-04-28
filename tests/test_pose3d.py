@@ -1390,7 +1390,7 @@ class TestSE3(unittest.TestCase):
         nt.assert_equal(tvec, [2, 3, 4])
 
     def test_interp(self):
-        # This data is taken from https://github.com/bdaiinstitute/spatialmath-python/issues/165
+        # This data is taken from https://github.com/rai-opensource/spatialmath-python/issues/165
         se3_1 = SE3()
         se3_1.t = np.array(
             [0.5705748101710814, 0.29623210833184527, 0.10764106509086407]
