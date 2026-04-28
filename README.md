@@ -27,7 +27,7 @@
 > What to do now:
 > - Update your git remote:
 >   ```bash
->   git remote set-url origin https://github.com/RAI-Opensource/spatialmath-python
+>   git remote set-url origin https://github.com/rai-opensource/spatialmath-python.git
 >   ```
 > - Update any links of `https://bdaiinstitute.github.io/spatialmath-python` to  <https://spatialmath-python.rai-inst.com/>
 > - If you maintain downstream docs/scripts, update links from this repository to the new org.
