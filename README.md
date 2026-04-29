@@ -463,8 +463,12 @@ We see that the symbolic constants are converted back to Python numeric types on
 
 Similarly when we assign an element or slice of the symbolic matrix to a numeric value, they are converted to symbolic constants on the way in.
 
+## Making a New Release
+- Make a pull request that bumps the version number in `pyproject.toml`, which follows the major.minor.patch semantic versioning convention. 
+- Then, go to the URL https://github.com/rai-opensource/spatialmath-python/releases, click draft new release. Click the tag selection dialouge, then click create new tag, and make a tag that matches the semantic version numbers in the pull request you just made. Click "generate release notes", then click publish release. This will automatically kick off the workflow in `.github/workflows/publish.yml` and the new version of the code on PyPi (https://pypi.org/project/spatialmath-python).
+
 ## History & Contributors
 
 This package was originally created by [Peter Corke](https://github.com/petercorke) and [Jesse Haviland](https://github.com/jhavl) and was inspired by the [Spatial Math Toolbox for MATLAB](https://github.com/petercorke/spatialmath-matlab).  It supports the textbook [Robotics, Vision & Control in Python 3e](https://github.com/petercorke/RVC3-python).
 
-The package is now a collaboration with [Boston Dynamics AI Institute](https://theaiinstitute.com/).
+The package is now a collaboration with the [Robotics and AI Institute](https://rai-inst.com/).
