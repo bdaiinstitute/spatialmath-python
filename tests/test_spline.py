@@ -27,6 +27,7 @@ class TestBSplineSE3(unittest.TestCase):
         spline = BSplineSE3(self.control_poses)
         nt.assert_almost_equal(spline(0).A, self.control_poses[0].A)
         nt.assert_almost_equal(spline(1).A, self.control_poses[-1].A)
+        assert False
 
     @pytest.mark.skipif(os.environ.get("CI") == "true", reason="no display in CI")
     def test_visualize(self):
