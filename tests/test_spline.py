@@ -1,3 +1,6 @@
+import os
+import pytest
+
 import numpy.testing as nt
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,6 +28,7 @@ class TestBSplineSE3(unittest.TestCase):
         nt.assert_almost_equal(spline(0).A, self.control_poses[0].A)
         nt.assert_almost_equal(spline(1).A, self.control_poses[-1].A)
 
+    @pytest.mark.skipif(os.environ.get("CI") == "true", reason="no display in CI")
     def test_visualize(self):
         spline = BSplineSE3(self.control_poses)
         spline.visualize(
@@ -65,6 +69,7 @@ class TestInterpSplineSE3:
             np.linspace(0, InterpSplineSE3._e, len(self.waypoints)), self.waypoints
         )
 
+    @pytest.mark.skipif(os.environ.get("CI") == "true", reason="no display in CI")
     def test_visualize(self):
         spline = InterpSplineSE3(self.times, self.waypoints)
         spline.visualize(
@@ -105,8 +110,9 @@ class TestSplineFit:
 
         assert fit.max_angular_error() < np.deg2rad(5.0)
         assert fit.max_angular_error() < 0.1
-        spline.visualize(
-            sample_times=np.linspace(0, self.time_horizon, 100),
-            animate=True,
-            repeat=False,
-        )
+        if os.environ.get("CI") != "true":
+            spline.visualize(
+                sample_times=np.linspace(0, self.time_horizon, 100),
+                animate=True,
+                repeat=False,
+            )

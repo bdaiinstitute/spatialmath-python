@@ -14,6 +14,7 @@ import unittest
 from math import pi
 import math
 from scipy.linalg import logm, expm
+import os
 import pytest
 import sys
 
@@ -25,8 +26,9 @@ import matplotlib.pyplot as plt
 
 class Test3D(unittest.TestCase):
     @pytest.mark.skipif(
-        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
-        reason="tkinter bug with mac",
+        os.environ.get("CI") == "true"
+        or (sys.platform.startswith("darwin") and sys.version_info < (3, 11)),
+        reason="no display in CI / tkinter bug on mac",
     )
     def test_plot(self):
         plt.figure()
@@ -72,8 +74,9 @@ class Test3D(unittest.TestCase):
         plt.close("all")
 
     @pytest.mark.skipif(
-        sys.platform.startswith("darwin") and sys.version_info < (3, 11),
-        reason="tkinter bug with mac",
+        os.environ.get("CI") == "true"
+        or (sys.platform.startswith("darwin") and sys.version_info < (3, 11)),
+        reason="no display in CI / tkinter bug on mac",
     )
     def test_animate(self):
         tranimate(transl(1, 2, 3), repeat=False, wait=True)
