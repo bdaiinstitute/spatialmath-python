@@ -13,25 +13,6 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/spatialmath-python)](https://pypistats.org/packages/spatialmath-python)
 [![GitHub stars](https://img.shields.io/github/stars/rai-opensource/spatialmath-python.svg?style=social&label=Star)](https://GitHub.com/rai-opensource/spatialmath-python/stargazers/)
 
-# Repository Migration Notice
-
-> [!IMPORTANT]
-> This repository has moved to the **RAI-Opensource** GitHub organization!
->
-> The `github.io` page is now at <https://spatialmath-python.rai-inst.com/>.  The old link (`https://bdaiinstitute.github.io/spatialmath-python`) is no longer valid.
->
-> Current status: **Migrated**.
-> - Migration target org: https://github.com/RAI-Opensource
-> - Previous target org: https://github.com/bdaiinstitute
->
-> What to do now:
-> - Update your git remote:
->   ```bash
->   git remote set-url origin https://github.com/rai-opensource/spatialmath-python.git
->   ```
-> - Update any links of `https://bdaiinstitute.github.io/spatialmath-python` to  <https://spatialmath-python.rai-inst.com/>
-> - If you maintain downstream docs/scripts, update links from this repository to the new org.
-
 <table style="border:0px">
 <tr style="border:0px">
 <td style="border:0px">
@@ -466,6 +447,18 @@ Similarly when we assign an element or slice of the symbolic matrix to a numeric
 ## Making a New Release
 - Make a pull request that bumps the version number in `pyproject.toml`, which follows the major.minor.patch semantic versioning convention. 
 - Then, go to the URL https://github.com/rai-opensource/spatialmath-python/releases, click draft new release. Click the tag selection dialouge, then click create new tag, and make a tag that matches the semantic version numbers in the pull request you just made. Click "generate release notes", then click publish release. This will automatically kick off the workflow in `.github/workflows/publish.yml` and the new version of the code on PyPi (https://pypi.org/project/spatialmath-python).
+
+## Migration Notice
+
+On April 28, 2026 this repository moved to the **RAI-Opensource** GitHub organization.  If you are still pulling from the previous bdaiinstitute GitHub organization, please update your git remote:
+   ```bash
+   git remote set-url origin https://github.com/RAI-Opensource/spot_ros2
+   ```
+
+Also update any links of `https://bdaiinstitute.github.io/spatialmath-python` to  <https://spatialmath-python.rai-inst.com/>.
+
+If you maintain downstream docs/scripts, update links from this repository to the new org.
+
 
 ## History & Contributors
 
